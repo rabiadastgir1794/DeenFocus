@@ -1,0 +1,9 @@
+Navigation Rules:
+
+- Use go_router for navigation.
+- Centralize routes inside:
+   lib/app/routes/app_router.dart
+- Define route names inside:
+   route_names.dart
+- No Navigator.push directly.
+- All navigation must use context.go() or context.push().

@@ -1,0 +1,13 @@
+Theme Rules:
+
+- Use main brand color: #459075
+- Use Material 3.
+- Support Light and Dark mode.
+- Rounded corners must be 16px minimum.
+- Use centralized theme files:
+   - app_theme.dart
+   - light_theme.dart
+   - dark_theme.dart
+
+Do NOT hardcode colors in widgets.
+Always use AppColors.

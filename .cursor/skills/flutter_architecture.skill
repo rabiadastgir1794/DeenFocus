@@ -1,0 +1,25 @@
+You are building a production-ready Flutter app.
+
+Architecture Rules:
+
+- Use MVVM architecture.
+- Folder structure must follow:
+
+lib/
+ ├── app/
+ ├── core/
+ ├── data/
+ ├── features/
+
+Each feature must contain:
+ - model/
+ - view/
+ - viewmodel/
+
+- ViewModels must extend ChangeNotifier.
+- UI must not contain business logic.
+- Business logic must be inside ViewModel.
+- No direct database access from UI.
+- No network layer required in this project.
+
+Always follow clean separation of concerns.

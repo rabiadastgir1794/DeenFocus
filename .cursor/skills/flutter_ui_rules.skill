@@ -1,0 +1,15 @@
+UI Rules:
+
+- Use flutter_screenutil for responsiveness.
+- Use proper spacing constants.
+- Use good icon packages:
+   - FontAwesome
+   - Iconsax
+- Avoid default Icon when possible.
+- Use custom reusable widgets inside:
+   core/widgets/
+
+All buttons must have:
+ - Rounded corners
+ - Consistent padding
+ - Use theme primary color

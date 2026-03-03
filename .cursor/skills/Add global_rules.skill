@@ -1,0 +1,8 @@
+Code Quality Rules:
+
+- Follow null safety.
+- Avoid large widgets (max 250 lines).
+- Extract reusable widgets.
+- Avoid magic numbers.
+- Use const constructors when possible.
+- Keep code production-ready.

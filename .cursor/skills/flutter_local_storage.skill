@@ -1,0 +1,8 @@
+Local Storage Rules:
+
+- Use Hive for local database.
+- Use SharedPreferences for simple preferences.
+- All Hive boxes must be initialized in main().
+- Database access must go through a service layer:
+   core/services/storage_service.dart
+- Do not access Hive directly in UI.
