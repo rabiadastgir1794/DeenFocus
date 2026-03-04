@@ -18,6 +18,7 @@ class AppTextField extends StatelessWidget {
     this.onSubmitted,
     this.maxLines = 1,
     this.enabled = true,
+    this.textAlign = TextAlign.start,
   });
 
   final TextEditingController? controller;
@@ -31,6 +32,7 @@ class AppTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final int maxLines;
   final bool enabled;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class AppTextField extends StatelessWidget {
       onSubmitted: onSubmitted,
       maxLines: maxLines,
       enabled: enabled,
+      textAlign: textAlign,
       decoration: InputDecoration(
         hintText: placeholder,
         errorText: errorText,

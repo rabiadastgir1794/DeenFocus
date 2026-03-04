@@ -1,60 +1,327 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/constants/spacing.dart';
+import '../../../core/services/location/location_service.dart';
+import '../../../core/services/permission_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../domain/search_places_use_case.dart';
+import '../model/location_suggestion.dart';
 
-class OnboardingLocationPage extends StatelessWidget {
+class OnboardingLocationPage extends StatefulWidget {
   const OnboardingLocationPage({
     super.key,
-    required this.onAllowTap,
-    this.isLoading = false,
+    required this.onLocationSelected,
+    this.initialSelection,
   });
 
-  final VoidCallback onAllowTap;
-  final bool isLoading;
+  final ValueChanged<LocationSuggestion?> onLocationSelected;
+  final LocationSuggestion? initialSelection;
+
+  @override
+  State<OnboardingLocationPage> createState() => _OnboardingLocationPageState();
+}
+
+class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
+  final TextEditingController _cityController = TextEditingController();
+  final SearchPlacesUseCase _searchPlacesUseCase = SearchPlacesUseCase();
+
+  Timer? _searchDebounce;
+  bool _isResolvingLocation = false;
+  bool _isSearching = false;
+  bool _locationPermissionRequested = false;
+  List<LocationSuggestion> _results = const [];
+  int _searchRequestId = 0;
+  String _activeQuery = '';
+
+  LocationSuggestion? _selectedLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLocation = widget.initialSelection;
+    if (_selectedLocation != null) {
+      _cityController.text = _selectedLocation!.title;
+    }
+    _requestPermissionWithDelay();
+  }
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    _cityController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _requestPermissionWithDelay() async {
+    if (_locationPermissionRequested) return;
+
+    _locationPermissionRequested = true;
+    await Future<void>.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final status = await PermissionService.requestLocationStatus();
+    if (!mounted) return;
+
+    if (status.isGranted) {
+      await _fetchAndApplyCurrentLocation();
+      return;
+    }
+
+    if (status.isPermanentlyDenied || status.isRestricted) {
+      final l10n = AppLocalizations.of(context)!;
+      await AppPermissionDialog.show(
+        context,
+        title: l10n.locationRequired,
+        message: l10n.locationRequiredMessage,
+        primaryButtonText: l10n.openSettings,
+        onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
+      );
+    }
+  }
+
+  Future<void> _fetchAndApplyCurrentLocation() async {
+    setState(() {
+      _isResolvingLocation = true;
+    });
+
+    try {
+      final location = await LocationService.fetchCurrentCity();
+      if (!mounted || location == null) return;
+
+      _applySelectedLocation(location, updateResults: true);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isResolvingLocation = false;
+        });
+      }
+    }
+  }
+
+  void _onQueryChanged(String value) {
+    _searchDebounce?.cancel();
+
+    final query = value.trim();
+    _activeQuery = query;
+    if (query.isEmpty) {
+      setState(() {
+        _results = const [];
+        _isSearching = false;
+      });
+      widget.onLocationSelected(null);
+      _selectedLocation = null;
+      return;
+    }
+
+    widget.onLocationSelected(null);
+    _selectedLocation = null;
+
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      _searchPlaces(query);
+    });
+  }
+
+  Future<void> _searchPlaces(String query) async {
+    final requestId = ++_searchRequestId;
+    setState(() {
+      _isSearching = true;
+    });
+    final results = await _searchPlacesUseCase.execute(query);
+
+    if (!mounted || requestId != _searchRequestId) {
+      return;
+    }
+
+    setState(() {
+      _results = results;
+      _isSearching = false;
+    });
+  }
+
+  void _applySelectedLocation(
+    LocationSuggestion location, {
+    bool updateResults = false,
+  }) {
+    setState(() {
+      _selectedLocation = location;
+      _cityController.text = location.title;
+      _cityController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _cityController.text.length),
+      );
+      if (updateResults) {
+        _results = <LocationSuggestion>[location];
+      }
+    });
+
+    widget.onLocationSelected(location);
+  }
+
+  Future<void> _onLocationTap(LocationSuggestion item) async {
+    setState(() {
+      _isResolvingLocation = true;
+    });
+
+    try {
+      LocationSuggestion effective = item;
+      if (item.placeId != null &&
+          item.placeId!.trim().isNotEmpty &&
+          (item.latitude == null || item.longitude == null)) {
+        final coordinates = await _searchPlacesUseCase.fetchCoordinates(
+          item.placeId!,
+        );
+        if (coordinates != null) {
+          effective = item.copyWith(
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+          );
+        }
+      }
+      if (!mounted) return;
+      _applySelectedLocation(effective);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isResolvingLocation = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppIconCircle(
-            icon: const Icon(CupertinoIcons.location),
-          ),
-          SizedBox(height: Spacing.xl.h),
-          Text(
-            AppLocalizations.of(context)!.locationTitle,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+    final l10n = AppLocalizations.of(context)!;
+
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AppIconCircle(icon: const Icon(CupertinoIcons.location)),
+              SizedBox(height: Spacing.xl.h),
+              Text(
+                l10n.locationTitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 24.sp,
                 ),
-          ),
-          SizedBox(height: Spacing.md.h),
-          Text(
-            AppLocalizations.of(context)!.locationSubtitle,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              ),
+              SizedBox(height: Spacing.md.h),
+              Text(
+                l10n.locationSubtitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                   height: 1.5,
                   fontSize: 16.sp,
                 ),
+              ),
+              SizedBox(height: Spacing.xl.h),
+              AppTextField(
+                controller: _cityController,
+                placeholder: 'Type your city name..',
+                textAlign: TextAlign.center,
+                onChanged: _onQueryChanged,
+              ),
+              SizedBox(height: Spacing.md.h),
+              Expanded(
+                child: _isSearching
+                    ? const Center(child: CircularProgressIndicator())
+                    : _results.isNotEmpty
+                    ? ListView.separated(
+                        itemCount: _results.length,
+                        separatorBuilder: (_, _) =>
+                            SizedBox(height: Spacing.sm.h),
+                        itemBuilder: (context, index) {
+                          final item = _results[index];
+                          final isSelected =
+                              _selectedLocation?.title == item.title &&
+                              _selectedLocation?.subtitle == item.subtitle;
+
+                          return ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              side: BorderSide(
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(
+                                        context,
+                                      ).colorScheme.outlineVariant,
+                              ),
+                            ),
+                            title: Text(
+                              item.title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                            subtitle: item.subtitle.trim().isEmpty
+                                ? null
+                                : Text(
+                                    item.subtitle,
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                            onTap: () => _onLocationTap(item),
+                          );
+                        },
+                      )
+                    : _activeQuery.isNotEmpty
+                    ? const AppEmptyState(
+                        title: 'No locations found',
+                        subtitle: 'Try another city name.',
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
           ),
-          SizedBox(height: Spacing.xl.h),
-          AppButton(
-            label: AppLocalizations.of(context)!.locationButton,
-            onPressed: onAllowTap,
-            loading: isLoading,
-            showTrailingIcon: false,
+        ),
+        if (_isResolvingLocation)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.35),
+              alignment: Alignment.center,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: Spacing.xl.w),
+                padding: EdgeInsets.all(Spacing.lg.w),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 30.h,
+                      width: 30.w,
+                      child: const CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(height: Spacing.md.h),
+                    Text(
+                      'Fetching location...',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }

@@ -13,15 +13,15 @@ import '../../../core/services/permission_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/onboarding_view_model.dart';
-import 'onboarding_welcome_page.dart';
-import 'onboarding_tasbih_page.dart';
-import 'onboarding_quran_page.dart';
-import 'onboarding_sect_page.dart';
 import 'onboarding_name_page.dart';
 import 'onboarding_location_page.dart';
 import 'onboarding_notifications_page.dart';
+import 'onboarding_quran_page.dart';
 import 'onboarding_screen_time_page.dart';
+import 'onboarding_sect_page.dart';
 import 'onboarding_subscription_page.dart';
+import 'onboarding_tasbih_page.dart';
+import 'onboarding_welcome_page.dart';
 
 class OnboardingFlowScreen extends StatefulWidget {
   const OnboardingFlowScreen({super.key});
@@ -73,7 +73,10 @@ class _OnboardingFlowContent extends StatefulWidget {
   State<_OnboardingFlowContent> createState() => _OnboardingFlowContentState();
 }
 
-class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with WidgetsBindingObserver {
+class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
+    with WidgetsBindingObserver {
+  bool _didAutoRequestNotification = false;
+
   @override
   void initState() {
     super.initState();
@@ -105,7 +108,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
     final l10n = AppLocalizations.of(context)!;
 
     final platform = Theme.of(context).platform;
-    final isCupertino = platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
+    final isCupertino =
+        platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
 
     if (isCupertino) {
       await showCupertinoModalPopup<void>(
@@ -132,7 +136,10 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                         ],
                       ),
                       if (language.localeCode == localeService.localeCode)
-                        const Icon(CupertinoIcons.checkmark, color: CupertinoColors.activeBlue),
+                        const Icon(
+                          CupertinoIcons.checkmark,
+                          color: CupertinoColors.activeBlue,
+                        ),
                     ],
                   ),
                 ),
@@ -159,7 +166,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
               itemCount: kAppLanguages.length,
               itemBuilder: (ctx, index) {
                 final language = kAppLanguages[index];
-                final isSelected = language.localeCode == localeService.localeCode;
+                final isSelected =
+                    language.localeCode == localeService.localeCode;
                 return ListTile(
                   leading: Text(
                     language.flag,
@@ -167,7 +175,11 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                   ),
                   title: Text(language.label),
                   trailing: isSelected
-                      ? Icon(Icons.check, color: Theme.of(ctx).colorScheme.primary, size: 24.r)
+                      ? Icon(
+                          Icons.check,
+                          color: Theme.of(ctx).colorScheme.primary,
+                          size: 24.r,
+                        )
                       : null,
                   onTap: () async {
                     Navigator.of(ctx).pop();
@@ -182,55 +194,41 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
     }
   }
 
-  Future<void> _onLocationAllowTap(BuildContext context, OnboardingViewModel vm) async {
-    final alreadyGranted = vm.locationGranted || await PermissionService.checkLocation();
-    if (!context.mounted) return;
-
-    if (alreadyGranted) {
-      await vm.recheckPermissions();
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text('Location access is already granted.'),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      return;
-    }
-
-    await vm.requestLocation();
-    if (!context.mounted) return;
-    if (!vm.locationGranted) {
-      final l10n = AppLocalizations.of(context)!;
-      await AppPermissionDialog.show(
-        context,
-        title: l10n.locationRequired,
-        message: l10n.locationRequiredMessage,
-        primaryButtonText: l10n.openSettings,
-        onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
-      );
-    }
-  }
-
-  Future<void> _onNotificationEnableTap(BuildContext context, OnboardingViewModel vm) async {
+  Future<void> _onNotificationEnableTap(
+    BuildContext context,
+    OnboardingViewModel vm,
+  ) async {
     await vm.requestNotification();
-    if (!context.mounted) return;
-    if (!vm.notificationGranted) {
-      final l10n = AppLocalizations.of(context)!;
-      await AppPermissionDialog.show(
-        context,
-        title: l10n.notificationsRequired,
-        message: l10n.notificationsRequiredMessage,
-        primaryButtonText: l10n.openSettings,
-        onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
-      );
-    }
   }
 
-  Future<void> _goToNextPage(BuildContext context, OnboardingViewModel vm) async {
+  Future<void> _requestNotificationOnStep(OnboardingViewModel vm) async {
+    if (_didAutoRequestNotification) return;
+    _didAutoRequestNotification = true;
+    await vm.requestNotification();
+  }
+
+  Future<void> _onScreenTimeAllowTap(
+    BuildContext context,
+    OnboardingViewModel vm,
+  ) async {
+    final opened = await PermissionService.requestScreenTimeAccess();
+    if (!context.mounted || opened) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    await AppPermissionDialog.show(
+      context,
+      title: l10n.screenTimeTitle,
+      message: l10n.screenTimeSubtitle,
+      primaryButtonText: l10n.openSettings,
+      onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
+    );
+    await vm.recheckPermissions();
+  }
+
+  Future<void> _goToNextPage(
+    BuildContext context,
+    OnboardingViewModel vm,
+  ) async {
     if (vm.currentIndex >= vm.totalSteps - 1) return;
     final nextIndex = vm.currentIndex + 1;
     await widget.pageController.animateToPage(
@@ -241,10 +239,10 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
   }
 
   Widget _buildTopBar(
-      BuildContext context,
-      OnboardingViewModel vm,
-      LocaleService localeService,
-      ) {
+    BuildContext context,
+    OnboardingViewModel vm,
+    LocaleService localeService,
+  ) {
     final current = _currentAppLanguage(localeService);
     final l10n = AppLocalizations.of(context)!;
 
@@ -291,6 +289,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OnboardingViewModel>();
+    final localeService = context.watch<LocaleService>();
+    vm.setSelectedLanguageCode(localeService.localeCode);
     final pageController = widget.pageController;
 
     if (vm.didComplete) {
@@ -307,14 +307,17 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
               totalSteps: vm.totalSteps,
               currentIndex: vm.currentIndex,
             ),
-            // Top bar: Language (top left on welcome), Skip (top right when showSkip)
-            _buildTopBar(context, vm, context.watch<LocaleService>()),
-            // Pages
+            _buildTopBar(context, vm, localeService),
             Expanded(
               child: PageView(
                 controller: widget.pageController,
                 physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (index) => vm.setStep(index),
+                onPageChanged: (index) {
+                  vm.setStep(index);
+                  if (index == 7) {
+                    _requestNotificationOnStep(vm);
+                  }
+                },
                 children: [
                   const OnboardingWelcomePage(),
                   const OnboardingFocusModePage(),
@@ -329,15 +332,15 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                     onChanged: vm.setUserName,
                   ),
                   OnboardingLocationPage(
-                    onAllowTap: () => _onLocationAllowTap(context, vm),
-                    isLoading: vm.locationRequesting,
+                    initialSelection: vm.selectedLocation,
+                    onLocationSelected: vm.setSelectedLocation,
                   ),
                   OnboardingNotificationsPage(
                     onEnableTap: () => _onNotificationEnableTap(context, vm),
                     isLoading: vm.notificationRequesting,
                   ),
                   OnboardingScreenTimePage(
-                    onAllowTap: () => PermissionService.openAppSettingsAsync(),
+                    onAllowTap: () => _onScreenTimeAllowTap(context, vm),
                     onSkipTap: () => _goToNextPage(context, vm),
                   ),
                   OnboardingSubscriptionPage(
@@ -347,9 +350,13 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                 ],
               ),
             ),
-            // Continue / Get Started button
             Padding(
-              padding: EdgeInsets.fromLTRB(Spacing.lg.w, 0, Spacing.lg.w, Spacing.xl.h),
+              padding: EdgeInsets.fromLTRB(
+                Spacing.lg.w,
+                0,
+                Spacing.lg.w,
+                Spacing.xl.h,
+              ),
               child: AppButton(
                 label: vm.currentIndex == vm.totalSteps - 1
                     ? AppLocalizations.of(context)!.getStarted
@@ -370,7 +377,6 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                 },
               ),
             ),
-            // Progress dots
             Padding(
               padding: EdgeInsets.only(bottom: Spacing.md.h),
               child: AppProgressIndicator(

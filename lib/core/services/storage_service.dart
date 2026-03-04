@@ -7,6 +7,10 @@ abstract class StorageService {
   static const String _keyUserName = 'user_name';
   static const String _keySect = 'sect';
   static const String _keyLocale = 'locale';
+  static const String _keyLocationName = 'user_location_name';
+  static const String _keyLocationSubtitle = 'user_location_subtitle';
+  static const String _keyLocationLatitude = 'user_location_latitude';
+  static const String _keyLocationLongitude = 'user_location_longitude';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -52,6 +56,53 @@ abstract class StorageService {
       await prefs.remove(_keyLocale);
     } else {
       await prefs.setString(_keyLocale, value);
+    }
+  }
+
+  static Future<String?> get locationName async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyLocationName);
+  }
+
+  static Future<String?> get locationSubtitle async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyLocationSubtitle);
+  }
+
+  static Future<double?> get locationLatitude async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyLocationLatitude);
+  }
+
+  static Future<double?> get locationLongitude async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyLocationLongitude);
+  }
+
+  static Future<void> setUserLocation({
+    required String name,
+    String? subtitle,
+    double? latitude,
+    double? longitude,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyLocationName, name);
+    if (subtitle == null || subtitle.trim().isEmpty) {
+      await prefs.remove(_keyLocationSubtitle);
+    } else {
+      await prefs.setString(_keyLocationSubtitle, subtitle.trim());
+    }
+
+    if (latitude == null) {
+      await prefs.remove(_keyLocationLatitude);
+    } else {
+      await prefs.setDouble(_keyLocationLatitude, latitude);
+    }
+
+    if (longitude == null) {
+      await prefs.remove(_keyLocationLongitude);
+    } else {
+      await prefs.setDouble(_keyLocationLongitude, longitude);
     }
   }
 }

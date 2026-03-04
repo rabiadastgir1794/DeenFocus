@@ -39,16 +39,8 @@ class AppPermissionDialog extends StatelessWidget {
         message: message,
         primaryButtonText: primaryButtonText,
         secondaryButtonText: secondaryButtonText,
-        onPrimaryTap: () {
-          Navigator.of(context).pop();
-          onPrimaryTap();
-        },
-        onSecondaryTap: onSecondaryTap == null
-            ? null
-            : () {
-                Navigator.of(context).pop();
-                onSecondaryTap();
-              },
+        onPrimaryTap: onPrimaryTap,
+        onSecondaryTap: onSecondaryTap,
       ),
     );
   }
@@ -61,22 +53,19 @@ class AppPermissionDialog extends StatelessWidget {
         title,
         style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
       ),
-      content: Text(
-        message,
-        style: TextStyle(fontSize: 16.sp, height: 1.4),
-      ),
+      content: Text(message, style: TextStyle(fontSize: 16.sp, height: 1.4)),
       actions: [
         if (onSecondaryTap != null)
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context, rootNavigator: true).maybePop();
               onSecondaryTap!();
             },
             child: Text(secondaryButtonText),
           ),
         FilledButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context, rootNavigator: true).maybePop();
             onPrimaryTap();
           },
           style: FilledButton.styleFrom(

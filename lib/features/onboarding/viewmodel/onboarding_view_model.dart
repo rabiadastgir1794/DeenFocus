@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../model/location_suggestion.dart';
 import '../model/sect_option.dart';
 import '../model/subscription_plan.dart';
 
@@ -34,36 +35,28 @@ class OnboardingViewModel extends ChangeNotifier {
   String _userName = '';
   String get userName => _userName;
 
+  LocationSuggestion? _selectedLocation;
+  LocationSuggestion? get selectedLocation => _selectedLocation;
+  String _selectedLanguageCode = 'en';
+
   /// Screens that show Skip on top right: 0 (Welcome) only. Subscription (9) has no skip.
   bool get showSkip => _currentIndex == 0;
 
-  /// Continue disabled: sect (4), name (5), location (6), notifications (7). Screen time (8) & subscription (9) always enabled.
+  /// Continue disabled: sect (4), name (5), location (6). Notifications (7), screen time (8), and subscription (9) are optional.
   bool get isContinueDisabled {
     if (_currentIndex == 4) return _selectedSect == null;
     if (_currentIndex == 5) return _userName.trim().isEmpty;
-    if (_currentIndex == 6) return !_locationGranted;
-    if (_currentIndex == 7) return !_notificationGranted;
+    if (_currentIndex == 6) return _selectedLocation == null;
     return false;
   }
 
   /// Re-check permission state (e.g. when returning from app settings). Call from view on resume.
-  bool _locationRequesting = false;
-  bool get locationRequesting => _locationRequesting;
-
   bool _notificationRequesting = false;
   bool get notificationRequesting => _notificationRequesting;
 
   Future<void> recheckPermissions() async {
     _locationGranted = await PermissionService.checkLocation();
     _notificationGranted = await PermissionService.checkNotification();
-    notifyListeners();
-  }
-
-  Future<void> requestLocation() async {
-    _locationRequesting = true;
-    notifyListeners();
-    _locationGranted = await PermissionService.requestLocation();
-    _locationRequesting = false;
     notifyListeners();
   }
 
@@ -90,11 +83,20 @@ class OnboardingViewModel extends ChangeNotifier {
 
   Future<void> _completeOnboarding() async {
     await StorageService.setOnboardingCompleted(true);
+    await StorageService.setLocaleCode(_selectedLanguageCode);
     if (_userName.trim().isNotEmpty) {
       await StorageService.setUserName(_userName.trim());
     }
     if (_selectedSect != null) {
       await StorageService.setSect(_selectedSect!.name);
+    }
+    if (_selectedLocation != null) {
+      await StorageService.setUserLocation(
+        name: _selectedLocation!.title,
+        subtitle: _selectedLocation!.subtitle,
+        latitude: _selectedLocation!.latitude,
+        longitude: _selectedLocation!.longitude,
+      );
     }
     _didComplete = true;
     notifyListeners();
@@ -113,6 +115,17 @@ class OnboardingViewModel extends ChangeNotifier {
   void setUserName(String value) {
     _userName = value;
     notifyListeners();
+  }
+
+  void setSelectedLocation(LocationSuggestion? value) {
+    _selectedLocation = value;
+    notifyListeners();
+  }
+
+  void setSelectedLanguageCode(String code) {
+    final trimmed = code.trim();
+    if (trimmed.isEmpty || _selectedLanguageCode == trimmed) return;
+    _selectedLanguageCode = trimmed;
   }
 
   void setStep(int index) {
