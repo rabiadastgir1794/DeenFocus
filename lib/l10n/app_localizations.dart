@@ -97,19 +97,25 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Deenly'**
+  /// **'Deen Focus'**
   String get appTitle;
 
   /// No description provided for @appTagline.
   ///
   /// In en, this message translates to:
-  /// **'Focus. Discipline. Consistency.'**
+  /// **'Where faith meets focus'**
   String get appTagline;
+
+  /// No description provided for @welcomeTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Mode. Child Mode. Sleep Mode.'**
+  String get welcomeTagline;
 
   /// No description provided for @welcomeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Your personal companion for spiritual growth and mindful living.'**
+  /// **'Track prayers, read Quran, count Tasbih, build streaks - everything for your spiritual journey in one app.'**
   String get welcomeDescription;
 
   /// No description provided for @skip.
@@ -175,13 +181,13 @@ abstract class AppLocalizations {
   /// No description provided for @salahTitle.
   ///
   /// In en, this message translates to:
-  /// **'Stay Focused During Salah'**
+  /// **'Tasbih & Prayer Streaks'**
   String get salahTitle;
 
   /// No description provided for @salahSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Block distracting apps during prayer times to maintain khushu and spiritual presence.'**
+  /// **'A beautiful digital tasbih counter with dhikhr presets, custom entries and streak tracking.'**
   String get salahSubtitle;
 
   /// No description provided for @tasbihTitle.
@@ -309,6 +315,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Allow Access'**
   String get screenTimeButton;
+
+  /// No description provided for @focusModesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Powerful Focus Modes'**
+  String get focusModesTitle;
+
+  /// No description provided for @focusModesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Three modes designed to protect your time and attention'**
+  String get focusModesSubtitle;
+
+  /// No description provided for @focusPrayerModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Mode'**
+  String get focusPrayerModeTitle;
+
+  /// No description provided for @focusPrayerModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Block distracting apps during Salah for complete khushu'**
+  String get focusPrayerModeDescription;
+
+  /// No description provided for @focusSleepModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep Mode'**
+  String get focusSleepModeTitle;
+
+  /// No description provided for @focusSleepModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your sleep schedule and wake up for Fajr'**
+  String get focusSleepModeDescription;
+
+  /// No description provided for @focusChildModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Mode'**
+  String get focusChildModeTitle;
+
+  /// No description provided for @focusChildModeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Instantly block apps when handing device to children'**
+  String get focusChildModeDescription;
 
   /// No description provided for @investTitle.
   ///

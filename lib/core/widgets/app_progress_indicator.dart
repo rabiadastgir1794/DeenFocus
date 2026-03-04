@@ -53,12 +53,12 @@ class AppStepProgressLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColors.progressInactiveDark : AppColors.progressInactiveLight;
+    final backgroundColor = isDark ? AppColors.progressInactiveDark : Colors.white;
 
     if (totalSteps <= 0) {
       return SizedBox(
         width: double.infinity,
-        height: 4.h,
+        height: 2.h,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(2.r),
           child: LinearProgressIndicator(
@@ -75,7 +75,7 @@ class AppStepProgressLine extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 4.h,
+      height: 3.h,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(2.r),
         child: LinearProgressIndicator(

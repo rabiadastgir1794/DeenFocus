@@ -25,10 +25,10 @@ class AppLanguageSelectorChip extends StatelessWidget {
 
     return Material(
       color: bg,
-      borderRadius: BorderRadius.circular(28.r),
+      borderRadius: BorderRadius.circular(12.r),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(28.r),
+        borderRadius: BorderRadius.circular(12.r),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Spacing.md.w, vertical: Spacing.sm.h),
           child: Row(
@@ -49,7 +49,7 @@ class AppLanguageSelectorChip extends StatelessWidget {
                 ),
               ),
               SizedBox(width: Spacing.xs.w),
-              Icon(Iconsax.arrow, size: 16.sp, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(Icons.keyboard_arrow_down_outlined, size: 16.sp, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ],
           ),
         ),

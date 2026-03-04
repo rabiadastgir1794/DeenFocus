@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../app/routes/route_names.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/app_icon_circle.dart';
 import '../../../l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +17,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
 
@@ -60,21 +64,25 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                AppIconCircle(icon: const Icon(CupertinoIcons.moon)),
+                SizedBox(height: Spacing.md.h),
                 Text(
                   AppLocalizations.of(context)!.appTitle,
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 36.sp,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 36.sp,
+                  ),
+
                 ),
                 SizedBox(height: Spacing.sm.h),
                 Text(
                   AppLocalizations.of(context)!.appTagline,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18.sp,
-                      ),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14.sp,
+                    color: AppColors.primary,
+                  ),
                 ),
               ],
             ),
@@ -84,4 +92,3 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
   }
 }
-

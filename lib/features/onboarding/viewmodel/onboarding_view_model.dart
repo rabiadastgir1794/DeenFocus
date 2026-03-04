@@ -7,7 +7,7 @@ import '../model/subscription_plan.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel() {
-    _totalSteps = 10;
+    _totalSteps = 11;
   }
 
   late int _totalSteps;

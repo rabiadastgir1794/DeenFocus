@@ -1,3 +1,4 @@
+import 'package:deenly/features/onboarding/view/onboarding_focus_mode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -240,24 +241,39 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
     );
   }
 
-  Widget _buildTopBar(BuildContext context, OnboardingViewModel vm, LocaleService localeService) {
+  Widget _buildTopBar(
+      BuildContext context,
+      OnboardingViewModel vm,
+      LocaleService localeService,
+      ) {
     final current = _currentAppLanguage(localeService);
     final l10n = AppLocalizations.of(context)!;
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Spacing.md.w, vertical: Spacing.sm.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: Spacing.md.w,
+        vertical: Spacing.sm.h,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if (vm.showSkip)
-            AppLanguageSelectorChip(
+          Visibility(
+            visible: vm.showSkip,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: AppLanguageSelectorChip(
               label: current.label,
               flagEmoji: current.flag,
               onTap: () => _showLanguagePicker(context),
-            )
-          else
-            const SizedBox.shrink(),
-          if (vm.showSkip)
-            TextButton(
+            ),
+          ),
+          Visibility(
+            visible: vm.showSkip,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: TextButton(
               onPressed: vm.skip,
               child: Text(
                 l10n.skip,
@@ -267,6 +283,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -301,6 +318,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                 onPageChanged: (index) => vm.setStep(index),
                 children: [
                   const OnboardingWelcomePage(),
+                  const OnboardingFocusModePage(),
                   const OnboardingSalahPage(),
                   const OnboardingTasbihPage(),
                   const OnboardingQuranPage(),

@@ -20,24 +20,24 @@ class OnboardingSalahPage extends StatelessWidget {
           AppIconCircle(
             icon: const Icon(CupertinoIcons.shield),
           ),
-          SizedBox(height: Spacing.xl.h),
+          SizedBox(height: Spacing.md.h),
           Text(
             AppLocalizations.of(context)!.salahTitle,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.sp,
-                ),
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 32.sp,
+            ),
           ),
           SizedBox(height: Spacing.md.h),
           Text(
             AppLocalizations.of(context)!.salahSubtitle,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  height: 1.5,
-                  fontSize: 16.sp,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              height: 1.5,
+              fontSize: 16.sp,
+            ),
           ),
         ],
       ),

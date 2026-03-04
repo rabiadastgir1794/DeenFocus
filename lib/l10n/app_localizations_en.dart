@@ -9,14 +9,17 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Deenly';
+  String get appTitle => 'Deen Focus';
 
   @override
-  String get appTagline => 'Focus. Discipline. Consistency.';
+  String get appTagline => 'Where faith meets focus';
+
+  @override
+  String get welcomeTagline => 'Prayer Mode. Child Mode. Sleep Mode.';
 
   @override
   String get welcomeDescription =>
-      'Your personal companion for spiritual growth and mindful living.';
+      'Track prayers, read Quran, count Tasbih, build streaks - everything for your spiritual journey in one app.';
 
   @override
   String get skip => 'Skip';
@@ -51,11 +54,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notifications are required to receive prayer time alerts and reminders.';
 
   @override
-  String get salahTitle => 'Stay Focused During Salah';
+  String get salahTitle => 'Tasbih & Prayer Streaks';
 
   @override
   String get salahSubtitle =>
-      'Block distracting apps during prayer times to maintain khushu and spiritual presence.';
+      'A beautiful digital tasbih counter with dhikhr presets, custom entries and streak tracking.';
 
   @override
   String get tasbihTitle => 'Tasbih & Prayer Streaks';
@@ -124,6 +127,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get screenTimeButton => 'Allow Access';
+
+  @override
+  String get focusModesTitle => 'Powerful Focus Modes';
+
+  @override
+  String get focusModesSubtitle =>
+      'Three modes designed to protect your time and attention';
+
+  @override
+  String get focusPrayerModeTitle => 'Prayer Mode';
+
+  @override
+  String get focusPrayerModeDescription =>
+      'Block distracting apps during Salah for complete khushu';
+
+  @override
+  String get focusSleepModeTitle => 'Sleep Mode';
+
+  @override
+  String get focusSleepModeDescription =>
+      'Protect your sleep schedule and wake up for Fajr';
+
+  @override
+  String get focusChildModeTitle => 'Child Mode';
+
+  @override
+  String get focusChildModeDescription =>
+      'Instantly block apps when handing device to children';
 
   @override
   String get investTitle => 'Invest in Your Deen';
