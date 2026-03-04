@@ -14,7 +14,6 @@ import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/onboarding_view_model.dart';
 import 'onboarding_welcome_page.dart';
-import 'onboarding_salah_page.dart';
 import 'onboarding_tasbih_page.dart';
 import 'onboarding_quran_page.dart';
 import 'onboarding_sect_page.dart';
@@ -319,7 +318,6 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent> with Wid
                 children: [
                   const OnboardingWelcomePage(),
                   const OnboardingFocusModePage(),
-                  const OnboardingSalahPage(),
                   const OnboardingTasbihPage(),
                   const OnboardingQuranPage(),
                   OnboardingSectPage(

@@ -88,16 +88,15 @@ class OnboardingSectPage extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.75,
         child: Material(
-          color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(24.r),
+            borderRadius: BorderRadius.circular(16.r),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
               decoration: BoxDecoration(
                 color: isSelected ? _primaryGreen : _neutralLight,
-                borderRadius: BorderRadius.circular(24.r),
+                borderRadius: BorderRadius.circular(16.r),
                 border: isSelected
                     ? null
                     : Border.all(color: _unselectedBorderColor, width: 1),

@@ -1,3 +1,4 @@
+import 'package:deenly/core/widgets/app_icon_rounded.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,19 +23,20 @@ class OnboardingQuranPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AppIconCircle(
+              AppIconRounded(
                 size: 72.r,
                 iconSize: 32.sp,
                 icon: const Icon(CupertinoIcons.book),
               ),
               SizedBox(width: 16.w), // spacing between icons
-              AppIconCircle(
+              AppIconRounded(
                 size: 72.r,
                 iconSize: 32.sp,
                 icon: const Icon(CupertinoIcons.compass),
+                backgroundColor: const Color(0xFFe5edf1),
               ),
               SizedBox(width: 16.w),
-              AppIconCircle(
+              AppIconRounded(
                 size: 72.r,
                 iconSize: 32.sp,
                 icon: const Icon(CupertinoIcons.location),
