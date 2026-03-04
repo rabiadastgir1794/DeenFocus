@@ -9,7 +9,6 @@ class OnboardingFocusModePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context)!;
     final modes = [
       _FocusModeConfig(
@@ -89,7 +88,6 @@ class _FocusModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       width: double.infinity,
