@@ -34,7 +34,7 @@ class OnboardingSectPage extends StatelessWidget {
             AppLocalizations.of(context)!.sectTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 24.sp,
+              fontSize: 18.sp,
               color: _titleColor,
             ),
           ),
@@ -44,7 +44,7 @@ class OnboardingSectPage extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: _subtitleColor,
-              fontSize: 14.sp,
+              fontSize: 10.5.sp,
             ),
           ),
           SizedBox(height: Spacing.xl.h),
@@ -111,7 +111,7 @@ class OnboardingSectPage extends StatelessWidget {
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: isSelected ? Colors.white : _unselectedTextColor,
                 ),

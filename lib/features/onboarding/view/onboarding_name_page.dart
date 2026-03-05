@@ -28,17 +28,17 @@ class OnboardingNamePage extends StatelessWidget {
           Text(
             AppLocalizations.of(context)!.nameTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.sp,
-                ),
+              fontWeight: FontWeight.bold,
+              fontSize: 18.sp,
+            ),
           ),
           SizedBox(height: Spacing.sm.h),
           Text(
             AppLocalizations.of(context)!.nameSubtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontSize: 14.sp,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontSize: 10.5.sp,
+            ),
           ),
           SizedBox(height: Spacing.xl.h),
           AppTextField(

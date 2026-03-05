@@ -25,6 +25,8 @@ class OnboardingNotificationsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AppIconCircle(
+            size: 64.8.r,
+            iconSize: 28.8.sp,
             icon: const Icon(CupertinoIcons.bell),
           ),
           SizedBox(height: Spacing.xl.h),
@@ -32,19 +34,19 @@ class OnboardingNotificationsPage extends StatelessWidget {
             AppLocalizations.of(context)!.notificationsTitle,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.sp,
-                ),
+              fontWeight: FontWeight.bold,
+              fontSize: 18.sp,
+            ),
           ),
           SizedBox(height: Spacing.md.h),
           Text(
             AppLocalizations.of(context)!.notificationsSubtitle,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  height: 1.5,
-                  fontSize: 16.sp,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              height: 1.5,
+              fontSize: 12.sp,
+            ),
           ),
           SizedBox(height: Spacing.xl.h),
           AppButton(

@@ -27,44 +27,32 @@ class OnboardingSubscriptionPage extends StatelessWidget {
         children: [
           SizedBox(height: 24.h),
           AppIconCircle(
+            size: 64.8.r,
+            iconSize: 28.8.sp,
             icon: const Icon(CupertinoIcons.creditcard),
           ),
           SizedBox(height: Spacing.xl.h),
           Text(
             AppLocalizations.of(context)!.investTitle,
-            style: Theme
-                .of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 24.sp,
+              fontSize: 18.sp,
             ),
           ),
           SizedBox(height: Spacing.md.h),
           Text(
             AppLocalizations.of(context)!.investSubtitle,
-            style: Theme
-                .of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .onSurfaceVariant,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               height: 1.5,
-              fontSize: 16.sp,
+              fontSize: 12.sp,
             ),
           ),
           SizedBox(height: Spacing.xl.h),
           Align(
             alignment: Alignment.center,
             child: SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: AppSelectableCard(
                 label: AppLocalizations.of(context)!.monthlyLabel,
                 subtitle: AppLocalizations.of(context)!.monthlyPrice,
@@ -77,10 +65,7 @@ class OnboardingSubscriptionPage extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: AppSelectableCard(
                 label: AppLocalizations.of(context)!.yearlyLabel,
                 subtitle: AppLocalizations.of(context)!.yearlyPrice,
@@ -94,10 +79,7 @@ class OnboardingSubscriptionPage extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: AppSelectableCard(
                 label: AppLocalizations.of(context)!.lifetimeLabel,
                 subtitle: AppLocalizations.of(context)!.lifetimePrice,
@@ -110,17 +92,11 @@ class OnboardingSubscriptionPage extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: Container(
                 padding: EdgeInsets.all(Spacing.lg.w),
                 decoration: BoxDecoration(
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Column(
@@ -128,24 +104,17 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(
-                          CupertinoIcons.checkmark_seal,
-                          size: 18,
-                        ),
+                        const Icon(CupertinoIcons.checkmark_seal, size: 16.2),
                         SizedBox(width: Spacing.sm.w),
                         Expanded(
                           child: Text(
                             'Advanced prayer analytics',
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .onSurface,
-                            ),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ],
@@ -153,24 +122,17 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                     SizedBox(height: Spacing.sm.h),
                     Row(
                       children: [
-                        const Icon(
-                          CupertinoIcons.checkmark_seal,
-                          size: 18,
-                        ),
+                        const Icon(CupertinoIcons.checkmark_seal, size: 16.2),
                         SizedBox(width: Spacing.sm.w),
                         Expanded(
                           child: Text(
                             AppLocalizations.of(context)!.featureFocusMode,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .onSurface,
-                            ),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ],
@@ -178,24 +140,17 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                     SizedBox(height: Spacing.sm.h),
                     Row(
                       children: [
-                        const Icon(
-                          CupertinoIcons.checkmark_seal,
-                          size: 18,
-                        ),
+                        const Icon(CupertinoIcons.checkmark_seal, size: 16.2),
                         SizedBox(width: Spacing.sm.w),
                         Expanded(
                           child: Text(
                             'Masjid auto mode',
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .onSurface,
-                            ),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ],
@@ -203,24 +158,17 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                     SizedBox(height: Spacing.sm.h),
                     Row(
                       children: [
-                        const Icon(
-                          CupertinoIcons.checkmark_seal,
-                          size: 18,
-                        ),
+                        const Icon(CupertinoIcons.checkmark_seal, size: 16.2),
                         SizedBox(width: Spacing.sm.w),
                         Expanded(
                           child: Text(
                             AppLocalizations.of(context)!.featureNoAds,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .onSurface,
-                            ),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ],
@@ -228,24 +176,17 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                     SizedBox(height: Spacing.sm.h),
                     Row(
                       children: [
-                        const Icon(
-                          CupertinoIcons.checkmark_seal,
-                          size: 18,
-                        ),
+                        const Icon(CupertinoIcons.checkmark_seal, size: 16.2),
                         SizedBox(width: Spacing.sm.w),
                         Expanded(
                           child: Text(
                             AppLocalizations.of(context)!.featureSupport,
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .onSurface,
-                            ),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ],

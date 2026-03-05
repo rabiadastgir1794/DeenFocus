@@ -171,14 +171,14 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 return ListTile(
                   leading: Text(
                     language.flag,
-                    style: TextStyle(fontSize: 20.sp),
+                    style: TextStyle(fontSize: 15.sp),
                   ),
                   title: Text(language.label),
                   trailing: isSelected
                       ? Icon(
                           Icons.check,
                           color: Theme.of(ctx).colorScheme.primary,
-                          size: 24.r,
+                          size: 21.6.r,
                         )
                       : null,
                   onTap: () async {
@@ -275,7 +275,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
               child: Text(
                 l10n.skip,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 12.sp,
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
@@ -292,6 +292,12 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     final localeService = context.watch<LocaleService>();
     vm.setSelectedLanguageCode(localeService.localeCode);
     final pageController = widget.pageController;
+
+    if (vm.currentIndex == 7 && !_didAutoRequestNotification) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _requestNotificationOnStep(vm);
+      });
+    }
 
     if (vm.didComplete) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -316,6 +322,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                   vm.setStep(index);
                   if (index == 7) {
                     _requestNotificationOnStep(vm);
+                  } else {
+                    _didAutoRequestNotification = false;
                   }
                 },
                 children: [

@@ -19,6 +19,8 @@ class OnboardingTasbihPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AppIconCircle(
+            size: 64.8.r,
+            iconSize: 28.8.sp,
             icon: const Icon(CupertinoIcons.heart),
           ),
           SizedBox(height: Spacing.md.h),
@@ -27,7 +29,7 @@ class OnboardingTasbihPage extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 32.sp,
+              fontSize: 24.sp,
             ),
           ),
           SizedBox(height: Spacing.md.h),
@@ -37,7 +39,7 @@ class OnboardingTasbihPage extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               height: 1.5,
-              fontSize: 16.sp,
+              fontSize: 12.sp,
             ),
           ),
         ],

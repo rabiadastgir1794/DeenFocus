@@ -52,7 +52,7 @@ class OnboardingFocusModePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 32.sp,
+                    fontSize: 24.sp,
                   ),
                 ),
                 SizedBox(height: Spacing.md.h),
@@ -62,7 +62,7 @@ class OnboardingFocusModePage extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.5,
-                    fontSize: 16.sp,
+                    fontSize: 12.sp,
                   ),
                 ),
                 SizedBox(height: Spacing.xl.h),
@@ -88,7 +88,6 @@ class _FocusModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(Spacing.lg.r),
@@ -107,11 +106,7 @@ class _FocusModeCard extends StatelessWidget {
               color: config.iconBackground,
               borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Icon(
-              config.icon,
-              color: config.iconColor,
-              size: 32.sp,
-            ),
+            child: Icon(config.icon, color: config.iconColor, size: 28.8.sp),
           ),
           SizedBox(width: Spacing.md.w),
           Expanded(
@@ -124,7 +119,7 @@ class _FocusModeCard extends StatelessWidget {
                     config.title,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.sp,
+                      fontSize: 13.5.sp,
                     ),
                   ),
                   SizedBox(height: Spacing.sm.h),
@@ -133,7 +128,7 @@ class _FocusModeCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                       height: 1.5,
-                      fontSize: 16.sp,
+                      fontSize: 12.sp,
                     ),
                   ),
                 ],

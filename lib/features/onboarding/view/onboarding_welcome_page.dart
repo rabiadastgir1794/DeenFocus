@@ -10,7 +10,6 @@ import '../../../l10n/app_localizations.dart';
 class OnboardingWelcomePage extends StatelessWidget {
   const OnboardingWelcomePage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,14 +18,18 @@ class OnboardingWelcomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AppIconCircle(icon: const Icon(CupertinoIcons.moon)),
+          AppIconCircle(
+            size: 64.8.r,
+            iconSize: 28.8.sp,
+            icon: const Icon(CupertinoIcons.moon),
+          ),
           SizedBox(height: Spacing.xl.h),
           Text(
             AppLocalizations.of(context)!.appTitle,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 48.sp,
+              fontSize: 36.sp,
             ),
           ),
           SizedBox(height: Spacing.sm.h),
@@ -35,7 +38,7 @@ class OnboardingWelcomePage extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w400,
-              fontSize: 18.sp,
+              fontSize: 13.5.sp,
               color: AppColors.primary,
             ),
           ),
@@ -47,7 +50,7 @@ class OnboardingWelcomePage extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 height: 1.5,
-                fontSize: 16.sp,
+                fontSize: 12.sp,
               ),
             ),
           ),

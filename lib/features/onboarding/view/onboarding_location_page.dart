@@ -62,7 +62,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
     if (_locationPermissionRequested) return;
 
     _locationPermissionRequested = true;
-    await Future<void>.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(const Duration(milliseconds: 100));
     if (!mounted) return;
 
     final status = await PermissionService.requestLocationStatus();
@@ -73,14 +73,14 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
       return;
     }
 
-    if (status.isPermanentlyDenied || status.isRestricted) {
+    if (status.isPermanentlyDenied) {
       final l10n = AppLocalizations.of(context)!;
       await AppPermissionDialog.show(
         context,
         title: l10n.locationRequired,
         message: l10n.locationRequiredMessage,
         primaryButtonText: l10n.openSettings,
-        onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
+        onPrimaryTap: () => PermissionService.openLocationSettings(),
       );
     }
   }
@@ -205,14 +205,18 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AppIconCircle(icon: const Icon(CupertinoIcons.location)),
+              AppIconCircle(
+                size: 64.8.r,
+                iconSize: 28.8.sp,
+                icon: const Icon(CupertinoIcons.location),
+              ),
               SizedBox(height: Spacing.xl.h),
               Text(
                 l10n.locationTitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24.sp,
+                  fontSize: 18.sp,
                 ),
               ),
               SizedBox(height: Spacing.md.h),
@@ -222,7 +226,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                   height: 1.5,
-                  fontSize: 16.sp,
+                  fontSize: 12.sp,
                 ),
               ),
               SizedBox(height: Spacing.xl.h),
@@ -262,7 +266,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                               item.title,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 15.sp,
+                                fontSize: 11.25.sp,
                               ),
                             ),
                             subtitle: item.subtitle.trim().isEmpty
@@ -270,7 +274,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                                 : Text(
                                     item.subtitle,
                                     style: TextStyle(
-                                      fontSize: 13.sp,
+                                      fontSize: 9.75.sp,
                                       color: Theme.of(
                                         context,
                                       ).colorScheme.onSurfaceVariant,
@@ -291,34 +295,18 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
           ),
         ),
         if (_isResolvingLocation)
-          Positioned.fill(
+          Align(
+            alignment: Alignment.center,
             child: Container(
-              color: Colors.black.withValues(alpha: 0.35),
-              alignment: Alignment.center,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: Spacing.xl.w),
-                padding: EdgeInsets.all(Spacing.lg.w),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: 30.h,
-                      width: 30.w,
-                      child: const CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    SizedBox(height: Spacing.md.h),
-                    Text(
-                      'Fetching location...',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+              width: 64.w,
+              height: 64.w,
+              decoration: BoxDecoration(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.25),
+                borderRadius: BorderRadius.circular(16.r),
               ),
+              child: Center(child: CupertinoActivityIndicator(radius: 12.r)),
             ),
           ),
       ],
