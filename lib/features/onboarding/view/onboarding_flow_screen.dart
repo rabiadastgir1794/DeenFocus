@@ -97,101 +97,145 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
   }
 
   AppLanguage _currentAppLanguage(LocaleService localeService) {
+    final englishDefault = kAppLanguages.firstWhere(
+      (l) => l.locale.languageCode == 'en',
+      orElse: () => kAppLanguages.first,
+    );
+
     return kAppLanguages.firstWhere(
       (l) => l.localeCode == localeService.localeCode,
-      orElse: () => kAppLanguages.first,
+      orElse: () => englishDefault,
     );
   }
 
   Future<void> _showLanguagePicker(BuildContext context) async {
     final localeService = context.read<LocaleService>();
     final l10n = AppLocalizations.of(context)!;
+    final englishDefault = kAppLanguages.firstWhere(
+      (l) => l.locale.languageCode == 'en',
+      orElse: () => kAppLanguages.first,
+    );
 
-    final platform = Theme.of(context).platform;
-    final isCupertino =
-        platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
-
-    if (isCupertino) {
-      await showCupertinoModalPopup<void>(
-        context: context,
-        builder: (ctx) {
-          return CupertinoActionSheet(
-            title: Text(l10n.language),
-            actions: [
-              for (final language in kAppLanguages)
-                CupertinoActionSheetAction(
-                  onPressed: () async {
-                    Navigator.of(ctx).pop();
-                    await localeService.setLocale(language.locale);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(language.flag),
-                          const SizedBox(width: 8),
-                          Text(language.label),
-                        ],
-                      ),
-                      if (language.localeCode == localeService.localeCode)
-                        Icon(
-                          CupertinoIcons.checkmark,
-                          color: Theme.of(ctx).colorScheme.primary,
-                        ),
-                    ],
-                  ),
-                ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              onPressed: () => Navigator.of(ctx).pop(),
-              isDefaultAction: true,
-              child: Text(l10n.cancel),
-            ),
-          );
-        },
-      );
-    } else {
-      await showModalBottomSheet<void>(
-        context: context,
-        showDragHandle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        builder: (ctx) {
-          return SafeArea(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: kAppLanguages.length,
-              itemBuilder: (ctx, index) {
-                final language = kAppLanguages[index];
-                final isSelected =
-                    language.localeCode == localeService.localeCode;
-                return ListTile(
-                  leading: Text(
-                    language.flag,
-                    style: TextStyle(fontSize: 15.sp),
-                  ),
-                  title: Text(language.label),
-                  trailing: isSelected
-                      ? Icon(
-                          Icons.check,
-                          color: Theme.of(ctx).colorScheme.primary,
-                          size: 21.6.r,
-                        )
-                      : null,
-                  onTap: () async {
-                    Navigator.of(ctx).pop();
-                    await localeService.setLocale(language.locale);
-                  },
-                );
-              },
-            ),
-          );
-        },
-      );
+    final isCurrentLocaleSupported = kAppLanguages.any(
+      (l) => l.localeCode == localeService.localeCode,
+    );
+    if (!isCurrentLocaleSupported) {
+      await localeService.setLocale(englishDefault.locale);
     }
+    if (!context.mounted) return;
+
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (ctx) {
+        final colorScheme = Theme.of(ctx).colorScheme;
+        final maxSheetHeight = MediaQuery.of(ctx).size.height * 0.78;
+        return SafeArea(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(12.w, 0, 12.w, 12.h),
+              decoration: BoxDecoration(
+                color: Theme.of(ctx).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(18.r),
+                border: Border.all(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                ),
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: maxSheetHeight),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
+                      child: Text(
+                        l10n.language,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurfaceVariant,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (final language in kAppLanguages)
+                              CupertinoButton(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 10.h,
+                                ),
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop();
+                                  await localeService.setLocale(
+                                    language.locale,
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(language.flag),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          language.label,
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            color: colorScheme.onSurface,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (language.localeCode ==
+                                        localeService.localeCode)
+                                      Icon(
+                                        CupertinoIcons.checkmark,
+                                        color: colorScheme.primary,
+                                        size: 18.sp,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: CupertinoButton(
+                          color: colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(12.r),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: Text(
+                            l10n.cancel,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _onNotificationEnableTap(
@@ -255,7 +299,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Visibility(
-            visible: vm.showSkip,
+            visible: vm.showLanguageChangeOption,
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
@@ -276,7 +320,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 l10n.skip,
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: vm.currentIndex == vm.totalSteps - 1
+                      ? Theme.of(context).colorScheme.onSurfaceVariant
+                      : Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),

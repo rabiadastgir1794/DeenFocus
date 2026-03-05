@@ -39,8 +39,9 @@ class OnboardingViewModel extends ChangeNotifier {
   LocationSuggestion? get selectedLocation => _selectedLocation;
   String _selectedLanguageCode = 'en';
 
-  /// Screens that show Skip on top right: 0 (Welcome) only. Subscription (9) has no skip.
-  bool get showSkip => _currentIndex == 0;
+  /// Screens that show Skip on top right.
+  bool get showLanguageChangeOption => _currentIndex == 0;
+  bool get showSkip => _currentIndex == 0 || _currentIndex == _totalSteps - 1;
 
   /// Continue disabled: sect (4), name (5), location (6). Notifications (7), screen time (8), and subscription (9) are optional.
   bool get isContinueDisabled {

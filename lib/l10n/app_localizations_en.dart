@@ -161,7 +161,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get investSubtitle =>
-      'Choose a plan that supports your spiritual journey. You can start free and upgrade anytime.';
+      'You don\'t think twice about spending on coffee or snacks...';
+
+  @override
+  String get investComparisonTitle => 'Think about it...';
+
+  @override
+  String get investDailyCoffee => 'Daily coffee';
+
+  @override
+  String get investDailyCoffeePrice => '\$5/day';
+
+  @override
+  String get investFastFood => 'Fast food';
+
+  @override
+  String get investFastFoodPrice => '\$10/meal';
+
+  @override
+  String get investYourDeen => 'Your Deen';
+
+  @override
+  String get investYourDeenPrice => '\$4.99/mo';
+
+  @override
+  String get investComparisonQuote =>
+      'You spend \$10 on small things without thinking - why not invest in your Deen?';
+
+  @override
+  String get bestValueTag => 'BEST VALUE';
+
+  @override
+  String get mostPopularChoice => 'Most popular choice';
+
+  @override
+  String get monthlyPriceValue => '\$4.99';
+
+  @override
+  String get monthlyPriceSuffix => '/month';
+
+  @override
+  String get monthlyPlanSubtitle => 'Billed monthly • Cancel anytime';
+
+  @override
+  String get yearlyPriceValue => '\$29.99';
+
+  @override
+  String get yearlyPriceSuffix => '/year';
+
+  @override
+  String get yearlyPlanSubtitle => 'Save 50% • Billed annually';
+
+  @override
+  String get lifetimePriceValue => '\$79.99';
+
+  @override
+  String get lifetimePriceSuffix => ' lifetime';
+
+  @override
+  String get lifetimePlanSubtitle => 'One-time purchase • Forever access';
+
+  @override
+  String get everythingYouGet => 'Everything you get';
+
+  @override
+  String get featureFocusModeAllModes =>
+      'Unlimited Focus Mode with all 3 modes';
+
+  @override
+  String get featurePrayerAnalyticsStreaks =>
+      'Advanced prayer analytics & streaks';
+
+  @override
+  String get featureMasjidGeofencing => 'Masjid auto-detection & geofencing';
+
+  @override
+  String get featureQuranAudioTranslations =>
+      'Full Quran with audio & translations';
+
+  @override
+  String get featureAiAssistant => 'AI Islamic assistant';
+
+  @override
+  String get featureNoAdsForever => 'Remove all ads forever';
+
+  @override
+  String get featurePrioritySupportEarlyAccess =>
+      'Priority support & early access';
+
+  @override
+  String get socialProofPrefix => 'Join ';
+
+  @override
+  String get socialProofHighlight => '10,000+';
+
+  @override
+  String get socialProofSuffix => ' Muslims already growing with Deen Focus';
 
   @override
   String get mostPopular => 'Most Popular';

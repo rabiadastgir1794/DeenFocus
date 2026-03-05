@@ -373,8 +373,188 @@ abstract class AppLocalizations {
   /// No description provided for @investSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose a plan that supports your spiritual journey. You can start free and upgrade anytime.'**
+  /// **'You don\'t think twice about spending on coffee or snacks...'**
   String get investSubtitle;
+
+  /// No description provided for @investComparisonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Think about it...'**
+  String get investComparisonTitle;
+
+  /// No description provided for @investDailyCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily coffee'**
+  String get investDailyCoffee;
+
+  /// No description provided for @investDailyCoffeePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'\$5/day'**
+  String get investDailyCoffeePrice;
+
+  /// No description provided for @investFastFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast food'**
+  String get investFastFood;
+
+  /// No description provided for @investFastFoodPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'\$10/meal'**
+  String get investFastFoodPrice;
+
+  /// No description provided for @investYourDeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Deen'**
+  String get investYourDeen;
+
+  /// No description provided for @investYourDeenPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'\$4.99/mo'**
+  String get investYourDeenPrice;
+
+  /// No description provided for @investComparisonQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'You spend \$10 on small things without thinking - why not invest in your Deen?'**
+  String get investComparisonQuote;
+
+  /// No description provided for @bestValueTag.
+  ///
+  /// In en, this message translates to:
+  /// **'BEST VALUE'**
+  String get bestValueTag;
+
+  /// No description provided for @mostPopularChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Most popular choice'**
+  String get mostPopularChoice;
+
+  /// No description provided for @monthlyPriceValue.
+  ///
+  /// In en, this message translates to:
+  /// **'\$4.99'**
+  String get monthlyPriceValue;
+
+  /// No description provided for @monthlyPriceSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'/month'**
+  String get monthlyPriceSuffix;
+
+  /// No description provided for @monthlyPlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed monthly • Cancel anytime'**
+  String get monthlyPlanSubtitle;
+
+  /// No description provided for @yearlyPriceValue.
+  ///
+  /// In en, this message translates to:
+  /// **'\$29.99'**
+  String get yearlyPriceValue;
+
+  /// No description provided for @yearlyPriceSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'/year'**
+  String get yearlyPriceSuffix;
+
+  /// No description provided for @yearlyPlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save 50% • Billed annually'**
+  String get yearlyPlanSubtitle;
+
+  /// No description provided for @lifetimePriceValue.
+  ///
+  /// In en, this message translates to:
+  /// **'\$79.99'**
+  String get lifetimePriceValue;
+
+  /// No description provided for @lifetimePriceSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' lifetime'**
+  String get lifetimePriceSuffix;
+
+  /// No description provided for @lifetimePlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time purchase • Forever access'**
+  String get lifetimePlanSubtitle;
+
+  /// No description provided for @everythingYouGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you get'**
+  String get everythingYouGet;
+
+  /// No description provided for @featureFocusModeAllModes.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited Focus Mode with all 3 modes'**
+  String get featureFocusModeAllModes;
+
+  /// No description provided for @featurePrayerAnalyticsStreaks.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced prayer analytics & streaks'**
+  String get featurePrayerAnalyticsStreaks;
+
+  /// No description provided for @featureMasjidGeofencing.
+  ///
+  /// In en, this message translates to:
+  /// **'Masjid auto-detection & geofencing'**
+  String get featureMasjidGeofencing;
+
+  /// No description provided for @featureQuranAudioTranslations.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Quran with audio & translations'**
+  String get featureQuranAudioTranslations;
+
+  /// No description provided for @featureAiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Islamic assistant'**
+  String get featureAiAssistant;
+
+  /// No description provided for @featureNoAdsForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove all ads forever'**
+  String get featureNoAdsForever;
+
+  /// No description provided for @featurePrioritySupportEarlyAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority support & early access'**
+  String get featurePrioritySupportEarlyAccess;
+
+  /// No description provided for @socialProofPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Join '**
+  String get socialProofPrefix;
+
+  /// No description provided for @socialProofHighlight.
+  ///
+  /// In en, this message translates to:
+  /// **'10,000+'**
+  String get socialProofHighlight;
+
+  /// No description provided for @socialProofSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' Muslims already growing with Deen Focus'**
+  String get socialProofSuffix;
 
   /// No description provided for @mostPopular.
   ///
