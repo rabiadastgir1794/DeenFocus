@@ -14,15 +14,11 @@ class OnboardingSectPage extends StatelessWidget {
 
   final SectOption? selectedSect;
   final ValueChanged<SectOption?> onSectSelected;
-  static const Color _primaryGreen = Color(0xFF2E7D5B);
-  static const Color _neutralLight = Color(0xFFF4F6F5);
-  static const Color _titleColor = Color(0xFF1E2E27);
-  static const Color _subtitleColor = Color(0xFF6B7C74);
-  static const Color _unselectedTextColor = Color(0xFF1F2D28);
-  static const Color _unselectedBorderColor = Color(0xFFE0E5E3);
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
       child: Column(
@@ -35,7 +31,7 @@ class OnboardingSectPage extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 18.sp,
-              color: _titleColor,
+              color: colorScheme.onSurface,
             ),
           ),
           SizedBox(height: Spacing.sm.h),
@@ -43,7 +39,7 @@ class OnboardingSectPage extends StatelessWidget {
             AppLocalizations.of(context)!.sectSubtitle,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: _subtitleColor,
+              color: colorScheme.onSurfaceVariant,
               fontSize: 10.5.sp,
             ),
           ),
@@ -79,6 +75,8 @@ class OnboardingSectPage extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Align(
       alignment: Alignment.center,
       child: SizedBox(
@@ -92,15 +90,15 @@ class OnboardingSectPage extends StatelessWidget {
               duration: const Duration(milliseconds: 180),
               padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
               decoration: BoxDecoration(
-                color: isSelected ? _primaryGreen : _neutralLight,
+                color: isSelected ? colorScheme.primary : colorScheme.surface,
                 borderRadius: BorderRadius.circular(16.r),
                 border: isSelected
                     ? null
-                    : Border.all(color: _unselectedBorderColor, width: 1),
+                    : Border.all(color: colorScheme.outlineVariant, width: 1),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
+                          color: colorScheme.scrim.withValues(alpha: 0.08),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
@@ -113,7 +111,9 @@ class OnboardingSectPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : _unselectedTextColor,
+                  color: isSelected
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurface,
                 ),
               ),
             ),

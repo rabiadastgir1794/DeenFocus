@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../theme/app_colors.dart';
 import '../constants/spacing.dart';
 
 enum AppButtonVariant { primary, disabled }
@@ -31,16 +30,18 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveVariant = variant ?? (_isDisabled ? AppButtonVariant.disabled : AppButtonVariant.primary);
+    final colorScheme = Theme.of(context).colorScheme;
+    final effectiveVariant =
+        variant ??
+        (_isDisabled ? AppButtonVariant.disabled : AppButtonVariant.primary);
 
     final backgroundColor = effectiveVariant == AppButtonVariant.primary
-        ? AppColors.primary
-        : (isDark ? AppColors.buttonDisabledDark : AppColors.buttonDisabledLight);
+        ? colorScheme.primary
+        : colorScheme.surfaceContainerHighest;
 
     final foregroundColor = effectiveVariant == AppButtonVariant.primary
-        ? Colors.white
-        : (isDark ? AppColors.buttonDisabledTextDark : AppColors.buttonDisabledTextLight);
+        ? colorScheme.onPrimary
+        : colorScheme.onSurfaceVariant;
 
     return SizedBox(
       width: double.infinity,
@@ -57,7 +58,10 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
-          padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w, vertical: Spacing.md.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: Spacing.lg.w,
+            vertical: Spacing.md.h,
+          ),
         ),
         child: loading
             ? SizedBox(
@@ -68,7 +72,7 @@ class AppButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
                 ),
               )
-              : Row(
+            : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -80,7 +84,11 @@ class AppButton extends StatelessWidget {
                   ),
                   if (showTrailingIcon) ...[
                     SizedBox(width: Spacing.sm.w),
-                    Icon(CupertinoIcons.chevron_right, size: 20.sp, color: foregroundColor),
+                    Icon(
+                      CupertinoIcons.chevron_right,
+                      size: 20.sp,
+                      color: foregroundColor,
+                    ),
                   ],
                 ],
               ),

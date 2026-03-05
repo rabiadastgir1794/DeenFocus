@@ -136,9 +136,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                         ],
                       ),
                       if (language.localeCode == localeService.localeCode)
-                        const Icon(
+                        Icon(
                           CupertinoIcons.checkmark,
-                          color: CupertinoColors.activeBlue,
+                          color: Theme.of(ctx).colorScheme.primary,
                         ),
                     ],
                   ),

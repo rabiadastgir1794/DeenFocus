@@ -7,13 +7,34 @@ ThemeData get darkTheme {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.dark(
-      primary: AppColors.primary,
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.primaryDark,
+      onPrimary: AppColors.onPrimaryDark,
+      primaryContainer: AppColors.primaryContainerDark,
+      onPrimaryContainer: AppColors.onPrimaryContainerDark,
+      secondary: AppColors.secondaryDark,
+      onSecondary: AppColors.onSecondaryDark,
+      secondaryContainer: AppColors.secondaryContainerDark,
+      onSecondaryContainer: AppColors.onSecondaryContainerDark,
+      tertiary: AppColors.tertiaryDark,
+      onTertiary: AppColors.onTertiaryDark,
+      tertiaryContainer: AppColors.tertiaryContainerDark,
+      onTertiaryContainer: AppColors.onTertiaryContainerDark,
+      error: AppColors.errorDark,
+      onError: AppColors.onErrorDark,
+      errorContainer: AppColors.errorContainerDark,
+      onErrorContainer: AppColors.onErrorContainerDark,
       surface: AppColors.surfaceDark,
-      onPrimary: Colors.white,
       onSurface: AppColors.textPrimaryDark,
+      surfaceContainerHighest: AppColors.inputBackgroundDark,
       onSurfaceVariant: AppColors.textSecondaryDark,
-      outline: AppColors.progressInactiveDark,
+      outline: AppColors.outlineDark,
+      outlineVariant: AppColors.outlineVariantDark,
+      shadow: Colors.black,
+      scrim: Colors.black,
+      inverseSurface: Color(0xFFE0E3DC),
+      onInverseSurface: Color(0xFF2F312D),
+      inversePrimary: AppColors.primary,
     ),
     scaffoldBackgroundColor: AppColors.backgroundDark,
     appBarTheme: const AppBarTheme(
@@ -24,9 +45,15 @@ ThemeData get darkTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primaryDark,
+        foregroundColor: AppColors.onPrimaryDark,
         elevation: 0,
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.primaryDark,
+        foregroundColor: AppColors.onPrimaryDark,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

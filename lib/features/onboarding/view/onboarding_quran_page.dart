@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/spacing.dart';
-import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 
 class OnboardingQuranPage extends StatelessWidget {
   const OnboardingQuranPage({super.key});
-  static const double _descriptionSlotHeight = 96;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
       child: Column(
@@ -33,7 +33,7 @@ class OnboardingQuranPage extends StatelessWidget {
                 size: 64.8.r,
                 iconSize: 28.8.sp,
                 icon: const Icon(CupertinoIcons.compass),
-                backgroundColor: const Color(0xFFe5edf1),
+                backgroundColor: colorScheme.tertiaryContainer,
               ),
               SizedBox(width: 16.w),
               AppIconRounded(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../theme/app_colors.dart';
 import '../constants/spacing.dart';
 
 /// Card that can be selected (e.g. sect selection, plans). Shows border when selected. Optional subtitle and badge.
@@ -23,11 +22,13 @@ class AppSelectableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     final borderColor = selected
-        ? (isDark ? AppColors.selectedCardBorderDark : AppColors.selectedCardBorderLight)
-        :  AppColors.cardBackgroundLight;
-    final backgroundColor = isDark ? AppColors.cardBackgroundDark : AppColors.unSelectedCardBorderLight;
+        ? colorScheme.primary
+        : colorScheme.outlineVariant;
+    final backgroundColor = selected
+        ? colorScheme.primaryContainer.withValues(alpha: 0.35)
+        : colorScheme.surface;
 
     return Material(
       color: backgroundColor,
@@ -37,7 +38,10 @@ class AppSelectableCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(4.r),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w, vertical: Spacing.lg.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: Spacing.lg.w,
+            vertical: Spacing.lg.h,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(color: borderColor, width: 2),
@@ -57,7 +61,7 @@ class AppSelectableCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.15),
+                    color: colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
@@ -65,7 +69,7 @@ class AppSelectableCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: colorScheme.onPrimaryContainer,
                     ),
                   ),
                 ),

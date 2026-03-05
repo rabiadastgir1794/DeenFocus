@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../theme/app_colors.dart';
-
 /// Reusable blocking permission dialog: title, message, Open Settings (primary), Cancel (secondary).
 class AppPermissionDialog extends StatelessWidget {
   const AppPermissionDialog({
@@ -47,6 +45,8 @@ class AppPermissionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       title: Text(
@@ -69,8 +69,8 @@ class AppPermissionDialog extends StatelessWidget {
             onPrimaryTap();
           },
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28.r),
             ),

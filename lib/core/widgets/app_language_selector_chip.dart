@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
-import '../theme/app_colors.dart';
 import '../constants/spacing.dart';
 
 /// Chip showing current language with dropdown. Reusable in onboarding and settings.
@@ -20,21 +19,27 @@ class AppLanguageSelectorChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = isDark ? AppColors.chipBackgroundDark : AppColors.chipBackgroundLight;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: bg,
+      color: colorScheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(12.r),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: Spacing.md.w, vertical: Spacing.sm.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: Spacing.md.w,
+            vertical: Spacing.sm.h,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Iconsax.global, size: 20.sp, color: Theme.of(context).colorScheme.onSurface),
+              Icon(
+                Iconsax.global,
+                size: 20.sp,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               if (flagEmoji != null) ...[
                 SizedBox(width: Spacing.xs.w),
                 Text(flagEmoji!, style: TextStyle(fontSize: 16.sp)),
@@ -49,7 +54,11 @@ class AppLanguageSelectorChip extends StatelessWidget {
                 ),
               ),
               SizedBox(width: Spacing.xs.w),
-              Icon(Icons.keyboard_arrow_down_outlined, size: 16.sp, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(
+                Icons.keyboard_arrow_down_outlined,
+                size: 16.sp,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ],
           ),
         ),

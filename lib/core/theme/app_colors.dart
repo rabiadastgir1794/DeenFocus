@@ -4,41 +4,82 @@ import 'package:flutter/material.dart';
 abstract class AppColors {
   AppColors._();
 
-  static const Color primary = Color(0xFF459075);
-  static const Color primaryDark = Color(0xFF3A7A62);
+  // Deen Focus palette from assets/themes.txt
+  static const Color primary = Color(0xFF4E9A7C);
+  static const Color primaryDark = Color(0xFF8ED4B4);
+  static const Color onPrimaryLight = Color(0xFFFFFFFF);
+  static const Color onPrimaryDark = Color(0xFF1B3D2E);
+  static const Color primaryContainerLight = Color(0xFFC8E6D8);
+  static const Color primaryContainerDark = Color(0xFF2E6B52);
+  static const Color onPrimaryContainerLight = Color(0xFF1B3D2E);
+  static const Color onPrimaryContainerDark = Color(0xFFC8E6D8);
+
+  static const Color secondaryLight = Color(0xFFB5A48A);
+  static const Color secondaryDark = Color(0xFFD8C8AA);
+  static const Color onSecondaryLight = Color(0xFFFFFFFF);
+  static const Color onSecondaryDark = Color(0xFF3D3224);
+  static const Color secondaryContainerLight = Color(0xFFF0E6D6);
+  static const Color secondaryContainerDark = Color(0xFF544636);
+  static const Color onSecondaryContainerLight = Color(0xFF3D3224);
+  static const Color onSecondaryContainerDark = Color(0xFFF0E6D6);
+
+  static const Color tertiaryLight = Color(0xFF5BA4C4);
+  static const Color tertiaryDark = Color(0xFF8ECCE8);
+  static const Color onTertiaryLight = Color(0xFFFFFFFF);
+  static const Color onTertiaryDark = Color(0xFF163545);
+  static const Color tertiaryContainerLight = Color(0xFFC8E4F0);
+  static const Color tertiaryContainerDark = Color(0xFF2E6B85);
+  static const Color onTertiaryContainerLight = Color(0xFF163545);
+  static const Color onTertiaryContainerDark = Color(0xFFC8E4F0);
 
   // Backgrounds
-  static const Color backgroundLight = Color(0xFFF5F5F5);
-  static const Color backgroundDark = Color(0xFF121212);
-  static const Color surfaceLight = Color(0xFFFFFFFF);
-  static const Color surfaceDark = Color(0xFF1E1E1E);
+  static const Color backgroundLight = Color(0xFFF7F5F0);
+  static const Color backgroundDark = Color(0xFF111B14);
+  static const Color surfaceLight = Color(0xFFF7F5F0);
+  static const Color surfaceDark = Color(0xFF111B14);
+  static const Color onBackgroundLight = Color(0xFF1C2E24);
+  static const Color onBackgroundDark = Color(0xFFE0E3DC);
 
   // Text
-  static const Color textPrimaryLight = Color(0xFF1A1A1A);
-  static const Color textPrimaryDark = Color(0xFFE1E1E1);
-  static const Color textSecondaryLight = Color(0xFF6B7280);
-  static const Color textSecondaryDark = Color(0xFF9CA3AF);
+  static const Color textPrimaryLight = Color(0xFF1C2E24);
+  static const Color textPrimaryDark = Color(0xFFE0E3DC);
+  static const Color textSecondaryLight = Color(0xFF4A4539);
+  static const Color textSecondaryDark = Color(0xFFCFC6B4);
 
   // Input & cards
-  static const Color inputBackgroundLight = Color(0xFFEEEEEE);
-  static const Color inputBackgroundDark = Color(0xFF2C2C2C);
-  static const Color cardBackgroundLight = Color(0xFFf7f4ef);
-  static const Color cardBackgroundDark = Color(0xFF2A2A2A);
+  static const Color inputBackgroundLight = Color(0xFFE8E0D4);
+  static const Color inputBackgroundDark = Color(0xFF3A3A30);
+  static const Color cardBackgroundLight = Color(0xFFF0E6D6);
+  static const Color cardBackgroundDark = Color(0xFF3A3A30);
 
   // Button disabled
-  static const Color buttonDisabledLight = Color(0xFFE0E0E0);
-  static const Color buttonDisabledDark = Color(0xFF3D3D3D);
-  static const Color buttonDisabledTextLight = Color(0xFF9E9E9E);
-  static const Color buttonDisabledTextDark = Color(0xFF6B6B6B);
+  static const Color buttonDisabledLight = Color(0xFFE8E0D4);
+  static const Color buttonDisabledDark = Color(0xFF3A3A30);
+  static const Color buttonDisabledTextLight = Color(0xFF7D7768);
+  static const Color buttonDisabledTextDark = Color(0xFF989080);
 
   // Progress indicator
-  static const Color progressInactiveLight = Color(0xFFD1D5DB);
-  static const Color progressInactiveDark = Color(0xFF4B5563);
+  static const Color progressInactiveLight = Color(0xFFCFC6B4);
+  static const Color progressInactiveDark = Color(0xFF4A4539);
 
   // Selection / chip
-  static const Color chipBackgroundLight = Color(0xFFEEEEEE);
-  static const Color chipBackgroundDark = Color(0xFF2C2C2C);
-  static const Color selectedCardBorderLight = Color(0xFF459075);
-  static const Color unSelectedCardBorderLight = Color(0xFFfaf8f4);
-  static const Color selectedCardBorderDark = Color(0xFF5BA88A);
+  static const Color chipBackgroundLight = Color(0xFFE8E0D4);
+  static const Color chipBackgroundDark = Color(0xFF3A3A30);
+  static const Color selectedCardBorderLight = Color(0xFF4E9A7C);
+  static const Color unSelectedCardBorderLight = Color(0xFFCFC6B4);
+  static const Color selectedCardBorderDark = Color(0xFF8ED4B4);
+
+  static const Color outlineLight = Color(0xFF7D7768);
+  static const Color outlineDark = Color(0xFF989080);
+  static const Color outlineVariantLight = Color(0xFFCFC6B4);
+  static const Color outlineVariantDark = Color(0xFF4A4539);
+
+  static const Color errorLight = Color(0xFFBA1A1A);
+  static const Color errorDark = Color(0xFFFFB4AB);
+  static const Color onErrorLight = Color(0xFFFFFFFF);
+  static const Color onErrorDark = Color(0xFF690005);
+  static const Color errorContainerLight = Color(0xFFFFDAD6);
+  static const Color errorContainerDark = Color(0xFF93000A);
+  static const Color onErrorContainerLight = Color(0xFF410002);
+  static const Color onErrorContainerDark = Color(0xFFFFDAD6);
 }

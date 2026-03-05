@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../theme/app_colors.dart';
-
 /// Horizontal dot progress for onboarding. Active step is elongated pill.
 class AppProgressIndicator extends StatelessWidget {
   const AppProgressIndicator({
@@ -16,8 +14,8 @@ class AppProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final inactiveColor = isDark ? AppColors.progressInactiveDark : AppColors.progressInactiveLight;
+    final colorScheme = Theme.of(context).colorScheme;
+    final inactiveColor = colorScheme.outlineVariant;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -29,7 +27,7 @@ class AppProgressIndicator extends StatelessWidget {
           width: isActive ? 24.w : 8.w,
           height: 8.h,
           decoration: BoxDecoration(
-            color: isActive ? AppColors.primary : inactiveColor,
+            color: isActive ? colorScheme.primary : inactiveColor,
             borderRadius: BorderRadius.circular(4.r),
           ),
         );
@@ -51,9 +49,8 @@ class AppStepProgressLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColors.progressInactiveDark : Colors.white;
+    final colorScheme = Theme.of(context).colorScheme;
+    final backgroundColor = colorScheme.outlineVariant;
 
     if (totalSteps <= 0) {
       return SizedBox(
@@ -63,8 +60,8 @@ class AppStepProgressLine extends StatelessWidget {
           borderRadius: BorderRadius.circular(2.r),
           child: LinearProgressIndicator(
             value: 0,
-            backgroundColor: backgroundColor.withOpacity(0.3),
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            backgroundColor: backgroundColor.withValues(alpha: 0.3),
+            valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
           ),
         ),
       );
@@ -80,8 +77,8 @@ class AppStepProgressLine extends StatelessWidget {
         borderRadius: BorderRadius.circular(2.r),
         child: LinearProgressIndicator(
           value: progress,
-          backgroundColor: backgroundColor.withOpacity(0.3),
-          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+          backgroundColor: backgroundColor.withValues(alpha: 0.3),
+          valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
         ),
       ),
     );

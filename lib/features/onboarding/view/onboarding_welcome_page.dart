@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/spacing.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_icon_circle.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -12,6 +11,8 @@ class OnboardingWelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
       child: Column(
@@ -39,7 +40,7 @@ class OnboardingWelcomePage extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w400,
               fontSize: 13.5.sp,
-              color: AppColors.primary,
+              color: colorScheme.primary,
             ),
           ),
           SizedBox(height: Spacing.sm.h),

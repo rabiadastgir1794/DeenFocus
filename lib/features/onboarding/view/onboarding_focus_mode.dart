@@ -10,27 +10,28 @@ class OnboardingFocusModePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     final modes = [
       _FocusModeConfig(
         title: l10n.focusPrayerModeTitle,
         description: l10n.focusPrayerModeDescription,
         icon: Icons.shield_outlined,
-        iconBackground: const Color(0xFFDEE8E1),
-        iconColor: const Color(0xFF3F8F6E),
+        iconBackground: colorScheme.primaryContainer,
+        iconColor: colorScheme.primary,
       ),
       _FocusModeConfig(
         title: l10n.focusSleepModeTitle,
         description: l10n.focusSleepModeDescription,
         icon: Icons.nights_stay_outlined,
-        iconBackground: const Color(0xFFDCE9EF),
-        iconColor: const Color(0xFF1F4A62),
+        iconBackground: colorScheme.tertiaryContainer,
+        iconColor: colorScheme.tertiary,
       ),
       _FocusModeConfig(
         title: l10n.focusChildModeTitle,
         description: l10n.focusChildModeDescription,
         icon: Icons.child_care_outlined,
-        iconBackground: const Color(0xFFF6DEDB),
-        iconColor: const Color(0xFFDA2B2B),
+        iconBackground: colorScheme.errorContainer,
+        iconColor: colorScheme.error,
       ),
     ];
 
@@ -88,13 +89,15 @@ class _FocusModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(Spacing.lg.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F5F2),
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(28.r),
-        border: Border.all(color: const Color(0xFFECE6E0)),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,33 +158,4 @@ class _FocusModeConfig {
   final IconData icon;
   final Color iconBackground;
   final Color iconColor;
-}
-
-class _SubtlePatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFFEDE8E2)
-      ..strokeWidth = 0.8;
-    const spacing = 42.0;
-
-    for (double x = -size.height; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x + size.height, size.height),
-        paint,
-      );
-    }
-
-    for (double x = 0; x < size.width + size.height; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x - size.height, size.height),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

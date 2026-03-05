@@ -7,13 +7,34 @@ ThemeData get lightTheme {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
+      onPrimary: AppColors.onPrimaryLight,
+      primaryContainer: AppColors.primaryContainerLight,
+      onPrimaryContainer: AppColors.onPrimaryContainerLight,
+      secondary: AppColors.secondaryLight,
+      onSecondary: AppColors.onSecondaryLight,
+      secondaryContainer: AppColors.secondaryContainerLight,
+      onSecondaryContainer: AppColors.onSecondaryContainerLight,
+      tertiary: AppColors.tertiaryLight,
+      onTertiary: AppColors.onTertiaryLight,
+      tertiaryContainer: AppColors.tertiaryContainerLight,
+      onTertiaryContainer: AppColors.onTertiaryContainerLight,
+      error: AppColors.errorLight,
+      onError: AppColors.onErrorLight,
+      errorContainer: AppColors.errorContainerLight,
+      onErrorContainer: AppColors.onErrorContainerLight,
       surface: AppColors.surfaceLight,
-      onPrimary: Colors.white,
       onSurface: AppColors.textPrimaryLight,
+      surfaceContainerHighest: AppColors.inputBackgroundLight,
       onSurfaceVariant: AppColors.textSecondaryLight,
-      outline: AppColors.progressInactiveLight,
+      outline: AppColors.outlineLight,
+      outlineVariant: AppColors.outlineVariantLight,
+      shadow: Colors.black,
+      scrim: Colors.black,
+      inverseSurface: Color(0xFF2F312D),
+      onInverseSurface: Color(0xFFF0F1EB),
+      inversePrimary: AppColors.primaryDark,
     ),
     scaffoldBackgroundColor: AppColors.backgroundLight,
     appBarTheme: const AppBarTheme(
@@ -25,8 +46,14 @@ ThemeData get lightTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.onPrimaryLight,
         elevation: 0,
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimaryLight,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
