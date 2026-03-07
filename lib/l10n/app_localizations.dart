@@ -651,6 +651,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App Language'**
   String get appLanguage;
+
+  /// No description provided for @tabHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get tabHome;
+
+  /// No description provided for @tabFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get tabFocus;
+
+  /// No description provided for @tabTasbih.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih'**
+  String get tabTasbih;
+
+  /// No description provided for @tabQuran.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran'**
+  String get tabQuran;
+
+  /// No description provided for @quranLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load Quran data'**
+  String get quranLoadFailed;
+
+  /// No description provided for @quranTabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read and explore the Holy Quran'**
+  String get quranTabSubtitle;
+
+  /// No description provided for @quranSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search surah...'**
+  String get quranSearchHint;
+
+  /// No description provided for @quranNoSurahsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No surahs found'**
+  String get quranNoSurahsFound;
+
+  /// No description provided for @quranVersesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'verses'**
+  String get quranVersesLabel;
+
+  /// No description provided for @quranTextOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Text options'**
+  String get quranTextOptions;
+
+  /// No description provided for @quranEnglishAndArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'English and Arabic'**
+  String get quranEnglishAndArabic;
+
+  /// No description provided for @quranArabicOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic only'**
+  String get quranArabicOnly;
+
+  /// No description provided for @quranIncreaseFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase font'**
+  String get quranIncreaseFont;
+
+  /// No description provided for @quranDecreaseFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease font'**
+  String get quranDecreaseFont;
+
+  /// No description provided for @quranPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get quranPause;
+
+  /// No description provided for @quranPlaySurah.
+  ///
+  /// In en, this message translates to:
+  /// **'Play surah'**
+  String get quranPlaySurah;
+
+  /// No description provided for @quranSurahLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Surah'**
+  String get quranSurahLabel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @tasbihBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get tasbihBack;
+
+  /// No description provided for @tasbihTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih'**
+  String get tasbihTabTitle;
+
+  /// No description provided for @tasbihChooseOrAddSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a dhikr or add your own'**
+  String get tasbihChooseOrAddSubtitle;
+
+  /// No description provided for @tasbihAddCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Custom Dhikr'**
+  String get tasbihAddCustomTitle;
+
+  /// No description provided for @tasbihEditCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Custom Dhikr'**
+  String get tasbihEditCustomTitle;
+
+  /// No description provided for @tasbihArabicOrDhikrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic text or any dhikr'**
+  String get tasbihArabicOrDhikrHint;
+
+  /// No description provided for @tasbihTransliterationOptionalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Transliteration (optional)'**
+  String get tasbihTransliterationOptionalHint;
+
+  /// No description provided for @tasbihMeaningOptionalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Meaning (optional)'**
+  String get tasbihMeaningOptionalHint;
+
+  /// No description provided for @tasbihNoTransliteration.
+  ///
+  /// In en, this message translates to:
+  /// **'No transliteration'**
+  String get tasbihNoTransliteration;
+
+  /// No description provided for @tasbihTotalCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Count'**
+  String get tasbihTotalCount;
+
+  /// No description provided for @tasbihTapMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Me'**
+  String get tasbihTapMe;
+
+  /// No description provided for @tasbihReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get tasbihReset;
 }
 
 class _AppLocalizationsDelegate

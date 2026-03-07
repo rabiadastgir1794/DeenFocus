@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_languages.dart';
 import '../../../core/services/locale_service.dart';
 import '../../../features/quran/view/quran_tab_screen.dart';
+import '../../../features/tasbih/view/tasbih_tab_screen.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -17,19 +18,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
 
   static const List<_AppTab> _tabs = <_AppTab>[
-    _AppTab(id: 'home', label: 'Home', icon: Icons.home_outlined),
-    _AppTab(id: 'focus', label: 'Focus', icon: Icons.shield_outlined),
-    _AppTab(id: 'tasbih', label: 'Tasbih', icon: Icons.trip_origin),
-    _AppTab(id: 'quran', label: 'Quran', icon: Icons.menu_book_outlined),
-    _AppTab(id: 'settings', label: 'Settings', icon: Icons.settings_outlined),
+    _AppTab(id: 'home', icon: Icons.home_outlined),
+    _AppTab(id: 'focus', icon: Icons.shield_outlined),
+    _AppTab(id: 'tasbih', icon: Icons.trip_origin),
+    _AppTab(id: 'quran', icon: Icons.menu_book_outlined),
+    _AppTab(id: 'settings', icon: Icons.settings_outlined),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final pages = <Widget>[
-      const _SimplePlaceholder(title: 'Home'),
-      const _SimplePlaceholder(title: 'Focus'),
-      const _SimplePlaceholder(title: 'Tasbih'),
+      _SimplePlaceholder(title: l10n.tabHome),
+      _SimplePlaceholder(title: l10n.tabFocus),
+      const TasbihTabScreen(),
       const QuranTabScreen(),
       const _SettingsTab(),
     ];
@@ -43,20 +45,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
         },
         destinations: _tabs
             .map(
-              (tab) =>
-                  NavigationDestination(icon: Icon(tab.icon), label: tab.label),
+              (tab) => NavigationDestination(
+                icon: Icon(tab.icon),
+                label: _labelForTab(l10n, tab.id),
+              ),
             )
             .toList(growable: false),
       ),
     );
   }
+
+  String _labelForTab(AppLocalizations l10n, String id) {
+    switch (id) {
+      case 'home':
+        return l10n.tabHome;
+      case 'focus':
+        return l10n.tabFocus;
+      case 'tasbih':
+        return l10n.tabTasbih;
+      case 'quran':
+        return l10n.tabQuran;
+      case 'settings':
+        return l10n.settings;
+      default:
+        return id;
+    }
+  }
 }
 
 class _AppTab {
-  const _AppTab({required this.id, required this.label, required this.icon});
+  const _AppTab({required this.id, required this.icon});
 
   final String id;
-  final String label;
   final IconData icon;
 }
 

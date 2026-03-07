@@ -15,6 +15,7 @@ abstract class StorageService {
   static const String _keyQuranShowEnglish = 'quran_show_english';
   static const String _keyQuranArabicFontSp = 'quran_arabic_font_sp';
   static const String _keyQuranEnglishFontSp = 'quran_english_font_sp';
+  static const String _keyTasbihSeedVersion = 'tasbih_seed_version';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -148,5 +149,15 @@ abstract class StorageService {
   static Future<void> setQuranEnglishFontSp(double value) async {
     final prefs = await _prefs;
     await prefs.setDouble(_keyQuranEnglishFontSp, value);
+  }
+
+  static Future<int> get tasbihSeedVersion async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyTasbihSeedVersion) ?? 0;
+  }
+
+  static Future<void> setTasbihSeedVersion(int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyTasbihSeedVersion, value);
   }
 }

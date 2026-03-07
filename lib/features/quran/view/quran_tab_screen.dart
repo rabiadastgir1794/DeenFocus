@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../data/quran_local_repository.dart';
 import 'surah_detail_bottom_sheet.dart';
 
@@ -43,8 +44,9 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
       });
     } catch (_) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _error = 'Failed to load Quran data';
+        _error = l10n.quranLoadFailed;
         _isLoading = false;
       });
     }
@@ -89,6 +91,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
@@ -98,7 +101,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Quran',
+                l10n.tabQuran,
                 style: TextStyle(
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w700,
@@ -107,7 +110,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
               ),
               SizedBox(height: 4.h),
               Text(
-                'Read & explore the Holy Quran',
+                l10n.quranTabSubtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
                   color: colorScheme.onSurfaceVariant,
@@ -122,7 +125,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Search surah...',
+                    hintText: l10n.quranSearchHint,
                     prefixIcon: Icon(
                       Icons.search_rounded,
                       size: 18.sp,
@@ -137,7 +140,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
                 ),
               ),
               SizedBox(height: 12.h),
-              Expanded(child: _buildBody(context)),
+              Expanded(child: _buildBody(context, l10n)),
             ],
           ),
         ),
@@ -145,7 +148,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, AppLocalizations l10n) {
     final colorScheme = Theme.of(context).colorScheme;
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -167,7 +170,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
             ),
             SizedBox(height: 8.h),
             Text(
-              'No surahs found',
+              l10n.quranNoSurahsFound,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: colorScheme.onSurfaceVariant,
@@ -225,7 +228,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          '${surah.verses} verses • ${surah.revelationType}',
+                          '${surah.verses} ${l10n.quranVersesLabel} • ${surah.revelationType}',
                           style: TextStyle(
                             fontSize: 11.sp,
                             color: colorScheme.onSurfaceVariant,

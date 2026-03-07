@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -7,11 +9,13 @@ import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
 import 'core/services/locale_service.dart';
 import 'core/theme/app_theme.dart';
+import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  unawaited(TasbihLocalRepository.instance.ensureInitialized());
   runApp(const DeenlyApp());
 }
 

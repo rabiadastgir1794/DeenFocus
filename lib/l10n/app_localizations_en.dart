@@ -306,4 +306,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLanguage => 'App Language';
+
+  @override
+  String get tabHome => 'Home';
+
+  @override
+  String get tabFocus => 'Focus';
+
+  @override
+  String get tabTasbih => 'Tasbih';
+
+  @override
+  String get tabQuran => 'Quran';
+
+  @override
+  String get quranLoadFailed => 'Failed to load Quran data';
+
+  @override
+  String get quranTabSubtitle => 'Read and explore the Holy Quran';
+
+  @override
+  String get quranSearchHint => 'Search surah...';
+
+  @override
+  String get quranNoSurahsFound => 'No surahs found';
+
+  @override
+  String get quranVersesLabel => 'verses';
+
+  @override
+  String get quranTextOptions => 'Text options';
+
+  @override
+  String get quranEnglishAndArabic => 'English and Arabic';
+
+  @override
+  String get quranArabicOnly => 'Arabic only';
+
+  @override
+  String get quranIncreaseFont => 'Increase font';
+
+  @override
+  String get quranDecreaseFont => 'Decrease font';
+
+  @override
+  String get quranPause => 'Pause';
+
+  @override
+  String get quranPlaySurah => 'Play surah';
+
+  @override
+  String get quranSurahLabel => 'Surah';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get tasbihBack => 'Back';
+
+  @override
+  String get tasbihTabTitle => 'Tasbih';
+
+  @override
+  String get tasbihChooseOrAddSubtitle => 'Choose a dhikr or add your own';
+
+  @override
+  String get tasbihAddCustomTitle => 'Add Custom Dhikr';
+
+  @override
+  String get tasbihEditCustomTitle => 'Edit Custom Dhikr';
+
+  @override
+  String get tasbihArabicOrDhikrHint => 'Arabic text or any dhikr';
+
+  @override
+  String get tasbihTransliterationOptionalHint => 'Transliteration (optional)';
+
+  @override
+  String get tasbihMeaningOptionalHint => 'Meaning (optional)';
+
+  @override
+  String get tasbihNoTransliteration => 'No transliteration';
+
+  @override
+  String get tasbihTotalCount => 'Total Count';
+
+  @override
+  String get tasbihTapMe => 'Tap Me';
+
+  @override
+  String get tasbihReset => 'Reset';
 }

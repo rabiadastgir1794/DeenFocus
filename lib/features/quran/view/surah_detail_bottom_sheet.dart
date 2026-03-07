@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../../../core/services/storage_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/quran_local_repository.dart';
 
 class SurahDetailBottomSheet extends StatefulWidget {
@@ -261,6 +262,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isPlaying = _player.playing;
     final currentAyah =
@@ -286,7 +288,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                       ),
                       const Spacer(),
                       PopupMenuButton<_TextOption>(
-                        tooltip: 'Text options',
+                        tooltip: l10n.quranTextOptions,
                         onSelected: (option) {
                           switch (option) {
                             case _TextOption.englishArabic:
@@ -303,21 +305,21 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                           CheckedPopupMenuItem<_TextOption>(
                             value: _TextOption.englishArabic,
                             checked: _showEnglish,
-                            child: const Text('English and Arabic'),
+                            child: Text(l10n.quranEnglishAndArabic),
                           ),
                           CheckedPopupMenuItem<_TextOption>(
                             value: _TextOption.arabicOnly,
                             checked: !_showEnglish,
-                            child: const Text('Arabic only'),
+                            child: Text(l10n.quranArabicOnly),
                           ),
                           const PopupMenuDivider(),
-                          const PopupMenuItem<_TextOption>(
+                          PopupMenuItem<_TextOption>(
                             value: _TextOption.increaseFont,
-                            child: Text('Increase font'),
+                            child: Text(l10n.quranIncreaseFont),
                           ),
-                          const PopupMenuItem<_TextOption>(
+                          PopupMenuItem<_TextOption>(
                             value: _TextOption.decreaseFont,
-                            child: Text('Decrease font'),
+                            child: Text(l10n.quranDecreaseFont),
                           ),
                         ],
                         child: Padding(
@@ -366,7 +368,11 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                       ? Icons.pause
                                       : Icons.play_arrow_rounded,
                                 ),
-                                label: Text(isPlaying ? 'Pause' : 'Play surah'),
+                                label: Text(
+                                  isPlaying
+                                      ? l10n.quranPause
+                                      : l10n.quranPlaySurah,
+                                ),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: colorScheme.primary,
                                   foregroundColor: colorScheme.onPrimary,
@@ -412,7 +418,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                   ),
                                   SizedBox(width: 4.w),
                                   Text(
-                                    '${widget.surah.verses} verses',
+                                    '${widget.surah.verses} ${l10n.quranVersesLabel}',
                                     style: TextStyle(
                                       color: colorScheme.onSurfaceVariant,
                                       fontSize: 14.sp,
@@ -454,7 +460,9 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                         : Icons.play_arrow_rounded,
                                   ),
                                   label: Text(
-                                    isPlaying ? 'Pause' : 'Play surah',
+                                    isPlaying
+                                        ? l10n.quranPause
+                                        : l10n.quranPlaySurah,
                                   ),
                                   style: FilledButton.styleFrom(
                                     backgroundColor: colorScheme.primary,
@@ -598,7 +606,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Surah ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
+                          '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
