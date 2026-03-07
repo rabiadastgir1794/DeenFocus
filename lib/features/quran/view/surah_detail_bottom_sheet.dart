@@ -271,196 +271,208 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     return SafeArea(
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
-            child: Row(
+          ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close_rounded),
-                ),
-                const Spacer(),
-                PopupMenuButton<_TextOption>(
-                  tooltip: 'Text options',
-                  onSelected: (option) {
-                    switch (option) {
-                      case _TextOption.englishArabic:
-                        _toggleShowEnglish(true);
-                      case _TextOption.arabicOnly:
-                        _toggleShowEnglish(false);
-                      case _TextOption.increaseFont:
-                        _increaseFont();
-                      case _TextOption.decreaseFont:
-                        _decreaseFont();
-                    }
-                  },
-                  itemBuilder: (_) => [
-                    CheckedPopupMenuItem<_TextOption>(
-                      value: _TextOption.englishArabic,
-                      checked: _showEnglish,
-                      child: const Text('English and Arabic'),
-                    ),
-                    CheckedPopupMenuItem<_TextOption>(
-                      value: _TextOption.arabicOnly,
-                      checked: !_showEnglish,
-                      child: const Text('Arabic only'),
-                    ),
-                    const PopupMenuDivider(),
-                    const PopupMenuItem<_TextOption>(
-                      value: _TextOption.increaseFont,
-                      child: Text('Increase font'),
-                    ),
-                    const PopupMenuItem<_TextOption>(
-                      value: _TextOption.decreaseFont,
-                      child: Text('Decrease font'),
-                    ),
-                  ],
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 6.h,
-                    ),
-                    child: Text(
-                      'A A',
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close_rounded),
                       ),
-                    ),
+                      const Spacer(),
+                      PopupMenuButton<_TextOption>(
+                        tooltip: 'Text options',
+                        onSelected: (option) {
+                          switch (option) {
+                            case _TextOption.englishArabic:
+                              _toggleShowEnglish(true);
+                            case _TextOption.arabicOnly:
+                              _toggleShowEnglish(false);
+                            case _TextOption.increaseFont:
+                              _increaseFont();
+                            case _TextOption.decreaseFont:
+                              _decreaseFont();
+                          }
+                        },
+                        itemBuilder: (_) => [
+                          CheckedPopupMenuItem<_TextOption>(
+                            value: _TextOption.englishArabic,
+                            checked: _showEnglish,
+                            child: const Text('English and Arabic'),
+                          ),
+                          CheckedPopupMenuItem<_TextOption>(
+                            value: _TextOption.arabicOnly,
+                            checked: !_showEnglish,
+                            child: const Text('Arabic only'),
+                          ),
+                          const PopupMenuDivider(),
+                          const PopupMenuItem<_TextOption>(
+                            value: _TextOption.increaseFont,
+                            child: Text('Increase font'),
+                          ),
+                          const PopupMenuItem<_TextOption>(
+                            value: _TextOption.decreaseFont,
+                            child: Text('Decrease font'),
+                          ),
+                        ],
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 6.h,
+                          ),
+                          child: Text(
+                            'A A',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 180),
+                  child: _showCompactHeader
+                      ? Padding(
+                          key: const ValueKey('compact_header'),
+                          padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.surah.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              FilledButton.icon(
+                                onPressed: _onPlayFullSurahTap,
+                                icon: Icon(
+                                  isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow_rounded,
+                                ),
+                                label: Text(isPlaying ? 'Pause' : 'Play surah'),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          key: const ValueKey('full_header'),
+                          padding: EdgeInsets.fromLTRB(24.w, 6.h, 24.w, 16.h),
+                          child: Column(
+                            children: [
+                              Text(
+                                widget.surah.arabicName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 30.sp,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                widget.surah.name,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: colorScheme.onSurface,
+                                  fontSize: 16.sp,
+                                ),
+                              ),
+                              SizedBox(height: 10.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.format_align_left_rounded,
+                                    size: 18.sp,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    '${widget.surah.verses} verses',
+                                    style: TextStyle(
+                                      color: colorScheme.onSurfaceVariant,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Container(
+                                    width: 4.w,
+                                    height: 4.w,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.onSurfaceVariant,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Icon(
+                                    Icons.nightlight_round,
+                                    size: 18.sp,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    widget.surah.revelationType,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurfaceVariant,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 14.h),
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton.icon(
+                                  onPressed: _onPlayFullSurahTap,
+                                  icon: Icon(
+                                    isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow_rounded,
+                                  ),
+                                  label: Text(
+                                    isPlaying ? 'Pause' : 'Play surah',
+                                  ),
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: colorScheme.primary,
+                                    foregroundColor: colorScheme.onPrimary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+                Divider(height: 1, color: colorScheme.outlineVariant),
               ],
             ),
           ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 180),
-            child: _showCompactHeader
-                ? Padding(
-                    key: const ValueKey('compact_header'),
-                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            widget.surah.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18.sp,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        FilledButton.icon(
-                          onPressed: _onPlayFullSurahTap,
-                          icon: Icon(
-                            isPlaying ? Icons.pause : Icons.play_arrow_rounded,
-                          ),
-                          label: Text(isPlaying ? 'Pause' : 'Play surah'),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: colorScheme.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Padding(
-                    key: const ValueKey('full_header'),
-                    padding: EdgeInsets.fromLTRB(24.w, 6.h, 24.w, 16.h),
-                    child: Column(
-                      children: [
-                        Text(
-                          widget.surah.arabicName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 30.sp,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          widget.surah.name,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: colorScheme.onSurface,
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.format_align_left_rounded,
-                              size: 18.sp,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              '${widget.surah.verses} verses',
-                              style: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            Container(
-                              width: 4.w,
-                              height: 4.w,
-                              decoration: BoxDecoration(
-                                color: colorScheme.onSurfaceVariant,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            Icon(
-                              Icons.nightlight_round,
-                              size: 18.sp,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              widget.surah.revelationType,
-                              style: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 14.h),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: _onPlayFullSurahTap,
-                            icon: Icon(
-                              isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow_rounded,
-                            ),
-                            label: Text(isPlaying ? 'Pause' : 'Play surah'),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: colorScheme.primary,
-                              foregroundColor: colorScheme.onPrimary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-          ),
-          Divider(height: 1, color: colorScheme.outlineVariant),
           Expanded(
             child: _loadingAyahs
                 ? const Center(child: CircularProgressIndicator())
