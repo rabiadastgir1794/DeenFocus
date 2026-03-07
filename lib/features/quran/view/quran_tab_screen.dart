@@ -80,7 +80,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
       ),
       builder: (_) {
         return FractionallySizedBox(
-          heightFactor: 0.9,
+          heightFactor: 1,
           child: SurahDetailBottomSheet(surah: surah),
         );
       },

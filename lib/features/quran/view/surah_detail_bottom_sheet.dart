@@ -34,17 +34,21 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
   Timer? _ticker;
+  bool _showCompactHeader = false;
 
   @override
   void initState() {
     super.initState();
+    _listController.addListener(_handleListScroll);
     _bootstrap();
     _bindPlayerState();
   }
 
   @override
   void dispose() {
+    _listController.removeListener(_handleListScroll);
     _ticker?.cancel();
+    _listController.dispose();
     _player.dispose();
     super.dispose();
   }
@@ -92,13 +96,15 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       if (index < 0 || index >= _ayahs.length) return;
       setState(() {
         _playingAyahIndex = index;
-        _showAudioBar = true;
       });
       _scrollToAyah(index);
     });
 
     _player.playerStateStream.listen((state) {
       if (!mounted) return;
+      if (state.playing && !_showAudioBar) {
+        setState(() => _showAudioBar = true);
+      }
       if (state.playing) {
         _startTicker();
       } else {
@@ -147,7 +153,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     if (_ayahs.isEmpty) return;
     setState(() {
       _playingAyahIndex = position;
-      _showAudioBar = true;
       _isAudioLoading = true;
     });
     await _player.seek(Duration.zero, index: position);
@@ -247,6 +252,13 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
 
   final ScrollController _listController = ScrollController();
 
+  void _handleListScroll() {
+    if (!_listController.hasClients) return;
+    final shouldCompact = _listController.offset > 8;
+    if (shouldCompact == _showCompactHeader) return;
+    setState(() => _showCompactHeader = shouldCompact);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -321,90 +333,132 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(24.w, 6.h, 24.w, 16.h),
-            child: Column(
-              children: [
-                Text(
-                  widget.surah.arabicName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 30.sp,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            child: _showCompactHeader
+                ? Padding(
+                    key: const ValueKey('compact_header'),
+                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.surah.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: colorScheme.onSurface,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18.sp,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        FilledButton.icon(
+                          onPressed: _onPlayFullSurahTap,
+                          icon: Icon(
+                            isPlaying ? Icons.pause : Icons.play_arrow_rounded,
+                          ),
+                          label: Text(isPlaying ? 'Pause' : 'Play surah'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: colorScheme.primary,
+                            foregroundColor: colorScheme.onPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    key: const ValueKey('full_header'),
+                    padding: EdgeInsets.fromLTRB(24.w, 6.h, 24.w, 16.h),
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.surah.arabicName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 30.sp,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          widget.surah.name,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: colorScheme.onSurface,
+                            fontSize: 16.sp,
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.format_align_left_rounded,
+                              size: 18.sp,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              '${widget.surah.verses} verses',
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            SizedBox(width: 10.w),
+                            Container(
+                              width: 4.w,
+                              height: 4.w,
+                              decoration: BoxDecoration(
+                                color: colorScheme.onSurfaceVariant,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 10.w),
+                            Icon(
+                              Icons.nightlight_round,
+                              size: 18.sp,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              widget.surah.revelationType,
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 14.h),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: _onPlayFullSurahTap,
+                            icon: Icon(
+                              isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow_rounded,
+                            ),
+                            label: Text(isPlaying ? 'Pause' : 'Play surah'),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: colorScheme.primary,
+                              foregroundColor: colorScheme.onPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  widget.surah.name,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: colorScheme.onSurface,
-                    fontSize: 16.sp,
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.format_align_left_rounded,
-                      size: 18.sp,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      '${widget.surah.verses} verses',
-                      style: TextStyle(
-                        color: colorScheme.onSurfaceVariant,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
-                    Container(
-                      width: 4.w,
-                      height: 4.w,
-                      decoration: BoxDecoration(
-                        color: colorScheme.onSurfaceVariant,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
-                    Icon(
-                      Icons.nightlight_round,
-                      size: 18.sp,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      widget.surah.revelationType,
-                      style: TextStyle(
-                        color: colorScheme.onSurfaceVariant,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 14.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: _onPlayFullSurahTap,
-                    icon: Icon(
-                      isPlaying ? Icons.pause : Icons.play_arrow_rounded,
-                    ),
-                    label: Text(isPlaying ? 'Pause' : 'Play surah'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      foregroundColor: colorScheme.onPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
           Divider(height: 1, color: colorScheme.outlineVariant),
           Expanded(
@@ -485,7 +539,9 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                   style: TextStyle(
                                     fontSize: _arabicFontSp.sp,
                                     height: 1.8,
-                                    color: colorScheme.onSurface,
+                                    color: isCurrent
+                                        ? colorScheme.primary
+                                        : Colors.black,
                                   ),
                                 ),
                                 if (_showEnglish) ...[
@@ -495,7 +551,9 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                     style: TextStyle(
                                       fontSize: _englishFontSp.sp,
                                       height: 1.45,
-                                      color: colorScheme.onSurfaceVariant,
+                                      color: isCurrent
+                                          ? colorScheme.primary
+                                          : Colors.black,
                                     ),
                                   ),
                                 ],
