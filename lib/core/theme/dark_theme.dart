@@ -45,15 +45,15 @@ ThemeData get darkTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryDark,
-        foregroundColor: AppColors.onPrimaryDark,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimaryLight,
         elevation: 0,
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: AppColors.primaryDark,
-        foregroundColor: AppColors.onPrimaryDark,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimaryLight,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

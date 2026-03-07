@@ -11,6 +11,10 @@ abstract class StorageService {
   static const String _keyLocationSubtitle = 'user_location_subtitle';
   static const String _keyLocationLatitude = 'user_location_latitude';
   static const String _keyLocationLongitude = 'user_location_longitude';
+  static const String _keyQuranSeedVersion = 'quran_seed_version';
+  static const String _keyQuranShowEnglish = 'quran_show_english';
+  static const String _keyQuranArabicFontSp = 'quran_arabic_font_sp';
+  static const String _keyQuranEnglishFontSp = 'quran_english_font_sp';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -104,5 +108,45 @@ abstract class StorageService {
     } else {
       await prefs.setDouble(_keyLocationLongitude, longitude);
     }
+  }
+
+  static Future<int> get quranSeedVersion async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranSeedVersion) ?? 0;
+  }
+
+  static Future<void> setQuranSeedVersion(int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyQuranSeedVersion, value);
+  }
+
+  static Future<bool> get quranShowEnglish async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyQuranShowEnglish) ?? true;
+  }
+
+  static Future<void> setQuranShowEnglish(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyQuranShowEnglish, value);
+  }
+
+  static Future<double> get quranArabicFontSp async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyQuranArabicFontSp) ?? 20;
+  }
+
+  static Future<double> get quranEnglishFontSp async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyQuranEnglishFontSp) ?? 15;
+  }
+
+  static Future<void> setQuranArabicFontSp(double value) async {
+    final prefs = await _prefs;
+    await prefs.setDouble(_keyQuranArabicFontSp, value);
+  }
+
+  static Future<void> setQuranEnglishFontSp(double value) async {
+    final prefs = await _prefs;
+    await prefs.setDouble(_keyQuranEnglishFontSp, value);
   }
 }

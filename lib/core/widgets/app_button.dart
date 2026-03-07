@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constants/spacing.dart';
+import '../theme/app_colors.dart';
 
 enum AppButtonVariant { primary, disabled }
 
@@ -36,11 +37,11 @@ class AppButton extends StatelessWidget {
         (_isDisabled ? AppButtonVariant.disabled : AppButtonVariant.primary);
 
     final backgroundColor = effectiveVariant == AppButtonVariant.primary
-        ? colorScheme.primary
+        ? AppColors.primary
         : colorScheme.surfaceContainerHighest;
 
     final foregroundColor = effectiveVariant == AppButtonVariant.primary
-        ? colorScheme.onPrimary
+        ? AppColors.onPrimaryLight
         : colorScheme.onSurfaceVariant;
 
     return SizedBox(
