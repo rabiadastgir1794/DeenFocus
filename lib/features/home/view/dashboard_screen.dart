@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_languages.dart';
 import '../../../core/services/locale_service.dart';
+import '../../../features/home/view/home_tab_screen.dart';
 import '../../../features/quran/view/quran_tab_screen.dart';
 import '../../../features/tasbih/view/tasbih_tab_screen.dart';
 import '../../../l10n/app_localizations.dart';
@@ -29,7 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final pages = <Widget>[
-      _SimplePlaceholder(title: l10n.tabHome),
+      const HomeTabScreen(),
       _SimplePlaceholder(title: l10n.tabFocus),
       const TasbihTabScreen(),
       const QuranTabScreen(),

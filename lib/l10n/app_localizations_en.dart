@@ -299,6 +299,105 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTitle => 'Deenly Home';
 
   @override
+  String get homeSalam => 'Assalamu Alaikum';
+
+  @override
+  String get homeDailyVerseFallback => 'Indeed, with hardship comes ease.';
+
+  @override
+  String get homeAppsLocked => 'Apps Locked';
+
+  @override
+  String get homeTapToUnlock => 'Tap to unlock apps temporarily';
+
+  @override
+  String get homePrayerModeActive => 'Prayer Mode Active';
+
+  @override
+  String get homeActivatePrayerMode => 'Activate Prayer Mode';
+
+  @override
+  String get homeAppsBlockedSubtitle => 'Apps are blocked. Tap to deactivate.';
+
+  @override
+  String get homeBlockDistractingApps => 'Block distracting apps during Salah.';
+
+  @override
+  String get homeQiblaDirection => 'Qibla Direction';
+
+  @override
+  String get homeLocationMissingForQibla =>
+      'Enable location to calculate Qibla direction.';
+
+  @override
+  String get homeToMakkah => 'to Makkah';
+
+  @override
+  String get homeFindMasjid => 'Find Masjid Near Me';
+
+  @override
+  String get homeSearchNearbyMosques => 'Search nearby mosques.';
+
+  @override
+  String get homePrayerStreak => 'Prayer Streak';
+
+  @override
+  String get homeOpenStreakDetails => 'Open streak details.';
+
+  @override
+  String get homeTodaysPrayers => 'Today\'s Prayers';
+
+  @override
+  String get homePrayerTimesUnavailable =>
+      'Prayer times are unavailable right now.';
+
+  @override
+  String get homeNextPrayerIn => 'Next prayer in';
+
+  @override
+  String get homePrayerFajr => 'Fajr';
+
+  @override
+  String get homePrayerSunrise => 'Sunrise';
+
+  @override
+  String get homePrayerDhuhr => 'Dhuhr';
+
+  @override
+  String get homePrayerAsr => 'Asr';
+
+  @override
+  String get homePrayerMaghrib => 'Maghrib';
+
+  @override
+  String get homePrayerIsha => 'Isha';
+
+  @override
+  String get homeWeek => 'Week';
+
+  @override
+  String get homeMonth => 'Month';
+
+  @override
+  String get homeThisWeek => 'This Week';
+
+  @override
+  String get homeJummahMubarak => 'Jummah Mubarak';
+
+  @override
+  String get homeJummahReminder => 'Don\'t forget Surah Al-Kahf.';
+
+  @override
+  String get homeAiChatDescription =>
+      'Ask anything about prayer times, Quran, and Islamic guidance.';
+
+  @override
+  String get homeDays => 'Days';
+
+  @override
+  String get homeNoEventsFoundForDay => 'No events found for this day.';
+
+  @override
   String get backToOnboarding => 'Back to Onboarding';
 
   @override

@@ -83,10 +83,26 @@ class QuranLocalRepository {
   static const int _seedVersion = 1;
 
   bool _initialized = false;
+  Future<void>? _initializing;
   late final Box<Map> _surahBox;
   late final Box<Map> _ayahBox;
 
   Future<void> ensureInitialized() async {
+    if (_initialized) return;
+    if (_initializing != null) {
+      await _initializing;
+      return;
+    }
+
+    _initializing = _initializeInternal();
+    try {
+      await _initializing;
+    } finally {
+      _initializing = null;
+    }
+  }
+
+  Future<void> _initializeInternal() async {
     if (_initialized) return;
 
     _surahBox = await Hive.openBox<Map>(_surahBoxName);

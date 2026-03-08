@@ -1,0 +1,67 @@
+import 'dart:math';
+
+import 'package:intl/intl.dart';
+
+import '../../../core/services/storage_service.dart';
+import '../../quran/data/quran_local_repository.dart';
+import '../model/home_models.dart';
+import 'surah_ayah_count_helper.dart';
+
+abstract class HomeDailyVerseHelper {
+  static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
+
+  static Future<DailyVerseRef> getOrGenerateDailyVerseRef({
+    DateTime? now,
+  }) async {
+    final today = now ?? DateTime.now();
+    final dayKey = _dayKeyFormat.format(today);
+
+    final cachedDate = await StorageService.homeDailyVerseDate;
+    final cachedSurah = await StorageService.homeDailyVerseSurah;
+    final cachedAyah = await StorageService.homeDailyVerseAyah;
+
+    if (cachedDate == dayKey && cachedSurah != null && cachedAyah != null) {
+      return DailyVerseRef(surahNumber: cachedSurah, ayahNumber: cachedAyah);
+    }
+
+    final random = Random(
+      today.millisecondsSinceEpoch ~/ Duration.millisecondsPerDay,
+    );
+    final surahNumber = random.nextInt(kSurahAyahCount.length) + 1;
+    final ayahCount = kSurahAyahCount[surahNumber] ?? 1;
+    final ayahNumber = random.nextInt(ayahCount) + 1;
+
+    await StorageService.setHomeDailyVerse(
+      dateKey: dayKey,
+      surah: surahNumber,
+      ayah: ayahNumber,
+    );
+
+    return DailyVerseRef(surahNumber: surahNumber, ayahNumber: ayahNumber);
+  }
+
+  static Future<HomeDailyVerse?> loadDailyVerse(DailyVerseRef ref) async {
+    await QuranLocalRepository.instance.ensureInitialized();
+    final surahs = await QuranLocalRepository.instance.getSurahs();
+    final ayahs = await QuranLocalRepository.instance.getAyahsBySurah(
+      ref.surahNumber,
+    );
+
+    final ayah = ayahs
+        .where((item) => item.ayahNumber == ref.ayahNumber)
+        .firstOrNull;
+    if (ayah == null) return null;
+
+    final surah = surahs
+        .where((item) => item.number == ref.surahNumber)
+        .firstOrNull;
+
+    return HomeDailyVerse(
+      surahNumber: ref.surahNumber,
+      ayahNumber: ref.ayahNumber,
+      surahName: surah?.name ?? 'Surah ${ref.surahNumber}',
+      arabicText: ayah.arabicText,
+      englishText: ayah.englishText,
+    );
+  }
+}

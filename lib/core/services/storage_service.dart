@@ -16,6 +16,18 @@ abstract class StorageService {
   static const String _keyQuranArabicFontSp = 'quran_arabic_font_sp';
   static const String _keyQuranEnglishFontSp = 'quran_english_font_sp';
   static const String _keyTasbihSeedVersion = 'tasbih_seed_version';
+  static const String _keyHomeDailyVerseDate = 'home_daily_verse_date';
+  static const String _keyHomeDailyVerseSurah = 'home_daily_verse_surah';
+  static const String _keyHomeDailyVerseAyah = 'home_daily_verse_ayah';
+  static const String _keyHomePrayerCacheDate = 'home_prayer_cache_date';
+  static const String _keyHomePrayerCacheLat = 'home_prayer_cache_lat';
+  static const String _keyHomePrayerCacheLng = 'home_prayer_cache_lng';
+  static const String _keyHomePrayerCacheJson = 'home_prayer_cache_json';
+  static const String _keyHomeNotificationPrompted =
+      'home_notification_prompted';
+  static const String _keyHomeIslamicEventsJson = 'home_islamic_events_json';
+  static const String _keyHomeIslamicEventsLastYear =
+      'home_islamic_events_last_year';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -159,5 +171,94 @@ abstract class StorageService {
   static Future<void> setTasbihSeedVersion(int value) async {
     final prefs = await _prefs;
     await prefs.setInt(_keyTasbihSeedVersion, value);
+  }
+
+  static Future<String?> get homeDailyVerseDate async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyHomeDailyVerseDate);
+  }
+
+  static Future<int?> get homeDailyVerseSurah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyHomeDailyVerseSurah);
+  }
+
+  static Future<int?> get homeDailyVerseAyah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyHomeDailyVerseAyah);
+  }
+
+  static Future<void> setHomeDailyVerse({
+    required String dateKey,
+    required int surah,
+    required int ayah,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyHomeDailyVerseDate, dateKey);
+    await prefs.setInt(_keyHomeDailyVerseSurah, surah);
+    await prefs.setInt(_keyHomeDailyVerseAyah, ayah);
+  }
+
+  static Future<String?> get homePrayerCacheDate async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyHomePrayerCacheDate);
+  }
+
+  static Future<double?> get homePrayerCacheLatitude async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyHomePrayerCacheLat);
+  }
+
+  static Future<double?> get homePrayerCacheLongitude async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyHomePrayerCacheLng);
+  }
+
+  static Future<String?> get homePrayerCacheJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyHomePrayerCacheJson);
+  }
+
+  static Future<void> setHomePrayerCache({
+    required String dateKey,
+    required double latitude,
+    required double longitude,
+    required String serializedTimes,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyHomePrayerCacheDate, dateKey);
+    await prefs.setDouble(_keyHomePrayerCacheLat, latitude);
+    await prefs.setDouble(_keyHomePrayerCacheLng, longitude);
+    await prefs.setString(_keyHomePrayerCacheJson, serializedTimes);
+  }
+
+  static Future<bool> get homeNotificationPrompted async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHomeNotificationPrompted) ?? false;
+  }
+
+  static Future<void> setHomeNotificationPrompted(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHomeNotificationPrompted, value);
+  }
+
+  static Future<String?> get homeIslamicEventsJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyHomeIslamicEventsJson);
+  }
+
+  static Future<void> setHomeIslamicEventsJson(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyHomeIslamicEventsJson, value);
+  }
+
+  static Future<int> get homeIslamicEventsLastYear async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyHomeIslamicEventsLastYear) ?? 0;
+  }
+
+  static Future<void> setHomeIslamicEventsLastYear(int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyHomeIslamicEventsLastYear, value);
   }
 }

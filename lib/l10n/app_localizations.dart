@@ -634,6 +634,198 @@ abstract class AppLocalizations {
   /// **'Deenly Home'**
   String get homeTitle;
 
+  /// No description provided for @homeSalam.
+  ///
+  /// In en, this message translates to:
+  /// **'Assalamu Alaikum'**
+  String get homeSalam;
+
+  /// No description provided for @homeDailyVerseFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Indeed, with hardship comes ease.'**
+  String get homeDailyVerseFallback;
+
+  /// No description provided for @homeAppsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps Locked'**
+  String get homeAppsLocked;
+
+  /// No description provided for @homeTapToUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to unlock apps temporarily'**
+  String get homeTapToUnlock;
+
+  /// No description provided for @homePrayerModeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Mode Active'**
+  String get homePrayerModeActive;
+
+  /// No description provided for @homeActivatePrayerMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Prayer Mode'**
+  String get homeActivatePrayerMode;
+
+  /// No description provided for @homeAppsBlockedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are blocked. Tap to deactivate.'**
+  String get homeAppsBlockedSubtitle;
+
+  /// No description provided for @homeBlockDistractingApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Block distracting apps during Salah.'**
+  String get homeBlockDistractingApps;
+
+  /// No description provided for @homeQiblaDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Qibla Direction'**
+  String get homeQiblaDirection;
+
+  /// No description provided for @homeLocationMissingForQibla.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location to calculate Qibla direction.'**
+  String get homeLocationMissingForQibla;
+
+  /// No description provided for @homeToMakkah.
+  ///
+  /// In en, this message translates to:
+  /// **'to Makkah'**
+  String get homeToMakkah;
+
+  /// No description provided for @homeFindMasjid.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Masjid Near Me'**
+  String get homeFindMasjid;
+
+  /// No description provided for @homeSearchNearbyMosques.
+  ///
+  /// In en, this message translates to:
+  /// **'Search nearby mosques.'**
+  String get homeSearchNearbyMosques;
+
+  /// No description provided for @homePrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Streak'**
+  String get homePrayerStreak;
+
+  /// No description provided for @homeOpenStreakDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Open streak details.'**
+  String get homeOpenStreakDetails;
+
+  /// No description provided for @homeTodaysPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Prayers'**
+  String get homeTodaysPrayers;
+
+  /// No description provided for @homePrayerTimesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times are unavailable right now.'**
+  String get homePrayerTimesUnavailable;
+
+  /// No description provided for @homeNextPrayerIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next prayer in'**
+  String get homeNextPrayerIn;
+
+  /// No description provided for @homePrayerFajr.
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr'**
+  String get homePrayerFajr;
+
+  /// No description provided for @homePrayerSunrise.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunrise'**
+  String get homePrayerSunrise;
+
+  /// No description provided for @homePrayerDhuhr.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhuhr'**
+  String get homePrayerDhuhr;
+
+  /// No description provided for @homePrayerAsr.
+  ///
+  /// In en, this message translates to:
+  /// **'Asr'**
+  String get homePrayerAsr;
+
+  /// No description provided for @homePrayerMaghrib.
+  ///
+  /// In en, this message translates to:
+  /// **'Maghrib'**
+  String get homePrayerMaghrib;
+
+  /// No description provided for @homePrayerIsha.
+  ///
+  /// In en, this message translates to:
+  /// **'Isha'**
+  String get homePrayerIsha;
+
+  /// No description provided for @homeWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get homeWeek;
+
+  /// No description provided for @homeMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get homeMonth;
+
+  /// No description provided for @homeThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get homeThisWeek;
+
+  /// No description provided for @homeJummahMubarak.
+  ///
+  /// In en, this message translates to:
+  /// **'Jummah Mubarak'**
+  String get homeJummahMubarak;
+
+  /// No description provided for @homeJummahReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t forget Surah Al-Kahf.'**
+  String get homeJummahReminder;
+
+  /// No description provided for @homeAiChatDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything about prayer times, Quran, and Islamic guidance.'**
+  String get homeAiChatDescription;
+
+  /// No description provided for @homeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get homeDays;
+
+  /// No description provided for @homeNoEventsFoundForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No events found for this day.'**
+  String get homeNoEventsFoundForDay;
+
   /// No description provided for @backToOnboarding.
   ///
   /// In en, this message translates to:
