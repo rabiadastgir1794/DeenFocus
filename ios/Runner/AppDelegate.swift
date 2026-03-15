@@ -3,10 +3,14 @@ import UIKit
 import FamilyControls
 import DeviceActivity
 import ManagedSettings
+import CoreLocation
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
   private let screenTimeChannelName = "com.app.deenly.deenly/screen_time"
+  private let qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
+  private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
+  private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
 
   override func application(
     _ application: UIApplication,
@@ -14,10 +18,19 @@ import ManagedSettings
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
 
-    if let controller = window?.rootViewController as? FlutterViewController {
+    if let registrar = self.registrar(forPlugin: "QiblaCompassPlugin") {
+      let messenger = registrar.messenger()
       let screenTimeChannel = FlutterMethodChannel(
         name: screenTimeChannelName,
-        binaryMessenger: controller.binaryMessenger
+        binaryMessenger: messenger
+      )
+      let qiblaMethodChannel = FlutterMethodChannel(
+        name: qiblaMethodChannelName,
+        binaryMessenger: messenger
+      )
+      let qiblaEventChannel = FlutterEventChannel(
+        name: qiblaEventChannelName,
+        binaryMessenger: messenger
       )
 
       screenTimeChannel.setMethodCallHandler { call, result in
@@ -30,6 +43,17 @@ import ManagedSettings
           result(FlutterMethodNotImplemented)
         }
       }
+
+      qiblaMethodChannel.setMethodCallHandler { call, result in
+        switch call.method {
+        case "setLocation":
+          result(nil)
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      }
+
+      qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -71,5 +95,53 @@ import ManagedSettings
     UIApplication.shared.open(url, options: [:]) { success in
       result(success)
     }
+  }
+}
+
+final class QiblaHeadingStreamHandler: NSObject, FlutterStreamHandler, CLLocationManagerDelegate {
+  private let locationManager = CLLocationManager()
+  private var eventSink: FlutterEventSink?
+
+  override init() {
+    super.init()
+    locationManager.delegate = self
+    locationManager.headingFilter = 1
+  }
+
+  func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+    guard CLLocationManager.headingAvailable() else {
+      events(FlutterEndOfEventStream)
+      return nil
+    }
+
+    eventSink = events
+    locationManager.startUpdatingLocation()
+    locationManager.startUpdatingHeading()
+    return nil
+  }
+
+  func onCancel(withArguments arguments: Any?) -> FlutterError? {
+    eventSink = nil
+    locationManager.stopUpdatingHeading()
+    locationManager.stopUpdatingLocation()
+    return nil
+  }
+
+  func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    let heading = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
+    eventSink?(normalizedHeading(heading))
+  }
+
+  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    eventSink?(FlutterEndOfEventStream)
+  }
+
+  func locationManagerShouldDisplayHeadingCalibration(_ manager: CLLocationManager) -> Bool {
+    return true
+  }
+
+  private func normalizedHeading(_ value: CLLocationDirection) -> Double {
+    let normalized = value.truncatingRemainder(dividingBy: 360)
+    return normalized >= 0 ? normalized : normalized + 360
   }
 }

@@ -15,6 +15,7 @@ import 'widgets/home_circle_icon_button.dart';
 import 'widgets/home_info_screens.dart';
 import 'widgets/home_prayer_streak_section.dart';
 import 'widgets/home_prayer_times_section.dart';
+import 'widgets/home_qibla_screen.dart';
 import 'widgets/home_verse_marquee.dart';
 
 class HomeTabScreen extends StatelessWidget {
@@ -169,10 +170,11 @@ class _HomeTabViewState extends State<_HomeTabView>
                       : '${vm.qiblaInfo} ${l10n.homeToMakkah}',
                   icon: Icons.explore_outlined,
                   iconBackground: colorScheme.primaryContainer,
-                  onTap: () => _openInfoScreen(
+                  onTap: () => _openQiblaScreen(
                     context,
-                    l10n.homeQiblaDirection,
-                    vm.qiblaInfo ?? l10n.homeLocationMissingForQibla,
+                    locationName: vm.locationName,
+                    latitude: vm.latitude,
+                    longitude: vm.longitude,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -305,6 +307,23 @@ class _HomeTabViewState extends State<_HomeTabView>
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => HomeSimpleInfoScreen(title: title, subtitle: subtitle),
+      ),
+    );
+  }
+
+  void _openQiblaScreen(
+    BuildContext context, {
+    required String? locationName,
+    required double? latitude,
+    required double? longitude,
+  }) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => HomeQiblaScreen(
+          locationName: locationName,
+          latitude: latitude,
+          longitude: longitude,
+        ),
       ),
     );
   }
