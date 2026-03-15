@@ -28,6 +28,7 @@ abstract class StorageService {
   static const String _keyHomeIslamicEventsJson = 'home_islamic_events_json';
   static const String _keyHomeIslamicEventsLastYear =
       'home_islamic_events_last_year';
+  static const String _keyFocusSettingsJson = 'focus_settings_json';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -260,5 +261,15 @@ abstract class StorageService {
   static Future<void> setHomeIslamicEventsLastYear(int value) async {
     final prefs = await _prefs;
     await prefs.setInt(_keyHomeIslamicEventsLastYear, value);
+  }
+
+  static Future<String?> get focusSettingsJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyFocusSettingsJson);
+  }
+
+  static Future<void> setFocusSettingsJson(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyFocusSettingsJson, value);
   }
 }

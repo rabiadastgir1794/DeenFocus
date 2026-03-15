@@ -1,5 +1,7 @@
 package com.app.deenly.deenly
 
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.hardware.GeomagneticField
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -12,6 +14,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+    private val focusMethodChannelName = "com.app.deenly.deenly/focus"
     private val qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
     private val qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
 
@@ -24,6 +27,13 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
+            focusMethodChannelName,
+        ).setMethodCallHandler { call, result ->
+            handleFocusMethodCall(call, result)
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
             qiblaMethodChannelName,
         ).setMethodCallHandler { call, result ->
             handleQiblaMethodCall(call, result, headingStreamHandler)
@@ -33,6 +43,17 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             qiblaEventChannelName,
         ).setStreamHandler(headingStreamHandler)
+    }
+
+    private fun handleFocusMethodCall(
+        call: MethodCall,
+        result: MethodChannel.Result,
+    ) {
+        when (call.method) {
+            "getInstalledApps" -> result.success(getInstalledApps())
+            "syncFocusState" -> result.success(null)
+            else -> result.notImplemented()
+        }
     }
 
     private fun handleQiblaMethodCall(
@@ -55,6 +76,33 @@ class MainActivity : FlutterActivity() {
             else -> result.notImplemented()
         }
     }
+
+    private fun getInstalledApps(): List<Map<String, Any>> {
+        val packageManager = applicationContext.packageManager
+        val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+
+        return packages
+            .asSequence()
+            .filter { appInfo ->
+                val packageName = appInfo.packageName
+                packageName != applicationContext.packageName &&
+                    packageManager.getLaunchIntentForPackage(packageName) != null
+            }
+            .map { appInfo ->
+                mapOf(
+                    "packageName" to appInfo.packageName,
+                    "appName" to packageManager.getApplicationLabel(appInfo).toString(),
+                    "isSystemApp" to appInfo.isSystemPackage(),
+                )
+            }
+            .sortedBy { (it["appName"] as String).lowercase() }
+            .toList()
+    }
+}
+
+private fun ApplicationInfo.isSystemPackage(): Boolean {
+    val systemFlags = ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
+    return (flags and systemFlags) != 0
 }
 
 private class QiblaHeadingStreamHandler(

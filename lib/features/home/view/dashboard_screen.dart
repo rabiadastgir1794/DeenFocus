@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_languages.dart';
 import '../../../core/services/locale_service.dart';
+import '../../../features/focus/view/focus_tab_screen.dart';
 import '../../../features/home/view/home_tab_screen.dart';
 import '../../../features/quran/view/quran_tab_screen.dart';
 import '../../../features/tasbih/view/tasbih_tab_screen.dart';
@@ -31,7 +32,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final l10n = AppLocalizations.of(context)!;
     final pages = <Widget>[
       const HomeTabScreen(),
-      _SimplePlaceholder(title: l10n.tabFocus),
+      const FocusTabScreen(),
       const TasbihTabScreen(),
       const QuranTabScreen(),
       const _SettingsTab(),
@@ -79,21 +80,6 @@ class _AppTab {
 
   final String id;
   final IconData icon;
-}
-
-class _SimplePlaceholder extends StatelessWidget {
-  const _SimplePlaceholder({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
-      ),
-    );
-  }
 }
 
 class _SettingsTab extends StatelessWidget {

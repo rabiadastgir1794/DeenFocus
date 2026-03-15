@@ -29,7 +29,6 @@ class HomeTabViewModel extends ChangeNotifier {
 
   bool isLoading = true;
   bool isEventsLoading = false;
-  bool prayerModeActive = false;
   bool _locationDialogRequired = false;
   bool _initialized = false;
 
@@ -177,11 +176,6 @@ class HomeTabViewModel extends ChangeNotifier {
       DateTime.now(),
       allIslamicEvents,
     );
-  }
-
-  void togglePrayerMode() {
-    prayerModeActive = !prayerModeActive;
-    notifyListeners();
   }
 
   void setWeeklyCalendar(bool value) {

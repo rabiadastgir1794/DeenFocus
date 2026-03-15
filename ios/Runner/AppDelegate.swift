@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import SwiftUI
 import FamilyControls
 import DeviceActivity
 import ManagedSettings
@@ -7,6 +8,7 @@ import CoreLocation
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
+  private let focusMethodChannelName = "com.app.deenly.deenly/focus"
   private let screenTimeChannelName = "com.app.deenly.deenly/screen_time"
   private let qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
@@ -20,6 +22,10 @@ import CoreLocation
 
     if let registrar = self.registrar(forPlugin: "QiblaCompassPlugin") {
       let messenger = registrar.messenger()
+      let focusMethodChannel = FlutterMethodChannel(
+        name: focusMethodChannelName,
+        binaryMessenger: messenger
+      )
       let screenTimeChannel = FlutterMethodChannel(
         name: screenTimeChannelName,
         binaryMessenger: messenger
@@ -32,6 +38,17 @@ import CoreLocation
         name: qiblaEventChannelName,
         binaryMessenger: messenger
       )
+
+      focusMethodChannel.setMethodCallHandler { call, result in
+        switch call.method {
+        case "presentFamilyActivityPicker":
+          self.presentFamilyActivityPicker(result: result)
+        case "syncFocusState":
+          result(nil)
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      }
 
       screenTimeChannel.setMethodCallHandler { call, result in
         switch call.method {
@@ -81,6 +98,37 @@ import CoreLocation
     }
   }
 
+  private func presentFamilyActivityPicker(result: @escaping FlutterResult) {
+    guard #available(iOS 16.0, *) else {
+      result(
+        FlutterError(
+          code: "IOS_VERSION_UNSUPPORTED",
+          message: "FamilyActivityPicker requires iOS 16 or later.",
+          details: nil
+        )
+      )
+      return
+    }
+
+    DispatchQueue.main.async {
+      guard let controller = self.topViewController() else {
+        result(
+          FlutterError(
+            code: "PICKER_PRESENTATION_FAILED",
+            message: "No active view controller available.",
+            details: nil
+          )
+        )
+        return
+      }
+
+      let presenter = FocusPickerPresenter { payload in
+        result(payload)
+      }
+      presenter.present(from: controller)
+    }
+  }
+
   private func openAppSettings(result: @escaping FlutterResult) {
     guard let url = URL(string: UIApplication.openSettingsURLString) else {
       result(false)
@@ -95,6 +143,97 @@ import CoreLocation
     UIApplication.shared.open(url, options: [:]) { success in
       result(success)
     }
+  }
+
+  private func topViewController(
+    from controller: UIViewController? = UIApplication.shared.connectedScenes
+      .compactMap { $0 as? UIWindowScene }
+      .flatMap { $0.windows }
+      .first(where: { $0.isKeyWindow })?.rootViewController
+  ) -> UIViewController? {
+    if let navigation = controller as? UINavigationController {
+      return topViewController(from: navigation.visibleViewController)
+    }
+
+    if let tab = controller as? UITabBarController {
+      return topViewController(from: tab.selectedViewController)
+    }
+
+    if let presented = controller?.presentedViewController {
+      return topViewController(from: presented)
+    }
+
+    return controller
+  }
+}
+
+@available(iOS 16.0, *)
+final class FocusPickerPresenter {
+  private let onComplete: ([String: Any?]) -> Void
+
+  init(onComplete: @escaping ([String: Any?]) -> Void) {
+    self.onComplete = onComplete
+  }
+
+  func present(from controller: UIViewController) {
+    let pickerController = FocusPickerViewController(onComplete: onComplete)
+    pickerController.modalPresentationStyle = .pageSheet
+    controller.present(pickerController, animated: true)
+  }
+}
+
+@available(iOS 16.0, *)
+private final class FocusPickerViewController: UIHostingController<FocusPickerRootView> {
+  init(onComplete: @escaping ([String: Any?]) -> Void) {
+    let rootView = FocusPickerRootView(onComplete: onComplete)
+    super.init(rootView: rootView)
+  }
+
+  @objc required dynamic init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+}
+
+@available(iOS 16.0, *)
+private struct FocusPickerRootView: View {
+  @Environment(\.dismiss) private var dismiss
+  @State private var selection = FamilyActivitySelection()
+
+  let onComplete: ([String: Any?]) -> Void
+
+  var body: some View {
+    NavigationStack {
+      FamilyActivityPicker(selection: $selection)
+        .navigationTitle("Select Apps")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Cancel") {
+              dismiss()
+              onComplete([
+                "selectionData": nil,
+                "applicationCount": selection.applicationTokens.count
+              ])
+            }
+          }
+
+          ToolbarItem(placement: .confirmationAction) {
+            Button("Done") {
+              let payload = serializeSelection(selection)
+              dismiss()
+              onComplete(payload)
+            }
+          }
+        }
+    }
+  }
+
+  private func serializeSelection(_ selection: FamilyActivitySelection) -> [String: Any?] {
+    let encoded = try? JSONEncoder().encode(selection)
+    return [
+      "selectionData": encoded?.base64EncodedString(),
+      "applicationCount": selection.applicationTokens.count
+    ]
   }
 }
 

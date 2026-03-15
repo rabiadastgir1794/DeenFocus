@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
+import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
 import 'core/theme/app_theme.dart';
+import 'features/focus/viewmodel/focus_controller.dart';
 import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
@@ -16,6 +18,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
+  unawaited(DailyRefreshService.instance.initialize());
   runApp(const DeenlyApp());
 }
 
@@ -24,8 +27,11 @@ class DeenlyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => LocaleService(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocaleService()),
+        ChangeNotifierProvider(create: (_) => FocusController()..initialize()),
+      ],
       child: ScreenUtilInit(
         designSize: const Size(390, 844),
         minTextAdapt: true,

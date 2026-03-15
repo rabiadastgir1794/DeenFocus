@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
+import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/home_models.dart';
 import '../viewmodel/home_tab_view_model.dart';
@@ -57,6 +58,7 @@ class _HomeTabViewState extends State<_HomeTabView>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       context.read<HomeTabViewModel>().onAppResumed();
+      context.read<FocusController>().refresh();
     }
   }
 
@@ -86,8 +88,8 @@ class _HomeTabViewState extends State<_HomeTabView>
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.28)
         : const Color(0xFFF3F1EB);
 
-    return Consumer<HomeTabViewModel>(
-      builder: (context, vm, _) {
+    return Consumer2<HomeTabViewModel, FocusController>(
+      builder: (context, vm, focusVm, _) {
         unawaited(_showBlockingLocationDialogIfNeeded(context, vm));
 
         if (vm.isLoading) {
@@ -143,6 +145,10 @@ class _HomeTabViewState extends State<_HomeTabView>
                   text: _verseText(l10n, vm.dailyVerse),
                   color: colorScheme.primary,
                 ),
+                if (focusVm.isAnyModeEnabled) ...[
+                  const SizedBox(height: 14),
+                  _FocusLockCard(focusVm: focusVm),
+                ],
                 const SizedBox(height: 14),
                 HomePrayerTimesSection(
                   prayerTimes: vm.prayerTimes,
@@ -151,15 +157,11 @@ class _HomeTabViewState extends State<_HomeTabView>
                 const SizedBox(height: 12),
                 HomeActionContainer(
                   backgroundColor: softCardColor,
-                  title: vm.prayerModeActive
-                      ? l10n.homePrayerModeActive
-                      : l10n.homeActivatePrayerMode,
-                  subtitle: vm.prayerModeActive
-                      ? l10n.homeAppsBlockedSubtitle
-                      : l10n.homeBlockDistractingApps,
+                  title: focusVm.homeCardTitle,
+                  subtitle: focusVm.homeCardSubtitle,
                   icon: Icons.shield_outlined,
                   iconBackground: colorScheme.primaryContainer,
-                  onTap: vm.togglePrayerMode,
+                  onTap: () {},
                 ),
                 const SizedBox(height: 12),
                 HomeActionContainer(
@@ -323,6 +325,100 @@ class _HomeTabViewState extends State<_HomeTabView>
           locationName: locationName,
           latitude: latitude,
           longitude: longitude,
+        ),
+      ),
+    );
+  }
+}
+
+class _FocusLockCard extends StatelessWidget {
+  const _FocusLockCard({required this.focusVm});
+
+  final FocusController focusVm;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isLocked = focusVm.isAppsLocked;
+
+    return InkWell(
+      onTap: isLocked ? () => focusVm.temporarilyUnlock() : null,
+      borderRadius: BorderRadius.circular(22),
+      child: Ink(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(
+            color: isLocked
+                ? colorScheme.error.withValues(alpha: 0.3)
+                : colorScheme.primary.withValues(alpha: 0.2),
+          ),
+          color: isLocked
+              ? colorScheme.errorContainer.withValues(alpha: 0.32)
+              : colorScheme.primaryContainer.withValues(alpha: 0.4),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: Theme.of(
+                  context,
+                ).colorScheme.surface.withValues(alpha: 0.72),
+              ),
+              child: Icon(
+                isLocked ? Icons.lock_outline : Icons.lock_open_outlined,
+                color: isLocked ? colorScheme.error : colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Apps Locked',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isLocked
+                        ? 'Tap to unlock apps temporarily'
+                        : focusVm.statusCaption,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(999),
+                color: isLocked
+                    ? colorScheme.error.withValues(alpha: 0.1)
+                    : colorScheme.primary.withValues(alpha: 0.12),
+              ),
+              child: Text(
+                isLocked ? 'Unlock' : 'Armed',
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: isLocked ? colorScheme.error : colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
