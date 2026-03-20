@@ -9,7 +9,9 @@ abstract class AppConfig {
   );
   static const String openAiBaseUrl = 'https://api.openai.com/v1';
   static const String openAiChatModel = 'gpt-4o-mini';
+  static const String appDemoVideoUrl = String.fromEnvironment('APP_DEMO_URL');
 
   static bool get hasGoogleMapsApiKey => googleMapsApiKey.trim().isNotEmpty;
   static bool get hasOpenAiApiKey => openAiApiKey.trim().isNotEmpty;
+  static bool get hasAppDemoVideoUrl => appDemoVideoUrl.trim().isNotEmpty;
 }

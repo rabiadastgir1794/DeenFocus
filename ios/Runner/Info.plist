@@ -49,5 +49,9 @@
 	<string>We use your location to show accurate prayer times and Qibla direction.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We use your location to show accurate prayer times and Qibla direction.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>comgooglemaps</string>
+	</array>
 </dict>
 </plist>

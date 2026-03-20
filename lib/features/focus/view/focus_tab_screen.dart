@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/focus_enforcement_service.dart';
+import '../../../core/services/app_notification_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
 import '../model/focus_models.dart';
@@ -15,8 +16,67 @@ class FocusTabScreen extends StatefulWidget {
   State<FocusTabScreen> createState() => _FocusTabScreenState();
 }
 
-class _FocusTabScreenState extends State<FocusTabScreen> {
+class _FocusTabScreenState extends State<FocusTabScreen>
+    with WidgetsBindingObserver {
   bool _showGlobalSelector = false;
+  FocusModeType? _pendingModeToEnable;
+  bool _awaitingBlockingPermission = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _handleAppResumed();
+    }
+  }
+
+  Future<void> _handleAppResumed() async {
+    if (!mounted) return;
+
+    final vm = context.read<FocusController>();
+    await vm.refresh();
+
+    if (!_awaitingBlockingPermission) return;
+
+    _awaitingBlockingPermission = false;
+    final granted = await FocusEnforcementService.isBlockingPermissionGranted();
+    final pendingMode = _pendingModeToEnable;
+    _pendingModeToEnable = null;
+
+    if (!mounted) return;
+
+    if (granted) {
+      if (pendingMode != null) {
+        await vm.enableMode(pendingMode);
+        if (vm.lockState.isLocked) {
+          await AppNotificationService.instance
+              .showImmediateFocusLockedNotification(pendingMode);
+        }
+      } else {
+        await vm.refresh();
+      }
+      return;
+    }
+
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Android blocking permission is still off, so selected apps cannot be blocked yet.',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -417,12 +477,14 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
     );
   }
 
-  Future<bool> _ensureAndroidBlockingAccess() async {
+  Future<bool> _ensureAndroidBlockingAccess(FocusModeType mode) async {
     if (defaultTargetPlatform != TargetPlatform.android) return true;
 
     final granted = await FocusEnforcementService.isBlockingPermissionGranted();
     if (granted || !mounted) return granted;
 
+    _pendingModeToEnable = mode;
+    _awaitingBlockingPermission = true;
     await AppPermissionDialog.show(
       context,
       title: 'Enable Android app blocking',
@@ -451,10 +513,14 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
     }
 
     if (enabled) {
-      final canBlock = await _ensureAndroidBlockingAccess();
+      final canBlock = await _ensureAndroidBlockingAccess(mode);
       if (!canBlock) return;
 
       await vm.enableMode(mode);
+      if (vm.lockState.isLocked) {
+        await AppNotificationService.instance
+            .showImmediateFocusLockedNotification(mode);
+      }
       return;
     }
     await vm.disableMode(mode);

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/device_apps_service.dart';
+import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
@@ -222,7 +223,7 @@ class FocusController extends ChangeNotifier {
       case FocusModeType.nightDiscipline:
         return 'Lock selected apps every day from ${_formatTime(_settings.nightRange.startHour, _settings.nightRange.startMinute)} to ${_formatTime(_settings.nightRange.endHour, _settings.nightRange.endMinute)}.';
       case FocusModeType.salah:
-        return 'Lock selected apps 5 minutes before each prayer until 5 minutes after.';
+        return 'Lock selected apps 10 minutes before each prayer until 15 minutes after.';
     }
   }
 
@@ -288,6 +289,11 @@ class FocusController extends ChangeNotifier {
     await FocusEnforcementService.sync(
       settings: _settings,
       lockState: _lockState,
+    );
+    await AppNotificationService.instance.syncFocusNotifications(
+      settings: _settings,
+      latitude: _cachedLatitude,
+      longitude: _cachedLongitude,
     );
     _scheduleNextRefresh();
     notifyListeners();
@@ -433,8 +439,8 @@ class FocusController extends ChangeNotifier {
         .map(
           (slot) => SalahWindow(
             prayer: slot,
-            start: slot.time.subtract(const Duration(minutes: 5)),
-            end: slot.time.add(const Duration(minutes: 5)),
+            start: slot.time.subtract(const Duration(minutes: 10)),
+            end: slot.time.add(const Duration(minutes: 15)),
           ),
         )
         .toList(growable: false);

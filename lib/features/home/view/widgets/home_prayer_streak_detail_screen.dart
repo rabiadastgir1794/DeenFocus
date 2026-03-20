@@ -12,16 +12,24 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
     return Consumer<HomeTabViewModel>(
       builder: (context, vm, _) {
         final colorScheme = Theme.of(context).colorScheme;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final days = vm.currentWeekDates;
 
         return Scaffold(
           appBar: AppBar(title: const Text('Prayer Streak')),
           body: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFFBF7EF), Color(0xFFF2EADB)],
+                colors: isDark
+                    ? <Color>[
+                        colorScheme.surface,
+                        colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.96,
+                        ),
+                      ]
+                    : const <Color>[Color(0xFFFBF7EF), Color(0xFFF2EADB)],
               ),
             ),
             child: SafeArea(
@@ -39,7 +47,9 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.78),
+                      color: isDark
+                          ? colorScheme.surfaceContainer.withValues(alpha: 0.9)
+                          : Colors.white.withValues(alpha: 0.82),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
                         color: colorScheme.outlineVariant.withValues(
@@ -48,7 +58,9 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
+                          color: Colors.black.withValues(
+                            alpha: isDark ? 0.22 : 0.05,
+                          ),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),

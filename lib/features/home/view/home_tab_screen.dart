@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/user_profile_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
@@ -14,6 +15,7 @@ import 'widgets/home_action_container.dart';
 import 'widgets/home_calendar_section.dart';
 import 'widgets/home_circle_icon_button.dart';
 import 'widgets/home_info_screens.dart';
+import 'widgets/home_nearby_mosques_screen.dart';
 import 'widgets/home_prayer_streak_detail_screen.dart';
 import 'widgets/home_prayer_streak_section.dart';
 import 'widgets/home_prayer_times_section.dart';
@@ -93,8 +95,8 @@ class _HomeTabViewState extends State<_HomeTabView>
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.28)
         : const Color(0xFFF3F1EB);
 
-    return Consumer2<HomeTabViewModel, FocusController>(
-      builder: (context, vm, focusVm, _) {
+    return Consumer3<HomeTabViewModel, FocusController, UserProfileService>(
+      builder: (context, vm, focusVm, profile, _) {
         unawaited(_showBlockingLocationDialogIfNeeded(context, vm));
 
         if (vm.isLoading) {
@@ -122,7 +124,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           Text(
-                            vm.userName,
+                            profile.userName,
                             style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
@@ -191,10 +193,14 @@ class _HomeTabViewState extends State<_HomeTabView>
                   subtitle: l10n.homeSearchNearbyMosques,
                   icon: Icons.location_on_outlined,
                   iconBackground: colorScheme.tertiaryContainer,
-                  onTap: () => _openInfoScreen(
-                    context,
-                    l10n.homeFindMasjid,
-                    l10n.homeSearchNearbyMosques,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => HomeNearbyMosquesScreen(
+                        initialLatitude: vm.latitude,
+                        initialLongitude: vm.longitude,
+                        initialLocationName: vm.locationName,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -224,12 +230,15 @@ class _HomeTabViewState extends State<_HomeTabView>
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
+                      color: colorScheme.primary.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.20),
+                      ),
                     ),
                     padding: const EdgeInsets.all(14),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           l10n.homeJummahMubarak,
@@ -240,7 +249,10 @@ class _HomeTabViewState extends State<_HomeTabView>
                               ),
                         ),
                         const SizedBox(height: 4),
-                        Text(l10n.homeJummahReminder),
+                        Text(
+                          l10n.homeJummahReminder,
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),
@@ -308,14 +320,6 @@ class _HomeTabViewState extends State<_HomeTabView>
           ),
         );
       },
-    );
-  }
-
-  void _openInfoScreen(BuildContext context, String title, String subtitle) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => HomeSimpleInfoScreen(title: title, subtitle: subtitle),
-      ),
     );
   }
 

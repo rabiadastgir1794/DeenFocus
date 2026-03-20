@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../features/home/helpers/home_daily_verse_helper.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
+import 'app_notification_service.dart';
 import 'storage_service.dart';
 
 class DailyRefreshService {
@@ -29,6 +30,10 @@ class DailyRefreshService {
     if (latitude == null || longitude == null) return;
 
     await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+      latitude: latitude,
+      longitude: longitude,
+    );
+    await AppNotificationService.instance.reschedulePrayerNotifications(
       latitude: latitude,
       longitude: longitude,
     );

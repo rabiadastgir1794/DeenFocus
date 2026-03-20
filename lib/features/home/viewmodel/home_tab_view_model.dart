@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/daily_refresh_service.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
 import '../helpers/home_prayer_times_helper.dart';
@@ -163,6 +164,7 @@ class HomeTabViewModel extends ChangeNotifier {
       latitude: location.latitude,
       longitude: location.longitude,
     );
+    await DailyRefreshService.instance.refreshNow();
   }
 
   Future<void> _ensureNotificationPrompted() async {

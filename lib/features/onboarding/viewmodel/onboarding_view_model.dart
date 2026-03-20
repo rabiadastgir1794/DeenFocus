@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/daily_refresh_service.dart';
 import '../model/location_suggestion.dart';
 import '../model/sect_option.dart';
 import '../model/subscription_plan.dart';
@@ -98,6 +99,10 @@ class OnboardingViewModel extends ChangeNotifier {
         latitude: _selectedLocation!.latitude,
         longitude: _selectedLocation!.longitude,
       );
+      if (_selectedLocation!.latitude != null &&
+          _selectedLocation!.longitude != null) {
+        await DailyRefreshService.instance.refreshNow();
+      }
     }
     _didComplete = true;
     notifyListeners();

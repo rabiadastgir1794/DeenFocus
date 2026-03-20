@@ -31,6 +31,7 @@ abstract class StorageService {
       'home_islamic_events_last_year';
   static const String _keyHomePrayerStreakJson = 'home_prayer_streak_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
+  static const String _keyDarkModeEnabled = 'dark_mode_enabled';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -290,5 +291,15 @@ abstract class StorageService {
   static Future<void> setFocusSettingsJson(String value) async {
     final prefs = await _prefs;
     await prefs.setString(_keyFocusSettingsJson, value);
+  }
+
+  static Future<bool?> get darkModeEnabled async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyDarkModeEnabled);
+  }
+
+  static Future<void> setDarkModeEnabled(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyDarkModeEnabled, value);
   }
 }

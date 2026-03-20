@@ -13,6 +13,8 @@ import CoreLocation
   private let qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
+  @available(iOS 16.0, *)
+  private let managedSettingsStore = ManagedSettingsStore()
 
   override func application(
     _ application: UIApplication,
@@ -44,7 +46,7 @@ import CoreLocation
         case "presentFamilyActivityPicker":
           self.presentFamilyActivityPicker(result: result)
         case "syncFocusState":
-          result(nil)
+          self.syncFocusState(call: call, result: result)
         default:
           result(FlutterMethodNotImplemented)
         }
@@ -143,6 +145,42 @@ import CoreLocation
     UIApplication.shared.open(url, options: [:]) { success in
       result(success)
     }
+  }
+
+  private func syncFocusState(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard #available(iOS 16.0, *) else {
+      result(nil)
+      return
+    }
+
+    guard let args = call.arguments as? [String: Any] else {
+      result(nil)
+      return
+    }
+
+    let isLocked = args["isLocked"] as? Bool ?? false
+    let encodedSelection = args["iosSelectionData"] as? String
+
+    if !isLocked {
+      managedSettingsStore.clearAllSettings()
+      result(nil)
+      return
+    }
+
+    guard
+      let encodedSelection,
+      let data = Data(base64Encoded: encodedSelection),
+      let selection = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+    else {
+      managedSettingsStore.clearAllSettings()
+      result(nil)
+      return
+    }
+
+    managedSettingsStore.shield.applications = selection.applicationTokens
+    managedSettingsStore.shield.applicationCategories = nil
+    managedSettingsStore.shield.webDomains = nil
+    result(nil)
   }
 
   private func topViewController(
