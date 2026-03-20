@@ -88,13 +88,6 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
               child: Column(
                 children: [
                   Text(
-                    l10n.homeQiblaDirection,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
                     cityLabel,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -172,7 +165,6 @@ class _QiblaCompass extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     const compassSize = 288.0;
-    const radius = compassSize / 2;
 
     return SizedBox(
       width: compassSize,
@@ -202,41 +194,15 @@ class _QiblaCompass extends StatelessWidget {
             turns: -(heading % 360) / 360,
             duration: const Duration(milliseconds: 140),
             curve: Curves.easeOut,
-            child: Container(
-              width: compassSize,
-              height: compassSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: colorScheme.outlineVariant, width: 2),
+            child: CustomPaint(
+              size: const Size(compassSize, compassSize),
+              painter: _CompassRingPainter(
+                ringColor: colorScheme.outlineVariant,
+                tickColor: colorScheme.onSurfaceVariant,
               ),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  for (var index = 0; index < 72; index++)
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Transform.rotate(
-                        angle: index * 5 * math.pi / 180,
-                        child: Container(
-                          width: 1,
-                          height: radius,
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            width: 1,
-                            height: index % 18 == 0
-                                ? 12
-                                : index % 6 == 0
-                                ? 8
-                                : 4,
-                            color: index % 18 == 0
-                                ? colorScheme.onSurface.withValues(alpha: 0.40)
-                                : index % 6 == 0
-                                ? colorScheme.onSurface.withValues(alpha: 0.20)
-                                : colorScheme.onSurface.withValues(alpha: 0.10),
-                          ),
-                        ),
-                      ),
-                    ),
                   ..._cardinalDirections(context),
                   Align(
                     alignment: Alignment.center,
@@ -261,33 +227,14 @@ class _QiblaCompass extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            width: 84,
-            height: 84,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colorScheme.primaryContainer.withValues(alpha: 0.72),
-              border: Border.all(
-                color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: colorScheme.shadow.withValues(alpha: 0.12),
-                  blurRadius: 18,
-                ),
-              ],
-            ),
-            child: Center(
-              child: Transform.rotate(
-                angle: (qiblaDirection - heading) * math.pi / 180,
-                child: Icon(
-                  Icons.navigation_rounded,
-                  size: 34,
-                  color: aligned
-                      ? colorScheme.primary
-                      : colorScheme.onSurfaceVariant,
-                ),
-              ),
+          Transform.rotate(
+            angle: (qiblaDirection - heading) * math.pi / 180,
+            child: Icon(
+              Icons.navigation_rounded,
+              size: 42,
+              color: aligned
+                  ? colorScheme.primary
+                  : colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -325,4 +272,50 @@ class _CardinalLabel {
 
   final String label;
   final Alignment alignment;
+}
+
+class _CompassRingPainter extends CustomPainter {
+  const _CompassRingPainter({required this.ringColor, required this.tickColor});
+
+  final Color ringColor;
+  final Color tickColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    final ringPaint = Paint()
+      ..color = ringColor.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawCircle(center, radius - 1, ringPaint);
+
+    for (var index = 0; index < 72; index++) {
+      final angle = (index * 5 - 90) * math.pi / 180;
+      final outer = Offset(
+        center.dx + (radius - 16) * math.cos(angle),
+        center.dy + (radius - 16) * math.sin(angle),
+      );
+      final tickRadius = index % 18 == 0
+          ? 2.6
+          : index % 6 == 0
+          ? 1.8
+          : 1.1;
+      final tickPaint = Paint()
+        ..color = index % 18 == 0
+            ? tickColor.withValues(alpha: 0.55)
+            : index % 6 == 0
+            ? tickColor.withValues(alpha: 0.3)
+            : tickColor.withValues(alpha: 0.18)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(outer, tickRadius, tickPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _CompassRingPainter oldDelegate) {
+    return oldDelegate.ringColor != ringColor ||
+        oldDelegate.tickColor != tickColor;
+  }
 }

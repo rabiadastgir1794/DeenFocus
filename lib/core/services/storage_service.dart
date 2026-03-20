@@ -22,12 +22,14 @@ abstract class StorageService {
   static const String _keyHomePrayerCacheDate = 'home_prayer_cache_date';
   static const String _keyHomePrayerCacheLat = 'home_prayer_cache_lat';
   static const String _keyHomePrayerCacheLng = 'home_prayer_cache_lng';
+  static const String _keyHomePrayerCacheSect = 'home_prayer_cache_sect';
   static const String _keyHomePrayerCacheJson = 'home_prayer_cache_json';
   static const String _keyHomeNotificationPrompted =
       'home_notification_prompted';
   static const String _keyHomeIslamicEventsJson = 'home_islamic_events_json';
   static const String _keyHomeIslamicEventsLastYear =
       'home_islamic_events_last_year';
+  static const String _keyHomePrayerStreakJson = 'home_prayer_streak_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
 
   static Future<SharedPreferences> get _prefs async =>
@@ -215,6 +217,11 @@ abstract class StorageService {
     return prefs.getDouble(_keyHomePrayerCacheLng);
   }
 
+  static Future<String?> get homePrayerCacheSect async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyHomePrayerCacheSect);
+  }
+
   static Future<String?> get homePrayerCacheJson async {
     final prefs = await _prefs;
     return prefs.getString(_keyHomePrayerCacheJson);
@@ -224,12 +231,14 @@ abstract class StorageService {
     required String dateKey,
     required double latitude,
     required double longitude,
+    required String sect,
     required String serializedTimes,
   }) async {
     final prefs = await _prefs;
     await prefs.setString(_keyHomePrayerCacheDate, dateKey);
     await prefs.setDouble(_keyHomePrayerCacheLat, latitude);
     await prefs.setDouble(_keyHomePrayerCacheLng, longitude);
+    await prefs.setString(_keyHomePrayerCacheSect, sect);
     await prefs.setString(_keyHomePrayerCacheJson, serializedTimes);
   }
 
@@ -261,6 +270,16 @@ abstract class StorageService {
   static Future<void> setHomeIslamicEventsLastYear(int value) async {
     final prefs = await _prefs;
     await prefs.setInt(_keyHomeIslamicEventsLastYear, value);
+  }
+
+  static Future<String?> get homePrayerStreakJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyHomePrayerStreakJson);
+  }
+
+  static Future<void> setHomePrayerStreakJson(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyHomePrayerStreakJson, value);
   }
 
   static Future<String?> get focusSettingsJson async {

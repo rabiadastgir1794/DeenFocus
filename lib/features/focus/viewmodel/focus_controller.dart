@@ -29,9 +29,9 @@ class FocusController extends ChangeNotifier {
   bool get hasInstalledApps => _installedApps.isNotEmpty;
   bool get isAnyModeEnabled => _settings.enabledMode != null;
   bool get hasSelectedApps => _settings.hasSelectedApps;
-  int get selectedAppCount => Platform.isIOS
-      ? _settings.iosSelectionCount
-      : _settings.selectedApps.length;
+  int get selectedAppCount => _settings.selectedApps.isNotEmpty
+      ? _settings.selectedApps.length
+      : _settings.iosSelectionCount;
   bool get isAppsLocked => _lockState.isLocked;
   bool get isTemporarilyUnlocked => _lockState.isTemporarilyUnlocked;
   bool get needsLocationForSalah =>
@@ -50,6 +50,8 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> requestInstalledApps() async {
+    if (_isLoadingApps) return;
+
     if (Platform.isIOS) {
       final result = await DeviceAppsService.presentIosFamilyPicker();
       if (result == null) return;
@@ -66,6 +68,7 @@ class FocusController extends ChangeNotifier {
     _isLoadingApps = true;
     notifyListeners();
 
+    await Future<void>.delayed(const Duration(milliseconds: 16));
     _installedApps = await DeviceAppsService.getInstalledApps();
 
     _isLoadingApps = false;
@@ -76,8 +79,18 @@ class FocusController extends ChangeNotifier {
     final selected = <String, String>{
       for (final app in apps) app.packageName: app.appName,
     };
+    final selectedIcons = <String, String>{
+      for (final app in apps)
+        if (app.iconBase64 != null) app.packageName: app.iconBase64!,
+    };
     _settings = _settings.copyWith(
       selectedApps: selected,
+      selectedAppIcons: selectedIcons,
+      childModeEnabled: selected.isEmpty ? false : null,
+      nightDisciplineEnabled: selected.isEmpty ? false : null,
+      salahModeEnabled: selected.isEmpty ? false : null,
+      clearChildLockedUntil: selected.isEmpty,
+      clearTemporaryUnlock: selected.isEmpty,
       iosSelectionCount: 0,
       clearIosSelectionData: true,
     );
@@ -173,6 +186,12 @@ class FocusController extends ChangeNotifier {
     await _recomputeAndPersist();
   }
 
+  Future<void> disableActiveMode() async {
+    final mode = _settings.enabledMode;
+    if (mode == null) return;
+    await disableMode(mode);
+  }
+
   String selectedAppsSummary() {
     if (Platform.isIOS && _settings.iosSelectionCount > 0) {
       return '${_settings.iosSelectionCount} iOS app${_settings.iosSelectionCount == 1 ? '' : 's'} selected';
@@ -242,7 +261,17 @@ class FocusController extends ChangeNotifier {
         ? FocusSettings.defaults()
         : FocusSettings.fromJson(json);
     await _reloadLocation();
+    if (Platform.isAndroid && _settings.selectedApps.isNotEmpty) {
+      unawaited(_warmInstalledAppsCache());
+    }
     await _recomputeAndPersist();
+  }
+
+  Future<void> _warmInstalledAppsCache() async {
+    final apps = await DeviceAppsService.getInstalledApps();
+    if (apps.isEmpty) return;
+    _installedApps = apps;
+    notifyListeners();
   }
 
   Future<void> _reloadLocation() async {

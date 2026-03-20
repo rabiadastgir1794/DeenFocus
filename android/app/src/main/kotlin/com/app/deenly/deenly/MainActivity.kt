@@ -50,8 +50,46 @@ class MainActivity : FlutterActivity() {
         result: MethodChannel.Result,
     ) {
         when (call.method) {
-            "getInstalledApps" -> result.success(getInstalledApps())
-            "syncFocusState" -> result.success(null)
+            "getInstalledApps" -> {
+                Thread {
+                    runCatching { getInstalledApps() }
+                        .onSuccess { apps ->
+                            runOnUiThread { result.success(apps) }
+                        }
+                        .onFailure { error ->
+                            runOnUiThread {
+                                result.error(
+                                    "GET_APPS_FAILED",
+                                    error.message ?: "Unable to load installed apps.",
+                                    null,
+                                )
+                            }
+                        }
+                }.start()
+            }
+            "syncFocusState" -> {
+                val selectedPackages =
+                    call.argument<List<String>>("selectedPackages").orEmpty()
+                val activeMode = call.argument<String>("activeMode")
+                val isLocked = call.argument<Boolean>("isLocked") ?: false
+                val lockReason = call.argument<String>("lockReason")
+                val nextChangeAt = call.argument<String>("nextChangeAt")
+                FocusBlockerStore.save(
+                    context = applicationContext,
+                    selectedPackages = selectedPackages,
+                    activeMode = activeMode,
+                    isLocked = isLocked,
+                    lockReason = lockReason,
+                    nextChangeAt = nextChangeAt,
+                )
+                result.success(null)
+            }
+            "isBlockingPermissionGranted" ->
+                result.success(isFocusAccessibilityServiceEnabled(applicationContext))
+            "openBlockingPermissionSettings" -> {
+                openFocusAccessibilitySettings(applicationContext)
+                result.success(null)
+            }
             else -> result.notImplemented()
         }
     }
@@ -93,6 +131,9 @@ class MainActivity : FlutterActivity() {
                     "packageName" to appInfo.packageName,
                     "appName" to packageManager.getApplicationLabel(appInfo).toString(),
                     "isSystemApp" to appInfo.isSystemPackage(),
+                    "iconBytes" to drawableToPngBytes(
+                        packageManager.getApplicationIcon(appInfo.packageName),
+                    ),
                 )
             }
             .sortedBy { (it["appName"] as String).lowercase() }

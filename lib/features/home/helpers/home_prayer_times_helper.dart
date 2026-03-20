@@ -4,6 +4,7 @@ import 'package:adhan/adhan.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/storage_service.dart';
+import '../../onboarding/model/sect_option.dart';
 import '../model/home_models.dart';
 
 abstract class HomePrayerTimesHelper {
@@ -20,12 +21,16 @@ abstract class HomePrayerTimesHelper {
     final cachedDate = await StorageService.homePrayerCacheDate;
     final cachedLat = await StorageService.homePrayerCacheLatitude;
     final cachedLng = await StorageService.homePrayerCacheLongitude;
+    final cachedSect = await StorageService.homePrayerCacheSect;
     final cachedJson = await StorageService.homePrayerCacheJson;
+    final storedSect = await StorageService.sect;
+    final sect = _resolveSect(storedSect);
 
     final hasMatchingCache =
         cachedDate == dayKey &&
         cachedLat != null &&
         cachedLng != null &&
+        cachedSect == sect.name &&
         cachedJson != null &&
         (cachedLat - latitude).abs() < 0.0001 &&
         (cachedLng - longitude).abs() < 0.0001;
@@ -38,8 +43,7 @@ abstract class HomePrayerTimesHelper {
     }
 
     final coordinates = Coordinates(latitude, longitude);
-    final params = CalculationMethod.karachi.getParameters()
-      ..madhab = Madhab.shafi;
+    final params = _parametersForSect(sect);
     final prayerTimes = PrayerTimes(
       coordinates,
       DateComponents.from(currentTime),
@@ -60,9 +64,30 @@ abstract class HomePrayerTimesHelper {
       dateKey: dayKey,
       latitude: latitude,
       longitude: longitude,
+      sect: sect.name,
       serializedTimes: _serialize(slots),
     );
     return data;
+  }
+
+  static SectOption _resolveSect(String? raw) {
+    switch (raw) {
+      case 'shia':
+        return SectOption.shia;
+      case 'sunni':
+        return SectOption.sunni;
+      case 'preferNotToSay':
+      default:
+        return SectOption.sunni;
+    }
+  }
+
+  static CalculationParameters _parametersForSect(SectOption sect) {
+    if (sect == SectOption.shia) {
+      return CalculationMethod.tehran.getParameters();
+    }
+
+    return CalculationMethod.karachi.getParameters()..madhab = Madhab.shafi;
   }
 
   static String _serialize(List<HomePrayerSlot> slots) {

@@ -14,25 +14,30 @@ import 'widgets/home_action_container.dart';
 import 'widgets/home_calendar_section.dart';
 import 'widgets/home_circle_icon_button.dart';
 import 'widgets/home_info_screens.dart';
+import 'widgets/home_prayer_streak_detail_screen.dart';
 import 'widgets/home_prayer_streak_section.dart';
 import 'widgets/home_prayer_times_section.dart';
 import 'widgets/home_qibla_screen.dart';
 import 'widgets/home_verse_marquee.dart';
 
 class HomeTabScreen extends StatelessWidget {
-  const HomeTabScreen({super.key});
+  const HomeTabScreen({super.key, required this.onOpenFocusTab});
+
+  final VoidCallback onOpenFocusTab;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeTabViewModel>(
       create: (_) => HomeTabViewModel()..initialize(),
-      child: const _HomeTabView(),
+      child: _HomeTabView(onOpenFocusTab: onOpenFocusTab),
     );
   }
 }
 
 class _HomeTabView extends StatefulWidget {
-  const _HomeTabView();
+  const _HomeTabView({required this.onOpenFocusTab});
+
+  final VoidCallback onOpenFocusTab;
 
   @override
   State<_HomeTabView> createState() => _HomeTabViewState();
@@ -145,7 +150,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   text: _verseText(l10n, vm.dailyVerse),
                   color: colorScheme.primary,
                 ),
-                if (focusVm.isAnyModeEnabled) ...[
+                if (focusVm.isAppsLocked) ...[
                   const SizedBox(height: 14),
                   _FocusLockCard(focusVm: focusVm),
                 ],
@@ -161,7 +166,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   subtitle: focusVm.homeCardSubtitle,
                   icon: Icons.shield_outlined,
                   iconBackground: colorScheme.primaryContainer,
-                  onTap: () {},
+                  onTap: widget.onOpenFocusTab,
                 ),
                 const SizedBox(height: 12),
                 HomeActionContainer(
@@ -197,6 +202,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   streakDays: vm.streakDays,
                   weekFlags: vm.weekStreakFlags,
                   backgroundColor: softCardColor,
+                  onTap: () => _openPrayerStreakDetail(context, vm),
                 ),
                 const SizedBox(height: 12),
                 HomeCalendarSection(
@@ -329,6 +335,17 @@ class _HomeTabViewState extends State<_HomeTabView>
       ),
     );
   }
+
+  void _openPrayerStreakDetail(BuildContext context, HomeTabViewModel vm) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
+          value: vm,
+          child: const HomePrayerStreakDetailScreen(),
+        ),
+      ),
+    );
+  }
 }
 
 class _FocusLockCard extends StatelessWidget {
@@ -342,7 +359,7 @@ class _FocusLockCard extends StatelessWidget {
     final isLocked = focusVm.isAppsLocked;
 
     return InkWell(
-      onTap: isLocked ? () => focusVm.temporarilyUnlock() : null,
+      onTap: isLocked ? () => focusVm.disableActiveMode() : null,
       borderRadius: BorderRadius.circular(22),
       child: Ink(
         width: double.infinity,
@@ -387,7 +404,7 @@ class _FocusLockCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Apps Locked',
+                    'Focus Mode Active',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -395,7 +412,7 @@ class _FocusLockCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isLocked
-                        ? 'Tap to unlock apps temporarily'
+                        ? 'Tap to turn off the current focus mode.'
                         : focusVm.statusCaption,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -411,7 +428,7 @@ class _FocusLockCard extends StatelessWidget {
                     : colorScheme.primary.withValues(alpha: 0.12),
               ),
               child: Text(
-                isLocked ? 'Unlock' : 'Armed',
+                isLocked ? 'Turn Off' : 'Armed',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: isLocked ? colorScheme.error : colorScheme.primary,
                   fontWeight: FontWeight.w700,

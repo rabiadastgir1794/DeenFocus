@@ -31,7 +31,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final pages = <Widget>[
-      const HomeTabScreen(),
+      HomeTabScreen(
+        onOpenFocusTab: () {
+          setState(() => _currentIndex = 1);
+        },
+      ),
       const FocusTabScreen(),
       const TasbihTabScreen(),
       const QuranTabScreen(),

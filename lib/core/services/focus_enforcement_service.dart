@@ -22,10 +22,32 @@ abstract class FocusEnforcementService {
         'iosSelectionCount': settings.iosSelectionCount,
         'activeMode': lockState.activeMode?.name,
         'isLocked': lockState.isLocked,
+        'lockReason': lockState.reason,
         'nextChangeAt': lockState.nextChangeAt?.toIso8601String(),
       });
     } on PlatformException {
       // Native enforcement is optional in this pass. UI/state remains functional.
+    }
+  }
+
+  static Future<bool> isBlockingPermissionGranted() async {
+    if (!Platform.isAndroid) return true;
+
+    try {
+      return await _channel.invokeMethod<bool>('isBlockingPermissionGranted') ??
+          false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  static Future<void> openBlockingPermissionSettings() async {
+    if (!Platform.isAndroid) return;
+
+    try {
+      await _channel.invokeMethod<void>('openBlockingPermissionSettings');
+    } on PlatformException {
+      // Best effort only.
     }
   }
 }

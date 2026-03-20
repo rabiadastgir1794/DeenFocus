@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +37,18 @@ class HomeTabViewModel extends ChangeNotifier {
   DateTime? selectedDate;
   bool weeklyCalendar = true;
   int streakDays = 0;
+  HomePrayerStreakState _prayerStreakState = const HomePrayerStreakState(
+    weekStartDateKey: '',
+    weekDays: <HomePrayerChecklistDay>[],
+    completedDateKeys: <String>{},
+  );
 
   Timer? _ticker;
+  static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
   bool get isFriday => DateTime.now().weekday == DateTime.friday;
+  HomePrayerStreakState get prayerStreakState => _prayerStreakState;
+  List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
 
   bool consumeLocationDialogFlag() {
     if (!_locationDialogRequired) return false;
@@ -71,6 +80,7 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> onAppResumed() async {
     await _ensureLocationAccessIfNeeded();
     await _loadPrayerTimes();
+    await _loadPrayerStreak();
     notifyListeners();
   }
 
@@ -88,10 +98,32 @@ class HomeTabViewModel extends ChangeNotifier {
     await _ensureNotificationPrompted();
     await _loadVerse();
     await _loadPrayerTimes();
+    await _loadPrayerStreak();
     _loadEvents();
 
     isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> _loadPrayerStreak() async {
+    final now = DateTime.now();
+    final weekStart = _startOfWeek(now);
+    final weekStartKey = _dayKeyFormat.format(weekStart);
+    final raw = await StorageService.homePrayerStreakJson;
+    var state = raw == null
+        ? HomePrayerStreakState.empty(weekStartDateKey: weekStartKey)
+        : HomePrayerStreakState.fromJson(raw);
+
+    if (state.weekStartDateKey != weekStartKey) {
+      state = state.copyWith(
+        weekStartDateKey: weekStartKey,
+        weekDays: const <HomePrayerChecklistDay>[],
+      );
+    }
+
+    _prayerStreakState = _ensureWeekDays(state, weekStart);
+    _recomputeStreakDays(now);
+    await _persistPrayerStreak();
   }
 
   Future<void> _ensureLocationAccessIfNeeded() async {
@@ -214,18 +246,143 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   List<bool> get weekStreakFlags {
-    final todayIndex = DateTime.now().weekday - 1; // Monday = 0
-    final completedSlots = streakDays.clamp(0, 7);
-    return List<bool>.generate(7, (index) {
-      if (index > todayIndex) return false;
-      return index < completedSlots;
-    });
+    final dates = currentWeekDates;
+    return dates
+        .map((date) {
+          final dateKey = _dayKeyFormat.format(date);
+          return _prayerStreakState.weekDays
+                  .where((item) => item.dateKey == dateKey)
+                  .firstOrNull
+                  ?.isCompleted ??
+              false;
+        })
+        .toList(growable: false);
+  }
+
+  List<HomePrayerChecklistDay> get currentWeekChecklistDays =>
+      currentWeekDates.map((date) => dayFor(date)).toList(growable: false);
+
+  bool isPrayerDayEditable(DateTime date) {
+    final today = DateTime.now();
+    final normalizedToday = DateTime(today.year, today.month, today.day);
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    return normalizedDate == normalizedToday;
+  }
+
+  HomePrayerChecklistDay dayFor(DateTime date) {
+    final dateKey = _dayKeyFormat.format(date);
+    return _prayerStreakState.weekDays
+            .where((item) => item.dateKey == dateKey)
+            .firstOrNull ??
+        HomePrayerChecklistDay(
+          dateKey: dateKey,
+          selectedPrayers: <TrackablePrayer>{},
+        );
+  }
+
+  Future<void> togglePrayerForDay(DateTime date, TrackablePrayer prayer) async {
+    if (!isPrayerDayEditable(date)) return;
+
+    final dateKey = _dayKeyFormat.format(date);
+    final current = dayFor(date);
+    final updatedPrayers = Set<TrackablePrayer>.from(current.selectedPrayers);
+    final wasCompleted = current.isCompleted;
+
+    if (updatedPrayers.contains(prayer)) {
+      updatedPrayers.remove(prayer);
+    } else {
+      updatedPrayers.add(prayer);
+    }
+
+    final updatedDay = current.copyWith(selectedPrayers: updatedPrayers);
+    final updatedWeekDays =
+        _prayerStreakState.weekDays
+            .where((item) => item.dateKey != dateKey)
+            .toList(growable: true)
+          ..add(updatedDay);
+    updatedWeekDays.sort((a, b) => a.dateKey.compareTo(b.dateKey));
+
+    final completedDates = Set<String>.from(
+      _prayerStreakState.completedDateKeys,
+    );
+    if (!wasCompleted && updatedDay.isCompleted) {
+      completedDates.add(dateKey);
+    } else if (wasCompleted && !updatedDay.isCompleted) {
+      completedDates.remove(dateKey);
+    }
+
+    _prayerStreakState = _prayerStreakState.copyWith(
+      weekDays: updatedWeekDays,
+      completedDateKeys: completedDates,
+    );
+    _recomputeStreakDays(DateTime.now());
+    await _persistPrayerStreak();
+    notifyListeners();
+  }
+
+  String weekdayLabel(DateTime date) {
+    return DateFormat('EEEE').format(date);
+  }
+
+  void _recomputeStreakDays(DateTime now) {
+    var count = 0;
+    var cursor = DateTime(now.year, now.month, now.day);
+    while (_prayerStreakState.completedDateKeys.contains(
+      _dayKeyFormat.format(cursor),
+    )) {
+      count += 1;
+      cursor = cursor.subtract(const Duration(days: 1));
+    }
+    streakDays = count;
+  }
+
+  HomePrayerStreakState _ensureWeekDays(
+    HomePrayerStreakState state,
+    DateTime weekStart,
+  ) {
+    final expectedDates = _currentWeekDates(
+      weekStart,
+    ).map(_dayKeyFormat.format).toSet();
+    final existingByKey = {
+      for (final item in state.weekDays)
+        if (expectedDates.contains(item.dateKey)) item.dateKey: item,
+    };
+    final normalizedWeekDays = _currentWeekDates(weekStart)
+        .map((date) {
+          final key = _dayKeyFormat.format(date);
+          return existingByKey[key] ??
+              HomePrayerChecklistDay(
+                dateKey: key,
+                selectedPrayers: <TrackablePrayer>{},
+              );
+        })
+        .toList(growable: false);
+
+    return state.copyWith(weekDays: normalizedWeekDays);
+  }
+
+  List<DateTime> _currentWeekDates(DateTime anchor) {
+    final start = _startOfWeek(anchor);
+    return List<DateTime>.generate(
+      7,
+      (index) => DateTime(start.year, start.month, start.day + index),
+    );
+  }
+
+  DateTime _startOfWeek(DateTime date) {
+    final normalized = DateTime(date.year, date.month, date.day);
+    return normalized.subtract(Duration(days: normalized.weekday - 1));
+  }
+
+  Future<void> _persistPrayerStreak() async {
+    await StorageService.setHomePrayerStreakJson(_prayerStreakState.toJson());
   }
 
   void _startTicker() {
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(minutes: 1), (_) async {
       await _loadPrayerTimes();
+      await _loadPrayerStreak();
       notifyListeners();
     });
   }

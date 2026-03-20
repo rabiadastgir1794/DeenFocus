@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import '../../home/model/home_models.dart';
 
@@ -11,6 +12,7 @@ class FocusInstalledApp {
     required this.packageName,
     required this.appName,
     required this.isSystemApp,
+    this.iconBytes,
   });
 
   factory FocusInstalledApp.fromMap(Map<Object?, Object?> map) {
@@ -18,12 +20,17 @@ class FocusInstalledApp {
       packageName: map['packageName'] as String? ?? '',
       appName: map['appName'] as String? ?? 'Unknown',
       isSystemApp: map['isSystemApp'] as bool? ?? false,
+      iconBytes: map['iconBytes'] as Uint8List?,
     );
   }
 
   final String packageName;
   final String appName;
   final bool isSystemApp;
+  final Uint8List? iconBytes;
+
+  String? get iconBase64 =>
+      iconBytes == null || iconBytes!.isEmpty ? null : base64Encode(iconBytes!);
 }
 
 class FocusTimeRange {
@@ -81,6 +88,7 @@ class FocusTimeRange {
 class FocusSettings {
   const FocusSettings({
     required this.selectedApps,
+    required this.selectedAppIcons,
     required this.iosSelectionData,
     required this.iosSelectionCount,
     required this.childModeEnabled,
@@ -96,6 +104,7 @@ class FocusSettings {
   factory FocusSettings.defaults() {
     return const FocusSettings(
       selectedApps: <String, String>{},
+      selectedAppIcons: <String, String>{},
       iosSelectionData: null,
       iosSelectionCount: 0,
       childModeEnabled: false,
@@ -119,6 +128,9 @@ class FocusSettings {
         selectedApps: selectedAppsRaw.map(
           (key, value) => MapEntry(key, value as String),
         ),
+        selectedAppIcons: Map<String, dynamic>.from(
+          map['selectedAppIcons'] as Map? ?? const {},
+        ).map((key, value) => MapEntry(key, value as String)),
         iosSelectionData: map['iosSelectionData'] as String?,
         iosSelectionCount: (map['iosSelectionCount'] as num?)?.toInt() ?? 0,
         childModeEnabled: map['childModeEnabled'] as bool? ?? false,
@@ -144,6 +156,7 @@ class FocusSettings {
   }
 
   final Map<String, String> selectedApps;
+  final Map<String, String> selectedAppIcons;
   final String? iosSelectionData;
   final int iosSelectionCount;
   final bool childModeEnabled;
@@ -164,8 +177,19 @@ class FocusSettings {
 
   bool get hasSelectedApps => selectedApps.isNotEmpty || iosSelectionCount > 0;
 
+  Uint8List? iconBytesForPackage(String packageName) {
+    final encoded = selectedAppIcons[packageName];
+    if (encoded == null || encoded.isEmpty) return null;
+    try {
+      return base64Decode(encoded);
+    } catch (_) {
+      return null;
+    }
+  }
+
   FocusSettings copyWith({
     Map<String, String>? selectedApps,
+    Map<String, String>? selectedAppIcons,
     String? iosSelectionData,
     bool clearIosSelectionData = false,
     int? iosSelectionCount,
@@ -182,6 +206,7 @@ class FocusSettings {
   }) {
     return FocusSettings(
       selectedApps: selectedApps ?? this.selectedApps,
+      selectedAppIcons: selectedAppIcons ?? this.selectedAppIcons,
       iosSelectionData: clearIosSelectionData
           ? null
           : iosSelectionData ?? this.iosSelectionData,
@@ -206,6 +231,7 @@ class FocusSettings {
   String toJson() {
     return jsonEncode(<String, dynamic>{
       'selectedApps': selectedApps,
+      'selectedAppIcons': selectedAppIcons,
       'iosSelectionData': iosSelectionData,
       'iosSelectionCount': iosSelectionCount,
       'childModeEnabled': childModeEnabled,

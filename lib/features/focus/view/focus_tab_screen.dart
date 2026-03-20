@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/services/focus_enforcement_service.dart';
+import '../../../core/widgets/app_permission_dialog.dart';
+import '../../../core/widgets/focus_app_icon.dart';
 import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
 
@@ -20,6 +23,9 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
     return Consumer<FocusController>(
       builder: (context, vm, _) {
         final colorScheme = Theme.of(context).colorScheme;
+        final installedAppsByPackage = {
+          for (final app in vm.installedApps) app.packageName: app,
+        };
         final globalApps = vm.settings.selectedApps.entries
             .map(
               (entry) => _SelectedAppChipData(
@@ -33,7 +39,7 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
             vm.settings.iosSelectionCount > 0;
         final enabledMode = vm.settings.enabledMode;
         final childActive =
-            enabledMode == FocusModeType.child && globalApps.isNotEmpty;
+            enabledMode == FocusModeType.child && vm.hasSelectedApps;
         final salahMode = enabledMode == FocusModeType.salah;
         final nightMode = enabledMode == FocusModeType.nightDiscipline;
         final childMode = enabledMode == FocusModeType.child;
@@ -61,7 +67,7 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                   const SizedBox(height: 24),
                   if (childActive)
                     _ChildModeBanner(
-                      appCount: globalApps.length,
+                      appCount: vm.selectedAppCount,
                       colorScheme: colorScheme,
                     ),
                   _GlassCard(
@@ -106,7 +112,7 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                                 borderRadius: BorderRadius.circular(999),
                               ),
                               child: Text(
-                                '${globalApps.length} app${globalApps.length == 1 ? '' : 's'}',
+                                '${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'}',
                                 style: Theme.of(context).textTheme.labelSmall
                                     ?.copyWith(
                                       color: colorScheme.primary,
@@ -180,9 +186,17 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(
-                                        _emojiForApp(app.label),
-                                        style: const TextStyle(fontSize: 16),
+                                      FocusAppIcon(
+                                        label: app.label,
+                                        iconBytes:
+                                            installedAppsByPackage[app
+                                                    .packageName]
+                                                ?.iconBytes ??
+                                            vm.settings.iconBytesForPackage(
+                                              app.packageName,
+                                            ),
+                                        size: 18,
+                                        radius: 6,
                                       ),
                                       const SizedBox(width: 8),
                                       Text(
@@ -218,13 +232,13 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                               await vm.requestInstalledApps();
                               return;
                             }
-                            if (!_showGlobalSelector) {
+                            final shouldShow = !_showGlobalSelector;
+                            setState(() {
+                              _showGlobalSelector = shouldShow;
+                            });
+                            if (shouldShow && vm.installedApps.isEmpty) {
                               await vm.requestInstalledApps();
                             }
-                            if (!mounted) return;
-                            setState(() {
-                              _showGlobalSelector = !_showGlobalSelector;
-                            });
                           },
                           borderRadius: BorderRadius.circular(14),
                           child: Ink(
@@ -247,11 +261,27 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                                   ),
                                 ),
                                 if (vm.isLoadingApps)
-                                  const SizedBox(
-                                    width: 14,
-                                    height: 14,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                                  DefaultTextStyle(
+                                    style:
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.labelSmall?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ) ??
+                                        const TextStyle(),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: 14,
+                                          height: 14,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text('Loading...'),
+                                      ],
                                     ),
                                   )
                                 else
@@ -260,6 +290,8 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                                         ? 'Open'
                                         : _showGlobalSelector
                                         ? 'Hide'
+                                        : vm.installedApps.isEmpty
+                                        ? 'Load'
                                         : 'Show',
                                     style: Theme.of(context)
                                         .textTheme
@@ -299,7 +331,7 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                     child: salahMode
                         ? _ModeFooterText(
                             text:
-                                '✓ ${globalApps.length} app${globalApps.length == 1 ? '' : 's'} will be blocked during prayer times',
+                                '✓ ${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'} will be blocked during prayer times',
                             color: colorScheme.primary,
                           )
                         : null,
@@ -330,6 +362,8 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                                         vm.settings.nightRange.startHour,
                                         vm.settings.nightRange.startMinute,
                                       ),
+                                      onTap: () =>
+                                          _pickNightTime(vm, isStart: true),
                                     ),
                                   ),
                                   const SizedBox(width: 12),
@@ -341,6 +375,8 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                                         vm.settings.nightRange.endHour,
                                         vm.settings.nightRange.endMinute,
                                       ),
+                                      onTap: () =>
+                                          _pickNightTime(vm, isStart: false),
                                     ),
                                   ),
                                 ],
@@ -348,7 +384,7 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                               const SizedBox(height: 12),
                               _ModeFooterText(
                                 text:
-                                    '✓ ${globalApps.length} app${globalApps.length == 1 ? '' : 's'} will be blocked at night',
+                                    '✓ ${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'} will be blocked at night',
                                 color: colorScheme.primary,
                               ),
                             ],
@@ -367,7 +403,7 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
                     child: childMode
                         ? _ModeFooterText(
                             text:
-                                '⚠ ${globalApps.length} app${globalApps.length == 1 ? '' : 's'} blocked immediately',
+                                '⚠ ${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'} blocked immediately',
                             color: colorScheme.error,
                           )
                         : null,
@@ -381,12 +417,43 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
     );
   }
 
+  Future<bool> _ensureAndroidBlockingAccess() async {
+    if (defaultTargetPlatform != TargetPlatform.android) return true;
+
+    final granted = await FocusEnforcementService.isBlockingPermissionGranted();
+    if (granted || !mounted) return granted;
+
+    await AppPermissionDialog.show(
+      context,
+      title: 'Enable Android app blocking',
+      message:
+          'To block other apps on Android, Deenly needs its accessibility permission turned on. We will open the correct settings screen for you.',
+      onPrimaryTap: () {
+        FocusEnforcementService.openBlockingPermissionSettings();
+      },
+    );
+    return false;
+  }
+
   Future<void> _toggleMode(
     FocusController vm,
     FocusModeType mode,
     bool enabled,
   ) async {
+    if (enabled && !vm.hasSelectedApps) {
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      messenger?.showSnackBar(
+        const SnackBar(
+          content: Text('No apps selected. Please select apps to block first.'),
+        ),
+      );
+      return;
+    }
+
     if (enabled) {
+      final canBlock = await _ensureAndroidBlockingAccess();
+      if (!canBlock) return;
+
       await vm.enableMode(mode);
       return;
     }
@@ -397,6 +464,9 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
     FocusController vm,
     _SelectedAppChipData app,
   ) async {
+    final installedAppsByPackage = {
+      for (final item in vm.installedApps) item.packageName: item,
+    };
     final remaining = vm.settings.selectedApps.entries
         .where((entry) => entry.key != app.packageName)
         .map(
@@ -404,6 +474,9 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
             packageName: entry.key,
             appName: entry.value,
             isSystemApp: false,
+            iconBytes:
+                installedAppsByPackage[entry.key]?.iconBytes ??
+                vm.settings.iconBytesForPackage(entry.key),
           ),
         )
         .toList(growable: false);
@@ -416,19 +489,66 @@ class _FocusTabScreenState extends State<FocusTabScreen> {
     ).formatTimeOfDay(TimeOfDay(hour: hour, minute: minute));
   }
 
-  String _emojiForApp(String name) {
-    final value = name.toLowerCase();
-    if (value.contains('instagram')) return '📷';
-    if (value.contains('tiktok')) return '🎵';
-    if (value.contains('youtube')) return '▶️';
-    if (value.contains('twitter') || value.contains('x')) return '🐦';
-    if (value.contains('snapchat')) return '👻';
-    if (value.contains('facebook')) return '📘';
-    if (value.contains('reddit')) return '🔴';
-    if (value.contains('game')) return '🎮';
-    if (value.contains('whatsapp')) return '💬';
-    if (value.contains('chrome')) return '🌐';
-    return '📱';
+  Future<void> _pickNightTime(
+    FocusController vm, {
+    required bool isStart,
+  }) async {
+    final current = isStart
+        ? TimeOfDay(
+            hour: vm.settings.nightRange.startHour,
+            minute: vm.settings.nightRange.startMinute,
+          )
+        : TimeOfDay(
+            hour: vm.settings.nightRange.endHour,
+            minute: vm.settings.nightRange.endMinute,
+          );
+
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: current,
+      helpText: isStart ? 'Select sleep time' : 'Select wake time',
+    );
+
+    if (picked == null || !mounted) return;
+
+    final valid = isStart
+        ? _isValidNightStart(picked)
+        : _isValidNightEnd(picked);
+    if (!valid) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(
+            isStart
+                ? 'Sleep time must stay between 8:00 PM and 11:59 PM.'
+                : 'Wake time must stay between 12:00 AM and 8:00 AM.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final start = isStart
+        ? picked
+        : TimeOfDay(
+            hour: vm.settings.nightRange.startHour,
+            minute: vm.settings.nightRange.startMinute,
+          );
+    final end = isStart
+        ? TimeOfDay(
+            hour: vm.settings.nightRange.endHour,
+            minute: vm.settings.nightRange.endMinute,
+          )
+        : picked;
+    await vm.setNightRange(start, end);
+  }
+
+  bool _isValidNightStart(TimeOfDay value) {
+    return value.hour >= 20 && value.hour <= 23;
+  }
+
+  bool _isValidNightEnd(TimeOfDay value) {
+    if (value.hour < 8) return true;
+    return value.hour == 8 && value.minute == 0;
   }
 }
 
@@ -617,37 +737,42 @@ class _ModeFooterText extends StatelessWidget {
 }
 
 class _TimeInfoCard extends StatelessWidget {
-  const _TimeInfoCard({required this.label, required this.time});
+  const _TimeInfoCard({required this.label, required this.time, this.onTap});
 
   final String label;
   final String time;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontSize: 11,
-              color: colorScheme.onSurfaceVariant,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Ink(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 11,
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            time,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-          ),
-        ],
+            const SizedBox(height: 6),
+            Text(
+              time,
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -664,9 +789,20 @@ class _AppsGrid extends StatelessWidget {
     final apps = vm.installedApps;
 
     if (vm.isLoadingApps) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 20),
-        child: Center(child: CircularProgressIndicator()),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            const Center(child: CircularProgressIndicator()),
+            const SizedBox(height: 12),
+            Text(
+              'Loading installed apps...',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -723,9 +859,11 @@ class _AppsGrid extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  _emojiForApp(app.appName),
-                  style: const TextStyle(fontSize: 22),
+                FocusAppIcon(
+                  label: app.appName,
+                  iconBytes: app.iconBytes,
+                  size: 28,
+                  radius: 10,
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -744,21 +882,6 @@ class _AppsGrid extends StatelessWidget {
         );
       },
     );
-  }
-
-  String _emojiForApp(String name) {
-    final value = name.toLowerCase();
-    if (value.contains('instagram')) return '📷';
-    if (value.contains('tiktok')) return '🎵';
-    if (value.contains('youtube')) return '▶️';
-    if (value.contains('twitter') || value == 'x') return '🐦';
-    if (value.contains('snapchat')) return '👻';
-    if (value.contains('facebook')) return '📘';
-    if (value.contains('reddit')) return '🔴';
-    if (value.contains('game')) return '🎮';
-    if (value.contains('whatsapp')) return '💬';
-    if (value.contains('chrome')) return '🌐';
-    return '📱';
   }
 }
 
