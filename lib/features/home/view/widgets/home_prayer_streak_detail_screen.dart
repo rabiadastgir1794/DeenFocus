@@ -93,47 +93,58 @@ class _PrayerWeekRow extends StatelessWidget {
     final editable = vm.isPrayerDayEditable(date);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                vm.weekdayLabel(date),
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                editable ? 'Today' : 'Locked',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: editable
+          ? BoxDecoration(
+              color: colorScheme.primaryFixedDim.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(8),
+            )
+          : null,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  vm.weekdayLabel(date),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 3),
+                Icon(
+                  editable
+                      ? Icons.edit_calendar_rounded
+                      : Icons.lock_outline_rounded,
+                  size: 16,
                   color: editable
                       ? colorScheme.primary
                       : colorScheme.onSurfaceVariant,
                 ),
-              ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final prayer in TrackablePrayer.values) ...[
+                _PrayerToggleChip(
+                  date: date,
+                  prayer: prayer,
+                  selected: day.selectedPrayers.contains(prayer),
+                  enabled: editable,
+                ),
+                if (prayer != TrackablePrayer.values.last)
+                  const SizedBox(width: 8),
+              ],
             ],
           ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final prayer in TrackablePrayer.values) ...[
-              _PrayerToggleChip(
-                date: date,
-                prayer: prayer,
-                selected: day.selectedPrayers.contains(prayer),
-                enabled: editable,
-              ),
-              if (prayer != TrackablePrayer.values.last)
-                const SizedBox(width: 8),
-            ],
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -179,25 +190,26 @@ class _PrayerToggleChip extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 10,
-                height: 10,
+                width: 32,
+                height: 32,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: selected
                       ? colorScheme.primary
                       : colorScheme.primary.withValues(alpha: 0.22),
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                _labelForPrayer(prayer),
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: selected
-                      ? colorScheme.primary
-                      : colorScheme.onSurfaceVariant,
+                child: Text(
+                  _labelForPrayer(prayer),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: selected
+                        ? Colors.white
+                        : colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
+              const SizedBox(height: 6),
             ],
           ),
         ),
