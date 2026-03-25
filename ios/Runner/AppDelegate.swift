@@ -6,6 +6,11 @@ import DeviceActivity
 import ManagedSettings
 import CoreLocation
 
+@available(iOS 16.0, *)
+private enum ManagedSettingsStoreHolder {
+  static let shared = ManagedSettingsStore()
+}
+
 @main
 @objc class AppDelegate: FlutterAppDelegate {
   private let focusMethodChannelName = "com.app.deenly.deenly/focus"
@@ -13,8 +18,6 @@ import CoreLocation
   private let qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
-  @available(iOS 16.0, *)
-  private let managedSettingsStore = ManagedSettingsStore()
 
   override func application(
     _ application: UIApplication,
@@ -161,8 +164,10 @@ import CoreLocation
     let isLocked = args["isLocked"] as? Bool ?? false
     let encodedSelection = args["iosSelectionData"] as? String
 
+    let store = ManagedSettingsStoreHolder.shared
+
     if !isLocked {
-      managedSettingsStore.clearAllSettings()
+      store.clearAllSettings()
       result(nil)
       return
     }
@@ -172,14 +177,14 @@ import CoreLocation
       let data = Data(base64Encoded: encodedSelection),
       let selection = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
     else {
-      managedSettingsStore.clearAllSettings()
+      store.clearAllSettings()
       result(nil)
       return
     }
 
-    managedSettingsStore.shield.applications = selection.applicationTokens
-    managedSettingsStore.shield.applicationCategories = nil
-    managedSettingsStore.shield.webDomains = nil
+    store.shield.applications = selection.applicationTokens
+    store.shield.applicationCategories = nil
+    store.shield.webDomains = nil
     result(nil)
   }
 
