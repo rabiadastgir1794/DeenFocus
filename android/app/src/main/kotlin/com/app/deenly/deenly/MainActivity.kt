@@ -1,4 +1,4 @@
-package com.app.deenly.deenly
+package com.rnr.deenfocus
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager

@@ -36,10 +36,18 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final chatBackground = colorScheme.surface;
+    final composerBackground = colorScheme.surface;
+    final inputBackground = isDark
+        ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.6)
+        : const Color(0xFFF6F2E9);
+    final inputBorderColor =
+        isDark ? colorScheme.outlineVariant : const Color(0xFFE6DBC5);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Islamic Chat')),
-      backgroundColor: Colors.white,
+      backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Column(
@@ -56,7 +64,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
               ),
             ),
             Material(
-              color: Colors.white,
+              color: composerBackground,
               elevation: 8,
               child: SafeArea(
                 top: false,
@@ -68,9 +76,9 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                       Expanded(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF6F2E9),
+                            color: inputBackground,
                             borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: const Color(0xFFE6DBC5)),
+                            border: Border.all(color: inputBorderColor),
                           ),
                           child: TextField(
                             controller: _inputController,
@@ -303,7 +311,12 @@ class _ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUser = message.role == _ChatRole.user;
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isLoading = message.content == 'LOADING_PLACEHOLDER';
+    final assistantBubbleColor = isDark
+        ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.75)
+        : const Color(0xFFF6F2E9);
+    final assistantTextColor = colorScheme.onSurface;
 
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -312,7 +325,7 @@ class _ChatBubble extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 320),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: isUser ? colorScheme.primary : const Color(0xFFF6F2E9),
+          color: isUser ? colorScheme.primary : assistantBubbleColor,
           borderRadius: BorderRadius.circular(18),
         ),
         child: isLoading
@@ -336,7 +349,7 @@ class _ChatBubble extends StatelessWidget {
             : Text(
                 message.content,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isUser ? colorScheme.onPrimary : Colors.black87,
+                  color: isUser ? colorScheme.onPrimary : assistantTextColor,
                   height: 1.35,
                 ),
               ),

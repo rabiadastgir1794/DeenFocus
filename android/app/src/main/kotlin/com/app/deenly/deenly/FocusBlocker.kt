@@ -1,4 +1,4 @@
-package com.app.deenly.deenly
+package com.rnr.deenfocus
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
@@ -13,14 +13,19 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.Build
+import android.provider.MediaStore
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -32,6 +37,7 @@ private const val activeModeKey = "active_mode"
 private const val lockReasonKey = "lock_reason"
 private const val nextChangeAtKey = "next_change_at"
 private const val syncGenerationKey = "sync_generation"
+private const val scheduledTransitionsKey = "scheduled_transitions"
 private const val focusScheduleAction = "com.app.deenly.deenly.FOCUS_SCHEDULE"
 private const val focusScheduleIdBase = 6100
 private const val focusScheduleMaxCount = 64
@@ -39,38 +45,129 @@ private const val focusDebugFileName = "deenly_focus_debug_log.txt"
 
 object FocusDebugLogger {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+    private const val publicDownloadsRelativePath = "Download/$focusDebugFileName"
 
     @Synchronized
     fun append(context: Context, tag: String, message: String) {
         runCatching {
-            val file = file(context)
+            val line = "${formatter.format(Date())} [$tag] $message\n"
+            val file = appFile(context)
             file.parentFile?.mkdirs()
-            file.appendText("${formatter.format(Date())} [$tag] $message\n")
+            file.appendText(line)
+            appendToPublicDownloads(context, line)
         }
     }
 
     @Synchronized
     fun clear(context: Context) {
         runCatching {
-            val file = file(context)
+            val line = "${formatter.format(Date())} [logger] cleared\n"
+            val file = appFile(context)
             if (file.exists()) {
                 file.writeText("")
             } else {
                 file.parentFile?.mkdirs()
                 file.createNewFile()
             }
-            file.appendText("${formatter.format(Date())} [logger] cleared\n")
+            file.appendText(line)
+            overwritePublicDownloads(context, line)
         }
     }
 
     fun path(context: Context): String {
-        return file(context).absolutePath
+        return publicDownloadsPath()
     }
 
-    private fun file(context: Context): File {
+    private fun appFile(context: Context): File {
         val baseDir =
             context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
         return File(baseDir, focusDebugFileName)
+    }
+
+    private fun publicDownloadsPath(): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            publicDownloadsRelativePath
+        } else {
+            File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                focusDebugFileName,
+            ).absolutePath
+        }
+    }
+
+    private fun appendToPublicDownloads(context: Context, line: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            writeViaMediaStore(context, line, append = true)
+            return
+        }
+
+        runCatching {
+            val file =
+                File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    focusDebugFileName,
+                )
+            file.parentFile?.mkdirs()
+            file.appendText(line)
+        }
+    }
+
+    private fun overwritePublicDownloads(context: Context, contents: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            writeViaMediaStore(context, contents, append = false)
+            return
+        }
+
+        runCatching {
+            val file =
+                File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    focusDebugFileName,
+                )
+            file.parentFile?.mkdirs()
+            file.writeText(contents)
+        }
+    }
+
+    private fun writeViaMediaStore(context: Context, contents: String, append: Boolean) {
+        runCatching {
+            val resolver = context.contentResolver
+            val existingUri =
+                resolver.query(
+                    MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                    arrayOf(MediaStore.Downloads._ID),
+                    "${MediaStore.Downloads.DISPLAY_NAME}=?",
+                    arrayOf(focusDebugFileName),
+                    null,
+                )?.use { cursor ->
+                    if (!cursor.moveToFirst()) return@use null
+                    val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+                    val id = cursor.getLong(idIndex)
+                    Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id.toString())
+                }
+
+            val uri =
+                existingUri
+                    ?: resolver.insert(
+                        MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                        android.content.ContentValues().apply {
+                            put(MediaStore.Downloads.DISPLAY_NAME, focusDebugFileName)
+                            put(MediaStore.Downloads.MIME_TYPE, "text/plain")
+                            put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                        },
+                    )
+                    ?: return
+
+            val mode = if (append) "wa" else "wt"
+            resolver.openOutputStream(uri, mode)?.use { output ->
+                writeText(output, contents)
+            }
+        }
+    }
+
+    private fun writeText(output: OutputStream, contents: String) {
+        output.write(contents.toByteArray())
+        output.flush()
     }
 }
 
@@ -107,7 +204,7 @@ object FocusBlockerStore {
 
     fun currentState(context: Context): FocusBlockState {
         val prefs = prefs(context)
-        return FocusBlockState(
+        val storedState = FocusBlockState(
             selectedPackages =
                 prefs.getStringSet(selectedPackagesKey, emptySet()).orEmpty(),
             isLocked = prefs.getBoolean(isLockedKey, false),
@@ -115,6 +212,33 @@ object FocusBlockerStore {
             lockReason = prefs.getString(lockReasonKey, null),
             nextChangeAt = prefs.getString(nextChangeAtKey, null),
             syncGeneration = prefs.getLong(syncGenerationKey, 0L),
+        )
+        return resolveScheduledState(context, storedState)
+    }
+
+    fun saveScheduledTransitions(
+        context: Context,
+        transitions: List<Map<String, Any?>>,
+    ) {
+        val serialized = JSONArray().apply {
+            transitions.take(focusScheduleMaxCount).forEach { transition ->
+                put(
+                    JSONObject().apply {
+                        put("at", transition["at"] as? String)
+                        put("atMillis", (transition["atMillis"] as? Number)?.toLong())
+                        put("isLocked", transition["isLocked"] as? Boolean ?: false)
+                        put("activeMode", transition["activeMode"] as? String)
+                        put("lockReason", transition["lockReason"] as? String)
+                        put("nextChangeAt", transition["nextChangeAt"] as? String)
+                    },
+                )
+            }
+        }.toString()
+        prefs(context).edit().putString(scheduledTransitionsKey, serialized).commit()
+        FocusDebugLogger.append(
+            context,
+            "store.transitions",
+            "saved ${transitions.size.coerceAtMost(focusScheduleMaxCount)} transitions",
         )
     }
 
@@ -129,6 +253,65 @@ object FocusBlockerStore {
     private fun prefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(focusPrefsName, Context.MODE_PRIVATE)
     }
+
+    private fun resolveScheduledState(
+        context: Context,
+        storedState: FocusBlockState,
+    ): FocusBlockState {
+        val transitions = readScheduledTransitions(context)
+        if (transitions.isEmpty()) return storedState
+
+        val now = System.currentTimeMillis()
+        val applied = transitions.lastOrNull { it.atMillis <= now } ?: return storedState
+        val next = transitions.firstOrNull { it.atMillis > now }
+        val resolved = storedState.copy(
+            isLocked = applied.isLocked,
+            activeMode = applied.activeMode ?: storedState.activeMode,
+            lockReason = applied.lockReason ?: storedState.lockReason,
+            nextChangeAt = applied.nextChangeAt ?: next?.nextChangeAt ?: next?.at,
+        )
+
+        if (resolved.isLocked != storedState.isLocked ||
+            resolved.activeMode != storedState.activeMode ||
+            resolved.nextChangeAt != storedState.nextChangeAt
+        ) {
+            FocusDebugLogger.append(
+                context,
+                "store.resolve",
+                "resolvedFromTransitions isLocked=${resolved.isLocked} activeMode=${resolved.activeMode} nextChangeAt=${resolved.nextChangeAt}",
+            )
+        }
+        return resolved
+    }
+
+    private fun readScheduledTransitions(context: Context): List<StoredTransition> {
+        val raw = prefs(context).getString(scheduledTransitionsKey, null) ?: return emptyList()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    val atMillis = item.optLong("atMillis", -1L)
+                    if (atMillis <= 0L) continue
+                    add(
+                        StoredTransition(
+                            atMillis = atMillis,
+                            at = item.stringOrNull("at"),
+                            isLocked = item.optBoolean("isLocked", false),
+                            activeMode = item.stringOrNull("activeMode"),
+                            lockReason = item.stringOrNull("lockReason"),
+                            nextChangeAt = item.stringOrNull("nextChangeAt"),
+                        ),
+                    )
+                }
+            }.sortedBy { it.atMillis }
+        }.getOrElse { emptyList() }
+    }
+}
+
+private fun JSONObject.stringOrNull(key: String): String? {
+    if (!has(key) || isNull(key)) return null
+    return optString(key, "")
 }
 
 data class FocusBlockState(
@@ -138,6 +321,15 @@ data class FocusBlockState(
     val lockReason: String?,
     val nextChangeAt: String?,
     val syncGeneration: Long,
+)
+
+data class StoredTransition(
+    val atMillis: Long,
+    val at: String?,
+    val isLocked: Boolean,
+    val activeMode: String?,
+    val lockReason: String?,
+    val nextChangeAt: String?,
 )
 
 fun isFocusAccessibilityServiceEnabled(context: Context): Boolean {
@@ -302,6 +494,7 @@ object FocusScheduleManager {
             "schedule.sync",
             "received ${transitions.size} transitions path=${FocusDebugLogger.path(context)}",
         )
+        FocusBlockerStore.saveScheduledTransitions(context, transitions)
         cancelAll(context)
 
         transitions.take(focusScheduleMaxCount).forEachIndexed { index, transition ->

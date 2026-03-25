@@ -1,4 +1,4 @@
-package com.app.deenly.deenly
+package com.rnr.deenfocus
 
 import android.app.Activity
 import android.content.Intent
@@ -277,13 +277,17 @@ class FocusBlockedActivity : Activity() {
             "yyyy-MM-dd'T'HH:mm:ss.SSS",
             "yyyy-MM-dd'T'HH:mm:ss",
         )
-        val parsed = isoPatterns.asSequence().mapNotNull { pattern ->
-            runCatching {
-                SimpleDateFormat(pattern, Locale.US).apply {
-                    timeZone = TimeZone.getTimeZone("UTC")
-                }.parse(nextChangeAt)
-            }.getOrNull()
-        }.firstOrNull()
+        val parsed = isoPatterns.asSequence()
+            .mapNotNull { pattern ->
+                runCatching {
+                    SimpleDateFormat(pattern, Locale.US).apply {
+                        // Flutter sends local ISO strings without a timezone suffix most of the time.
+                        // Parsing those as UTC shifts the time and makes the "unlocks at" UI wrong.
+                        timeZone = TimeZone.getDefault()
+                    }.parse(nextChangeAt)
+                }.getOrNull()
+            }
+            .firstOrNull()
         if (parsed != null) {
             return SimpleDateFormat("MMM d, h:mm a", Locale.getDefault()).format(parsed)
         }

@@ -13,6 +13,14 @@ import '../../home/model/home_models.dart';
 import '../model/focus_models.dart';
 
 class FocusController extends ChangeNotifier {
+  // TEMP: Salah test mode (keep code, disable for production)
+  // static const bool _salahTestModeEnabled = true;
+  static const bool _salahTestModeEnabled = false;
+  static const int _salahTestWindowCount = 2;
+  static const Duration _salahTestInitialDelay = Duration(minutes: 2);
+  static const Duration _salahTestLockDuration = Duration(minutes: 4);
+  static const Duration _salahTestGapDuration = Duration(minutes: 2);
+
   FocusSettings _settings = FocusSettings.defaults();
   FocusLockState _lockState = const FocusLockState.unlocked();
   List<FocusInstalledApp> _installedApps = const <FocusInstalledApp>[];
@@ -151,10 +159,17 @@ class FocusController extends ChangeNotifier {
           )
         : null;
 
+    final now = DateTime.now();
     _settings = _settings.copyWith(
       childModeEnabled: mode == FocusModeType.child,
       nightDisciplineEnabled: mode == FocusModeType.nightDiscipline,
       salahModeEnabled: mode == FocusModeType.salah,
+      salahTestAnchorAt:
+          _salahTestModeEnabled && mode == FocusModeType.salah
+          ? (_settings.salahTestAnchorAt ?? now)
+          : null,
+      clearSalahTestAnchorAt:
+          mode != FocusModeType.salah || !_salahTestModeEnabled,
       childLockedUntil: childLockedUntil,
       clearChildLockedUntil:
           mode != FocusModeType.child ||
@@ -192,6 +207,7 @@ class FocusController extends ChangeNotifier {
       case FocusModeType.salah:
         _settings = _settings.copyWith(
           salahModeEnabled: false,
+          clearSalahTestAnchorAt: true,
           clearTemporaryUnlock: true,
         );
         break;
@@ -255,7 +271,9 @@ class FocusController extends ChangeNotifier {
       case FocusModeType.nightDiscipline:
         return 'Lock selected apps every day from ${_formatTime(_settings.nightRange.startHour, _settings.nightRange.startMinute)} to ${_formatTime(_settings.nightRange.endHour, _settings.nightRange.endMinute)}.';
       case FocusModeType.salah:
-        return 'Lock selected apps 10 minutes before each prayer until 15 minutes after.';
+        return _salahTestModeEnabled
+            ? 'Testing mode: lock starts in 2 minutes for 4 minutes, twice.'
+            : 'Lock selected apps 10 minutes before each prayer until 15 minutes after.';
     }
   }
 
@@ -467,6 +485,29 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<List<SalahWindow>> _salahWindows(DateTime now) async {
+    if (_salahTestModeEnabled) {
+      final anchor = _settings.salahTestAnchorAt ?? now;
+      final windows = List<SalahWindow>.generate(_salahTestWindowCount, (
+        index,
+      ) {
+        final start = anchor.add(
+          _salahTestInitialDelay +
+              (_salahTestLockDuration + _salahTestGapDuration) * index,
+        );
+        final end = start.add(_salahTestLockDuration);
+        return SalahWindow(
+          prayer: HomePrayerSlot(id: _testPrayerIdForIndex(index), time: start),
+          start: start,
+          end: end,
+        );
+      }, growable: false);
+      await FocusEnforcementService.appendDebugLog(
+        'focus.salahWindows',
+        'testMode=true anchor=${anchor.toIso8601String()} now=${now.toIso8601String()} windows=${windows.map((window) => "${window.prayer.id.name}:${window.start.toIso8601String()}->${window.end.toIso8601String()}").join("|")}',
+      );
+      return windows;
+    }
+
     if (_cachedLatitude == null || _cachedLongitude == null) {
       return const <SalahWindow>[];
     }
@@ -496,6 +537,17 @@ class FocusController extends ChangeNotifier {
           ),
         )
         .toList(growable: false);
+  }
+
+  HomePrayerId _testPrayerIdForIndex(int index) {
+    const prayerIds = <HomePrayerId>[
+      HomePrayerId.fajr,
+      HomePrayerId.dhuhr,
+      HomePrayerId.asr,
+      HomePrayerId.maghrib,
+      HomePrayerId.isha,
+    ];
+    return prayerIds[index % prayerIds.length];
   }
 
   DateTime? _nextSalahStart(List<SalahWindow> windows, DateTime now) {

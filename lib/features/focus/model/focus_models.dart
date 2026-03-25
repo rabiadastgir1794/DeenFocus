@@ -98,6 +98,7 @@ class FocusSettings {
     required this.nightDisciplineEnabled,
     required this.nightRange,
     required this.salahModeEnabled,
+    required this.salahTestAnchorAt,
     required this.temporarilyUnlockedUntil,
   });
 
@@ -114,6 +115,7 @@ class FocusSettings {
       nightDisciplineEnabled: false,
       nightRange: FocusTimeRange.defaults(),
       salahModeEnabled: false,
+      salahTestAnchorAt: null,
       temporarilyUnlockedUntil: null,
     );
   }
@@ -146,6 +148,7 @@ class FocusSettings {
           Map<String, dynamic>.from(map['nightRange'] as Map? ?? const {}),
         ),
         salahModeEnabled: map['salahModeEnabled'] as bool? ?? false,
+        salahTestAnchorAt: _parseDateTime(map['salahTestAnchorAt']),
         temporarilyUnlockedUntil: _parseDateTime(
           map['temporarilyUnlockedUntil'],
         ),
@@ -166,6 +169,7 @@ class FocusSettings {
   final bool nightDisciplineEnabled;
   final FocusTimeRange nightRange;
   final bool salahModeEnabled;
+  final DateTime? salahTestAnchorAt;
   final DateTime? temporarilyUnlockedUntil;
 
   FocusModeType? get enabledMode {
@@ -201,6 +205,8 @@ class FocusSettings {
     bool? nightDisciplineEnabled,
     FocusTimeRange? nightRange,
     bool? salahModeEnabled,
+    DateTime? salahTestAnchorAt,
+    bool clearSalahTestAnchorAt = false,
     DateTime? temporarilyUnlockedUntil,
     bool clearTemporaryUnlock = false,
   }) {
@@ -222,6 +228,9 @@ class FocusSettings {
           nightDisciplineEnabled ?? this.nightDisciplineEnabled,
       nightRange: nightRange ?? this.nightRange,
       salahModeEnabled: salahModeEnabled ?? this.salahModeEnabled,
+      salahTestAnchorAt: clearSalahTestAnchorAt
+          ? null
+          : salahTestAnchorAt ?? this.salahTestAnchorAt,
       temporarilyUnlockedUntil: clearTemporaryUnlock
           ? null
           : temporarilyUnlockedUntil ?? this.temporarilyUnlockedUntil,
@@ -241,6 +250,7 @@ class FocusSettings {
       'nightDisciplineEnabled': nightDisciplineEnabled,
       'nightRange': nightRange.toMap(),
       'salahModeEnabled': salahModeEnabled,
+      'salahTestAnchorAt': salahTestAnchorAt?.toIso8601String(),
       'temporarilyUnlockedUntil': temporarilyUnlockedUntil?.toIso8601String(),
     });
   }
