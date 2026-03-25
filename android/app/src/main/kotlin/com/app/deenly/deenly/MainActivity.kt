@@ -51,12 +51,27 @@ class MainActivity : FlutterActivity() {
     ) {
         when (call.method) {
             "getInstalledApps" -> {
+                FocusDebugLogger.append(
+                    applicationContext,
+                    "channel.getInstalledApps",
+                    "loading installed apps",
+                )
                 Thread {
                     runCatching { getInstalledApps() }
                         .onSuccess { apps ->
+                            FocusDebugLogger.append(
+                                applicationContext,
+                                "channel.getInstalledApps",
+                                "loaded ${apps.size} apps",
+                            )
                             runOnUiThread { result.success(apps) }
                         }
                         .onFailure { error ->
+                            FocusDebugLogger.append(
+                                applicationContext,
+                                "channel.getInstalledApps",
+                                "failed ${error.message}",
+                            )
                             runOnUiThread {
                                 result.error(
                                     "GET_APPS_FAILED",
@@ -74,6 +89,13 @@ class MainActivity : FlutterActivity() {
                 val isLocked = call.argument<Boolean>("isLocked") ?: false
                 val lockReason = call.argument<String>("lockReason")
                 val nextChangeAt = call.argument<String>("nextChangeAt")
+                val scheduledTransitions =
+                    call.argument<List<Map<String, Any?>>>("scheduledTransitions").orEmpty()
+                FocusDebugLogger.append(
+                    applicationContext,
+                    "channel.syncFocusState",
+                    "selected=${selectedPackages.size} isLocked=$isLocked activeMode=$activeMode nextChangeAt=$nextChangeAt transitions=${scheduledTransitions.size}",
+                )
                 FocusBlockerStore.save(
                     context = applicationContext,
                     selectedPackages = selectedPackages,
@@ -82,13 +104,42 @@ class MainActivity : FlutterActivity() {
                     lockReason = lockReason,
                     nextChangeAt = nextChangeAt,
                 )
+                FocusScheduleManager.sync(
+                    context = applicationContext,
+                    transitions = scheduledTransitions,
+                )
                 result.success(null)
             }
-            "isBlockingPermissionGranted" ->
-                result.success(isFocusAccessibilityServiceEnabled(applicationContext))
+            "isBlockingPermissionGranted" -> {
+                val granted = isFocusAccessibilityServiceReady(applicationContext)
+                FocusDebugLogger.append(
+                    applicationContext,
+                    "channel.isBlockingPermissionGranted",
+                    "granted=$granted",
+                )
+                result.success(granted)
+            }
             "openBlockingPermissionSettings" -> {
+                FocusDebugLogger.append(
+                    applicationContext,
+                    "channel.openBlockingPermissionSettings",
+                    "requested",
+                )
                 openFocusAccessibilitySettings(applicationContext)
                 result.success(null)
+            }
+            "appendFocusDebugLog" -> {
+                val tag = call.argument<String>("tag").orEmpty()
+                val message = call.argument<String>("message").orEmpty()
+                FocusDebugLogger.append(applicationContext, tag, message)
+                result.success(null)
+            }
+            "clearFocusDebugLog" -> {
+                FocusDebugLogger.clear(applicationContext)
+                result.success(FocusDebugLogger.path(applicationContext))
+            }
+            "getFocusDebugLogPath" -> {
+                result.success(FocusDebugLogger.path(applicationContext))
             }
             else -> result.notImplemented()
         }

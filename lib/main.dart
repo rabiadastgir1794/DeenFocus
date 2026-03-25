@@ -26,8 +26,15 @@ Future<void> main() async {
   runApp(const DeenlyApp());
 }
 
-class DeenlyApp extends StatelessWidget {
+class DeenlyApp extends StatefulWidget {
   const DeenlyApp({super.key});
+
+  @override
+  State<DeenlyApp> createState() => _DeenlyAppState();
+}
+
+class _DeenlyAppState extends State<DeenlyApp> {
+  late final _router = createAppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +61,7 @@ class DeenlyApp extends StatelessWidget {
                 locale: localeService.locale,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: kSupportedLocales,
-                routerConfig: createAppRouter(),
+                routerConfig: _router,
               );
             },
           );

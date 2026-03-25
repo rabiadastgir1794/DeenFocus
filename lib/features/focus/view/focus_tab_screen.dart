@@ -44,38 +44,53 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   Future<void> _handleAppResumed() async {
     if (!mounted) return;
 
+    await FocusEnforcementService.appendDebugLog(
+      'focus.screen.resume',
+      'app resumed awaiting=$_awaitingBlockingPermission pending=${_pendingModeToEnable?.name}',
+    );
     final vm = context.read<FocusController>();
     await vm.refresh();
 
     if (!_awaitingBlockingPermission) return;
 
+    final granted = await _waitForBlockingPermissionReady();
+    if (!granted) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.',
+          ),
+        ),
+      );
+      return;
+    }
+
     _awaitingBlockingPermission = false;
-    final granted = await FocusEnforcementService.isBlockingPermissionGranted();
     final pendingMode = _pendingModeToEnable;
     _pendingModeToEnable = null;
 
     if (!mounted) return;
 
-    if (granted) {
-      if (pendingMode != null) {
-        await vm.enableMode(pendingMode);
-        if (vm.lockState.isLocked) {
-          await AppNotificationService.instance
-              .showImmediateFocusLockedNotification(pendingMode);
-        }
-      } else {
-        await vm.refresh();
+    if (pendingMode != null) {
+      await vm.enableMode(pendingMode);
+      if (vm.lockState.isLocked) {
+        await AppNotificationService.instance
+            .showImmediateFocusLockedNotification(pendingMode);
       }
-      return;
+    } else {
+      await vm.refresh();
     }
+  }
 
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Android blocking permission is still off, so selected apps cannot be blocked yet.',
-        ),
-      ),
-    );
+  Future<bool> _waitForBlockingPermissionReady() async {
+    for (var attempt = 0; attempt < 8; attempt++) {
+      final granted =
+          await FocusEnforcementService.isBlockingPermissionGranted();
+      if (granted) return true;
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    }
+    return false;
   }
 
   @override
@@ -480,6 +495,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   Future<bool> _ensureAndroidBlockingAccess(FocusModeType mode) async {
     if (defaultTargetPlatform != TargetPlatform.android) return true;
 
+    await FocusEnforcementService.appendDebugLog(
+      'focus.screen.ensurePermission',
+      'mode=${mode.name}',
+    );
     final granted = await FocusEnforcementService.isBlockingPermissionGranted();
     if (granted || !mounted) return granted;
 
@@ -502,6 +521,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     FocusModeType mode,
     bool enabled,
   ) async {
+    await FocusEnforcementService.appendDebugLog(
+      'focus.screen.toggle',
+      'mode=${mode.name} enabled=$enabled selected=${vm.settings.selectedApps.keys.join(",")} locked=${vm.lockState.isLocked}',
+    );
     if (enabled && !vm.hasSelectedApps) {
       final messenger = ScaffoldMessenger.maybeOf(context);
       messenger?.showSnackBar(

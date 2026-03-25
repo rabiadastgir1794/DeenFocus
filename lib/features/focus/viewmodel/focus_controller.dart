@@ -42,10 +42,18 @@ class FocusController extends ChangeNotifier {
   Future<void> initialize() async {
     if (_isInitialized) return;
     _isInitialized = true;
+    await FocusEnforcementService.appendDebugLog(
+      'focus.initialize',
+      'initializing controller',
+    );
     await _load();
   }
 
   Future<void> refresh() async {
+    await FocusEnforcementService.appendDebugLog(
+      'focus.refresh',
+      'manual refresh start',
+    );
     await _reloadLocation();
     await _recomputeAndPersist();
   }
@@ -77,6 +85,10 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> setSelectedApps(List<FocusInstalledApp> apps) async {
+    await FocusEnforcementService.appendDebugLog(
+      'focus.setSelectedApps',
+      'count=${apps.length} packages=${apps.map((app) => app.packageName).join(",")}',
+    );
     final selected = <String, String>{
       for (final app in apps) app.packageName: app.appName,
     };
@@ -126,6 +138,10 @@ class FocusController extends ChangeNotifier {
 
   Future<void> enableMode(FocusModeType mode) async {
     if (!_settings.hasSelectedApps) return;
+    await FocusEnforcementService.appendDebugLog(
+      'focus.enableMode',
+      'before mode=${mode.name} selected=${_settings.selectedApps.keys.join(",")} childType=${_settings.childLockType.name} tempUnlockUntil=${_settings.temporarilyUnlockedUntil?.toIso8601String()}',
+    );
 
     final childLockedUntil =
         mode == FocusModeType.child &&
@@ -148,9 +164,17 @@ class FocusController extends ChangeNotifier {
 
     await _persist();
     await _recomputeAndPersist();
+    await FocusEnforcementService.appendDebugLog(
+      'focus.enableMode',
+      'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} reason=${_lockState.reason}',
+    );
   }
 
   Future<void> disableMode(FocusModeType mode) async {
+    await FocusEnforcementService.appendDebugLog(
+      'focus.disableMode',
+      'before mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+    );
     switch (mode) {
       case FocusModeType.child:
         _settings = _settings.copyWith(
@@ -174,12 +198,20 @@ class FocusController extends ChangeNotifier {
     }
     await _persist();
     await _recomputeAndPersist();
+    await FocusEnforcementService.appendDebugLog(
+      'focus.disableMode',
+      'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+    );
   }
 
   Future<void> temporarilyUnlock({
     Duration duration = const Duration(minutes: 15),
   }) async {
     if (!_lockState.isLocked) return;
+    await FocusEnforcementService.appendDebugLog(
+      'focus.temporarilyUnlock',
+      'duration=${duration.inMinutes} currentMode=${_lockState.activeMode?.name}',
+    );
     _settings = _settings.copyWith(
       temporarilyUnlockedUntil: DateTime.now().add(duration),
     );
@@ -261,6 +293,10 @@ class FocusController extends ChangeNotifier {
     _settings = json == null
         ? FocusSettings.defaults()
         : FocusSettings.fromJson(json);
+    await FocusEnforcementService.appendDebugLog(
+      'focus.load',
+      'loaded mode=${_settings.enabledMode?.name} selected=${_settings.selectedApps.keys.join(",")} night=${_settings.nightDisciplineEnabled} salah=${_settings.salahModeEnabled}',
+    );
     await _reloadLocation();
     if (Platform.isAndroid && _settings.selectedApps.isNotEmpty) {
       unawaited(_warmInstalledAppsCache());
@@ -278,22 +314,38 @@ class FocusController extends ChangeNotifier {
   Future<void> _reloadLocation() async {
     _cachedLatitude = await StorageService.locationLatitude;
     _cachedLongitude = await StorageService.locationLongitude;
+    await FocusEnforcementService.appendDebugLog(
+      'focus.location',
+      'lat=$_cachedLatitude lng=$_cachedLongitude',
+    );
   }
 
   Future<void> _recomputeAndPersist() async {
+    await FocusEnforcementService.appendDebugLog(
+      'focus.recompute',
+      'start mode=${_settings.enabledMode?.name} selected=${_settings.selectedApps.keys.join(",")} tempUnlock=${_settings.temporarilyUnlockedUntil?.toIso8601String()}',
+    );
     final updatedSettings = _normalizeSettings(_settings, DateTime.now());
     final updatedLockState = await _computeLockState(updatedSettings);
+    final scheduledTransitions = await _buildScheduledTransitions(
+      updatedSettings,
+    );
     _settings = updatedSettings;
     _lockState = updatedLockState;
     await _persist();
     await FocusEnforcementService.sync(
       settings: _settings,
       lockState: _lockState,
+      scheduledTransitions: scheduledTransitions,
     );
     await AppNotificationService.instance.syncFocusNotifications(
       settings: _settings,
       latitude: _cachedLatitude,
       longitude: _cachedLongitude,
+    );
+    await FocusEnforcementService.appendDebugLog(
+      'focus.recompute',
+      'done mode=${_lockState.activeMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} reason=${_lockState.reason}',
     );
     _scheduleNextRefresh();
     notifyListeners();
@@ -457,6 +509,223 @@ class FocusController extends ChangeNotifier {
     if (a == null) return b;
     if (b == null) return a;
     return a.isBefore(b) ? a : b;
+  }
+
+  Future<List<Map<String, dynamic>>> _buildScheduledTransitions(
+    FocusSettings settings,
+  ) async {
+    if (!Platform.isAndroid) {
+      return const <Map<String, dynamic>>[];
+    }
+
+    final now = DateTime.now();
+    final events = <Map<String, dynamic>>[];
+
+    if (settings.nightDisciplineEnabled) {
+      events.addAll(_buildNightScheduledTransitions(settings, now));
+    }
+
+    if (settings.salahModeEnabled) {
+      events.addAll(await _buildSalahScheduledTransitions(settings, now));
+    }
+
+    events.sort(
+      (a, b) => DateTime.parse(
+        a['at'] as String,
+      ).compareTo(DateTime.parse(b['at'] as String)),
+    );
+    return events;
+  }
+
+  List<Map<String, dynamic>> _buildNightScheduledTransitions(
+    FocusSettings settings,
+    DateTime now,
+  ) {
+    final range = settings.nightRange;
+    final events = <Map<String, dynamic>>[];
+    final window = _nightWindowContainingOrNext(range, now);
+    if (window == null) return events;
+
+    final isWithinWindow = range.contains(now);
+    if (window.start.isAfter(now)) {
+      events.add(
+        _scheduledTransition(
+          at: window.start,
+          isLocked: true,
+          activeMode: FocusModeType.nightDiscipline,
+          reason: 'Night Discipline is blocking selected apps.',
+          nextChangeAt: window.end,
+        ),
+      );
+    }
+
+    if (window.end.isAfter(now)) {
+      final nextWindow = _nightWindowContainingOrNext(
+        range,
+        window.end.add(const Duration(seconds: 1)),
+      );
+      events.add(
+        _scheduledTransition(
+          at: window.end,
+          isLocked: false,
+          activeMode: FocusModeType.nightDiscipline,
+          reason:
+              'Night Discipline will start at ${_formatTime(range.startHour, range.startMinute)}.',
+          nextChangeAt: nextWindow?.start,
+        ),
+      );
+    }
+
+    if (isWithinWindow &&
+        settings.temporarilyUnlockedUntil != null &&
+        settings.temporarilyUnlockedUntil!.isAfter(now) &&
+        settings.temporarilyUnlockedUntil!.isBefore(window.end)) {
+      events.add(
+        _scheduledTransition(
+          at: settings.temporarilyUnlockedUntil!,
+          isLocked: true,
+          activeMode: FocusModeType.nightDiscipline,
+          reason: 'Night Discipline is blocking selected apps.',
+          nextChangeAt: window.end,
+        ),
+      );
+    }
+
+    return events;
+  }
+
+  Future<List<Map<String, dynamic>>> _buildSalahScheduledTransitions(
+    FocusSettings settings,
+    DateTime now,
+  ) async {
+    final windows = await _salahWindows(now);
+    if (windows.isEmpty) return const <Map<String, dynamic>>[];
+
+    final events = <Map<String, dynamic>>[];
+    for (var index = 0; index < windows.length; index++) {
+      final window = windows[index];
+      final nextWindow = index + 1 < windows.length ? windows[index + 1] : null;
+
+      if (window.start.isAfter(now)) {
+        events.add(
+          _scheduledTransition(
+            at: window.start,
+            isLocked: true,
+            activeMode: FocusModeType.salah,
+            reason:
+                'Salah mode is active for ${_prayerLabel(window.prayer.id)}.',
+            nextChangeAt: window.end,
+          ),
+        );
+      }
+
+      if (window.end.isAfter(now)) {
+        events.add(
+          _scheduledTransition(
+            at: window.end,
+            isLocked: false,
+            activeMode: FocusModeType.salah,
+            reason: 'Salah mode will lock apps around the next prayer.',
+            nextChangeAt: nextWindow?.start,
+          ),
+        );
+      }
+    }
+
+    final activeWindow = windows.where((window) {
+      return !now.isBefore(window.start) && now.isBefore(window.end);
+    }).firstOrNull;
+    if (activeWindow != null &&
+        settings.temporarilyUnlockedUntil != null &&
+        settings.temporarilyUnlockedUntil!.isAfter(now) &&
+        settings.temporarilyUnlockedUntil!.isBefore(activeWindow.end)) {
+      events.add(
+        _scheduledTransition(
+          at: settings.temporarilyUnlockedUntil!,
+          isLocked: true,
+          activeMode: FocusModeType.salah,
+          reason:
+              'Salah mode is active for ${_prayerLabel(activeWindow.prayer.id)}.',
+          nextChangeAt: activeWindow.end,
+        ),
+      );
+    }
+
+    return events;
+  }
+
+  ({DateTime start, DateTime end})? _nightWindowContainingOrNext(
+    FocusTimeRange range,
+    DateTime now,
+  ) {
+    final todayStart = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      range.startHour,
+      range.startMinute,
+    );
+    var todayEnd = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      range.endHour,
+      range.endMinute,
+    );
+
+    if (range.startTotalMinutes >= range.endTotalMinutes) {
+      if (!todayEnd.isAfter(todayStart)) {
+        todayEnd = todayEnd.add(const Duration(days: 1));
+      }
+
+      if (now.isBefore(todayStart) && now.isBefore(todayEnd)) {
+        final previousStart = todayStart.subtract(const Duration(days: 1));
+        if (!now.isBefore(previousStart)) {
+          return (start: previousStart, end: todayEnd);
+        }
+        return (start: todayStart, end: todayEnd.add(const Duration(days: 1)));
+      }
+
+      if (!now.isBefore(todayStart) && now.isBefore(todayEnd)) {
+        return (start: todayStart, end: todayEnd);
+      }
+
+      return (
+        start: todayStart.add(const Duration(days: 1)),
+        end: todayEnd.add(const Duration(days: 1)),
+      );
+    }
+
+    if (now.isBefore(todayStart)) {
+      return (start: todayStart, end: todayEnd);
+    }
+
+    if (now.isBefore(todayEnd)) {
+      return (start: todayStart, end: todayEnd);
+    }
+
+    return (
+      start: todayStart.add(const Duration(days: 1)),
+      end: todayEnd.add(const Duration(days: 1)),
+    );
+  }
+
+  Map<String, dynamic> _scheduledTransition({
+    required DateTime at,
+    required bool isLocked,
+    required FocusModeType activeMode,
+    required String reason,
+    required DateTime? nextChangeAt,
+  }) {
+    return <String, dynamic>{
+      'at': at.toIso8601String(),
+      'atMillis': at.millisecondsSinceEpoch,
+      'isLocked': isLocked,
+      'activeMode': activeMode.name,
+      'lockReason': reason,
+      'nextChangeAt': nextChangeAt?.toIso8601String(),
+      'nextChangeAtMillis': nextChangeAt?.millisecondsSinceEpoch,
+    };
   }
 
   void _scheduleNextRefresh() {

@@ -23,12 +23,14 @@ import java.util.TimeZone
 class FocusBlockedActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate intent=$intent")
         renderContent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        FocusDebugLogger.append(applicationContext, "blocked.activity", "onNewIntent intent=$intent")
         renderContent(intent)
     }
 
