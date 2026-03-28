@@ -13,14 +13,14 @@ class DailyRefreshService {
 
   static final DailyRefreshService instance = DailyRefreshService._();
 
-  Timer? _midnightTimer;
+  Timer? _refreshTimer;
   bool _initialized = false;
 
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
     await refreshNow();
-    _scheduleNextMidnightRefresh();
+    _scheduleNextRefresh();
   }
 
   Future<void> refreshNow() async {
@@ -44,20 +44,20 @@ class DailyRefreshService {
 
   @visibleForTesting
   void scheduleRefreshFor(DateTime now) {
-    _midnightTimer?.cancel();
-    final nextMidnight = DateTime(now.year, now.month, now.day + 1);
-    final delay = nextMidnight.difference(now);
-    _midnightTimer = Timer(delay, () async {
+    _refreshTimer?.cancel();
+    final nextRefresh = DateTime(now.year, now.month, now.day + 1);
+    final delay = nextRefresh.difference(now);
+    _refreshTimer = Timer(delay, () async {
       await refreshNow();
       scheduleRefreshFor(DateTime.now());
     });
   }
 
-  void _scheduleNextMidnightRefresh() {
+  void _scheduleNextRefresh() {
     scheduleRefreshFor(DateTime.now());
   }
 
   void dispose() {
-    _midnightTimer?.cancel();
+    _refreshTimer?.cancel();
   }
 }

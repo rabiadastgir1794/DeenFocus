@@ -13,6 +13,11 @@
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		F10000000000000000000001 /* DeenlyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000011 /* DeenlyWidgets.swift */; };
 		F10000000000000000000002 /* DeenlyWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F10000000000000000000010 /* DeenlyWidgets.appex */; };
+		F10000000000000000000003 /* fajr.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000014 /* fajr.png */; };
+		F10000000000000000000004 /* dhuhr.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000015 /* dhuhr.png */; };
+		F10000000000000000000005 /* asar.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000016 /* asar.png */; };
+		F10000000000000000000006 /* maghrib.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000017 /* maghrib.png */; };
+		F10000000000000000000007 /* isha.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000018 /* isha.png */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -70,6 +75,11 @@
 		F10000000000000000000011 /* DeenlyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeenlyWidgets.swift; sourceTree = "<group>"; };
 		F10000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F10000000000000000000013 /* DeenlyWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeenlyWidgets.entitlements; sourceTree = "<group>"; };
+		F10000000000000000000014 /* fajr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fajr.png; sourceTree = "<group>"; };
+		F10000000000000000000015 /* dhuhr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dhuhr.png; sourceTree = "<group>"; };
+		F10000000000000000000016 /* asar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = asar.png; sourceTree = "<group>"; };
+		F10000000000000000000017 /* maghrib.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = maghrib.png; sourceTree = "<group>"; };
+		F10000000000000000000018 /* isha.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = isha.png; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +135,11 @@
 				F10000000000000000000011 /* DeenlyWidgets.swift */,
 				F10000000000000000000012 /* Info.plist */,
 				F10000000000000000000013 /* DeenlyWidgets.entitlements */,
+				F10000000000000000000014 /* fajr.png */,
+				F10000000000000000000015 /* dhuhr.png */,
+				F10000000000000000000016 /* asar.png */,
+				F10000000000000000000017 /* maghrib.png */,
+				F10000000000000000000018 /* isha.png */,
 			);
 			path = DeenlyWidgets;
 			sourceTree = "<group>";
@@ -311,6 +326,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F10000000000000000000003 /* fajr.png in Resources */,
+				F10000000000000000000004 /* dhuhr.png in Resources */,
+				F10000000000000000000005 /* asar.png in Resources */,
+				F10000000000000000000006 /* maghrib.png in Resources */,
+				F10000000000000000000007 /* isha.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -512,7 +532,7 @@
 				DEVELOPMENT_TEAM = 3NK8HTLUJK;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DeenlyWidgets/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -539,7 +559,7 @@
 				DEVELOPMENT_TEAM = 3NK8HTLUJK;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DeenlyWidgets/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -565,7 +585,7 @@
 				DEVELOPMENT_TEAM = 3NK8HTLUJK;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DeenlyWidgets/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

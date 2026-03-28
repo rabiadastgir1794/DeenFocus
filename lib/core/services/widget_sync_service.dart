@@ -16,16 +16,14 @@ class WidgetSyncService {
   static const MethodChannel _channel = MethodChannel(
     'com.app.deenly.deenly/widgets',
   );
-  static const int _bucketMinutes = 5;
-  static const int _timelineHours = 24;
-  static const int _timelineEntries = (_timelineHours * 60) ~/ _bucketMinutes;
+  static const int _timelineDays = 7;
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
   static final DateFormat _dateLabelFormat = DateFormat('EEE, MMM d');
   static final DateFormat _timeLabelFormat = DateFormat('h:mm a');
 
   Future<void> syncTimeline({DateTime? fromDate}) async {
     final seedDate = fromDate ?? DateTime.now();
-    final startDate = _floorToBucket(seedDate);
+    final startDate = DateTime(seedDate.year, seedDate.month, seedDate.day);
     final latitude = await StorageService.locationLatitude;
     final longitude = await StorageService.locationLongitude;
     final locationName = await StorageService.locationName;
@@ -35,10 +33,10 @@ class WidgetSyncService {
     final verseCache = <String, HomeDailyVerse?>{};
 
     final entries = <Map<String, dynamic>>[];
-    for (var index = 0; index < _timelineEntries; index++) {
-      final date = startDate.add(Duration(minutes: index * _bucketMinutes));
+    for (var index = 0; index < _timelineDays; index++) {
+      final date = startDate.add(Duration(days: index));
       final dayKey = _dayKeyFormat.format(date);
-      final ref = HomeDailyVerseHelper.getWidgetVerseRefForMoment(date);
+      final ref = HomeDailyVerseHelper.getDailyVerseRefForDate(date);
       final verseKey = '${ref.surahNumber}:${ref.ayahNumber}';
       final verse = verseCache.containsKey(verseKey)
           ? verseCache[verseKey]
@@ -94,17 +92,6 @@ class WidgetSyncService {
     await _channel.invokeMethod<void>('saveWidgetTimeline', <String, dynamic>{
       'timelineJson': payload,
     });
-  }
-
-  DateTime _floorToBucket(DateTime value) {
-    final minuteBucket = (value.minute ~/ _bucketMinutes) * _bucketMinutes;
-    return DateTime(
-      value.year,
-      value.month,
-      value.day,
-      value.hour,
-      minuteBucket,
-    );
   }
 
   String _labelForPrayer(HomePrayerId id) {

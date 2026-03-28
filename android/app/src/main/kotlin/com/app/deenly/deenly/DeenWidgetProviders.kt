@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit
 private const val widgetPrefsName = "deenly_widget"
 private const val widgetTimelineKey = "widget_timeline_json"
 private const val widgetRefreshAction = "com.rnr.deenfocus.WIDGET_REFRESH"
-private const val widgetRefreshMinutes = 5L
 
 enum class WidgetSize {
     SMALL,
@@ -166,10 +165,9 @@ internal object DeenWidgetUpdater {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val pendingIntent = refreshPendingIntent(context)
         val nextRefresh = LocalDateTime.now()
-            .truncatedTo(ChronoUnit.MINUTES)
-            .plusMinutes(widgetRefreshMinutes)
-            .withSecond(0)
-            .withNano(0)
+            .plusDays(1)
+            .toLocalDate()
+            .atStartOfDay()
             .atZone(ZoneId.systemDefault())
             .toInstant()
             .toEpochMilli()
@@ -418,6 +416,7 @@ abstract class BaseDeenWidgetProvider(
         appWidgetIds: IntArray,
     ) {
         DeenWidgetUpdater.updateWidgets(context, appWidgetManager, appWidgetIds, size)
+        DeenWidgetUpdater.refreshAll(context)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
