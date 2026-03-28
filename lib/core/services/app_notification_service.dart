@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -79,44 +84,73 @@ class AppNotificationService {
     _initialized = true;
   }
 
+  /// Android 13+ and iOS/macOS need an explicit runtime grant before scheduling.
+  Future<void> _ensureNotificationRuntimePermissions() async {
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    await androidPlugin?.requestNotificationsPermission();
+
+    final iosPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
+    await iosPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+
+    final macPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin
+        >();
+    await macPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+
+  /// Enough IDs for 7 days × 6 prayer indices (sunrise skipped when scheduling).
+  static const int _prayerNotificationIdStart = 1000;
+  static const int _prayerNotificationIdEnd = 1199;
+
   Future<void> reschedulePrayerNotifications({
     required double latitude,
     required double longitude,
   }) async {
     await initialize();
-    await _cancelRange(1000, 1039);
+    await _ensureNotificationRuntimePermissions();
+    await _ensureAndroidExactAlarmOrFallback();
+    // Match device timezone after travel / DST changes.
+    await _setLocalTimezone();
+    await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
 
     final now = DateTime.now();
+    // Schedule a full week — many devices batch or drop inexact alarms; using
+    // [AndroidScheduleMode.alarmClock] per-slot avoids only the first firing.
+    const daysAhead = 7;
     final datasets = <({int dayOffset, HomePrayerTimesData data})>[
-      (
-        dayOffset: 0,
-        data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-          latitude: latitude,
-          longitude: longitude,
-          now: now,
+      for (var d = 0; d < daysAhead; d++)
+        (
+          dayOffset: d,
+          data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+            latitude: latitude,
+            longitude: longitude,
+            now: now.add(Duration(days: d)),
+          ),
         ),
-      ),
-      (
-        dayOffset: 1,
-        data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-          latitude: latitude,
-          longitude: longitude,
-          now: now.add(const Duration(days: 1)),
-        ),
-      ),
     ];
 
     for (final dataset in datasets) {
       for (final slot in dataset.data.slots.where(
         (slot) => slot.id != HomePrayerId.sunrise,
       )) {
-        final id = 1000 + dataset.dayOffset * 10 + _slotIndex(slot.id);
+        final id =
+            _prayerNotificationIdStart +
+            dataset.dayOffset * 20 +
+            _slotIndex(slot.id);
         await _scheduleIfFuture(
           id: id,
           when: slot.time,
           title: "It's time for ${_prayerLabel(slot.id)}",
           body: 'Take a moment for ${_prayerLabel(slot.id)} prayer.',
           details: _prayerNotificationDetails,
+          preferAlarmClock: true,
         );
       }
     }
@@ -128,6 +162,9 @@ class AppNotificationService {
     required double? longitude,
   }) async {
     await initialize();
+    await _ensureNotificationRuntimePermissions();
+    await _ensureAndroidExactAlarmOrFallback();
+    await _setLocalTimezone();
     await _cancelRange(2000, 2059);
     await _cancelRange(3000, 3059);
     await _cancelRange(4000, 4003);
@@ -220,6 +257,7 @@ class AppNotificationService {
 
   Future<void> showImmediateFocusLockedNotification(FocusModeType mode) async {
     await initialize();
+    await _ensureNotificationRuntimePermissions();
     if (mode != FocusModeType.salah && mode != FocusModeType.nightDiscipline) {
       return;
     }
@@ -271,6 +309,7 @@ class AppNotificationService {
     required String title,
     required String body,
     required NotificationDetails details,
+    bool preferAlarmClock = false,
   }) async {
     final scheduledAt = when.toLocal();
     if (!scheduledAt.isAfter(DateTime.now())) {
@@ -286,16 +325,70 @@ class AppNotificationService {
       'id=$id title=$title scheduledAt=${scheduledAt.toIso8601String()}',
     );
 
-    await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledAt, tz.local),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
+    final whenTz = tz.TZDateTime.from(scheduledAt, tz.local);
+
+    if (Platform.isAndroid) {
+      Future<void> scheduleWith(AndroidScheduleMode mode) {
+        return _plugin.zonedSchedule(
+          id,
+          title,
+          body,
+          whenTz,
+          details,
+          androidScheduleMode: mode,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+        );
+      }
+
+      try {
+        if (preferAlarmClock) {
+          // One alarm per prayer — avoids OEMs collapsing idle exact alarms.
+          await scheduleWith(AndroidScheduleMode.alarmClock);
+        } else {
+          await scheduleWith(AndroidScheduleMode.exactAllowWhileIdle);
+        }
+      } on PlatformException catch (e, st) {
+        assert(() {
+          debugPrint(
+            'notifications: primary schedule failed ($e), retrying. $st',
+          );
+          return true;
+        }());
+        try {
+          await scheduleWith(AndroidScheduleMode.exactAllowWhileIdle);
+        } on PlatformException catch (e2, st2) {
+          assert(() {
+            debugPrint(
+              'notifications: exact fallback failed ($e2), inexact. $st2',
+            );
+            return true;
+          }());
+          await scheduleWith(AndroidScheduleMode.inexactAllowWhileIdle);
+        }
+      }
+    } else {
+      await _plugin.zonedSchedule(
+        id,
+        title,
+        body,
+        whenTz,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    }
+  }
+
+  /// Exact alarms while idle require [Permission.scheduleExactAlarm] on many
+  /// Android 12+ builds; without it, [AndroidScheduleMode.exactAllowWhileIdle]
+  /// scheduling fails.
+  Future<void> _ensureAndroidExactAlarmOrFallback() async {
+    if (!Platform.isAndroid) return;
+    final status = await Permission.scheduleExactAlarm.status;
+    if (status.isGranted || status.isLimited) return;
+    await Permission.scheduleExactAlarm.request();
   }
 
   Future<void> _scheduleSalahTestNotifications(DateTime now) async {
@@ -336,6 +429,8 @@ class AppNotificationService {
       await _plugin.cancel(id);
     }
   }
+
+  /// Cancels prayer notification ID range (e.g. before focus sync if IDs ever overlap).
 
   Future<void> _setLocalTimezone() async {
     try {

@@ -1,4 +1,12 @@
 abstract class AppConfig {
+  /// Optional override for flutter_map raster tiles (`{z}`/`{x}`/`{y}`).
+  /// Default uses the OSM public tile server (no key). For heavy production
+  /// traffic, switch to a commercial provider and pass the URL via dart-define.
+  static const String mapTilesUrlTemplate = String.fromEnvironment(
+    'MAP_TILES_URL',
+    defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  );
+
   static const String googleMapsApiKey = String.fromEnvironment(
     'GOOGLE_MAPS_API_KEY',
   );

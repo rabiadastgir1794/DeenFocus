@@ -6,6 +6,7 @@ import FamilyControls
 import DeviceActivity
 import ManagedSettings
 import CoreLocation
+import MapKit
 
 @available(iOS 16.0, *)
 private enum ManagedSettingsStoreHolder {
@@ -19,6 +20,7 @@ private enum ManagedSettingsStoreHolder {
   private let qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
   private let widgetChannelName = "com.app.deenly.deenly/widgets"
+  private let locationSearchChannelName = "com.app.deenly.deenly/location_search"
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
   private let widgetAppGroup = "group.com.rnr.deenfocus.widgets"
 
@@ -44,6 +46,10 @@ private enum ManagedSettingsStoreHolder {
       )
       let widgetChannel = FlutterMethodChannel(
         name: widgetChannelName,
+        binaryMessenger: messenger
+      )
+      let locationSearchChannel = FlutterMethodChannel(
+        name: locationSearchChannelName,
         binaryMessenger: messenger
       )
       let qiblaEventChannel = FlutterEventChannel(
@@ -91,10 +97,79 @@ private enum ManagedSettingsStoreHolder {
         }
       }
 
+      locationSearchChannel.setMethodCallHandler { call, result in
+        switch call.method {
+        case "search":
+          guard
+            let args = call.arguments as? [String: Any],
+            let query = args["query"] as? String
+          else {
+            result(
+              FlutterError(
+                code: "INVALID_QUERY",
+                message: "Query missing.",
+                details: nil
+              )
+            )
+            return
+          }
+          self.searchMapItems(query: query, result: result)
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      }
+
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  private func searchMapItems(query: String, result: @escaping FlutterResult) {
+    let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else {
+      result([])
+      return
+    }
+
+    let request = MKLocalSearch.Request()
+    request.naturalLanguageQuery = trimmed
+    if #available(iOS 13.0, *) {
+      request.resultTypes = [.address, .pointOfInterest]
+    }
+
+    let search = MKLocalSearch(request: request)
+    search.start { response, error in
+      // FlutterMethodChannel expects results on the main queue.
+      DispatchQueue.main.async {
+        if error != nil {
+          result([])
+          return
+        }
+        guard let response = response else {
+          result([])
+          return
+        }
+
+        var payload: [[String: Any]] = []
+        for item in response.mapItems {
+          let pm = item.placemark
+          let title = item.name ?? pm.name ?? trimmed
+          var subtitleParts: [String] = []
+          if let locality = pm.locality { subtitleParts.append(locality) }
+          if let country = pm.country { subtitleParts.append(country) }
+          let subtitle = subtitleParts.joined(separator: ", ")
+
+          payload.append([
+            "title": title,
+            "subtitle": subtitle,
+            "latitude": pm.coordinate.latitude,
+            "longitude": pm.coordinate.longitude,
+          ])
+        }
+        result(payload)
+      }
+    }
   }
 
   private func saveWidgetTimeline(call: FlutterMethodCall, result: @escaping FlutterResult) {

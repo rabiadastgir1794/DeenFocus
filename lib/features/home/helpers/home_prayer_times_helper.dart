@@ -164,17 +164,34 @@ abstract class HomePrayerTimesHelper {
       }
     }
 
-    final remaining = nextSlot == null
-        ? null
-        : nextSlot.time.difference(currentTime).isNegative
-        ? Duration.zero
-        : nextSlot.time.difference(currentTime);
+    if (nextSlot != null) {
+      final remaining = nextSlot.time.difference(currentTime);
+      return HomePrayerTimesData(
+        slots: slots,
+        nextPrayer: nextSlot.id,
+        nextPrayerTime: nextSlot.time,
+        remaining: remaining.isNegative ? Duration.zero : remaining,
+      );
+    }
+
+    // All prayers for today have passed — keep Isha highlighted until midnight,
+    // then the next refresh shows Fajr as the upcoming prayer.
+    final isha = slots.firstWhere(
+      (s) => s.id == HomePrayerId.isha,
+      orElse: () => slots.last,
+    );
+    final startOfNextCalendarDay = DateTime(
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+    ).add(const Duration(days: 1));
+    final untilMidnight = startOfNextCalendarDay.difference(currentTime);
 
     return HomePrayerTimesData(
       slots: slots,
-      nextPrayer: nextSlot?.id,
-      nextPrayerTime: nextSlot?.time,
-      remaining: remaining,
+      nextPrayer: HomePrayerId.isha,
+      nextPrayerTime: isha.time,
+      remaining: untilMidnight.isNegative ? Duration.zero : untilMidnight,
     );
   }
 }

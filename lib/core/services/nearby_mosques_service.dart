@@ -4,8 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import '../config/app_config.dart';
-
+/// Fetches nearby mosques from OpenStreetMap via the public Overpass API (no API key).
 @immutable
 class NearbyMosque {
   const NearbyMosque({
@@ -24,6 +23,8 @@ class NearbyMosque {
   final double latitude;
   final double longitude;
   final double distanceMeters;
+
+  /// Optional deep link; not set for OSM-sourced results.
   final String? googleMapsUri;
 }
 
@@ -31,90 +32,136 @@ class NearbyMosquesService {
   NearbyMosquesService({http.Client? client})
     : _client = client ?? http.Client();
 
+  static const _overpassInterpreter = 'https://overpass-api.de/api/interpreter';
+
   final http.Client _client;
 
   Future<List<NearbyMosque>> fetchNearby({
     required double latitude,
     required double longitude,
     double radiusMeters = 5000,
-    int maxResultCount = 12,
+    int maxResultCount = 40,
   }) async {
-    if (!AppConfig.hasGoogleMapsApiKey) {
-      throw const NearbyMosquesException(
-        'Add a Google Maps API key to load nearby mosques.',
-      );
-    }
+    final query = '''
+[out:json][timeout:25];
+(
+  node["amenity"="mosque"](around:$radiusMeters,$latitude,$longitude);
+  way["amenity"="mosque"](around:$radiusMeters,$latitude,$longitude);
+  relation["amenity"="mosque"](around:$radiusMeters,$latitude,$longitude);
+  node["amenity"="place_of_worship"]["religion"="muslim"](around:$radiusMeters,$latitude,$longitude);
+  way["amenity"="place_of_worship"]["religion"="muslim"](around:$radiusMeters,$latitude,$longitude);
+  relation["amenity"="place_of_worship"]["religion"="muslim"](around:$radiusMeters,$latitude,$longitude);
+);
+out center;
+''';
 
-    final uri = Uri.parse(
-      'https://places.googleapis.com/v1/places:searchNearby',
-    );
     final response = await _client
         .post(
-          uri,
-          headers: <String, String>{
-            'Content-Type': 'application/json',
-            'X-Goog-Api-Key': AppConfig.googleMapsApiKey,
-            'X-Goog-FieldMask':
-                'places.id,places.displayName,places.formattedAddress,places.location,places.googleMapsUri',
+          Uri.parse(_overpassInterpreter),
+          headers: const <String, String>{
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Accept': 'application/json',
           },
-          body: jsonEncode(<String, dynamic>{
-            'includedTypes': const <String>['mosque'],
-            'maxResultCount': maxResultCount,
-            'locationRestriction': <String, dynamic>{
-              'circle': <String, dynamic>{
-                'center': <String, double>{
-                  'latitude': latitude,
-                  'longitude': longitude,
-                },
-                'radius': radiusMeters,
-              },
-            },
-          }),
+          body: query,
         )
-        .timeout(const Duration(seconds: 25));
+        .timeout(const Duration(seconds: 35));
 
+    if (response.statusCode == 429) {
+      throw const NearbyMosquesException(
+        'Too many map requests. Please try again in a minute.',
+      );
+    }
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw NearbyMosquesException(
-        'Google Places request failed (${response.statusCode}).',
+        'Could not load nearby mosques (${response.statusCode}).',
       );
     }
 
-    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-    final places = decoded['places'] as List<dynamic>? ?? const <dynamic>[];
+    final decoded = jsonDecode(response.body);
+    if (decoded is! Map<String, dynamic>) {
+      throw const NearbyMosquesException('Unexpected response from map data service.');
+    }
 
-    return places
-        .whereType<Map<String, dynamic>>()
-        .map((place) {
-          final location =
-              place['location'] as Map<String, dynamic>? ?? const {};
-          final lat = (location['latitude'] as num?)?.toDouble();
-          final lng = (location['longitude'] as num?)?.toDouble();
-          final nameMap =
-              place['displayName'] as Map<String, dynamic>? ?? const {};
-          final name = (nameMap['text'] as String?)?.trim() ?? '';
-          final address = (place['formattedAddress'] as String?)?.trim() ?? '';
-          if (lat == null || lng == null || name.isEmpty) {
-            return null;
-          }
+    final elements = decoded['elements'] as List<dynamic>? ?? const <dynamic>[];
+    final results = <NearbyMosque>[];
 
-          return NearbyMosque(
-            id: (place['id'] as String?)?.trim() ?? name,
-            name: name,
-            address: address,
-            latitude: lat,
-            longitude: lng,
-            distanceMeters: _distanceMeters(
-              fromLat: latitude,
-              fromLng: longitude,
-              toLat: lat,
-              toLng: lng,
-            ),
-            googleMapsUri: (place['googleMapsUri'] as String?)?.trim(),
-          );
-        })
-        .whereType<NearbyMosque>()
-        .toList(growable: false)
-      ..sort((a, b) => a.distanceMeters.compareTo(b.distanceMeters));
+    for (final raw in elements) {
+      if (raw is! Map<String, dynamic>) continue;
+      final type = raw['type'] as String?;
+      final id = raw['id'];
+      if (type == null || id == null) continue;
+
+      double? lat;
+      double? lon;
+      if (type == 'node') {
+        lat = (raw['lat'] as num?)?.toDouble();
+        lon = (raw['lon'] as num?)?.toDouble();
+      } else if (type == 'way' || type == 'relation') {
+        final center = raw['center'] as Map<String, dynamic>?;
+        if (center != null) {
+          lat = (center['lat'] as num?)?.toDouble();
+          lon = (center['lon'] as num?)?.toDouble();
+        }
+      }
+      if (lat == null || lon == null) continue;
+
+      final tags = raw['tags'] as Map<String, dynamic>? ?? const {};
+      final name = _mosqueName(tags);
+      final address = _formatAddress(tags);
+      final osmId = '$type/$id';
+
+      results.add(
+        NearbyMosque(
+          id: osmId,
+          name: name,
+          address: address,
+          latitude: lat,
+          longitude: lon,
+          distanceMeters: _distanceMeters(
+            fromLat: latitude,
+            fromLng: longitude,
+            toLat: lat,
+            toLng: lon,
+          ),
+        ),
+      );
+    }
+
+    results.sort((a, b) => a.distanceMeters.compareTo(b.distanceMeters));
+
+    final deduped = <NearbyMosque>[];
+    final seen = <String>{};
+    for (final m in results) {
+      if (seen.add(m.id)) {
+        deduped.add(m);
+        if (deduped.length >= maxResultCount) break;
+      }
+    }
+
+    return deduped;
+  }
+
+  static String _mosqueName(Map<String, dynamic> tags) {
+    for (final key in const ['name', 'name:en', 'official_name']) {
+      final v = tags[key];
+      if (v is String && v.trim().isNotEmpty) return v.trim();
+    }
+    return 'Mosque';
+  }
+
+  static String _formatAddress(Map<String, dynamic> tags) {
+    final full = tags['addr:full'];
+    if (full is String && full.trim().isNotEmpty) return full.trim();
+
+    final parts = <String>[
+      if (tags['addr:housenumber'] is String) tags['addr:housenumber'] as String,
+      if (tags['addr:street'] is String) tags['addr:street'] as String,
+      if (tags['addr:city'] is String) tags['addr:city'] as String,
+      if (tags['addr:country'] is String) tags['addr:country'] as String,
+    ].map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+
+    if (parts.isNotEmpty) return parts.join(', ');
+    return 'OpenStreetMap';
   }
 
   double _distanceMeters({

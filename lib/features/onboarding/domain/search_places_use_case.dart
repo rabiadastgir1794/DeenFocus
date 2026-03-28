@@ -1,19 +1,20 @@
-import '../data/places_api_client.dart';
+import 'package:deenly/core/services/native_location_search_service.dart';
 import '../model/location_suggestion.dart';
 
 class SearchPlacesUseCase {
-  SearchPlacesUseCase({PlacesApiClient? client})
-    : _client = client ?? PlacesApiClient();
+  SearchPlacesUseCase({NativeLocationSearchService? native})
+    : _native = native ?? NativeLocationSearchService();
 
-  final PlacesApiClient _client;
+  final NativeLocationSearchService _native;
 
   Future<List<LocationSuggestion>> execute(String query) {
-    return _client.searchCities(query);
+    return _native.search(query);
   }
 
+  /// Native search always returns coordinates; kept for call-site compatibility.
   Future<({double latitude, double longitude})?> fetchCoordinates(
     String placeId,
-  ) {
-    return _client.fetchPlaceCoordinates(placeId);
+  ) async {
+    return null;
   }
 }

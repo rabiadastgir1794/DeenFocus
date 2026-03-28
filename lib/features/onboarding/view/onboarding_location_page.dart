@@ -163,27 +163,18 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
   }
 
   Future<void> _onLocationTap(LocationSuggestion item) async {
+    if (item.latitude != null && item.longitude != null) {
+      _applySelectedLocation(item);
+      return;
+    }
+
     setState(() {
       _isResolvingLocation = true;
     });
 
     try {
-      LocationSuggestion effective = item;
-      if (item.placeId != null &&
-          item.placeId!.trim().isNotEmpty &&
-          (item.latitude == null || item.longitude == null)) {
-        final coordinates = await _searchPlacesUseCase.fetchCoordinates(
-          item.placeId!,
-        );
-        if (coordinates != null) {
-          effective = item.copyWith(
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-          );
-        }
-      }
       if (!mounted) return;
-      _applySelectedLocation(effective);
+      _applySelectedLocation(item);
     } finally {
       if (mounted) {
         setState(() {

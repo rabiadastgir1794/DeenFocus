@@ -119,6 +119,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsButton => 'Enable Notifications';
 
   @override
+  String get notificationsEnabled => 'Notifications are enabled';
+
+  @override
   String get screenTimeTitle => 'Screen Time Access';
 
   @override

@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/services/location/location_service.dart';
+import '../../../../core/services/nearby_mosques_cache.dart';
 import '../../../../core/services/nearby_mosques_service.dart';
 import '../../../../core/services/permission_service.dart';
 
@@ -51,17 +54,11 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
       _errorMessage = null;
     });
 
-    if (!AppConfig.hasGoogleMapsApiKey) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage =
-            'Nearby Mosques needs a Google Maps API key before maps and mosque results can load.';
-      });
-      return;
-    }
-
     try {
       await _ensureLocation();
+      if (!mounted) return;
+      setState(() {});
+
       final latitude = _latitude;
       final longitude = _longitude;
       if (latitude == null || longitude == null) {
@@ -70,9 +67,31 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
         );
       }
 
+      final cached = await NearbyMosquesCache.readValid(
+        latitude: latitude,
+        longitude: longitude,
+      );
+      if (cached != null) {
+        if (!mounted) return;
+        setState(() {
+          _mosques = cached.mosques;
+          _isLoading = false;
+          _errorMessage = cached.mosques.isEmpty
+              ? 'No mosques were found within 5 km of your current location.'
+              : null;
+        });
+        return;
+      }
+
       final mosques = await _service.fetchNearby(
         latitude: latitude,
         longitude: longitude,
+      );
+
+      await NearbyMosquesCache.save(
+        latitude: latitude,
+        longitude: longitude,
+        mosques: mosques,
       );
 
       if (!mounted) return;
@@ -129,11 +148,13 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             children: [
-              _MapCard(
+              _NearbyMosquesMapCard(
                 latitude: _latitude,
                 longitude: _longitude,
                 mosques: _mosques,
                 isDark: isDark,
+                awaitingMosqueResults: _isLoading,
+                onMosqueTap: _openMap,
               ),
               const SizedBox(height: 16),
               if ((_locationName?.trim().isNotEmpty ?? false))
@@ -153,18 +174,12 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
               else if (_errorMessage != null)
                 _StatusCard(
                   message: _errorMessage!,
-                  actionLabel: _canOpenSettings
-                      ? 'Open Settings'
-                      : AppConfig.hasGoogleMapsApiKey
-                      ? 'Try Again'
-                      : null,
+                  actionLabel: _canOpenSettings ? 'Open Settings' : 'Try Again',
                   onAction: _canOpenSettings
                       ? () async {
                           await PermissionService.openLocationSettings();
                         }
-                      : AppConfig.hasGoogleMapsApiKey
-                      ? _load
-                      : null,
+                      : _load,
                 )
               else ...[
                 Text(
@@ -190,51 +205,121 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
       _errorMessage?.toLowerCase().contains('permission') ?? false;
 
   Future<void> _openMap(NearbyMosque mosque) async {
-    final label = Uri.encodeComponent(mosque.name);
-    final coordinates = '${mosque.latitude},${mosque.longitude}';
+    final lat = mosque.latitude;
+    final lng = mosque.longitude;
+    final name = mosque.name;
 
     if (Platform.isIOS) {
-      final googleMapsUri = Uri.parse(
-        'comgooglemaps://?q=$label&center=$coordinates',
+      final uri = Uri.parse(
+        'https://maps.apple.com/?ll=$lat,$lng&q=${Uri.encodeComponent(name)}',
       );
-      if (await canLaunchUrl(googleMapsUri)) {
-        await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
-        return;
-      }
-
-      final appleMapsUri = Uri.parse(
-        'https://maps.apple.com/?ll=$coordinates&q=$label',
-      );
-      await launchUrl(appleMapsUri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
       return;
     }
 
-    final fallback = mosque.googleMapsUri?.trim().isNotEmpty == true
-        ? Uri.parse(mosque.googleMapsUri!)
-        : Uri.parse(
-            'https://www.google.com/maps/search/?api=1&query=$coordinates&query_place_id=${Uri.encodeComponent(mosque.id)}',
-          );
-    await launchUrl(fallback, mode: LaunchMode.externalApplication);
+    final uri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent('$lat,$lng')}',
+    );
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
 
-class _MapCard extends StatelessWidget {
-  const _MapCard({
+class _NearbyMosquesMapCard extends StatefulWidget {
+  const _NearbyMosquesMapCard({
     required this.latitude,
     required this.longitude,
     required this.mosques,
     required this.isDark,
+    required this.awaitingMosqueResults,
+    required this.onMosqueTap,
   });
 
   final double? latitude;
   final double? longitude;
   final List<NearbyMosque> mosques;
   final bool isDark;
+  final bool awaitingMosqueResults;
+  final Future<void> Function(NearbyMosque mosque) onMosqueTap;
+
+  @override
+  State<_NearbyMosquesMapCard> createState() => _NearbyMosquesMapCardState();
+}
+
+class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
+  final MapController _mapController = MapController();
+
+  String _mapFooterCaption() {
+    if (widget.mosques.isNotEmpty) {
+      return '${widget.mosques.length} mosques found within 5 km';
+    }
+    if (widget.awaitingMosqueResults) {
+      return 'Nearby mosques will appear here once results load.';
+    }
+    return 'No mosques found within 5 km in OpenStreetMap.';
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _NearbyMosquesMapCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.latitude != widget.latitude ||
+        oldWidget.longitude != widget.longitude ||
+        oldWidget.awaitingMosqueResults != widget.awaitingMosqueResults ||
+        oldWidget.mosques.length != widget.mosques.length ||
+        !_sameMosqueIds(oldWidget.mosques, widget.mosques)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _fitBounds());
+    }
+  }
+
+  bool _sameMosqueIds(List<NearbyMosque> a, List<NearbyMosque> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id) return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fitBounds());
+  }
+
+  void _fitBounds() {
+    final lat = widget.latitude;
+    final lng = widget.longitude;
+    if (lat == null || lng == null) return;
+
+    final user = LatLng(lat, lng);
+    final points = <LatLng>[
+      user,
+      ...widget.mosques.map((m) => LatLng(m.latitude, m.longitude)),
+    ];
+
+    if (widget.mosques.isEmpty) {
+      _mapController.move(user, 14);
+      return;
+    }
+
+    _mapController.fitCamera(
+      CameraFit.bounds(
+        bounds: LatLngBounds.fromPoints(points),
+        padding: const EdgeInsets.fromLTRB(44, 44, 44, 64),
+        maxZoom: 16,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final mapUrl = _buildStaticMapUrl();
+    final lat = widget.latitude;
+    final lng = widget.longitude;
 
     return Container(
       height: 280,
@@ -243,29 +328,106 @@ class _MapCard extends StatelessWidget {
         border: Border.all(
           color: colorScheme.outlineVariant.withValues(alpha: 0.35),
         ),
-        color: isDark
+        color: widget.isDark
             ? colorScheme.surfaceContainerHigh
             : colorScheme.surfaceContainerLowest,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.05),
+            color: Colors.black.withValues(alpha: widget.isDark ? 0.18 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: mapUrl == null
-          ? _MapPlaceholder(hasLocation: latitude != null && longitude != null)
+      child: lat == null || lng == null
+          ? const _MapPlaceholder(hasLocation: false)
           : Stack(
               children: [
                 Positioned.fill(
-                  child: Image.network(
-                    mapUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const _MapPlaceholder(hasLocation: true);
-                    },
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: LatLng(lat, lng),
+                      initialZoom: 14,
+                      minZoom: 3,
+                      maxZoom: 19,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.all,
+                      ),
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: AppConfig.mapTilesUrlTemplate,
+                        userAgentPackageName: 'com.rnr.deenfocus',
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(lat, lng),
+                            width: 44,
+                            height: 44,
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.my_location,
+                              color: colorScheme.primary,
+                              size: 36,
+                              shadows: const [
+                                Shadow(
+                                  blurRadius: 4,
+                                  color: Colors.black26,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                          ),
+                          for (final mosque in widget.mosques)
+                            Marker(
+                              point: LatLng(mosque.latitude, mosque.longitude),
+                              width: 42,
+                              height: 42,
+                              alignment: Alignment.bottomCenter,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () => widget.onMosqueTap(mosque),
+                                  customBorder: const CircleBorder(),
+                                  child: Icon(
+                                    Icons.location_on,
+                                    color: colorScheme.error,
+                                    size: 40,
+                                    shadows: const [
+                                      Shadow(
+                                        blurRadius: 4,
+                                        color: Colors.black38,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      SimpleAttributionWidget(
+                        alignment: Alignment.bottomRight,
+                        backgroundColor: colorScheme.surface.withValues(
+                          alpha: 0.88,
+                        ),
+                        source: const Text('OpenStreetMap'),
+                        onTap: () async {
+                          final uri = Uri.parse(
+                            'https://www.openstreetmap.org/copyright',
+                          );
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(
+                              uri,
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 Positioned(
@@ -282,9 +444,7 @@ class _MapCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      mosques.isEmpty
-                          ? 'Nearby mosques will appear here once results load.'
-                          : '${mosques.length} mosques found within 5 km',
+                      _mapFooterCaption(),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w600,
@@ -295,35 +455,6 @@ class _MapCard extends StatelessWidget {
               ],
             ),
     );
-  }
-
-  String? _buildStaticMapUrl() {
-    final latitude = this.latitude;
-    final longitude = this.longitude;
-    if (latitude == null ||
-        longitude == null ||
-        !AppConfig.hasGoogleMapsApiKey) {
-      return null;
-    }
-
-    final buffer = StringBuffer(
-      'https://maps.googleapis.com/maps/api/staticmap'
-      '?center=$latitude,$longitude'
-      '&zoom=14'
-      '&size=1200x800'
-      '&scale=2'
-      '&maptype=roadmap'
-      '&markers=color:green%7Clabel:U%7C$latitude,$longitude',
-    );
-
-    for (final mosque in mosques.take(8)) {
-      buffer.write(
-        '&markers=color:red%7Clabel:M%7C${mosque.latitude},${mosque.longitude}',
-      );
-    }
-
-    buffer.write('&key=${AppConfig.googleMapsApiKey}');
-    return buffer.toString();
   }
 }
 
@@ -342,7 +473,7 @@ class _MapPlaceholder extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.location_on_outlined,
+              Icons.map_outlined,
               size: 38,
               color: colorScheme.primary,
             ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -82,6 +83,12 @@ class HomeTabViewModel extends ChangeNotifier {
     await _ensureLocationAccessIfNeeded();
     await _loadPrayerTimes();
     await _loadPrayerStreak();
+    if (latitude != null && longitude != null) {
+      await AppNotificationService.instance.reschedulePrayerNotifications(
+        latitude: latitude!,
+        longitude: longitude!,
+      );
+    }
     notifyListeners();
   }
 

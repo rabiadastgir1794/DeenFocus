@@ -34,6 +34,7 @@
   "notificationsTitle": "Stay Reminded",
   "notificationsSubtitle": "Get notified for prayer times, focus mode reminders, and daily spiritual prompts.",
   "notificationsButton": "Enable Notifications",
+  "notificationsEnabled": "Notifications are enabled",
   "screenTimeTitle": "Screen Time Access",
   "screenTimeSubtitle": "To block distracting apps during Salah and Night Discipline, we need screen time permission.",
   "screenTimeButton": "Allow Access",

@@ -101,7 +101,14 @@ class OnboardingViewModel extends ChangeNotifier {
       );
       if (_selectedLocation!.latitude != null &&
           _selectedLocation!.longitude != null) {
-        await DailyRefreshService.instance.refreshNow();
+        try {
+          await DailyRefreshService.instance.refreshNow();
+        } catch (e, st) {
+          assert(() {
+            debugPrint('Onboarding: refresh after location failed: $e\n$st');
+            return true;
+          }());
+        }
       }
     }
     _didComplete = true;

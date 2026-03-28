@@ -32,6 +32,11 @@ abstract class StorageService {
   static const String _keyHomePrayerStreakJson = 'home_prayer_streak_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
   static const String _keyDarkModeEnabled = 'dark_mode_enabled';
+  static const String _keyNearbyMosquesCacheLat = 'nearby_mosques_cache_lat';
+  static const String _keyNearbyMosquesCacheLng = 'nearby_mosques_cache_lng';
+  static const String _keyNearbyMosquesCacheFetchedMs =
+      'nearby_mosques_cache_fetched_ms';
+  static const String _keyNearbyMosquesCacheJson = 'nearby_mosques_cache_json';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -301,5 +306,38 @@ abstract class StorageService {
   static Future<void> setDarkModeEnabled(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyDarkModeEnabled, value);
+  }
+
+  static Future<double?> get nearbyMosquesCacheLatitude async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyNearbyMosquesCacheLat);
+  }
+
+  static Future<double?> get nearbyMosquesCacheLongitude async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyNearbyMosquesCacheLng);
+  }
+
+  static Future<int?> get nearbyMosquesCacheFetchedMs async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyNearbyMosquesCacheFetchedMs);
+  }
+
+  static Future<String?> get nearbyMosquesCacheJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyNearbyMosquesCacheJson);
+  }
+
+  static Future<void> setNearbyMosquesCache({
+    required double latitude,
+    required double longitude,
+    required int fetchedMs,
+    required String json,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setDouble(_keyNearbyMosquesCacheLat, latitude);
+    await prefs.setDouble(_keyNearbyMosquesCacheLng, longitude);
+    await prefs.setInt(_keyNearbyMosquesCacheFetchedMs, fetchedMs);
+    await prefs.setString(_keyNearbyMosquesCacheJson, json);
   }
 }

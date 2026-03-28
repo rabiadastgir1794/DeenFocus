@@ -33,6 +33,7 @@ class OnboardingFlowScreen extends StatefulWidget {
 class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
   late PageController _pageController;
   late TextEditingController _nameController;
+  late final OnboardingViewModel _onboardingViewModel = OnboardingViewModel();
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
 
   @override
   void dispose() {
+    _onboardingViewModel.dispose();
     _pageController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -50,8 +52,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => OnboardingViewModel(),
+    return ChangeNotifierProvider.value(
+      value: _onboardingViewModel,
       child: _OnboardingFlowContent(
         pageController: _pageController,
         nameController: _nameController,
@@ -76,6 +78,7 @@ class _OnboardingFlowContent extends StatefulWidget {
 class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     with WidgetsBindingObserver {
   bool _didAutoRequestNotification = false;
+  bool _scheduledPostOnboardingNavigation = false;
 
   @override
   void initState() {
@@ -248,7 +251,10 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
   Future<void> _requestNotificationOnStep(OnboardingViewModel vm) async {
     if (_didAutoRequestNotification) return;
     _didAutoRequestNotification = true;
-    await vm.requestNotification();
+    await vm.recheckPermissions();
+    if (!vm.notificationGranted) {
+      await vm.requestNotification();
+    }
   }
 
   Future<void> _onScreenTimeAllowTap(
@@ -345,8 +351,10 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
       });
     }
 
-    if (vm.didComplete) {
+    if (vm.didComplete && !_scheduledPostOnboardingNavigation) {
+      _scheduledPostOnboardingNavigation = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
         context.go(RouteNames.home);
       });
     }
@@ -392,6 +400,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                   OnboardingNotificationsPage(
                     onEnableTap: () => _onNotificationEnableTap(context, vm),
                     isLoading: vm.notificationRequesting,
+                    showEnableButton: !vm.notificationGranted,
                   ),
                   OnboardingScreenTimePage(
                     onAllowTap: () => _onScreenTimeAllowTap(context, vm),

@@ -18,6 +18,7 @@ class MainActivity : FlutterActivity() {
     private val qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
     private val qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
     private val widgetMethodChannelName = "com.app.deenly.deenly/widgets"
+    private val locationSearchChannelName = "com.app.deenly.deenly/location_search"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -50,6 +51,20 @@ class MainActivity : FlutterActivity() {
             widgetMethodChannelName,
         ).setMethodCallHandler { call, result ->
             handleWidgetMethodCall(call, result)
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            locationSearchChannelName,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "search" -> {
+                    val query = call.argument<String>("query").orEmpty()
+                    val outcome = LocationSearchHelper.search(applicationContext, query)
+                    result.success(outcome.results)
+                }
+                else -> result.notImplemented()
+            }
         }
     }
 

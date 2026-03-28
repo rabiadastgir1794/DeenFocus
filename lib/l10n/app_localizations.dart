@@ -298,6 +298,12 @@ abstract class AppLocalizations {
   /// **'Enable Notifications'**
   String get notificationsButton;
 
+  /// No description provided for @notificationsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are enabled'**
+  String get notificationsEnabled;
+
   /// No description provided for @screenTimeTitle.
   ///
   /// In en, this message translates to:
