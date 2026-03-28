@@ -292,7 +292,7 @@ class AppNotificationService {
       body,
       tz.TZDateTime.from(scheduledAt, tz.local),
       details,
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );

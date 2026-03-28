@@ -155,9 +155,15 @@ private struct DeenlyWidgetView: View {
   @Environment(\.widgetFamily) private var family
   let entry: DeenlyWidgetEntry
   private let fontScale: CGFloat = 1.25
+  /// Matches salah focus: highlight stays on a prayer until 10 minutes after its time, then moves on.
+  private let highlightGraceSeconds: TimeInterval = 10 * 60
 
   private var palette: WidgetPalette {
     entry.payload.isDarkMode ? .dark : .light
+  }
+
+  private var prayersForHighlightNoSunrise: [WidgetPrayer] {
+    entry.payload.prayers.filter { $0.id != "sunrise" }
   }
 
   /// iOS 17+ adds large default widget content margins; we disable those on the configuration
@@ -167,41 +173,49 @@ private struct DeenlyWidgetView: View {
   var body: some View {
     GeometryReader { geo in
       let horizontalInset = geo.size.width * horizontalContentInsetRatio
-      Group {
-        switch family {
-        case .systemSmall:
-          smallBody
-        case .systemMedium:
-          mediumBody
-        default:
-          largeBody
+      TimelineView(.periodic(from: Date(), by: 60)) { timeline in
+        Group {
+          switch family {
+          case .systemSmall:
+            smallBody(now: timeline.date)
+          case .systemMedium:
+            mediumBody(now: timeline.date)
+          default:
+            largeBody(now: timeline.date)
+          }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.horizontal, horizontalInset)
+        .modifier(WidgetBackgroundModifier(background: palette.background))
       }
-      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-      .padding(.horizontal, horizontalInset)
-      .modifier(WidgetBackgroundModifier(background: palette.background))
     }
   }
 
-  private var smallBody: some View {
+  private func smallBody(now: Date) -> some View {
     VStack(alignment: .leading, spacing: 4) {
       header(fontSize: 9 * fontScale, dateSize: 8 * fontScale)
       Divider().overlay(Color.white.opacity(0.16))
-      smallPrayerGrid(prayers: visiblePrayers(limit: 5))
+      smallPrayerGrid(prayers: visiblePrayers(limit: 5), now: now)
     }
     .padding(.vertical, 8)
   }
 
-  private var mediumBody: some View {
+  private func mediumBody(now: Date) -> some View {
     VStack(alignment: .leading, spacing: 4) {
       header(fontSize: 14 * fontScale, dateSize: 10 * fontScale)
       Divider().overlay(Color.white.opacity(0.16))
-      prayerRows(prayers: visiblePrayers(limit: 6), columns: 3, showVerse: false)
+      prayerRows(
+        prayers: visiblePrayers(limit: 6),
+        columns: 3,
+        showVerse: false,
+        now: now,
+        highlightSource: entry.payload.prayers
+      )
     }
     .padding(.vertical, 8)
   }
 
-  private var largeBody: some View {
+  private func largeBody(now: Date) -> some View {
     VStack(alignment: .leading, spacing: 10) {
       header(fontSize: 16 * fontScale, dateSize: 12 * fontScale)
       Divider().overlay(Color.white.opacity(0.16))
@@ -218,7 +232,13 @@ private struct DeenlyWidgetView: View {
           .foregroundColor(palette.foreground.opacity(0.86))
       }
       Spacer(minLength: 8)
-      prayerRows(prayers: visiblePrayers(limit: 5), columns: 5, showVerse: true)
+      prayerRows(
+        prayers: visiblePrayers(limit: 5),
+        columns: 5,
+        showVerse: true,
+        now: now,
+        highlightSource: prayersForHighlightNoSunrise
+      )
     }
     .padding(.vertical, 14)
   }
@@ -237,11 +257,17 @@ private struct DeenlyWidgetView: View {
     }
   }
 
-  private func prayerRows(prayers: [WidgetPrayer], columns: Int, showVerse: Bool) -> some View {
+  private func prayerRows(
+    prayers: [WidgetPrayer],
+    columns: Int,
+    showVerse: Bool,
+    now: Date,
+    highlightSource: [WidgetPrayer]
+  ) -> some View {
     let rows = stride(from: 0, to: prayers.count, by: columns).map {
       Array(prayers[$0..<min($0 + columns, prayers.count)])
     }
-    let nextPrayerId = findNextPrayerId(prayers: entry.payload.prayers)
+    let nextPrayerId = findNextPrayerId(prayers: highlightSource, now: now)
 
     let rowSpacing: CGFloat = {
       if showVerse { return 4 }
@@ -273,8 +299,8 @@ private struct DeenlyWidgetView: View {
   /// Small widgets are ~155pt tall; a 2×column grid needs 3 rows and clips the last prayer.
   /// Use 3 prayers on the first row and 2 on the second so everything fits.
   @ViewBuilder
-  private func smallPrayerGrid(prayers: [WidgetPrayer]) -> some View {
-    let nextPrayerId = findNextPrayerId(prayers: entry.payload.prayers)
+  private func smallPrayerGrid(prayers: [WidgetPrayer], now: Date) -> some View {
+    let nextPrayerId = findNextPrayerId(prayers: prayersForHighlightNoSunrise, now: now)
     if prayers.count >= 5 {
       VStack(spacing: 3) {
         HStack(spacing: 2) {
@@ -301,7 +327,13 @@ private struct DeenlyWidgetView: View {
         }
       }
     } else {
-      prayerRows(prayers: prayers, columns: 2, showVerse: false)
+      prayerRows(
+        prayers: prayers,
+        columns: 2,
+        showVerse: false,
+        now: now,
+        highlightSource: prayersForHighlightNoSunrise
+      )
     }
   }
 
@@ -312,15 +344,12 @@ private struct DeenlyWidgetView: View {
     return Array(prayers.prefix(limit))
   }
 
-  private func findNextPrayerId(prayers: [WidgetPrayer]) -> String? {
-    let now = Date()
-
-    return prayers.first(where: { prayer in
-      if let date = WidgetDateParser.parse(prayer.isoTime) {
-        return date > now
-      }
-      return false
-    })?.id
+  private func findNextPrayerId(prayers: [WidgetPrayer], now: Date) -> String? {
+    prayers.first { prayer in
+      guard let start = WidgetDateParser.parse(prayer.isoTime) else { return false }
+      let endOfGrace = start.addingTimeInterval(highlightGraceSeconds)
+      return now < endOfGrace
+    }?.id
   }
 }
 

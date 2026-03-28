@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -45,28 +46,78 @@ class _DeenlyAppState extends State<DeenlyApp> {
         ChangeNotifierProvider(create: (_) => UserProfileService()),
         ChangeNotifierProvider(create: (_) => FocusController()..initialize()),
       ],
-      child: ScreenUtilInit(
-        designSize: const Size(390, 844),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return Consumer2<LocaleService, ThemeService>(
-            builder: (context, localeService, themeService, _) {
-              return MaterialApp.router(
-                title: 'Deenly',
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.light,
-                darkTheme: AppTheme.dark,
-                themeMode: themeService.themeMode,
-                locale: localeService.locale,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: kSupportedLocales,
-                routerConfig: _router,
-              );
-            },
-          );
-        },
+      child: _AppLifecycleFocusRefresher(
+        child: _DeenlyMaterialApp(router: _router),
       ),
+    );
+  }
+}
+
+/// Refreshes focus lock state whenever the app returns to foreground so
+/// prayer windows stay aligned even if the user was on a tab without its own observer.
+class _AppLifecycleFocusRefresher extends StatefulWidget {
+  const _AppLifecycleFocusRefresher({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_AppLifecycleFocusRefresher> createState() =>
+      _AppLifecycleFocusRefresherState();
+}
+
+class _AppLifecycleFocusRefresherState extends State<_AppLifecycleFocusRefresher>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(context.read<FocusController>().refresh());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+
+class _DeenlyMaterialApp extends StatelessWidget {
+  const _DeenlyMaterialApp({required this.router});
+
+  final GoRouter router;
+
+  @override
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return Consumer2<LocaleService, ThemeService>(
+          builder: (context, localeService, themeService, _) {
+            return MaterialApp.router(
+              title: 'Deenly',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.light,
+              darkTheme: AppTheme.dark,
+              themeMode: themeService.themeMode,
+              locale: localeService.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: kSupportedLocales,
+              routerConfig: router,
+            );
+          },
+        );
+      },
     );
   }
 }

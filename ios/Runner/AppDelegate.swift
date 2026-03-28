@@ -202,7 +202,16 @@ private enum ManagedSettingsStoreHolder {
     }
 
     let isLocked = args["isLocked"] as? Bool ?? false
+    let activeMode = args["activeMode"] as? String
     let encodedSelection = args["iosSelectionData"] as? String
+    let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
+    let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
+
+    FocusDeviceActivityScheduler.sync(
+      activeMode: activeMode,
+      encodedSelection: encodedSelection,
+      transitions: transitions
+    )
 
     let store = ManagedSettingsStoreHolder.shared
 

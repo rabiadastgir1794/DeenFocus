@@ -65,7 +65,7 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:maxLines="5"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/_11sdp"
+                android:textSize="@dimen/_14sdp"
                 android:textStyle="bold" />
 
             <TextView

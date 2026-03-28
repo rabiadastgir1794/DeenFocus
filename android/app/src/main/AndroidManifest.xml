@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <application
         android:label="Deen Focus"
         android:name="${applicationName}"
@@ -61,6 +62,17 @@
         <receiver
             android:name=".FocusScheduleReceiver"
             android:exported="false" />
+        <receiver
+            android:name=".FocusBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".SmallDeenWidgetProvider"
             android:exported="true">

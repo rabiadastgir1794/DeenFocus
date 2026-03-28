@@ -230,6 +230,10 @@ object FocusBlockerStore {
                         put("activeMode", transition["activeMode"] as? String)
                         put("lockReason", transition["lockReason"] as? String)
                         put("nextChangeAt", transition["nextChangeAt"] as? String)
+                        val nextEndMs = (transition["nextChangeAtMillis"] as? Number)?.toLong()
+                        if (nextEndMs != null && nextEndMs > 0L) {
+                            put("nextChangeAtMillis", nextEndMs)
+                        }
                     },
                 )
             }
@@ -240,6 +244,35 @@ object FocusBlockerStore {
             "store.transitions",
             "saved ${transitions.size.coerceAtMost(focusScheduleMaxCount)} transitions",
         )
+    }
+
+    fun scheduledTransitionMaps(context: Context): List<Map<String, Any?>> {
+        val raw = prefs(context).getString(scheduledTransitionsKey, null) ?: return emptyList()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    val atMillis = item.optLong("atMillis", -1L)
+                    if (atMillis <= 0L) continue
+                    val map = mutableMapOf<String, Any?>(
+                        "at" to item.stringOrNull("at"),
+                        "atMillis" to atMillis,
+                        "isLocked" to item.optBoolean("isLocked", false),
+                        "activeMode" to item.stringOrNull("activeMode"),
+                        "lockReason" to item.stringOrNull("lockReason"),
+                        "nextChangeAt" to item.stringOrNull("nextChangeAt"),
+                    )
+                    if (item.has("nextChangeAtMillis") && !item.isNull("nextChangeAtMillis")) {
+                        val endMs = item.optLong("nextChangeAtMillis", 0L)
+                        if (endMs > 0L) {
+                            map["nextChangeAtMillis"] = endMs
+                        }
+                    }
+                    add(map)
+                }
+            }.sortedBy { (it["atMillis"] as Long) }
+        }.getOrElse { emptyList() }
     }
 
     fun appLabel(context: Context, packageName: String): String {
@@ -546,20 +579,39 @@ object FocusScheduleManager {
             flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         ) ?: return
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                atMillis,
-                pendingIntent,
-            )
-            return
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                alarmManager.canScheduleExactAlarms() -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    atMillis,
+                    pendingIntent,
+                )
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                !alarmManager.canScheduleExactAlarms() -> {
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    atMillis,
+                    pendingIntent,
+                )
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    atMillis,
+                    pendingIntent,
+                )
+            }
+            else -> {
+                @Suppress("DEPRECATION")
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    atMillis,
+                    pendingIntent,
+                )
+            }
         }
-
-        alarmManager.setAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            atMillis,
-            pendingIntent,
-        )
     }
 
     fun cancelAll(context: Context) {

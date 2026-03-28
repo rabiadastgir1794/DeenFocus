@@ -566,10 +566,6 @@ class FocusController extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> _buildScheduledTransitions(
     FocusSettings settings,
   ) async {
-    if (!Platform.isAndroid) {
-      return const <Map<String, dynamic>>[];
-    }
-
     final now = DateTime.now();
     final events = <Map<String, dynamic>>[];
 
@@ -776,7 +772,8 @@ class FocusController extends ChangeNotifier {
       'activeMode': activeMode.name,
       'lockReason': reason,
       'nextChangeAt': nextChangeAt?.toIso8601String(),
-      'nextChangeAtMillis': nextChangeAt?.millisecondsSinceEpoch,
+      if (nextChangeAt != null)
+        'nextChangeAtMillis': nextChangeAt.millisecondsSinceEpoch,
     };
   }
 

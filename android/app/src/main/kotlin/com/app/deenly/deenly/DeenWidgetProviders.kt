@@ -21,6 +21,9 @@ import java.time.temporal.ChronoUnit
 private const val widgetPrefsName = "deenly_widget"
 private const val widgetTimelineKey = "widget_timeline_json"
 private const val widgetRefreshAction = "com.rnr.deenfocus.WIDGET_REFRESH"
+private const val widgetHighlightAlarmBase = 8300
+private const val widgetHighlightAlarmMax = 64
+private const val highlightGraceMinutes = 10L
 
 enum class WidgetSize {
     SMALL,
@@ -138,6 +141,7 @@ internal object DeenWidgetUpdater {
             WidgetSize.LARGE,
         )
         scheduleNextRefresh(context, manager)
+        schedulePrayerHighlightAlarms(context)
     }
 
     fun updateWidgets(
@@ -180,6 +184,122 @@ internal object DeenWidgetUpdater {
         )
     }
 
+    /**
+     * Refreshes widgets when the "next prayer" highlight should advance (each prayer time + 10 min),
+     * matching in-app salah focus windows.
+     */
+    private fun schedulePrayerHighlightAlarms(context: Context) {
+        val manager = AppWidgetManager.getInstance(context)
+        val hasWidgets =
+            manager.getAppWidgetIds(ComponentName(context, SmallDeenWidgetProvider::class.java)).isNotEmpty() ||
+                manager.getAppWidgetIds(ComponentName(context, MediumDeenWidgetProvider::class.java)).isNotEmpty() ||
+                manager.getAppWidgetIds(ComponentName(context, LargeDeenWidgetProvider::class.java)).isNotEmpty()
+        if (!hasWidgets) {
+            cancelPrayerHighlightAlarms(context)
+            return
+        }
+
+        val raw = context.getSharedPreferences(widgetPrefsName, Context.MODE_PRIVATE)
+            .getString(widgetTimelineKey, null)
+        if (raw.isNullOrBlank()) {
+            cancelPrayerHighlightAlarms(context)
+            return
+        }
+
+        cancelPrayerHighlightAlarms(context)
+
+        val boundaries = mutableListOf<Long>()
+        runCatching {
+            val root = JSONObject(raw)
+            val entries = root.optJSONArray("entries") ?: return@runCatching
+            val nowMillis = System.currentTimeMillis()
+            for (i in 0 until entries.length()) {
+                val row = entries.optJSONObject(i) ?: continue
+                val prayers = row.optJSONArray("prayers") ?: continue
+                for (j in 0 until prayers.length()) {
+                    val p = prayers.optJSONObject(j) ?: continue
+                    val iso = p.optString("isoTime")
+                    val dt = parsePrayerLocalDateTime(iso) ?: continue
+                    val boundary = dt.plusMinutes(highlightGraceMinutes)
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
+                        .toEpochMilli()
+                    if (boundary > nowMillis) {
+                        boundaries.add(boundary)
+                    }
+                }
+            }
+        }
+
+        val uniqueSorted = boundaries.distinct().sorted().take(widgetHighlightAlarmMax)
+        if (uniqueSorted.isEmpty()) return
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        uniqueSorted.forEachIndexed { index, atMillis ->
+            val intent = Intent(context, SmallDeenWidgetProvider::class.java).apply {
+                action = widgetRefreshAction
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                widgetHighlightAlarmBase + index,
+                intent,
+                pendingIntentFlags(),
+            )
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                    alarmManager.canScheduleExactAlarms() -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        atMillis,
+                        pendingIntent,
+                    )
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                    !alarmManager.canScheduleExactAlarms() -> {
+                    alarmManager.setAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        atMillis,
+                        pendingIntent,
+                    )
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        atMillis,
+                        pendingIntent,
+                    )
+                }
+                else -> {
+                    @Suppress("DEPRECATION")
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        atMillis,
+                        pendingIntent,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun cancelPrayerHighlightAlarms(context: Context) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        repeat(widgetHighlightAlarmMax) { index ->
+            val intent = Intent(context, SmallDeenWidgetProvider::class.java).apply {
+                action = widgetRefreshAction
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                widgetHighlightAlarmBase + index,
+                intent,
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+            )
+            if (pendingIntent != null) {
+                alarmManager.cancel(pendingIntent)
+                pendingIntent.cancel()
+            }
+        }
+    }
+
     private fun updateForProvider(
         context: Context,
         manager: AppWidgetManager,
@@ -216,7 +336,9 @@ internal object DeenWidgetUpdater {
             WidgetSize.SMALL -> bindPrayerGrid(
                 views = views,
                 prayers = entry.prayers.filterNot { it.id == "sunrise" }.take(5),
-                highlightPrayerId = findNextPrayerId(entry.prayers),
+                highlightPrayerId = findNextPrayerId(
+                    entry.prayers.filterNot { it.id == "sunrise" },
+                ),
                 topIds = intArrayOf(
                     R.id.grid1Top,
                     R.id.grid2Top,
@@ -293,7 +415,9 @@ internal object DeenWidgetUpdater {
                 bindPrayerGrid(
                     views = views,
                     prayers = entry.prayers.filterNot { it.id == "sunrise" }.take(5),
-                    highlightPrayerId = findNextPrayerId(entry.prayers),
+                    highlightPrayerId = findNextPrayerId(
+                        entry.prayers.filterNot { it.id == "sunrise" },
+                    ),
                     topIds = intArrayOf(
                         R.id.grid1Top,
                         R.id.grid2Top,
@@ -382,10 +506,16 @@ internal object DeenWidgetUpdater {
         }.getOrNull()
     }
 
+    /**
+     * Highlights the current "next" slot until [highlightGraceMinutes] after that prayer's time,
+     * then advances (aligned with salah focus windows).
+     */
     private fun findNextPrayerId(prayers: List<WidgetPrayer>): String? {
         val now = LocalDateTime.now()
         return prayers.firstOrNull { prayer ->
-            parsePrayerLocalDateTime(prayer.isoTime)?.isAfter(now) == true
+            val start = parsePrayerLocalDateTime(prayer.isoTime) ?: return@firstOrNull false
+            val endOfGrace = start.plusMinutes(highlightGraceMinutes)
+            now.isBefore(endOfGrace)
         }?.id
     }
 
