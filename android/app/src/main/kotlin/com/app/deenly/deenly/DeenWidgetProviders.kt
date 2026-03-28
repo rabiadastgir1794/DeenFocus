@@ -11,6 +11,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -362,12 +363,29 @@ internal object DeenWidgetUpdater {
         }
     }
 
+    /**
+     * Flutter may emit local wall times or UTC (`…Z`). [LocalDateTime.parse] alone often fails on `Z`,
+     * so next-prayer highlighting never matched and stayed hidden.
+     */
+    private fun parsePrayerLocalDateTime(isoTime: String): LocalDateTime? {
+        val raw = isoTime.trim()
+        if (raw.isEmpty()) return null
+        runCatching { Instant.parse(raw).atZone(ZoneId.systemDefault()).toLocalDateTime() }
+            .getOrNull()
+            ?.let { return it }
+        runCatching { LocalDateTime.parse(raw, DateTimeFormatter.ISO_LOCAL_DATE_TIME) }
+            .getOrNull()
+            ?.let { return it }
+        runCatching { LocalDateTime.parse(raw, timeFormatter) }.getOrNull()?.let { return it }
+        return runCatching {
+            LocalDateTime.parse(raw, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+        }.getOrNull()
+    }
+
     private fun findNextPrayerId(prayers: List<WidgetPrayer>): String? {
         val now = LocalDateTime.now()
         return prayers.firstOrNull { prayer ->
-            runCatching { LocalDateTime.parse(prayer.isoTime, timeFormatter) }
-                .getOrNull()
-                ?.isAfter(now) == true
+            parsePrayerLocalDateTime(prayer.isoTime)?.isAfter(now) == true
         }?.id
     }
 

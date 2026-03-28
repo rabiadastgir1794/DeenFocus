@@ -206,15 +206,15 @@ private struct DeenlyWidgetView: View {
       header(fontSize: 16 * fontScale, dateSize: 12 * fontScale)
       Divider().overlay(Color.white.opacity(0.16))
       Text("Daily Verse")
-        .font(.system(size: 12 * fontScale, weight: .medium, design: .rounded))
+        .font(.system(size: 9 * fontScale, weight: .medium, design: .rounded))
         .foregroundColor(palette.foreground.opacity(0.9))
       Text(entry.payload.verse?.text ?? "Open Deenly to prepare your daily verse and prayer widget data.")
-        .font(.system(size: 15 * fontScale, weight: .bold, design: .rounded))
+        .font(.system(size: 11.25 * fontScale, weight: .bold, design: .rounded))
         .foregroundColor(palette.foreground)
         .lineLimit(5)
       if let source = entry.payload.verse?.source, !source.isEmpty {
         Text(source)
-          .font(.system(size: 12 * fontScale, weight: .regular, design: .rounded))
+          .font(.system(size: 9 * fontScale, weight: .regular, design: .rounded))
           .foregroundColor(palette.foreground.opacity(0.86))
       }
       Spacer(minLength: 8)
@@ -383,10 +383,10 @@ private struct PrayerCell: View {
     .padding(.vertical, verticalPadding)
     .padding(.horizontal, isLarge ? 2 : 0.5)
     .background(
-      RoundedRectangle(cornerRadius: 16, style: .continuous)
+      RoundedRectangle(cornerRadius: 12.8, style: .continuous)
         .fill(isHighlighted ? Color.white.opacity(0.14) : Color.clear)
         .overlay(
-          RoundedRectangle(cornerRadius: 16, style: .continuous)
+          RoundedRectangle(cornerRadius: 12.8, style: .continuous)
             .stroke(Color.white.opacity(isHighlighted ? 0.16 : 0), lineWidth: 1)
         )
     )

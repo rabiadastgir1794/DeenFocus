@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/daily_verse"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_9sdp"
                 android:textStyle="italic" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:maxLines="5"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/_15sdp"
+                android:textSize="@dimen/_11sdp"
                 android:textStyle="bold" />
 
             <TextView
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/_9sdp" />
 
             <ImageView
                 android:id="@+id/emptyImageView"
