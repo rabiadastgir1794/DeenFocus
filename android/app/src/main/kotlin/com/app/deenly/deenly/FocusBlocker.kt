@@ -42,26 +42,82 @@ private const val focusScheduleAction = "com.app.deenly.deenly.FOCUS_SCHEDULE"
 private const val focusScheduleIdBase = 6100
 private const val focusScheduleMaxCount = 64
 private const val focusDebugFileName = "deenly_focus_debug_log.txt"
+private const val focusDebugSectionPrefs = "focus_debug_log_sections"
+private const val focusDebugKeyLastDate = "last_section_date"
+private const val focusDebugKeyLastHour = "last_section_hour"
 
 object FocusDebugLogger {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+    private val dateKeyFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    private val hourKeyFormat = SimpleDateFormat("yyyy-MM-dd-HH", Locale.US)
+    private val dateBannerFormat = SimpleDateFormat("dd MMMM, yyyy", Locale.US)
+    private val hourBannerFormat = SimpleDateFormat("HH:mm", Locale.US)
     private const val publicDownloadsRelativePath = "Download/$focusDebugFileName"
 
+    private fun sectionPrefs(context: Context): SharedPreferences {
+        return context.getSharedPreferences(focusDebugSectionPrefs, Context.MODE_PRIVATE)
+    }
+
+    /**
+     * Builds optional date / hour banners, then the log line. Appends to existing file or creates it.
+     */
     @Synchronized
     fun append(context: Context, tag: String, message: String) {
         runCatching {
-            val line = "${formatter.format(Date())} [$tag] $message\n"
+            val now = Date()
+            val prefs = sectionPrefs(context)
+            val dateKey = dateKeyFormat.format(now)
+            val hourKey = hourKeyFormat.format(now)
+            val lastDate = prefs.getString(focusDebugKeyLastDate, null)
+            val lastHour = prefs.getString(focusDebugKeyLastHour, null)
+
+            val chunk = StringBuilder()
+            if (lastDate != dateKey) {
+                val banner = dateBannerFormat.format(now).uppercase(Locale.US)
+                chunk.append("-------- $banner -------\n\n")
+                prefs.edit()
+                    .putString(focusDebugKeyLastDate, dateKey)
+                    .putString(focusDebugKeyLastHour, hourKey)
+                    .apply()
+                val hm = hourBannerFormat.format(now)
+                chunk.append("------ $hm ---\n")
+            } else if (lastHour != hourKey) {
+                val hm = hourBannerFormat.format(now)
+                chunk.append("------ $hm ---\n")
+                prefs.edit().putString(focusDebugKeyLastHour, hourKey).apply()
+            }
+
+            chunk.append("${formatter.format(now)} [$tag] $message\n")
+            val text = chunk.toString()
+
             val file = appFile(context)
             file.parentFile?.mkdirs()
-            file.appendText(line)
-            appendToPublicDownloads(context, line)
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+            file.appendText(text)
+            appendToPublicDownloads(context, text)
         }
     }
 
     @Synchronized
     fun clear(context: Context) {
         runCatching {
-            val line = "${formatter.format(Date())} [logger] cleared\n"
+            sectionPrefs(context).edit()
+                .remove(focusDebugKeyLastDate)
+                .remove(focusDebugKeyLastHour)
+                .apply()
+
+            val now = Date()
+            val banner = dateBannerFormat.format(now).uppercase(Locale.US)
+            val hm = hourBannerFormat.format(now)
+            val line =
+                "-------- $banner -------\n\n------ $hm ---\n${formatter.format(now)} [logger] cleared\n"
+            sectionPrefs(context).edit()
+                .putString(focusDebugKeyLastDate, dateKeyFormat.format(now))
+                .putString(focusDebugKeyLastHour, hourKeyFormat.format(now))
+                .apply()
+
             val file = appFile(context)
             if (file.exists()) {
                 file.writeText("")
