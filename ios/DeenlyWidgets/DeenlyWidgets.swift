@@ -8,8 +8,10 @@ private struct WidgetTimelinePayload: Decodable {
 }
 
 private struct WidgetPayloadEntry: Decodable {
+  let timestamp: String
   let dayKey: String
   let dateLabel: String
+  let timeLabel: String
   let isDarkMode: Bool
   let verse: WidgetVerse?
   let prayers: [WidgetPrayer]
@@ -34,8 +36,10 @@ private struct DeenlyWidgetEntry: TimelineEntry {
   static let placeholder = DeenlyWidgetEntry(
     date: Date(),
     payload: WidgetPayloadEntry(
+      timestamp: "2026-03-28T08:20:00",
       dayKey: "2026-03-28",
       dateLabel: "Sat, Mar 28",
+      timeLabel: "8:20 AM",
       isDarkMode: false,
       verse: WidgetVerse(
         text: "Indeed, with hardship comes ease.",
@@ -59,38 +63,54 @@ private struct DeenlyProvider: TimelineProvider {
   }
 
   func getSnapshot(in context: Context, completion: @escaping (DeenlyWidgetEntry) -> Void) {
-    completion(loadEntry(for: Date()) ?? .placeholder)
+    completion(loadCurrentEntry(for: Date()) ?? .placeholder)
   }
 
   func getTimeline(in context: Context, completion: @escaping (Timeline<DeenlyWidgetEntry>) -> Void) {
-    let calendar = Calendar.current
-    let startOfToday = calendar.startOfDay(for: Date())
-    let entries = (0..<7).map { dayOffset -> DeenlyWidgetEntry in
-      let day = calendar.date(byAdding: .day, value: dayOffset, to: startOfToday) ?? startOfToday
-      return loadEntry(for: day) ?? .placeholder
+    let entries = loadTimelineEntries()
+    guard !entries.isEmpty else {
+      completion(
+        Timeline(
+          entries: [.placeholder],
+          policy: .after(Date().addingTimeInterval(300))
+        )
+      )
+      return
     }
-    let nextRefresh = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? Date().addingTimeInterval(86400)
-    completion(Timeline(entries: entries, policy: .after(nextRefresh)))
+
+    let now = Date()
+    let upcomingEntries = entries.filter { $0.date >= now.addingTimeInterval(-1) }
+    let nextRefresh = upcomingEntries.last?.date.addingTimeInterval(300) ?? now.addingTimeInterval(300)
+    completion(Timeline(entries: upcomingEntries.isEmpty ? [entries.last!] : upcomingEntries, policy: .after(nextRefresh)))
   }
 
-  private func loadEntry(for date: Date) -> DeenlyWidgetEntry? {
+  private func loadCurrentEntry(for date: Date) -> DeenlyWidgetEntry? {
+    let entries = loadTimelineEntries()
+    return entries.last(where: { $0.date <= date }) ?? entries.first
+  }
+
+  private func loadTimelineEntries() -> [DeenlyWidgetEntry] {
     let defaults = UserDefaults(suiteName: widgetAppGroup)
     guard
       let raw = defaults?.string(forKey: "widget_timeline_json"),
       let data = raw.data(using: .utf8),
       let payload = try? JSONDecoder().decode(WidgetTimelinePayload.self, from: data)
     else {
-      return nil
+      return []
     }
 
-    let formatter = DateFormatter()
-    formatter.calendar = Calendar(identifier: .gregorian)
-    formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.dateFormat = "yyyy-MM-dd"
-    let dayKey = formatter.string(from: date)
-    let selected = payload.entries.first(where: { $0.dayKey == dayKey }) ?? payload.entries.first
-    guard let selected else { return nil }
-    return DeenlyWidgetEntry(date: date, payload: selected)
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    let fallbackFormatter = ISO8601DateFormatter()
+    fallbackFormatter.formatOptions = [.withInternetDateTime]
+
+    return payload.entries.compactMap { payloadEntry in
+      let date = formatter.date(from: payloadEntry.timestamp) ??
+        fallbackFormatter.date(from: payloadEntry.timestamp)
+      guard let date else { return nil }
+      return DeenlyWidgetEntry(date: date, payload: payloadEntry)
+    }
+    .sorted(by: { $0.date < $1.date })
   }
 }
 

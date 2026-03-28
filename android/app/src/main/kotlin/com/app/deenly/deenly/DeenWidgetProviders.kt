@@ -1,5 +1,6 @@
 package com.rnr.deenfocus
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -12,10 +13,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 private const val widgetPrefsName = "deenly_widget"
 private const val widgetTimelineKey = "widget_timeline_json"
+private const val widgetRefreshAction = "com.rnr.deenfocus.WIDGET_REFRESH"
+private const val widgetRefreshMinutes = 5L
 
 enum class WidgetSize {
     SMALL,
@@ -36,14 +41,18 @@ data class WidgetVerse(
 )
 
 data class WidgetEntry(
+    val timestamp: String,
     val dayKey: String,
     val dateLabel: String,
+    val timeLabel: String,
     val isDarkMode: Boolean,
     val verse: WidgetVerse?,
     val prayers: List<WidgetPrayer>,
 )
 
 internal object DeenWidgetStore {
+    private val timestampFormatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
+
     fun saveTimeline(context: Context, json: String) {
         context.getSharedPreferences(widgetPrefsName, Context.MODE_PRIVATE)
             .edit()
@@ -63,8 +72,10 @@ internal object DeenWidgetStore {
                     val row = entries.optJSONObject(index) ?: continue
                     add(
                         WidgetEntry(
+                            timestamp = row.optString("timestamp"),
                             dayKey = row.optString("dayKey"),
                             dateLabel = row.optString("dateLabel"),
+                            timeLabel = row.optString("timeLabel"),
                             isDarkMode = row.optBoolean("isDarkMode", false),
                             verse = row.optJSONObject("verse")?.let {
                                 WidgetVerse(
@@ -90,7 +101,15 @@ internal object DeenWidgetStore {
                     )
                 }
             }
-            parsed.firstOrNull { it.dayKey == todayKey } ?: parsed.firstOrNull()
+            val now = LocalDateTime.now()
+            parsed
+                .lastOrNull { entry ->
+                    runCatching { LocalDateTime.parse(entry.timestamp, timestampFormatter) }
+                        .getOrNull()
+                        ?.let { !it.isAfter(now) } == true
+                }
+                ?: parsed.firstOrNull { it.dayKey == todayKey }
+                ?: parsed.firstOrNull()
         }.getOrNull()
     }
 }
@@ -118,6 +137,7 @@ internal object DeenWidgetUpdater {
             LargeDeenWidgetProvider::class.java,
             WidgetSize.LARGE,
         )
+        scheduleNextRefresh(context, manager)
     }
 
     fun updateWidgets(
@@ -131,6 +151,34 @@ internal object DeenWidgetUpdater {
             val views = buildViews(context, size, entry)
             manager.updateAppWidget(appWidgetId, views)
         }
+    }
+
+    private fun scheduleNextRefresh(
+        context: Context,
+        manager: AppWidgetManager,
+    ) {
+        val hasWidgets =
+            manager.getAppWidgetIds(ComponentName(context, SmallDeenWidgetProvider::class.java)).isNotEmpty() ||
+                manager.getAppWidgetIds(ComponentName(context, MediumDeenWidgetProvider::class.java)).isNotEmpty() ||
+                manager.getAppWidgetIds(ComponentName(context, LargeDeenWidgetProvider::class.java)).isNotEmpty()
+        if (!hasWidgets) return
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val pendingIntent = refreshPendingIntent(context)
+        val nextRefresh = LocalDateTime.now()
+            .truncatedTo(ChronoUnit.MINUTES)
+            .plusMinutes(widgetRefreshMinutes)
+            .withSecond(0)
+            .withNano(0)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
+        alarmManager.setAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            nextRefresh,
+            pendingIntent,
+        )
     }
 
     private fun updateForProvider(
@@ -341,12 +389,23 @@ internal object DeenWidgetUpdater {
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
             ?: Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        return PendingIntent.getActivity(context, 1001, intent, pendingIntentFlags())
+    }
+
+    private fun refreshPendingIntent(context: Context): PendingIntent {
+        val intent = Intent(context, SmallDeenWidgetProvider::class.java).apply {
+            action = widgetRefreshAction
+        }
+        return PendingIntent.getBroadcast(context, 1002, intent, pendingIntentFlags())
+    }
+
+    private fun pendingIntentFlags(): Int {
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
-        return PendingIntent.getActivity(context, 1001, intent, flags)
+        return flags
     }
 }
 
@@ -368,6 +427,7 @@ abstract class BaseDeenWidgetProvider(
             Intent.ACTION_TIME_CHANGED,
             Intent.ACTION_TIMEZONE_CHANGED,
             Intent.ACTION_BOOT_COMPLETED,
+            widgetRefreshAction,
             AppWidgetManager.ACTION_APPWIDGET_UPDATE,
             -> DeenWidgetUpdater.refreshAll(context)
         }
