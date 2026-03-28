@@ -19,7 +19,7 @@ class _HomeVerseMarqueeState extends State<HomeVerseMarquee>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 38),
+      duration: const Duration(seconds: 95),
     )..repeat();
   }
 

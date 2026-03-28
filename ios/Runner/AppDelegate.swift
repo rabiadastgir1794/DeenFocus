@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import SwiftUI
+import WidgetKit
 import FamilyControls
 import DeviceActivity
 import ManagedSettings
@@ -17,7 +18,9 @@ private enum ManagedSettingsStoreHolder {
   private let screenTimeChannelName = "com.app.deenly.deenly/screen_time"
   private let qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
+  private let widgetChannelName = "com.app.deenly.deenly/widgets"
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
+  private let widgetAppGroup = "group.com.rnr.deenfocus.widgets"
 
   override func application(
     _ application: UIApplication,
@@ -37,6 +40,10 @@ private enum ManagedSettingsStoreHolder {
       )
       let qiblaMethodChannel = FlutterMethodChannel(
         name: qiblaMethodChannelName,
+        binaryMessenger: messenger
+      )
+      let widgetChannel = FlutterMethodChannel(
+        name: widgetChannelName,
         binaryMessenger: messenger
       )
       let qiblaEventChannel = FlutterEventChannel(
@@ -75,10 +82,43 @@ private enum ManagedSettingsStoreHolder {
         }
       }
 
+      widgetChannel.setMethodCallHandler { call, result in
+        switch call.method {
+        case "saveWidgetTimeline":
+          self.saveWidgetTimeline(call: call, result: result)
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      }
+
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  private func saveWidgetTimeline(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard
+      let args = call.arguments as? [String: Any],
+      let timelineJson = args["timelineJson"] as? String,
+      !timelineJson.isEmpty
+    else {
+      result(
+        FlutterError(
+          code: "INVALID_WIDGET_TIMELINE",
+          message: "Timeline JSON missing.",
+          details: nil
+        )
+      )
+      return
+    }
+
+    let defaults = UserDefaults(suiteName: widgetAppGroup)
+    defaults?.set(timelineJson, forKey: "widget_timeline_json")
+    if #available(iOS 14.0, *) {
+      WidgetCenter.shared.reloadAllTimelines()
+    }
+    result(nil)
   }
 
   private func requestScreenTimeAuthorization(result: @escaping FlutterResult) {

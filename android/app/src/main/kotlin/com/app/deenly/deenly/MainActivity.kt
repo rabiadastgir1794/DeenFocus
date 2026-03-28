@@ -17,6 +17,7 @@ class MainActivity : FlutterActivity() {
     private val focusMethodChannelName = "com.app.deenly.deenly/focus"
     private val qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
     private val qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
+    private val widgetMethodChannelName = "com.app.deenly.deenly/widgets"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -43,6 +44,13 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             qiblaEventChannelName,
         ).setStreamHandler(headingStreamHandler)
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            widgetMethodChannelName,
+        ).setMethodCallHandler { call, result ->
+            handleWidgetMethodCall(call, result)
+        }
     }
 
     private fun handleFocusMethodCall(
@@ -162,6 +170,25 @@ class MainActivity : FlutterActivity() {
                 result.success(null)
             }
 
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun handleWidgetMethodCall(
+        call: MethodCall,
+        result: MethodChannel.Result,
+    ) {
+        when (call.method) {
+            "saveWidgetTimeline" -> {
+                val timelineJson = call.argument<String>("timelineJson")
+                if (timelineJson.isNullOrBlank()) {
+                    result.error("INVALID_WIDGET_TIMELINE", "Timeline JSON missing.", null)
+                    return
+                }
+                DeenWidgetStore.saveTimeline(applicationContext, timelineJson)
+                DeenWidgetUpdater.refreshAll(applicationContext)
+                result.success(null)
+            }
             else -> result.notImplemented()
         }
     }

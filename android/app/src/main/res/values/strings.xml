@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Deenly</string>
+    <string name="daily_verse">Daily Verse</string>
+    <string name="widget_small_name">Deenly Small Widget</string>
+    <string name="widget_medium_name">Deenly Medium Widget</string>
+    <string name="widget_large_name">Deenly Large Widget</string>
+    <string name="widget_empty_verse">Open Deenly to prepare your daily verse and prayer widget data.</string>
 </resources>

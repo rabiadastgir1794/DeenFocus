@@ -10,6 +10,17 @@ import 'surah_ayah_count_helper.dart';
 abstract class HomeDailyVerseHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
+  static DailyVerseRef getDailyVerseRefForDate(DateTime date) {
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    final random = Random(
+      normalizedDate.millisecondsSinceEpoch ~/ Duration.millisecondsPerDay,
+    );
+    final surahNumber = random.nextInt(kSurahAyahCount.length) + 1;
+    final ayahCount = kSurahAyahCount[surahNumber] ?? 1;
+    final ayahNumber = random.nextInt(ayahCount) + 1;
+    return DailyVerseRef(surahNumber: surahNumber, ayahNumber: ayahNumber);
+  }
+
   static Future<DailyVerseRef> getOrGenerateDailyVerseRef({
     DateTime? now,
   }) async {
@@ -24,20 +35,15 @@ abstract class HomeDailyVerseHelper {
       return DailyVerseRef(surahNumber: cachedSurah, ayahNumber: cachedAyah);
     }
 
-    final random = Random(
-      today.millisecondsSinceEpoch ~/ Duration.millisecondsPerDay,
-    );
-    final surahNumber = random.nextInt(kSurahAyahCount.length) + 1;
-    final ayahCount = kSurahAyahCount[surahNumber] ?? 1;
-    final ayahNumber = random.nextInt(ayahCount) + 1;
+    final ref = getDailyVerseRefForDate(today);
 
     await StorageService.setHomeDailyVerse(
       dateKey: dayKey,
-      surah: surahNumber,
-      ayah: ayahNumber,
+      surah: ref.surahNumber,
+      ayah: ref.ayahNumber,
     );
 
-    return DailyVerseRef(surahNumber: surahNumber, ayahNumber: ayahNumber);
+    return ref;
   }
 
   static Future<HomeDailyVerse?> loadDailyVerse(DailyVerseRef ref) async {

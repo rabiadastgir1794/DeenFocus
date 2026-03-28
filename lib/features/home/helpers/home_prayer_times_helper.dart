@@ -10,6 +10,23 @@ import '../model/home_models.dart';
 abstract class HomePrayerTimesHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
+  static Future<HomePrayerTimesData> generatePrayerTimesForDate({
+    required double latitude,
+    required double longitude,
+    required DateTime date,
+    String? sectRaw,
+  }) async {
+    final normalizedDate = DateTime(date.year, date.month, date.day, 12);
+    final sect = _resolveSect(sectRaw ?? await StorageService.sect);
+    final slots = _buildSlots(
+      latitude: latitude,
+      longitude: longitude,
+      currentTime: normalizedDate,
+      sect: sect,
+    );
+    return _buildData(slots, normalizedDate);
+  }
+
   static Future<HomePrayerTimesData> getOrGeneratePrayerTimes({
     required double latitude,
     required double longitude,
@@ -42,22 +59,12 @@ abstract class HomePrayerTimesHelper {
       }
     }
 
-    final coordinates = Coordinates(latitude, longitude);
-    final params = _parametersForSect(sect);
-    final prayerTimes = PrayerTimes(
-      coordinates,
-      DateComponents.from(currentTime),
-      params,
+    final slots = _buildSlots(
+      latitude: latitude,
+      longitude: longitude,
+      currentTime: currentTime,
+      sect: sect,
     );
-
-    final slots = <HomePrayerSlot>[
-      HomePrayerSlot(id: HomePrayerId.fajr, time: prayerTimes.fajr),
-      HomePrayerSlot(id: HomePrayerId.sunrise, time: prayerTimes.sunrise),
-      HomePrayerSlot(id: HomePrayerId.dhuhr, time: prayerTimes.dhuhr),
-      HomePrayerSlot(id: HomePrayerId.asr, time: prayerTimes.asr),
-      HomePrayerSlot(id: HomePrayerId.maghrib, time: prayerTimes.maghrib),
-      HomePrayerSlot(id: HomePrayerId.isha, time: prayerTimes.isha),
-    ];
 
     final data = _buildData(slots, currentTime);
     await StorageService.setHomePrayerCache(
@@ -88,6 +95,30 @@ abstract class HomePrayerTimesHelper {
     }
 
     return CalculationMethod.karachi.getParameters()..madhab = Madhab.shafi;
+  }
+
+  static List<HomePrayerSlot> _buildSlots({
+    required double latitude,
+    required double longitude,
+    required DateTime currentTime,
+    required SectOption sect,
+  }) {
+    final coordinates = Coordinates(latitude, longitude);
+    final params = _parametersForSect(sect);
+    final prayerTimes = PrayerTimes(
+      coordinates,
+      DateComponents.from(currentTime),
+      params,
+    );
+
+    return <HomePrayerSlot>[
+      HomePrayerSlot(id: HomePrayerId.fajr, time: prayerTimes.fajr),
+      HomePrayerSlot(id: HomePrayerId.sunrise, time: prayerTimes.sunrise),
+      HomePrayerSlot(id: HomePrayerId.dhuhr, time: prayerTimes.dhuhr),
+      HomePrayerSlot(id: HomePrayerId.asr, time: prayerTimes.asr),
+      HomePrayerSlot(id: HomePrayerId.maghrib, time: prayerTimes.maghrib),
+      HomePrayerSlot(id: HomePrayerId.isha, time: prayerTimes.isha),
+    ];
   }
 
   static String _serialize(List<HomePrayerSlot> slots) {

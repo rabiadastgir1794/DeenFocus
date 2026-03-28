@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'storage_service.dart';
+import 'widget_sync_service.dart';
 
 class ThemeService extends ChangeNotifier {
   ThemeService() {
@@ -20,6 +21,7 @@ class ThemeService extends ChangeNotifier {
       _themeMode = saved ? ThemeMode.dark : ThemeMode.light;
     }
     notifyListeners();
+    await WidgetSyncService.instance.syncTimeline();
   }
 
   Future<void> setDarkModeEnabled(bool value) async {
@@ -28,5 +30,6 @@ class ThemeService extends ChangeNotifier {
     _themeMode = nextMode;
     notifyListeners();
     await StorageService.setDarkModeEnabled(value);
+    await WidgetSyncService.instance.syncTimeline();
   }
 }

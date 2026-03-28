@@ -6,6 +6,7 @@ import '../../features/home/helpers/home_daily_verse_helper.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import 'app_notification_service.dart';
 import 'storage_service.dart';
+import 'widget_sync_service.dart';
 
 class DailyRefreshService {
   DailyRefreshService._();
@@ -27,16 +28,18 @@ class DailyRefreshService {
 
     final latitude = await StorageService.locationLatitude;
     final longitude = await StorageService.locationLongitude;
-    if (latitude == null || longitude == null) return;
+    if (latitude != null && longitude != null) {
+      await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+        latitude: latitude,
+        longitude: longitude,
+      );
+      await AppNotificationService.instance.reschedulePrayerNotifications(
+        latitude: latitude,
+        longitude: longitude,
+      );
+    }
 
-    await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-      latitude: latitude,
-      longitude: longitude,
-    );
-    await AppNotificationService.instance.reschedulePrayerNotifications(
-      latitude: latitude,
-      longitude: longitude,
-    );
+    await WidgetSyncService.instance.syncTimeline();
   }
 
   @visibleForTesting
