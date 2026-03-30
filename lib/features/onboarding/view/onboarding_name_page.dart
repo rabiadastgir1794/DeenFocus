@@ -20,33 +20,37 @@ class OnboardingNamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: Spacing.xl.h),
-          Text(
-            AppLocalizations.of(context)!.nameTitle,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.sp,
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: Spacing.xl.h),
+            Text(
+              AppLocalizations.of(context)!.nameTitle,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.sp,
+              ),
             ),
-          ),
-          SizedBox(height: Spacing.sm.h),
-          Text(
-            AppLocalizations.of(context)!.nameSubtitle,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 10.5.sp,
+            SizedBox(height: Spacing.sm.h),
+            Text(
+              AppLocalizations.of(context)!.nameSubtitle,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 10.5.sp,
+              ),
             ),
-          ),
-          SizedBox(height: Spacing.xl.h),
-          AppTextField(
-            controller: controller,
-            placeholder: AppLocalizations.of(context)!.namePlaceholder,
-            onChanged: onChanged,
-          ),
-        ],
+            SizedBox(height: Spacing.xl.h),
+            AppTextField(
+              controller: controller,
+              placeholder: AppLocalizations.of(context)!.namePlaceholder,
+              onChanged: onChanged,
+            ),
+            SizedBox(height: Spacing.xl.h),
+          ],
+        ),
       ),
     );
   }

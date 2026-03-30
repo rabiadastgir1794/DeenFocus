@@ -345,12 +345,6 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     vm.setSelectedLanguageCode(localeService.localeCode);
     final pageController = widget.pageController;
 
-    if (vm.currentIndex == 7 && !_didAutoRequestNotification) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _requestNotificationOnStep(vm);
-      });
-    }
-
     if (vm.didComplete && !_scheduledPostOnboardingNavigation) {
       _scheduledPostOnboardingNavigation = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -360,7 +354,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             AppStepProgressLine(
@@ -373,6 +369,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 controller: widget.pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (index) {
+                  if (vm.currentIndex == 6 && index != 6) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
                   vm.setStep(index);
                   if (index == 7) {
                     _requestNotificationOnStep(vm);
@@ -413,14 +412,22 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Spacing.lg.w,
-                0,
-                Spacing.lg.w,
-                Spacing.xl.h,
-              ),
-              child: AppButton(
+          ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            Spacing.lg.w,
+            0,
+            Spacing.lg.w,
+            Spacing.md.h,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppButton(
                 label: vm.currentIndex == vm.totalSteps - 1
                     ? AppLocalizations.of(context)!.getStarted
                     : AppLocalizations.of(context)!.continueButton,
@@ -439,15 +446,13 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                   }
                 },
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: Spacing.md.h),
-              child: AppProgressIndicator(
+              SizedBox(height: Spacing.xl.h),
+              AppProgressIndicator(
                 totalSteps: vm.totalSteps,
                 currentIndex: vm.currentIndex,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

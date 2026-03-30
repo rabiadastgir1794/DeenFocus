@@ -192,97 +192,102 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AppIconCircle(
-                size: 64.8.r,
-                iconSize: 28.8.sp,
-                icon: const Icon(CupertinoIcons.location),
-              ),
-              SizedBox(height: Spacing.xl.h),
-              Text(
-                l10n.locationTitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.sp,
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: Spacing.md.h),
+                AppIconCircle(
+                  size: 64.8.r,
+                  iconSize: 28.8.sp,
+                  icon: const Icon(CupertinoIcons.location),
                 ),
-              ),
-              SizedBox(height: Spacing.md.h),
-              Text(
-                l10n.locationSubtitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  height: 1.5,
-                  fontSize: 12.sp,
+                SizedBox(height: Spacing.xl.h),
+                Text(
+                  l10n.locationTitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.sp,
+                  ),
                 ),
-              ),
-              SizedBox(height: Spacing.xl.h),
-              AppTextField(
-                controller: _cityController,
-                placeholder: 'Type your city name..',
-                textAlign: TextAlign.center,
-                onChanged: _onQueryChanged,
-              ),
-              SizedBox(height: Spacing.md.h),
-              Expanded(
-                child: _isSearching
-                    ? const Center(child: CircularProgressIndicator())
-                    : _results.isNotEmpty
-                    ? ListView.separated(
-                        itemCount: _results.length,
-                        separatorBuilder: (_, _) =>
-                            SizedBox(height: Spacing.sm.h),
-                        itemBuilder: (context, index) {
-                          final item = _results[index];
-                          final isSelected =
-                              _selectedLocation?.title == item.title &&
-                              _selectedLocation?.subtitle == item.subtitle;
+                SizedBox(height: Spacing.md.h),
+                Text(
+                  l10n.locationSubtitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.5,
+                    fontSize: 12.sp,
+                  ),
+                ),
+                SizedBox(height: Spacing.xl.h),
+                AppTextField(
+                  controller: _cityController,
+                  placeholder: 'Type your city name..',
+                  textAlign: TextAlign.center,
+                  onChanged: _onQueryChanged,
+                ),
+                SizedBox(height: Spacing.md.h),
+                if (_isSearching)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
+                    child: const Center(child: CircularProgressIndicator()),
+                  )
+                else if (_results.isNotEmpty)
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _results.length,
+                    separatorBuilder: (_, _) =>
+                        SizedBox(height: Spacing.sm.h),
+                    itemBuilder: (context, index) {
+                      final item = _results[index];
+                      final isSelected =
+                          _selectedLocation?.title == item.title &&
+                          _selectedLocation?.subtitle == item.subtitle;
 
-                          return ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              side: BorderSide(
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(
-                                        context,
-                                      ).colorScheme.outlineVariant,
+                      return ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          side: BorderSide(
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                        ),
+                        title: Text(
+                          item.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11.25.sp,
+                          ),
+                        ),
+                        subtitle: item.subtitle.trim().isEmpty
+                            ? null
+                            : Text(
+                                item.subtitle,
+                                style: TextStyle(
+                                  fontSize: 9.75.sp,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                               ),
-                            ),
-                            title: Text(
-                              item.title,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 11.25.sp,
-                              ),
-                            ),
-                            subtitle: item.subtitle.trim().isEmpty
-                                ? null
-                                : Text(
-                                    item.subtitle,
-                                    style: TextStyle(
-                                      fontSize: 9.75.sp,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                            onTap: () => _onLocationTap(item),
-                          );
-                        },
-                      )
-                    : _activeQuery.isNotEmpty
-                    ? const AppEmptyState(
-                        title: 'No locations found',
-                        subtitle: 'Try another city name.',
-                      )
-                    : const SizedBox.shrink(),
-              ),
-            ],
+                        onTap: () => _onLocationTap(item),
+                      );
+                    },
+                  )
+                else if (_activeQuery.isNotEmpty)
+                  const AppEmptyState(
+                    title: 'No locations found',
+                    subtitle: 'Try another city name.',
+                  ),
+                SizedBox(height: Spacing.xl.h),
+              ],
+            ),
           ),
         ),
         if (_isResolvingLocation)

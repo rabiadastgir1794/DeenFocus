@@ -140,11 +140,6 @@ class _HomeTabViewState extends State<_HomeTabView>
                         );
                       },
                     ),
-                    const SizedBox(width: 10),
-                    HomeCircleIconButton(
-                      icon: Icons.dark_mode_outlined,
-                      onTap: () {},
-                    ),
                   ],
                 ),
                 const SizedBox(height: 10),

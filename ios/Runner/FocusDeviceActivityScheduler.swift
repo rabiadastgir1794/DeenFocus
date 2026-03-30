@@ -35,7 +35,8 @@ enum FocusDeviceActivityScheduler {
     cancelAllSchedules()
 
     let defaults = UserDefaults(suiteName: appGroupId)
-    let trackModes = activeMode == "salah" || activeMode == "nightDiscipline"
+    let trackModes =
+      activeMode == "salah" || activeMode == "nightDiscipline" || !transitions.isEmpty
     guard trackModes, let enc = encodedSelection, !enc.isEmpty else {
       defaults?.removeObject(forKey: selectionKey)
       return

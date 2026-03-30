@@ -27,10 +27,12 @@ class OnboardingNotificationsPage extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
           AppIconCircle(
             size: 64.8.r,
             iconSize: 28.8.sp,
@@ -86,7 +88,8 @@ class OnboardingNotificationsPage extends StatelessWidget {
                 ),
               ],
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

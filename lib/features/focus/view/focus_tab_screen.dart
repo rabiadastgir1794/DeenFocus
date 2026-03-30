@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/app_notification_service.dart';
+import '../../../core/services/permission_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
 import '../model/focus_models.dart';
@@ -112,12 +113,12 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         final isIosSelection =
             defaultTargetPlatform == TargetPlatform.iOS &&
             vm.settings.iosSelectionCount > 0;
-        final enabledMode = vm.settings.enabledMode;
-        final childActive =
-            enabledMode == FocusModeType.child && vm.hasSelectedApps;
-        final salahMode = enabledMode == FocusModeType.salah;
-        final nightMode = enabledMode == FocusModeType.nightDiscipline;
-        final childMode = enabledMode == FocusModeType.child;
+        final childMode = vm.settings.childModeEnabled;
+        final childActive = childMode && vm.hasSelectedApps;
+        final salahMode =
+            vm.settings.salahModeEnabled && !vm.settings.childModeEnabled;
+        final nightMode =
+            vm.settings.nightDisciplineEnabled && !vm.settings.childModeEnabled;
 
         return Scaffold(
           body: SafeArea(
@@ -536,6 +537,22 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     }
 
     if (enabled) {
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final screenTimeOk = await PermissionService.requestScreenTimeAccess();
+        if (!mounted) return;
+        if (!screenTimeOk) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Screen Time access is required to block apps on iPhone. '
+                'Allow Family Controls for Deenly in Settings.',
+              ),
+            ),
+          );
+          return;
+        }
+      }
+
       final canBlock = await _ensureAndroidBlockingAccess(mode);
       if (!canBlock) return;
 

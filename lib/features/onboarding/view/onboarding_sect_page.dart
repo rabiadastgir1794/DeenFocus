@@ -21,11 +21,13 @@ class OnboardingSectPage extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: Spacing.xl.h),
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: Spacing.xl.h),
           Text(
             AppLocalizations.of(context)!.sectTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -64,7 +66,9 @@ class OnboardingSectPage extends StatelessWidget {
             isSelected: selectedSect == SectOption.preferNotToSay,
             onTap: () => onSectSelected(SectOption.preferNotToSay),
           ),
-        ],
+            SizedBox(height: Spacing.lg.h),
+          ],
+        ),
       ),
     );
   }

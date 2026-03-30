@@ -103,7 +103,6 @@ class HomeTabViewModel extends ChangeNotifier {
     longitude = await StorageService.locationLongitude;
 
     await _ensureLocationAccessIfNeeded();
-    await _ensureNotificationPrompted();
     await _loadVerse();
     await _loadPrayerTimes();
     await _loadPrayerStreak();
@@ -172,13 +171,6 @@ class HomeTabViewModel extends ChangeNotifier {
       longitude: location.longitude,
     );
     await DailyRefreshService.instance.refreshNow();
-  }
-
-  Future<void> _ensureNotificationPrompted() async {
-    final prompted = await StorageService.homeNotificationPrompted;
-    if (prompted) return;
-    await PermissionService.requestNotification();
-    await StorageService.setHomeNotificationPrompted(true);
   }
 
   Future<void> _loadVerse() async {

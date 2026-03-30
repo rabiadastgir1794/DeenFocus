@@ -36,7 +36,10 @@ class FocusController extends ChangeNotifier {
   List<FocusInstalledApp> get installedApps => _installedApps;
   bool get isLoadingApps => _isLoadingApps;
   bool get hasInstalledApps => _installedApps.isNotEmpty;
-  bool get isAnyModeEnabled => _settings.enabledMode != null;
+  bool get isAnyModeEnabled =>
+      _settings.childModeEnabled ||
+      _settings.nightDisciplineEnabled ||
+      _settings.salahModeEnabled;
   bool get hasSelectedApps => _settings.hasSelectedApps;
   int get selectedAppCount => _settings.selectedApps.isNotEmpty
       ? _settings.selectedApps.length
@@ -160,22 +163,38 @@ class FocusController extends ChangeNotifier {
         : null;
 
     final now = DateTime.now();
-    _settings = _settings.copyWith(
-      childModeEnabled: mode == FocusModeType.child,
-      nightDisciplineEnabled: mode == FocusModeType.nightDiscipline,
-      salahModeEnabled: mode == FocusModeType.salah,
-      salahTestAnchorAt:
-          _salahTestModeEnabled && mode == FocusModeType.salah
-          ? (_settings.salahTestAnchorAt ?? now)
-          : null,
-      clearSalahTestAnchorAt:
-          mode != FocusModeType.salah || !_salahTestModeEnabled,
-      childLockedUntil: childLockedUntil,
-      clearChildLockedUntil:
-          mode != FocusModeType.child ||
-          _settings.childLockType == ChildLockType.indefinite,
-      clearTemporaryUnlock: true,
-    );
+    if (mode == FocusModeType.child) {
+      _settings = _settings.copyWith(
+        childModeEnabled: true,
+        nightDisciplineEnabled: false,
+        salahModeEnabled: false,
+        salahTestAnchorAt:
+            _salahTestModeEnabled ? (_settings.salahTestAnchorAt ?? now) : null,
+        clearSalahTestAnchorAt: !_salahTestModeEnabled,
+        childLockedUntil: childLockedUntil,
+        clearChildLockedUntil:
+            _settings.childLockType == ChildLockType.indefinite,
+        clearTemporaryUnlock: true,
+      );
+    } else {
+      _settings = _settings.copyWith(
+        childModeEnabled: false,
+        clearChildLockedUntil: true,
+        nightDisciplineEnabled: mode == FocusModeType.nightDiscipline
+            ? true
+            : _settings.nightDisciplineEnabled,
+        salahModeEnabled: mode == FocusModeType.salah
+            ? true
+            : _settings.salahModeEnabled,
+        salahTestAnchorAt:
+            _salahTestModeEnabled && mode == FocusModeType.salah
+            ? (_settings.salahTestAnchorAt ?? now)
+            : null,
+        clearSalahTestAnchorAt:
+            mode != FocusModeType.salah || !_salahTestModeEnabled,
+        clearTemporaryUnlock: true,
+      );
+    }
 
     await _persist();
     await _recomputeAndPersist();
@@ -236,7 +255,7 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> disableActiveMode() async {
-    final mode = _settings.enabledMode;
+    final mode = _lockState.activeMode;
     if (mode == null) return;
     await disableMode(mode);
   }
@@ -288,12 +307,25 @@ class FocusController extends ChangeNotifier {
       return _lockState.reason ?? 'Selected apps are blocked right now.';
     }
     if (isAnyModeEnabled) {
-      final mode = _settings.enabledMode;
-      return mode == null
-          ? 'Choose a mode to protect your attention.'
-          : '${modeTitle(mode)} is enabled.';
+      if (_settings.childModeEnabled) {
+        return '${modeTitle(FocusModeType.child)} is enabled.';
+      }
+      final parts = <String>[];
+      if (_settings.nightDisciplineEnabled) {
+        parts.add(modeTitle(FocusModeType.nightDiscipline));
+      }
+      if (_settings.salahModeEnabled) {
+        parts.add(modeTitle(FocusModeType.salah));
+      }
+      if (parts.isEmpty) {
+        return 'Choose a mode to protect your attention.';
+      }
+      if (parts.length == 1) {
+        return '${parts.first} is enabled.';
+      }
+      return '${parts.join(' and ')} are enabled.';
     }
-    return 'Choose apps and enable one mode at a time.';
+    return 'Choose apps and enable focus modes.';
   }
 
   String get statusCaption {
@@ -302,7 +334,7 @@ class FocusController extends ChangeNotifier {
     if (isTemporarilyUnlocked && _settings.temporarilyUnlockedUntil != null) {
       return 'Unlocked until ${DateFormat.jm().format(_settings.temporarilyUnlockedUntil!)}';
     }
-    if (_settings.enabledMode == null) return 'No focus mode enabled';
+    if (!isAnyModeEnabled) return 'No focus mode enabled';
     return 'Ready to lock $selectedAppCount apps';
   }
 
@@ -319,6 +351,7 @@ class FocusController extends ChangeNotifier {
     if (Platform.isAndroid && _settings.selectedApps.isNotEmpty) {
       unawaited(_warmInstalledAppsCache());
     }
+    notifyListeners();
     await _recomputeAndPersist();
   }
 
@@ -356,37 +389,52 @@ class FocusController extends ChangeNotifier {
       lockState: _lockState,
       scheduledTransitions: scheduledTransitions,
     );
-    await AppNotificationService.instance.syncFocusNotifications(
-      settings: _settings,
-      latitude: _cachedLatitude,
-      longitude: _cachedLongitude,
+    notifyListeners();
+    unawaited(
+      AppNotificationService.instance
+          .syncFocusNotifications(
+            settings: _settings,
+            latitude: _cachedLatitude,
+            longitude: _cachedLongitude,
+          )
+          .catchError((Object e, StackTrace st) {
+            assert(() {
+              debugPrint('focus: syncFocusNotifications failed: $e\n$st');
+              return true;
+            }());
+          }),
     );
     await FocusEnforcementService.appendDebugLog(
       'focus.recompute',
       'done mode=${_lockState.activeMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} reason=${_lockState.reason}',
     );
     _scheduleNextRefresh();
-    notifyListeners();
   }
 
   FocusSettings _normalizeSettings(FocusSettings settings, DateTime now) {
-    if (settings.childModeEnabled &&
-        settings.childLockType == ChildLockType.timed &&
-        settings.childLockedUntil != null &&
-        !settings.childLockedUntil!.isAfter(now)) {
-      return settings.copyWith(
+    var s = settings;
+    if (s.childModeEnabled &&
+        (s.nightDisciplineEnabled || s.salahModeEnabled)) {
+      s = s.copyWith(nightDisciplineEnabled: false, salahModeEnabled: false);
+    }
+
+    if (s.childModeEnabled &&
+        s.childLockType == ChildLockType.timed &&
+        s.childLockedUntil != null &&
+        !s.childLockedUntil!.isAfter(now)) {
+      return s.copyWith(
         childModeEnabled: false,
         clearChildLockedUntil: true,
         clearTemporaryUnlock: true,
       );
     }
 
-    if (settings.temporarilyUnlockedUntil != null &&
-        !settings.temporarilyUnlockedUntil!.isAfter(now)) {
-      return settings.copyWith(clearTemporaryUnlock: true);
+    if (s.temporarilyUnlockedUntil != null &&
+        !s.temporarilyUnlockedUntil!.isAfter(now)) {
+      return s.copyWith(clearTemporaryUnlock: true);
     }
 
-    return settings;
+    return s;
   }
 
   Future<FocusLockState> _computeLockState(FocusSettings settings) async {
@@ -407,46 +455,92 @@ class FocusController extends ChangeNotifier {
       );
     }
 
-    if (settings.nightDisciplineEnabled) {
-      final now = DateTime.now();
-      final isWithinWindow = settings.nightRange.contains(now);
-      final tempUnlocked = isWithinWindow && _isTemporaryUnlockActive(settings);
-      return FocusLockState(
-        isLocked: isWithinWindow && !tempUnlocked,
-        activeMode: FocusModeType.nightDiscipline,
-        reason: isWithinWindow
-            ? 'Night Discipline is blocking selected apps.'
-            : 'Night Discipline will start at ${_formatTime(settings.nightRange.startHour, settings.nightRange.startMinute)}.',
-        nextChangeAt: _earlierOf(
-          tempUnlocked ? settings.temporarilyUnlockedUntil : null,
-          _nextNightBoundary(settings.nightRange, now),
-        ),
-        isTemporarilyUnlocked: tempUnlocked,
-      );
+    if (!settings.nightDisciplineEnabled && !settings.salahModeEnabled) {
+      return const FocusLockState.unlocked();
     }
 
+    final now = DateTime.now();
+    final nightLocked =
+        settings.nightDisciplineEnabled && settings.nightRange.contains(now);
+    SalahWindow? activeSalah;
     if (settings.salahModeEnabled) {
-      final now = DateTime.now();
       final windows = await _salahWindows(now);
-      final active = windows.where((window) {
-        return !now.isBefore(window.start) && now.isBefore(window.end);
-      }).firstOrNull;
-      final tempUnlocked = active != null && _isTemporaryUnlockActive(settings);
+      activeSalah = windows
+          .where((window) {
+            return !now.isBefore(window.start) && now.isBefore(window.end);
+          })
+          .firstOrNull;
+    }
+    final salahLocked = activeSalah != null;
+    final inScheduledWindow = nightLocked || salahLocked;
+    final tempUnlocked = inScheduledWindow && _isTemporaryUnlockActive(settings);
+
+    if (!nightLocked && !salahLocked) {
+      DateTime? nextChange;
+      String reason;
+      if (settings.nightDisciplineEnabled && settings.salahModeEnabled) {
+        final windows = await _salahWindows(now);
+        nextChange = _earlierOf(
+          _nextNightBoundary(settings.nightRange, now),
+          _nextSalahStart(windows, now),
+        );
+        reason =
+            'Night Discipline and Salah mode will lock apps at their scheduled times.';
+      } else if (settings.nightDisciplineEnabled) {
+        nextChange = _nextNightBoundary(settings.nightRange, now);
+        reason =
+            'Night Discipline will start at ${_formatTime(settings.nightRange.startHour, settings.nightRange.startMinute)}.';
+      } else {
+        final windows = await _salahWindows(now);
+        nextChange = _nextSalahStart(windows, now);
+        reason = 'Salah mode will lock apps around the next prayer.';
+      }
       return FocusLockState(
-        isLocked: active != null && !tempUnlocked,
-        activeMode: FocusModeType.salah,
-        reason: active == null
-            ? 'Salah mode will lock apps around the next prayer.'
-            : 'Salah mode is active for ${_prayerLabel(active.prayer.id)}.',
-        nextChangeAt: _earlierOf(
-          tempUnlocked ? settings.temporarilyUnlockedUntil : null,
-          active?.end ?? _nextSalahStart(windows, now),
-        ),
-        isTemporarilyUnlocked: tempUnlocked,
+        isLocked: false,
+        activeMode: settings.nightDisciplineEnabled
+            ? FocusModeType.nightDiscipline
+            : FocusModeType.salah,
+        reason: reason,
+        nextChangeAt: nextChange,
+        isTemporarilyUnlocked: false,
       );
     }
 
-    return const FocusLockState.unlocked();
+    final isLocked = !tempUnlocked;
+    final FocusModeType displayMode;
+    final String reason;
+    if (salahLocked && nightLocked) {
+      displayMode = FocusModeType.salah;
+      reason = 'Night Discipline and Salah mode are blocking selected apps.';
+    } else if (salahLocked) {
+      displayMode = FocusModeType.salah;
+      reason =
+          'Salah mode is active for ${_prayerLabel(activeSalah.prayer.id)}.';
+    } else {
+      displayMode = FocusModeType.nightDiscipline;
+      reason = 'Night Discipline is blocking selected apps.';
+    }
+
+    DateTime? nextChangeAt = tempUnlocked
+        ? settings.temporarilyUnlockedUntil
+        : null;
+    if (salahLocked) {
+      nextChangeAt = _earlierOf(nextChangeAt, activeSalah.end);
+    }
+    if (nightLocked) {
+      nextChangeAt = _earlierOf(
+        nextChangeAt,
+        _nextNightBoundary(settings.nightRange, now),
+      );
+    }
+
+    return FocusLockState(
+      isLocked: isLocked,
+      activeMode: displayMode,
+      reason: reason,
+      nextChangeAt: nextChangeAt,
+      isTemporarilyUnlocked: tempUnlocked,
+    );
   }
 
   bool _isTemporaryUnlockActive(FocusSettings settings) {

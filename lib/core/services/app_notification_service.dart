@@ -64,7 +64,14 @@ class AppNotificationService {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-    const darwinSettings = DarwinInitializationSettings();
+    // Do not request notification permission here — that runs from onboarding
+    // (or settings). Defaults on DarwinInitializationSettings are all `true`,
+    // which would show the system prompt during [initialize] at app launch.
+    const darwinSettings = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+    );
 
     await _plugin.initialize(
       const InitializationSettings(
@@ -84,25 +91,17 @@ class AppNotificationService {
     _initialized = true;
   }
 
-  /// Android 13+ and iOS/macOS need an explicit runtime grant before scheduling.
-  Future<void> _ensureNotificationRuntimePermissions() async {
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    await androidPlugin?.requestNotificationsPermission();
-
-    final iosPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >();
-    await iosPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-
-    final macPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          MacOSFlutterLocalNotificationsPlugin
-        >();
-    await macPlugin?.requestPermissions(alert: true, badge: true, sound: true);
+  Future<bool> _hasNotificationPermission() async {
+    if (Platform.isAndroid) {
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      final granted = await androidPlugin?.areNotificationsEnabled();
+      if (granted == true) return true;
+    }
+    final status = await Permission.notification.status;
+    return status.isGranted || status.isLimited;
   }
 
   /// Enough IDs for 7 days × 6 prayer indices (sunrise skipped when scheduling).
@@ -114,7 +113,9 @@ class AppNotificationService {
     required double longitude,
   }) async {
     await initialize();
-    await _ensureNotificationRuntimePermissions();
+    if (!await _hasNotificationPermission()) {
+      return;
+    }
     await _ensureAndroidExactAlarmOrFallback();
     // Match device timezone after travel / DST changes.
     await _setLocalTimezone();
@@ -162,7 +163,12 @@ class AppNotificationService {
     required double? longitude,
   }) async {
     await initialize();
-    await _ensureNotificationRuntimePermissions();
+    if (!await _hasNotificationPermission()) {
+      await _cancelRange(2000, 2059);
+      await _cancelRange(3000, 3059);
+      await _cancelRange(4000, 4003);
+      return;
+    }
     await _ensureAndroidExactAlarmOrFallback();
     await _setLocalTimezone();
     await _cancelRange(2000, 2059);
@@ -257,7 +263,9 @@ class AppNotificationService {
 
   Future<void> showImmediateFocusLockedNotification(FocusModeType mode) async {
     await initialize();
-    await _ensureNotificationRuntimePermissions();
+    if (!await _hasNotificationPermission()) {
+      return;
+    }
     if (mode != FocusModeType.salah && mode != FocusModeType.nightDiscipline) {
       return;
     }

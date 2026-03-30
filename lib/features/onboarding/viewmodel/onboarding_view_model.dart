@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/daily_refresh_service.dart';
@@ -65,9 +68,13 @@ class OnboardingViewModel extends ChangeNotifier {
   Future<void> requestNotification() async {
     _notificationRequesting = true;
     notifyListeners();
-    _notificationGranted = await PermissionService.requestNotification();
-    _notificationRequesting = false;
-    notifyListeners();
+    try {
+      await AppNotificationService.instance.initialize();
+      _notificationGranted = await PermissionService.requestNotification();
+    } finally {
+      _notificationRequesting = false;
+      notifyListeners();
+    }
   }
 
   void goNext() {
@@ -101,14 +108,16 @@ class OnboardingViewModel extends ChangeNotifier {
       );
       if (_selectedLocation!.latitude != null &&
           _selectedLocation!.longitude != null) {
-        try {
-          await DailyRefreshService.instance.refreshNow();
-        } catch (e, st) {
-          assert(() {
-            debugPrint('Onboarding: refresh after location failed: $e\n$st');
-            return true;
-          }());
-        }
+        // Do not await: refresh loads prayer data, notifications, widgets and can
+        // take multiple seconds. Home tab loads the same data on open anyway.
+        unawaited(
+          DailyRefreshService.instance.refreshNow().catchError((Object e, StackTrace st) {
+            assert(() {
+              debugPrint('Onboarding: refresh after location failed: $e\n$st');
+              return true;
+            }());
+          }),
+        );
       }
     }
     _didComplete = true;
