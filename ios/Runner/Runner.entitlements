@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.rnr.deenfocus.widgets</string>
+		<string>group.com.rnr.deenfocus</string>
 	</array>
 </dict>
 </plist>
