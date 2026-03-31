@@ -224,7 +224,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      '${vm.settings.iosSelectionCount} iOS app${vm.settings.iosSelectionCount == 1 ? '' : 's'} selected',
+                                      '${vm.settings.iosSelectionCount} iOS item${vm.settings.iosSelectionCount == 1 ? '' : 's'} selected',
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelMedium
@@ -305,6 +305,22 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         InkWell(
                           onTap: () async {
                             if (defaultTargetPlatform == TargetPlatform.iOS) {
+                              final screenTimeOk =
+                                  await PermissionService.requestScreenTimeAccess();
+                              if (!mounted) return;
+                              if (!screenTimeOk) {
+                                ScaffoldMessenger.maybeOf(
+                                  context,
+                                )?.showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Screen Time access is required to view and select apps. '
+                                      'Allow Family Controls for Deenly in Settings.',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               await vm.requestInstalledApps();
                               return;
                             }
@@ -383,7 +399,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         if (defaultTargetPlatform == TargetPlatform.iOS) ...[
                           const SizedBox(height: 12),
                           Text(
-                            'On iOS, Apple shows a native Screen Time picker. The app receives the selected opaque tokens and selected app count, not a normal installed-app name list.',
+                            'On iOS, Apple shows a native Screen Time picker. The app receives opaque tokens and a selected item count for apps, categories, and websites, not a normal installed-app name list.',
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(color: colorScheme.onSurfaceVariant),
                           ),

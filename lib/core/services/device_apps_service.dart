@@ -35,7 +35,10 @@ abstract class DeviceAppsService {
       if (raw == null) return null;
       return IosFocusSelectionResult(
         selectionData: raw['selectionData'] as String?,
-        applicationCount: (raw['applicationCount'] as num?)?.toInt() ?? 0,
+        selectionCount:
+            (raw['selectionCount'] as num?)?.toInt() ??
+            (raw['applicationCount'] as num?)?.toInt() ??
+            0,
       );
     } on PlatformException {
       return null;
@@ -46,9 +49,9 @@ abstract class DeviceAppsService {
 class IosFocusSelectionResult {
   const IosFocusSelectionResult({
     required this.selectionData,
-    required this.applicationCount,
+    required this.selectionCount,
   });
 
   final String? selectionData;
-  final int applicationCount;
+  final int selectionCount;
 }

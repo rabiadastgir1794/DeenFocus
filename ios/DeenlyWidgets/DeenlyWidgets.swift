@@ -2,7 +2,7 @@ import SwiftUI
 import WidgetKit
 import UIKit
 
-private let widgetAppGroup = "group.com.rnr.deenfocus.widgets"
+private let widgetAppGroup = "group.com.rnr.deenfocus"
 
 private enum WidgetDateParser {
   private static let localFormatters: [DateFormatter] = {

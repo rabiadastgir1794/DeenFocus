@@ -10,7 +10,8 @@ import MapKit
 
 @available(iOS 16.0, *)
 private enum ManagedSettingsStoreHolder {
-  static let shared = ManagedSettingsStore()
+  static let name = ManagedSettingsStore.Name("FocusShield")
+  static let shared = ManagedSettingsStore(named: name)
 }
 
 @main
@@ -22,7 +23,7 @@ private enum ManagedSettingsStoreHolder {
   private let widgetChannelName = "com.app.deenly.deenly/widgets"
   private let locationSearchChannelName = "com.app.deenly.deenly/location_search"
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
-  private let widgetAppGroup = "group.com.rnr.deenfocus.widgets"
+  private let widgetAppGroup = "group.com.rnr.deenfocus"
 
   override func application(
     _ application: UIApplication,
@@ -279,13 +280,23 @@ private enum ManagedSettingsStoreHolder {
     let isLocked = args["isLocked"] as? Bool ?? false
     let activeMode = args["activeMode"] as? String
     let encodedSelection = args["iosSelectionData"] as? String
+    let nightDisciplineEnabled = args["nightDisciplineEnabled"] as? Bool ?? false
+    let nightStartHour = args["nightStartHour"] as? Int ?? 22
+    let nightStartMinute = args["nightStartMinute"] as? Int ?? 0
+    let nightEndHour = args["nightEndHour"] as? Int ?? 6
+    let nightEndMinute = args["nightEndMinute"] as? Int ?? 0
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
 
     FocusDeviceActivityScheduler.sync(
       activeMode: activeMode,
       encodedSelection: encodedSelection,
-      transitions: transitions
+      transitions: transitions,
+      nightDisciplineEnabled: nightDisciplineEnabled,
+      nightStartHour: nightStartHour,
+      nightStartMinute: nightStartMinute,
+      nightEndHour: nightEndHour,
+      nightEndMinute: nightEndMinute
     )
 
     let store = ManagedSettingsStoreHolder.shared
@@ -307,8 +318,11 @@ private enum ManagedSettingsStoreHolder {
     }
 
     store.shield.applications = selection.applicationTokens
-    store.shield.applicationCategories = nil
-    store.shield.webDomains = nil
+    store.shield.applicationCategories = selection.categoryTokens.isEmpty
+      ? nil
+      : ShieldSettings.ActivityCategoryPolicy.specific(selection.categoryTokens)
+    store.shield.webDomains = selection.webDomainTokens
+    store.shield.webDomainCategories = nil
     result(nil)
   }
 
@@ -364,7 +378,9 @@ private final class FocusPickerViewController: UIHostingController<FocusPickerRo
 @available(iOS 16.0, *)
 private struct FocusPickerRootView: View {
   @Environment(\.dismiss) private var dismiss
-  @State private var selection = FamilyActivitySelection()
+  // Include all apps from selected categories so we persist app tokens, not
+  // only category/group tokens.
+  @State private var selection = FamilyActivitySelection(includeEntireCategory: true)
 
   let onComplete: ([String: Any?]) -> Void
 
@@ -379,7 +395,10 @@ private struct FocusPickerRootView: View {
               dismiss()
               onComplete([
                 "selectionData": nil,
-                "applicationCount": selection.applicationTokens.count
+                "applicationCount": totalSelectionCount(for: selection),
+                "categoryCount": selection.categoryTokens.count,
+                "webDomainCount": selection.webDomainTokens.count,
+                "selectionCount": totalSelectionCount(for: selection),
               ])
             }
           }
@@ -397,10 +416,20 @@ private struct FocusPickerRootView: View {
 
   private func serializeSelection(_ selection: FamilyActivitySelection) -> [String: Any?] {
     let encoded = try? JSONEncoder().encode(selection)
+    let totalCount = totalSelectionCount(for: selection)
     return [
       "selectionData": encoded?.base64EncodedString(),
-      "applicationCount": selection.applicationTokens.count
+      "applicationCount": totalCount,
+      "categoryCount": selection.categoryTokens.count,
+      "webDomainCount": selection.webDomainTokens.count,
+      "selectionCount": totalCount,
     ]
+  }
+
+  private func totalSelectionCount(for selection: FamilyActivitySelection) -> Int {
+    selection.applicationTokens.count +
+      selection.categoryTokens.count +
+      selection.webDomainTokens.count
   }
 }
 

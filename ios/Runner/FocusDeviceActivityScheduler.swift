@@ -5,9 +5,10 @@ import Foundation
 /// while the Flutter app is suspended (Salah / Night Discipline).
 @available(iOS 16.0, *)
 enum FocusDeviceActivityScheduler {
-  static let appGroupId = "group.com.rnr.deenfocus.widgets"
+  static let appGroupId = "group.com.rnr.deenfocus"
   private static let selectionKey = "focus_device_activity_selection_b64"
   private static let activityNamesKey = "focus_device_activity_names"
+  private static let repeatingNightActivityName = "deenly_focus_night_daily"
 
   private static let isoFormatter: ISO8601DateFormatter = {
     let f = ISO8601DateFormatter()
@@ -31,12 +32,22 @@ enum FocusDeviceActivityScheduler {
     defaults?.removeObject(forKey: activityNamesKey)
   }
 
-  static func sync(activeMode: String?, encodedSelection: String?, transitions: [[String: Any]]) {
+  static func sync(
+    activeMode: String?,
+    encodedSelection: String?,
+    transitions: [[String: Any]],
+    nightDisciplineEnabled: Bool,
+    nightStartHour: Int,
+    nightStartMinute: Int,
+    nightEndHour: Int,
+    nightEndMinute: Int
+  ) {
     cancelAllSchedules()
 
     let defaults = UserDefaults(suiteName: appGroupId)
     let trackModes =
-      activeMode == "salah" || activeMode == "nightDiscipline" || !transitions.isEmpty
+      activeMode == "salah" || activeMode == "nightDiscipline" || !transitions.isEmpty ||
+      nightDisciplineEnabled
     guard trackModes, let enc = encodedSelection, !enc.isEmpty else {
       defaults?.removeObject(forKey: selectionKey)
       return
@@ -49,6 +60,31 @@ enum FocusDeviceActivityScheduler {
     let minDuration: TimeInterval = 15 * 60
     let now = Date()
     var names: [String] = []
+
+    if nightDisciplineEnabled {
+      let startC = DateComponents(
+        hour: nightStartHour,
+        minute: nightStartMinute,
+        second: 0
+      )
+      let endC = DateComponents(
+        hour: nightEndHour,
+        minute: nightEndMinute,
+        second: 0
+      )
+      let activityName = DeviceActivityName(repeatingNightActivityName)
+      let schedule = DeviceActivitySchedule(
+        intervalStart: startC,
+        intervalEnd: endC,
+        repeats: true
+      )
+      do {
+        try center.startMonitoring(activityName, during: schedule)
+        names.append(repeatingNightActivityName)
+      } catch {
+        // Non-fatal: keep one-shot schedules as fallback.
+      }
+    }
 
     for t in transitions {
       guard let locked = t["isLocked"] as? Bool, locked else { continue }

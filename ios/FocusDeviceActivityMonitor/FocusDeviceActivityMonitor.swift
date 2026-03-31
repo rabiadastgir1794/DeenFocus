@@ -5,8 +5,10 @@ import ManagedSettings
 
 @available(iOS 16.0, *)
 final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
-  private let store = ManagedSettingsStore()
-  private static let appGroupId = "group.com.rnr.deenfocus.widgets"
+  private let store = ManagedSettingsStore(
+    named: ManagedSettingsStore.Name("FocusShield")
+  )
+  private static let appGroupId = "group.com.rnr.deenfocus"
   private static let selectionKey = "focus_device_activity_selection_b64"
 
   override func intervalDidStart(for activity: DeviceActivityName) {
@@ -28,7 +30,10 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
       return
     }
     store.shield.applications = sel.applicationTokens
-    store.shield.applicationCategories = nil
-    store.shield.webDomains = nil
+    store.shield.applicationCategories = sel.categoryTokens.isEmpty
+      ? nil
+      : ShieldSettings.ActivityCategoryPolicy.specific(sel.categoryTokens)
+    store.shield.webDomains = sel.webDomainTokens
+    store.shield.webDomainCategories = nil
   }
 }

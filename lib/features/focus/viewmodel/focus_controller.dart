@@ -77,7 +77,7 @@ class FocusController extends ChangeNotifier {
       if (result == null) return;
       _settings = _settings.copyWith(
         iosSelectionData: result.selectionData,
-        iosSelectionCount: result.applicationCount,
+        iosSelectionCount: result.selectionCount,
         selectedApps: const <String, String>{},
       );
       await _persist();
@@ -168,8 +168,9 @@ class FocusController extends ChangeNotifier {
         childModeEnabled: true,
         nightDisciplineEnabled: false,
         salahModeEnabled: false,
-        salahTestAnchorAt:
-            _salahTestModeEnabled ? (_settings.salahTestAnchorAt ?? now) : null,
+        salahTestAnchorAt: _salahTestModeEnabled
+            ? (_settings.salahTestAnchorAt ?? now)
+            : null,
         clearSalahTestAnchorAt: !_salahTestModeEnabled,
         childLockedUntil: childLockedUntil,
         clearChildLockedUntil:
@@ -186,8 +187,7 @@ class FocusController extends ChangeNotifier {
         salahModeEnabled: mode == FocusModeType.salah
             ? true
             : _settings.salahModeEnabled,
-        salahTestAnchorAt:
-            _salahTestModeEnabled && mode == FocusModeType.salah
+        salahTestAnchorAt: _salahTestModeEnabled && mode == FocusModeType.salah
             ? (_settings.salahTestAnchorAt ?? now)
             : null,
         clearSalahTestAnchorAt:
@@ -262,7 +262,7 @@ class FocusController extends ChangeNotifier {
 
   String selectedAppsSummary() {
     if (Platform.isIOS && _settings.iosSelectionCount > 0) {
-      return '${_settings.iosSelectionCount} iOS app${_settings.iosSelectionCount == 1 ? '' : 's'} selected';
+      return '${_settings.iosSelectionCount} iOS item${_settings.iosSelectionCount == 1 ? '' : 's'} selected';
     }
     if (_settings.selectedApps.isEmpty) return 'No apps selected';
     final values = _settings.selectedApps.values.toList(growable: false);
@@ -465,15 +465,14 @@ class FocusController extends ChangeNotifier {
     SalahWindow? activeSalah;
     if (settings.salahModeEnabled) {
       final windows = await _salahWindows(now);
-      activeSalah = windows
-          .where((window) {
-            return !now.isBefore(window.start) && now.isBefore(window.end);
-          })
-          .firstOrNull;
+      activeSalah = windows.where((window) {
+        return !now.isBefore(window.start) && now.isBefore(window.end);
+      }).firstOrNull;
     }
     final salahLocked = activeSalah != null;
     final inScheduledWindow = nightLocked || salahLocked;
-    final tempUnlocked = inScheduledWindow && _isTemporaryUnlockActive(settings);
+    final tempUnlocked =
+        inScheduledWindow && _isTemporaryUnlockActive(settings);
 
     if (!nightLocked && !salahLocked) {
       DateTime? nextChange;
