@@ -852,12 +852,13 @@ class FocusController extends ChangeNotifier {
         todayEnd = todayEnd.add(const Duration(days: 1));
       }
 
-      if (now.isBefore(todayStart) && now.isBefore(todayEnd)) {
+      if (now.isBefore(todayStart)) {
         final previousStart = todayStart.subtract(const Duration(days: 1));
-        if (!now.isBefore(previousStart)) {
-          return (start: previousStart, end: todayEnd);
+        final previousEnd = todayEnd.subtract(const Duration(days: 1));
+        if (!now.isBefore(previousStart) && now.isBefore(previousEnd)) {
+          return (start: previousStart, end: previousEnd);
         }
-        return (start: todayStart, end: todayEnd.add(const Duration(days: 1)));
+        return (start: todayStart, end: todayEnd);
       }
 
       if (!now.isBefore(todayStart) && now.isBefore(todayEnd)) {
