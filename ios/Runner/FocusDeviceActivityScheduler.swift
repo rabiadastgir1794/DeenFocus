@@ -3,33 +3,110 @@ import Foundation
 
 /// Registers one-shot Device Activity intervals so ManagedSettings shields can turn on/off
 /// while the Flutter app is suspended (Salah / Night Discipline).
+enum FocusIOSDebugLogger {
+  private static let appGroupId = "group.com.rnr.deenfocus"
+  private static let fileName = "focus_debug.log"
+
+  private static let formatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS Z"
+    return formatter
+  }()
+
+  private static func sharedLogURL() -> URL? {
+    FileManager.default
+      .containerURL(forSecurityApplicationGroupIdentifier: appGroupId)?
+      .appendingPathComponent(fileName)
+  }
+
+  private static func documentsLogURL() -> URL? {
+    FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+      .first?
+      .appendingPathComponent(fileName)
+  }
+
+  @discardableResult
+  static func exportToDocuments() -> String? {
+    guard
+      let sharedURL = sharedLogURL(),
+      let documentsURL = documentsLogURL()
+    else {
+      return nil
+    }
+
+    if !FileManager.default.fileExists(atPath: sharedURL.path) {
+      return documentsURL.path
+    }
+
+    do {
+      let data = try Data(contentsOf: sharedURL)
+      try data.write(to: documentsURL, options: .atomic)
+    } catch {
+      return documentsURL.path
+    }
+
+    return documentsURL.path
+  }
+
+  static func path() -> String? {
+    exportToDocuments() ?? sharedLogURL()?.path
+  }
+
+  static func clear() {
+    let fileManager = FileManager.default
+    if let sharedURL = sharedLogURL() {
+      try? fileManager.removeItem(at: sharedURL)
+    }
+    if let documentsURL = documentsLogURL() {
+      try? fileManager.removeItem(at: documentsURL)
+    }
+  }
+
+  static func append(_ tag: String, _ message: String) {
+    guard let url = sharedLogURL() else { return }
+    let timestamp = formatter.string(from: Date())
+    let line = "[\(timestamp)] [\(tag)] \(message)\n"
+    let data = Data(line.utf8)
+
+    if FileManager.default.fileExists(atPath: url.path) {
+      do {
+        let handle = try FileHandle(forWritingTo: url)
+        handle.seekToEndOfFile()
+        handle.write(data)
+        handle.closeFile()
+      } catch {
+        try? data.write(to: url, options: .atomic)
+      }
+    } else {
+      try? data.write(to: url, options: .atomic)
+    }
+
+    _ = exportToDocuments()
+  }
+}
+
 @available(iOS 16.0, *)
 enum FocusDeviceActivityScheduler {
   static let appGroupId = "group.com.rnr.deenfocus"
   private static let selectionKey = "focus_device_activity_selection_b64"
   private static let activityNamesKey = "focus_device_activity_names"
-  private static let repeatingNightActivityName = "deenly_focus_night_daily"
-
-  private static let isoFormatter: ISO8601DateFormatter = {
-    let f = ISO8601DateFormatter()
-    f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-    return f
-  }()
-
-  private static let isoFormatterNoFrac: ISO8601DateFormatter = {
-    let f = ISO8601DateFormatter()
-    f.formatOptions = [.withInternetDateTime]
-    return f
-  }()
+  private static let activityActionsKey = "focus_device_activity_actions"
+  private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
 
   static func cancelAllSchedules() {
     let defaults = UserDefaults(suiteName: appGroupId)
     let rawNames = defaults?.stringArray(forKey: activityNamesKey) ?? []
     guard !rawNames.isEmpty else { return }
+    FocusIOSDebugLogger.append(
+      "ios.scheduler.cancel",
+      "stopping \(rawNames.count) schedule(s): \(rawNames.joined(separator: ","))"
+    )
     let center = DeviceActivityCenter()
     let names = rawNames.map { DeviceActivityName($0) }
     center.stopMonitoring(names)
     defaults?.removeObject(forKey: activityNamesKey)
+    defaults?.removeObject(forKey: activityActionsKey)
   }
 
   static func sync(
@@ -48,8 +125,16 @@ enum FocusDeviceActivityScheduler {
     let trackModes =
       activeMode == "salah" || activeMode == "nightDiscipline" || !transitions.isEmpty ||
       nightDisciplineEnabled
+    FocusIOSDebugLogger.append(
+      "ios.scheduler.sync",
+      "activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute))"
+    )
     guard trackModes, let enc = encodedSelection, !enc.isEmpty else {
       defaults?.removeObject(forKey: selectionKey)
+      FocusIOSDebugLogger.append(
+        "ios.scheduler.sync",
+        "skipped scheduling because tracking is disabled or selection data is empty"
+      )
       return
     }
 
@@ -57,38 +142,58 @@ enum FocusDeviceActivityScheduler {
 
     let center = DeviceActivityCenter()
     let cal = Calendar.current
-    let minDuration: TimeInterval = 15 * 60
+    let triggerDuration: TimeInterval = 15 * 60
     let now = Date()
     var names: [String] = []
+    var actionsByName: [String: String] = [:]
+    let startMinutes = nightStartHour * 60 + nightStartMinute
+    let endMinutes = nightEndHour * 60 + nightEndMinute
+    let isOvernightNightRange = startMinutes >= endMinutes
+    var didRegisterRepeatingNightLock = false
 
-    if nightDisciplineEnabled {
-      let startC = DateComponents(
+    if nightDisciplineEnabled && isOvernightNightRange {
+      let lockStart = DateComponents(
         hour: nightStartHour,
         minute: nightStartMinute,
         second: 0
       )
-      let endC = DateComponents(
+      let lockEnd = DateComponents(
         hour: nightEndHour,
         minute: nightEndMinute,
         second: 0
       )
-      let activityName = DeviceActivityName(repeatingNightActivityName)
-      let schedule = DeviceActivitySchedule(
-        intervalStart: startC,
-        intervalEnd: endC,
+
+      let lockActivityName = DeviceActivityName(repeatingNightLockActivityName)
+      let lockSchedule = DeviceActivitySchedule(
+        intervalStart: lockStart,
+        intervalEnd: lockEnd,
         repeats: true
       )
+
       do {
-        try center.startMonitoring(activityName, during: schedule)
-        names.append(repeatingNightActivityName)
+        try center.startMonitoring(lockActivityName, during: lockSchedule)
+        names.append(repeatingNightLockActivityName)
+        actionsByName[repeatingNightLockActivityName] = "lock"
+        didRegisterRepeatingNightLock = true
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "registered repeating night lock name=\(repeatingNightLockActivityName) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute))"
+        )
       } catch {
-        // Non-fatal: keep one-shot schedules as fallback.
+        // Non-fatal: rely on one-shot schedules below when available.
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "failed repeating night lock name=\(repeatingNightLockActivityName) error=\(error.localizedDescription)"
+        )
       }
     }
 
     for t in transitions {
-      guard let locked = t["isLocked"] as? Bool, locked else { continue }
+      guard let locked = t["isLocked"] as? Bool else { continue }
       let transitionMode = t["activeMode"] as? String
+      if transitionMode == "nightDiscipline" && locked && didRegisterRepeatingNightLock {
+        continue
+      }
 
       let startMs: Int64 = {
         if let n = t["atMillis"] as? NSNumber { return n.int64Value }
@@ -98,26 +203,11 @@ enum FocusDeviceActivityScheduler {
       }()
       guard startMs > 0 else { continue }
 
-      var endDate: Date?
-      if let nextMs = t["nextChangeAtMillis"] as? NSNumber {
-        endDate = Date(timeIntervalSince1970: nextMs.doubleValue / 1000.0)
-      }
-      if endDate == nil, let s = t["nextChangeAt"] as? String {
-        endDate = isoFormatter.date(from: s) ?? isoFormatterNoFrac.date(from: s)
-      }
-      guard var intervalEnd = endDate else { continue }
-
       var start = Date(timeIntervalSince1970: Double(startMs) / 1000.0)
-      let shouldPadInterval = transitionMode != "nightDiscipline"
-      if shouldPadInterval && intervalEnd.timeIntervalSince(start) < minDuration {
-        intervalEnd = start.addingTimeInterval(minDuration)
-      }
-      guard intervalEnd > now else { continue }
-
       if start < now {
         start = now.addingTimeInterval(10)
       }
-      if start >= intervalEnd { continue }
+      let intervalEnd = start.addingTimeInterval(triggerDuration)
 
       let comps: Set<Calendar.Component> = [
         .year, .month, .day, .hour, .minute, .second,
@@ -125,7 +215,8 @@ enum FocusDeviceActivityScheduler {
       let startC = cal.dateComponents(comps, from: start)
       let endC = cal.dateComponents(comps, from: intervalEnd)
 
-      let nameStr = "deenly_focus_\(startMs)"
+      let action = locked ? "lock" : "unlock"
+      let nameStr = "deenly_focus_\(action)_\(startMs)"
       let activityName = DeviceActivityName(nameStr)
       let schedule = DeviceActivitySchedule(
         intervalStart: startC,
@@ -135,11 +226,25 @@ enum FocusDeviceActivityScheduler {
       do {
         try center.startMonitoring(activityName, during: schedule)
         names.append(nameStr)
+        actionsByName[nameStr] = action
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "registered one-shot action=\(action) name=\(nameStr) at=\(start) end=\(intervalEnd)"
+        )
       } catch {
         // Non-fatal: system limits or invalid schedule.
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "failed one-shot action=\(action) name=\(nameStr) at=\(start) error=\(error.localizedDescription)"
+        )
       }
     }
 
     defaults?.set(names, forKey: activityNamesKey)
+    defaults?.set(actionsByName, forKey: activityActionsKey)
+    FocusIOSDebugLogger.append(
+      "ios.scheduler.sync",
+      "stored \(names.count) active schedule name(s); exportedLogPath=\(FocusIOSDebugLogger.path() ?? "nil")"
+    )
   }
 }

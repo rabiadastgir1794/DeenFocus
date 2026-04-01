@@ -10,7 +10,7 @@ abstract class FocusEnforcementService {
   );
 
   static Future<void> appendDebugLog(String tag, String message) async {
-    if (!Platform.isAndroid) return;
+    if (!Platform.isAndroid && !Platform.isIOS) return;
 
     try {
       await _channel.invokeMethod<void>(
@@ -23,7 +23,7 @@ abstract class FocusEnforcementService {
   }
 
   static Future<String?> clearDebugLog() async {
-    if (!Platform.isAndroid) return null;
+    if (!Platform.isAndroid && !Platform.isIOS) return null;
 
     try {
       return await _channel.invokeMethod<String>('clearFocusDebugLog');
@@ -33,7 +33,7 @@ abstract class FocusEnforcementService {
   }
 
   static Future<String?> debugLogPath() async {
-    if (!Platform.isAndroid) return null;
+    if (!Platform.isAndroid && !Platform.isIOS) return null;
 
     try {
       return await _channel.invokeMethod<String>('getFocusDebugLogPath');

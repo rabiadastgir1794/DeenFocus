@@ -7,6 +7,7 @@ import DeviceActivity
 import ManagedSettings
 import CoreLocation
 import MapKit
+import UserNotifications
 
 @available(iOS 16.0, *)
 private enum ManagedSettingsStoreHolder {
@@ -64,6 +65,13 @@ private enum ManagedSettingsStoreHolder {
           self.presentFamilyActivityPicker(result: result)
         case "syncFocusState":
           self.syncFocusState(call: call, result: result)
+        case "appendFocusDebugLog":
+          self.appendFocusDebugLog(call: call, result: result)
+        case "clearFocusDebugLog":
+          FocusIOSDebugLogger.clear()
+          result(FocusIOSDebugLogger.path())
+        case "getFocusDebugLogPath":
+          result(FocusIOSDebugLogger.path())
         default:
           result(FlutterMethodNotImplemented)
         }
@@ -123,7 +131,27 @@ private enum ManagedSettingsStoreHolder {
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
     }
 
+    UNUserNotificationCenter.current().delegate = self
+    FocusIOSDebugLogger.append(
+      "ios.app.launch",
+      "app launched exportedLogPath=\(FocusIOSDebugLogger.path() ?? "nil")"
+    )
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  private func appendFocusDebugLog(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard
+      let args = call.arguments as? [String: Any],
+      let tag = args["tag"] as? String,
+      let message = args["message"] as? String
+    else {
+      result(nil)
+      return
+    }
+
+    FocusIOSDebugLogger.append(tag, message)
+    result(nil)
   }
 
   private func searchMapItems(query: String, result: @escaping FlutterResult) {
@@ -332,6 +360,10 @@ private enum ManagedSettingsStoreHolder {
     let nightEndMinute = args["nightEndMinute"] as? Int ?? 0
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
+    FocusIOSDebugLogger.append(
+      "ios.sync",
+      "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
+    )
 
     FocusDeviceActivityScheduler.sync(
       activeMode: activeMode,
@@ -348,6 +380,10 @@ private enum ManagedSettingsStoreHolder {
 
     if !isLocked {
       store.clearAllSettings()
+      FocusIOSDebugLogger.append(
+        "ios.sync",
+        "cleared managed settings because flutter state is unlocked"
+      )
       result(nil)
       return
     }
@@ -358,6 +394,10 @@ private enum ManagedSettingsStoreHolder {
       let selection = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
     else {
       store.clearAllSettings()
+      FocusIOSDebugLogger.append(
+        "ios.sync",
+        "cleared managed settings because selection data could not be decoded"
+      )
       result(nil)
       return
     }
@@ -368,7 +408,39 @@ private enum ManagedSettingsStoreHolder {
       : ShieldSettings.ActivityCategoryPolicy.specific(selection.categoryTokens)
     store.shield.webDomains = selection.webDomainTokens
     store.shield.webDomainCategories = nil
+    FocusIOSDebugLogger.append(
+      "ios.sync",
+      "applied immediate shield apps=\(selection.applicationTokens.count) categories=\(selection.categoryTokens.count) domains=\(selection.webDomainTokens.count)"
+    )
     result(nil)
+  }
+
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    FocusIOSDebugLogger.append(
+      "ios.notification.foreground",
+      "identifier=\(notification.request.identifier) title=\(notification.request.content.title)"
+    )
+    if #available(iOS 14.0, *) {
+      completionHandler([.banner, .sound, .badge])
+    } else {
+      completionHandler([.alert, .sound, .badge])
+    }
+  }
+
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    FocusIOSDebugLogger.append(
+      "ios.notification.tap",
+      "identifier=\(response.notification.request.identifier) title=\(response.notification.request.content.title)"
+    )
+    completionHandler()
   }
 
   private func topViewController(

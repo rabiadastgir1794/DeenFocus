@@ -149,6 +149,10 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> setNightRange(TimeOfDay start, TimeOfDay end) async {
+    await FocusEnforcementService.appendDebugLog(
+      'focus.nightRange.update',
+      'sleep=${start.hour.toString().padLeft(2, "0")}:${start.minute.toString().padLeft(2, "0")} wake=${end.hour.toString().padLeft(2, "0")}:${end.minute.toString().padLeft(2, "0")}',
+    );
     _settings = _settings.copyWith(
       nightRange: FocusTimeRange(
         startHour: start.hour,

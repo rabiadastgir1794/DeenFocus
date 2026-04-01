@@ -28,6 +28,8 @@
 	<array>
 		<string>comgooglemaps</string>
 	</array>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -35,6 +37,8 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to show accurate prayer times and Qibla direction.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
