@@ -261,16 +261,17 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     BuildContext context,
     OnboardingViewModel vm,
   ) async {
-    final opened = await PermissionService.requestScreenTimeAccess();
-    if (!context.mounted || opened) return;
+    final authResult =
+        await PermissionService.requestScreenTimeAccessDetailed();
+    if (!context.mounted || authResult.granted) return;
 
     final l10n = AppLocalizations.of(context)!;
     await AppPermissionDialog.show(
       context,
       title: l10n.screenTimeTitle,
-      message: l10n.screenTimeSubtitle,
-      primaryButtonText: l10n.openSettings,
-      onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
+      message: authResult.userFacingMessage() ?? l10n.screenTimeSubtitle,
+      primaryButtonText: 'OK',
+      onPrimaryTap: () {},
     );
     await vm.recheckPermissions();
   }

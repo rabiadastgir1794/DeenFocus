@@ -91,6 +91,9 @@ class FocusSettings {
     required this.selectedAppIcons,
     required this.iosSelectionData,
     required this.iosSelectionCount,
+    required this.iosApplicationSelectionCount,
+    required this.iosCategorySelectionCount,
+    required this.iosWebDomainSelectionCount,
     required this.childModeEnabled,
     required this.childLockType,
     required this.childLockDurationMinutes,
@@ -108,6 +111,9 @@ class FocusSettings {
       selectedAppIcons: <String, String>{},
       iosSelectionData: null,
       iosSelectionCount: 0,
+      iosApplicationSelectionCount: 0,
+      iosCategorySelectionCount: 0,
+      iosWebDomainSelectionCount: 0,
       childModeEnabled: false,
       childLockType: ChildLockType.indefinite,
       childLockDurationMinutes: 30,
@@ -135,6 +141,12 @@ class FocusSettings {
         ).map((key, value) => MapEntry(key, value as String)),
         iosSelectionData: map['iosSelectionData'] as String?,
         iosSelectionCount: (map['iosSelectionCount'] as num?)?.toInt() ?? 0,
+        iosApplicationSelectionCount:
+            (map['iosApplicationSelectionCount'] as num?)?.toInt() ?? 0,
+        iosCategorySelectionCount:
+            (map['iosCategorySelectionCount'] as num?)?.toInt() ?? 0,
+        iosWebDomainSelectionCount:
+            (map['iosWebDomainSelectionCount'] as num?)?.toInt() ?? 0,
         childModeEnabled: map['childModeEnabled'] as bool? ?? false,
         childLockType:
             (map['childLockType'] as String?) == ChildLockType.timed.name
@@ -162,6 +174,9 @@ class FocusSettings {
   final Map<String, String> selectedAppIcons;
   final String? iosSelectionData;
   final int iosSelectionCount;
+  final int iosApplicationSelectionCount;
+  final int iosCategorySelectionCount;
+  final int iosWebDomainSelectionCount;
   final bool childModeEnabled;
   final ChildLockType childLockType;
   final int childLockDurationMinutes;
@@ -197,6 +212,9 @@ class FocusSettings {
     String? iosSelectionData,
     bool clearIosSelectionData = false,
     int? iosSelectionCount,
+    int? iosApplicationSelectionCount,
+    int? iosCategorySelectionCount,
+    int? iosWebDomainSelectionCount,
     bool? childModeEnabled,
     ChildLockType? childLockType,
     int? childLockDurationMinutes,
@@ -217,6 +235,12 @@ class FocusSettings {
           ? null
           : iosSelectionData ?? this.iosSelectionData,
       iosSelectionCount: iosSelectionCount ?? this.iosSelectionCount,
+      iosApplicationSelectionCount:
+          iosApplicationSelectionCount ?? this.iosApplicationSelectionCount,
+      iosCategorySelectionCount:
+          iosCategorySelectionCount ?? this.iosCategorySelectionCount,
+      iosWebDomainSelectionCount:
+          iosWebDomainSelectionCount ?? this.iosWebDomainSelectionCount,
       childModeEnabled: childModeEnabled ?? this.childModeEnabled,
       childLockType: childLockType ?? this.childLockType,
       childLockDurationMinutes:
@@ -243,6 +267,9 @@ class FocusSettings {
       'selectedAppIcons': selectedAppIcons,
       'iosSelectionData': iosSelectionData,
       'iosSelectionCount': iosSelectionCount,
+      'iosApplicationSelectionCount': iosApplicationSelectionCount,
+      'iosCategorySelectionCount': iosCategorySelectionCount,
+      'iosWebDomainSelectionCount': iosWebDomainSelectionCount,
       'childModeEnabled': childModeEnabled,
       'childLockType': childLockType.name,
       'childLockDurationMinutes': childLockDurationMinutes,

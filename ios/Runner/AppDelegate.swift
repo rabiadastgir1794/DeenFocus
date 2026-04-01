@@ -199,21 +199,66 @@ private enum ManagedSettingsStoreHolder {
 
   private func requestScreenTimeAuthorization(result: @escaping FlutterResult) {
     guard #available(iOS 16.0, *) else {
-      result(false)
+      result([
+        "authorized": false,
+        "errorCode": "IOS_VERSION_UNSUPPORTED",
+        "errorMessage": "Family Controls requires iOS 16 or later."
+      ])
       return
     }
 
     Task {
       do {
         try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
-        result(true)
+        result([
+          "authorized": true,
+          "errorCode": nil,
+          "errorMessage": nil
+        ])
       } catch {
+        let authError = error as? FamilyControlsError
+        let errorCode: String
+        let errorMessage: String
+
+        switch authError {
+        case .authenticationMethodUnavailable:
+          errorCode = "AUTHENTICATION_METHOD_UNAVAILABLE"
+          errorMessage = "This iPhone must have a device passcode set before Apple can grant Screen Time access."
+        case .authorizationCanceled:
+          errorCode = "AUTHORIZATION_CANCELED"
+          errorMessage = "Screen Time access was canceled before it was granted."
+        case .authorizationConflict:
+          errorCode = "AUTHORIZATION_CONFLICT"
+          errorMessage = "Another app is already managing Family Controls on this iPhone."
+        case .invalidAccountType:
+          errorCode = "INVALID_ACCOUNT_TYPE"
+          errorMessage = "Sign in with a valid iCloud account to use Screen Time access."
+        case .networkError:
+          errorCode = "NETWORK_ERROR"
+          errorMessage = "Connect this iPhone to the internet, then try Screen Time access again."
+        case .restricted:
+          errorCode = "RESTRICTED"
+          errorMessage = "Family Controls is restricted on this iPhone."
+        case .unavailable:
+          errorCode = "UNAVAILABLE"
+          errorMessage = "Family Controls is currently unavailable on this iPhone."
+        case .invalidArgument:
+          errorCode = "INVALID_ARGUMENT"
+          errorMessage = "The Screen Time authorization request was invalid."
+        case .none:
+          errorCode = "SCREEN_TIME_AUTH_FAILED"
+          errorMessage = error.localizedDescription
+        @unknown default:
+          errorCode = "SCREEN_TIME_AUTH_FAILED"
+          errorMessage = error.localizedDescription
+        }
+
         result(
-          FlutterError(
-            code: "SCREEN_TIME_AUTH_FAILED",
-            message: error.localizedDescription,
-            details: nil
-          )
+          [
+            "authorized": false,
+            "errorCode": errorCode,
+            "errorMessage": errorMessage
+          ]
         )
       }
     }
@@ -416,12 +461,15 @@ private struct FocusPickerRootView: View {
 
   private func serializeSelection(_ selection: FamilyActivitySelection) -> [String: Any?] {
     let encoded = try? JSONEncoder().encode(selection)
-    let totalCount = totalSelectionCount(for: selection)
+    let applicationCount = selection.applicationTokens.count
+    let categoryCount = selection.categoryTokens.count
+    let webDomainCount = selection.webDomainTokens.count
+    let totalCount = applicationCount + categoryCount + webDomainCount
     return [
       "selectionData": encoded?.base64EncodedString(),
-      "applicationCount": totalCount,
-      "categoryCount": selection.categoryTokens.count,
-      "webDomainCount": selection.webDomainTokens.count,
+      "applicationCount": applicationCount,
+      "categoryCount": categoryCount,
+      "webDomainCount": webDomainCount,
       "selectionCount": totalCount,
     ]
   }

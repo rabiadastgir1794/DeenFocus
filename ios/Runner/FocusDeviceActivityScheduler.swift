@@ -88,6 +88,7 @@ enum FocusDeviceActivityScheduler {
 
     for t in transitions {
       guard let locked = t["isLocked"] as? Bool, locked else { continue }
+      let transitionMode = t["activeMode"] as? String
 
       let startMs: Int64 = {
         if let n = t["atMillis"] as? NSNumber { return n.int64Value }
@@ -107,7 +108,8 @@ enum FocusDeviceActivityScheduler {
       guard var intervalEnd = endDate else { continue }
 
       var start = Date(timeIntervalSince1970: Double(startMs) / 1000.0)
-      if intervalEnd.timeIntervalSince(start) < minDuration {
+      let shouldPadInterval = transitionMode != "nightDiscipline"
+      if shouldPadInterval && intervalEnd.timeIntervalSince(start) < minDuration {
         intervalEnd = start.addingTimeInterval(minDuration)
       }
       guard intervalEnd > now else { continue }

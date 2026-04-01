@@ -143,7 +143,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   const SizedBox(height: 24),
                   if (childActive)
                     _ChildModeBanner(
-                      appCount: vm.selectedAppCount,
+                      countLabel: vm.selectedTargetPhrase,
                       colorScheme: colorScheme,
                     ),
                   _GlassCard(
@@ -188,7 +188,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                 borderRadius: BorderRadius.circular(999),
                               ),
                               child: Text(
-                                '${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'}',
+                                vm.selectedTargetPhrase,
                                 style: Theme.of(context).textTheme.labelSmall
                                     ?.copyWith(
                                       color: colorScheme.primary,
@@ -224,7 +224,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      '${vm.settings.iosSelectionCount} iOS item${vm.settings.iosSelectionCount == 1 ? '' : 's'} selected',
+                                      vm.selectedAppsSummary(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelMedium
@@ -305,17 +305,17 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         InkWell(
                           onTap: () async {
                             if (defaultTargetPlatform == TargetPlatform.iOS) {
-                              final screenTimeOk =
-                                  await PermissionService.requestScreenTimeAccess();
+                              final authResult =
+                                  await PermissionService.requestScreenTimeAccessDetailed();
                               if (!mounted) return;
-                              if (!screenTimeOk) {
+                              if (!authResult.granted) {
                                 ScaffoldMessenger.maybeOf(
                                   context,
                                 )?.showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                      'Screen Time access is required to view and select apps. '
-                                      'Allow Family Controls for Deenly in Settings.',
+                                      authResult.userFacingMessage() ??
+                                          'Screen Time access is required to view and select apps.',
                                     ),
                                   ),
                                 );
@@ -423,7 +423,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     child: salahMode
                         ? _ModeFooterText(
                             text:
-                                '✓ ${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'} will be blocked during prayer times',
+                                '✓ ${vm.selectedTargetPhrase} will be blocked during prayer times',
                             color: colorScheme.primary,
                           )
                         : null,
@@ -476,7 +476,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               const SizedBox(height: 12),
                               _ModeFooterText(
                                 text:
-                                    '✓ ${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'} will be blocked at night',
+                                    '✓ ${vm.selectedTargetPhrase} will be blocked at night',
                                 color: colorScheme.primary,
                               ),
                             ],
@@ -495,7 +495,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     child: childMode
                         ? _ModeFooterText(
                             text:
-                                '⚠ ${vm.selectedAppCount} app${vm.selectedAppCount == 1 ? '' : 's'} blocked immediately',
+                                '⚠ ${vm.selectedTargetPhrase} blocked immediately',
                             color: colorScheme.error,
                           )
                         : null,
@@ -554,14 +554,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
     if (enabled) {
       if (defaultTargetPlatform == TargetPlatform.iOS) {
-        final screenTimeOk = await PermissionService.requestScreenTimeAccess();
+        final authResult =
+            await PermissionService.requestScreenTimeAccessDetailed();
         if (!mounted) return;
-        if (!screenTimeOk) {
+        if (!authResult.granted) {
           ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text(
-                'Screen Time access is required to block apps on iPhone. '
-                'Allow Family Controls for Deenly in Settings.',
+                authResult.userFacingMessage() ??
+                    'Screen Time access is required to block apps on iPhone.',
               ),
             ),
           );
@@ -633,22 +634,6 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
     if (picked == null || !mounted) return;
 
-    final valid = isStart
-        ? _isValidNightStart(picked)
-        : _isValidNightEnd(picked);
-    if (!valid) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        SnackBar(
-          content: Text(
-            isStart
-                ? 'Sleep time must stay between 8:00 PM and 11:59 PM.'
-                : 'Wake time must stay between 12:00 AM and 8:00 AM.',
-          ),
-        ),
-      );
-      return;
-    }
-
     final start = isStart
         ? picked
         : TimeOfDay(
@@ -661,23 +646,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
             minute: vm.settings.nightRange.endMinute,
           )
         : picked;
+
     await vm.setNightRange(start, end);
-  }
-
-  bool _isValidNightStart(TimeOfDay value) {
-    return value.hour >= 20 && value.hour <= 23;
-  }
-
-  bool _isValidNightEnd(TimeOfDay value) {
-    if (value.hour < 8) return true;
-    return value.hour == 8 && value.minute == 0;
   }
 }
 
 class _ChildModeBanner extends StatelessWidget {
-  const _ChildModeBanner({required this.appCount, required this.colorScheme});
+  const _ChildModeBanner({required this.countLabel, required this.colorScheme});
 
-  final int appCount;
+  final String countLabel;
   final ColorScheme colorScheme;
 
   @override
@@ -706,7 +683,7 @@ class _ChildModeBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$appCount app${appCount == 1 ? '' : 's'} blocked immediately',
+                  '$countLabel blocked immediately',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 11,
                     color: colorScheme.onSurfaceVariant,

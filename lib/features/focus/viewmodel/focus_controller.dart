@@ -44,6 +44,13 @@ class FocusController extends ChangeNotifier {
   int get selectedAppCount => _settings.selectedApps.isNotEmpty
       ? _settings.selectedApps.length
       : _settings.iosSelectionCount;
+  bool get isIosPickerSelection =>
+      Platform.isIOS &&
+      _settings.selectedApps.isEmpty &&
+      _settings.iosSelectionCount > 0;
+  String get selectedTargetNoun => isIosPickerSelection ? 'item' : 'app';
+  String get selectedTargetPhrase =>
+      '$selectedAppCount $selectedTargetNoun${selectedAppCount == 1 ? '' : 's'}';
   bool get isAppsLocked => _lockState.isLocked;
   bool get isTemporarilyUnlocked => _lockState.isTemporarilyUnlocked;
   bool get needsLocationForSalah =>
@@ -78,7 +85,11 @@ class FocusController extends ChangeNotifier {
       _settings = _settings.copyWith(
         iosSelectionData: result.selectionData,
         iosSelectionCount: result.selectionCount,
+        iosApplicationSelectionCount: result.applicationCount,
+        iosCategorySelectionCount: result.categoryCount,
+        iosWebDomainSelectionCount: result.webDomainCount,
         selectedApps: const <String, String>{},
+        selectedAppIcons: const <String, String>{},
       );
       await _persist();
       await _recomputeAndPersist();
@@ -116,6 +127,9 @@ class FocusController extends ChangeNotifier {
       clearChildLockedUntil: selected.isEmpty,
       clearTemporaryUnlock: selected.isEmpty,
       iosSelectionCount: 0,
+      iosApplicationSelectionCount: 0,
+      iosCategorySelectionCount: 0,
+      iosWebDomainSelectionCount: 0,
       clearIosSelectionData: true,
     );
     await _persist();
@@ -262,6 +276,25 @@ class FocusController extends ChangeNotifier {
 
   String selectedAppsSummary() {
     if (Platform.isIOS && _settings.iosSelectionCount > 0) {
+      final parts = <String>[];
+      if (_settings.iosApplicationSelectionCount > 0) {
+        parts.add(
+          '${_settings.iosApplicationSelectionCount} app${_settings.iosApplicationSelectionCount == 1 ? '' : 's'}',
+        );
+      }
+      if (_settings.iosCategorySelectionCount > 0) {
+        parts.add(
+          '${_settings.iosCategorySelectionCount} categor${_settings.iosCategorySelectionCount == 1 ? 'y' : 'ies'}',
+        );
+      }
+      if (_settings.iosWebDomainSelectionCount > 0) {
+        parts.add(
+          '${_settings.iosWebDomainSelectionCount} website${_settings.iosWebDomainSelectionCount == 1 ? '' : 's'}',
+        );
+      }
+      if (parts.isNotEmpty) {
+        return '${parts.join(', ')} selected';
+      }
       return '${_settings.iosSelectionCount} iOS item${_settings.iosSelectionCount == 1 ? '' : 's'} selected';
     }
     if (_settings.selectedApps.isEmpty) return 'No apps selected';
@@ -335,7 +368,7 @@ class FocusController extends ChangeNotifier {
       return 'Unlocked until ${DateFormat.jm().format(_settings.temporarilyUnlockedUntil!)}';
     }
     if (!isAnyModeEnabled) return 'No focus mode enabled';
-    return 'Ready to lock $selectedAppCount apps';
+    return 'Ready to lock $selectedTargetPhrase';
   }
 
   Future<void> _load() async {

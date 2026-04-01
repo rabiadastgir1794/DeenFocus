@@ -39,6 +39,9 @@ abstract class DeviceAppsService {
             (raw['selectionCount'] as num?)?.toInt() ??
             (raw['applicationCount'] as num?)?.toInt() ??
             0,
+        applicationCount: (raw['applicationCount'] as num?)?.toInt() ?? 0,
+        categoryCount: (raw['categoryCount'] as num?)?.toInt() ?? 0,
+        webDomainCount: (raw['webDomainCount'] as num?)?.toInt() ?? 0,
       );
     } on PlatformException {
       return null;
@@ -50,8 +53,14 @@ class IosFocusSelectionResult {
   const IosFocusSelectionResult({
     required this.selectionData,
     required this.selectionCount,
+    required this.applicationCount,
+    required this.categoryCount,
+    required this.webDomainCount,
   });
 
   final String? selectionData;
   final int selectionCount;
+  final int applicationCount;
+  final int categoryCount;
+  final int webDomainCount;
 }
