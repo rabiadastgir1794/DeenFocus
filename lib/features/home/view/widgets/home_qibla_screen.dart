@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../../core/services/qibla_compass_service.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class HomeQiblaScreen extends StatefulWidget {
@@ -37,6 +38,21 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
     }
   }
 
+  PreferredSizeWidget _buildAppBar(BuildContext context, String title) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      leadingWidth: 58,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
+        child: AppTopBackButton(
+          onTap: () => Navigator.of(context).pop(),
+          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+        ),
+      ),
+      title: Text(title),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -45,7 +61,7 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
 
     if (latitude == null || longitude == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(l10n.homeQiblaDirection)),
+        appBar: _buildAppBar(context, l10n.homeQiblaDirection),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -73,7 +89,7 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
         : 'Current location';
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.homeQiblaDirection)),
+      appBar: _buildAppBar(context, l10n.homeQiblaDirection),
       body: StreamBuilder<double>(
         stream: _headingStream,
         builder: (context, snapshot) {

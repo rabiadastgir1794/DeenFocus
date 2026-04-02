@@ -11,6 +11,7 @@ import '../../../../core/services/location/location_service.dart';
 import '../../../../core/services/nearby_mosques_cache.dart';
 import '../../../../core/services/nearby_mosques_service.dart';
 import '../../../../core/services/permission_service.dart';
+import '../../../../core/widgets/widgets.dart';
 
 class HomeNearbyMosquesScreen extends StatefulWidget {
   const HomeNearbyMosquesScreen({
@@ -141,7 +142,18 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Nearby Mosques')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leadingWidth: 58,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
+          child: AppTopBackButton(
+            onTap: () => Navigator.of(context).pop(),
+            semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+          ),
+        ),
+        title: const Text('Nearby Mosques'),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _load,

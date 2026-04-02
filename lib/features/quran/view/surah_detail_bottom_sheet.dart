@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../../../core/services/storage_service.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/quran_local_repository.dart';
 
@@ -34,7 +35,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   bool _isUserSeeking = false;
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
-  Timer? _ticker;
+  StreamSubscription<Duration>? _positionSub;
+  StreamSubscription<Duration?>? _durationSub;
   bool _showCompactHeader = false;
 
   @override
@@ -48,7 +50,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   @override
   void dispose() {
     _listController.removeListener(_handleListScroll);
-    _ticker?.cancel();
+    _positionSub?.cancel();
+    _durationSub?.cancel();
     _listController.dispose();
     _player.dispose();
     super.dispose();
@@ -106,12 +109,16 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       if (state.playing && !_showAudioBar) {
         setState(() => _showAudioBar = true);
       }
-      if (state.playing) {
-        _startTicker();
-      } else {
-        _ticker?.cancel();
-      }
       setState(() {});
+    });
+
+    _positionSub = _player.positionStream.listen((position) {
+      if (!mounted || _isUserSeeking) return;
+      setState(() => _currentPosition = position);
+    });
+    _durationSub = _player.durationStream.listen((duration) {
+      if (!mounted) return;
+      setState(() => _currentDuration = duration ?? Duration.zero);
     });
   }
 
@@ -126,17 +133,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
           .toList(growable: false),
     );
     await _player.setAudioSource(source, preload: true);
-  }
-
-  void _startTicker() {
-    _ticker?.cancel();
-    _ticker = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      if (!mounted || _isUserSeeking) return;
-      setState(() {
-        _currentPosition = _player.position;
-        _currentDuration = _player.duration ?? Duration.zero;
-      });
-    });
   }
 
   String _getAudioUrl(int surahNumber, int ayahNumber) {
@@ -238,7 +234,16 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       _currentPosition = Duration.zero;
       _currentDuration = Duration.zero;
     });
-    _ticker?.cancel();
+  }
+
+  int get _sliderDurationMs {
+    final max = _currentDuration.inMilliseconds;
+    return max <= 0 ? 0 : max;
+  }
+
+  double get _sliderProgress {
+    if (_sliderDurationMs <= 0) return 0;
+    return (_currentPosition.inMilliseconds / _sliderDurationMs).clamp(0, 1);
   }
 
   void _scrollToAyah(int index) {
@@ -270,69 +275,82 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         ? _ayahs[_playingAyahIndex]
         : null;
 
-    return SafeArea(
-      child: Column(
-        children: [
-          ColoredBox(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Material(
+          type: MaterialType.transparency,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ColoredBox(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Icons.close_rounded),
+                      AppTopBackButton(
+                        onTap: () => Navigator.of(context).pop(),
+                        semanticLabel: MaterialLocalizations.of(
+                          context,
+                        ).backButtonTooltip,
                       ),
-                      const Spacer(),
-                      PopupMenuButton<_TextOption>(
-                        tooltip: l10n.quranTextOptions,
-                        onSelected: (option) {
-                          switch (option) {
-                            case _TextOption.englishArabic:
-                              _toggleShowEnglish(true);
-                            case _TextOption.arabicOnly:
-                              _toggleShowEnglish(false);
-                            case _TextOption.increaseFont:
-                              _increaseFont();
-                            case _TextOption.decreaseFont:
-                              _decreaseFont();
-                          }
-                        },
-                        itemBuilder: (_) => [
-                          CheckedPopupMenuItem<_TextOption>(
-                            value: _TextOption.englishArabic,
-                            checked: _showEnglish,
-                            child: Text(l10n.quranEnglishAndArabic),
-                          ),
-                          CheckedPopupMenuItem<_TextOption>(
-                            value: _TextOption.arabicOnly,
-                            checked: !_showEnglish,
-                            child: Text(l10n.quranArabicOnly),
-                          ),
-                          const PopupMenuDivider(),
-                          PopupMenuItem<_TextOption>(
-                            value: _TextOption.increaseFont,
-                            child: Text(l10n.quranIncreaseFont),
-                          ),
-                          PopupMenuItem<_TextOption>(
-                            value: _TextOption.decreaseFont,
-                            child: Text(l10n.quranDecreaseFont),
-                          ),
-                        ],
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 6.h,
-                          ),
-                          child: Text(
-                            'A A',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                              color: colorScheme.onSurface,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: PopupMenuButton<_TextOption>(
+                            tooltip: l10n.quranTextOptions,
+                            onSelected: (option) {
+                              switch (option) {
+                                case _TextOption.englishArabic:
+                                  _toggleShowEnglish(true);
+                                case _TextOption.arabicOnly:
+                                  _toggleShowEnglish(false);
+                                case _TextOption.increaseFont:
+                                  _increaseFont();
+                                case _TextOption.decreaseFont:
+                                  _decreaseFont();
+                              }
+                            },
+                            itemBuilder: (_) => [
+                              CheckedPopupMenuItem<_TextOption>(
+                                value: _TextOption.englishArabic,
+                                checked: _showEnglish,
+                                child: Text(l10n.quranEnglishAndArabic),
+                              ),
+                              CheckedPopupMenuItem<_TextOption>(
+                                value: _TextOption.arabicOnly,
+                                checked: !_showEnglish,
+                                child: Text(l10n.quranArabicOnly),
+                              ),
+                              const PopupMenuDivider(),
+                              PopupMenuItem<_TextOption>(
+                                value: _TextOption.increaseFont,
+                                child: Text(l10n.quranIncreaseFont),
+                              ),
+                              PopupMenuItem<_TextOption>(
+                                value: _TextOption.decreaseFont,
+                                child: Text(l10n.quranDecreaseFont),
+                              ),
+                            ],
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 6.h,
+                              ),
+                              child: Text(
+                                'A A',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -361,24 +379,21 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                 ),
                               ),
                               SizedBox(width: 12.w),
-                              FilledButton.icon(
+                              FilledButton(
                                 onPressed: _onPlayFullSurahTap,
-                                icon: Icon(
-                                  isPlaying
-                                      ? Icons.pause
-                                      : Icons.play_arrow_rounded,
-                                ),
-                                label: Text(
-                                  isPlaying
-                                      ? l10n.quranPause
-                                      : l10n.quranPlaySurah,
-                                ),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: colorScheme.primary,
                                   foregroundColor: colorScheme.onPrimary,
+                                  minimumSize: Size(44.w, 42.h),
+                                  padding: EdgeInsets.zero,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12.r),
                                   ),
+                                ),
+                                child: Icon(
+                                  isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow_rounded,
                                 ),
                               ),
                             ],
@@ -408,44 +423,47 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                 ),
                               ),
                               SizedBox(height: 10.h),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 10.w,
+                                runSpacing: 6.h,
                                 children: [
-                                  Icon(
-                                    Icons.format_align_left_rounded,
-                                    size: 18.sp,
-                                    color: colorScheme.onSurfaceVariant,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.format_align_left_rounded,
+                                        size: 18.sp,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        '${widget.surah.verses} ${l10n.quranVersesLabel}',
+                                        style: TextStyle(
+                                          color: colorScheme.onSurfaceVariant,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    '${widget.surah.verses} ${l10n.quranVersesLabel}',
-                                    style: TextStyle(
-                                      color: colorScheme.onSurfaceVariant,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Container(
-                                    width: 4.w,
-                                    height: 4.w,
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.onSurfaceVariant,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Icon(
-                                    Icons.nightlight_round,
-                                    size: 18.sp,
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    widget.surah.revelationType,
-                                    style: TextStyle(
-                                      color: colorScheme.onSurfaceVariant,
-                                      fontSize: 14.sp,
-                                    ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.nightlight_round,
+                                        size: 18.sp,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        widget.surah.revelationType,
+                                        style: TextStyle(
+                                          color: colorScheme.onSurfaceVariant,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -478,10 +496,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                         ),
                 ),
                 Divider(height: 1, color: colorScheme.outlineVariant),
-              ],
-            ),
-          ),
-          Expanded(
+                  ],
+                ),
+              ),
+              Expanded(
             child: _loadingAyahs
                 ? const Center(child: CircularProgressIndicator())
                 : ListView.separated(
@@ -584,14 +602,17 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                       );
                     },
                   ),
-          ),
-          if (_showAudioBar && currentAyah != null)
-            Container(
+              ),
+              if (_showAudioBar && currentAyah != null)
+                Container(
               margin: EdgeInsets.fromLTRB(12.w, 0, 12.w, 12.h),
               padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
               decoration: BoxDecoration(
                 color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.55),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.08),
@@ -656,30 +677,21 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                     ],
                   ),
                   Slider(
-                    value: _currentDuration.inMilliseconds <= 0
-                        ? 0
-                        : ((_currentPosition.inMilliseconds * 1000) /
-                                  _currentDuration.inMilliseconds)
-                              .clamp(0, 1000)
-                              .toDouble(),
+                    value: _sliderProgress,
                     min: 0,
-                    max: 1000,
+                    max: 1,
                     onChangeStart: (_) => _isUserSeeking = true,
                     onChanged: (value) {
-                      if (_currentDuration.inMilliseconds <= 0) return;
-                      final ms =
-                          ((_currentDuration.inMilliseconds * value) / 1000)
-                              .toInt();
+                      if (_sliderDurationMs <= 0) return;
+                      final ms = (_sliderDurationMs * value).toInt();
                       setState(
                         () => _currentPosition = Duration(milliseconds: ms),
                       );
                     },
                     onChangeEnd: (value) async {
                       _isUserSeeking = false;
-                      if (_currentDuration.inMilliseconds <= 0) return;
-                      final ms =
-                          ((_currentDuration.inMilliseconds * value) / 1000)
-                              .toInt();
+                      if (_sliderDurationMs <= 0) return;
+                      final ms = (_sliderDurationMs * value).toInt();
                       await _player.seek(Duration(milliseconds: ms));
                     },
                   ),
@@ -705,8 +717,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                   ),
                 ],
               ),
-            ),
-        ],
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -13,7 +13,10 @@ abstract class DeviceAppsService {
     if (!Platform.isAndroid) return const <FocusInstalledApp>[];
 
     try {
-      final raw = await _channel.invokeListMethod<dynamic>('getInstalledApps');
+      final raw = await _channel.invokeListMethod<dynamic>(
+        'getInstalledApps',
+        <String, dynamic>{'includeIcons': false},
+      );
       if (raw == null) return const <FocusInstalledApp>[];
       return raw
           .whereType<Map<Object?, Object?>>()

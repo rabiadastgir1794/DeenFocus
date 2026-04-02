@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
 
-class HomePrayerTimesSection extends StatelessWidget {
+class HomePrayerTimesSection extends StatefulWidget {
   const HomePrayerTimesSection({
     super.key,
     required this.prayerTimes,
@@ -15,14 +17,36 @@ class HomePrayerTimesSection extends StatelessWidget {
   final Color backgroundColor;
 
   @override
+  State<HomePrayerTimesSection> createState() => _HomePrayerTimesSectionState();
+}
+
+class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final prayerTimes = widget.prayerTimes;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outlineVariant.withValues(alpha: 0.35),
@@ -62,22 +86,21 @@ class HomePrayerTimesSection extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               alignment: WrapAlignment.center,
-              children: prayerTimes!.slots
+              children: prayerTimes.slots
                   .map(
-                    (slot) =>
-                        HomePrayerTile(slot: slot, prayerTimes: prayerTimes!),
+                    (slot) => HomePrayerTile(slot: slot, prayerTimes: prayerTimes),
                   )
                   .toList(growable: false),
             ),
           const SizedBox(height: 10),
-          if (prayerTimes?.remaining != null)
+          if (_dynamicRemaining(prayerTimes) case final remaining?)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(l10n.homeNextPrayerIn),
                 const SizedBox(width: 6),
                 Text(
-                  _formatRemaining(prayerTimes!.remaining!),
+                  _formatRemaining(remaining),
                   style: TextStyle(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w700,
@@ -93,7 +116,24 @@ class HomePrayerTimesSection extends StatelessWidget {
   String _formatRemaining(Duration value) {
     final hours = value.inHours;
     final minutes = value.inMinutes.remainder(60);
-    return '${hours}h ${minutes}m';
+    final seconds = value.inSeconds.remainder(60);
+    return '${hours}h ${minutes}m ${seconds}s';
+  }
+
+  Duration? _dynamicRemaining(HomePrayerTimesData? prayerTimes) {
+    if (prayerTimes == null || prayerTimes.nextPrayer == null) return null;
+    final nextPrayerTime = prayerTimes.nextPrayerTime;
+    if (nextPrayerTime != null) {
+      final remaining = nextPrayerTime.difference(DateTime.now());
+      return remaining.isNegative ? Duration.zero : remaining;
+    }
+    final nextSlot = prayerTimes.slots
+        .where((slot) => slot.id == prayerTimes.nextPrayer)
+        .firstOrNull;
+    if (nextSlot == null) return prayerTimes.remaining;
+    final remaining = nextSlot.time.difference(DateTime.now());
+    if (remaining.isNegative) return Duration.zero;
+    return remaining;
   }
 }
 

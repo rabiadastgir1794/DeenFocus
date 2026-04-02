@@ -100,10 +100,44 @@ class FocusController extends ChangeNotifier {
     notifyListeners();
 
     await Future<void>.delayed(const Duration(milliseconds: 16));
-    _installedApps = await DeviceAppsService.getInstalledApps();
+    final rawApps = await DeviceAppsService.getInstalledApps();
+    _installedApps = _normalizeInstalledApps(rawApps);
 
     _isLoadingApps = false;
     notifyListeners();
+  }
+
+  Future<void> toggleSelectedApp(FocusInstalledApp app) async {
+    final selected = Map<String, String>.from(_settings.selectedApps);
+    final selectedIcons = Map<String, String>.from(_settings.selectedAppIcons);
+    final isSelected = selected.containsKey(app.packageName);
+    if (isSelected) {
+      selected.remove(app.packageName);
+      selectedIcons.remove(app.packageName);
+    } else {
+      selected[app.packageName] = app.appName;
+      final iconBase64 = app.iconBase64;
+      if (iconBase64 != null) {
+        selectedIcons[app.packageName] = iconBase64;
+      }
+    }
+
+    _settings = _settings.copyWith(
+      selectedApps: selected,
+      selectedAppIcons: selectedIcons,
+      childModeEnabled: selected.isEmpty ? false : null,
+      nightDisciplineEnabled: selected.isEmpty ? false : null,
+      salahModeEnabled: selected.isEmpty ? false : null,
+      clearChildLockedUntil: selected.isEmpty,
+      clearTemporaryUnlock: selected.isEmpty,
+      iosSelectionCount: 0,
+      iosApplicationSelectionCount: 0,
+      iosCategorySelectionCount: 0,
+      iosWebDomainSelectionCount: 0,
+      clearIosSelectionData: true,
+    );
+    await _persist();
+    await _recomputeAndPersist();
   }
 
   Future<void> setSelectedApps(List<FocusInstalledApp> apps) async {
@@ -316,6 +350,32 @@ class FocusController extends ChangeNotifier {
       case FocusModeType.salah:
         return 'Salah Mode';
     }
+  }
+
+  List<FocusInstalledApp> _normalizeInstalledApps(List<FocusInstalledApp> apps) {
+    if (apps.isEmpty) return const <FocusInstalledApp>[];
+    final byPackage = <String, FocusInstalledApp>{};
+    for (final app in apps) {
+      final packageName = app.packageName.trim();
+      if (packageName.isEmpty) continue;
+      final appName = app.appName.trim().isEmpty ? packageName : app.appName;
+      final normalized = FocusInstalledApp(
+        packageName: packageName,
+        appName: appName,
+        isSystemApp: app.isSystemApp,
+        iconBytes: app.iconBytes,
+      );
+      final existing = byPackage[packageName];
+      if (existing == null || (existing.isSystemApp && !normalized.isSystemApp)) {
+        byPackage[packageName] = normalized;
+      }
+    }
+
+    final result = byPackage.values.toList(growable: true);
+    result.sort(
+      (a, b) => a.appName.toLowerCase().compareTo(b.appName.toLowerCase()),
+    );
+    return result;
   }
 
   String modeSubtitle(FocusModeType mode) {

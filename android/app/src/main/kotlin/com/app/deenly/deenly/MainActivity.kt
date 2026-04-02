@@ -74,13 +74,14 @@ class MainActivity : FlutterActivity() {
     ) {
         when (call.method) {
             "getInstalledApps" -> {
+                val includeIcons = call.argument<Boolean>("includeIcons") ?: true
                 FocusDebugLogger.append(
                     applicationContext,
                     "channel.getInstalledApps",
-                    "loading installed apps",
+                    "loading installed apps includeIcons=$includeIcons",
                 )
                 Thread {
-                    runCatching { getInstalledApps() }
+                    runCatching { getInstalledApps(includeIcons) }
                         .onSuccess { apps ->
                             FocusDebugLogger.append(
                                 applicationContext,
@@ -208,7 +209,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun getInstalledApps(): List<Map<String, Any>> {
+    private fun getInstalledApps(includeIcons: Boolean): List<Map<String, Any?>> {
         val packageManager = applicationContext.packageManager
         val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
@@ -224,9 +225,11 @@ class MainActivity : FlutterActivity() {
                     "packageName" to appInfo.packageName,
                     "appName" to packageManager.getApplicationLabel(appInfo).toString(),
                     "isSystemApp" to appInfo.isSystemPackage(),
-                    "iconBytes" to drawableToPngBytes(
-                        packageManager.getApplicationIcon(appInfo.packageName),
-                    ),
+                    "iconBytes" to if (includeIcons) {
+                        drawableToPngBytes(packageManager.getApplicationIcon(appInfo.packageName))
+                    } else {
+                        null
+                    },
                 )
             }
             .sortedBy { (it["appName"] as String).lowercase() }

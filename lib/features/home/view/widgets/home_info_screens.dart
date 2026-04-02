@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/config/app_config.dart';
+import '../../../../core/widgets/widgets.dart';
 
 class HomeAiChatScreen extends StatefulWidget {
   const HomeAiChatScreen({super.key});
@@ -46,7 +47,18 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
         isDark ? colorScheme.outlineVariant : const Color(0xFFE6DBC5);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Islamic Chat')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leadingWidth: 58,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
+          child: AppTopBackButton(
+            onTap: () => Navigator.of(context).pop(),
+            semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+          ),
+        ),
+        title: const Text('Islamic Chat'),
+      ),
       backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
       body: SafeArea(

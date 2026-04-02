@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/tasbih_local_repository.dart';
 
@@ -207,6 +208,11 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
         },
         onSave: _saveSession,
         onReset: _resetTotal,
+        onOptionsSelected: (option) async {
+          if (option == _TasbihDetailOption.resetTotal) {
+            await _resetTotal();
+          }
+        },
       );
     }
 
@@ -455,6 +461,7 @@ class _TasbihDetailView extends StatelessWidget {
     required this.onTapCounter,
     required this.onSave,
     required this.onReset,
+    required this.onOptionsSelected,
   });
 
   final TasbihItem item;
@@ -465,6 +472,7 @@ class _TasbihDetailView extends StatelessWidget {
   final VoidCallback onTapCounter;
   final Future<void> Function() onSave;
   final Future<void> Function() onReset;
+  final Future<void> Function(_TasbihDetailOption option) onOptionsSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -481,11 +489,43 @@ class _TasbihDetailView extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextButton.icon(
-                        onPressed: onBack,
-                        icon: const Icon(Icons.chevron_left_rounded),
-                        label: Text(l10n.tasbihBack),
+                      AppTopBackButton(
+                        onTap: onBack,
+                        semanticLabel: l10n.tasbihBack,
+                      ),
+                      PopupMenuButton<_TasbihDetailOption>(
+                        onSelected: (option) => onOptionsSelected(option),
+                        itemBuilder: (_) => [
+                          PopupMenuItem<_TasbihDetailOption>(
+                            value: _TasbihDetailOption.resetTotal,
+                            child: const Text('Reset total'),
+                          ),
+                        ],
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.55),
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: colorScheme.outlineVariant.withValues(
+                                alpha: 0.42,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Options',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -623,3 +663,5 @@ class _TasbihDetailView extends StatelessWidget {
     );
   }
 }
+
+enum _TasbihDetailOption { resetTotal }

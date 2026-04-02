@@ -917,69 +917,62 @@ class _AppsGrid extends StatelessWidget {
       );
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: apps.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        childAspectRatio: 0.82,
-      ),
-      itemBuilder: (context, index) {
-        final app = apps[index];
-        final selected = vm.settings.selectedApps.containsKey(app.packageName);
-        return InkWell(
-          onTap: () async {
-            final updated = <FocusInstalledApp>[
-              for (final item in apps)
-                if (vm.settings.selectedApps.containsKey(item.packageName) &&
-                    item.packageName != app.packageName)
-                  item,
-            ];
-            if (!selected) updated.add(app);
-            await vm.setSelectedApps(updated);
-          },
-          borderRadius: BorderRadius.circular(14),
-          child: Ink(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: selected
-                  ? colorScheme.primary.withValues(alpha: 0.15)
-                  : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              border: Border.all(
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.56;
+    return SizedBox(
+      height: maxHeight.clamp(260.0, 500.0),
+      child: GridView.builder(
+        itemCount: apps.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 0.82,
+        ),
+        itemBuilder: (context, index) {
+          final app = apps[index];
+          final selected = vm.settings.selectedApps.containsKey(app.packageName);
+          return InkWell(
+            onTap: () => vm.toggleSelectedApp(app),
+            borderRadius: BorderRadius.circular(14),
+            child: Ink(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
                 color: selected
-                    ? colorScheme.primary.withValues(alpha: 0.3)
-                    : Colors.transparent,
+                    ? colorScheme.primary.withValues(alpha: 0.15)
+                    : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                border: Border.all(
+                  color: selected
+                      ? colorScheme.primary.withValues(alpha: 0.3)
+                      : Colors.transparent,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FocusAppIcon(
+                    label: app.appName,
+                    iconBytes: app.iconBytes,
+                    size: 28,
+                    radius: 10,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    app.appName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FocusAppIcon(
-                  label: app.appName,
-                  iconBytes: app.iconBytes,
-                  size: 28,
-                  radius: 10,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  app.appName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

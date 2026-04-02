@@ -40,8 +40,11 @@ ThemeData get darkTheme {
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      centerTitle: false,
+      toolbarHeight: 60,
+      leadingWidth: 52,
       systemOverlayStyle: SystemUiOverlayStyle.light,
-      iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
+      iconTheme: IconThemeData(color: AppColors.textPrimaryDark, size: 24),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

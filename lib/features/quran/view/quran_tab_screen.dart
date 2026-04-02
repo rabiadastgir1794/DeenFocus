@@ -71,21 +71,10 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
   }
 
   Future<void> _openSurahDetail(SurahSummary surah) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: false,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SurahDetailBottomSheet(surah: surah),
       ),
-      builder: (_) {
-        return FractionallySizedBox(
-          heightFactor: 1,
-          child: SurahDetailBottomSheet(surah: surah),
-        );
-      },
     );
   }
 
