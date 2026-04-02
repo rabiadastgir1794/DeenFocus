@@ -11,57 +11,63 @@ class OnboardingScreenTimePage extends StatelessWidget {
     super.key,
     required this.onAllowTap,
     required this.onSkipTap,
+    required this.isLoading,
   });
 
   final VoidCallback onAllowTap;
   final VoidCallback onSkipTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppIconCircle(
-            size: 64.8.r,
-            iconSize: 28.8.sp,
-            icon: const Icon(CupertinoIcons.timer),
-          ),
-          SizedBox(height: Spacing.xl.h),
-          Text(
-            AppLocalizations.of(context)!.screenTimeTitle,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.sp,
+      child: AbsorbPointer(
+        absorbing: isLoading,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AppIconCircle(
+              size: 64.8.r,
+              iconSize: 28.8.sp,
+              icon: const Icon(CupertinoIcons.timer),
             ),
-          ),
-          SizedBox(height: Spacing.md.h),
-          Text(
-            AppLocalizations.of(context)!.screenTimeSubtitle,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              height: 1.5,
-              fontSize: 12.sp,
+            SizedBox(height: Spacing.xl.h),
+            Text(
+              AppLocalizations.of(context)!.screenTimeTitle,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.sp,
+              ),
             ),
-          ),
-          SizedBox(height: Spacing.xl.h),
-          AppButton(
-            label: AppLocalizations.of(context)!.screenTimeButton,
-            onPressed: onAllowTap,
-            showTrailingIcon: false,
-          ),
-          SizedBox(height: Spacing.sm.h),
-          Center(
-            child: AppTextButton(
-              label: AppLocalizations.of(context)!.skip,
-              onPressed: onSkipTap,
+            SizedBox(height: Spacing.md.h),
+            Text(
+              AppLocalizations.of(context)!.screenTimeSubtitle,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.5,
+                fontSize: 12.sp,
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: Spacing.xl.h),
+            AppButton(
+              label: AppLocalizations.of(context)!.screenTimeButton,
+              onPressed: onAllowTap,
+              showTrailingIcon: false,
+              loading: isLoading,
+            ),
+            SizedBox(height: Spacing.sm.h),
+            Center(
+              child: AppTextButton(
+                label: AppLocalizations.of(context)!.skip,
+                onPressed: isLoading ? null : onSkipTap,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

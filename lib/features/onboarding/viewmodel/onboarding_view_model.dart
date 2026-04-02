@@ -59,6 +59,9 @@ class OnboardingViewModel extends ChangeNotifier {
   bool _notificationRequesting = false;
   bool get notificationRequesting => _notificationRequesting;
 
+  bool _screenTimeRequesting = false;
+  bool get screenTimeRequesting => _screenTimeRequesting;
+
   Future<void> recheckPermissions() async {
     _locationGranted = await PermissionService.checkLocation();
     _notificationGranted = await PermissionService.checkNotification();
@@ -73,6 +76,17 @@ class OnboardingViewModel extends ChangeNotifier {
       _notificationGranted = await PermissionService.requestNotification();
     } finally {
       _notificationRequesting = false;
+      notifyListeners();
+    }
+  }
+
+  Future<ScreenTimeAuthorizationResult> requestScreenTime() async {
+    _screenTimeRequesting = true;
+    notifyListeners();
+    try {
+      return await PermissionService.requestScreenTimeAccessDetailed();
+    } finally {
+      _screenTimeRequesting = false;
       notifyListeners();
     }
   }

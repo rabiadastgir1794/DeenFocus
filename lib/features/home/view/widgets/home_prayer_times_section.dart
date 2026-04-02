@@ -128,54 +128,33 @@ class HomePrayerTile extends StatelessWidget {
     return Container(
       width: 104,
       height: 76,
-      clipBehavior: Clip.none,
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          if (isCurrent)
-            Positioned(
-              top: -14,
-              right: -14,
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  shape: BoxShape.circle,
-                ),
-              ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              _labelForPrayer(l10n, slot.id),
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: textColor),
             ),
-          SizedBox.expand(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    _labelForPrayer(l10n, slot.id),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelSmall?.copyWith(color: textColor),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    DateFormat.jm(l10n.localeName).format(slot.time),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: textColor),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 4),
+            Text(
+              DateFormat.jm(l10n.localeName).format(slot.time),
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: textColor),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

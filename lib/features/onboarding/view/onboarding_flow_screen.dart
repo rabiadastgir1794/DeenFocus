@@ -9,7 +9,6 @@ import '../../../app/routes/route_names.dart';
 import '../../../core/constants/app_languages.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/services/locale_service.dart';
-import '../../../core/services/permission_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/onboarding_view_model.dart';
@@ -261,9 +260,12 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     BuildContext context,
     OnboardingViewModel vm,
   ) async {
-    final authResult =
-        await PermissionService.requestScreenTimeAccessDetailed();
-    if (!context.mounted || authResult.granted) return;
+    final authResult = await vm.requestScreenTime();
+    if (!context.mounted) return;
+    if (authResult.granted) {
+      await _goToNextPage(context, vm);
+      return;
+    }
 
     final l10n = AppLocalizations.of(context)!;
     await AppPermissionDialog.show(
@@ -354,66 +356,72 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
       });
     }
 
+    final isBusyScreenTimeStep = vm.currentIndex == 8 && vm.screenTimeRequesting;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            AppStepProgressLine(
-              totalSteps: vm.totalSteps,
-              currentIndex: vm.currentIndex,
-            ),
-            _buildTopBar(context, vm, localeService),
-            Expanded(
-              child: PageView(
-                controller: widget.pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (index) {
-                  if (vm.currentIndex == 6 && index != 6) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  }
-                  vm.setStep(index);
-                  if (index == 7) {
-                    _requestNotificationOnStep(vm);
-                  } else {
-                    _didAutoRequestNotification = false;
-                  }
-                },
-                children: [
-                  const OnboardingWelcomePage(),
-                  const OnboardingFocusModePage(),
-                  const OnboardingTasbihPage(),
-                  const OnboardingQuranPage(),
-                  OnboardingSectPage(
-                    selectedSect: vm.selectedSect,
-                    onSectSelected: vm.setSelectedSect,
-                  ),
-                  OnboardingNamePage(
-                    controller: widget.nameController,
-                    onChanged: vm.setUserName,
-                  ),
-                  OnboardingLocationPage(
-                    initialSelection: vm.selectedLocation,
-                    onLocationSelected: vm.setSelectedLocation,
-                  ),
-                  OnboardingNotificationsPage(
-                    onEnableTap: () => _onNotificationEnableTap(context, vm),
-                    isLoading: vm.notificationRequesting,
-                    showEnableButton: !vm.notificationGranted,
-                  ),
-                  OnboardingScreenTimePage(
-                    onAllowTap: () => _onScreenTimeAllowTap(context, vm),
-                    onSkipTap: () => _goToNextPage(context, vm),
-                  ),
-                  OnboardingSubscriptionPage(
-                    selectedPlan: vm.selectedPlan,
-                    onPlanSelected: vm.setSelectedPlan,
-                  ),
-                ],
+      body: AbsorbPointer(
+        absorbing: isBusyScreenTimeStep,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              AppStepProgressLine(
+                totalSteps: vm.totalSteps,
+                currentIndex: vm.currentIndex,
               ),
-            ),
-          ],
+              _buildTopBar(context, vm, localeService),
+              Expanded(
+                child: PageView(
+                  controller: widget.pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) {
+                    if (vm.currentIndex == 6 && index != 6) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                    vm.setStep(index);
+                    if (index == 7) {
+                      _requestNotificationOnStep(vm);
+                    } else {
+                      _didAutoRequestNotification = false;
+                    }
+                  },
+                  children: [
+                    const OnboardingWelcomePage(),
+                    const OnboardingFocusModePage(),
+                    const OnboardingTasbihPage(),
+                    const OnboardingQuranPage(),
+                    OnboardingSectPage(
+                      selectedSect: vm.selectedSect,
+                      onSectSelected: vm.setSelectedSect,
+                    ),
+                    OnboardingNamePage(
+                      controller: widget.nameController,
+                      onChanged: vm.setUserName,
+                    ),
+                    OnboardingLocationPage(
+                      initialSelection: vm.selectedLocation,
+                      onLocationSelected: vm.setSelectedLocation,
+                    ),
+                    OnboardingNotificationsPage(
+                      onEnableTap: () => _onNotificationEnableTap(context, vm),
+                      isLoading: vm.notificationRequesting,
+                      showEnableButton: !vm.notificationGranted,
+                    ),
+                    OnboardingScreenTimePage(
+                      onAllowTap: () => _onScreenTimeAllowTap(context, vm),
+                      onSkipTap: () => _goToNextPage(context, vm),
+                      isLoading: vm.screenTimeRequesting,
+                    ),
+                    OnboardingSubscriptionPage(
+                      selectedPlan: vm.selectedPlan,
+                      onPlanSelected: vm.setSelectedPlan,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -432,7 +440,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 label: vm.currentIndex == vm.totalSteps - 1
                     ? AppLocalizations.of(context)!.getStarted
                     : AppLocalizations.of(context)!.continueButton,
-                enabled: !vm.isContinueDisabled,
+                enabled: !vm.isContinueDisabled && !isBusyScreenTimeStep,
                 showTrailingIcon: vm.currentIndex != vm.totalSteps - 1,
                 onPressed: () async {
                   if (vm.currentIndex < vm.totalSteps - 1) {

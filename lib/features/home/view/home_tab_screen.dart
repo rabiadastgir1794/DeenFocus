@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/theme_service.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/viewmodel/focus_controller.dart';
@@ -95,8 +96,13 @@ class _HomeTabViewState extends State<_HomeTabView>
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.28)
         : const Color(0xFFF3F1EB);
 
-    return Consumer3<HomeTabViewModel, FocusController, UserProfileService>(
-      builder: (context, vm, focusVm, profile, _) {
+    return Consumer4<
+      HomeTabViewModel,
+      FocusController,
+      UserProfileService,
+      ThemeService
+    >(
+      builder: (context, vm, focusVm, profile, themeService, _) {
         unawaited(_showBlockingLocationDialogIfNeeded(context, vm));
 
         if (vm.isLoading) {
@@ -140,6 +146,19 @@ class _HomeTabViewState extends State<_HomeTabView>
                         );
                       },
                     ),
+                    const SizedBox(width: 8),
+                    HomeCircleIconButton(
+                      icon: themeService.isDarkModeEnabled
+                          ? Icons.light_mode_outlined
+                          : Icons.dark_mode_outlined,
+                      onTap: () {
+                        unawaited(
+                          themeService.setDarkModeEnabled(
+                            !themeService.isDarkModeEnabled,
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -157,38 +176,24 @@ class _HomeTabViewState extends State<_HomeTabView>
                   backgroundColor: softCardColor,
                 ),
                 const SizedBox(height: 12),
-                HomeActionContainer(
+                _QuickActionsCard(
                   backgroundColor: softCardColor,
-                  title: focusVm.homeCardTitle,
-                  subtitle: focusVm.homeCardSubtitle,
-                  icon: Icons.shield_outlined,
-                  iconBackground: colorScheme.primaryContainer,
-                  onTap: widget.onOpenFocusTab,
-                ),
-                const SizedBox(height: 12),
-                HomeActionContainer(
-                  backgroundColor: softCardColor,
-                  title: l10n.homeQiblaDirection,
-                  subtitle: vm.qiblaInfo == null
+                  focusTitle: focusVm.homeCardTitle,
+                  focusSubtitle: focusVm.homeCardSubtitle,
+                  qiblaTitle: l10n.homeQiblaDirection,
+                  qiblaSubtitle: vm.qiblaInfo == null
                       ? l10n.homeLocationMissingForQibla
                       : '${vm.qiblaInfo} ${l10n.homeToMakkah}',
-                  icon: Icons.explore_outlined,
-                  iconBackground: colorScheme.primaryContainer,
-                  onTap: () => _openQiblaScreen(
+                  masjidTitle: l10n.homeFindMasjid,
+                  masjidSubtitle: l10n.homeSearchNearbyMosques,
+                  onOpenFocus: widget.onOpenFocusTab,
+                  onOpenQibla: () => _openQiblaScreen(
                     context,
                     locationName: vm.locationName,
                     latitude: vm.latitude,
                     longitude: vm.longitude,
                   ),
-                ),
-                const SizedBox(height: 12),
-                HomeActionContainer(
-                  backgroundColor: softCardColor,
-                  title: l10n.homeFindMasjid,
-                  subtitle: l10n.homeSearchNearbyMosques,
-                  icon: Icons.location_on_outlined,
-                  iconBackground: colorScheme.tertiaryContainer,
-                  onTap: () => Navigator.of(context).push(
+                  onOpenMasjid: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => HomeNearbyMosquesScreen(
                         initialLatitude: vm.latitude,
@@ -342,6 +347,97 @@ class _HomeTabViewState extends State<_HomeTabView>
           value: vm,
           child: const HomePrayerStreakDetailScreen(),
         ),
+      ),
+    );
+  }
+}
+
+class _QuickActionsCard extends StatelessWidget {
+  const _QuickActionsCard({
+    required this.backgroundColor,
+    required this.focusTitle,
+    required this.focusSubtitle,
+    required this.qiblaTitle,
+    required this.qiblaSubtitle,
+    required this.masjidTitle,
+    required this.masjidSubtitle,
+    required this.onOpenFocus,
+    required this.onOpenQibla,
+    required this.onOpenMasjid,
+  });
+
+  final Color backgroundColor;
+  final String focusTitle;
+  final String focusSubtitle;
+  final String qiblaTitle;
+  final String qiblaSubtitle;
+  final String masjidTitle;
+  final String masjidSubtitle;
+  final VoidCallback onOpenFocus;
+  final VoidCallback onOpenQibla;
+  final VoidCallback onOpenMasjid;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+          width: 1.1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.07),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          HomeActionContainer(
+            backgroundColor: backgroundColor,
+            title: focusTitle,
+            subtitle: focusSubtitle,
+            icon: Icons.shield_outlined,
+            iconBackground: colorScheme.primaryContainer,
+            onTap: onOpenFocus,
+            showOuterDecoration: false,
+          ),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+          ),
+          HomeActionContainer(
+            backgroundColor: backgroundColor,
+            title: qiblaTitle,
+            subtitle: qiblaSubtitle,
+            icon: Icons.explore_outlined,
+            iconBackground: colorScheme.primaryContainer,
+            onTap: onOpenQibla,
+            showOuterDecoration: false,
+          ),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+          ),
+          HomeActionContainer(
+            backgroundColor: backgroundColor,
+            title: masjidTitle,
+            subtitle: masjidSubtitle,
+            icon: Icons.location_on_outlined,
+            iconBackground: colorScheme.tertiaryContainer,
+            onTap: onOpenMasjid,
+            showOuterDecoration: false,
+          ),
+        ],
       ),
     );
   }

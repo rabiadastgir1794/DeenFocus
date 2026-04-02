@@ -9,6 +9,7 @@ class HomeActionContainer extends StatelessWidget {
     required this.icon,
     required this.iconBackground,
     required this.onTap,
+    this.showOuterDecoration = true,
   });
 
   final Color backgroundColor;
@@ -17,29 +18,34 @@ class HomeActionContainer extends StatelessWidget {
   final IconData icon;
   final Color iconBackground;
   final VoidCallback onTap;
+  final bool showOuterDecoration;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final decoration = BoxDecoration(
+      color: showOuterDecoration ? backgroundColor : Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      border: showOuterDecoration
+          ? Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.35))
+          : null,
+      boxShadow: showOuterDecoration
+          ? [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.035),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ]
+          : null,
+    );
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Ink(
         width: double.infinity,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.035),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
+        decoration: decoration,
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
