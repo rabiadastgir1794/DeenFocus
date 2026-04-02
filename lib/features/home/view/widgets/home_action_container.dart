@@ -10,6 +10,7 @@ class HomeActionContainer extends StatelessWidget {
     required this.iconBackground,
     required this.onTap,
     this.showOuterDecoration = true,
+    this.trailing,
   });
 
   final Color backgroundColor;
@@ -19,6 +20,7 @@ class HomeActionContainer extends StatelessWidget {
   final Color iconBackground;
   final VoidCallback onTap;
   final bool showOuterDecoration;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +76,8 @@ class HomeActionContainer extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
+            trailing ??
+                Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
           ],
         ),
       ),

@@ -190,14 +190,26 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
 
     return Stack(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
+            final maxSuggestionHeight = (constraints.maxHeight * 0.36).clamp(
+              120.0,
+              260.0,
+            );
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
+              child: AnimatedPadding(
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOut,
+                padding: EdgeInsets.only(bottom: keyboardInset),
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                 SizedBox(height: Spacing.md.h),
                 AppIconCircle(
                   size: 64.8.r,
@@ -237,48 +249,52 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                     child: const Center(child: CircularProgressIndicator()),
                   )
                 else if (_results.isNotEmpty)
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _results.length,
-                    separatorBuilder: (_, _) =>
-                        SizedBox(height: Spacing.sm.h),
-                    itemBuilder: (context, index) {
-                      final item = _results[index];
-                      final isSelected =
-                          _selectedLocation?.title == item.title &&
-                          _selectedLocation?.subtitle == item.subtitle;
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: maxSuggestionHeight),
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: _results.length,
+                      separatorBuilder: (_, _) =>
+                          SizedBox(height: Spacing.sm.h),
+                      itemBuilder: (context, index) {
+                        final item = _results[index];
+                        final isSelected =
+                            _selectedLocation?.title == item.title &&
+                            _selectedLocation?.subtitle == item.subtitle;
 
-                      return ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          side: BorderSide(
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.outlineVariant,
+                        return ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            side: BorderSide(
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.outlineVariant,
+                            ),
                           ),
-                        ),
-                        title: Text(
-                          item.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11.25.sp,
+                          title: Text(
+                            item.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11.25.sp,
+                            ),
                           ),
-                        ),
-                        subtitle: item.subtitle.trim().isEmpty
-                            ? null
-                            : Text(
-                                item.subtitle,
-                                style: TextStyle(
-                                  fontSize: 9.75.sp,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                          subtitle: item.subtitle.trim().isEmpty
+                              ? null
+                              : Text(
+                                  item.subtitle,
+                                  style: TextStyle(
+                                    fontSize: 9.75.sp,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
                                 ),
-                              ),
-                        onTap: () => _onLocationTap(item),
-                      );
-                    },
+                          onTap: () => _onLocationTap(item),
+                        );
+                      },
+                    ),
                   )
                 else if (_activeQuery.isNotEmpty)
                   const AppEmptyState(
@@ -286,9 +302,12 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                     subtitle: 'Try another city name.',
                   ),
                 SizedBox(height: Spacing.xl.h),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
         if (_isResolvingLocation)
           Align(

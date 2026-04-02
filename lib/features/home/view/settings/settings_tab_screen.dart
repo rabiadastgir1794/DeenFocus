@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +12,7 @@ import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
+import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -203,6 +206,62 @@ class SettingsTabScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _showSectPicker(BuildContext context) async {
+    final profile = context.read<UserProfileService>();
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sect',
+                  style: Theme.of(
+                    ctx,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 12),
+                for (final option in const <SectOption>[
+                  SectOption.sunni,
+                  SectOption.shia,
+                ])
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(_sectLabel(option, l10n)),
+                    trailing: option == profile.sect
+                        ? Icon(Icons.check_rounded, color: colorScheme.primary)
+                        : null,
+                    onTap: () {
+                      Navigator.of(ctx).pop();
+                      unawaited(profile.setSect(option));
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _sectLabel(SectOption option, AppLocalizations l10n) {
+    switch (option) {
+      case SectOption.sunni:
+        return l10n.sectSunni;
+      case SectOption.shia:
+        return l10n.sectShia;
+      case SectOption.preferNotToSay:
+        return l10n.sectSunni;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -267,6 +326,12 @@ class SettingsTabScreen extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+                _SettingsRow(
+                  icon: Icons.access_time_rounded,
+                  label: 'Sect',
+                  value: _sectLabel(profile.sect, l10n),
+                  onTap: () => _showSectPicker(context),
                 ),
               ],
             ),
@@ -349,6 +414,7 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
       appBar: AppBar(title: const Text('Location')),
       body: Column(
@@ -363,24 +429,25 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _selectedLocation == null || _saving
-                    ? null
-                    : () async {
-                        setState(() => _saving = true);
-                        await context.read<UserProfileService>().setLocation(
-                          _selectedLocation!,
-                        );
-                        if (context.mounted) Navigator.of(context).pop();
-                      },
-                child: Text(_saving ? 'Saving...' : 'Save Location'),
+          if (!keyboardOpen)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _selectedLocation == null || _saving
+                      ? null
+                      : () async {
+                          setState(() => _saving = true);
+                          await context.read<UserProfileService>().setLocation(
+                            _selectedLocation!,
+                          );
+                          if (context.mounted) Navigator.of(context).pop();
+                        },
+                  child: Text(_saving ? 'Saving...' : 'Save Location'),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

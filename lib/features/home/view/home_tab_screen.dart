@@ -104,6 +104,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     >(
       builder: (context, vm, focusVm, profile, themeService, _) {
         unawaited(_showBlockingLocationDialogIfNeeded(context, vm));
+        unawaited(vm.syncSectIfChanged(profile.sect.name));
 
         if (vm.isLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -166,7 +167,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   text: _verseText(l10n, vm.dailyVerse),
                   color: colorScheme.primary,
                 ),
-                if (focusVm.isAppsLocked) ...[
+                if (focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked) ...[
                   const SizedBox(height: 14),
                   _FocusLockCard(focusVm: focusVm),
                 ],
@@ -186,6 +187,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                       : '${vm.qiblaInfo} ${l10n.homeToMakkah}',
                   masjidTitle: l10n.homeFindMasjid,
                   masjidSubtitle: l10n.homeSearchNearbyMosques,
+                  isFocusLocked: focusVm.isAppsLocked,
                   onOpenFocus: widget.onOpenFocusTab,
                   onOpenQibla: () => _openQiblaScreen(
                     context,
@@ -361,6 +363,7 @@ class _QuickActionsCard extends StatelessWidget {
     required this.qiblaSubtitle,
     required this.masjidTitle,
     required this.masjidSubtitle,
+    required this.isFocusLocked,
     required this.onOpenFocus,
     required this.onOpenQibla,
     required this.onOpenMasjid,
@@ -373,6 +376,7 @@ class _QuickActionsCard extends StatelessWidget {
   final String qiblaSubtitle;
   final String masjidTitle;
   final String masjidSubtitle;
+  final bool isFocusLocked;
   final VoidCallback onOpenFocus;
   final VoidCallback onOpenQibla;
   final VoidCallback onOpenMasjid;
@@ -408,6 +412,32 @@ class _QuickActionsCard extends StatelessWidget {
             iconBackground: colorScheme.primaryContainer,
             onTap: onOpenFocus,
             showOuterDecoration: false,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isFocusLocked) ...[
+                  Container(
+                    width: 22,
+                    height: 22,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: colorScheme.error.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.lock_rounded,
+                      size: 14,
+                      color: colorScheme.error,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                Icon(
+                  Icons.chevron_right,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
           ),
           Divider(
             height: 1,
@@ -452,6 +482,7 @@ class _FocusLockCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isLocked = focusVm.isAppsLocked;
+    final isTempUnlocked = focusVm.isTemporarilyUnlocked;
 
     return InkWell(
       onTap: isLocked ? () => focusVm.disableActiveMode() : null,
@@ -499,7 +530,7 @@ class _FocusLockCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Focus Mode Active',
+                    isTempUnlocked ? 'Focus Temporarily Unlocked' : 'Focus Mode Active',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),

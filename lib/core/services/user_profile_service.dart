@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../features/onboarding/model/location_suggestion.dart';
+import '../../features/onboarding/model/sect_option.dart';
 import 'daily_refresh_service.dart';
 import 'storage_service.dart';
 
@@ -14,18 +17,26 @@ class UserProfileService extends ChangeNotifier {
   String? _locationSubtitle;
   double? _latitude;
   double? _longitude;
+  SectOption _sect = SectOption.sunni;
 
   String get userName => _userName;
   String? get locationName => _locationName;
   String? get locationSubtitle => _locationSubtitle;
   double? get latitude => _latitude;
   double? get longitude => _longitude;
+  SectOption get sect => _sect;
 
   String get locationLabel {
     final name = _locationName?.trim() ?? '';
     final subtitle = _locationSubtitle?.trim() ?? '';
     if (name.isEmpty) return 'Set location';
     if (subtitle.isEmpty) return name;
+    final nameLower = name.toLowerCase();
+    final subtitleLower = subtitle.toLowerCase();
+    if (subtitleLower == nameLower ||
+        subtitleLower.startsWith('$nameLower,')) {
+      return name;
+    }
     return '$name, $subtitle';
   }
 
@@ -46,6 +57,7 @@ class UserProfileService extends ChangeNotifier {
     _locationSubtitle = await StorageService.locationSubtitle;
     _latitude = await StorageService.locationLatitude;
     _longitude = await StorageService.locationLongitude;
+    _sect = _resolveSect(await StorageService.sect);
     notifyListeners();
   }
 
@@ -65,6 +77,12 @@ class UserProfileService extends ChangeNotifier {
   Future<void> setLocation(LocationSuggestion value) async {
     _locationName = value.title.trim();
     _locationSubtitle = value.subtitle.trim();
+    if (_locationSubtitle!.toLowerCase() == _locationName!.toLowerCase() ||
+        _locationSubtitle!.toLowerCase().startsWith(
+          '${_locationName!.toLowerCase()},',
+        )) {
+      _locationSubtitle = '';
+    }
     _latitude = value.latitude;
     _longitude = value.longitude;
     await StorageService.setUserLocation(
@@ -77,5 +95,25 @@ class UserProfileService extends ChangeNotifier {
       await DailyRefreshService.instance.refreshNow();
     }
     notifyListeners();
+  }
+
+  Future<void> setSect(SectOption value) async {
+    if (_sect == value) return;
+    _sect = value;
+    notifyListeners();
+    await StorageService.setSect(value.name);
+    unawaited(DailyRefreshService.instance.refreshNow());
+  }
+
+  SectOption _resolveSect(String? raw) {
+    switch (raw) {
+      case 'shia':
+        return SectOption.shia;
+      case 'preferNotToSay':
+        return SectOption.sunni;
+      case 'sunni':
+      default:
+        return SectOption.sunni;
+    }
   }
 }

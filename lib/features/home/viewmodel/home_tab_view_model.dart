@@ -34,6 +34,7 @@ class HomeTabViewModel extends ChangeNotifier {
   bool isEventsLoading = false;
   bool _locationDialogRequired = false;
   bool _initialized = false;
+  String? _lastAppliedSect;
 
   DateTime visibleMonth = DateTime.now();
   DateTime? selectedDate;
@@ -101,6 +102,7 @@ class HomeTabViewModel extends ChangeNotifier {
     locationSubtitle = await StorageService.locationSubtitle;
     latitude = await StorageService.locationLatitude;
     longitude = await StorageService.locationLongitude;
+    _lastAppliedSect = await StorageService.sect;
 
     await _ensureLocationAccessIfNeeded();
     await _loadVerse();
@@ -183,10 +185,18 @@ class HomeTabViewModel extends ChangeNotifier {
       prayerTimes = null;
       return;
     }
+    _lastAppliedSect = await StorageService.sect;
     prayerTimes = await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
       latitude: latitude!,
       longitude: longitude!,
     );
+  }
+
+  Future<void> syncSectIfChanged(String sect) async {
+    if (_lastAppliedSect == sect) return;
+    _lastAppliedSect = sect;
+    await _loadPrayerTimes();
+    notifyListeners();
   }
 
   Future<void> _loadEvents() async {
