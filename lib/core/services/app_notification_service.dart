@@ -16,14 +16,6 @@ import '../../features/home/model/home_models.dart';
 class AppNotificationService {
   AppNotificationService._();
 
-  // TEMP: Salah test mode (keep code, disable for production)
-  // static const bool salahTestModeEnabled = true;
-  static const bool salahTestModeEnabled = false;
-  static const int _salahTestWindowCount = 2;
-  static const Duration _salahTestInitialDelay = Duration(minutes: 2);
-  static const Duration _salahTestLockDuration = Duration(minutes: 4);
-  static const Duration _salahTestGapDuration = Duration(minutes: 2);
-
   static final AppNotificationService instance = AppNotificationService._();
 
   static const _prayerChannel = AndroidNotificationChannel(
@@ -175,110 +167,30 @@ class AppNotificationService {
     await _cancelRange(3000, 3059);
     await _cancelRange(4000, 4003);
 
-    final now = DateTime.now();
-
-    if (settings.salahModeEnabled) {
-      if (salahTestModeEnabled) {
-        await _scheduleSalahTestNotifications(settings.salahTestAnchorAt ?? now);
-      } else if (latitude != null && longitude != null) {
-        final datasets = <({int dayOffset, HomePrayerTimesData data})>[
-          (
-            dayOffset: 0,
-            data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-              latitude: latitude,
-              longitude: longitude,
-              now: now,
-            ),
-          ),
-          (
-            dayOffset: 1,
-            data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-              latitude: latitude,
-              longitude: longitude,
-              now: now.add(const Duration(days: 1)),
-            ),
-          ),
-        ];
-
-        for (final dataset in datasets) {
-          for (final slot in dataset.data.slots.where(
-            (slot) => slot.id != HomePrayerId.sunrise,
-          )) {
-            final prayerName = _prayerLabel(slot.id);
-            final start = slot.time.subtract(const Duration(minutes: 10));
-            final end = slot.time.add(const Duration(minutes: 15));
-            final offsetBase = dataset.dayOffset * 10 + _slotIndex(slot.id);
-
-            await _scheduleIfFuture(
-              id: 2000 + offsetBase,
-              when: start,
-              title: 'Salah Focus Mode active',
-              body:
-                  '$prayerName is approaching, so selected apps are now locked.',
-              details: _focusNotificationDetails,
-            );
-            await _scheduleIfFuture(
-              id: 3000 + offsetBase,
-              when: end,
-              title: 'Salah Focus Mode ended',
-              body:
-                  '$prayerName focus window has ended, so selected apps are unlocked.',
-              details: _focusNotificationDetails,
-            );
-          }
-        }
-      } else {
-        await FocusEnforcementService.appendDebugLog(
-          'notifications.salah',
-          'skipped real salah scheduling because location is unavailable',
-        );
-      }
-    }
-
-    if (settings.nightDisciplineEnabled) {
-      final start = _nextNightTime(
-        now,
-        settings.nightRange.startHour,
-        settings.nightRange.startMinute,
-        preferFutureOnly: false,
-      );
-      final end = _nextNightEnd(now, settings.nightRange);
-
-      await _scheduleIfFuture(
-        id: 4000,
-        when: start.isBefore(now) ? start.add(const Duration(days: 1)) : start,
-        title: 'Night Discipline active',
-        body: 'Selected apps are now locked for your night routine.',
-        details: _focusNotificationDetails,
-      );
-      await _scheduleIfFuture(
-        id: 4001,
-        when: end,
-        title: 'Night Discipline ended',
-        body: 'Selected apps are now unlocked.',
-        details: _focusNotificationDetails,
-      );
-    }
+    // Keep focus notifications limited to explicit user ON/OFF actions.
+    // All scheduled "active window" notifications are intentionally disabled.
   }
 
-  Future<void> showImmediateFocusLockedNotification(FocusModeType mode) async {
+  Future<void> showFocusModeToggleNotification({
+    required FocusModeType mode,
+    required bool enabled,
+  }) async {
     await initialize();
     if (!await _hasNotificationPermission()) {
       return;
     }
-    if (mode != FocusModeType.salah && mode != FocusModeType.nightDiscipline) {
-      return;
-    }
-
-    final title = mode == FocusModeType.salah
-        ? 'Salah Focus Mode active'
-        : 'Night Discipline active';
-    final body = mode == FocusModeType.salah
-        ? 'Selected apps are now locked for the active prayer window.'
-        : 'Selected apps are now locked for your night routine.';
+    final modeLabel = switch (mode) {
+      FocusModeType.salah => 'Salah Focus Mode',
+      FocusModeType.nightDiscipline => 'Night Discipline',
+      FocusModeType.child => 'Child Mode',
+    };
+    final title = enabled ? '$modeLabel turned on' : '$modeLabel turned off';
+    final body = enabled
+        ? 'Selected apps will follow this focus mode schedule.'
+        : 'Selected apps are no longer managed by this focus mode.';
 
     await _plugin.show(
-      5000 + mode.index,
+      5100 + mode.index,
       title,
       body,
       _focusNotificationDetails,
@@ -399,38 +311,6 @@ class AppNotificationService {
     await Permission.scheduleExactAlarm.request();
   }
 
-  Future<void> _scheduleSalahTestNotifications(DateTime now) async {
-    await FocusEnforcementService.appendDebugLog(
-      'notifications.salahTest',
-      'scheduling $_salahTestWindowCount test windows from ${now.toIso8601String()}',
-    );
-    for (var index = 0; index < _salahTestWindowCount; index++) {
-      final prayerId = _testPrayerIdForIndex(index);
-      final prayerName = _prayerLabel(prayerId);
-      final start = now.add(
-        _salahTestInitialDelay +
-            (_salahTestLockDuration + _salahTestGapDuration) * index,
-      );
-      final end = start.add(_salahTestLockDuration);
-
-      await _scheduleIfFuture(
-        id: 2000 + index,
-        when: start,
-        title: 'Salah Focus Mode active',
-        body:
-            'Test cycle for $prayerName started, selected apps are now locked.',
-        details: _focusNotificationDetails,
-      );
-      await _scheduleIfFuture(
-        id: 3000 + index,
-        when: end,
-        title: 'Salah Focus Mode ended',
-        body:
-            'Test cycle for $prayerName ended, selected apps are now unlocked.',
-        details: _focusNotificationDetails,
-      );
-    }
-  }
 
   Future<void> _cancelRange(int startInclusive, int endInclusive) async {
     for (var id = startInclusive; id <= endInclusive; id++) {
@@ -483,57 +363,4 @@ class AppNotificationService {
     }
   }
 
-  HomePrayerId _testPrayerIdForIndex(int index) {
-    const prayerIds = <HomePrayerId>[
-      HomePrayerId.fajr,
-      HomePrayerId.dhuhr,
-      HomePrayerId.asr,
-      HomePrayerId.maghrib,
-      HomePrayerId.isha,
-    ];
-    return prayerIds[index % prayerIds.length];
-  }
-
-  DateTime _nextNightTime(
-    DateTime now,
-    int hour,
-    int minute, {
-    required bool preferFutureOnly,
-  }) {
-    final today = DateTime(now.year, now.month, now.day, hour, minute);
-    if (today.isAfter(now) || (!preferFutureOnly && today == now)) return today;
-    return today.add(const Duration(days: 1));
-  }
-
-  DateTime _nextNightEnd(DateTime now, FocusTimeRange range) {
-    var end = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      range.endHour,
-      range.endMinute,
-    );
-    final start = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      range.startHour,
-      range.startMinute,
-    );
-
-    if (range.startTotalMinutes >= range.endTotalMinutes) {
-      if (!end.isAfter(start)) {
-        end = end.add(const Duration(days: 1));
-      }
-      if (end.isBefore(now)) {
-        end = end.add(const Duration(days: 1));
-      }
-      return end;
-    }
-
-    if (!end.isAfter(now)) {
-      end = end.add(const Duration(days: 1));
-    }
-    return end;
-  }
 }

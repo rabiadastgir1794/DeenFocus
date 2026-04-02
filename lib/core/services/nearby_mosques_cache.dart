@@ -44,6 +44,27 @@ abstract class NearbyMosquesCache {
     return (lat: cachedLat, lng: cachedLng, fetched: fetched, mosques: list);
   }
 
+  static Future<({double lat, double lng, DateTime fetched, List<NearbyMosque> mosques})?> readLatest() async {
+    final cachedLat = await StorageService.nearbyMosquesCacheLatitude;
+    final cachedLng = await StorageService.nearbyMosquesCacheLongitude;
+    final fetchedMs = await StorageService.nearbyMosquesCacheFetchedMs;
+    final json = await StorageService.nearbyMosquesCacheJson;
+    if (cachedLat == null ||
+        cachedLng == null ||
+        fetchedMs == null ||
+        json == null ||
+        json.isEmpty) {
+      return null;
+    }
+    final fetched = DateTime.fromMillisecondsSinceEpoch(fetchedMs, isUtc: false);
+    return (
+      lat: cachedLat,
+      lng: cachedLng,
+      fetched: fetched,
+      mosques: _decodeMosques(json),
+    );
+  }
+
   static Future<void> save({
     required double latitude,
     required double longitude,
@@ -123,4 +144,3 @@ abstract class NearbyMosquesCache {
 
   static double _cosDeg(double degrees) => math.cos(_degToRad(degrees));
 }
-

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -32,6 +30,7 @@ class HomeNearbyMosquesScreen extends StatefulWidget {
 
 class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
   final NearbyMosquesService _service = NearbyMosquesService();
+  static const double _searchRadiusMeters = 3000;
 
   bool _isLoading = true;
   String? _errorMessage;
@@ -78,7 +77,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
           _mosques = cached.mosques;
           _isLoading = false;
           _errorMessage = cached.mosques.isEmpty
-              ? 'No mosques were found within 5 km of your current location.'
+              ? 'No mosques were found within 3 km of your current location.'
               : null;
         });
         return;
@@ -87,6 +86,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
       final mosques = await _service.fetchNearby(
         latitude: latitude,
         longitude: longitude,
+        radiusMeters: _searchRadiusMeters,
       );
 
       await NearbyMosquesCache.save(
@@ -100,14 +100,21 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
         _mosques = mosques;
         _isLoading = false;
         _errorMessage = mosques.isEmpty
-            ? 'No mosques were found within 5 km of your current location.'
+            ? 'No mosques were found within 3 km of your current location.'
             : null;
       });
     } catch (error) {
       if (!mounted) return;
+      final fallback = await NearbyMosquesCache.readLatest();
       setState(() {
         _isLoading = false;
-        _errorMessage = error.toString().replaceFirst('Exception: ', '');
+        if (fallback != null && fallback.mosques.isNotEmpty) {
+          _mosques = fallback.mosques;
+          _errorMessage =
+              'Live update failed. Showing last saved results. Pull to refresh.';
+        } else {
+          _errorMessage = error.toString().replaceFirst('Exception: ', '');
+        }
       });
     }
   }
@@ -195,7 +202,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
                 )
               else ...[
                 Text(
-                  'Within 5 km',
+                  'Within 3 km',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -220,19 +227,70 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
     final lat = mosque.latitude;
     final lng = mosque.longitude;
     final name = mosque.name;
+    final googleWebUri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent('$lat,$lng')}',
+    );
+    final appleWebUri = Uri.parse(
+      'https://maps.apple.com/?ll=$lat,$lng&q=${Uri.encodeComponent(name)}',
+    );
+    final googleAppUri = Uri.parse(
+      'comgooglemaps://?q=${Uri.encodeComponent('$lat,$lng')}',
+    );
+    final appleAppUri = Uri.parse(
+      'maps://?ll=$lat,$lng&q=${Uri.encodeComponent(name)}',
+    );
 
-    if (Platform.isIOS) {
-      final uri = Uri.parse(
-        'https://maps.apple.com/?ll=$lat,$lng&q=${Uri.encodeComponent(name)}',
-      );
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final hasGoogle = await canLaunchUrl(googleAppUri);
+    final hasApple = await canLaunchUrl(appleAppUri);
+
+    if (hasGoogle && !hasApple) {
+      await launchUrl(googleAppUri, mode: LaunchMode.externalApplication);
+      return;
+    }
+    if (hasApple && !hasGoogle) {
+      await launchUrl(appleAppUri, mode: LaunchMode.externalApplication);
+      return;
+    }
+    if (!hasGoogle && !hasApple) {
+      final fallback = await canLaunchUrl(googleWebUri)
+          ? googleWebUri
+          : appleWebUri;
+      await launchUrl(fallback, mode: LaunchMode.externalApplication);
       return;
     }
 
-    final uri = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent('$lat,$lng')}',
+    if (!mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.map_outlined),
+                title: const Text('Open in Google Maps'),
+                onTap: () async {
+                  Navigator.of(ctx).pop();
+                  final uri = hasGoogle ? googleAppUri : googleWebUri;
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.navigation_outlined),
+                title: const Text('Open in Apple Maps'),
+                onTap: () async {
+                  Navigator.of(ctx).pop();
+                  final uri = hasApple ? appleAppUri : appleWebUri;
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
 
@@ -262,12 +320,12 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
 
   String _mapFooterCaption() {
     if (widget.mosques.isNotEmpty) {
-      return '${widget.mosques.length} mosques found within 5 km';
+      return '${widget.mosques.length} mosques found within 3 km';
     }
     if (widget.awaitingMosqueResults) {
       return 'Nearby mosques will appear here once results load.';
     }
-    return 'No mosques found within 5 km in OpenStreetMap.';
+    return 'No mosques found within 3 km in OpenStreetMap.';
   }
 
   @override

@@ -5,7 +5,7 @@ class AppTopBackButton extends StatelessWidget {
   const AppTopBackButton({
     super.key,
     required this.onTap,
-    this.icon = Icons.arrow_back_rounded,
+    this.icon = Icons.chevron_left_rounded,
     this.semanticLabel,
   });
 
@@ -19,22 +19,12 @@ class AppTopBackButton extends StatelessWidget {
     return Semantics(
       label: semanticLabel,
       button: true,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.52),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 0.42),
-            ),
-          ),
-          child: Icon(icon, size: 24, color: colorScheme.onSurface),
-        ),
+      child: IconButton(
+        onPressed: onTap,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+        splashRadius: 20,
+        icon: Icon(icon, size: 28, color: colorScheme.onSurface),
       ),
     );
   }

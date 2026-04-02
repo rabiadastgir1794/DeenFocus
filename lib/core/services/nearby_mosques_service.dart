@@ -32,14 +32,17 @@ class NearbyMosquesService {
   NearbyMosquesService({http.Client? client})
     : _client = client ?? http.Client();
 
-  static const _overpassInterpreter = 'https://overpass-api.de/api/interpreter';
+  static const _overpassInterpreters = <String>[
+    'https://overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter',
+  ];
 
   final http.Client _client;
 
   Future<List<NearbyMosque>> fetchNearby({
     required double latitude,
     required double longitude,
-    double radiusMeters = 5000,
+    double radiusMeters = 3000,
     int maxResultCount = 40,
   }) async {
     final query = '''
@@ -55,16 +58,33 @@ class NearbyMosquesService {
 out center;
 ''';
 
-    final response = await _client
-        .post(
-          Uri.parse(_overpassInterpreter),
-          headers: const <String, String>{
-            'Content-Type': 'text/plain; charset=utf-8',
-            'Accept': 'application/json',
-          },
-          body: query,
-        )
-        .timeout(const Duration(seconds: 35));
+    http.Response? response;
+    Object? lastError;
+    for (final endpoint in _overpassInterpreters) {
+      try {
+        response = await _client
+            .post(
+              Uri.parse(endpoint),
+              headers: const <String, String>{
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Accept': 'application/json',
+              },
+              body: query,
+            )
+            .timeout(const Duration(seconds: 35));
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          break;
+        }
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    if (response == null) {
+      throw NearbyMosquesException(
+        'Could not connect to mosque data service. Please try again.',
+      );
+    }
 
     if (response.statusCode == 429) {
       throw const NearbyMosquesException(
@@ -73,7 +93,8 @@ out center;
     }
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw NearbyMosquesException(
-        'Could not load nearby mosques (${response.statusCode}).',
+        'Could not load nearby mosques (${response.statusCode}). ${lastError ?? ''}'
+            .trim(),
       );
     }
 

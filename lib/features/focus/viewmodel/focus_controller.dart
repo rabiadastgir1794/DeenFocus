@@ -389,7 +389,7 @@ class FocusController extends ChangeNotifier {
       case FocusModeType.salah:
         return _salahTestModeEnabled
             ? 'Testing mode: lock starts in 2 minutes for 4 minutes, twice.'
-            : 'Lock selected apps 10 minutes before each prayer until 15 minutes after.';
+            : 'Lock selected apps at prayer time until 15 minutes after.';
     }
   }
 
@@ -722,7 +722,7 @@ class FocusController extends ChangeNotifier {
         .map(
           (slot) => SalahWindow(
             prayer: slot,
-            start: slot.time.subtract(const Duration(minutes: 10)),
+            start: slot.time,
             end: slot.time.add(const Duration(minutes: 15)),
           ),
         )

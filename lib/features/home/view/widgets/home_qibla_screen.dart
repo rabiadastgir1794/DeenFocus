@@ -93,65 +93,110 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
       body: StreamBuilder<double>(
         stream: _headingStream,
         builder: (context, snapshot) {
+          final colorScheme = Theme.of(context).colorScheme;
           final heading = snapshot.data ?? 0;
           final angleDelta = _normalizedDelta(qiblaDirection, heading);
           final hasLiveHeading = snapshot.hasData;
           final aligned = hasLiveHeading && angleDelta <= 10;
 
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-              child: Column(
-                children: [
-                  Text(
-                    cityLabel,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  colorScheme.surface,
+                  colorScheme.surfaceContainerLowest,
+                ],
+              ),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Column(
+                  children: [
+                    Text(
+                      cityLabel,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: _QiblaCompass(
-                        heading: heading,
-                        qiblaDirection: qiblaDirection,
-                        aligned: aligned,
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: colorScheme.surface.withValues(alpha: 0.62),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withValues(
+                              alpha: 0.45,
+                            ),
+                          ),
+                        ),
+                        child: Center(
+                          child: _QiblaCompass(
+                            heading: heading,
+                            qiblaDirection: qiblaDirection,
+                            aligned: aligned,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    !hasLiveHeading
-                        ? 'Compass unavailable on this device'
-                        : aligned
-                        ? 'Facing Qibla'
-                        : 'Turn to find Qibla',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: aligned
-                          ? Theme.of(context).colorScheme.primary
-                          : !hasLiveHeading
-                          ? Theme.of(context).colorScheme.error
-                          : Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
+                    const SizedBox(height: 14),
+                    Text(
+                      !hasLiveHeading
+                          ? 'Compass unavailable on this device'
+                          : aligned
+                          ? 'Facing Qibla'
+                          : 'Turn to find Qibla',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: aligned
+                            ? colorScheme.primary
+                            : !hasLiveHeading
+                            ? colorScheme.error
+                            : colorScheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Distance to Makkah: ${distanceKm.toStringAsFixed(0)} km',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerLowest,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withValues(
+                            alpha: 0.4,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Distance to Makkah: ${distanceKm.toStringAsFixed(0)} km',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: colorScheme.onSurfaceVariant),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${qiblaDirection.toStringAsFixed(0)}° from North',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: colorScheme.onSurfaceVariant),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${qiblaDirection.toStringAsFixed(0)}° from North',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
