@@ -43,11 +43,11 @@ class FocusController extends ChangeNotifier {
   bool get hasSelectedApps => _settings.hasSelectedApps;
   int get selectedAppCount => _settings.selectedApps.isNotEmpty
       ? _settings.selectedApps.length
-      : _settings.iosSelectionCount;
+      : _settings.iosSelectionTotalCount;
   bool get isIosPickerSelection =>
       Platform.isIOS &&
       _settings.selectedApps.isEmpty &&
-      _settings.iosSelectionCount > 0;
+      _settings.iosSelectionTotalCount > 0;
   String get selectedTargetNoun => isIosPickerSelection ? 'item' : 'app';
   String get selectedTargetPhrase =>
       '$selectedAppCount $selectedTargetNoun${selectedAppCount == 1 ? '' : 's'}';
@@ -313,7 +313,7 @@ class FocusController extends ChangeNotifier {
   }
 
   String selectedAppsSummary() {
-    if (Platform.isIOS && _settings.iosSelectionCount > 0) {
+    if (Platform.isIOS && _settings.iosSelectionTotalCount > 0) {
       final parts = <String>[];
       if (_settings.iosApplicationSelectionCount > 0) {
         parts.add(
@@ -333,7 +333,8 @@ class FocusController extends ChangeNotifier {
       if (parts.isNotEmpty) {
         return '${parts.join(', ')} selected';
       }
-      return '${_settings.iosSelectionCount} iOS item${_settings.iosSelectionCount == 1 ? '' : 's'} selected';
+      final totalCount = _settings.iosSelectionTotalCount;
+      return '$totalCount iOS item${totalCount == 1 ? '' : 's'} selected';
     }
     if (_settings.selectedApps.isEmpty) return 'No apps selected';
     final values = _settings.selectedApps.values.toList(growable: false);
@@ -352,7 +353,9 @@ class FocusController extends ChangeNotifier {
     }
   }
 
-  List<FocusInstalledApp> _normalizeInstalledApps(List<FocusInstalledApp> apps) {
+  List<FocusInstalledApp> _normalizeInstalledApps(
+    List<FocusInstalledApp> apps,
+  ) {
     if (apps.isEmpty) return const <FocusInstalledApp>[];
     final byPackage = <String, FocusInstalledApp>{};
     for (final app in apps) {
@@ -366,7 +369,8 @@ class FocusController extends ChangeNotifier {
         iconBytes: app.iconBytes,
       );
       final existing = byPackage[packageName];
-      if (existing == null || (existing.isSystemApp && !normalized.isSystemApp)) {
+      if (existing == null ||
+          (existing.isSystemApp && !normalized.isSystemApp)) {
         byPackage[packageName] = normalized;
       }
     }

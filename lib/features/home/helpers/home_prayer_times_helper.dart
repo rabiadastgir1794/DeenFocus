@@ -111,13 +111,34 @@ abstract class HomePrayerTimesHelper {
       params,
     );
 
+    DateTime normalizeToMinute(DateTime value) =>
+        DateTime(value.year, value.month, value.day, value.hour, value.minute);
+
     return <HomePrayerSlot>[
-      HomePrayerSlot(id: HomePrayerId.fajr, time: prayerTimes.fajr),
-      HomePrayerSlot(id: HomePrayerId.sunrise, time: prayerTimes.sunrise),
-      HomePrayerSlot(id: HomePrayerId.dhuhr, time: prayerTimes.dhuhr),
-      HomePrayerSlot(id: HomePrayerId.asr, time: prayerTimes.asr),
-      HomePrayerSlot(id: HomePrayerId.maghrib, time: prayerTimes.maghrib),
-      HomePrayerSlot(id: HomePrayerId.isha, time: prayerTimes.isha),
+      HomePrayerSlot(
+        id: HomePrayerId.fajr,
+        time: normalizeToMinute(prayerTimes.fajr),
+      ),
+      HomePrayerSlot(
+        id: HomePrayerId.sunrise,
+        time: normalizeToMinute(prayerTimes.sunrise),
+      ),
+      HomePrayerSlot(
+        id: HomePrayerId.dhuhr,
+        time: normalizeToMinute(prayerTimes.dhuhr),
+      ),
+      HomePrayerSlot(
+        id: HomePrayerId.asr,
+        time: normalizeToMinute(prayerTimes.asr),
+      ),
+      HomePrayerSlot(
+        id: HomePrayerId.maghrib,
+        time: normalizeToMinute(prayerTimes.maghrib),
+      ),
+      HomePrayerSlot(
+        id: HomePrayerId.isha,
+        time: normalizeToMinute(prayerTimes.isha),
+      ),
     ];
   }
 

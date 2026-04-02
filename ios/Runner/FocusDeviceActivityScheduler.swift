@@ -89,9 +89,16 @@ enum FocusIOSDebugLogger {
 @available(iOS 16.0, *)
 enum FocusDeviceActivityScheduler {
   static let appGroupId = "group.com.rnr.deenfocus"
+  static let shieldActiveModeKey = "focus_shield_active_mode"
+  static let shieldLockReasonKey = "focus_shield_lock_reason"
+  static let shieldFlutterLockedKey = "focus_flutter_is_locked"
+  static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
+  static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let selectionKey = "focus_device_activity_selection_b64"
   private static let activityNamesKey = "focus_device_activity_names"
   private static let activityActionsKey = "focus_device_activity_actions"
+  private static let activityModesKey = "focus_device_activity_modes"
+  private static let activityReasonsKey = "focus_device_activity_reasons"
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
 
   static func cancelAllSchedules() {
@@ -107,6 +114,8 @@ enum FocusDeviceActivityScheduler {
     center.stopMonitoring(names)
     defaults?.removeObject(forKey: activityNamesKey)
     defaults?.removeObject(forKey: activityActionsKey)
+    defaults?.removeObject(forKey: activityModesKey)
+    defaults?.removeObject(forKey: activityReasonsKey)
   }
 
   static func sync(
@@ -146,6 +155,8 @@ enum FocusDeviceActivityScheduler {
     let now = Date()
     var names: [String] = []
     var actionsByName: [String: String] = [:]
+    var modesByName: [String: String] = [:]
+    var reasonsByName: [String: String] = [:]
     let startMinutes = nightStartHour * 60 + nightStartMinute
     let endMinutes = nightEndHour * 60 + nightEndMinute
     let isOvernightNightRange = startMinutes >= endMinutes
@@ -174,6 +185,9 @@ enum FocusDeviceActivityScheduler {
         try center.startMonitoring(lockActivityName, during: lockSchedule)
         names.append(repeatingNightLockActivityName)
         actionsByName[repeatingNightLockActivityName] = "lock"
+        modesByName[repeatingNightLockActivityName] = "nightDiscipline"
+        reasonsByName[repeatingNightLockActivityName] =
+          "Sleep Lock is active during your protected schedule."
         didRegisterRepeatingNightLock = true
         FocusIOSDebugLogger.append(
           "ios.scheduler.register",
@@ -191,6 +205,7 @@ enum FocusDeviceActivityScheduler {
     for t in transitions {
       guard let locked = t["isLocked"] as? Bool else { continue }
       let transitionMode = t["activeMode"] as? String
+      let transitionReason = t["lockReason"] as? String
       if transitionMode == "nightDiscipline" && locked && didRegisterRepeatingNightLock {
         continue
       }
@@ -227,6 +242,12 @@ enum FocusDeviceActivityScheduler {
         try center.startMonitoring(activityName, during: schedule)
         names.append(nameStr)
         actionsByName[nameStr] = action
+        if let transitionMode, !transitionMode.isEmpty {
+          modesByName[nameStr] = transitionMode
+        }
+        if let transitionReason, !transitionReason.isEmpty {
+          reasonsByName[nameStr] = transitionReason
+        }
         FocusIOSDebugLogger.append(
           "ios.scheduler.register",
           "registered one-shot action=\(action) name=\(nameStr) at=\(start) end=\(intervalEnd)"
@@ -242,6 +263,8 @@ enum FocusDeviceActivityScheduler {
 
     defaults?.set(names, forKey: activityNamesKey)
     defaults?.set(actionsByName, forKey: activityActionsKey)
+    defaults?.set(modesByName, forKey: activityModesKey)
+    defaults?.set(reasonsByName, forKey: activityReasonsKey)
     FocusIOSDebugLogger.append(
       "ios.scheduler.sync",
       "stored \(names.count) active schedule name(s); exportedLogPath=\(FocusIOSDebugLogger.path() ?? "nil")"

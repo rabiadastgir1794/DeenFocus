@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/focus_enforcement_service.dart';
-import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
@@ -75,10 +74,6 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
     if (pendingMode != null) {
       await vm.enableMode(pendingMode);
-      await AppNotificationService.instance.showFocusModeToggleNotification(
-        mode: pendingMode,
-        enabled: true,
-      );
     } else {
       await vm.refresh();
     }
@@ -200,42 +195,36 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         ),
                         if (isIosSelection) ...[
                           const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  '📱',
+                                  style: TextStyle(fontSize: 16),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primary.withValues(
-                                    alpha: 0.1,
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    vm.selectedAppsSummary(),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(fontWeight: FontWeight.w500),
                                   ),
-                                  borderRadius: BorderRadius.circular(14),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Text(
-                                      '📱',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      vm.selectedAppsSummary(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ] else if (globalApps.isNotEmpty) ...[
                           const SizedBox(height: 12),
@@ -345,7 +334,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Select Apps to Block',
+                                    'Select apps to block',
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge
@@ -558,17 +547,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       if (!canBlock) return;
 
       await vm.enableMode(mode);
-      await AppNotificationService.instance.showFocusModeToggleNotification(
-        mode: mode,
-        enabled: true,
-      );
       return;
     }
     await vm.disableMode(mode);
-    await AppNotificationService.instance.showFocusModeToggleNotification(
-      mode: mode,
-      enabled: false,
-    );
   }
 
   Future<void> _removeSelectedApp(
@@ -972,16 +953,16 @@ class _ScheduleTimeTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               Text(
                 time,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(width: 6),
               Icon(Icons.edit_rounded, size: 16, color: colorScheme.primary),
@@ -1046,7 +1027,9 @@ class _AppsGrid extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final app = apps[index];
-          final selected = vm.settings.selectedApps.containsKey(app.packageName);
+          final selected = vm.settings.selectedApps.containsKey(
+            app.packageName,
+          );
           return InkWell(
             onTap: () => vm.toggleSelectedApp(app),
             borderRadius: BorderRadius.circular(14),
@@ -1056,7 +1039,9 @@ class _AppsGrid extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 color: selected
                     ? colorScheme.primary.withValues(alpha: 0.15)
-                    : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    : colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.5,
+                      ),
                 border: Border.all(
                   color: selected
                       ? colorScheme.primary.withValues(alpha: 0.3)

@@ -41,7 +41,7 @@ class FocusBlockedActivity : Activity() {
 
     private fun renderContent(intent: Intent) {
         val appName = intent.getStringExtra("blockedAppName").orEmpty()
-        val activeMode = intent.getStringExtra("activeMode")
+        val activeMode = normalizeMode(intent.getStringExtra("activeMode"))
         val lockReason = intent.getStringExtra("lockReason")
         val nextChangeAt = intent.getStringExtra("nextChangeAt")
 
@@ -233,11 +233,20 @@ class FocusBlockedActivity : Activity() {
         return container
     }
 
+    private fun normalizeMode(activeMode: String?): String? {
+        return when (activeMode) {
+            "child", "childMode" -> "child"
+            "nightDiscipline", "night", "sleep", "sleepLock" -> "nightDiscipline"
+            "salah", "prayer", "prayerLock" -> "salah"
+            else -> activeMode
+        }
+    }
+
     private fun modeTitle(activeMode: String?): String {
         return when (activeMode) {
             "child" -> "Child Mode Active"
-            "nightDiscipline" -> "Night Discipline Active"
-            "salah" -> "Salah Mode Active"
+            "nightDiscipline" -> "Sleep Lock Active"
+            "salah" -> "Prayer Lock Active"
             else -> "Focus Mode Active"
         }
     }
@@ -246,8 +255,8 @@ class FocusBlockedActivity : Activity() {
         val appRef = if (appName.isBlank()) "This app" else appName
         return when (activeMode) {
             "child" -> "$appRef is being kept closed because Child Mode is protecting the device right now."
-            "nightDiscipline" -> "$appRef is paused to help protect your sleep, focus, and Fajr routine."
-            "salah" -> "$appRef is paused so you can stay present during the active prayer window."
+            "nightDiscipline" -> "$appRef is paused because Sleep Lock is active during your protected sleep schedule."
+            "salah" -> "$appRef is paused because Prayer Lock is active for the current salah window."
             else -> "$appRef is unavailable while your current focus protection is active."
         }
     }
@@ -255,8 +264,8 @@ class FocusBlockedActivity : Activity() {
     private fun fallbackReason(activeMode: String?): String {
         return when (activeMode) {
             "child" -> "Child Mode is currently on, so selected apps stay blocked until the mode is turned off or the timed session ends."
-            "nightDiscipline" -> "Night Discipline is active during your protected schedule, so selected apps stay blocked inside that time window."
-            "salah" -> "Salah Mode locks selected apps around prayer times so distractions stay out of the way."
+            "nightDiscipline" -> "Sleep Lock is active during your protected schedule, so selected apps stay blocked inside that time window."
+            "salah" -> "Prayer Lock keeps selected apps blocked during the active prayer time window."
             else -> "A focus mode is active, so this app is temporarily unavailable."
         }
     }

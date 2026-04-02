@@ -97,21 +97,25 @@ class HomeTabViewModel extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    userName = await StorageService.userName ?? 'User';
-    locationName = await StorageService.locationName;
-    locationSubtitle = await StorageService.locationSubtitle;
-    latitude = await StorageService.locationLatitude;
-    longitude = await StorageService.locationLongitude;
-    _lastAppliedSect = await StorageService.sect;
+    try {
+      userName = await StorageService.userName ?? 'User';
+      locationName = await StorageService.locationName;
+      locationSubtitle = await StorageService.locationSubtitle;
+      latitude = await StorageService.locationLatitude;
+      longitude = await StorageService.locationLongitude;
+      _lastAppliedSect = await StorageService.sect;
 
-    await _ensureLocationAccessIfNeeded();
-    await _loadVerse();
-    await _loadPrayerTimes();
-    await _loadPrayerStreak();
-    _loadEvents();
-
-    isLoading = false;
-    notifyListeners();
+      await _ensureLocationAccessIfNeeded();
+      await _loadVerse();
+      await _loadPrayerTimes();
+      await _loadPrayerStreak();
+      _loadEvents();
+    } catch (_) {
+      // Keep last good state and always release loading to avoid stuck spinner.
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> _loadPrayerStreak() async {

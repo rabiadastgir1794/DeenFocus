@@ -132,7 +132,8 @@ class _HomeTabViewState extends State<_HomeTabView>
                           ),
                           Text(
                             profile.userName,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.w700),
                           ),
                         ],
                       ),
@@ -140,7 +141,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                     HomeCircleIconButton(
                       icon: Icons.chat_bubble_outline,
                       onTap: () {
-                        Navigator.of(context).push(
+                        Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute<void>(
                             builder: (_) => const HomeAiChatScreen(),
                           ),
@@ -432,10 +433,7 @@ class _QuickActionsCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                 ],
-                Icon(
-                  Icons.chevron_right,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
               ],
             ),
           ),
@@ -530,7 +528,9 @@ class _FocusLockCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isTempUnlocked ? 'Focus Temporarily Unlocked' : 'Focus Mode Active',
+                    isTempUnlocked
+                        ? 'Focus Temporarily Unlocked'
+                        : 'Focus Mode Active',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),

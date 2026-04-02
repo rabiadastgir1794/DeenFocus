@@ -18,6 +18,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.Build
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
@@ -29,6 +30,7 @@ import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 
 private const val focusPrefsName = "focus_enforcement"
 private const val selectedPackagesKey = "selected_packages"
@@ -228,6 +230,14 @@ object FocusDebugLogger {
 }
 
 object FocusBlockerStore {
+    @Volatile
+    private var lastWallClockMillis: Long? = null
+
+    @Volatile
+    private var lastElapsedRealtimeMillis: Long? = null
+
+    private const val clockJumpThresholdMillis: Long = 90_000L
+
     fun save(
         context: Context,
         selectedPackages: List<String>,
@@ -269,7 +279,41 @@ object FocusBlockerStore {
             nextChangeAt = prefs.getString(nextChangeAtKey, null),
             syncGeneration = prefs.getLong(syncGenerationKey, 0L),
         )
+        if (didClockJump(context)) {
+            FocusDebugLogger.append(
+                context,
+                "store.resolve",
+                "clock jump detected; keeping stored lock state until next explicit sync/alarm",
+            )
+            return storedState
+        }
         return resolveScheduledState(context, storedState)
+    }
+
+    private fun didClockJump(context: Context): Boolean {
+        val nowWall = System.currentTimeMillis()
+        val nowElapsed = SystemClock.elapsedRealtime()
+        val previousWall = lastWallClockMillis
+        val previousElapsed = lastElapsedRealtimeMillis
+        lastWallClockMillis = nowWall
+        lastElapsedRealtimeMillis = nowElapsed
+
+        if (previousWall == null || previousElapsed == null) return false
+
+        val elapsedDelta = nowElapsed - previousElapsed
+        if (elapsedDelta < 0L) return false
+
+        val expectedWall = previousWall + elapsedDelta
+        val skew = abs(nowWall - expectedWall)
+        val jumped = skew > clockJumpThresholdMillis
+        if (jumped) {
+            FocusDebugLogger.append(
+                context,
+                "store.clock",
+                "wall=$nowWall expected=$expectedWall skewMs=$skew elapsedDeltaMs=$elapsedDelta",
+            )
+        }
+        return jumped
     }
 
     fun saveScheduledTransitions(
@@ -364,6 +408,12 @@ object FocusBlockerStore {
             resolved.activeMode != storedState.activeMode ||
             resolved.nextChangeAt != storedState.nextChangeAt
         ) {
+            prefs(context).edit()
+                .putBoolean(isLockedKey, resolved.isLocked)
+                .putString(activeModeKey, resolved.activeMode)
+                .putString(lockReasonKey, resolved.lockReason)
+                .putString(nextChangeAtKey, resolved.nextChangeAt)
+                .commit()
             FocusDebugLogger.append(
                 context,
                 "store.resolve",

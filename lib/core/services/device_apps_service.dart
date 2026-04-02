@@ -36,15 +36,17 @@ abstract class DeviceAppsService {
         'presentFamilyActivityPicker',
       );
       if (raw == null) return null;
+      final applicationCount = (raw['applicationCount'] as num?)?.toInt() ?? 0;
+      final categoryCount = (raw['categoryCount'] as num?)?.toInt() ?? 0;
+      final webDomainCount = (raw['webDomainCount'] as num?)?.toInt() ?? 0;
+      final fallbackTotal = applicationCount + categoryCount + webDomainCount;
       return IosFocusSelectionResult(
         selectionData: raw['selectionData'] as String?,
         selectionCount:
-            (raw['selectionCount'] as num?)?.toInt() ??
-            (raw['applicationCount'] as num?)?.toInt() ??
-            0,
-        applicationCount: (raw['applicationCount'] as num?)?.toInt() ?? 0,
-        categoryCount: (raw['categoryCount'] as num?)?.toInt() ?? 0,
-        webDomainCount: (raw['webDomainCount'] as num?)?.toInt() ?? 0,
+            (raw['selectionCount'] as num?)?.toInt() ?? fallbackTotal,
+        applicationCount: applicationCount,
+        categoryCount: categoryCount,
+        webDomainCount: webDomainCount,
       );
     } on PlatformException {
       return null;

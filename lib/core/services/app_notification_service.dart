@@ -25,19 +25,7 @@ class AppNotificationService {
     importance: Importance.max,
   );
 
-  static const _focusChannel = AndroidNotificationChannel(
-    'focus_modes',
-    'Focus Modes',
-    description: 'Focus mode lock and unlock alerts from Deenly.',
-    importance: Importance.high,
-  );
-
   static const _darwinPrayerDetails = DarwinNotificationDetails(
-    presentAlert: true,
-    presentBadge: true,
-    presentSound: true,
-  );
-  static const _darwinFocusDetails = DarwinNotificationDetails(
     presentAlert: true,
     presentBadge: true,
     presentSound: true,
@@ -78,7 +66,6 @@ class AppNotificationService {
           AndroidFlutterLocalNotificationsPlugin
         >();
     await androidPlugin?.createNotificationChannel(_prayerChannel);
-    await androidPlugin?.createNotificationChannel(_focusChannel);
 
     _initialized = true;
   }
@@ -111,6 +98,8 @@ class AppNotificationService {
     await _ensureAndroidExactAlarmOrFallback();
     // Match device timezone after travel / DST changes.
     await _setLocalTimezone();
+    // Clear stale notifications from older builds that used different IDs/titles.
+    await _plugin.cancelAll();
     await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
 
     final now = DateTime.now();
@@ -143,7 +132,8 @@ class AppNotificationService {
           title: "It's time for ${_prayerLabel(slot.id)}",
           body: 'Take a moment for ${_prayerLabel(slot.id)} prayer.',
           details: _prayerNotificationDetails,
-          preferAlarmClock: true,
+          // Avoid alarm-clock UI side effects ("approaching"/upcoming alarm).
+          preferAlarmClock: false,
         );
       }
     }
@@ -171,32 +161,6 @@ class AppNotificationService {
     // All scheduled "active window" notifications are intentionally disabled.
   }
 
-  Future<void> showFocusModeToggleNotification({
-    required FocusModeType mode,
-    required bool enabled,
-  }) async {
-    await initialize();
-    if (!await _hasNotificationPermission()) {
-      return;
-    }
-    final modeLabel = switch (mode) {
-      FocusModeType.salah => 'Salah Focus Mode',
-      FocusModeType.nightDiscipline => 'Night Discipline',
-      FocusModeType.child => 'Child Mode',
-    };
-    final title = enabled ? '$modeLabel turned on' : '$modeLabel turned off';
-    final body = enabled
-        ? 'Selected apps will follow this focus mode schedule.'
-        : 'Selected apps are no longer managed by this focus mode.';
-
-    await _plugin.show(
-      5100 + mode.index,
-      title,
-      body,
-      _focusNotificationDetails,
-    );
-  }
-
   NotificationDetails get _prayerNotificationDetails =>
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -208,19 +172,6 @@ class AppNotificationService {
         ),
         iOS: _darwinPrayerDetails,
         macOS: _darwinPrayerDetails,
-      );
-
-  NotificationDetails get _focusNotificationDetails =>
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'focus_modes',
-          'Focus Modes',
-          channelDescription: 'Focus mode lock and unlock alerts from Deenly.',
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: _darwinFocusDetails,
-        macOS: _darwinFocusDetails,
       );
 
   Future<void> _scheduleIfFuture({
@@ -311,7 +262,6 @@ class AppNotificationService {
     await Permission.scheduleExactAlarm.request();
   }
 
-
   Future<void> _cancelRange(int startInclusive, int endInclusive) async {
     for (var id = startInclusive; id <= endInclusive; id++) {
       await _plugin.cancel(id);
@@ -362,5 +312,4 @@ class AppNotificationService {
         return 'Isha';
     }
   }
-
 }

@@ -48,17 +48,39 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let appGroupId = "group.com.rnr.deenfocus"
   private static let selectionKey = "focus_device_activity_selection_b64"
   private static let activityActionsKey = "focus_device_activity_actions"
+  private static let activityModesKey = "focus_device_activity_modes"
+  private static let activityReasonsKey = "focus_device_activity_reasons"
+  private static let shieldActiveModeKey = "focus_shield_active_mode"
+  private static let shieldLockReasonKey = "focus_shield_lock_reason"
+  private static let shieldFlutterLockedKey = "focus_flutter_is_locked"
+  private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
+  private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
+  private static let clockJumpThresholdMs: Double = 90_000
 
   override func intervalDidStart(for activity: DeviceActivityName) {
     super.intervalDidStart(for: activity)
-    let action = UserDefaults(suiteName: Self.appGroupId)?
-      .dictionary(forKey: Self.activityActionsKey)?[activity.rawValue] as? String
+    let defaults = UserDefaults(suiteName: Self.appGroupId)
+    let action = defaults?.dictionary(forKey: Self.activityActionsKey)?[activity.rawValue] as? String
+    let mode = defaults?.dictionary(forKey: Self.activityModesKey)?[activity.rawValue] as? String
+    let reason = defaults?.dictionary(forKey: Self.activityReasonsKey)?[activity.rawValue] as? String
+    let clockJumped = didClockJump(defaults: defaults)
     FocusMonitorDebugLogger.append(
       "ios.monitor.start",
-      "activity=\(activity.rawValue) action=\(action ?? "lock")"
+      "activity=\(activity.rawValue) action=\(action ?? "lock") mode=\(mode ?? "nil") clockJumped=\(clockJumped)"
     )
 
     if action == "unlock" {
+      let flutterStillLocked = defaults?.bool(forKey: Self.shieldFlutterLockedKey) ?? false
+      if clockJumped || flutterStillLocked {
+        FocusMonitorDebugLogger.append(
+          "ios.monitor.unlock",
+          "ignored unlock activity=\(activity.rawValue) clockJumped=\(clockJumped) flutterStillLocked=\(flutterStillLocked)"
+        )
+        applyShield()
+        return
+      }
+      defaults?.removeObject(forKey: Self.shieldActiveModeKey)
+      defaults?.removeObject(forKey: Self.shieldLockReasonKey)
       FocusMonitorDebugLogger.append(
         "ios.monitor.unlock",
         "clearing managed settings for activity=\(activity.rawValue)"
@@ -67,7 +89,46 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
       return
     }
 
+    if let mode, !mode.isEmpty {
+      defaults?.set(mode, forKey: Self.shieldActiveModeKey)
+    }
+    if let reason, !reason.isEmpty {
+      defaults?.set(reason, forKey: Self.shieldLockReasonKey)
+    }
     applyShield()
+  }
+
+  private func didClockJump(defaults: UserDefaults?) -> Bool {
+    guard let defaults else { return false }
+
+    let nowWallMs = Date().timeIntervalSince1970 * 1000
+    let nowUptimeMs = ProcessInfo.processInfo.systemUptime * 1000
+
+    let previousWallMs = defaults.double(forKey: Self.monitorLastWallClockMsKey)
+    let previousUptimeMs = defaults.double(forKey: Self.monitorLastUptimeMsKey)
+
+    defaults.set(nowWallMs, forKey: Self.monitorLastWallClockMsKey)
+    defaults.set(nowUptimeMs, forKey: Self.monitorLastUptimeMsKey)
+
+    if previousWallMs <= 0 || previousUptimeMs <= 0 {
+      return false
+    }
+
+    let uptimeDelta = nowUptimeMs - previousUptimeMs
+    if uptimeDelta < 0 {
+      return false
+    }
+
+    let expectedWallMs = previousWallMs + uptimeDelta
+    let skewMs = abs(nowWallMs - expectedWallMs)
+    let jumped = skewMs > Self.clockJumpThresholdMs
+    if jumped {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.clock",
+        "jump detected wall=\(Int(nowWallMs)) expected=\(Int(expectedWallMs)) skewMs=\(Int(skewMs)) uptimeDeltaMs=\(Int(uptimeDelta))"
+      )
+    }
+    return jumped
   }
 
   override func intervalDidEnd(for activity: DeviceActivityName) {

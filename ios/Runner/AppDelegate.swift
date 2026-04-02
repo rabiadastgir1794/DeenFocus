@@ -360,6 +360,7 @@ private enum ManagedSettingsStoreHolder {
     let nightEndMinute = args["nightEndMinute"] as? Int ?? 0
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
+    let lockReason = args["lockReason"] as? String
     FocusIOSDebugLogger.append(
       "ios.sync",
       "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
@@ -375,10 +376,14 @@ private enum ManagedSettingsStoreHolder {
       nightEndHour: nightEndHour,
       nightEndMinute: nightEndMinute
     )
+    let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
 
     let store = ManagedSettingsStoreHolder.shared
 
     if !isLocked {
+      sharedDefaults?.set(false, forKey: FocusDeviceActivityScheduler.shieldFlutterLockedKey)
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
       store.clearAllSettings()
       FocusIOSDebugLogger.append(
         "ios.sync",
@@ -393,6 +398,8 @@ private enum ManagedSettingsStoreHolder {
       let data = Data(base64Encoded: encodedSelection),
       let selection = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
     else {
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
       store.clearAllSettings()
       FocusIOSDebugLogger.append(
         "ios.sync",
@@ -401,6 +408,18 @@ private enum ManagedSettingsStoreHolder {
       result(nil)
       return
     }
+
+    if let activeMode, !activeMode.isEmpty {
+      sharedDefaults?.set(activeMode, forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)
+    } else {
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)
+    }
+    if let lockReason, !lockReason.isEmpty {
+      sharedDefaults?.set(lockReason, forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
+    } else {
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
+    }
+    sharedDefaults?.set(true, forKey: FocusDeviceActivityScheduler.shieldFlutterLockedKey)
 
     store.shield.applications = selection.applicationTokens
     store.shield.applicationCategories = selection.categoryTokens.isEmpty
@@ -425,7 +444,7 @@ private enum ManagedSettingsStoreHolder {
       "identifier=\(notification.request.identifier) title=\(notification.request.content.title)"
     )
     if #available(iOS 14.0, *) {
-      completionHandler([.banner, .sound, .badge])
+      completionHandler([.list, .banner, .sound, .badge])
     } else {
       completionHandler([.alert, .sound, .badge])
     }
@@ -510,12 +529,15 @@ private struct FocusPickerRootView: View {
           ToolbarItem(placement: .cancellationAction) {
             Button("Cancel") {
               dismiss()
+              let applicationCount = selection.applicationTokens.count
+              let categoryCount = selection.categoryTokens.count
+              let webDomainCount = selection.webDomainTokens.count
               onComplete([
                 "selectionData": nil,
-                "applicationCount": totalSelectionCount(for: selection),
-                "categoryCount": selection.categoryTokens.count,
-                "webDomainCount": selection.webDomainTokens.count,
-                "selectionCount": totalSelectionCount(for: selection),
+                "applicationCount": applicationCount,
+                "categoryCount": categoryCount,
+                "webDomainCount": webDomainCount,
+                "selectionCount": applicationCount + categoryCount + webDomainCount,
               ])
             }
           }

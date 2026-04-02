@@ -194,7 +194,16 @@ class FocusSettings {
     return null;
   }
 
-  bool get hasSelectedApps => selectedApps.isNotEmpty || iosSelectionCount > 0;
+  int get iosSelectionTotalCount {
+    final summedCount =
+        iosApplicationSelectionCount +
+        iosCategorySelectionCount +
+        iosWebDomainSelectionCount;
+    return summedCount > 0 ? summedCount : iosSelectionCount;
+  }
+
+  bool get hasSelectedApps =>
+      selectedApps.isNotEmpty || iosSelectionTotalCount > 0;
 
   Uint8List? iconBytesForPackage(String packageName) {
     final encoded = selectedAppIcons[packageName];
