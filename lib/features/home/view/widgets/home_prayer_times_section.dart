@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
 
@@ -91,7 +92,6 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                     (slot) => HomePrayerTile(
                       slot: slot,
                       prayerTimes: prayerTimes,
-                      sectionBackgroundColor: widget.backgroundColor,
                     ),
                   )
                   .toList(growable: false),
@@ -146,12 +146,10 @@ class HomePrayerTile extends StatelessWidget {
     super.key,
     required this.slot,
     required this.prayerTimes,
-    required this.sectionBackgroundColor,
   });
 
   final HomePrayerSlot slot;
   final HomePrayerTimesData prayerTimes;
-  final Color sectionBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -163,44 +161,54 @@ class HomePrayerTile extends StatelessWidget {
     final isCurrent = prayerTimes.nextPrayer == slot.id;
     final isPast = isPassed && !isCurrent;
 
-    // Current: solid green, white text, no border.
-    // Past: #F2F0EA (light) / muted warm surface (dark), muted text, no border.
-    // Upcoming: same fill as section container + border.
-    const currentGreen = Color(0xFF2E7D32);
-    const pastLightBackground = Color(0xFFF2F0EA);
+    // Mirrors web: next → primary + shadow-primary/20; passed → muted/50;
+    // upcoming → warm fill + border-border/50.
     final Color background;
     final Color titleColor;
     final Color timeColor;
     final BoxBorder? border;
+    final List<BoxShadow>? boxShadow;
 
     if (isCurrent) {
-      background = currentGreen;
-      titleColor = Colors.white;
-      timeColor = Colors.white;
+      background = colorScheme.primary;
+      titleColor = colorScheme.onPrimary;
+      timeColor = colorScheme.onPrimary;
       border = null;
+      boxShadow = [
+        BoxShadow(
+          color: colorScheme.primary.withValues(alpha: 0.2),
+          blurRadius: 16,
+          offset: const Offset(0, 6),
+        ),
+      ];
     } else if (isPast) {
-      background = isDark
-          ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.42)
-          : pastLightBackground;
-      titleColor = colorScheme.onSurface.withValues(alpha: isDark ? 0.5 : 0.52);
-      timeColor = colorScheme.onSurface.withValues(alpha: isDark ? 0.5 : 0.52);
+      background = colorScheme.surfaceContainerHighest.withValues(
+        alpha: isDark ? 0.42 : 0.5,
+      );
+      titleColor = colorScheme.onSurfaceVariant;
+      timeColor = colorScheme.onSurfaceVariant.withValues(alpha: 0.8);
       border = null;
+      boxShadow = null;
     } else {
-      background = sectionBackgroundColor;
+      background = isDark
+          ? (Theme.of(context).cardTheme.color ?? colorScheme.surface)
+          : const Color(0xFFf6f4ee  );
       titleColor = colorScheme.onSurface;
       timeColor = colorScheme.onSurface;
       border = Border.all(
-        color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.55 : 0.65),
+        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
       );
+      boxShadow = null;
     }
 
-    return Container(
+    final tile = Container(
       width: 104,
       height: 76,
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(12),
         border: border,
+        boxShadow: boxShadow,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Center(
@@ -211,21 +219,49 @@ class HomePrayerTile extends StatelessWidget {
             Text(
               _labelForPrayer(l10n, slot.id),
               textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: titleColor),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: titleColor.withValues(alpha: 0.8),
+                  ),
             ),
             const SizedBox(height: 4),
             Text(
               DateFormat.jm(l10n.localeName).format(slot.time),
               textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: timeColor),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: timeColor,
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
           ],
         ),
       ),
+    );
+
+    if (!isCurrent) return tile;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        tile,
+        Positioned(
+          top: -4,
+          right: -4,
+          child: Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.prayerNextIndicator,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.prayerNextIndicator.withValues(alpha: 0.45),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 

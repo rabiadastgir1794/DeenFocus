@@ -28,12 +28,20 @@ abstract class DeviceAppsService {
     }
   }
 
-  static Future<IosFocusSelectionResult?> presentIosFamilyPicker() async {
+  /// [existingSelectionData] is the persisted base64 JSON from a prior pick; pass it so
+  /// the system picker shows current selections and Cancel does not wipe counts.
+  static Future<IosFocusSelectionResult?> presentIosFamilyPicker({
+    String? existingSelectionData,
+  }) async {
     if (!Platform.isIOS) return null;
 
     try {
       final raw = await _channel.invokeMapMethod<dynamic, dynamic>(
         'presentFamilyActivityPicker',
+        <String, dynamic>{
+          if (existingSelectionData != null && existingSelectionData.isNotEmpty)
+            'iosSelectionData': existingSelectionData,
+        },
       );
       if (raw == null) return null;
       final applicationCount = (raw['applicationCount'] as num?)?.toInt() ?? 0;

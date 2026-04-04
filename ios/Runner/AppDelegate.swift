@@ -62,7 +62,7 @@ private enum ManagedSettingsStoreHolder {
       focusMethodChannel.setMethodCallHandler { call, result in
         switch call.method {
         case "presentFamilyActivityPicker":
-          self.presentFamilyActivityPicker(result: result)
+          self.presentFamilyActivityPicker(call: call, result: result)
         case "syncFocusState":
           self.syncFocusState(call: call, result: result)
         case "appendFocusDebugLog":
@@ -292,7 +292,7 @@ private enum ManagedSettingsStoreHolder {
     }
   }
 
-  private func presentFamilyActivityPicker(result: @escaping FlutterResult) {
+  private func presentFamilyActivityPicker(call: FlutterMethodCall, result: @escaping FlutterResult) {
     guard #available(iOS 16.0, *) else {
       result(
         FlutterError(
@@ -303,6 +303,8 @@ private enum ManagedSettingsStoreHolder {
       )
       return
     }
+
+    let encodedExisting = (call.arguments as? [String: Any])?["iosSelectionData"] as? String
 
     DispatchQueue.main.async {
       guard let controller = self.topViewController() else {
@@ -316,7 +318,7 @@ private enum ManagedSettingsStoreHolder {
         return
       }
 
-      let presenter = FocusPickerPresenter { payload in
+      let presenter = FocusPickerPresenter(encodedSelection: encodedExisting) { payload in
         result(payload)
       }
       presenter.present(from: controller)
@@ -486,14 +488,19 @@ private enum ManagedSettingsStoreHolder {
 
 @available(iOS 16.0, *)
 final class FocusPickerPresenter {
+  private let encodedSelection: String?
   private let onComplete: ([String: Any?]) -> Void
 
-  init(onComplete: @escaping ([String: Any?]) -> Void) {
+  init(encodedSelection: String?, onComplete: @escaping ([String: Any?]) -> Void) {
+    self.encodedSelection = encodedSelection
     self.onComplete = onComplete
   }
 
   func present(from controller: UIViewController) {
-    let pickerController = FocusPickerViewController(onComplete: onComplete)
+    let pickerController = FocusPickerViewController(
+      encodedSelection: encodedSelection,
+      onComplete: onComplete
+    )
     pickerController.modalPresentationStyle = .pageSheet
     controller.present(pickerController, animated: true)
   }
@@ -501,8 +508,8 @@ final class FocusPickerPresenter {
 
 @available(iOS 16.0, *)
 private final class FocusPickerViewController: UIHostingController<FocusPickerRootView> {
-  init(onComplete: @escaping ([String: Any?]) -> Void) {
-    let rootView = FocusPickerRootView(onComplete: onComplete)
+  init(encodedSelection: String?, onComplete: @escaping ([String: Any?]) -> Void) {
+    let rootView = FocusPickerRootView(encodedSelection: encodedSelection, onComplete: onComplete)
     super.init(rootView: rootView)
   }
 
@@ -516,9 +523,21 @@ private struct FocusPickerRootView: View {
   @Environment(\.dismiss) private var dismiss
   // Include all apps from selected categories so we persist app tokens, not
   // only category/group tokens.
-  @State private var selection = FamilyActivitySelection(includeEntireCategory: true)
+  @State private var selection: FamilyActivitySelection
+
+  /// Snapshot when the sheet opened — used for Cancel so we do not clear Flutter state.
+  private let initialSelection: FamilyActivitySelection
 
   let onComplete: ([String: Any?]) -> Void
+
+  @State private var didFinish = false
+
+  init(encodedSelection: String?, onComplete: @escaping ([String: Any?]) -> Void) {
+    let loaded = Self.decodeSelection(from: encodedSelection)
+    _selection = State(initialValue: loaded)
+    initialSelection = loaded
+    self.onComplete = onComplete
+  }
 
   var body: some View {
     NavigationStack {
@@ -528,22 +547,15 @@ private struct FocusPickerRootView: View {
         .toolbar {
           ToolbarItem(placement: .cancellationAction) {
             Button("Cancel") {
+              didFinish = true
               dismiss()
-              let applicationCount = selection.applicationTokens.count
-              let categoryCount = selection.categoryTokens.count
-              let webDomainCount = selection.webDomainTokens.count
-              onComplete([
-                "selectionData": nil,
-                "applicationCount": applicationCount,
-                "categoryCount": categoryCount,
-                "webDomainCount": webDomainCount,
-                "selectionCount": applicationCount + categoryCount + webDomainCount,
-              ])
+              onComplete(serializeSelection(initialSelection))
             }
           }
 
           ToolbarItem(placement: .confirmationAction) {
             Button("Done") {
+              didFinish = true
               let payload = serializeSelection(selection)
               dismiss()
               onComplete(payload)
@@ -551,6 +563,22 @@ private struct FocusPickerRootView: View {
           }
         }
     }
+    .onDisappear {
+      if !didFinish {
+        didFinish = true
+        onComplete(serializeSelection(initialSelection))
+      }
+    }
+  }
+
+  private static func decodeSelection(from encoded: String?) -> FamilyActivitySelection {
+    guard let encoded,
+          let data = Data(base64Encoded: encoded),
+          let decoded = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+    else {
+      return FamilyActivitySelection(includeEntireCategory: true)
+    }
+    return decoded
   }
 
   private func serializeSelection(_ selection: FamilyActivitySelection) -> [String: Any?] {
@@ -566,12 +594,6 @@ private struct FocusPickerRootView: View {
       "webDomainCount": webDomainCount,
       "selectionCount": totalCount,
     ]
-  }
-
-  private func totalSelectionCount(for selection: FamilyActivitySelection) -> Int {
-    selection.applicationTokens.count +
-      selection.categoryTokens.count +
-      selection.webDomainTokens.count
   }
 }
 

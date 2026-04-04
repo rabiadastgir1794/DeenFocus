@@ -109,12 +109,6 @@ class _PrayerWeekRow extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(4),
-      decoration: editable
-          ? BoxDecoration(
-              color: colorScheme.primaryFixedDim.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(8),
-            )
-          : null,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

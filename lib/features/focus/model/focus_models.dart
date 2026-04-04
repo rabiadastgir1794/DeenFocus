@@ -103,6 +103,8 @@ class FocusSettings {
     required this.salahModeEnabled,
     required this.salahTestAnchorAt,
     required this.temporarilyUnlockedUntil,
+    required this.nightDisciplineBeforeChild,
+    required this.salahModeBeforeChild,
   });
 
   factory FocusSettings.defaults() {
@@ -123,6 +125,8 @@ class FocusSettings {
       salahModeEnabled: false,
       salahTestAnchorAt: null,
       temporarilyUnlockedUntil: null,
+      nightDisciplineBeforeChild: null,
+      salahModeBeforeChild: null,
     );
   }
 
@@ -164,6 +168,8 @@ class FocusSettings {
         temporarilyUnlockedUntil: _parseDateTime(
           map['temporarilyUnlockedUntil'],
         ),
+        nightDisciplineBeforeChild: map['nightDisciplineBeforeChild'] as bool?,
+        salahModeBeforeChild: map['salahModeBeforeChild'] as bool?,
       );
     } catch (_) {
       return FocusSettings.defaults();
@@ -186,6 +192,11 @@ class FocusSettings {
   final bool salahModeEnabled;
   final DateTime? salahTestAnchorAt;
   final DateTime? temporarilyUnlockedUntil;
+
+  /// Snapshot taken when entering child mode; used to restore [nightDisciplineEnabled]
+  /// and [salahModeEnabled] after child mode ends.
+  final bool? nightDisciplineBeforeChild;
+  final bool? salahModeBeforeChild;
 
   FocusModeType? get enabledMode {
     if (childModeEnabled) return FocusModeType.child;
@@ -236,6 +247,10 @@ class FocusSettings {
     bool clearSalahTestAnchorAt = false,
     DateTime? temporarilyUnlockedUntil,
     bool clearTemporaryUnlock = false,
+    bool? nightDisciplineBeforeChild,
+    bool? salahModeBeforeChild,
+    bool clearNightDisciplineBeforeChild = false,
+    bool clearSalahModeBeforeChild = false,
   }) {
     return FocusSettings(
       selectedApps: selectedApps ?? this.selectedApps,
@@ -267,6 +282,12 @@ class FocusSettings {
       temporarilyUnlockedUntil: clearTemporaryUnlock
           ? null
           : temporarilyUnlockedUntil ?? this.temporarilyUnlockedUntil,
+      nightDisciplineBeforeChild: clearNightDisciplineBeforeChild
+          ? null
+          : nightDisciplineBeforeChild ?? this.nightDisciplineBeforeChild,
+      salahModeBeforeChild: clearSalahModeBeforeChild
+          ? null
+          : salahModeBeforeChild ?? this.salahModeBeforeChild,
     );
   }
 
@@ -288,6 +309,8 @@ class FocusSettings {
       'salahModeEnabled': salahModeEnabled,
       'salahTestAnchorAt': salahTestAnchorAt?.toIso8601String(),
       'temporarilyUnlockedUntil': temporarilyUnlockedUntil?.toIso8601String(),
+      'nightDisciplineBeforeChild': nightDisciplineBeforeChild,
+      'salahModeBeforeChild': salahModeBeforeChild,
     });
   }
 

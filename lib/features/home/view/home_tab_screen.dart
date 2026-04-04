@@ -8,6 +8,7 @@ import '../../../core/services/permission_service.dart';
 import '../../../core/services/theme_service.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
+import '../../focus/model/focus_models.dart';
 import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/home_models.dart';
@@ -94,7 +95,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final softCardColor = isDark
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.28)
-        : const Color(0xFFF3F1EB);
+        : const Color(0xFFf7f5ef);
 
     return Consumer4<
       HomeTabViewModel,
@@ -482,8 +483,11 @@ class _FocusLockCard extends StatelessWidget {
     final isLocked = focusVm.isAppsLocked;
     final isTempUnlocked = focusVm.isTemporarilyUnlocked;
 
+    final unlockFromHomeUsesTemporaryUnlock =
+        isLocked && focusVm.lockState.activeMode != FocusModeType.child;
+
     return InkWell(
-      onTap: isLocked ? () => focusVm.disableActiveMode() : null,
+      onTap: isLocked ? () => focusVm.unlockFromHome() : null,
       borderRadius: BorderRadius.circular(22),
       child: Ink(
         width: double.infinity,
@@ -538,7 +542,9 @@ class _FocusLockCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isLocked
-                        ? 'Tap to turn off the current focus mode.'
+                        ? (unlockFromHomeUsesTemporaryUnlock
+                              ? 'Tap to unlock for now. Apps lock again at the next scheduled time.'
+                              : 'Tap to turn off Child mode.')
                         : focusVm.statusCaption,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -554,7 +560,9 @@ class _FocusLockCard extends StatelessWidget {
                     : colorScheme.primary.withValues(alpha: 0.12),
               ),
               child: Text(
-                isLocked ? 'Turn Off' : 'Armed',
+                isLocked
+                    ? (unlockFromHomeUsesTemporaryUnlock ? 'Unlock' : 'Turn Off')
+                    : 'Armed',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: isLocked ? colorScheme.error : colorScheme.primary,
                   fontWeight: FontWeight.w700,

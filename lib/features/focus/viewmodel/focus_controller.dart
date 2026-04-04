@@ -84,7 +84,9 @@ class FocusController extends ChangeNotifier {
     if (_isLoadingApps) return;
 
     if (Platform.isIOS) {
-      final result = await DeviceAppsService.presentIosFamilyPicker();
+      final result = await DeviceAppsService.presentIosFamilyPicker(
+        existingSelectionData: _settings.iosSelectionData,
+      );
       if (result == null) return;
       _settings = _settings.copyWith(
         iosSelectionData: result.selectionData,
@@ -132,6 +134,8 @@ class FocusController extends ChangeNotifier {
       childModeEnabled: selected.isEmpty ? false : null,
       nightDisciplineEnabled: selected.isEmpty ? false : null,
       salahModeEnabled: selected.isEmpty ? false : null,
+      clearNightDisciplineBeforeChild: selected.isEmpty,
+      clearSalahModeBeforeChild: selected.isEmpty,
       clearChildLockedUntil: selected.isEmpty,
       clearTemporaryUnlock: selected.isEmpty,
       iosSelectionCount: 0,
@@ -161,6 +165,8 @@ class FocusController extends ChangeNotifier {
       childModeEnabled: selected.isEmpty ? false : null,
       nightDisciplineEnabled: selected.isEmpty ? false : null,
       salahModeEnabled: selected.isEmpty ? false : null,
+      clearNightDisciplineBeforeChild: selected.isEmpty,
+      clearSalahModeBeforeChild: selected.isEmpty,
       clearChildLockedUntil: selected.isEmpty,
       clearTemporaryUnlock: selected.isEmpty,
       iosSelectionCount: 0,
@@ -226,6 +232,8 @@ class FocusController extends ChangeNotifier {
     if (mode == FocusModeType.child) {
       _settings = _settings.copyWith(
         childModeEnabled: true,
+        nightDisciplineBeforeChild: _settings.nightDisciplineEnabled,
+        salahModeBeforeChild: _settings.salahModeEnabled,
         nightDisciplineEnabled: false,
         salahModeEnabled: false,
         salahTestAnchorAt: _salahTestModeEnabled
@@ -238,21 +246,40 @@ class FocusController extends ChangeNotifier {
         clearTemporaryUnlock: true,
       );
     } else {
+      final childWasOn = _settings.childModeEnabled;
+      final stashedNight = _settings.nightDisciplineBeforeChild;
+      final stashedSalah = _settings.salahModeBeforeChild;
+
+      final bool nextNight;
+      final bool nextSalah;
+      if (childWasOn) {
+        nextNight = mode == FocusModeType.nightDiscipline
+            ? true
+            : (stashedNight ?? false);
+        nextSalah = mode == FocusModeType.salah
+            ? true
+            : (stashedSalah ?? false);
+      } else {
+        nextNight = mode == FocusModeType.nightDiscipline
+            ? true
+            : _settings.nightDisciplineEnabled;
+        nextSalah = mode == FocusModeType.salah
+            ? true
+            : _settings.salahModeEnabled;
+      }
+
       _settings = _settings.copyWith(
         childModeEnabled: false,
         clearChildLockedUntil: true,
-        nightDisciplineEnabled: mode == FocusModeType.nightDiscipline
-            ? true
-            : _settings.nightDisciplineEnabled,
-        salahModeEnabled: mode == FocusModeType.salah
-            ? true
-            : _settings.salahModeEnabled,
-        salahTestAnchorAt: _salahTestModeEnabled && mode == FocusModeType.salah
+        nightDisciplineEnabled: nextNight,
+        salahModeEnabled: nextSalah,
+        salahTestAnchorAt: _salahTestModeEnabled && nextSalah
             ? (_settings.salahTestAnchorAt ?? now)
             : null,
-        clearSalahTestAnchorAt:
-            mode != FocusModeType.salah || !_salahTestModeEnabled,
+        clearSalahTestAnchorAt: !nextSalah || !_salahTestModeEnabled,
         clearTemporaryUnlock: true,
+        clearNightDisciplineBeforeChild: childWasOn,
+        clearSalahModeBeforeChild: childWasOn,
       );
     }
 
@@ -274,11 +301,7 @@ class FocusController extends ChangeNotifier {
     );
     switch (mode) {
       case FocusModeType.child:
-        _settings = _settings.copyWith(
-          childModeEnabled: false,
-          clearChildLockedUntil: true,
-          clearTemporaryUnlock: true,
-        );
+        _settings = _applyChildModeExit(_settings);
         break;
       case FocusModeType.nightDiscipline:
         _settings = _settings.copyWith(
@@ -322,6 +345,58 @@ class FocusController extends ChangeNotifier {
     final mode = _lockState.activeMode;
     if (mode == null) return;
     await disableMode(mode);
+  }
+
+  /// Home "unlock" action: does **not** turn off Salah or Night Discipline — it
+  /// only sets [FocusSettings.temporarilyUnlockedUntil] until the end of the
+  /// current prayer window and/or current night window so blocking resumes on
+  /// the next schedule. Child mode is fully disabled here (parents expect that).
+  Future<void> unlockFromHome() async {
+    if (!_lockState.isLocked) return;
+    final mode = _lockState.activeMode;
+    if (mode == FocusModeType.child) {
+      await disableActiveMode();
+      return;
+    }
+
+    final now = DateTime.now();
+    final windows = _settings.salahModeEnabled
+        ? await _salahWindows(now)
+        : const <SalahWindow>[];
+    DateTime? until;
+
+    if (_settings.salahModeEnabled) {
+      final activeSalah = windows.where((SalahWindow w) {
+        return !now.isBefore(w.start) && now.isBefore(w.end);
+      }).firstOrNull;
+      if (activeSalah != null) {
+        until = activeSalah.end;
+      }
+    }
+
+    if (_settings.nightDisciplineEnabled && _settings.nightRange.contains(now)) {
+      final nightWindow = _nightWindowContainingOrNext(_settings.nightRange, now);
+      if (nightWindow != null) {
+        until = until == null ? nightWindow.end : _earlierOf(until, nightWindow.end);
+      }
+    }
+
+    if (until != null && !until.isAfter(now)) {
+      await _recomputeAndPersist();
+      return;
+    }
+    if (until == null) {
+      await temporarilyUnlock();
+      return;
+    }
+
+    await FocusEnforcementService.appendDebugLog(
+      'focus.unlockFromHome',
+      'until=${until.toIso8601String()} mode=${mode?.name}',
+    );
+    _settings = _settings.copyWith(temporarilyUnlockedUntil: until);
+    await _persist();
+    await _recomputeAndPersist();
   }
 
   String selectedAppsSummary() {
@@ -527,11 +602,8 @@ class FocusController extends ChangeNotifier {
       ),
     );
     unawaited(
-      AppNotificationService.instance
-          .syncFocusNotifications(
+      AppNotificationService.instance.syncFocusNotifications(
             settings: _settings,
-            latitude: _cachedLatitude,
-            longitude: _cachedLongitude,
           )
           .catchError((Object e, StackTrace st) {
             assert(() {
@@ -549,6 +621,25 @@ class FocusController extends ChangeNotifier {
     _scheduleNextRefresh();
   }
 
+  FocusSettings _applyChildModeExit(FocusSettings s) {
+    final night = s.nightDisciplineBeforeChild ?? false;
+    final salah = s.salahModeBeforeChild ?? false;
+    final now = DateTime.now();
+    return s.copyWith(
+      childModeEnabled: false,
+      clearChildLockedUntil: true,
+      clearTemporaryUnlock: true,
+      nightDisciplineEnabled: night,
+      salahModeEnabled: salah,
+      salahTestAnchorAt: _salahTestModeEnabled && salah
+          ? (s.salahTestAnchorAt ?? now)
+          : null,
+      clearSalahTestAnchorAt: !salah || !_salahTestModeEnabled,
+      clearNightDisciplineBeforeChild: true,
+      clearSalahModeBeforeChild: true,
+    );
+  }
+
   FocusSettings _normalizeSettings(FocusSettings settings, DateTime now) {
     var s = settings;
     if (s.childModeEnabled &&
@@ -560,11 +651,7 @@ class FocusController extends ChangeNotifier {
         s.childLockType == ChildLockType.timed &&
         s.childLockedUntil != null &&
         !s.childLockedUntil!.isAfter(now)) {
-      return s.copyWith(
-        childModeEnabled: false,
-        clearChildLockedUntil: true,
-        clearTemporaryUnlock: true,
-      );
+      return _applyChildModeExit(s);
     }
 
     if (s.temporarilyUnlockedUntil != null &&

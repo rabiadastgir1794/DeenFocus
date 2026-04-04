@@ -82,4 +82,10 @@ abstract class AppColors {
   static const Color errorContainerDark = Color(0xFF93000A);
   static const Color onErrorContainerLight = Color(0xFF410002);
   static const Color onErrorContainerDark = Color(0xFFFFDAD6);
+
+  /// Next-prayer tile accent (web `emerald-glow` dot on primary card).
+  static const Color prayerNextIndicator = Color(0xFF34D399);
+
+  /// Upcoming prayer tile fill (light theme).
+  static const Color prayerUpcomingTileLight = Color(0xFFF6F4EE);
 }

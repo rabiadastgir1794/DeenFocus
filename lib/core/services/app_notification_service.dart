@@ -25,6 +25,13 @@ class AppNotificationService {
     importance: Importance.max,
   );
 
+  static const _focusChannel = AndroidNotificationChannel(
+    'focus_modes',
+    'Focus modes',
+    description: 'Sleep time and other focus mode updates from Deenly.',
+    importance: Importance.high,
+  );
+
   static const _darwinPrayerDetails = DarwinNotificationDetails(
     presentAlert: true,
     presentBadge: true,
@@ -66,6 +73,7 @@ class AppNotificationService {
           AndroidFlutterLocalNotificationsPlugin
         >();
     await androidPlugin?.createNotificationChannel(_prayerChannel);
+    await androidPlugin?.createNotificationChannel(_focusChannel);
 
     _initialized = true;
   }
@@ -98,8 +106,9 @@ class AppNotificationService {
     await _ensureAndroidExactAlarmOrFallback();
     // Match device timezone after travel / DST changes.
     await _setLocalTimezone();
-    // Clear stale notifications from older builds that used different IDs/titles.
-    await _plugin.cancelAll();
+    // Cancel only our prayer slot IDs. Do not use [cancelAll] — it removes every
+    // notification from the tray (delivered + other channels), so reminders and
+    // focus notifications would vanish whenever we reschedule (resume, refresh).
     await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
 
     final now = DateTime.now();
@@ -139,26 +148,168 @@ class AppNotificationService {
     }
   }
 
+  /// Night discipline: one ID per upcoming lock / unlock (same horizon as prayer batch).
+  static const int _nightLockNotificationIdStart = 4000;
+  static const int _nightUnlockNotificationIdStart = 4010;
+  static const int _nightUnlockNotificationIdEnd = 4016;
+
   Future<void> syncFocusNotifications({
     required FocusSettings settings,
-    required double? latitude,
-    required double? longitude,
   }) async {
     await initialize();
     if (!await _hasNotificationPermission()) {
       await _cancelRange(2000, 2059);
       await _cancelRange(3000, 3059);
-      await _cancelRange(4000, 4003);
+      await _cancelRange(
+        _nightLockNotificationIdStart,
+        _nightUnlockNotificationIdEnd,
+      );
       return;
     }
     await _ensureAndroidExactAlarmOrFallback();
     await _setLocalTimezone();
     await _cancelRange(2000, 2059);
     await _cancelRange(3000, 3059);
-    await _cancelRange(4000, 4003);
+    await _cancelRange(
+      _nightLockNotificationIdStart,
+      _nightUnlockNotificationIdEnd,
+    );
 
-    // Keep focus notifications limited to explicit user ON/OFF actions.
-    // All scheduled "active window" notifications are intentionally disabled.
+    if (!settings.nightDisciplineEnabled) {
+      return;
+    }
+
+    final range = settings.nightRange;
+    final now = DateTime.now();
+    final lockTimes = <DateTime>[];
+    final unlockTimes = <DateTime>[];
+    var probe = now;
+    for (var iter = 0;
+        iter < 48 &&
+            (lockTimes.length < 7 || unlockTimes.length < 7);
+        iter++) {
+      final w = _nightWindowContainingOrNext(range, probe);
+      if (w.start.isAfter(now) && lockTimes.length < 7) {
+        lockTimes.add(w.start);
+      }
+      if (w.end.isAfter(now) && unlockTimes.length < 7) {
+        unlockTimes.add(w.end);
+      }
+      probe = w.end.add(const Duration(seconds: 1));
+    }
+
+    var lockId = _nightLockNotificationIdStart;
+    for (final at in lockTimes) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.nightLock.schedule',
+        'id=$lockId at=${at.toIso8601String()}',
+      );
+      await _scheduleIfFuture(
+        id: lockId,
+        when: at,
+        title: 'Sleep time',
+        body: 'Selected apps are locked for your sleep schedule.',
+        details: _nightTransitionNotificationDetails,
+        preferAlarmClock: false,
+      );
+      lockId++;
+    }
+
+    var unlockId = _nightUnlockNotificationIdStart;
+    for (final at in unlockTimes) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.nightUnlock.schedule',
+        'id=$unlockId at=${at.toIso8601String()}',
+      );
+      await _scheduleIfFuture(
+        id: unlockId,
+        when: at,
+        title: 'Sleep time over',
+        body: "Selected apps are unlocked until tonight's sleep time.",
+        details: _nightTransitionNotificationDetails,
+        preferAlarmClock: false,
+      );
+      unlockId++;
+    }
+  }
+
+  NotificationDetails get _nightTransitionNotificationDetails =>
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _focusChannel.id,
+          _focusChannel.name,
+          channelDescription: _focusChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+        macOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      );
+
+  /// Matches [FocusController._nightWindowContainingOrNext] — sleep window boundaries.
+  ({DateTime start, DateTime end}) _nightWindowContainingOrNext(
+    FocusTimeRange range,
+    DateTime now,
+  ) {
+    final todayStart = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      range.startHour,
+      range.startMinute,
+    );
+    var todayEnd = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      range.endHour,
+      range.endMinute,
+    );
+
+    if (range.startTotalMinutes >= range.endTotalMinutes) {
+      if (!todayEnd.isAfter(todayStart)) {
+        todayEnd = todayEnd.add(const Duration(days: 1));
+      }
+
+      if (now.isBefore(todayStart)) {
+        final previousStart = todayStart.subtract(const Duration(days: 1));
+        final previousEnd = todayEnd.subtract(const Duration(days: 1));
+        if (!now.isBefore(previousStart) && now.isBefore(previousEnd)) {
+          return (start: previousStart, end: previousEnd);
+        }
+        return (start: todayStart, end: todayEnd);
+      }
+
+      if (!now.isBefore(todayStart) && now.isBefore(todayEnd)) {
+        return (start: todayStart, end: todayEnd);
+      }
+
+      return (
+        start: todayStart.add(const Duration(days: 1)),
+        end: todayEnd.add(const Duration(days: 1)),
+      );
+    }
+
+    if (now.isBefore(todayStart)) {
+      return (start: todayStart, end: todayEnd);
+    }
+
+    if (now.isBefore(todayEnd)) {
+      return (start: todayStart, end: todayEnd);
+    }
+
+    return (
+      start: todayStart.add(const Duration(days: 1)),
+      end: todayEnd.add(const Duration(days: 1)),
+    );
   }
 
   NotificationDetails get _prayerNotificationDetails =>
