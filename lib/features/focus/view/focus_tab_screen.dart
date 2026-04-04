@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   bool _showGlobalSelector = false;
   FocusModeType? _pendingModeToEnable;
   bool _awaitingBlockingPermission = false;
+  final Set<FocusModeType> _modesInFlight = <FocusModeType>{};
 
   @override
   void initState() {
@@ -43,12 +46,12 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   Future<void> _handleAppResumed() async {
     if (!mounted) return;
+    final vm = context.read<FocusController>();
 
     await FocusEnforcementService.appendDebugLog(
       'focus.screen.resume',
       'app resumed awaiting=$_awaitingBlockingPermission pending=${_pendingModeToEnable?.name}',
     );
-    final vm = context.read<FocusController>();
     await vm.refresh();
 
     if (!_awaitingBlockingPermission) return;
@@ -293,14 +296,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         const SizedBox(height: 12),
                         InkWell(
                           onTap: () async {
+                            final messenger = ScaffoldMessenger.maybeOf(
+                              context,
+                            );
                             if (defaultTargetPlatform == TargetPlatform.iOS) {
                               final authResult =
                                   await PermissionService.requestScreenTimeAccessDetailed();
                               if (!mounted) return;
                               if (!authResult.granted) {
-                                ScaffoldMessenger.maybeOf(
-                                  context,
-                                )?.showSnackBar(
+                                messenger?.showSnackBar(
                                   SnackBar(
                                     content: Text(
                                       authResult.userFacingMessage() ??
@@ -407,6 +411,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     title: 'Salah Focus Mode',
                     subtitle: 'Block apps during prayer',
                     value: salahMode,
+                    isLoading: _modesInFlight.contains(FocusModeType.salah),
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.salah, value),
                     child: salahMode
@@ -427,6 +432,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     title: 'Night Discipline',
                     subtitle: 'Protect sleep & Fajr',
                     value: nightMode,
+                    isLoading: _modesInFlight.contains(
+                      FocusModeType.nightDiscipline,
+                    ),
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.nightDiscipline, value),
                     child: nightMode
@@ -463,6 +471,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     title: 'Child Mode',
                     subtitle: 'Block apps immediately',
                     value: childMode,
+                    isLoading: _modesInFlight.contains(FocusModeType.child),
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.child, value),
                     child: childMode
@@ -485,9 +494,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   Future<bool> _ensureAndroidBlockingAccess(FocusModeType mode) async {
     if (defaultTargetPlatform != TargetPlatform.android) return true;
 
-    await FocusEnforcementService.appendDebugLog(
-      'focus.screen.ensurePermission',
-      'mode=${mode.name}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.screen.ensurePermission',
+        'mode=${mode.name}',
+      ),
     );
     final granted = await FocusEnforcementService.isBlockingPermissionGranted();
     if (granted || !mounted) return granted;
@@ -506,50 +517,89 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     return false;
   }
 
+  /// Ensures [setState] has been laid out and painted so loaders animate before work runs.
+  ///
+  /// A single [endOfFrame] can complete in the same turn as the gesture, before the
+  /// frame that contains the loading UI — so we yield once, then wait two frame boundaries.
+  Future<void> _waitUntilLoaderPainted() async {
+    await Future<void>.delayed(Duration.zero);
+    await WidgetsBinding.instance.endOfFrame;
+    await WidgetsBinding.instance.endOfFrame;
+  }
+
   Future<void> _toggleMode(
     FocusController vm,
     FocusModeType mode,
     bool enabled,
   ) async {
-    await FocusEnforcementService.appendDebugLog(
-      'focus.screen.toggle',
-      'mode=${mode.name} enabled=$enabled selected=${vm.settings.selectedApps.keys.join(",")} locked=${vm.lockState.isLocked}',
-    );
-    if (enabled && !vm.hasSelectedApps) {
-      final messenger = ScaffoldMessenger.maybeOf(context);
-      messenger?.showSnackBar(
-        const SnackBar(
-          content: Text('No apps selected. Please select apps to block first.'),
+    if (_modesInFlight.contains(mode)) return;
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    setState(() => _modesInFlight.add(mode));
+    await _waitUntilLoaderPainted();
+    if (!mounted) {
+      _modesInFlight.remove(mode);
+      return;
+    }
+
+    try {
+      unawaited(
+        FocusEnforcementService.appendDebugLog(
+          'focus.screen.toggle',
+          'mode=${mode.name} enabled=$enabled selected=${vm.settings.selectedApps.keys.join(",")} locked=${vm.lockState.isLocked}',
         ),
       );
-      return;
-    }
-
-    if (enabled) {
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        final authResult =
-            await PermissionService.requestScreenTimeAccessDetailed();
-        if (!mounted) return;
-        if (!authResult.granted) {
-          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-            SnackBar(
-              content: Text(
-                authResult.userFacingMessage() ??
-                    'Screen Time access is required to block apps on iPhone.',
-              ),
+      if (enabled && !vm.hasSelectedApps) {
+        messenger?.showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No apps selected. Please select apps to block first.',
             ),
-          );
-          return;
-        }
+          ),
+        );
+        return;
       }
 
-      final canBlock = await _ensureAndroidBlockingAccess(mode);
-      if (!canBlock) return;
+      if (enabled) {
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          final authResult =
+              await PermissionService.requestScreenTimeAccessDetailed();
+          if (!mounted) return;
+          if (!authResult.granted) {
+            messenger?.showSnackBar(
+              SnackBar(
+                content: Text(
+                  authResult.userFacingMessage() ??
+                      'Screen Time access is required to block apps on iPhone.',
+                ),
+              ),
+            );
+            return;
+          }
+        }
 
-      await vm.enableMode(mode);
-      return;
+        final canBlock = await _ensureAndroidBlockingAccess(mode);
+        if (!canBlock) return;
+
+        await vm.enableMode(mode);
+        return;
+      }
+      await vm.disableMode(mode);
+    } catch (_) {
+      if (mounted) {
+        messenger?.showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Something went wrong while updating Focus mode. Please try again.',
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _modesInFlight.remove(mode));
+      }
     }
-    await vm.disableMode(mode);
   }
 
   Future<void> _removeSelectedApp(
@@ -760,6 +810,7 @@ class _ModeCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.value,
+    required this.isLoading,
     required this.onChanged,
     this.child,
     this.marginBottom = 0,
@@ -771,6 +822,7 @@ class _ModeCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool value;
+  final bool isLoading;
   final ValueChanged<bool> onChanged;
   final Widget? child;
   final double marginBottom;
@@ -815,9 +867,38 @@ class _ModeCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Switch(value: value, onChanged: onChanged),
+              SizedBox(
+                width: 52,
+                height: 32,
+                child: Center(
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2.4),
+                        )
+                      : Switch(
+                          value: value,
+                          onChanged: onChanged,
+                        ),
+                ),
+              ),
             ],
           ),
+          if (isLoading) ...[
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: SizedBox(
+                height: 3,
+                width: double.infinity,
+                child: LinearProgressIndicator(
+                  backgroundColor: colorScheme.surfaceContainerHighest
+                      .withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+          ],
           if (child != null) ...[
             const SizedBox(height: 12),
             Container(

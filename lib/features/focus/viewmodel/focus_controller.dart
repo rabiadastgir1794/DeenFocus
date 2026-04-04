@@ -136,7 +136,6 @@ class FocusController extends ChangeNotifier {
       iosWebDomainSelectionCount: 0,
       clearIosSelectionData: true,
     );
-    await _persist();
     await _recomputeAndPersist();
   }
 
@@ -166,7 +165,6 @@ class FocusController extends ChangeNotifier {
       iosWebDomainSelectionCount: 0,
       clearIosSelectionData: true,
     );
-    await _persist();
     await _recomputeAndPersist();
   }
 
@@ -201,9 +199,11 @@ class FocusController extends ChangeNotifier {
 
   Future<void> enableMode(FocusModeType mode) async {
     if (!_settings.hasSelectedApps) return;
-    await FocusEnforcementService.appendDebugLog(
-      'focus.enableMode',
-      'before mode=${mode.name} selected=${_settings.selectedApps.keys.join(",")} childType=${_settings.childLockType.name} tempUnlockUntil=${_settings.temporarilyUnlockedUntil?.toIso8601String()}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.enableMode',
+        'before mode=${mode.name} selected=${_settings.selectedApps.keys.join(",")} childType=${_settings.childLockType.name} tempUnlockUntil=${_settings.temporarilyUnlockedUntil?.toIso8601String()}',
+      ),
     );
 
     final childLockedUntil =
@@ -248,18 +248,21 @@ class FocusController extends ChangeNotifier {
       );
     }
 
-    await _persist();
     await _recomputeAndPersist();
-    await FocusEnforcementService.appendDebugLog(
-      'focus.enableMode',
-      'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} reason=${_lockState.reason}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.enableMode',
+        'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} reason=${_lockState.reason}',
+      ),
     );
   }
 
   Future<void> disableMode(FocusModeType mode) async {
-    await FocusEnforcementService.appendDebugLog(
-      'focus.disableMode',
-      'before mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.disableMode',
+        'before mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+      ),
     );
     switch (mode) {
       case FocusModeType.child:
@@ -283,11 +286,12 @@ class FocusController extends ChangeNotifier {
         );
         break;
     }
-    await _persist();
     await _recomputeAndPersist();
-    await FocusEnforcementService.appendDebugLog(
-      'focus.disableMode',
-      'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.disableMode',
+        'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+      ),
     );
   }
 
@@ -473,24 +477,41 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> _recomputeAndPersist() async {
-    await FocusEnforcementService.appendDebugLog(
-      'focus.recompute',
-      'start mode=${_settings.enabledMode?.name} selected=${_settings.selectedApps.keys.join(",")} tempUnlock=${_settings.temporarilyUnlockedUntil?.toIso8601String()}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.recompute',
+        'start mode=${_settings.enabledMode?.name} selected=${_settings.selectedApps.keys.join(",")} tempUnlock=${_settings.temporarilyUnlockedUntil?.toIso8601String()}',
+      ),
     );
-    final updatedSettings = _normalizeSettings(_settings, DateTime.now());
-    final updatedLockState = await _computeLockState(updatedSettings);
+    final recomputeNow = DateTime.now();
+    final updatedSettings = _normalizeSettings(_settings, recomputeNow);
+    Future<List<SalahWindow>>? memoizedSalahWindows;
+    Future<List<SalahWindow>> salahWindowsOnce() {
+      memoizedSalahWindows ??= _salahWindows(recomputeNow);
+      return memoizedSalahWindows!;
+    }
+
+    final updatedLockState = await _computeLockState(
+      updatedSettings,
+      recomputeNow,
+      salahWindowsOnce,
+    );
     final scheduledTransitions = await _buildScheduledTransitions(
       updatedSettings,
+      recomputeNow,
+      salahWindowsOnce,
     );
     _settings = updatedSettings;
     _lockState = updatedLockState;
     await _persist();
-    await FocusEnforcementService.sync(
-      settings: _settings,
-      lockState: _lockState,
-      scheduledTransitions: scheduledTransitions,
-    );
     notifyListeners();
+    unawaited(
+      FocusEnforcementService.sync(
+        settings: _settings,
+        lockState: _lockState,
+        scheduledTransitions: scheduledTransitions,
+      ),
+    );
     unawaited(
       AppNotificationService.instance
           .syncFocusNotifications(
@@ -505,9 +526,11 @@ class FocusController extends ChangeNotifier {
             }());
           }),
     );
-    await FocusEnforcementService.appendDebugLog(
-      'focus.recompute',
-      'done mode=${_lockState.activeMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} reason=${_lockState.reason}',
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.recompute',
+        'done mode=${_lockState.activeMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} reason=${_lockState.reason}',
+      ),
     );
     _scheduleNextRefresh();
   }
@@ -538,7 +561,11 @@ class FocusController extends ChangeNotifier {
     return s;
   }
 
-  Future<FocusLockState> _computeLockState(FocusSettings settings) async {
+  Future<FocusLockState> _computeLockState(
+    FocusSettings settings,
+    DateTime now,
+    Future<List<SalahWindow>> Function() getSalahWindows,
+  ) async {
     if (!settings.hasSelectedApps) return const FocusLockState.unlocked();
 
     if (settings.childModeEnabled) {
@@ -560,12 +587,11 @@ class FocusController extends ChangeNotifier {
       return const FocusLockState.unlocked();
     }
 
-    final now = DateTime.now();
     final nightLocked =
         settings.nightDisciplineEnabled && settings.nightRange.contains(now);
     SalahWindow? activeSalah;
     if (settings.salahModeEnabled) {
-      final windows = await _salahWindows(now);
+      final windows = await getSalahWindows();
       activeSalah = windows.where((window) {
         return !now.isBefore(window.start) && now.isBefore(window.end);
       }).firstOrNull;
@@ -579,7 +605,7 @@ class FocusController extends ChangeNotifier {
       DateTime? nextChange;
       String reason;
       if (settings.nightDisciplineEnabled && settings.salahModeEnabled) {
-        final windows = await _salahWindows(now);
+        final windows = await getSalahWindows();
         nextChange = _earlierOf(
           _nextNightBoundary(settings.nightRange, now),
           _nextSalahStart(windows, now),
@@ -591,7 +617,7 @@ class FocusController extends ChangeNotifier {
         reason =
             'Night Discipline will start at ${_formatTime(settings.nightRange.startHour, settings.nightRange.startMinute)}.';
       } else {
-        final windows = await _salahWindows(now);
+        final windows = await getSalahWindows();
         nextChange = _nextSalahStart(windows, now);
         reason = 'Salah mode will lock apps around the next prayer.';
       }
@@ -759,8 +785,9 @@ class FocusController extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> _buildScheduledTransitions(
     FocusSettings settings,
+    DateTime now,
+    Future<List<SalahWindow>> Function() getSalahWindows,
   ) async {
-    final now = DateTime.now();
     final events = <Map<String, dynamic>>[];
 
     if (settings.nightDisciplineEnabled) {
@@ -768,7 +795,13 @@ class FocusController extends ChangeNotifier {
     }
 
     if (settings.salahModeEnabled) {
-      events.addAll(await _buildSalahScheduledTransitions(settings, now));
+      events.addAll(
+        await _buildSalahScheduledTransitions(
+          settings,
+          now,
+          getSalahWindows,
+        ),
+      );
     }
 
     events.sort(
@@ -839,8 +872,9 @@ class FocusController extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> _buildSalahScheduledTransitions(
     FocusSettings settings,
     DateTime now,
+    Future<List<SalahWindow>> Function() getSalahWindows,
   ) async {
-    final windows = await _salahWindows(now);
+    final windows = await getSalahWindows();
     if (windows.isEmpty) return const <Map<String, dynamic>>[];
 
     final events = <Map<String, dynamic>>[];
