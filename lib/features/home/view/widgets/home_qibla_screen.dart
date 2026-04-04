@@ -38,21 +38,6 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
     }
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, String title) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      leadingWidth: 58,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
-        child: AppTopBackButton(
-          onTap: () => Navigator.of(context).pop(),
-          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-        ),
-      ),
-      title: Text(title),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -61,7 +46,10 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
 
     if (latitude == null || longitude == null) {
       return Scaffold(
-        appBar: _buildAppBar(context, l10n.homeQiblaDirection),
+        appBar: CustomAppBar(
+          title: l10n.homeQiblaDirection,
+          onBack: () => Navigator.of(context).pop(),
+        ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -89,7 +77,10 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
         : 'Current location';
 
     return Scaffold(
-      appBar: _buildAppBar(context, l10n.homeQiblaDirection),
+      appBar: CustomAppBar(
+        title: l10n.homeQiblaDirection,
+        onBack: () => Navigator.of(context).pop(),
+      ),
       body: StreamBuilder<double>(
         stream: _headingStream,
         builder: (context, snapshot) {
@@ -111,6 +102,7 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen> {
               ),
             ),
             child: SafeArea(
+              top: false,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
                 child: Column(

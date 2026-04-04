@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/widgets/widgets.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
 
@@ -16,7 +17,7 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
         final days = vm.currentWeekDates;
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Prayer Streak')),
+          appBar: const CustomAppBar(title: 'Prayer Streak'),
           body: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -33,6 +34,7 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
               ),
             ),
             child: SafeArea(
+              top: false,
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                 children: [

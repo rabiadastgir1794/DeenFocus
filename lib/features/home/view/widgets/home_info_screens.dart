@@ -43,25 +43,19 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     final inputBackground = isDark
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.6)
         : const Color(0xFFF6F2E9);
-    final inputBorderColor =
-        isDark ? colorScheme.outlineVariant : const Color(0xFFE6DBC5);
+    final inputBorderColor = isDark
+        ? colorScheme.outlineVariant
+        : const Color(0xFFE6DBC5);
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leadingWidth: 58,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
-          child: AppTopBackButton(
-            onTap: () => Navigator.of(context).pop(),
-            semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-          ),
-        ),
-        title: const Text('Islamic Chat'),
+      appBar: CustomAppBar(
+        title: 'Islamic Chat',
+        onBack: () => Navigator.of(context).pop(),
       ),
       backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
             Expanded(
@@ -77,11 +71,10 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
             ),
             Material(
               color: composerBackground,
-              elevation: 8,
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -294,7 +287,7 @@ class HomeSimpleInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: CustomAppBar(title: title),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),

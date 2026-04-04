@@ -429,7 +429,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             Spacing.lg.w,
-            0,
+            16,
             Spacing.lg.w,
             Spacing.md.h,
           ),

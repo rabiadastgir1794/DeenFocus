@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/tasbih_local_repository.dart';
+import 'tasbih_detail_screen.dart';
 
 class TasbihTabScreen extends StatefulWidget {
   const TasbihTabScreen({super.key});
@@ -14,11 +14,8 @@ class TasbihTabScreen extends StatefulWidget {
 
 class _TasbihTabScreenState extends State<TasbihTabScreen> {
   List<TasbihItem> _items = const <TasbihItem>[];
-  TasbihItem? _selectedItem;
   bool _loading = true;
   bool _saving = false;
-  int _sessionCount = 0;
-  int _savedTotal = 0;
 
   bool _showEditor = false;
   TasbihItem? _editingItem;
@@ -114,13 +111,6 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
     _closeEditor();
   }
 
-  Future<void> _deleteCustom(TasbihItem item) async {
-    await _withSaving(() async {
-      await TasbihLocalRepository.instance.deleteCustomItem(item.id);
-      await _loadItems();
-    });
-  }
-
   Future<void> _togglePin(TasbihItem item) async {
     await _withSaving(() async {
       await TasbihLocalRepository.instance.togglePin(item.id);
@@ -143,46 +133,40 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
     }, showLoader: false);
   }
 
-  void _openDetail(TasbihItem item) {
-    setState(() {
-      _selectedItem = item;
-      _savedTotal = item.totalCount;
-      _sessionCount = 0;
+  Future<void> _openDetail(TasbihItem item) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => TasbihDetailScreen(item: item)),
+    );
+    if (!mounted) return;
+    await _loadItems();
+  }
+
+  Future<void> _deleteCustom(TasbihItem item) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete dhikr?'),
+          content: Text(item.label),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true) return;
+    await _withSaving(() async {
+      await TasbihLocalRepository.instance.deleteCustomItem(item.id);
+      await _loadItems();
     });
-  }
-
-  Future<void> _saveSession() async {
-    final item = _selectedItem;
-    if (item == null || _sessionCount <= 0) return;
-
-    await _withSaving(() async {
-      final total = await TasbihLocalRepository.instance.saveSession(
-        tasbihId: item.id,
-        sessionCount: _sessionCount,
-      );
-      await _loadItems();
-      if (!mounted) return;
-      setState(() {
-        _savedTotal = total;
-        _sessionCount = 0;
-        _selectedItem = _items.firstWhere((e) => e.id == item.id);
-      });
-    }, showLoader: false);
-  }
-
-  Future<void> _resetTotal() async {
-    final item = _selectedItem;
-    if (item == null) return;
-    await _withSaving(() async {
-      await TasbihLocalRepository.instance.resetTotal(item.id);
-      await _loadItems();
-      if (!mounted) return;
-      setState(() {
-        _savedTotal = 0;
-        _sessionCount = 0;
-        _selectedItem = _items.firstWhere((e) => e.id == item.id);
-      });
-    }, showLoader: false);
   }
 
   @override
@@ -190,30 +174,6 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
     final l10n = AppLocalizations.of(context)!;
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    if (_selectedItem != null) {
-      return _TasbihDetailView(
-        item: _selectedItem!,
-        sessionCount: _sessionCount,
-        totalCount: _savedTotal,
-        saving: _saving,
-        onBack: () => setState(() {
-          _selectedItem = null;
-          _sessionCount = 0;
-        }),
-        onTapCounter: () {
-          if (_sessionCount >= 100) return;
-          setState(() => _sessionCount += 1);
-        },
-        onSave: _saveSession,
-        onReset: _resetTotal,
-        onOptionsSelected: (option) async {
-          if (option == _TasbihDetailOption.resetTotal) {
-            await _resetTotal();
-          }
-        },
-      );
     }
 
     return Stack(
@@ -450,218 +410,3 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
     );
   }
 }
-
-class _TasbihDetailView extends StatelessWidget {
-  const _TasbihDetailView({
-    required this.item,
-    required this.sessionCount,
-    required this.totalCount,
-    required this.saving,
-    required this.onBack,
-    required this.onTapCounter,
-    required this.onSave,
-    required this.onReset,
-    required this.onOptionsSelected,
-  });
-
-  final TasbihItem item;
-  final int sessionCount;
-  final int totalCount;
-  final bool saving;
-  final VoidCallback onBack;
-  final VoidCallback onTapCounter;
-  final Future<void> Function() onSave;
-  final Future<void> Function() onReset;
-  final Future<void> Function(_TasbihDetailOption option) onOptionsSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final progress = (sessionCount / 100).clamp(0.0, 1.0);
-
-    return Stack(
-      children: [
-        Scaffold(
-          body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 16.h),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AppTopBackButton(
-                        onTap: onBack,
-                        semanticLabel: l10n.tasbihBack,
-                      ),
-                      PopupMenuButton<_TasbihDetailOption>(
-                        onSelected: (option) => onOptionsSelected(option),
-                        itemBuilder: (_) => [
-                          PopupMenuItem<_TasbihDetailOption>(
-                            value: _TasbihDetailOption.resetTotal,
-                            child: const Text('Reset total'),
-                          ),
-                        ],
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 8.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colorScheme.surfaceContainerHighest
-                                .withValues(alpha: 0.55),
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: colorScheme.outlineVariant.withValues(
-                                alpha: 0.42,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Options',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    item.label,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  if (item.transliteration.isNotEmpty) ...[
-                    SizedBox(height: 4.h),
-                    Text(
-                      item.transliteration,
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                  SizedBox(height: 12.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.bar_chart_rounded,
-                        size: 18.sp,
-                        color: colorScheme.primary,
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        '$totalCount',
-                        style: TextStyle(
-                          color: colorScheme.primary,
-                          fontSize: 28.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: 250.w,
-                    height: 250.w,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 250.w,
-                          height: 250.w,
-                          child: CircularProgressIndicator(
-                            value: 1,
-                            strokeWidth: 8,
-                            color: colorScheme.surfaceContainerHighest,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 250.w,
-                          height: 250.w,
-                          child: CircularProgressIndicator(
-                            value: progress,
-                            strokeWidth: 8,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                        Material(
-                          elevation: 8,
-                          shape: const CircleBorder(),
-                          color: colorScheme.surface,
-                          child: InkWell(
-                            customBorder: const CircleBorder(),
-                            onTap: onTapCounter,
-                            child: SizedBox(
-                              width: 195.w,
-                              height: 195.w,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '$sessionCount',
-                                    style: TextStyle(
-                                      fontSize: 48.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: colorScheme.onSurface,
-                                    ),
-                                  ),
-                                  Text(
-                                    l10n.tasbihTapMe,
-                                    style: TextStyle(
-                                      fontSize: 11.sp,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FilledButton.tonalIcon(
-                          onPressed: onReset,
-                          icon: const Icon(Icons.rotate_left_rounded),
-                          label: Text(l10n.tasbihReset),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: FilledButton.icon(
-                          onPressed: onSave,
-                          icon: const Icon(Icons.save_outlined),
-                          label: Text(l10n.save),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        if (saving)
-          ColoredBox(
-            color: Colors.black.withValues(alpha: 0.15),
-            child: const Center(child: CircularProgressIndicator()),
-          ),
-      ],
-    );
-  }
-}
-
-enum _TasbihDetailOption { resetTotal }

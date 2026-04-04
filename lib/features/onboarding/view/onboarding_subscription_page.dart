@@ -39,7 +39,7 @@ class OnboardingSubscriptionPage extends StatelessWidget {
           ),
         ),
         SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(24.w, 28.h, 24.w, 20.h),
+          padding: EdgeInsets.fromLTRB(24.w, 4.h, 24.w, 20.h),
           child: Align(
             alignment: Alignment.topCenter,
             child: ConstrainedBox(
@@ -67,7 +67,7 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                       color: colorScheme.primary,
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 8.h),
                   Text(
                     l10n.investTitle,
                     textAlign: TextAlign.center,

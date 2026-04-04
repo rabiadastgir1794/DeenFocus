@@ -42,7 +42,7 @@ class NearbyMosquesService {
   Future<List<NearbyMosque>> fetchNearby({
     required double latitude,
     required double longitude,
-    double radiusMeters = 3000,
+    double radiusMeters = 5000,
     int maxResultCount = 40,
   }) async {
     final query = '''

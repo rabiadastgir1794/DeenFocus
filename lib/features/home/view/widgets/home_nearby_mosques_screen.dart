@@ -30,7 +30,7 @@ class HomeNearbyMosquesScreen extends StatefulWidget {
 
 class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
   final NearbyMosquesService _service = NearbyMosquesService();
-  static const double _searchRadiusMeters = 3000;
+  static const double _searchRadiusMeters = 5000;
 
   bool _isLoading = true;
   String? _errorMessage;
@@ -77,7 +77,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
           _mosques = cached.mosques;
           _isLoading = false;
           _errorMessage = cached.mosques.isEmpty
-              ? 'No mosques were found within 3 km of your current location.'
+              ? 'No mosques were found within 5 km of your current location.'
               : null;
         });
         return;
@@ -149,19 +149,12 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leadingWidth: 58,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
-          child: AppTopBackButton(
-            onTap: () => Navigator.of(context).pop(),
-            semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-          ),
-        ),
-        title: const Text('Nearby Mosques'),
+      appBar: CustomAppBar(
+        title: 'Nearby Mosques',
+        onBack: () => Navigator.of(context).pop(),
       ),
       body: SafeArea(
+        top: false,
         child: RefreshIndicator(
           onRefresh: _load,
           child: ListView(
@@ -202,7 +195,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
                 )
               else ...[
                 Text(
-                  'Within 3 km',
+                  'Within 5 km',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -479,24 +472,6 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
                             ),
                         ],
                       ),
-                      SimpleAttributionWidget(
-                        alignment: Alignment.bottomRight,
-                        backgroundColor: colorScheme.surface.withValues(
-                          alpha: 0.88,
-                        ),
-                        source: const Text('OpenStreetMap'),
-                        onTap: () async {
-                          final uri = Uri.parse(
-                            'https://www.openstreetmap.org/copyright',
-                          );
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(
-                              uri,
-                              mode: LaunchMode.externalApplication,
-                            );
-                          }
-                        },
-                      ),
                     ],
                   ),
                 ),
@@ -542,11 +517,7 @@ class _MapPlaceholder extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.map_outlined,
-              size: 38,
-              color: colorScheme.primary,
-            ),
+            Icon(Icons.map_outlined, size: 38, color: colorScheme.primary),
             const SizedBox(height: 10),
             Text(
               hasLocation

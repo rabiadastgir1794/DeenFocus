@@ -11,6 +11,7 @@ import '../../../../core/constants/app_languages.dart';
 import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
@@ -416,7 +417,7 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
   Widget build(BuildContext context) {
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
-      appBar: AppBar(title: const Text('Location')),
+      appBar: const CustomAppBar(title: 'Location'),
       body: Column(
         children: [
           Expanded(
@@ -461,7 +462,7 @@ class SettingsAboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('About Deen Focus')),
+      appBar: const CustomAppBar(title: 'About Deen Focus'),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
