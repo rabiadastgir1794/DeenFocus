@@ -88,7 +88,11 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               alignment: WrapAlignment.center,
               children: prayerTimes.slots
                   .map(
-                    (slot) => HomePrayerTile(slot: slot, prayerTimes: prayerTimes),
+                    (slot) => HomePrayerTile(
+                      slot: slot,
+                      prayerTimes: prayerTimes,
+                      sectionBackgroundColor: widget.backgroundColor,
+                    ),
                   )
                   .toList(growable: false),
             ),
@@ -142,10 +146,12 @@ class HomePrayerTile extends StatelessWidget {
     super.key,
     required this.slot,
     required this.prayerTimes,
+    required this.sectionBackgroundColor,
   });
 
   final HomePrayerSlot slot;
   final HomePrayerTimesData prayerTimes;
+  final Color sectionBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -155,15 +161,38 @@ class HomePrayerTile extends StatelessWidget {
     final now = DateTime.now();
     final isPassed = !slot.time.isAfter(now);
     final isCurrent = prayerTimes.nextPrayer == slot.id;
+    final isPast = isPassed && !isCurrent;
 
-    final background = isCurrent
-        ? colorScheme.primary
-        : isPassed
-        ? colorScheme.primary.withValues(alpha: isDark ? 0.30 : 0.14)
-        : isDark
-        ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.55)
-        : const Color(0xFFF3F1EB);
-    final textColor = isCurrent ? colorScheme.onPrimary : colorScheme.onSurface;
+    // Current: solid green, white text, no border.
+    // Past: #F2F0EA (light) / muted warm surface (dark), muted text, no border.
+    // Upcoming: same fill as section container + border.
+    const currentGreen = Color(0xFF2E7D32);
+    const pastLightBackground = Color(0xFFF2F0EA);
+    final Color background;
+    final Color titleColor;
+    final Color timeColor;
+    final BoxBorder? border;
+
+    if (isCurrent) {
+      background = currentGreen;
+      titleColor = Colors.white;
+      timeColor = Colors.white;
+      border = null;
+    } else if (isPast) {
+      background = isDark
+          ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.42)
+          : pastLightBackground;
+      titleColor = colorScheme.onSurface.withValues(alpha: isDark ? 0.5 : 0.52);
+      timeColor = colorScheme.onSurface.withValues(alpha: isDark ? 0.5 : 0.52);
+      border = null;
+    } else {
+      background = sectionBackgroundColor;
+      titleColor = colorScheme.onSurface;
+      timeColor = colorScheme.onSurface;
+      border = Border.all(
+        color: colorScheme.outlineVariant.withValues(alpha: isDark ? 0.55 : 0.65),
+      );
+    }
 
     return Container(
       width: 104,
@@ -171,6 +200,7 @@ class HomePrayerTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(12),
+        border: border,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Center(
@@ -183,7 +213,7 @@ class HomePrayerTile extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
-              ).textTheme.labelSmall?.copyWith(color: textColor),
+              ).textTheme.labelSmall?.copyWith(color: titleColor),
             ),
             const SizedBox(height: 4),
             Text(
@@ -191,7 +221,7 @@ class HomePrayerTile extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: textColor),
+              ).textTheme.bodyMedium?.copyWith(color: timeColor),
             ),
           ],
         ),

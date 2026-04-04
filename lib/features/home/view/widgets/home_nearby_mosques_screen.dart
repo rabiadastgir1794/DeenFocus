@@ -31,8 +31,11 @@ class HomeNearbyMosquesScreen extends StatefulWidget {
 class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
   final NearbyMosquesService _service = NearbyMosquesService();
   static const double _searchRadiusMeters = 5000;
+  static const String _emptyMosquesHint =
+      'Nothing listed within 5 km on OpenStreetMap for this spot. Try again later or move the map.';
 
   bool _isLoading = true;
+  /// Set only for real failures (network, permission, location). Empty results use [_mosques.isEmpty] instead.
   String? _errorMessage;
   String? _locationName;
   double? _latitude;
@@ -48,7 +51,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
     _load();
   }
 
-  Future<void> _load() async {
+  Future<void> _load({bool forceRefresh = false}) async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -67,20 +70,20 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
         );
       }
 
-      final cached = await NearbyMosquesCache.readValid(
-        latitude: latitude,
-        longitude: longitude,
-      );
-      if (cached != null) {
-        if (!mounted) return;
-        setState(() {
-          _mosques = cached.mosques;
-          _isLoading = false;
-          _errorMessage = cached.mosques.isEmpty
-              ? 'No mosques were found within 5 km of your current location.'
-              : null;
-        });
-        return;
+      if (!forceRefresh) {
+        final cached = await NearbyMosquesCache.readValid(
+          latitude: latitude,
+          longitude: longitude,
+        );
+        if (cached != null) {
+          if (!mounted) return;
+          setState(() {
+            _mosques = cached.mosques;
+            _isLoading = false;
+            _errorMessage = null;
+          });
+          return;
+        }
       }
 
       final mosques = await _service.fetchNearby(
@@ -99,9 +102,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
       setState(() {
         _mosques = mosques;
         _isLoading = false;
-        _errorMessage = mosques.isEmpty
-            ? 'No mosques were found within 3 km of your current location.'
-            : null;
+        _errorMessage = null;
       });
     } catch (error) {
       if (!mounted) return;
@@ -156,7 +157,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
       body: SafeArea(
         top: false,
         child: RefreshIndicator(
-          onRefresh: _load,
+          onRefresh: () => _load(forceRefresh: true),
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             children: [
@@ -191,7 +192,12 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
                       ? () async {
                           await PermissionService.openLocationSettings();
                         }
-                      : _load,
+                      : () => _load(forceRefresh: true),
+                )
+              else if (_mosques.isEmpty)
+                _NoMosquesFoundCard(
+                  hint: _emptyMosquesHint,
+                  onRetry: () => _load(forceRefresh: true),
                 )
               else ...[
                 Text(
@@ -313,12 +319,12 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
 
   String _mapFooterCaption() {
     if (widget.mosques.isNotEmpty) {
-      return '${widget.mosques.length} mosques found within 3 km';
+      return '${widget.mosques.length} mosques found within 5 km';
     }
     if (widget.awaitingMosqueResults) {
       return 'Nearby mosques will appear here once results load.';
     }
-    return 'No mosques found within 3 km in OpenStreetMap.';
+    return 'No mosques found within 5 km in OpenStreetMap.';
   }
 
   @override
@@ -530,6 +536,71 @@ class _MapPlaceholder extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _NoMosquesFoundCard extends StatelessWidget {
+  const _NoMosquesFoundCard({
+    required this.hint,
+    required this.onRetry,
+  });
+
+  final String hint;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.mosque_outlined,
+            size: 44,
+            color: colorScheme.primary.withValues(alpha: 0.85),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'No mosques found',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            hint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  height: 1.4,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Search radius: 5 km',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          const SizedBox(height: 16),
+          FilledButton.tonal(
+            onPressed: onRetry,
+            child: const Text('Try again'),
+          ),
+        ],
       ),
     );
   }
