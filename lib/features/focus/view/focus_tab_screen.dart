@@ -52,7 +52,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       'focus.screen.resume',
       'app resumed awaiting=$_awaitingBlockingPermission pending=${_pendingModeToEnable?.name}',
     );
-    await vm.refresh();
+    // Foreground focus sync is handled by _AppLifecycleFocusRefresher in main.dart.
 
     if (!_awaitingBlockingPermission) return;
 

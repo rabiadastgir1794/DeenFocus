@@ -65,8 +65,8 @@ class _HomeTabViewState extends State<_HomeTabView>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      // Focus refresh is handled once by [_AppLifecycleFocusRefresher] in main.dart.
       context.read<HomeTabViewModel>().onAppResumed();
-      context.read<FocusController>().refresh();
     }
   }
 

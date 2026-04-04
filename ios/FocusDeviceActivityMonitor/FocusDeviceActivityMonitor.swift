@@ -70,11 +70,13 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
     )
 
     if action == "unlock" {
-      let flutterStillLocked = defaults?.bool(forKey: Self.shieldFlutterLockedKey) ?? false
-      if clockJumped || flutterStillLocked {
+      // Do not gate unlock on `focus_flutter_is_locked`: that flag reflects the last
+      // Flutter process sync and stays stale while the app is suspended, so scheduled
+      // unlocks (prayer end, wake time) were ignored and shields flickered/reapplied.
+      if clockJumped {
         FocusMonitorDebugLogger.append(
           "ios.monitor.unlock",
-          "ignored unlock activity=\(activity.rawValue) clockJumped=\(clockJumped) flutterStillLocked=\(flutterStillLocked)"
+          "ignored unlock activity=\(activity.rawValue) clockJumped=true"
         )
         applyShield()
         return

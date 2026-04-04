@@ -49,6 +49,12 @@ class HomeTabViewModel extends ChangeNotifier {
   Timer? _ticker;
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
+  /// Avoids overlapping prayer loads (resume + periodic ticker) so next-prayer
+  /// does not briefly flip (e.g. Fajr vs current) when async work completes out of order.
+  Future<void> _prayerTimesSerial = Future<void>.value();
+
+  Future<void>? _resumeInFlight;
+
   bool get isFriday => DateTime.now().weekday == DateTime.friday;
   HomePrayerStreakState get prayerStreakState => _prayerStreakState;
   List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
@@ -80,7 +86,15 @@ class HomeTabViewModel extends ChangeNotifier {
     _startTicker();
   }
 
-  Future<void> onAppResumed() async {
+  Future<void> onAppResumed() {
+    if (_resumeInFlight != null) return _resumeInFlight!;
+    _resumeInFlight = _onAppResumedBody().whenComplete(() {
+      _resumeInFlight = null;
+    });
+    return _resumeInFlight!;
+  }
+
+  Future<void> _onAppResumedBody() async {
     await _ensureLocationAccessIfNeeded();
     await _loadPrayerTimes();
     await _loadPrayerStreak();
@@ -184,7 +198,13 @@ class HomeTabViewModel extends ChangeNotifier {
     dailyVerse = await HomeDailyVerseHelper.loadDailyVerse(ref);
   }
 
-  Future<void> _loadPrayerTimes() async {
+  Future<void> _loadPrayerTimes() {
+    final run = _prayerTimesSerial.then((_) => _loadPrayerTimesBody());
+    _prayerTimesSerial = run.catchError((Object _) {});
+    return run;
+  }
+
+  Future<void> _loadPrayerTimesBody() async {
     if (latitude == null || longitude == null) {
       prayerTimes = null;
       return;
