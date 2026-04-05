@@ -28,8 +28,10 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.abs
 
 private const val focusPrefsName = "focus_enforcement"
@@ -47,6 +49,12 @@ private const val focusDebugFileName = "deenly_focus_debug_log.txt"
 private const val focusDebugSectionPrefs = "focus_debug_log_sections"
 private const val focusDebugKeyLastDate = "last_section_date"
 private const val focusDebugKeyLastHour = "last_section_hour"
+
+private const val nightDisciplineEnabledKey = "night_discipline_enabled"
+private const val nightStartHourKey = "night_start_hour"
+private const val nightStartMinuteKey = "night_start_minute"
+private const val nightEndHourKey = "night_end_hour"
+private const val nightEndMinuteKey = "night_end_minute"
 
 object FocusDebugLogger {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
@@ -245,6 +253,11 @@ object FocusBlockerStore {
         isLocked: Boolean,
         lockReason: String?,
         nextChangeAt: String?,
+        nightDisciplineEnabled: Boolean? = null,
+        nightStartHour: Int? = null,
+        nightStartMinute: Int? = null,
+        nightEndHour: Int? = null,
+        nightEndMinute: Int? = null,
     ) {
         val syncGeneration = System.currentTimeMillis()
         FocusDebugLogger.append(
@@ -252,14 +265,22 @@ object FocusBlockerStore {
             "store.save",
             "packages=${selectedPackages.size} activeMode=$activeMode isLocked=$isLocked nextChangeAt=$nextChangeAt reason=$lockReason",
         )
-        prefs(context).edit()
-            .putStringSet(selectedPackagesKey, selectedPackages.toSet())
-            .putString(activeModeKey, activeMode)
-            .putBoolean(isLockedKey, isLocked)
-            .putString(lockReasonKey, lockReason)
-            .putString(nextChangeAtKey, nextChangeAt)
-            .putLong(syncGenerationKey, syncGeneration)
-            .commit()
+        val edit =
+            prefs(context).edit()
+                .putStringSet(selectedPackagesKey, selectedPackages.toSet())
+                .putString(activeModeKey, activeMode)
+                .putBoolean(isLockedKey, isLocked)
+                .putString(lockReasonKey, lockReason)
+                .putString(nextChangeAtKey, nextChangeAt)
+                .putLong(syncGenerationKey, syncGeneration)
+        if (nightDisciplineEnabled != null) {
+            edit.putBoolean(nightDisciplineEnabledKey, nightDisciplineEnabled)
+        }
+        if (nightStartHour != null) edit.putInt(nightStartHourKey, nightStartHour)
+        if (nightStartMinute != null) edit.putInt(nightStartMinuteKey, nightStartMinute)
+        if (nightEndHour != null) edit.putInt(nightEndHourKey, nightEndHour)
+        if (nightEndMinute != null) edit.putInt(nightEndMinuteKey, nightEndMinute)
+        edit.commit()
     }
 
     fun isPackageBlocked(context: Context, packageName: String): Boolean {
@@ -291,7 +312,7 @@ object FocusBlockerStore {
                 "clock jump detected; still resolving scheduled transitions (wake/sleep must apply unlocks)",
             )
         }
-        return resolveScheduledState(context, storedState)
+        return correctNightDisciplineNextChangeOnAndroid(context, resolveScheduledState(context, storedState))
     }
 
     private fun didClockJump(context: Context): Boolean {
@@ -318,6 +339,115 @@ object FocusBlockerStore {
             )
         }
         return jumped
+    }
+
+    /**
+     * Parity with Flutter FocusController._nextNightBoundary: after midnight and before wake on an
+     * overnight sleep range, the next boundary is wake time, not tonight's sleep start. Older
+     * persisted nextChangeAt values could still show tonight's start; correct them for the blocked
+     * overlay and accessibility path when we detect that pattern.
+     */
+    private fun correctNightDisciplineNextChangeOnAndroid(
+        context: Context,
+        state: FocusBlockState,
+    ): FocusBlockState {
+        val prefs = prefs(context)
+        if (!prefs.getBoolean(nightDisciplineEnabledKey, false)) return state
+        if (state.activeMode != "nightDiscipline") return state
+        if (!state.isLocked) return state
+        val nextIso = state.nextChangeAt ?: return state
+
+        val sh = prefs.getInt(nightStartHourKey, 22)
+        val sm = prefs.getInt(nightStartMinuteKey, 0)
+        val eh = prefs.getInt(nightEndHourKey, 6)
+        val em = prefs.getInt(nightEndMinuteKey, 0)
+        val startTotal = sh * 60 + sm
+        val endTotal = eh * 60 + em
+        if (startTotal < endTotal) return state
+
+        val tz = TimeZone.getDefault()
+        val nowCal = Calendar.getInstance(tz)
+        nowCal.timeInMillis = System.currentTimeMillis()
+
+        fun todayAt(h: Int, m: Int): Calendar {
+            val c = Calendar.getInstance(tz)
+            c.timeInMillis = nowMillis
+            c.set(Calendar.HOUR_OF_DAY, h)
+            c.set(Calendar.MINUTE, m)
+            c.set(Calendar.SECOND, 0)
+            c.set(Calendar.MILLISECOND, 0)
+            return c
+        }
+
+        val todayStart = todayAt(sh, sm)
+        val todayEnd = todayAt(eh, em)
+        val todayEndAdjusted =
+            if (!todayEnd.after(todayStart)) {
+                (todayEnd.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, 1) }
+            } else {
+                todayEnd
+            }
+        val previousStart = (todayStart.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, -1) }
+        val previousEnd = (todayEndAdjusted.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, -1) }
+
+        if (nowCal.before(todayStart) &&
+            !nowCal.before(previousStart) &&
+            nowCal.before(previousEnd)
+        ) {
+            val parsedNext = parseIsoLocalToCalendar(nextIso, tz) ?: return state
+            if (sameCalendarMinute(parsedNext, todayStart)) {
+                val fixed = formatIsoLocalMatchFlutter(previousEnd.timeInMillis, tz)
+                if (fixed != nextIso) {
+                    prefs.edit().putString(nextChangeAtKey, fixed).commit()
+                    FocusDebugLogger.append(
+                        context,
+                        "store.night.nextChange",
+                        "corrected overnight nextChangeAt=$fixed (was $nextIso)",
+                    )
+                    return state.copy(nextChangeAt = fixed)
+                }
+            }
+        }
+        return state
+    }
+
+    private fun sameCalendarMinute(a: Calendar, b: Calendar): Boolean {
+        return a.get(Calendar.YEAR) == b.get(Calendar.YEAR) &&
+            a.get(Calendar.MONTH) == b.get(Calendar.MONTH) &&
+            a.get(Calendar.DAY_OF_MONTH) == b.get(Calendar.DAY_OF_MONTH) &&
+            a.get(Calendar.HOUR_OF_DAY) == b.get(Calendar.HOUR_OF_DAY) &&
+            a.get(Calendar.MINUTE) == b.get(Calendar.MINUTE)
+    }
+
+    private fun parseIsoLocalToCalendar(iso: String, tz: TimeZone): Calendar? {
+        val millis = runCatching { iso.toLong() }.getOrNull()
+        if (millis != null) {
+            return Calendar.getInstance(tz).apply { timeInMillis = millis }
+        }
+        val isoPatterns =
+            listOf(
+                "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+                "yyyy-MM-dd'T'HH:mm:ssX",
+                "yyyy-MM-dd'T'HH:mm:ss.SSS",
+                "yyyy-MM-dd'T'HH:mm:ss",
+            )
+        for (pattern in isoPatterns) {
+            val cal =
+                runCatching {
+                    val sdf = SimpleDateFormat(pattern, Locale.US)
+                    sdf.timeZone = tz
+                    val d = sdf.parse(iso) ?: return@runCatching null
+                    Calendar.getInstance(tz).apply { time = d }
+                }.getOrNull()
+            if (cal != null) return cal
+        }
+        return null
+    }
+
+    private fun formatIsoLocalMatchFlutter(millis: Long, tz: TimeZone): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US)
+        sdf.timeZone = tz
+        return sdf.format(Date(millis))
     }
 
     fun saveScheduledTransitions(

@@ -113,6 +113,11 @@ class MainActivity : FlutterActivity() {
                 val isLocked = call.argument<Boolean>("isLocked") ?: false
                 val lockReason = call.argument<String>("lockReason")
                 val nextChangeAt = call.argument<String>("nextChangeAt")
+                val nightDisciplineEnabled = call.argument<Boolean>("nightDisciplineEnabled")
+                val nightStartHour = call.argument<Number>("nightStartHour")?.toInt()
+                val nightStartMinute = call.argument<Number>("nightStartMinute")?.toInt()
+                val nightEndHour = call.argument<Number>("nightEndHour")?.toInt()
+                val nightEndMinute = call.argument<Number>("nightEndMinute")?.toInt()
                 val scheduledTransitions =
                     call.argument<List<Map<String, Any?>>>("scheduledTransitions").orEmpty()
                 FocusDebugLogger.append(
@@ -127,6 +132,11 @@ class MainActivity : FlutterActivity() {
                     isLocked = isLocked,
                     lockReason = lockReason,
                     nextChangeAt = nextChangeAt,
+                    nightDisciplineEnabled = nightDisciplineEnabled,
+                    nightStartHour = nightStartHour,
+                    nightStartMinute = nightStartMinute,
+                    nightEndHour = nightEndHour,
+                    nightEndMinute = nightEndMinute,
                 )
                 FocusScheduleManager.sync(
                     context = applicationContext,

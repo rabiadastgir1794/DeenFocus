@@ -825,6 +825,13 @@ class FocusController extends ChangeNotifier {
       if (!todayEnd.isAfter(todayStart)) {
         todayEnd = todayEnd.add(const Duration(days: 1));
       }
+      // Same as [_nightWindowContainingOrNext]: after midnight, before wake, the
+      // next boundary is wake (previousEnd), not tonight's sleep start.
+      final previousStart = todayStart.subtract(const Duration(days: 1));
+      final previousEnd = todayEnd.subtract(const Duration(days: 1));
+      if (!now.isBefore(previousStart) && now.isBefore(previousEnd)) {
+        return previousEnd;
+      }
       if (now.isBefore(todayStart)) return todayStart;
       if (now.isBefore(todayEnd)) return todayEnd;
       return todayStart.add(const Duration(days: 1));
