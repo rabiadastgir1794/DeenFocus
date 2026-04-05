@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
@@ -424,11 +425,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   ),
                   _ModeCard(
                     marginBottom: 16,
-                    icon: Icons.dark_mode_outlined,
-                    iconBackground: colorScheme.secondaryContainer.withValues(
-                      alpha: 0.45,
-                    ),
-                    iconColor: colorScheme.onSecondaryContainer,
+                    icon: Icons.nights_stay,
+                    iconBackground: colorScheme.primary.withValues(alpha: 0.2),
+                    iconColor: colorScheme.primary,
                     title: 'Night Discipline',
                     subtitle: 'Protect sleep & Fajr',
                     value: nightMode,
@@ -439,25 +438,41 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         _toggleMode(vm, FocusModeType.nightDiscipline, value),
                     child: nightMode
                         ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 12),
-                              Text(
-                                'Sleep schedule',
-                                style: Theme.of(context).textTheme.labelLarge
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 8),
-                              _TimeInfoCard(
-                                label:
-                                    '${_formatTime(context, vm.settings.nightRange.startHour, vm.settings.nightRange.startMinute)} - ${_formatTime(context, vm.settings.nightRange.endHour, vm.settings.nightRange.endMinute)}',
-                                time: 'Tap to edit sleep and wake times',
-                                icon: Icons.bedtime_outlined,
-                                onTap: () => _showNightScheduleSheet(vm),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _NightTimePill(
+                                      label: 'Sleep',
+                                      timeText: _formatTime(
+                                        context,
+                                        vm.settings.nightRange.startHour,
+                                        vm.settings.nightRange.startMinute,
+                                      ),
+                                      onTap: () =>
+                                          _pickNightTime(vm, isSleep: true),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: _NightTimePill(
+                                      label: 'Wake',
+                                      timeText: _formatTime(
+                                        context,
+                                        vm.settings.nightRange.endHour,
+                                        vm.settings.nightRange.endMinute,
+                                      ),
+                                      onTap: () =>
+                                          _pickNightTime(vm, isSleep: false),
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 12),
                               _ModeFooterText(
                                 text:
-                                    '✓ ${vm.selectedTargetPhrase} will be blocked at night',
+                                    '✓ ${globalApps.length} app${globalApps.length != 1 ? 's' : ''} will be blocked at night',
                                 color: colorScheme.primary,
                               ),
                             ],
@@ -631,93 +646,101 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     ).formatTimeOfDay(TimeOfDay(hour: hour, minute: minute));
   }
 
-  Future<void> _showNightScheduleSheet(FocusController vm) async {
-    TimeOfDay sleep = TimeOfDay(
+  Future<void> _pickNightTime(FocusController vm, {required bool isSleep}) async {
+    final sleep = TimeOfDay(
       hour: vm.settings.nightRange.startHour,
       minute: vm.settings.nightRange.startMinute,
     );
-    TimeOfDay wake = TimeOfDay(
+    final wake = TimeOfDay(
       hour: vm.settings.nightRange.endHour,
       minute: vm.settings.nightRange.endMinute,
     );
+    final initial = isSleep ? sleep : wake;
+    final picked = await _showCupertinoTimePicker(
+      context,
+      initialTime: initial,
+      title: isSleep ? 'Sleep' : 'Wake',
+    );
+    if (picked == null || !mounted) return;
+    if (isSleep) {
+      await vm.setNightRange(picked, wake);
+    } else {
+      await vm.setNightRange(sleep, picked);
+    }
+  }
 
-    if (!mounted) return;
-    await showModalBottomSheet<void>(
+  Future<TimeOfDay?> _showCupertinoTimePicker(
+    BuildContext context, {
+    required TimeOfDay initialTime,
+    String? title,
+  }) {
+    final use24h = MediaQuery.of(context).alwaysUse24HourFormat;
+    var selected = DateTime(
+      2020,
+      1,
+      1,
+      initialTime.hour,
+      initialTime.minute,
+    );
+
+    return showCupertinoModalPopup<TimeOfDay>(
       context: context,
-      showDragHandle: true,
       builder: (ctx) {
-        return StatefulBuilder(
-          builder: (ctx, setModalState) {
-            String format(TimeOfDay value) =>
-                MaterialLocalizations.of(ctx).formatTimeOfDay(value);
-
-            Future<void> pick(bool isSleep) async {
-              final current = isSleep ? sleep : wake;
-              final picked = await showTimePicker(
-                context: ctx,
-                initialTime: current,
-                helpText: isSleep ? 'Select sleep time' : 'Select wake time',
-              );
-              if (picked == null) return;
-              setModalState(() {
-                if (isSleep) {
-                  sleep = picked;
-                } else {
-                  wake = picked;
-                }
-              });
-            }
-
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Night Discipline Schedule',
-                      style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
+        final surface = Theme.of(ctx).colorScheme.surface;
+        return Container(
+          height: 280,
+          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).padding.bottom),
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CupertinoButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        child: const Text('Cancel'),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Choose your sleep and wake time to block apps overnight.',
-                      style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(ctx).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    _ScheduleTimeTile(
-                      label: 'Sleep time',
-                      time: format(sleep),
-                      icon: Icons.bedtime_outlined,
-                      onTap: () => pick(true),
-                    ),
-                    const SizedBox(height: 10),
-                    _ScheduleTimeTile(
-                      label: 'Wake time',
-                      time: format(wake),
-                      icon: Icons.wb_sunny_outlined,
-                      onTap: () => pick(false),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: () async {
-                          await vm.setNightRange(sleep, wake);
-                          if (ctx.mounted) Navigator.of(ctx).pop();
+                      if (title != null)
+                        Text(
+                          title,
+                          style: Theme.of(ctx).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      CupertinoButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop(
+                            TimeOfDay(
+                              hour: selected.hour,
+                              minute: selected.minute,
+                            ),
+                          );
                         },
-                        child: const Text('Save sleep schedule'),
+                        child: const Text('Done'),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+                Expanded(
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.time,
+                    use24hFormat: use24h,
+                    initialDateTime: selected,
+                    onDateTimeChanged: (DateTime dt) {
+                      selected = dt;
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -939,81 +962,15 @@ class _ModeFooterText extends StatelessWidget {
   }
 }
 
-class _TimeInfoCard extends StatelessWidget {
-  const _TimeInfoCard({
+class _NightTimePill extends StatelessWidget {
+  const _NightTimePill({
     required this.label,
-    required this.time,
-    this.icon,
-    this.onTap,
-  });
-
-  final String label;
-  final String time;
-  final IconData? icon;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Ink(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                if (icon != null) ...[
-                  Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 6),
-                ],
-                Expanded(
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              time,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 11,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ScheduleTimeTile extends StatelessWidget {
-  const _ScheduleTimeTile({
-    required this.label,
-    required this.time,
-    required this.icon,
+    required this.timeText,
     required this.onTap,
   });
 
   final String label;
-  final String time;
-  final IconData icon;
+  final String timeText;
   final VoidCallback onTap;
 
   @override
@@ -1021,32 +978,29 @@ class _ScheduleTimeTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return Material(
       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Column(
             children: [
-              Icon(icon, size: 18, color: colorScheme.onSurfaceVariant),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  label,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  fontSize: 10,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
-                time,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                timeText,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              const SizedBox(width: 6),
-              Icon(Icons.edit_rounded, size: 16, color: colorScheme.primary),
             ],
           ),
         ),

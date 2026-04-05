@@ -263,11 +263,16 @@ object FocusBlockerStore {
     }
 
     fun isPackageBlocked(context: Context, packageName: String): Boolean {
-        val prefs = prefs(context)
-        if (!prefs.getBoolean(isLockedKey, false)) return false
-        return prefs.getStringSet(selectedPackagesKey, emptySet()).orEmpty().contains(packageName)
+        val state = currentState(context)
+        if (!state.isLocked) return false
+        return state.selectedPackages.contains(packageName)
     }
 
+    /**
+     * Matches iOS DeviceActivity monitor behavior: scheduled transitions (prayer / night windows) are
+     * resolved against wall-clock time even after sleep/wake. We must not skip resolution when a
+     * clock jump is detected — that previously left stored lock state stale and blocked apps after wake.
+     */
     fun currentState(context: Context): FocusBlockState {
         val prefs = prefs(context)
         val storedState = FocusBlockState(
@@ -283,9 +288,8 @@ object FocusBlockerStore {
             FocusDebugLogger.append(
                 context,
                 "store.resolve",
-                "clock jump detected; keeping stored lock state until next explicit sync/alarm",
+                "clock jump detected; still resolving scheduled transitions (wake/sleep must apply unlocks)",
             )
-            return storedState
         }
         return resolveScheduledState(context, storedState)
     }
@@ -768,19 +772,27 @@ class FocusScheduleReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != focusScheduleAction) return
 
+        val isLocked = intent.getBooleanExtra("isLocked", false)
         FocusDebugLogger.append(
             context,
             "schedule.fire",
-            "action=${intent.action} isLocked=${intent.getBooleanExtra("isLocked", false)} mode=${intent.getStringExtra("activeMode")} nextChangeAt=${intent.getStringExtra("nextChangeAt")}",
+            "action=${intent.action} isLocked=$isLocked mode=${intent.getStringExtra("activeMode")} nextChangeAt=${intent.getStringExtra("nextChangeAt")}",
         )
         val current = FocusBlockerStore.currentState(context)
         FocusBlockerStore.save(
             context = context,
             selectedPackages = current.selectedPackages.toList(),
             activeMode = intent.getStringExtra("activeMode"),
-            isLocked = intent.getBooleanExtra("isLocked", false),
+            isLocked = isLocked,
             lockReason = intent.getStringExtra("lockReason"),
             nextChangeAt = intent.getStringExtra("nextChangeAt"),
         )
+        if (!isLocked) {
+            FocusDebugLogger.append(
+                context,
+                "schedule.unlock",
+                "applied persisted unlock (parity with iOS shield clear on scheduled unlock)",
+            )
+        }
     }
 }
