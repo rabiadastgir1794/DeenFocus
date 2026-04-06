@@ -1018,6 +1018,12 @@ abstract class AppLocalizations {
   /// **'Total Count'**
   String get tasbihTotalCount;
 
+  /// No description provided for @tasbihGrandTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Tasbih'**
+  String get tasbihGrandTotalLabel;
+
   /// No description provided for @tasbihTapMe.
   ///
   /// In en, this message translates to:
@@ -1029,6 +1035,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get tasbihReset;
+
+  /// No description provided for @tasbihResetTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset total'**
+  String get tasbihResetTotal;
 }
 
 class _AppLocalizationsDelegate

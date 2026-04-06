@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -42,16 +45,43 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     if (_sessionCount <= 0) return;
 
     await _withSaving(() async {
-      final total = await TasbihLocalRepository.instance.saveSession(
+      await TasbihLocalRepository.instance.recordSessionBatch(
         tasbihId: _item.id,
         sessionCount: _sessionCount,
       );
       if (!mounted) return;
-      setState(() {
-        _item = _item.copyWith(totalCount: total);
-        _sessionCount = 0;
-      });
+      setState(() => _sessionCount = 0);
     });
+  }
+
+  /// Writes session history for any unsaved taps (totals already persisted per tap).
+  Future<void> _flushPendingSession() async {
+    if (_sessionCount <= 0) return;
+    try {
+      await TasbihLocalRepository.instance.recordSessionBatch(
+        tasbihId: _item.id,
+        sessionCount: _sessionCount,
+      );
+      if (mounted) setState(() => _sessionCount = 0);
+    } catch (_) {}
+  }
+
+  void _popAfterFrame() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    });
+  }
+
+  Future<void> _handleBack() async {
+    await _flushPendingSession();
+    if (!mounted) return;
+    _popAfterFrame();
+  }
+
+  Future<void> _persistTap() async {
+    final total = await TasbihLocalRepository.instance.incrementTap(_item.id);
+    if (mounted) setState(() => _item = _item.copyWith(totalCount: total));
   }
 
   Future<void> _resetTotal() async {
@@ -73,44 +103,42 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
 
     return Stack(
       children: [
-        Scaffold(
-          appBar: CustomAppBar(
-            title: _item.label,
-            onBack: () => Navigator.of(context).pop(),
+        PopScope(
+          canPop: _sessionCount == 0,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            unawaited(
+              _flushPendingSession().then((_) {
+                if (!context.mounted) return;
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  if (!context.mounted) return;
+                  Navigator.of(context).pop(result);
+                });
+              }),
+            );
+          },
+          child: Scaffold(
+            appBar: CustomAppBar(
+              title: _item.label,
+              onBack: () => unawaited(_handleBack()),
             actions: [
               PopupMenuButton<_TasbihDetailOption>(
+                tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+                padding: EdgeInsets.zero,
                 onSelected: (option) async {
                   if (option == _TasbihDetailOption.resetTotal) {
                     await _resetTotal();
                   }
                 },
                 itemBuilder: (_) => [
-                  const PopupMenuItem<_TasbihDetailOption>(
+                  PopupMenuItem<_TasbihDetailOption>(
                     value: _TasbihDetailOption.resetTotal,
-                    child: Text('Reset total'),
+                    child: Text(l10n.tasbihResetTotal),
                   ),
                 ],
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 8.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(
-                      alpha: 0.55,
-                    ),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.42),
-                    ),
-                  ),
-                  child: Text(
-                    'Options',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ],
@@ -164,34 +192,6 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                       ),
                     ),
                   ],
-                  SizedBox(height: 18.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.bar_chart_rounded,
-                        size: 18.sp,
-                        color: colorScheme.primary,
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        l10n.tasbihTotalCount,
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        '${_item.totalCount}',
-                        style: TextStyle(
-                          color: colorScheme.primary,
-                          fontSize: 28.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
                   const Spacer(),
                   SizedBox(
                     width: 280.w,
@@ -226,6 +226,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                             onTap: () {
                               if (_sessionCount >= _sessionGoal) return;
                               setState(() => _sessionCount += 1);
+                              unawaited(_persistTap());
                             },
                             child: SizedBox(
                               width: 215.w,
@@ -289,6 +290,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
               ),
             ),
           ),
+        ),
         ),
         if (_saving)
           ColoredBox(

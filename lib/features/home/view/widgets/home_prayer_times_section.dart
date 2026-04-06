@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -68,20 +69,34 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
             children: [
               Text(
                 l10n.homeTodaysPrayers,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
+                  color: colorScheme.onSurface,
+                ),
               ),
               const Spacer(),
               Text(
                 DateFormat.yMMMEd(l10n.localeName).format(DateTime.now()),
-                style: Theme.of(
-                  context,
-                ).textTheme.labelMedium?.copyWith(color: colorScheme.primary),
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
           if (prayerTimes == null)
-            Text(l10n.homePrayerTimesUnavailable)
+            Text(
+              l10n.homePrayerTimesUnavailable,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            )
           else
             Wrap(
               spacing: 8,
@@ -101,13 +116,22 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(l10n.homeNextPrayerIn),
-                const SizedBox(width: 6),
+                Text(
+                  l10n.homeNextPrayerIn,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    height: 1.2,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Text(
                   _formatRemaining(remaining),
-                  style: TextStyle(
-                    color: colorScheme.primary,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
+                    height: 1.2,
+                    color: colorScheme.primary,
                   ),
                 ),
               ],
@@ -219,18 +243,23 @@ class HomePrayerTile extends StatelessWidget {
             Text(
               _labelForPrayer(l10n, slot.id),
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: titleColor.withValues(alpha: 0.8),
-                  ),
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                height: 1.2,
+                color: titleColor.withValues(alpha: 0.8),
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               DateFormat.jm(l10n.localeName).format(slot.time),
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: timeColor,
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+                color: timeColor,
+              ),
             ),
           ],
         ),

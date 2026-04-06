@@ -154,6 +154,8 @@
   "tasbihMeaningOptionalHint": "Meaning (optional)",
   "tasbihNoTransliteration": "No transliteration",
   "tasbihTotalCount": "Total Count",
+  "tasbihGrandTotalLabel": "Total Tasbih",
   "tasbihTapMe": "Tap Me",
-  "tasbihReset": "Reset"
+  "tasbihReset": "Reset",
+  "tasbihResetTotal": "Reset total"
 }

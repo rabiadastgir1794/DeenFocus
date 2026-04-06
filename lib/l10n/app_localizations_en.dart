@@ -494,8 +494,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasbihTotalCount => 'Total Count';
 
   @override
+  String get tasbihGrandTotalLabel => 'Total Tasbih';
+
+  @override
   String get tasbihTapMe => 'Tap Me';
 
   @override
   String get tasbihReset => 'Reset';
+
+  @override
+  String get tasbihResetTotal => 'Reset total';
 }

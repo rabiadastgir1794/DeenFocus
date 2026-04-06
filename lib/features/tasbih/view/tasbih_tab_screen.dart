@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -134,8 +135,10 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
   }
 
   Future<void> _openDetail(TasbihItem item) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => TasbihDetailScreen(item: item)),
+    await Navigator.of(context).push<void>(
+      CupertinoPageRoute<void>(
+        builder: (_) => TasbihDetailScreen(item: item),
+      ),
     );
     if (!mounted) return;
     await _loadItems();
@@ -172,9 +175,12 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
+
+    final listItemCount = _items.length;
 
     return Stack(
       children: [
@@ -216,6 +222,37 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                         icon: const Icon(Icons.add_circle_outline_rounded),
                       ),
                     ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              l10n.tasbihGrandTotalLabel,
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '$listItemCount',
+                            style: TextStyle(
+                              color: colorScheme.primary,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   if (_showEditor) ...[
                     SizedBox(height: 8.h),

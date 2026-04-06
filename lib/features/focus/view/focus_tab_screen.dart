@@ -425,9 +425,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   ),
                   _ModeCard(
                     marginBottom: 16,
-                    icon: Icons.nights_stay,
+                    icon: Icons.nightlight_outlined,
                     iconBackground: colorScheme.primary.withValues(alpha: 0.2),
-                    iconColor: colorScheme.primary,
+                    iconColor: colorScheme.onSurface,
                     title: 'Night Discipline',
                     subtitle: 'Protect sleep & Fajr',
                     value: nightMode,
