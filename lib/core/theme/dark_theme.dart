@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
@@ -7,6 +8,9 @@ ThemeData get darkTheme {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
+    textTheme: GoogleFonts.plusJakartaSansTextTheme(
+      ThemeData(brightness: Brightness.dark, useMaterial3: true).textTheme,
+    ),
     colorScheme: const ColorScheme.dark(
       primary: AppColors.primaryDark,
       onPrimary: AppColors.onPrimaryDark,
@@ -32,8 +36,8 @@ ThemeData get darkTheme {
       outlineVariant: AppColors.outlineVariantDark,
       shadow: Colors.black,
       scrim: Colors.black,
-      inverseSurface: Color(0xFFE0E3DC),
-      onInverseSurface: Color(0xFF2F312D),
+      inverseSurface: Color(0xFFF7F5F0),
+      onInverseSurface: Color(0xFF1B2E24),
       inversePrimary: AppColors.primary,
     ),
     scaffoldBackgroundColor: AppColors.backgroundDark,
@@ -48,15 +52,15 @@ ThemeData get darkTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimaryLight,
+        backgroundColor: AppColors.primaryDark,
+        foregroundColor: AppColors.onPrimaryDark,
         elevation: 0,
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimaryLight,
+        backgroundColor: AppColors.primaryDark,
+        foregroundColor: AppColors.onPrimaryDark,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -69,12 +73,12 @@ ThemeData get darkTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        borderSide: const BorderSide(color: AppColors.primaryDark, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
     ),
     cardTheme: CardThemeData(
-      color: AppColors.surfaceDark,
+      color: AppColors.cardBackgroundDark,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),

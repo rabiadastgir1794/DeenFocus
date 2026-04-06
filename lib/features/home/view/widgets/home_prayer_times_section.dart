@@ -239,6 +239,9 @@ class HomePrayerTile extends StatelessWidget {
 
     if (!isCurrent) return tile;
 
+    final emeraldGlow =
+        isDark ? AppColors.emeraldGlowDark : AppColors.emeraldGlow;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -251,10 +254,10 @@ class HomePrayerTile extends StatelessWidget {
             height: 10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.prayerNextIndicator,
+              color: emeraldGlow,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.prayerNextIndicator.withValues(alpha: 0.45),
+                  color: emeraldGlow.withValues(alpha: 0.45),
                   blurRadius: 6,
                 ),
               ],

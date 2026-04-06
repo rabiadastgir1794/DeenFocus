@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../app/routes/route_names.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_icon_circle.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -81,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                     fontSize: 14.sp,
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],

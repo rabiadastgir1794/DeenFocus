@@ -371,7 +371,7 @@ object FocusBlockerStore {
 
         fun todayAt(h: Int, m: Int): Calendar {
             val c = Calendar.getInstance(tz)
-            c.timeInMillis = nowMillis
+            c.timeInMillis = nowCal.timeInMillis
             c.set(Calendar.HOUR_OF_DAY, h)
             c.set(Calendar.MINUTE, m)
             c.set(Calendar.SECOND, 0)

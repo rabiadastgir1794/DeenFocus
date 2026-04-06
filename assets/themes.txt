@@ -1,115 +1,112 @@
 ========================================
-  DEEN FOCUS — Material 3 Color Palette
-  Light & Dark Mode
+  DEEN FOCUS — App Color Palette
+  Light & Dark Mode (HSL / Flutter)
+  Implemented in: lib/core/theme/app_colors.dart
 ========================================
 
-Based on: Soft Emerald Green (Primary), Warm Sand/Beige (Secondary), Light Blue (Tertiary)
 
 ─────────────────────────────────────────
   LIGHT MODE
 ─────────────────────────────────────────
 
-── Primary Colors ──
-colorPrimary:                 #4E9A7C
-colorOnPrimary:               #FFFFFF
-colorPrimaryContainer:        #C8E6D8
-colorOnPrimaryContainer:      #1B3D2E
+── Core ──
+Background:              hsl(40, 33%, 97%)        #F7F5F0
+Foreground:              hsl(160, 25%, 14%)        #1B2E24
 
-── Secondary Colors ──
-colorSecondary:               #B5A48A
-colorOnSecondary:             #FFFFFF
-colorSecondaryContainer:      #F0E6D6
-colorOnSecondaryContainer:    #3D3224
+── Card ──
+Card:                    hsl(40, 30%, 95%)         #F2EFE8
+Card Foreground:         hsl(160, 25%, 14%)        #1B2E24
 
-── Tertiary Colors ──
-colorTertiary:                #5BA4C4
-colorOnTertiary:              #FFFFFF
-colorTertiaryContainer:       #C8E4F0
-colorOnTertiaryContainer:     #163545
+── Popover ──
+Popover:                 hsl(40, 33%, 97%)         #F7F5F0
+Popover Foreground:      hsl(160, 25%, 14%)        #1B2E24
 
-── Background / Surface ──
-colorBackground:              #F7F5F0
-colorOnBackground:            #1C2E24
-colorSurface:                 #F7F5F0
-colorOnSurface:               #1C2E24
-colorSurfaceVariant:          #E8E0D4
-colorOnSurfaceVariant:        #4A4539
+── Primary ──
+Primary:                 hsl(158, 35%, 42%)        #46926E
+Primary Foreground:      hsl(40, 33%, 97%)         #F7F5F0
 
-── Error Colors ──
-colorError:                   #BA1A1A
-colorOnError:                 #FFFFFF
-colorErrorContainer:          #FFDAD6
-colorOnErrorContainer:        #410002
+── Secondary ──
+Secondary:               hsl(35, 30%, 90%)         #EBE4D8
+Secondary Foreground:    hsl(160, 25%, 20%)        #263D30
 
-── Outline / Borders ──
-colorOutline:                 #7D7768
-colorOutlineVariant:          #CFC6B4
+── Muted ──
+Muted:                   hsl(40, 20%, 92%)         #EDEAE4
+Muted Foreground:        hsl(160, 10%, 46%)        #6A7D72
 
-── Other ──
-colorInverseSurface:          #2F312D
-colorInverseOnSurface:        #F0F1EB
-colorInversePrimary:          #8ED4B4
-scrim:                        #000000
+── Accent ──
+Accent:                  hsl(200, 60%, 72%)        #85C4E0
+Accent Foreground:       hsl(200, 60%, 18%)        #123044
+
+── Destructive ──
+Destructive:             hsl(0, 72%, 51%)          #E02424
+Destructive Foreground:  hsl(0, 0%, 98%)           #FAFAFA
+
+── Borders & Input ──
+Border:                  hsl(40, 20%, 88%)         #E5E0D6
+Input:                   hsl(40, 20%, 88%)         #E5E0D6
+Ring:                    hsl(158, 35%, 42%)         #46926E
+
+── Custom Tokens ──
+Sand:                    hsl(35, 35%, 85%)          #DFCFB8
+Sand Foreground:         hsl(35, 20%, 30%)          #5C4D3D
+Emerald Glow:            hsl(158, 40%, 55%)         #5CB896
+Warm BG:                 hsl(38, 40%, 96%)          #F8F5EE
+
+── Radius ──
+Border Radius:           1rem (16 logical px in ThemeData)
 
 
 ─────────────────────────────────────────
   DARK MODE
 ─────────────────────────────────────────
 
-── Primary Colors ──
-colorPrimary:                 #8ED4B4
-colorOnPrimary:               #1B3D2E
-colorPrimaryContainer:        #2E6B52
-colorOnPrimaryContainer:      #C8E6D8
+── Core ──
+Background:              hsl(220, 25%, 8%)         #0F1219
+Foreground:              hsl(40, 20%, 92%)          #EDEAE4
 
-── Secondary Colors ──
-colorSecondary:               #D8C8AA
-colorOnSecondary:             #3D3224
-colorSecondaryContainer:      #544636
-colorOnSecondaryContainer:    #F0E6D6
+── Card ──
+Card:                    hsl(220, 22%, 12%)         #171C26
+Card Foreground:         hsl(40, 20%, 92%)          #EDEAE4
 
-── Tertiary Colors ──
-colorTertiary:                #8ECCE8
-colorOnTertiary:              #163545
-colorTertiaryContainer:       #2E6B85
-colorOnTertiaryContainer:     #C8E4F0
+── Popover ──
+Popover:                 hsl(220, 22%, 12%)         #171C26
+Popover Foreground:      hsl(40, 20%, 92%)          #EDEAE4
 
-── Background / Surface ──
-colorBackground:              #111B14
-colorOnBackground:            #E0E3DC
-colorSurface:                 #111B14
-colorOnSurface:               #E0E3DC
-colorSurfaceVariant:          #3A3A30
-colorOnSurfaceVariant:        #CFC6B4
+── Primary ──
+Primary:                 hsl(158, 35%, 45%)         #4B9974
+Primary Foreground:      hsl(220, 25%, 8%)          #0F1219
 
-── Error Colors ──
-colorError:                   #FFB4AB
-colorOnError:                 #690005
-colorErrorContainer:          #93000A
-colorOnErrorContainer:        #FFDAD6
+── Secondary ──
+Secondary:               hsl(220, 18%, 18%)         #262C38
+Secondary Foreground:    hsl(40, 20%, 85%)           #DDD8CE
 
-── Outline / Borders ──
-colorOutline:                 #989080
-colorOutlineVariant:          #4A4539
+── Muted ──
+Muted:                   hsl(220, 18%, 16%)          #222833
+Muted Foreground:        hsl(220, 10%, 55%)          #818994
 
-── Other ──
-colorInverseSurface:          #E0E3DC
-colorInverseOnSurface:        #2F312D
-colorInversePrimary:          #4E9A7C
-scrim:                        #000000
+── Accent ──
+Accent:                  hsl(200, 50%, 40%)          #337A9A
+Accent Foreground:       hsl(200, 50%, 90%)          #C2E2F0
 
+── Destructive ──
+Destructive:             hsl(0, 62.8%, 30.6%)        #7F1D1D
+Destructive Foreground:  hsl(0, 0%, 98%)             #FAFAFA
 
-========================================
-  HEX → HSL Reference (for CSS tokens)
-========================================
+── Borders & Input ──
+Border:                  hsl(220, 18%, 18%)          #262C38
+Input:                   hsl(220, 18%, 18%)          #262C38
+Ring:                    hsl(158, 35%, 45%)           #4B9974
 
-#4E9A7C  →  158° 33% 45%
-#8ED4B4  →  158° 43% 69%
-#B5A48A  →  35° 22% 63%
-#5BA4C4  →  200° 43% 56%
-#F7F5F0  →  40° 33% 96%
-#111B14  →  148° 24% 8%
-#1C2E24  →  152° 25% 15%
-#BA1A1A  →  0° 75% 41%
+── Custom Tokens ──
+Sand:                    hsl(35, 15%, 20%)            #3B352C
+Sand Foreground:         hsl(35, 20%, 75%)            #C9BBAA
+Emerald Glow:            hsl(158, 40%, 40%)           #3D9970
+Warm BG:                 hsl(220, 22%, 10%)           #131820
+
 
 ========================================
+  FONT
+========================================
+Primary Font:  Plus Jakarta Sans (google_fonts)
+Weights:       200–800 (italic supported)
+

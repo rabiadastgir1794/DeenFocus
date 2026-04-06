@@ -616,7 +616,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                                 height: 1.8,
                                                 color: isCurrent
                                                     ? colorScheme.primary
-                                                    : Colors.black,
+                                                    : colorScheme.onSurface,
                                               ),
                                             ),
                                             if (_showEnglish) ...[
@@ -628,7 +628,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                                   height: 1.45,
                                                   color: isCurrent
                                                       ? colorScheme.primary
-                                                      : Colors.black,
+                                                      : colorScheme.onSurface,
                                                 ),
                                               ),
                                             ],

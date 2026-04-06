@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
@@ -7,6 +8,7 @@ ThemeData get lightTheme {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
+    textTheme: GoogleFonts.plusJakartaSansTextTheme(),
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       onPrimary: AppColors.onPrimaryLight,
@@ -32,8 +34,8 @@ ThemeData get lightTheme {
       outlineVariant: AppColors.outlineVariantLight,
       shadow: Colors.black,
       scrim: Colors.black,
-      inverseSurface: Color(0xFF2F312D),
-      onInverseSurface: Color(0xFFF0F1EB),
+      inverseSurface: Color(0xFF0F1219),
+      onInverseSurface: Color(0xFFEDEAE4),
       inversePrimary: AppColors.primaryDark,
     ),
     scaffoldBackgroundColor: AppColors.backgroundLight,
@@ -74,7 +76,7 @@ ThemeData get lightTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
     ),
     cardTheme: CardThemeData(
-      color: AppColors.surfaceLight,
+      color: AppColors.cardBackgroundLight,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
