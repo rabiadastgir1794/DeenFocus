@@ -17,12 +17,12 @@ class HomeAiChatScreen extends StatefulWidget {
 class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   final TextEditingController _inputController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final List<_ChatMessage> _messages = <_ChatMessage>[
-    const _ChatMessage(
-      role: _ChatRole.assistant,
-      content:
-          "As-salamu alaykum! I'm here to help with prayer, Quran, and Islamic guidance. What would you like to ask?",
-    ),
+  final List<_ChatMessage> _messages = <_ChatMessage>[];
+
+  static const List<String> _suggestionPrompts = <String>[
+    'What is Ramadan?',
+    'Prayer times',
+    'Quran reading plan',
   ];
 
   bool _isLoading = false;
@@ -42,39 +42,78 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     final composerBackground = colorScheme.surface;
     final inputBackground = isDark
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.6)
-        : const Color(0xFFF6F2E9);
-    final inputBorderColor = isDark
-        ? colorScheme.outlineVariant
-        : const Color(0xFFE6DBC5);
+        : colorScheme.surfaceContainerHighest.withValues(alpha: 0.85);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Islamic Chat',
-        onBack: () => Navigator.of(context).pop(),
-      ),
       backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(16),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final message = _messages[index];
-                  return _ChatBubble(message: message);
-                },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                    child: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints.tightFor(
+                        width: 40,
+                        height: 40,
+                      ),
+                      splashRadius: 20,
+                      tooltip: MaterialLocalizations.of(
+                        context,
+                      ).backButtonTooltip,
+                      icon: Icon(
+                        Icons.chevron_left_rounded,
+                        size: 28,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Deen Focus AI',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Material(
-              color: composerBackground,
-              child: SafeArea(
-                top: false,
+              const SizedBox(height: 16),
+              Expanded(
+                child: _messages.isEmpty
+                    ? _HomeAiChatEmptyState(
+                        colorScheme: colorScheme,
+                        onSuggestion: _applySuggestion,
+                        suggestions: _suggestionPrompts,
+                      )
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(bottom: 16),
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          final message = _messages[index];
+                          return _ChatBubble(message: message);
+                        },
+                      ),
+              ),
+              Material(
+                color: composerBackground,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                  padding: const EdgeInsets.only(top: 4),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -82,8 +121,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: inputBackground,
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: inputBorderColor),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           child: TextField(
                             controller: _inputController,
@@ -94,40 +132,39 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                             onChanged: (_) => setState(() {}),
                             onSubmitted: (_) => _sendMessage(),
                             decoration: InputDecoration(
-                              hintText: 'Ask a question',
+                              hintText: 'Ask a question...',
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 14,
+                                horizontal: 16,
                                 vertical: 12,
                               ),
                               hintStyle: TextStyle(
                                 color: colorScheme.onSurfaceVariant,
                               ),
                             ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: colorScheme.onSurface),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      InkResponse(
-                        onTap: _canSend ? _sendMessage : null,
-                        radius: 24,
-                        child: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _canSend
-                                ? colorScheme.primary
-                                : colorScheme.outlineVariant.withValues(
-                                    alpha: 0.35,
-                                  ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: _canSend ? _sendMessage : null,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
                           ),
-                          child: Icon(
-                            Icons.send_rounded,
-                            size: 20,
-                            color: _canSend
-                                ? colorScheme.onPrimary
-                                : colorScheme.onSurfaceVariant,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          'Send',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onPrimary,
                           ),
                         ),
                       ),
@@ -135,11 +172,16 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _applySuggestion(String text) {
+    _inputController.text = text;
+    setState(() {});
   }
 
   bool get _canSend => _inputController.text.trim().isNotEmpty && !_isLoading;
@@ -170,7 +212,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     } catch (error) {
       if (!mounted) return;
       _replaceLoadingMessage(
-        'Sorry, I ran into an issue while connecting to Islamic Chat. ${error.toString()}',
+        'Sorry, I ran into an issue while connecting to Deen Focus AI. ${error.toString()}',
       );
     }
   }
@@ -274,6 +316,104 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   }
 }
 
+class _HomeAiChatEmptyState extends StatelessWidget {
+  const _HomeAiChatEmptyState({
+    required this.colorScheme,
+    required this.onSuggestion,
+    required this.suggestions,
+  });
+
+  final ColorScheme colorScheme;
+  final ValueChanged<String> onSuggestion;
+  final List<String> suggestions;
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = colorScheme.surfaceContainerHighest.withValues(alpha: 0.75);
+    final textTheme = Theme.of(context).textTheme;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colorScheme.primary.withValues(alpha: 0.1),
+                    ),
+                    child: Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 28,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Ask anything about Islam',
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Prayer times, Quran, Hadith, Islamic events, and spiritual guidance',
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.35,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.center,
+                    children: suggestions
+                        .map(
+                          (q) => Material(
+                            color: muted,
+                            borderRadius: BorderRadius.circular(12),
+                            child: InkWell(
+                              onTap: () => onSuggestion(q),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                child: Text(
+                                  q,
+                                  style: textTheme.labelMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class HomeSimpleInfoScreen extends StatelessWidget {
   const HomeSimpleInfoScreen({
     super.key,
@@ -323,15 +463,17 @@ class _ChatBubble extends StatelessWidget {
         : const Color(0xFFF6F2E9);
     final assistantTextColor = colorScheme.onSurface;
 
+    final maxBubbleWidth = MediaQuery.sizeOf(context).width * 0.85;
+
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        constraints: const BoxConstraints(maxWidth: 320),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        constraints: BoxConstraints(maxWidth: maxBubbleWidth),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isUser ? colorScheme.primary : assistantBubbleColor,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: isLoading
             ? SizedBox(
