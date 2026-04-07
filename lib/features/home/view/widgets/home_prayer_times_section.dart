@@ -43,6 +43,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final prayerTimes = widget.prayerTimes;
 
     return Container(
@@ -51,7 +52,9 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
         color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+          color: isDark ?
+          colorScheme.outlineVariant.withValues(alpha: 0.35):
+          AppColors.outlineVariantLight.withValues(alpha: 0.35),
         ),
         boxShadow: [
           BoxShadow(
@@ -61,7 +64,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 14,vertical: 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

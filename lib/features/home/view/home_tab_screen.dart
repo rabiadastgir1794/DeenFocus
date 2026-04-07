@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/theme_service.dart';
 import '../../../core/services/user_profile_service.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/model/focus_models.dart';
 import '../../focus/viewmodel/focus_controller.dart';
@@ -92,10 +93,7 @@ class _HomeTabViewState extends State<_HomeTabView>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final softCardColor = isDark
-        ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.28)
-        : const Color(0xFFf7f5ef);
+    final softCardColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
 
     return Consumer4<
       HomeTabViewModel,
@@ -386,13 +384,18 @@ class _QuickActionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDark ?
+    colorScheme.outlineVariant.withValues(alpha: 0.35):
+    AppColors.outlineVariantLight.withValues(alpha: 0.35);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+          color: borderColor,
           width: 1.1,
         ),
         boxShadow: [
@@ -411,7 +414,7 @@ class _QuickActionsCard extends StatelessWidget {
             title: focusTitle,
             subtitle: focusSubtitle,
             icon: Icons.shield_outlined,
-            iconBackground: colorScheme.primaryContainer.withValues(alpha: 0.25),
+            iconBackground: colorScheme.primaryContainer.withValues(alpha: isDark ? 0.25 : 1),
             onTap: onOpenFocus,
             showOuterDecoration: false,
             trailing: Row(
@@ -441,28 +444,28 @@ class _QuickActionsCard extends StatelessWidget {
           Divider(
             height: 1,
             thickness: 1,
-            color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+            color: borderColor,
           ),
           HomeActionContainer(
             backgroundColor: backgroundColor,
             title: qiblaTitle,
             subtitle: qiblaSubtitle,
             icon: Icons.explore_outlined,
-            iconBackground: colorScheme.primaryContainer.withValues(alpha: 0.25),
+            iconBackground: colorScheme.primaryContainer.withValues(alpha: isDark ? 0.25 : 1),
             onTap: onOpenQibla,
             showOuterDecoration: false,
           ),
           Divider(
             height: 1,
             thickness: 1,
-            color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+            color: borderColor,
           ),
           HomeActionContainer(
             backgroundColor: backgroundColor,
             title: masjidTitle,
             subtitle: masjidSubtitle,
             icon: Icons.location_on_outlined,
-            iconBackground: colorScheme.tertiaryContainer.withValues(alpha: 0.25),
+            iconBackground: colorScheme.tertiaryContainer.withValues(alpha: isDark ? 0.25 : 1),
             onTap: onOpenMasjid,
             showOuterDecoration: false,
           ),

@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/view/widgets/home_circle_icon_button.dart';
+import '../../home/view/widgets/home_rounded_icon_button.dart';
 import '../data/tasbih_local_repository.dart';
 import 'tasbih_detail_screen.dart';
 
@@ -136,9 +139,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
 
   Future<void> _openDetail(TasbihItem item) async {
     await Navigator.of(context).push<void>(
-      CupertinoPageRoute<void>(
-        builder: (_) => TasbihDetailScreen(item: item),
-      ),
+      CupertinoPageRoute<void>(builder: (_) => TasbihDetailScreen(item: item)),
     );
     if (!mounted) return;
     await _loadItems();
@@ -176,6 +177,14 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.20,
+    );
+    final borderColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.35);
+
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -217,15 +226,20 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                           ],
                         ),
                       ),
-                      IconButton(
-                        onPressed: () => _openEditor(),
-                        icon: const Icon(Icons.add_circle_outline_rounded),
+                      HomeRoundedIconButton(
+                        icon: Icons.add,
+                        onTap: () => _openEditor(),
                       ),
                     ],
                   ),
                   SizedBox(height: 10.h),
-                  Card(
+                  Container(
                     margin: EdgeInsets.zero,
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: borderColor, width: 1.1),
+                    ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.w,
@@ -333,7 +347,12 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                       onReorder: _reorder,
                       itemBuilder: (context, index) {
                         final item = _items[index];
-                        return Card(
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: backgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: borderColor, width: 1.1),
+                          ),
                           key: ValueKey(item.id),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(

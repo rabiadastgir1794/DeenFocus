@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
 import '../model/focus_models.dart';
@@ -95,6 +96,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
+    final borderColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.25)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.25);
     return Consumer<FocusController>(
       builder: (context, vm, _) {
         final colorScheme = Theme.of(context).colorScheme;
@@ -803,15 +809,17 @@ class _GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.35);
     return Container(
       margin: EdgeInsets.only(bottom: marginBottom),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),

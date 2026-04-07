@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../features/focus/view/focus_tab_screen.dart';
 import '../../../features/home/view/home_tab_screen.dart';
 import '../../../features/home/view/settings/settings_tab_screen.dart';
@@ -28,6 +29,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
+    final backgroundColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.25)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.25);
     final pages = <Widget>[
       HomeTabScreen(
         onOpenFocusTab: () {
@@ -44,6 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: IndexedStack(index: _currentIndex, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
+        backgroundColor: backgroundColor,
         onDestinationSelected: (index) {
           setState(() => _currentIndex = index);
         },

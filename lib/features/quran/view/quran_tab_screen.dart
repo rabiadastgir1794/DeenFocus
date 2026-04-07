@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/quran_local_repository.dart';
 import 'surah_detail_bottom_sheet.dart';
@@ -82,6 +83,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -139,6 +141,12 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
 
   Widget _buildBody(BuildContext context, AppLocalizations l10n) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.35);
+    final backgroundColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
+
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -175,9 +183,12 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
       separatorBuilder: (_, _) => SizedBox(height: 8.h),
       itemBuilder: (context, index) {
         final surah = _filteredSurahs[index];
-        return Material(
-          color: colorScheme.surface.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(16.r),
+        return Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: borderColor),
+          ),
           child: InkWell(
             borderRadius: BorderRadius.circular(16.r),
             onTap: () => _openSurahDetail(surah),

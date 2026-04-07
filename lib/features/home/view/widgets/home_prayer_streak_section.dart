@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class HomePrayerStreakSection extends StatelessWidget {
@@ -21,7 +22,9 @@ class HomePrayerStreakSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final borderColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.35);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -30,9 +33,7 @@ class HomePrayerStreakSection extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-          ),
+          border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.035),
