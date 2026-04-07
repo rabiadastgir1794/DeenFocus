@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
@@ -15,6 +16,11 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
         final colorScheme = Theme.of(context).colorScheme;
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final days = vm.currentWeekDates;
+
+        final borderColor = isDark
+            ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+            : AppColors.outlineVariantLight.withValues(alpha: 0.35);
+        final backgroundColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
 
         return Scaffold(
           appBar: const CustomAppBar(title: 'Prayer Streak'),
@@ -49,15 +55,9 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? colorScheme.surfaceContainer.withValues(alpha: 0.9)
-                          : Colors.white.withValues(alpha: 0.82),
+                      color: backgroundColor,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: colorScheme.outlineVariant.withValues(
-                          alpha: 0.45,
-                        ),
-                      ),
+                      border: Border.all(color: borderColor),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(
@@ -128,7 +128,7 @@ class _PrayerWeekRow extends StatelessWidget {
                   editable
                       ? Icons.edit_calendar_rounded
                       : Icons.lock_outline_rounded,
-                  size: 16,
+                  size: 14,
                   color: editable
                       ? colorScheme.primary
                       : colorScheme.onSurfaceVariant,
