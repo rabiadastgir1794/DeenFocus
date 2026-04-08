@@ -374,10 +374,16 @@ class FocusController extends ChangeNotifier {
       }
     }
 
-    if (_settings.nightDisciplineEnabled && _settings.nightRange.contains(now)) {
-      final nightWindow = _nightWindowContainingOrNext(_settings.nightRange, now);
+    if (_settings.nightDisciplineEnabled &&
+        _settings.nightRange.contains(now)) {
+      final nightWindow = _nightWindowContainingOrNext(
+        _settings.nightRange,
+        now,
+      );
       if (nightWindow != null) {
-        until = until == null ? nightWindow.end : _earlierOf(until, nightWindow.end);
+        until = until == null
+            ? nightWindow.end
+            : _earlierOf(until, nightWindow.end);
       }
     }
 
@@ -395,6 +401,19 @@ class FocusController extends ChangeNotifier {
       'until=${until.toIso8601String()} mode=${mode?.name}',
     );
     _settings = _settings.copyWith(temporarilyUnlockedUntil: until);
+    await _persist();
+    await _recomputeAndPersist();
+  }
+
+  /// Home action while temporarily unlocked: clear temporary unlock and enforce
+  /// the currently active scheduled lock immediately.
+  Future<void> relockNowFromHome() async {
+    if (!_lockState.isTemporarilyUnlocked) return;
+    await FocusEnforcementService.appendDebugLog(
+      'focus.relockFromHome',
+      'tempUnlockUntil=${_settings.temporarilyUnlockedUntil?.toIso8601String()} activeMode=${_lockState.activeMode?.name}',
+    );
+    _settings = _settings.copyWith(clearTemporaryUnlock: true);
     await _persist();
     await _recomputeAndPersist();
   }
@@ -602,9 +621,8 @@ class FocusController extends ChangeNotifier {
       ),
     );
     unawaited(
-      AppNotificationService.instance.syncFocusNotifications(
-            settings: _settings,
-          )
+      AppNotificationService.instance
+          .syncFocusNotifications(settings: _settings)
           .catchError((Object e, StackTrace st) {
             assert(() {
               debugPrint('focus: syncFocusNotifications failed: $e\n$st');
@@ -932,15 +950,11 @@ class FocusController extends ChangeNotifier {
     final events = <Map<String, dynamic>>[];
 
     if (settings.nightDisciplineEnabled) {
-      events.addAll(
-        _buildNightScheduledTransitions(settings, now, windows),
-      );
+      events.addAll(_buildNightScheduledTransitions(settings, now, windows));
     }
 
     if (settings.salahModeEnabled) {
-      events.addAll(
-        _buildSalahScheduledTransitions(settings, now, windows),
-      );
+      events.addAll(_buildSalahScheduledTransitions(settings, now, windows));
     }
 
     events.sort(
@@ -996,7 +1010,8 @@ class FocusController extends ChangeNotifier {
             at: window.start,
             isLocked: true,
             activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
-            reason: snap.reason ?? 'Night Discipline is blocking selected apps.',
+            reason:
+                snap.reason ?? 'Night Discipline is blocking selected apps.',
             nextChangeAt: snap.nextChangeAt ?? window.end,
           ),
         );
@@ -1014,7 +1029,8 @@ class FocusController extends ChangeNotifier {
           at: window.end,
           isLocked: snap.isLocked,
           activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
-          reason: snap.reason ??
+          reason:
+              snap.reason ??
               'Night Discipline will start at ${_formatTime(range.startHour, range.startMinute)}.',
           nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
         ),
@@ -1036,7 +1052,8 @@ class FocusController extends ChangeNotifier {
             at: settings.temporarilyUnlockedUntil!,
             isLocked: true,
             activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
-            reason: snap.reason ?? 'Night Discipline is blocking selected apps.',
+            reason:
+                snap.reason ?? 'Night Discipline is blocking selected apps.',
             nextChangeAt: snap.nextChangeAt ?? window.end,
           ),
         );
@@ -1066,7 +1083,8 @@ class FocusController extends ChangeNotifier {
               at: window.start,
               isLocked: true,
               activeMode: snap.activeMode ?? FocusModeType.salah,
-              reason: snap.reason ??
+              reason:
+                  snap.reason ??
                   'Salah mode is active for ${_prayerLabel(window.prayer.id)}.',
               nextChangeAt: snap.nextChangeAt ?? window.end,
             ),
@@ -1081,7 +1099,8 @@ class FocusController extends ChangeNotifier {
             at: window.end,
             isLocked: snap.isLocked,
             activeMode: snap.activeMode ?? FocusModeType.salah,
-            reason: snap.reason ??
+            reason:
+                snap.reason ??
                 'Salah mode will lock apps around the next prayer.',
             nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
           ),
@@ -1107,7 +1126,8 @@ class FocusController extends ChangeNotifier {
             at: settings.temporarilyUnlockedUntil!,
             isLocked: true,
             activeMode: snap.activeMode ?? FocusModeType.salah,
-            reason: snap.reason ??
+            reason:
+                snap.reason ??
                 'Salah mode is active for ${_prayerLabel(activeWindow.prayer.id)}.',
             nextChangeAt: snap.nextChangeAt ?? activeWindow.end,
           ),

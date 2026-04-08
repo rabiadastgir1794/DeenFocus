@@ -40,6 +40,9 @@ class AppNotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
+  static const MethodChannel _focusMethodChannel = MethodChannel(
+    'com.app.deenly.deenly/focus',
+  );
   bool _initialized = false;
 
   Future<void> initialize() async {
@@ -153,9 +156,7 @@ class AppNotificationService {
   static const int _nightUnlockNotificationIdStart = 4010;
   static const int _nightUnlockNotificationIdEnd = 4016;
 
-  Future<void> syncFocusNotifications({
-    required FocusSettings settings,
-  }) async {
+  Future<void> syncFocusNotifications({required FocusSettings settings}) async {
     await initialize();
     if (!await _hasNotificationPermission()) {
       await _cancelRange(2000, 2059);
@@ -184,10 +185,11 @@ class AppNotificationService {
     final lockTimes = <DateTime>[];
     final unlockTimes = <DateTime>[];
     var probe = now;
-    for (var iter = 0;
-        iter < 48 &&
-            (lockTimes.length < 7 || unlockTimes.length < 7);
-        iter++) {
+    for (
+      var iter = 0;
+      iter < 48 && (lockTimes.length < 7 || unlockTimes.length < 7);
+      iter++
+    ) {
       final w = _nightWindowContainingOrNext(range, probe);
       if (w.start.isAfter(now) && lockTimes.length < 7) {
         lockTimes.add(w.start);
@@ -414,6 +416,34 @@ class AppNotificationService {
   }
 
   Future<void> _cancelRange(int startInclusive, int endInclusive) async {
+    // On iOS, `cancel(id)` can remove delivered entries with the same ID from
+    // Notification Center. Route through native pending-only cancellation.
+    if (Platform.isIOS) {
+      try {
+        await _focusMethodChannel.invokeMethod<int>(
+          'cancelPendingNotificationRange',
+          <String, dynamic>{
+            'startInclusive': startInclusive,
+            'endInclusive': endInclusive,
+          },
+        );
+        return;
+      } on PlatformException {
+        // Fall back to plugin behavior below.
+      }
+    }
+
+    // On macOS we limit to pending IDs first to reduce delivered clearing risk.
+    if (Platform.isMacOS) {
+      final pending = await _plugin.pendingNotificationRequests();
+      for (final request in pending) {
+        final id = request.id;
+        if (id < startInclusive || id > endInclusive) continue;
+        await _plugin.cancel(id);
+      }
+      return;
+    }
+
     for (var id = startInclusive; id <= endInclusive; id++) {
       await _plugin.cancel(id);
     }

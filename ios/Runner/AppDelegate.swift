@@ -72,6 +72,8 @@ private enum ManagedSettingsStoreHolder {
           result(FocusIOSDebugLogger.path())
         case "getFocusDebugLogPath":
           result(FocusIOSDebugLogger.path())
+        case "cancelPendingNotificationRange":
+          self.cancelPendingNotificationRange(call: call, result: result)
         default:
           result(FlutterMethodNotImplemented)
         }
@@ -152,6 +154,40 @@ private enum ManagedSettingsStoreHolder {
 
     FocusIOSDebugLogger.append(tag, message)
     result(nil)
+  }
+
+  private func cancelPendingNotificationRange(
+    call: FlutterMethodCall,
+    result: @escaping FlutterResult
+  ) {
+    guard
+      let args = call.arguments as? [String: Any],
+      let start = args["startInclusive"] as? Int,
+      let end = args["endInclusive"] as? Int
+    else {
+      result(0)
+      return
+    }
+
+    UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+      let identifiersToRemove = requests.compactMap { request -> String? in
+        guard let id = Int(request.identifier) else { return nil }
+        guard id >= start, id <= end else { return nil }
+        return request.identifier
+      }
+
+      if !identifiersToRemove.isEmpty {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(
+          withIdentifiers: identifiersToRemove
+        )
+      }
+
+      FocusIOSDebugLogger.append(
+        "ios.notifications.cancelPending",
+        "range=\(start)-\(end) removed=\(identifiersToRemove.count)"
+      )
+      result(identifiersToRemove.count)
+    }
   }
 
   private func searchMapItems(query: String, result: @escaping FlutterResult) {

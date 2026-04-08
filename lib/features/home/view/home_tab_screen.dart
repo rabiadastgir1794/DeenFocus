@@ -93,7 +93,9 @@ class _HomeTabViewState extends State<_HomeTabView>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final softCardColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
+    final softCardColor = colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.20,
+    );
 
     return Consumer4<
       HomeTabViewModel,
@@ -385,19 +387,16 @@ class _QuickActionsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ?
-    colorScheme.outlineVariant.withValues(alpha: 0.35):
-    AppColors.outlineVariantLight.withValues(alpha: 0.35);
+    final borderColor = isDark
+        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+        : AppColors.outlineVariantLight.withValues(alpha: 0.35);
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: borderColor,
-          width: 1.1,
-        ),
+        border: Border.all(color: borderColor, width: 1.1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.07),
@@ -414,7 +413,9 @@ class _QuickActionsCard extends StatelessWidget {
             title: focusTitle,
             subtitle: focusSubtitle,
             icon: Icons.shield_outlined,
-            iconBackground: colorScheme.primaryContainer.withValues(alpha: isDark ? 0.25 : 1),
+            iconBackground: colorScheme.primaryContainer.withValues(
+              alpha: isDark ? 0.25 : 1,
+            ),
             onTap: onOpenFocus,
             showOuterDecoration: false,
             trailing: Row(
@@ -441,31 +442,27 @@ class _QuickActionsCard extends StatelessWidget {
               ],
             ),
           ),
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: borderColor,
-          ),
+          Divider(height: 1, thickness: 1, color: borderColor),
           HomeActionContainer(
             backgroundColor: backgroundColor,
             title: qiblaTitle,
             subtitle: qiblaSubtitle,
             icon: Icons.explore_outlined,
-            iconBackground: colorScheme.primaryContainer.withValues(alpha: isDark ? 0.25 : 1),
+            iconBackground: colorScheme.primaryContainer.withValues(
+              alpha: isDark ? 0.25 : 1,
+            ),
             onTap: onOpenQibla,
             showOuterDecoration: false,
           ),
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: borderColor,
-          ),
+          Divider(height: 1, thickness: 1, color: borderColor),
           HomeActionContainer(
             backgroundColor: backgroundColor,
             title: masjidTitle,
             subtitle: masjidSubtitle,
             icon: Icons.location_on_outlined,
-            iconBackground: colorScheme.tertiaryContainer.withValues(alpha: isDark ? 0.25 : 1),
+            iconBackground: colorScheme.tertiaryContainer.withValues(
+              alpha: isDark ? 0.25 : 1,
+            ),
             onTap: onOpenMasjid,
             showOuterDecoration: false,
           ),
@@ -488,9 +485,15 @@ class _FocusLockCard extends StatelessWidget {
 
     final unlockFromHomeUsesTemporaryUnlock =
         isLocked && focusVm.lockState.activeMode != FocusModeType.child;
+    final canRelockNow = isTempUnlocked;
+    final canUnlockOrDisable = isLocked;
 
     return InkWell(
-      onTap: isLocked ? () => focusVm.unlockFromHome() : null,
+      onTap: canUnlockOrDisable
+          ? () => focusVm.unlockFromHome()
+          : canRelockNow
+          ? () => focusVm.relockNowFromHome()
+          : null,
       borderRadius: BorderRadius.circular(22),
       child: Ink(
         width: double.infinity,
@@ -560,14 +563,22 @@ class _FocusLockCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
                 color: isLocked
                     ? colorScheme.error.withValues(alpha: 0.1)
+                    : canRelockNow
+                    ? colorScheme.error.withValues(alpha: 0.1)
                     : colorScheme.primary.withValues(alpha: 0.12),
               ),
               child: Text(
                 isLocked
-                    ? (unlockFromHomeUsesTemporaryUnlock ? 'Unlock' : 'Turn Off')
+                    ? (unlockFromHomeUsesTemporaryUnlock
+                          ? 'Unlock'
+                          : 'Turn Off')
+                    : canRelockNow
+                    ? 'Re-lock'
                     : 'Armed',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: isLocked ? colorScheme.error : colorScheme.primary,
+                  color: isLocked || canRelockNow
+                      ? colorScheme.error
+                      : colorScheme.primary,
                   fontWeight: FontWeight.w700,
                 ),
               ),
