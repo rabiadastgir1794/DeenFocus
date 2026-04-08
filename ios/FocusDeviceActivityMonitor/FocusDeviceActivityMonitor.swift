@@ -56,20 +56,55 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let clockJumpThresholdMs: Double = 90_000
+  private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
+  private static let oneShotLockPrefix = "deenly_focus_lock_"
+  private static let oneShotUnlockPrefix = "deenly_focus_unlock_"
 
   override func intervalDidStart(for activity: DeviceActivityName) {
     super.intervalDidStart(for: activity)
     let defaults = UserDefaults(suiteName: Self.appGroupId)
-    let action = defaults?.dictionary(forKey: Self.activityActionsKey)?[activity.rawValue] as? String
-    let mode = defaults?.dictionary(forKey: Self.activityModesKey)?[activity.rawValue] as? String
+    let storedAction = defaults?.dictionary(forKey: Self.activityActionsKey)?[activity.rawValue] as? String
+    let storedMode = defaults?.dictionary(forKey: Self.activityModesKey)?[activity.rawValue] as? String
     let reason = defaults?.dictionary(forKey: Self.activityReasonsKey)?[activity.rawValue] as? String
+    let inferredAction = inferredAction(for: activity.rawValue)
+    var action = storedAction
+    var mode = storedMode
+
+    if let inferredAction, let storedAction, storedAction != inferredAction {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.guard",
+        "activity=\(activity.rawValue) action mismatch stored=\(storedAction) inferred=\(inferredAction); using inferred action"
+      )
+      action = inferredAction
+    } else if storedAction == nil, let inferredAction {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.guard",
+        "activity=\(activity.rawValue) missing action metadata; inferred=\(inferredAction)"
+      )
+      action = inferredAction
+    }
+
+    if activity.rawValue == Self.repeatingNightLockActivityName, mode != "nightDiscipline" {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.guard",
+        "activity=\(activity.rawValue) expected mode=nightDiscipline but got mode=\(mode ?? "nil"); applying nightDiscipline fallback"
+      )
+      mode = "nightDiscipline"
+    } else if activity.rawValue.hasPrefix("deenly_focus_"), mode == nil {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.guard",
+        "activity=\(activity.rawValue) missing mode metadata"
+      )
+    }
+
+    let effectiveAction = action ?? "lock"
     let clockJumped = didClockJump(defaults: defaults)
     FocusMonitorDebugLogger.append(
       "ios.monitor.start",
-      "activity=\(activity.rawValue) action=\(action ?? "lock") mode=\(mode ?? "nil") clockJumped=\(clockJumped)"
+      "activity=\(activity.rawValue) action=\(effectiveAction) mode=\(mode ?? "nil") clockJumped=\(clockJumped)"
     )
 
-    if action == "unlock" {
+    if effectiveAction == "unlock" {
       // Do not gate unlock on `focus_flutter_is_locked`: that flag reflects the last
       // Flutter process sync and stays stale while the app is suspended, so scheduled
       // unlocks (prayer end, wake time) were ignored and shields flickered/reapplied.
@@ -101,6 +136,19 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
       defaults?.set(reason, forKey: Self.shieldLockReasonKey)
     }
     applyShield()
+  }
+
+  private func inferredAction(for activityName: String) -> String? {
+    if activityName == Self.repeatingNightLockActivityName {
+      return "lock"
+    }
+    if activityName.hasPrefix(Self.oneShotLockPrefix) {
+      return "lock"
+    }
+    if activityName.hasPrefix(Self.oneShotUnlockPrefix) {
+      return "unlock"
+    }
+    return nil
   }
 
   private func didClockJump(defaults: UserDefaults?) -> Bool {

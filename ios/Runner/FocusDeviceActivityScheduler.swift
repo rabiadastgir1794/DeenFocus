@@ -99,6 +99,7 @@ enum FocusDeviceActivityScheduler {
   private static let activityActionsKey = "focus_device_activity_actions"
   private static let activityModesKey = "focus_device_activity_modes"
   private static let activityReasonsKey = "focus_device_activity_reasons"
+  private static let activityScheduleSignatureKey = "focus_device_activity_schedule_signature"
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
 
   static func cancelAllSchedules() {
@@ -116,6 +117,7 @@ enum FocusDeviceActivityScheduler {
     defaults?.removeObject(forKey: activityActionsKey)
     defaults?.removeObject(forKey: activityModesKey)
     defaults?.removeObject(forKey: activityReasonsKey)
+    defaults?.removeObject(forKey: activityScheduleSignatureKey)
   }
 
   static func sync(
@@ -128,18 +130,41 @@ enum FocusDeviceActivityScheduler {
     nightEndHour: Int,
     nightEndMinute: Int
   ) {
-    cancelAllSchedules()
-
     let defaults = UserDefaults(suiteName: appGroupId)
     let trackModes =
       activeMode == "salah" || activeMode == "nightDiscipline" || !transitions.isEmpty ||
       nightDisciplineEnabled
+    let hasSchedulingInputs = trackModes && (encodedSelection?.isEmpty == false)
+    let scheduleSignature = makeScheduleSignature(
+      activeMode: activeMode,
+      encodedSelection: encodedSelection,
+      transitions: transitions,
+      nightDisciplineEnabled: nightDisciplineEnabled,
+      nightStartHour: nightStartHour,
+      nightStartMinute: nightStartMinute,
+      nightEndHour: nightEndHour,
+      nightEndMinute: nightEndMinute
+    )
+    let previousSignature = defaults?.string(forKey: activityScheduleSignatureKey)
+    let existingNames = defaults?.stringArray(forKey: activityNamesKey) ?? []
+
+    if previousSignature == scheduleSignature && (!hasSchedulingInputs || !existingNames.isEmpty) {
+      FocusIOSDebugLogger.append(
+        "ios.scheduler.sync",
+        "skipped re-registration because schedule signature is unchanged"
+      )
+      return
+    }
+
+    cancelAllSchedules()
+
     FocusIOSDebugLogger.append(
       "ios.scheduler.sync",
       "activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute))"
     )
     guard trackModes, let enc = encodedSelection, !enc.isEmpty else {
       defaults?.removeObject(forKey: selectionKey)
+      defaults?.set(scheduleSignature, forKey: activityScheduleSignatureKey)
       FocusIOSDebugLogger.append(
         "ios.scheduler.sync",
         "skipped scheduling because tracking is disabled or selection data is empty"
@@ -265,9 +290,63 @@ enum FocusDeviceActivityScheduler {
     defaults?.set(actionsByName, forKey: activityActionsKey)
     defaults?.set(modesByName, forKey: activityModesKey)
     defaults?.set(reasonsByName, forKey: activityReasonsKey)
+    defaults?.set(scheduleSignature, forKey: activityScheduleSignatureKey)
     FocusIOSDebugLogger.append(
       "ios.scheduler.sync",
       "stored \(names.count) active schedule name(s); exportedLogPath=\(FocusIOSDebugLogger.path() ?? "nil")"
     )
+  }
+
+  private static func makeScheduleSignature(
+    activeMode: String?,
+    encodedSelection: String?,
+    transitions: [[String: Any]],
+    nightDisciplineEnabled: Bool,
+    nightStartHour: Int,
+    nightStartMinute: Int,
+    nightEndHour: Int,
+    nightEndMinute: Int
+  ) -> String {
+    let selection = encodedSelection ?? ""
+    let selectionSignature: String
+    if selection.isEmpty {
+      selectionSignature = "empty"
+    } else {
+      let prefixPart = String(selection.prefix(64))
+      let suffixPart = String(selection.suffix(64))
+      selectionSignature = "len=\(selection.count)|\(prefixPart)|\(suffixPart)"
+    }
+
+    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String) in
+      let atMillis: Int64 = {
+        if let n = transition["atMillis"] as? NSNumber { return n.int64Value }
+        if let i = transition["atMillis"] as? Int64 { return i }
+        if let i = transition["atMillis"] as? Int { return Int64(i) }
+        return 0
+      }()
+      let isLocked = transition["isLocked"] as? Bool ?? false
+      let mode = transition["activeMode"] as? String ?? ""
+      let reason = transition["lockReason"] as? String ?? ""
+      return (atMillis, isLocked, mode, reason)
+    }
+    .sorted {
+      if $0.0 != $1.0 { return $0.0 < $1.0 }
+      if $0.1 != $1.1 { return !$0.1 && $1.1 }
+      if $0.2 != $1.2 { return $0.2 < $1.2 }
+      return $0.3 < $1.3
+    }
+    .map { atMillis, isLocked, mode, reason in
+      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason)"
+    }
+    .joined(separator: ",")
+
+    return [
+      "mode=\(activeMode ?? "nil")",
+      "night=\(nightDisciplineEnabled ? 1 : 0)",
+      "sleep=\(nightStartHour):\(nightStartMinute)",
+      "wake=\(nightEndHour):\(nightEndMinute)",
+      "selection=\(selectionSignature)",
+      "transitions=\(normalizedTransitions)",
+    ].joined(separator: "|")
   }
 }
