@@ -210,6 +210,7 @@ class _HomeWeeklyCalendar extends StatelessWidget {
             today.year == date.year &&
             today.month == date.month &&
             today.day == date.day;
+        final isTodaySelected = isToday && isSelected;
         final hasEvent = eventDates.any(
           (d) =>
               d.year == date.year && d.month == date.month && d.day == date.day,
@@ -227,16 +228,24 @@ class _HomeWeeklyCalendar extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isToday || isSelected
-                        ? colorScheme.primaryContainer
-                        : Colors.transparent,
+                    color: _calendarHighlightColor(
+                      colorScheme,
+                      isToday: isToday,
+                      isSelected: isSelected,
+                    ),
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     '${date.day}',
                     style: TextStyle(
-                      color: colorScheme.primary,
-                      fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
+                      color: _calendarTextColor(
+                        colorScheme,
+                        isToday: isToday,
+                        isSelected: isSelected,
+                      ),
+                      fontWeight: isTodaySelected || isToday || isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                     ),
                   ),
                 ),
@@ -288,6 +297,7 @@ class _HomeMonthlyCalendar extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         GridView.builder(
+          key: ValueKey('${monthDate.year}-${monthDate.month}'),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: leading + daysInMonth,
@@ -308,6 +318,7 @@ class _HomeMonthlyCalendar extends StatelessWidget {
                 today.year == date.year &&
                 today.month == date.month &&
                 today.day == date.day;
+            final isTodaySelected = isToday && isSelected;
             final hasEvent = eventDates.any(
               (d) =>
                   d.year == date.year &&
@@ -316,6 +327,9 @@ class _HomeMonthlyCalendar extends StatelessWidget {
             );
 
             return InkWell(
+              key: ValueKey(
+                '${monthDate.year}-${monthDate.month}-$day',
+              ),
               onTap: () => onTap(date),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -325,16 +339,24 @@ class _HomeMonthlyCalendar extends StatelessWidget {
                     height: 30,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isToday || isSelected
-                          ? colorScheme.primaryContainer
-                          : Colors.transparent,
+                      color: _calendarHighlightColor(
+                        colorScheme,
+                        isToday: isToday,
+                        isSelected: isSelected,
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Text(
                       '$day',
                       style: TextStyle(
-                        color: colorScheme.primary,
-                        fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
+                        color: _calendarTextColor(
+                          colorScheme,
+                          isToday: isToday,
+                          isSelected: isSelected,
+                        ),
+                        fontWeight: isTodaySelected || isToday || isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                       ),
                     ),
                   ),
@@ -357,4 +379,38 @@ class _HomeMonthlyCalendar extends StatelessWidget {
       ],
     );
   }
+}
+
+Color _calendarHighlightColor(
+  ColorScheme colorScheme, {
+  required bool isToday,
+  required bool isSelected,
+}) {
+  if (isToday && isSelected) {
+    return colorScheme.primary;
+  }
+  if (isToday) {
+    return colorScheme.primaryContainer;
+  }
+  if (isSelected) {
+    return colorScheme.secondaryContainer;
+  }
+  return Colors.transparent;
+}
+
+Color _calendarTextColor(
+  ColorScheme colorScheme, {
+  required bool isToday,
+  required bool isSelected,
+}) {
+  if (isToday && isSelected) {
+    return colorScheme.onPrimary;
+  }
+  if (isToday) {
+    return colorScheme.primary;
+  }
+  if (isSelected) {
+    return colorScheme.onSecondaryContainer;
+  }
+  return colorScheme.primary;
 }
