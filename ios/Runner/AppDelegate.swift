@@ -389,6 +389,7 @@ private enum ManagedSettingsStoreHolder {
     }
 
     let isLocked = args["isLocked"] as? Bool ?? false
+    let isTemporarilyUnlocked = args["isTemporarilyUnlocked"] as? Bool ?? false
     let activeMode = args["activeMode"] as? String
     let encodedSelection = args["iosSelectionData"] as? String
     let nightDisciplineEnabled = args["nightDisciplineEnabled"] as? Bool ?? false
@@ -399,10 +400,22 @@ private enum ManagedSettingsStoreHolder {
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
     let lockReason = args["lockReason"] as? String
+    let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
+    let nativeShieldLocked =
+      sharedDefaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false
     FocusIOSDebugLogger.append(
       "ios.sync",
       "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
     )
+
+    if !isLocked && nativeShieldLocked && !isTemporarilyUnlocked {
+      FocusIOSDebugLogger.append(
+        "ios.sync",
+        "preserved native monitor lock and skipped scheduler sync because flutter state is stale"
+      )
+      result(nil)
+      return
+    }
 
     FocusDeviceActivityScheduler.sync(
       activeMode: activeMode,
@@ -414,12 +427,11 @@ private enum ManagedSettingsStoreHolder {
       nightEndHour: nightEndHour,
       nightEndMinute: nightEndMinute
     )
-    let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
-
     let store = ManagedSettingsStoreHolder.shared
 
     if !isLocked {
       sharedDefaults?.set(false, forKey: FocusDeviceActivityScheduler.shieldFlutterLockedKey)
+      sharedDefaults?.set(false, forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey)
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
       store.clearAllSettings()
@@ -436,6 +448,7 @@ private enum ManagedSettingsStoreHolder {
       let data = Data(base64Encoded: encodedSelection),
       let selection = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
     else {
+      sharedDefaults?.set(false, forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey)
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
       store.clearAllSettings()
@@ -458,6 +471,7 @@ private enum ManagedSettingsStoreHolder {
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldLockReasonKey)
     }
     sharedDefaults?.set(true, forKey: FocusDeviceActivityScheduler.shieldFlutterLockedKey)
+    sharedDefaults?.set(true, forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey)
 
     store.shield.applications = selection.applicationTokens
     store.shield.applicationCategories = selection.categoryTokens.isEmpty

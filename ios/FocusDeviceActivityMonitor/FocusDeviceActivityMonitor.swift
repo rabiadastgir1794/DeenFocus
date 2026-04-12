@@ -53,6 +53,7 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let shieldActiveModeKey = "focus_shield_active_mode"
   private static let shieldLockReasonKey = "focus_shield_lock_reason"
   private static let shieldFlutterLockedKey = "focus_flutter_is_locked"
+  private static let shieldNativeLockedKey = "focus_native_shield_locked"
   private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let clockJumpThresholdMs: Double = 90_000
@@ -119,6 +120,7 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
           "clockJumped=true activity=\(activity.rawValue); still clearing shield"
         )
       }
+      defaults?.set(false, forKey: Self.shieldNativeLockedKey)
       defaults?.removeObject(forKey: Self.shieldActiveModeKey)
       defaults?.removeObject(forKey: Self.shieldLockReasonKey)
       FocusMonitorDebugLogger.append(
@@ -135,6 +137,7 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
     if let reason, !reason.isEmpty {
       defaults?.set(reason, forKey: Self.shieldLockReasonKey)
     }
+    defaults?.set(true, forKey: Self.shieldNativeLockedKey)
     applyShield()
   }
 

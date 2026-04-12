@@ -66,6 +66,7 @@ abstract class FocusEnforcementService {
         'nightEndMinute': settings.nightRange.endMinute,
         'activeMode': lockState.activeMode?.name,
         'isLocked': lockState.isLocked,
+        'isTemporarilyUnlocked': lockState.isTemporarilyUnlocked,
         'lockReason': lockState.reason,
         'nextChangeAt': lockState.nextChangeAt?.toIso8601String(),
         'scheduledTransitions': scheduledTransitions,

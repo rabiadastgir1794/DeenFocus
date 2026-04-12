@@ -92,6 +92,7 @@ enum FocusDeviceActivityScheduler {
   static let shieldActiveModeKey = "focus_shield_active_mode"
   static let shieldLockReasonKey = "focus_shield_lock_reason"
   static let shieldFlutterLockedKey = "focus_flutter_is_locked"
+  static let shieldNativeLockedKey = "focus_native_shield_locked"
   static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let selectionKey = "focus_device_activity_selection_b64"
