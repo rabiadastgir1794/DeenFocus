@@ -48,6 +48,12 @@ class HomePrayerStreakSection extends StatelessWidget {
           children: [
             Row(
               children: [
+                Icon(
+                  Icons.local_fire_department_rounded,
+                  size: 22,
+                  color: colorScheme.primary,
+                ),
+                const SizedBox(width: 10),
                 Text(
                   l10n.homePrayerStreak,
                   style: Theme.of(context).textTheme.titleSmall,

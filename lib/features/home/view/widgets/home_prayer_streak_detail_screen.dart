@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
 
@@ -13,6 +13,7 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<HomeTabViewModel>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         final colorScheme = Theme.of(context).colorScheme;
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final days = vm.currentWeekDates;
@@ -20,10 +21,11 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
         final borderColor = isDark
             ? colorScheme.outlineVariant.withValues(alpha: 0.35)
             : AppColors.outlineVariantLight.withValues(alpha: 0.35);
-        final backgroundColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
+        final backgroundColor = colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.20,
+        );
 
         return Scaffold(
-          appBar: const CustomAppBar(title: 'Prayer Streak'),
           body: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -40,10 +42,35 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
               ),
             ),
             child: SafeArea(
-              top: false,
+              bottom: false,
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                 children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 0,
+                          vertical: 8,
+                        ),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                      label: const Text('Back'),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.homePrayerStreak,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     '🔥 ${vm.streakDays} Days',
                     style: Theme.of(context).textTheme.displaySmall?.copyWith(
@@ -72,9 +99,12 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'This Week',
+                          l10n.homeThisWeek,
                           style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                              ?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                         const SizedBox(height: 16),
                         for (var index = 0; index < days.length; index++) ...[
@@ -106,53 +136,38 @@ class _PrayerWeekRow extends StatelessWidget {
     final day = vm.dayFor(date);
     final editable = vm.isPrayerDayEditable(date);
     final colorScheme = Theme.of(context).colorScheme;
+    final isCompleted = day.isCompleted;
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  vm.weekdayLabel(date),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 3),
-                Icon(
-                  editable
-                      ? Icons.edit_calendar_rounded
-                      : Icons.lock_outline_rounded,
-                  size: 14,
-                  color: editable
-                      ? colorScheme.primary
-                      : colorScheme.onSurfaceVariant,
-                ),
-              ],
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            vm.weekdayLabel(date),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: isCompleted
+                  ? colorScheme.onSurface
+                  : colorScheme.onSurfaceVariant,
             ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final prayer in TrackablePrayer.values) ...[
-                _PrayerToggleChip(
-                  date: date,
-                  prayer: prayer,
-                  selected: day.selectedPrayers.contains(prayer),
-                  enabled: editable,
-                ),
-                if (prayer != TrackablePrayer.values.last)
-                  const SizedBox(width: 8),
-              ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final prayer in TrackablePrayer.values) ...[
+              _PrayerToggleChip(
+                date: date,
+                prayer: prayer,
+                selected: day.selectedPrayers.contains(prayer),
+                enabled: editable,
+              ),
+              if (prayer != TrackablePrayer.values.last)
+                const SizedBox(width: 6),
             ],
-          ),
-        ],
-      ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -174,51 +189,37 @@ class _PrayerToggleChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.read<HomeTabViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
+    final backgroundColor = selected
+        ? colorScheme.primary.withValues(alpha: 0.24)
+        : colorScheme.primary.withValues(alpha: 0.10);
 
     return InkWell(
       onTap: enabled ? () => vm.togglePrayerForDay(date, prayer) : null,
       borderRadius: BorderRadius.circular(14),
       child: Ink(
-        width: 42,
-        height: 44,
+        width: 28,
+        height: 28,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: selected
-              ? colorScheme.primary.withValues(alpha: 0.16)
-              : colorScheme.primary.withValues(alpha: 0.08),
+          shape: BoxShape.circle,
+          color: backgroundColor,
           border: Border.all(
             color: selected
-                ? colorScheme.primary.withValues(alpha: 0.22)
+                ? colorScheme.primary.withValues(alpha: 0.34)
                 : colorScheme.primary.withValues(alpha: 0.12),
           ),
         ),
         child: Opacity(
           opacity: enabled ? 1 : 0.55,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: selected
-                      ? colorScheme.primary
-                      : colorScheme.primary.withValues(alpha: 0.22),
-                ),
-                child: Text(
-                  _labelForPrayer(prayer),
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: selected
-                        ? Colors.white
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                ),
+          child: Center(
+            child: Text(
+              _labelForPrayer(prayer),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: selected
+                    ? colorScheme.primary
+                    : colorScheme.onSurfaceVariant,
               ),
-              const SizedBox(height: 6),
-            ],
+            ),
           ),
         ),
       ),
