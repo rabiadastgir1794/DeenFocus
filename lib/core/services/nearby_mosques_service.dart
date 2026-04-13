@@ -59,7 +59,6 @@ out center;
 ''';
 
     http.Response? response;
-    Object? lastError;
     for (final endpoint in _overpassInterpreters) {
       try {
         response = await _client
@@ -75,14 +74,12 @@ out center;
         if (response.statusCode >= 200 && response.statusCode < 300) {
           break;
         }
-      } catch (error) {
-        lastError = error;
-      }
+      } catch (_) {}
     }
 
     if (response == null) {
-      throw NearbyMosquesException(
-        'Could not connect to mosque data service. Please try again.',
+      throw const NearbyMosquesException(
+        'No internet connection or the map service is unreachable. Check your connection and try again.',
       );
     }
 
@@ -92,15 +89,22 @@ out center;
       );
     }
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw NearbyMosquesException(
-        'Could not load nearby mosques (${response.statusCode}). ${lastError ?? ''}'
-            .trim(),
+      throw const NearbyMosquesException(
+        'Could not load nearby mosques. Check your internet connection and try again.',
       );
     }
 
-    final decoded = jsonDecode(response.body);
-    if (decoded is! Map<String, dynamic>) {
-      throw const NearbyMosquesException('Unexpected response from map data service.');
+    late final Map<String, dynamic> decoded;
+    try {
+      final raw = jsonDecode(response.body);
+      if (raw is! Map<String, dynamic>) {
+        throw const FormatException('not a map');
+      }
+      decoded = raw;
+    } on FormatException {
+      throw const NearbyMosquesException(
+        'We could not read the mosque list right now. Please try again later.',
+      );
     }
 
     final elements = decoded['elements'] as List<dynamic>? ?? const <dynamic>[];
