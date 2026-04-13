@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../../l10n/app_localizations.dart';
 
 class HomeAiChatScreen extends StatefulWidget {
   const HomeAiChatScreen({super.key});
@@ -17,7 +15,6 @@ class HomeAiChatScreen extends StatefulWidget {
 
 class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   final TextEditingController _inputController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
   final List<_ChatMessage> _messages = <_ChatMessage>[];
 
   static const List<String> _suggestionPrompts = <String>[
@@ -31,7 +28,6 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   @override
   void dispose() {
     _inputController.dispose();
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -44,7 +40,6 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     final inputBackground = isDark
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.6)
         : colorScheme.surfaceContainerHighest.withValues(alpha: 0.85);
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: chatBackground,
@@ -67,11 +62,12 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                         suggestions: _suggestionPrompts,
                       )
                     : ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.only(bottom: 16),
+                        reverse: true,
+                        padding: const EdgeInsets.only(top: 16),
                         itemCount: _messages.length,
                         itemBuilder: (context, index) {
-                          final message = _messages[index];
+                          final message =
+                              _messages[_messages.length - 1 - index];
                           return _ChatBubble(message: message);
                         },
                       ),
@@ -91,7 +87,6 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                           ),
                           child: TextField(
                             controller: _inputController,
-                            enabled: !_isLoading,
                             minLines: 1,
                             maxLines: 5,
                             textInputAction: TextInputAction.send,
@@ -167,7 +162,6 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
         ),
       );
     });
-    _scrollToBottom();
 
     if (!mounted) return;
 
@@ -266,18 +260,6 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
       } else {
         _messages.add(_ChatMessage(role: _ChatRole.assistant, content: reply));
       }
-    });
-    _scrollToBottom();
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_scrollController.hasClients) return;
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent + 80,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-      );
     });
   }
 }
