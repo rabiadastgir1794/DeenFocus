@@ -22,6 +22,8 @@ class FocusTabScreen extends StatefulWidget {
 
 class _FocusTabScreenState extends State<FocusTabScreen>
     with WidgetsBindingObserver {
+  static const Duration _modeSwitchLoaderMinDuration = Duration(seconds: 1);
+
   bool _showGlobalSelector = false;
   FocusModeType? _pendingModeToEnable;
   bool _awaitingBlockingPermission = false;
@@ -478,7 +480,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               const SizedBox(height: 12),
                               _ModeFooterText(
                                 text:
-                                    '✓ ${globalApps.length} app${globalApps.length != 1 ? 's' : ''} will be blocked at night',
+                                    '✓ ${vm.selectedTargetPhrase} will be blocked at night',
                                 color: colorScheme.primary,
                               ),
                             ],
@@ -556,6 +558,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     if (_modesInFlight.contains(mode)) return;
     if (!mounted) return;
     final messenger = ScaffoldMessenger.maybeOf(context);
+    final loaderStopwatch = Stopwatch()..start();
     setState(() => _modesInFlight.add(mode));
     await _waitUntilLoaderPainted();
     if (!mounted) {
@@ -617,8 +620,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         );
       }
     } finally {
+      final remaining =
+          _modeSwitchLoaderMinDuration - loaderStopwatch.elapsed;
+      if (remaining > Duration.zero) {
+        await Future<void>.delayed(remaining);
+      }
       if (mounted) {
         setState(() => _modesInFlight.remove(mode));
+      } else {
+        _modesInFlight.remove(mode);
       }
     }
   }
@@ -916,20 +926,6 @@ class _ModeCard extends StatelessWidget {
               ),
             ],
           ),
-          if (isLoading) ...[
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(999),
-              child: SizedBox(
-                height: 3,
-                width: double.infinity,
-                child: LinearProgressIndicator(
-                  backgroundColor: colorScheme.surfaceContainerHighest
-                      .withValues(alpha: 0.5),
-                ),
-              ),
-            ),
-          ],
           if (child != null) ...[
             const SizedBox(height: 12),
             Container(
