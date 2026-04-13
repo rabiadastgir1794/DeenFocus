@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
@@ -26,97 +27,60 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
         );
 
         return Scaffold(
-          body: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? <Color>[
-                        colorScheme.surface,
-                        colorScheme.surfaceContainerHighest.withValues(
-                          alpha: 0.96,
+          appBar: CustomAppBar(
+            title: l10n.homePrayerStreak,
+            onBack: () => Navigator.of(context).pop(),
+          ),
+          body: SafeArea(
+            bottom: false,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              children: [
+                Text(
+                  '🔥 ${vm.streakDays} Days',
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: borderColor),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.22 : 0.05,
                         ),
-                      ]
-                    : const <Color>[Color(0xFFFBF7EF), Color(0xFFF2EADB)],
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 0,
-                          vertical: 8,
-                        ),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
                       ),
-                      icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                      label: const Text('Back'),
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.homePrayerStreak,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '🔥 ${vm.streakDays} Days',
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: borderColor),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(
-                            alpha: isDark ? 0.22 : 0.05,
-                          ),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.homeThisWeek,
+                        style: Theme.of(context).textTheme.labelSmall
+                            ?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                      const SizedBox(height: 16),
+                      for (var index = 0; index < days.length; index++) ...[
+                        _PrayerWeekRow(date: days[index]),
+                        if (index != days.length - 1)
+                          const SizedBox(height: 12),
                       ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.homeThisWeek,
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        const SizedBox(height: 16),
-                        for (var index = 0; index < days.length; index++) ...[
-                          _PrayerWeekRow(date: days[index]),
-                          if (index != days.length - 1)
-                            const SizedBox(height: 12),
-                        ],
-                      ],
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

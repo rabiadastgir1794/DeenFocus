@@ -46,40 +46,29 @@ class HomePrayerStreakSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.local_fire_department_rounded,
-                  size: 22,
-                  color: colorScheme.primary,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  l10n.homePrayerStreak,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                const SizedBox(width: 8),
-                if (streakDays > 3)
+            Text(
+              l10n.homePrayerStreak,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 12),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+              child: Row(
+                children: [
+                  const SizedBox(height: 6),
                   Text(
-                    '🔥 $streakDays ${l10n.homeDays}',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    '${streakDays > 1 ? "🔥" : ""} $streakDays ${l10n.homeDays}',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: colorScheme.primary,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                const Spacer(),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              '$streakDays ${l10n.homeDays}',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w800,
+                  const Spacer(),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 12),

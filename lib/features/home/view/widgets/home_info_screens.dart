@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class HomeAiChatScreen extends StatefulWidget {
   const HomeAiChatScreen({super.key});
@@ -43,56 +44,21 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     final inputBackground = isDark
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.6)
         : colorScheme.surfaceContainerHighest.withValues(alpha: 0.85);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
+      appBar: CustomAppBar(
+        title: 'Deen Focus AI',
+        onBack: () => Navigator.of(context).pop(),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints.tightFor(
-                        width: 40,
-                        height: 40,
-                      ),
-                      splashRadius: 20,
-                      tooltip: MaterialLocalizations.of(
-                        context,
-                      ).backButtonTooltip,
-                      icon: Icon(
-                        Icons.chevron_left_rounded,
-                        size: 28,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Text(
-                        'Deen Focus AI',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.start,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: _messages.isEmpty
                     ? _HomeAiChatEmptyState(
@@ -341,7 +307,7 @@ class _HomeAiChatEmptyState extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     width: 64,

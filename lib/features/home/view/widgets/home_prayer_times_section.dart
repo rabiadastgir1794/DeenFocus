@@ -52,9 +52,9 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
         color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ?
-          colorScheme.outlineVariant.withValues(alpha: 0.35):
-          AppColors.outlineVariantLight.withValues(alpha: 0.35),
+          color: isDark
+              ? colorScheme.outlineVariant.withValues(alpha: 0.35)
+              : AppColors.outlineVariantLight.withValues(alpha: 0.35),
         ),
         boxShadow: [
           BoxShadow(
@@ -64,7 +64,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14,vertical: 22),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -107,10 +107,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               alignment: WrapAlignment.center,
               children: prayerTimes.slots
                   .map(
-                    (slot) => HomePrayerTile(
-                      slot: slot,
-                      prayerTimes: prayerTimes,
-                    ),
+                    (slot) =>
+                        HomePrayerTile(slot: slot, prayerTimes: prayerTimes),
                   )
                   .toList(growable: false),
             ),
@@ -219,7 +217,7 @@ class HomePrayerTile extends StatelessWidget {
     } else {
       background = isDark
           ? (Theme.of(context).cardTheme.color ?? colorScheme.surface)
-          : const Color(0xFFf6f4ee  );
+          : const Color(0xFFf6f4ee);
       titleColor = colorScheme.onSurface;
       timeColor = colorScheme.onSurface;
       border = Border.all(
@@ -270,34 +268,7 @@ class HomePrayerTile extends StatelessWidget {
     );
 
     if (!isCurrent) return tile;
-
-    final emeraldGlow =
-        isDark ? AppColors.emeraldGlowDark : AppColors.emeraldGlow;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        tile,
-        Positioned(
-          top: -4,
-          right: -4,
-          child: Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: emeraldGlow,
-              boxShadow: [
-                BoxShadow(
-                  color: emeraldGlow.withValues(alpha: 0.45),
-                  blurRadius: 6,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+    return tile;
   }
 
   String _labelForPrayer(AppLocalizations l10n, HomePrayerId id) {

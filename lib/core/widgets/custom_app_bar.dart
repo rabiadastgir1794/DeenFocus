@@ -26,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: _toolbarHeight,
-      leadingWidth: showBackButton ? 60 : 16,
+      leadingWidth: showBackButton ? 40 : 16,
       titleSpacing: 4,
       elevation: 0,
       scrolledUnderElevation: 0,
