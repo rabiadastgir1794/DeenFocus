@@ -888,15 +888,18 @@ class FocusController extends ChangeNotifier {
       return const <SalahWindow>[];
     }
 
-    final today = await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+    // Focus scheduling must be deterministic. Using the shared prayer cache
+    // here can race with notification/home refreshes and briefly feed Focus
+    // the wrong day's windows, which then pushes stale transitions to iOS.
+    final today = await HomePrayerTimesHelper.generatePrayerTimesForDate(
       latitude: _cachedLatitude!,
       longitude: _cachedLongitude!,
-      now: now,
+      date: now,
     );
-    final tomorrow = await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+    final tomorrow = await HomePrayerTimesHelper.generatePrayerTimesForDate(
       latitude: _cachedLatitude!,
       longitude: _cachedLongitude!,
-      now: now.add(const Duration(days: 1)),
+      date: now.add(const Duration(days: 1)),
     );
 
     final prayers = <HomePrayerSlot>[

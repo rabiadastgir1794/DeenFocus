@@ -244,9 +244,15 @@ enum FocusDeviceActivityScheduler {
       }()
       guard startMs > 0 else { continue }
 
-      var start = Date(timeIntervalSince1970: Double(startMs) / 1000.0)
-      if start < now {
-        start = now.addingTimeInterval(10)
+      let action = locked ? "lock" : "unlock"
+      let nameStr = "deenly_focus_\(action)_\(startMs)"
+      let start = Date(timeIntervalSince1970: Double(startMs) / 1000.0)
+      if !start.timeIntervalSince(now).isFinite || start <= now {
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "skipped past action=\(action) name=\(nameStr) at=\(start)"
+        )
+        continue
       }
       let intervalEnd = start.addingTimeInterval(triggerDuration)
 
@@ -256,8 +262,6 @@ enum FocusDeviceActivityScheduler {
       let startC = cal.dateComponents(comps, from: start)
       let endC = cal.dateComponents(comps, from: intervalEnd)
 
-      let action = locked ? "lock" : "unlock"
-      let nameStr = "deenly_focus_\(action)_\(startMs)"
       let activityName = DeviceActivityName(nameStr)
       let schedule = DeviceActivitySchedule(
         intervalStart: startC,
