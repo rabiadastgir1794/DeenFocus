@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -337,7 +338,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
           child: Builder(
             builder: (context) {
               final showAudioBar = _showAudioBar && currentAyah != null;
-              final bottomPad = MediaQuery.paddingOf(context).bottom;
               return Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.bottomCenter,
@@ -392,7 +392,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                               ),
                                             ),
                                             child: Icon(
-                                              isPlaying
+                                              isPlaying && _showAudioBar && currentAyah != null
                                                   ? Icons.pause
                                                   : Icons.play_arrow_rounded,
                                             ),
@@ -485,12 +485,12 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                             child: FilledButton.icon(
                                               onPressed: _onPlayFullSurahTap,
                                               icon: Icon(
-                                                isPlaying
+                                                isPlaying && showAudioBar
                                                     ? Icons.pause
                                                     : Icons.play_arrow_rounded,
                                               ),
                                               label: Text(
-                                                isPlaying
+                                                isPlaying && showAudioBar
                                                     ? l10n.quranPause
                                                     : l10n.quranPlaySurah,
                                               ),
@@ -644,14 +644,17 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                   ),
                   if (showAudioBar)
                     Positioned(
-                      left: 12.w,
-                      right: 12.w,
-                      bottom: 0,
+                      left: 0.w,
+                      right: 0.w,
+                      bottom: Platform.isIOS ? -30 : 0,
                       child: Container(
                         padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
                         decoration: BoxDecoration(
                           color: colorScheme.surface,
-                          borderRadius: BorderRadius.circular(16.r),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(60.r),
+                            bottomRight: Radius.circular(60.r),
+                          ),
                           border: Border.all(
                             color: colorScheme.outlineVariant.withValues(
                               alpha: 0.55,
