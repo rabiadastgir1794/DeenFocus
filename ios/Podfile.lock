@@ -11,6 +11,8 @@ PODS:
   - geolocator_apple (1.2.0):
     - Flutter
     - FlutterMacOS
+  - in_app_review (2.0.0):
+    - Flutter
   - just_audio (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -34,6 +36,7 @@ DEPENDENCIES:
   - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -54,6 +57,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geocoding_ios/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/darwin"
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/darwin"
   package_info_plus:
@@ -74,6 +79,7 @@ SPEC CHECKSUMS:
   flutter_timezone: ac3da59ac941ff1c98a2e1f0293420e020120282
   geocoding_ios: eafacae6ad11a1eb56681f7d11df602a5fd49416
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
+  in_app_review: 436034b18594851a7328d7f1c2ed5ec235b79cfc
   just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba

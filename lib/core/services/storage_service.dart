@@ -362,7 +362,7 @@ abstract class StorageService {
     final firstMs = prefs.getInt(_keyAppFirstOpenMs);
     if (firstMs == null) return false;
     final elapsed = DateTime.now().millisecondsSinceEpoch - firstMs;
-    return elapsed >= const Duration(days: 3).inMilliseconds;
+    return elapsed >= Duration.zero.inMilliseconds;
   }
 
   static Future<void> setAppReviewPromptCompleted() async {

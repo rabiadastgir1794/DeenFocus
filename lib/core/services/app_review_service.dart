@@ -22,19 +22,44 @@ class AppReviewService {
 
     _busy = true;
     try {
-      final review = InAppReview.instance;
-      if (await review.isAvailable()) {
-        await review.requestReview();
-      } else if (Platform.isIOS && kIosAppStoreId.isNotEmpty) {
-        await review.openStoreListing(appStoreId: kIosAppStoreId);
-      } else if (Platform.isAndroid) {
-        await review.openStoreListing();
-      }
+      await _showReviewOrStore();
     } catch (e, st) {
       debugPrint('AppReviewService: $e\n$st');
     } finally {
       await StorageService.setAppReviewPromptCompleted();
       _busy = false;
+    }
+  }
+
+  /// Use from a Submit/Rate button when you want guaranteed store navigation.
+  static Future<void> openStoreListingForFeedback() async {
+    if (kIsWeb || (!Platform.isAndroid && !Platform.isIOS)) return;
+    await _openStoreListing();
+  }
+
+  static Future<void> _showReviewOrStore() async {
+    final review = InAppReview.instance;
+    if (await review.isAvailable()) {
+      await review.requestReview();
+      return;
+    }
+    await _openStoreListing();
+  }
+
+  static Future<void> _openStoreListing() async {
+    final review = InAppReview.instance;
+    if (Platform.isIOS) {
+      if (kIosAppStoreId.isEmpty) {
+        debugPrint(
+          'AppReviewService: kIosAppStoreId is empty, cannot open iOS listing.',
+        );
+        return;
+      }
+      await review.openStoreListing(appStoreId: kIosAppStoreId);
+      return;
+    }
+    if (Platform.isAndroid) {
+      await review.openStoreListing();
     }
   }
 }
