@@ -101,6 +101,10 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: CustomAppBar(
+        title: l10n.homeQiblaDirection,
+        onBack: () => Navigator.of(context).pop(),
+      ),
       body: StreamBuilder<double>(
         stream: _headingStream,
         builder: (context, snapshot) {
@@ -119,12 +123,6 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'Qibla',
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(height: 4),
                         Text(
                           cityLabel,
                           style: Theme.of(context).textTheme.bodySmall
@@ -147,31 +145,6 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints.tightFor(
-                        width: 40,
-                        height: 40,
-                      ),
-                      splashRadius: 20,
-                      tooltip: MaterialLocalizations.of(
-                        context,
-                      ).backButtonTooltip,
-                      icon: Icon(
-                        Icons.chevron_left_rounded,
-                        size: 28,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
                     ),
                   ),
                 ),

@@ -37,6 +37,9 @@ abstract class StorageService {
   static const String _keyNearbyMosquesCacheFetchedMs =
       'nearby_mosques_cache_fetched_ms';
   static const String _keyNearbyMosquesCacheJson = 'nearby_mosques_cache_json';
+  static const String _keyAppFirstOpenMs = 'app_first_open_ms';
+  static const String _keyAppReviewPromptCompleted =
+      'app_review_prompt_completed';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -339,5 +342,31 @@ abstract class StorageService {
     await prefs.setDouble(_keyNearbyMosquesCacheLng, longitude);
     await prefs.setInt(_keyNearbyMosquesCacheFetchedMs, fetchedMs);
     await prefs.setString(_keyNearbyMosquesCacheJson, json);
+  }
+
+  static Future<void> ensureAppFirstOpenRecorded() async {
+    final prefs = await _prefs;
+    if (!prefs.containsKey(_keyAppFirstOpenMs)) {
+      await prefs.setInt(
+        _keyAppFirstOpenMs,
+        DateTime.now().millisecondsSinceEpoch,
+      );
+    }
+  }
+
+  static Future<bool> get shouldShowAppReviewPrompt async {
+    final prefs = await _prefs;
+    if (prefs.getBool(_keyAppReviewPromptCompleted) ?? false) {
+      return false;
+    }
+    final firstMs = prefs.getInt(_keyAppFirstOpenMs);
+    if (firstMs == null) return false;
+    final elapsed = DateTime.now().millisecondsSinceEpoch - firstMs;
+    return elapsed >= const Duration(days: 3).inMilliseconds;
+  }
+
+  static Future<void> setAppReviewPromptCompleted() async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyAppReviewPromptCompleted, true);
   }
 }

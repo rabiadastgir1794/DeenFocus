@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
 import 'core/services/app_notification_service.dart';
+import 'core/services/app_review_service.dart';
 import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
 import 'core/services/theme_service.dart';
@@ -83,6 +84,7 @@ class _AppLifecycleFocusRefresherState extends State<_AppLifecycleFocusRefresher
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(context.read<FocusController>().refresh());
+      unawaited(AppReviewService.onAppResumed());
     }
   }
 
