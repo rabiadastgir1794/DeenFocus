@@ -280,7 +280,6 @@ class _HomeTabViewState extends State<_HomeTabView>
     HomeTabViewModel vm,
     DateTime date,
   ) async {
-    vm.selectDate(date);
     final l10n = AppLocalizations.of(context)!;
     final eventOnDate = vm.eventsForDate(date);
 
@@ -292,40 +291,45 @@ class _HomeTabViewState extends State<_HomeTabView>
       return;
     }
 
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  DateFormat.yMMMMd(l10n.localeName).format(date),
-                  style: Theme.of(ctx).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 10),
-                for (final item in eventOnDate)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.event_outlined),
-                    title: Text(
-                      item.title,
-                      style: TextStyle(
-                        color: Theme.of(ctx).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
+    vm.selectDate(date);
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        builder: (ctx) {
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat.yMMMMd(l10n.localeName).format(date),
+                    style: Theme.of(ctx).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  for (final item in eventOnDate)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.event_outlined),
+                      title: Text(
+                        item.title,
+                        style: TextStyle(
+                          color: Theme.of(ctx).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    } finally {
+      vm.selectDate(null);
+    }
   }
 
   void _openQiblaScreen(

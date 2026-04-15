@@ -16,7 +16,11 @@ class ThemeService extends ChangeNotifier {
   Future<void> _load() async {
     final saved = await StorageService.darkModeEnabled;
     if (saved == null) {
-      _themeMode = ThemeMode.system;
+      final systemIsDark =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+          Brightness.dark;
+      _themeMode = systemIsDark ? ThemeMode.dark : ThemeMode.light;
+      await StorageService.setDarkModeEnabled(systemIsDark);
     } else {
       _themeMode = saved ? ThemeMode.dark : ThemeMode.light;
     }
