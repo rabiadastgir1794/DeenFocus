@@ -25,6 +25,7 @@ class FocusController extends ChangeNotifier {
   FocusLockState _lockState = const FocusLockState.unlocked();
   List<FocusInstalledApp> _installedApps = const <FocusInstalledApp>[];
   bool _isInitialized = false;
+  Future<void>? _initializeFuture;
   bool _isLoadingApps = false;
   Timer? _refreshTimer;
 
@@ -62,6 +63,15 @@ class FocusController extends ChangeNotifier {
       (_cachedLatitude == null || _cachedLongitude == null);
 
   Future<void> initialize() async {
+    if (_initializeFuture != null) {
+      await _initializeFuture;
+      return;
+    }
+    _initializeFuture = _initialize();
+    await _initializeFuture;
+  }
+
+  Future<void> _initialize() async {
     if (_isInitialized) return;
     _isInitialized = true;
     await FocusEnforcementService.appendDebugLog(
@@ -72,6 +82,10 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    // Refresh can be triggered by multiple lifecycle listeners. Ensure any
+    // in-flight initialize/load has completed to avoid persisting defaults
+    // over previously saved mode settings.
+    await initialize();
     await FocusEnforcementService.appendDebugLog(
       'focus.refresh',
       'manual refresh start',

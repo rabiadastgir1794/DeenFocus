@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/tasbih_local_repository.dart';
 
@@ -138,7 +139,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     );
     final saveBackgroundColor = colorScheme.primary.withValues(alpha: 0.14);
     final saveForegroundColor = isDark
-        ? AppColors.onPrimaryDark
+        ? colorScheme.onSurface
         : AppColors.onPrimaryContainerLight;
 
     return Stack(
@@ -158,6 +159,10 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
             );
           },
           child: Scaffold(
+            appBar: CustomAppBar(
+              title: "Tasbih",
+              onBack: () => Navigator.of(context).pop(),
+            ),
             body: SafeArea(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 16.h),
@@ -165,17 +170,6 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                   children: [
                     Row(
                       children: [
-                        TextButton.icon(
-                          onPressed: () => unawaited(_handleBack()),
-                          style: TextButton.styleFrom(
-                            foregroundColor: colorScheme.primary,
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                          label: const Text('Back'),
-                        ),
                         const Spacer(),
                         PopupMenuButton<_TasbihDetailOption>(
                           tooltip: MaterialLocalizations.of(
@@ -314,6 +308,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                               l10n.save,
                               style: TextStyle(
                                 fontSize: 15.sp,
+                                color: colorScheme.onSurface,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),

@@ -57,6 +57,7 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let clockJumpThresholdMs: Double = 90_000
+  private static let sleepWakeGapSlackMs: Double = 5_000
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
   private static let oneShotLockPrefix = "deenly_focus_lock_"
   private static let oneShotUnlockPrefix = "deenly_focus_unlock_"
@@ -172,6 +173,17 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
 
     let uptimeDelta = nowUptimeMs - previousUptimeMs
     if uptimeDelta < 0 {
+      return false
+    }
+
+    // `systemUptime` does not advance while the device sleeps, while wall clock
+    // does. Treat that as normal sleep/wake drift rather than a manual clock jump.
+    let wallDelta = nowWallMs - previousWallMs
+    if wallDelta - uptimeDelta > Self.sleepWakeGapSlackMs {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.clock",
+        "sleep/wake drift wallDeltaMs=\(Int(wallDelta)) uptimeDeltaMs=\(Int(uptimeDelta))"
+      )
       return false
     }
 

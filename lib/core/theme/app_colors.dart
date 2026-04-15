@@ -39,6 +39,12 @@ abstract class AppColors {
   static const Color backgroundDark = Color(0xFF111B14);
   static const Color surfaceLight = Color(0xFFF7F5F0);
   static const Color surfaceDark = Color(0xFF111B14);
+  static const Color surfaceVariantLight = Color(0xFFE8E0D4);
+  static const Color surfaceVariantDark = Color(0xFF3A3A30);
+  static const Color inverseSurfaceLight = Color(0xFF2F312D);
+  static const Color inverseSurfaceDark = Color(0xFFE0E3DC);
+  static const Color inverseOnSurfaceLight = Color(0xFFF0F1EB);
+  static const Color inverseOnSurfaceDark = Color(0xFF2F312D);
   static const Color onBackgroundLight = Color(0xFF1C2E24);
   static const Color onBackgroundDark = Color(0xFFE0E3DC);
 
@@ -49,10 +55,28 @@ abstract class AppColors {
   static const Color textSecondaryDark = Color(0xFFCFC6B4);
 
   // —— Input & cards ——
-  static const Color inputBackgroundLight = Color(0xFFE8E0D4);
-  static const Color inputBackgroundDark = Color(0xFF3A3A30);
-  static const Color cardBackgroundLight = Color(0xFFF0E6D6);
-  static const Color cardBackgroundDark = Color(0xFF1A241D);
+  static const Color inputBackgroundLight = surfaceVariantLight;
+  static const Color inputBackgroundDark = surfaceVariantDark;
+  static const Color cardBackgroundLight = surfaceContainerLight;
+  static const Color cardBackgroundDark = surfaceContainerDark;
+
+  // —— Material 3 surface roles ——
+  static const Color surfaceTintLight = primary;
+  static const Color surfaceTintDark = primaryDark;
+  static const Color surfaceBrightLight = Color(0xFFF7F5F0);
+  static const Color surfaceBrightDark = Color(0xFF373D35);
+  static const Color surfaceDimLight = Color(0xFFDDD9CE);
+  static const Color surfaceDimDark = Color(0xFF111B14);
+  static const Color surfaceContainerLowestLight = Color(0xFFFFFFFF);
+  static const Color surfaceContainerLowestDark = Color(0xFF141F18);
+  static const Color surfaceContainerLowLight = Color(0xFFF5F1E8);
+  static const Color surfaceContainerLowDark = Color(0xFF19241C);
+  static const Color surfaceContainerLight = Color(0xFFEFEBE1);
+  static const Color surfaceContainerDark = Color(0xFF1D2820);
+  static const Color surfaceContainerHighLight = Color(0xFFE9E5DB);
+  static const Color surfaceContainerHighDark = Color(0xFF232E26);
+  static const Color surfaceContainerHighestLight = Color(0xFFE3DFD5);
+  static const Color surfaceContainerHighestDark = Color(0xFF2D382F);
 
   // —— Button disabled ——
   static const Color buttonDisabledLight = Color(0xFFE8E0D4);

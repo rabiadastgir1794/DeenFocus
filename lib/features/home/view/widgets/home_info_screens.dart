@@ -125,7 +125,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: colorScheme.onPrimary,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ),
