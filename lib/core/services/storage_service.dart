@@ -32,6 +32,7 @@ abstract class StorageService {
   static const String _keyHomePrayerStreakJson = 'home_prayer_streak_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
   static const String _keyDarkModeEnabled = 'dark_mode_enabled';
+  static const String _keyAppNotificationsEnabled = 'app_notifications_enabled';
   static const String _keyNearbyMosquesCacheLat = 'nearby_mosques_cache_lat';
   static const String _keyNearbyMosquesCacheLng = 'nearby_mosques_cache_lng';
   static const String _keyNearbyMosquesCacheFetchedMs =
@@ -309,6 +310,16 @@ abstract class StorageService {
   static Future<void> setDarkModeEnabled(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyDarkModeEnabled, value);
+  }
+
+  static Future<bool> get appNotificationsEnabled async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyAppNotificationsEnabled) ?? true;
+  }
+
+  static Future<void> setAppNotificationsEnabled(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyAppNotificationsEnabled, value);
   }
 
   static Future<double?> get nearbyMosquesCacheLatitude async {

@@ -68,19 +68,6 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     } catch (_) {}
   }
 
-  void _popAfterFrame() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      Navigator.of(context).pop();
-    });
-  }
-
-  Future<void> _handleBack() async {
-    await _flushPendingSession();
-    if (!mounted) return;
-    _popAfterFrame();
-  }
-
   Future<void> _persistTap() async {
     final total = await TasbihLocalRepository.instance.incrementTap(_item.id);
     if (mounted) setState(() => _item = _item.copyWith(totalCount: total));
@@ -203,69 +190,73 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const Spacer(flex: 2),
-                    SizedBox(
-                      width: 280.w,
-                      height: 280.w,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: 280.w,
-                            height: 280.w,
-                            child: CircularProgressIndicator(
-                              value: 1,
-                              strokeWidth: 10,
-                              color: colorScheme.surfaceContainerHighest,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 280.w,
-                            height: 280.w,
-                            child: CircularProgressIndicator(
-                              value: progress,
-                              strokeWidth: 10,
-                              color: colorScheme.primary,
-                            ),
-                          ),
-                          Material(
-                            elevation: 8,
-                            shape: const CircleBorder(),
-                            color: colorScheme.surface,
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: _handleTap,
-                              child: SizedBox(
-                                width: 215.w,
-                                height: 215.w,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '$_sessionCount',
-                                      style: TextStyle(
-                                        fontSize: 54.sp,
-                                        fontWeight: FontWeight.w700,
-                                        color: colorScheme.onSurface,
-                                      ),
-                                    ),
-                                    SizedBox(height: 6.h),
-                                    Text(
-                                      l10n.tasbihTapMe,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
+                    Expanded(
+                      child: Center(
+                        child: SizedBox(
+                          width: 240.w,
+                          height: 240.w,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                width: 240.w,
+                                height: 240.w,
+                                child: CircularProgressIndicator(
+                                  value: 1,
+                                  strokeWidth: 10,
+                                  color: colorScheme.surfaceContainerHighest,
                                 ),
                               ),
-                            ),
+                              SizedBox(
+                                width: 240.w,
+                                height: 240.w,
+                                child: CircularProgressIndicator(
+                                  value: progress,
+                                  strokeWidth: 10,
+                                  color: colorScheme.primary,
+                                ),
+                              ),
+                              Material(
+                                elevation: 8,
+                                shape: const CircleBorder(),
+                                color: colorScheme.surface,
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: _handleTap,
+                                  child: SizedBox(
+                                    width: 182.w,
+                                    height: 182.w,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '$_sessionCount',
+                                          style: TextStyle(
+                                            fontSize: 50.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: colorScheme.onSurface,
+                                          ),
+                                        ),
+                                        SizedBox(height: 6.h),
+                                        Text(
+                                          l10n.tasbihTapMe,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color:
+                                                colorScheme.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     Row(
                       children: [
                         Expanded(

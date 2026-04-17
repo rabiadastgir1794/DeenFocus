@@ -9,7 +9,6 @@ import '../../../core/services/theme_service.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
-import '../../focus/model/focus_models.dart';
 import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/home_models.dart';
@@ -114,7 +113,8 @@ class _HomeTabViewState extends State<_HomeTabView>
         final currentMonth = DateFormat.yMMMM(
           l10n.localeName,
         ).format(vm.visibleMonth);
-        final showHomeFocusLockCard = focusVm.isAppsLocked;
+        final showHomeFocusLockCard =
+            focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked;
 
         return SafeArea(
           child: SingleChildScrollView(
@@ -134,6 +134,8 @@ class _HomeTabViewState extends State<_HomeTabView>
                           ),
                           Text(
                             profile.userName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.w700),
                           ),
@@ -485,11 +487,12 @@ class _FocusLockCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final unlockFromHomeUsesTemporaryUnlock =
-        focusVm.lockState.activeMode != FocusModeType.child;
+    final isTemporarilyUnlocked = focusVm.isTemporarilyUnlocked;
 
     return InkWell(
-      onTap: () => focusVm.unlockFromHome(),
+      onTap: () => isTemporarilyUnlocked
+          ? focusVm.relockNowFromHome()
+          : focusVm.unlockFromHome(),
       borderRadius: BorderRadius.circular(22),
       child: Ink(
         width: double.infinity,
@@ -530,17 +533,15 @@ class _FocusLockCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    unlockFromHomeUsesTemporaryUnlock
-                        ? 'Apps Locked'
-                        : 'Apps Locked',
+                    isTemporarilyUnlocked ? 'Apps Unlocked' : 'Apps Locked',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    unlockFromHomeUsesTemporaryUnlock
-                        ? 'Tap to unlock temporarily'
+                    isTemporarilyUnlocked
+                        ? 'Tap to relock blocked apps now'
                         : 'Tap to unlock apps temporarily',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -554,7 +555,7 @@ class _FocusLockCard extends StatelessWidget {
                 color: colorScheme.error.withValues(alpha: 0.1),
               ),
               child: Text(
-                unlockFromHomeUsesTemporaryUnlock ? 'Unlock' : 'Turn Off',
+                isTemporarilyUnlocked ? 'Relock' : 'Unlock',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: colorScheme.error,
                   fontWeight: FontWeight.w700,

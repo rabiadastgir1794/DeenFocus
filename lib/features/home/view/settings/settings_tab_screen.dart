@@ -8,17 +8,66 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/constants/app_languages.dart';
+import '../../../../core/services/app_notification_service.dart';
 import '../../../../core/services/locale_service.dart';
+import '../../../../core/services/permission_service.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../features/focus/viewmodel/focus_controller.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 
-class SettingsTabScreen extends StatelessWidget {
+class SettingsTabScreen extends StatefulWidget {
   const SettingsTabScreen({super.key});
+
+  @override
+  State<SettingsTabScreen> createState() => _SettingsTabScreenState();
+}
+
+class _SettingsTabScreenState extends State<SettingsTabScreen> {
+  bool _notificationsEnabled = true;
+  bool _notificationsInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_loadNotificationToggle());
+  }
+
+  Future<void> _loadNotificationToggle() async {
+    final enabled = await StorageService.appNotificationsEnabled;
+    if (!mounted) return;
+    setState(() {
+      _notificationsEnabled = enabled;
+      _notificationsInitialized = true;
+    });
+  }
+
+  Future<void> _toggleNotifications(bool value) async {
+    final focusSettings = context.read<FocusController>().settings;
+    if (value) {
+      final granted = await PermissionService.requestNotification();
+      if (!granted) {
+        if (!mounted) return;
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          const SnackBar(
+            content: Text('Enable system notifications to turn this on.'),
+          ),
+        );
+        return;
+      }
+    }
+    await StorageService.setAppNotificationsEnabled(value);
+    await AppNotificationService.instance.syncFocusNotifications(
+      settings: focusSettings,
+    );
+    if (!mounted) return;
+    setState(() => _notificationsEnabled = value);
+  }
 
   Future<void> _showLanguagePicker(BuildContext context) async {
     final localeService = context.read<LocaleService>();
@@ -352,6 +401,18 @@ class SettingsTabScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _SettingsGroup(
               children: [
+                _SettingsSwitchRow(
+                  icon: Icons.notifications_none_rounded,
+                  label: 'Notifications',
+                  value: _notificationsEnabled,
+                  enabled: _notificationsInitialized,
+                  onChanged: _toggleNotifications,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _SettingsGroup(
+              children: [
                 _SettingsRow(
                   icon: Icons.info_outline_rounded,
                   label: 'About Deen Focus',
@@ -679,6 +740,7 @@ class _SettingsRow extends StatelessWidget {
                       Flexible(
                         child: Text(
                           value!,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.end,
                           style: Theme.of(context).textTheme.bodySmall
@@ -707,12 +769,14 @@ class _SettingsSwitchRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final IconData icon;
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -739,7 +803,7 @@ class _SettingsSwitchRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Switch.adaptive(value: value, onChanged: onChanged),
+          Switch.adaptive(value: value, onChanged: enabled ? onChanged : null),
         ],
       ),
     );

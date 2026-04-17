@@ -9,6 +9,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'focus_enforcement_service.dart';
+import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import '../../features/home/model/home_models.dart';
@@ -82,6 +83,8 @@ class AppNotificationService {
   }
 
   Future<bool> _hasNotificationPermission() async {
+    final enabledByUser = await StorageService.appNotificationsEnabled;
+    if (!enabledByUser) return false;
     if (Platform.isAndroid) {
       final androidPlugin = _plugin
           .resolvePlatformSpecificImplementation<
@@ -155,6 +158,10 @@ class AppNotificationService {
   static const int _nightLockNotificationIdStart = 4000;
   static const int _nightUnlockNotificationIdStart = 4010;
   static const int _nightUnlockNotificationIdEnd = 4016;
+  static const int _salahLockNotificationIdStart = 3000;
+  static const int _salahLockNotificationIdEnd = 3059;
+  static const int _salahUnlockNotificationIdStart = 3060;
+  static const int _salahUnlockNotificationIdEnd = 3119;
 
   Future<void> syncFocusNotifications({required FocusSettings settings}) async {
     await initialize();
@@ -170,16 +177,35 @@ class AppNotificationService {
     await _ensureAndroidExactAlarmOrFallback();
     await _setLocalTimezone();
     await _cancelRange(2000, 2059);
-    await _cancelRange(3000, 3059);
+    await _cancelRange(_salahLockNotificationIdStart, _salahLockNotificationIdEnd);
+    await _cancelRange(
+      _salahUnlockNotificationIdStart,
+      _salahUnlockNotificationIdEnd,
+    );
     await _cancelRange(
       _nightLockNotificationIdStart,
       _nightUnlockNotificationIdEnd,
     );
 
-    if (!settings.nightDisciplineEnabled) {
-      return;
-    }
+    final includeUnlockNotifications = settings.temporarilyUnlockedUntil == null;
 
+    if (settings.nightDisciplineEnabled) {
+      await _scheduleNightNotifications(
+        settings: settings,
+        includeUnlockNotifications: includeUnlockNotifications,
+      );
+    }
+    if (settings.salahModeEnabled) {
+      await _scheduleSalahNotifications(
+        includeUnlockNotifications: includeUnlockNotifications,
+      );
+    }
+  }
+
+  Future<void> _scheduleNightNotifications({
+    required FocusSettings settings,
+    required bool includeUnlockNotifications,
+  }) async {
     final range = settings.nightRange;
     final now = DateTime.now();
     final lockTimes = <DateTime>[];
@@ -217,6 +243,10 @@ class AppNotificationService {
       lockId++;
     }
 
+    if (!includeUnlockNotifications) {
+      return;
+    }
+
     var unlockId = _nightUnlockNotificationIdStart;
     for (final at in unlockTimes) {
       await FocusEnforcementService.appendDebugLog(
@@ -228,6 +258,78 @@ class AppNotificationService {
         when: at,
         title: 'Sleep time over',
         body: "Selected apps are unlocked until tonight's sleep time.",
+        details: _nightTransitionNotificationDetails,
+        preferAlarmClock: false,
+      );
+      unlockId++;
+    }
+  }
+
+  Future<void> _scheduleSalahNotifications({
+    required bool includeUnlockNotifications,
+  }) async {
+    final now = DateTime.now();
+    final latitude = await StorageService.locationLatitude;
+    final longitude = await StorageService.locationLongitude;
+    if (latitude == null || longitude == null) return;
+
+    final datasets = <({int dayOffset, HomePrayerTimesData data})>[
+      for (var d = 0; d < 7; d++)
+        (
+          dayOffset: d,
+          data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+            latitude: latitude,
+            longitude: longitude,
+            now: now.add(Duration(days: d)),
+          ),
+        ),
+    ];
+
+    final lockTimes = <({DateTime at, HomePrayerId id})>[];
+    final unlockTimes = <({DateTime at, HomePrayerId id})>[];
+    for (final dataset in datasets) {
+      for (final slot in dataset.data.slots.where(
+        (slot) => slot.id != HomePrayerId.sunrise,
+      )) {
+        if (slot.time.isAfter(now)) {
+          lockTimes.add((at: slot.time, id: slot.id));
+          unlockTimes.add(
+            (at: slot.time.add(const Duration(minutes: 15)), id: slot.id),
+          );
+        }
+      }
+    }
+
+    var lockId = _salahLockNotificationIdStart;
+    for (final item in lockTimes) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.salahLock.schedule',
+        'id=$lockId at=${item.at.toIso8601String()} prayer=${item.id.name}',
+      );
+      await _scheduleIfFuture(
+        id: lockId,
+        when: item.at,
+        title: "${_prayerLabel(item.id)} focus started",
+        body: 'Selected apps are now locked for prayer time.',
+        details: _nightTransitionNotificationDetails,
+        preferAlarmClock: false,
+      );
+      lockId++;
+    }
+
+    if (!includeUnlockNotifications) return;
+
+    var unlockId = _salahUnlockNotificationIdStart;
+    for (final item in unlockTimes) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.salahUnlock.schedule',
+        'id=$unlockId at=${item.at.toIso8601String()} prayer=${item.id.name}',
+      );
+      await _scheduleIfFuture(
+        id: unlockId,
+        when: item.at,
+        title: "${_prayerLabel(item.id)} focus ended",
+        body: 'Selected apps are unlocked until the next focus window.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );

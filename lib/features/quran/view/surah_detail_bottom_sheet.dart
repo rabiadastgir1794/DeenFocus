@@ -39,6 +39,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   StreamSubscription<Duration>? _positionSub;
   StreamSubscription<Duration?>? _durationSub;
   bool _showCompactHeader = false;
+  bool _suppressNextAutoScroll = false;
 
   @override
   void initState() {
@@ -102,6 +103,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       setState(() {
         _playingAyahIndex = index;
       });
+      if (_suppressNextAutoScroll) {
+        _suppressNextAutoScroll = false;
+        return;
+      }
       _scrollToAyah(index);
     });
 
@@ -149,6 +154,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
 
   Future<void> _onAyahTap(int position) async {
     if (_ayahs.isEmpty) return;
+    _suppressNextAutoScroll = true;
     setState(() {
       _playingAyahIndex = position;
       _isAudioLoading = true;

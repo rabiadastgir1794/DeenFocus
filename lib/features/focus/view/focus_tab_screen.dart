@@ -27,6 +27,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   bool _showGlobalSelector = false;
   FocusModeType? _pendingModeToEnable;
   bool _awaitingBlockingPermission = false;
+  bool _isAuthorizingScreenTime = false;
   final Set<FocusModeType> _modesInFlight = <FocusModeType>{};
 
   @override
@@ -98,11 +99,6 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colorScheme = Theme.of(context).colorScheme;
-    final borderColor = isDark
-        ? colorScheme.outlineVariant.withValues(alpha: 0.25)
-        : AppColors.outlineVariantLight.withValues(alpha: 0.25);
     return Consumer<FocusController>(
       builder: (context, vm, _) {
         final colorScheme = Theme.of(context).colorScheme;
@@ -129,7 +125,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
         return Scaffold(
           body: SafeArea(
-            child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                AbsorbPointer(
+                  absorbing: _isAuthorizingScreenTime,
+                  child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,12 +305,17 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         const SizedBox(height: 12),
                         InkWell(
                           onTap: () async {
+                            if (_isAuthorizingScreenTime) return;
                             final messenger = ScaffoldMessenger.maybeOf(
                               context,
                             );
                             if (defaultTargetPlatform == TargetPlatform.iOS) {
+                              setState(() => _isAuthorizingScreenTime = true);
                               final authResult =
                                   await PermissionService.requestScreenTimeAccessDetailed();
+                              if (mounted) {
+                                setState(() => _isAuthorizingScreenTime = false);
+                              }
                               if (!mounted) return;
                               if (!authResult.granted) {
                                 messenger?.showSnackBar(
@@ -424,10 +429,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.salah, value),
                     child: salahMode
-                        ? _ModeFooterText(
+                        ? _ModeStatusBanner(
                             text:
-                                '✓ ${vm.selectedTargetPhrase} will be blocked during prayer times',
-                            color: colorScheme.primary,
+                                '⚠ ${vm.selectedTargetPhrase} blocked during prayer times',
+                            color: colorScheme.error,
                           )
                         : null,
                   ),
@@ -478,10 +483,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              _ModeFooterText(
+                              _ModeStatusBanner(
                                 text:
-                                    '✓ ${vm.selectedTargetPhrase} will be blocked at night',
-                                color: colorScheme.primary,
+                                    '⚠ ${vm.selectedTargetPhrase} blocked during sleep hours',
+                                color: colorScheme.error,
                               ),
                             ],
                           )
@@ -498,7 +503,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.child, value),
                     child: childMode
-                        ? _ModeFooterText(
+                        ? _ModeStatusBanner(
                             text:
                                 '⚠ ${vm.selectedTargetPhrase} blocked immediately',
                             color: colorScheme.error,
@@ -507,6 +512,16 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   ),
                 ],
               ),
+                  ),
+                ),
+                if (_isAuthorizingScreenTime)
+                  Positioned.fill(
+                    child: ColoredBox(
+                      color: Colors.black.withValues(alpha: 0.18),
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
+              ],
             ),
           ),
         );
@@ -586,8 +601,12 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
       if (enabled) {
         if (defaultTargetPlatform == TargetPlatform.iOS) {
+          setState(() => _isAuthorizingScreenTime = true);
           final authResult =
               await PermissionService.requestScreenTimeAccessDetailed();
+          if (mounted) {
+            setState(() => _isAuthorizingScreenTime = false);
+          }
           if (!mounted) return;
           if (!authResult.granted) {
             messenger?.showSnackBar(
@@ -947,20 +966,28 @@ class _ModeCard extends StatelessWidget {
   }
 }
 
-class _ModeFooterText extends StatelessWidget {
-  const _ModeFooterText({required this.text, required this.color});
+class _ModeStatusBanner extends StatelessWidget {
+  const _ModeStatusBanner({required this.text, required this.color});
 
   final String text;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        fontSize: 11,
-        color: color,
-        fontWeight: FontWeight.w500,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: color.withValues(alpha: 0.10),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          fontSize: 11,
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

@@ -60,6 +60,8 @@ abstract class FocusEnforcementService {
         'iosSelectionData': settings.iosSelectionData,
         'iosSelectionCount': settings.iosSelectionCount,
         'nightDisciplineEnabled': settings.nightDisciplineEnabled,
+        'salahModeEnabled': settings.salahModeEnabled,
+        'childModeEnabled': settings.childModeEnabled,
         'nightStartHour': settings.nightRange.startHour,
         'nightStartMinute': settings.nightRange.startMinute,
         'nightEndHour': settings.nightRange.endHour,
