@@ -1,25 +1,6 @@
-import 'dart:async';
-
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../core/services/storage_service.dart';
-
-/// Serializes async updates per [tasbihId] so rapid taps don't lose counts.
-class _AsyncMutex {
-  Future<void> _lock = Future<void>.value();
-
-  Future<T> run<T>(Future<T> Function() action) async {
-    final previous = _lock;
-    final completer = Completer<void>();
-    _lock = completer.future;
-    await previous;
-    try {
-      return await action();
-    } finally {
-      completer.complete();
-    }
-  }
-}
 
 class TasbihItem {
   const TasbihItem({
@@ -125,8 +106,6 @@ class TasbihLocalRepository {
   late final Box<Map> _itemsBox;
   late final Box<Map> _sessionsBox;
   Future<void>? _opening;
-  final Map<String, _AsyncMutex> _tapMutexById = <String, _AsyncMutex>{};
-
   Future<void> ensureInitialized() async {
     if (_initialized) return;
     _opening ??= _openBoxesAndSeed();
@@ -230,32 +209,24 @@ class TasbihLocalRepository {
     await _itemsBox.put(id, item.copyWith(isPinned: !item.isPinned).toMap());
   }
 
-  /// Persists one tap to this dhikr's running total (call from the counter UI).
-  Future<int> incrementTap(String tasbihId) async {
-    await ensureInitialized();
-    final mutex = _tapMutexById.putIfAbsent(tasbihId, _AsyncMutex.new);
-    return mutex.run(() async {
-      final raw = _itemsBox.get(tasbihId);
-      if (raw == null) return 0;
-      final current = TasbihItem.fromMap(raw);
-      final next = current.totalCount + 1;
-      await _itemsBox.put(
-        tasbihId,
-        current.copyWith(totalCount: next).toMap(),
-      );
-      await _itemsBox.flush();
-      return next;
-    });
-  }
-
-  /// Records a completed session batch for history (does not change totals;
-  /// totals are updated per tap via [incrementTap]).
-  Future<void> recordSessionBatch({
+  /// Commits a saved session to history and the tasbih's total count.
+  Future<int> recordSessionBatch({
     required String tasbihId,
     required int sessionCount,
   }) async {
     await ensureInitialized();
-    if (sessionCount <= 0) return;
+    if (sessionCount <= 0) {
+      final raw = _itemsBox.get(tasbihId);
+      if (raw == null) return 0;
+      return TasbihItem.fromMap(raw).totalCount;
+    }
+
+    final raw = _itemsBox.get(tasbihId);
+    if (raw == null) return 0;
+    final item = TasbihItem.fromMap(raw);
+    final nextTotal = item.totalCount + sessionCount;
+    await _itemsBox.put(tasbihId, item.copyWith(totalCount: nextTotal).toMap());
+
     final session = TasbihSession(
       id: '${tasbihId}_${DateTime.now().millisecondsSinceEpoch}',
       tasbihId: tasbihId,
@@ -263,7 +234,9 @@ class TasbihLocalRepository {
       createdAtIso: DateTime.now().toUtc().toIso8601String(),
     );
     await _sessionsBox.put(session.id, session.toMap());
+    await _itemsBox.flush();
     await _sessionsBox.flush();
+    return nextTotal;
   }
 
   Future<void> resetTotal(String tasbihId) async {

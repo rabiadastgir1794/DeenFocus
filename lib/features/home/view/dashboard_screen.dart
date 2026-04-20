@@ -31,6 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
+    const selectedNavColor = AppColors.primary;
     final backgroundColor = isDark
         ? colorScheme.outlineVariant.withValues(alpha: 0.25)
         : AppColors.outlineVariantLight.withValues(alpha: 0.25);
@@ -48,20 +49,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        backgroundColor: backgroundColor,
-        onDestinationSelected: (index) {
-          setState(() => _currentIndex = index);
-        },
-        destinations: _tabs
-            .map(
-              (tab) => NavigationDestination(
-                icon: Icon(tab.icon),
-                label: _labelForTab(l10n, tab.id),
-              ),
-            )
-            .toList(growable: false),
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          backgroundColor: backgroundColor,
+          indicatorColor: selectedNavColor.withValues(alpha: 0.18),
+          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
+            final isSelected = states.contains(WidgetState.selected);
+            return IconThemeData(
+              color: isSelected
+                  ? selectedNavColor
+                  : colorScheme.onSurfaceVariant,
+            );
+          }),
+          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
+            final isSelected = states.contains(WidgetState.selected);
+            return TextStyle(
+              color: isSelected
+                  ? selectedNavColor
+                  : colorScheme.onSurfaceVariant,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            );
+          }),
+        ),
+        child: NavigationBar(
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (index) {
+            setState(() => _currentIndex = index);
+          },
+          destinations: _tabs
+              .map(
+                (tab) => NavigationDestination(
+                  icon: Icon(tab.icon),
+                  label: _labelForTab(l10n, tab.id),
+                ),
+              )
+              .toList(growable: false),
+        ),
       ),
     );
   }

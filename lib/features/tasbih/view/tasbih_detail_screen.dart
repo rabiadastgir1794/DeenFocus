@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -23,7 +22,6 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
 
   late TasbihItem _item;
   bool _saving = false;
-  bool _autoCompletingCycle = false;
   int _sessionCount = 0;
 
   @override
@@ -47,55 +45,20 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     if (_sessionCount <= 0) return;
 
     await _withSaving(() async {
-      await TasbihLocalRepository.instance.recordSessionBatch(
+      final total = await TasbihLocalRepository.instance.recordSessionBatch(
         tasbihId: _item.id,
         sessionCount: _sessionCount,
       );
       if (!mounted) return;
-      setState(() => _sessionCount = 0);
+      setState(() {
+        _item = _item.copyWith(totalCount: total);
+        _sessionCount = 0;
+      });
     });
   }
 
-  /// Writes session history for any unsaved taps (totals already persisted per tap).
-  Future<void> _flushPendingSession() async {
-    if (_sessionCount <= 0) return;
-    try {
-      await TasbihLocalRepository.instance.recordSessionBatch(
-        tasbihId: _item.id,
-        sessionCount: _sessionCount,
-      );
-      if (mounted) setState(() => _sessionCount = 0);
-    } catch (_) {}
-  }
-
-  Future<void> _persistTap() async {
-    final total = await TasbihLocalRepository.instance.incrementTap(_item.id);
-    if (mounted) setState(() => _item = _item.copyWith(totalCount: total));
-  }
-
-  Future<void> _completeCycleIfNeeded() async {
-    if (_autoCompletingCycle || _sessionCount < _sessionGoal) return;
-    _autoCompletingCycle = true;
-    try {
-      await TasbihLocalRepository.instance.recordSessionBatch(
-        tasbihId: _item.id,
-        sessionCount: _sessionGoal,
-      );
-      if (!mounted) return;
-      setState(() => _sessionCount = 0);
-    } finally {
-      _autoCompletingCycle = false;
-    }
-  }
-
   void _handleTap() {
-    if (_autoCompletingCycle) return;
-    final nextCount = _sessionCount + 1;
-    setState(() => _sessionCount = nextCount);
-    unawaited(_persistTap());
-    if (nextCount >= _sessionGoal) {
-      unawaited(_completeCycleIfNeeded());
-    }
+    setState(() => _sessionCount += 1);
   }
 
   Future<void> _resetTotal() async {
@@ -132,19 +95,8 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     return Stack(
       children: [
         PopScope(
-          canPop: _sessionCount == 0,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) return;
-            unawaited(
-              _flushPendingSession().then((_) {
-                if (!context.mounted) return;
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  if (!context.mounted) return;
-                  Navigator.of(context).pop(result);
-                });
-              }),
-            );
-          },
+          canPop: true,
+          onPopInvokedWithResult: (_, _) {},
           child: Scaffold(
             appBar: CustomAppBar(
               title: "Tasbih",
@@ -191,7 +143,8 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                       ),
                     ),
                     Expanded(
-                      child: Center(
+                      child: Align(
+                        alignment: const Alignment(-0.04, -0.45),
                         child: SizedBox(
                           width: 240.w,
                           height: 240.w,
@@ -243,8 +196,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                                           l10n.tasbihTapMe,
                                           style: TextStyle(
                                             fontSize: 12.sp,
-                                            color:
-                                                colorScheme.onSurfaceVariant,
+                                            color: colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                       ],
