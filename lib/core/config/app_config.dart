@@ -1,4 +1,18 @@
 abstract class AppConfig {
+  /// Superwall public API key(s). Prefer platform-specific keys when they
+  /// differ; otherwise set [superwallApiKey] alone. Pass via `--dart-define`.
+  ///
+  /// Dashboard: https://superwall.com/docs/home
+  static const String superwallApiKey = String.fromEnvironment(
+    'SUPERWALL_API_KEY',
+  );
+  static const String superwallAndroidApiKey = String.fromEnvironment(
+    'SUPERWALL_ANDROID_API_KEY',
+  );
+  static const String superwallIosApiKey = String.fromEnvironment(
+    'SUPERWALL_IOS_API_KEY',
+  );
+
   /// Optional override for flutter_map raster tiles (`{z}`/`{x}`/`{y}`).
   /// Default uses the OSM public tile server (no key). For heavy production
   /// traffic, switch to a commercial provider and pass the URL via dart-define.

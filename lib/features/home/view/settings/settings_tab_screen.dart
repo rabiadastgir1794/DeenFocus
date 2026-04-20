@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/constants/app_languages.dart';
+import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/services/app_notification_service.dart';
 import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/permission_service.dart';
@@ -198,7 +199,14 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
     );
   }
 
-  Future<void> _showEditNameSheet(BuildContext context) async {
+  Future<void> _onEditUsernameTapped(BuildContext context) async {
+    await AppSuperwall.registerPlacement(SuperwallPlacements.changeUsername, () {
+      if (!context.mounted) return;
+      unawaited(_presentEditUsernameSheet(context));
+    });
+  }
+
+  Future<void> _presentEditUsernameSheet(BuildContext context) async {
     final profile = context.read<UserProfileService>();
     final controller = TextEditingController(text: profile.userName);
 
@@ -355,7 +363,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   icon: Icons.person_outline_rounded,
                   label: 'Username',
                   value: profile.userName,
-                  onTap: () => _showEditNameSheet(context),
+                  onTap: () => unawaited(_onEditUsernameTapped(context)),
                 ),
                 _SettingsRow(
                   icon: Icons.language_rounded,
@@ -417,9 +425,17 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   icon: Icons.info_outline_rounded,
                   label: 'About Deen Focus',
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const SettingsAboutScreen(),
+                    unawaited(
+                      AppSuperwall.registerPlacement(
+                        SuperwallPlacements.aboutDeenFocus,
+                        () {
+                          if (!context.mounted) return;
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const SettingsAboutScreen(),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },

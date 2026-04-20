@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
+import 'core/superwall/app_superwall.dart';
 import 'core/services/app_notification_service.dart';
 import 'core/services/app_review_service.dart';
 import 'core/services/daily_refresh_service.dart';
@@ -22,6 +23,7 @@ import 'l10n/app_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await AppSuperwall.configureIfNeeded();
   await AppNotificationService.instance.initialize();
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
   unawaited(DailyRefreshService.instance.initialize());

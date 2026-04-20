@@ -30,7 +30,8 @@ android {
 
     defaultConfig {
         applicationId = "com.rnr.deenfocus"
-        minSdk = flutter.minSdkVersion
+        // superwallkit_flutter / Superwall Android SDK requires minSdk 26.
+        minSdk = maxOf(flutter.minSdkVersion, 26)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
