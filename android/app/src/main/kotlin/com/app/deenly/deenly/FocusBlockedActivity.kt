@@ -2,6 +2,7 @@ package com.rnr.deenfocus
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -15,12 +16,35 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 class FocusBlockedActivity : Activity() {
+    private data class ThemePalette(
+        val background: Int,
+        val cardBackground: Int,
+        val cardBorder: Int,
+        val titleText: Int,
+        val bodyText: Int,
+        val infoCardBackground: Int,
+        val infoLabelText: Int,
+        val infoValueText: Int,
+        val buttonStart: Int,
+        val buttonEnd: Int,
+        val buttonText: Int,
+    )
+
+    private data class ModeContent(
+        val badge: String,
+        val title: String,
+        val description: String,
+        val instruction: String,
+        val quote: String,
+        val actionLabel: String,
+        val topGradientStart: Int,
+        val topGradientEnd: Int,
+        val badgeBg: Int,
+        val badgeText: Int,
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate intent=$intent")
@@ -40,12 +64,11 @@ class FocusBlockedActivity : Activity() {
     }
 
     private fun renderContent(intent: Intent) {
-        val appName = intent.getStringExtra("blockedAppName").orEmpty()
         val activeMode = normalizeMode(intent.getStringExtra("activeMode"))
-        val lockReason = intent.getStringExtra("lockReason")
-        val nextChangeAt = intent.getStringExtra("nextChangeAt")
+        val content = modeContent(activeMode)
+        val palette = themePalette()
 
-        window.decorView.setBackgroundColor(Color.parseColor("#F5F1E8"))
+        window.decorView.setBackgroundColor(palette.background)
 
         val scrollView = ScrollView(this).apply {
             isFillViewport = true
@@ -55,14 +78,9 @@ class FocusBlockedActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
             setPadding(dp(24), dp(32), dp(24), dp(32))
-            background = GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(
-                    Color.parseColor("#EDE0C7"),
-                    Color.parseColor("#E2D0AF"),
-                    Color.parseColor("#D7C29B"),
-                ),
-            )
+            background = GradientDrawable().apply {
+                setColor(palette.background)
+            }
         }
 
         val card = LinearLayout(this).apply {
@@ -71,8 +89,8 @@ class FocusBlockedActivity : Activity() {
             setPadding(dp(24), dp(28), dp(24), dp(24))
             background = GradientDrawable().apply {
                 cornerRadius = dpF(28)
-                setColor(Color.parseColor("#FFFFFC"))
-                setStroke(dp(1), Color.parseColor("#DDCDAF"))
+                setColor(palette.cardBackground)
+                setStroke(dp(1), palette.cardBorder)
             }
             elevation = dpF(18)
             translationZ = dpF(10)
@@ -100,64 +118,56 @@ class FocusBlockedActivity : Activity() {
         }
 
         val modeBadge = TextView(this).apply {
-            text = modeTitle(activeMode)
-            setTextColor(Color.parseColor("#7B4E00"))
+            text = content.badge
+            setTextColor(content.badgeText)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             setTypeface(typeface, Typeface.BOLD)
             background = GradientDrawable().apply {
                 cornerRadius = dpF(999)
-                setColor(Color.parseColor("#F6E7C7"))
+                setColor(content.badgeBg)
             }
             setPadding(dp(12), dp(6), dp(12), dp(6))
         }
 
         val title = TextView(this).apply {
-            text = if (appName.isBlank()) {
-                "This app is blocked for now"
-            } else {
-                "$appName is blocked for now"
-            }
-            setTextColor(Color.parseColor("#2E2415"))
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f)
+            text = content.title
+            setTextColor(palette.titleText)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 27f)
             gravity = Gravity.CENTER
             setTypeface(typeface, Typeface.BOLD)
             setPadding(0, dp(18), 0, dp(10))
         }
 
-        val subtitle = TextView(this).apply {
-            text = modeSummary(activeMode, appName)
-            setTextColor(Color.parseColor("#6E5A39"))
+        val description = TextView(this).apply {
+            text = content.description
+            setTextColor(palette.bodyText)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             gravity = Gravity.CENTER
             setLineSpacing(0f, 1.25f)
         }
 
-        val reasonCard = infoCard(
-            label = "Why this app is blocked",
-            value = lockReason ?: fallbackReason(activeMode),
+        val instructionCard = infoCard(
+            label = "Instruction",
+            value = content.instruction,
+            palette = palette,
         )
 
-        val untilText = formatNextChange(nextChangeAt)
-        val untilCard = infoCard(
-            label = when (activeMode) {
-                "child" -> "Unlocks"
-                "nightDiscipline" -> "Next change"
-                "salah" -> "Prayer window"
-                else -> "Next change"
-            },
-            value = untilText,
+        val quoteCard = infoCard(
+            label = if (activeMode == "salah") "Verse" else "Quote",
+            value = content.quote,
+            palette = palette,
         )
 
         val homeButton = Button(this).apply {
-            text = "Return to Home"
-            setTextColor(Color.WHITE)
+            text = content.actionLabel
+            setTextColor(palette.buttonText)
             textSize = 16f
             typeface = Typeface.DEFAULT_BOLD
             background = GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 intArrayOf(
-                    Color.parseColor("#3C8D63"),
-                    Color.parseColor("#2E6D4D"),
+                    palette.buttonStart,
+                    palette.buttonEnd,
                 ),
             ).apply {
                 cornerRadius = dpF(18)
@@ -168,11 +178,11 @@ class FocusBlockedActivity : Activity() {
 
         card.addView(modeBadge)
         card.addView(title)
-        card.addView(subtitle)
+        card.addView(description)
         card.addView(space(18))
-        card.addView(reasonCard)
+        card.addView(instructionCard)
         card.addView(space(12))
-        card.addView(untilCard)
+        card.addView(quoteCard)
         card.addView(space(22))
         card.addView(
             homeButton,
@@ -202,27 +212,27 @@ class FocusBlockedActivity : Activity() {
         setContentView(scrollView)
     }
 
-    private fun infoCard(label: String, value: String): View {
+    private fun infoCard(label: String, value: String, palette: ThemePalette): View {
         val container = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(14), dp(16), dp(14))
             background = GradientDrawable().apply {
                 cornerRadius = dpF(20)
-                setColor(Color.parseColor("#F8F2E6"))
-                setStroke(dp(1), Color.parseColor("#E2D4B8"))
+                setColor(palette.infoCardBackground)
+                setStroke(dp(1), palette.cardBorder)
             }
         }
 
         val labelView = TextView(this).apply {
             text = label
-            setTextColor(Color.parseColor("#8A6C39"))
+            setTextColor(palette.infoLabelText)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             setTypeface(typeface, Typeface.BOLD)
         }
 
         val valueView = TextView(this).apply {
             text = value
-            setTextColor(Color.parseColor("#3A2D18"))
+            setTextColor(palette.infoValueText)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
             setLineSpacing(0f, 1.2f)
             setPadding(0, dp(6), 0, 0)
@@ -231,6 +241,41 @@ class FocusBlockedActivity : Activity() {
         container.addView(labelView)
         container.addView(valueView)
         return container
+    }
+
+    private fun themePalette(): ThemePalette {
+        val isDarkTheme =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                Configuration.UI_MODE_NIGHT_YES
+        return if (isDarkTheme) {
+            ThemePalette(
+                background = Color.parseColor("#111B14"),
+                cardBackground = Color.parseColor("#1D2820"),
+                cardBorder = Color.parseColor("#4A4539"),
+                titleText = Color.parseColor("#E0E3DC"),
+                bodyText = Color.parseColor("#CFC6B4"),
+                infoCardBackground = Color.parseColor("#232E26"),
+                infoLabelText = Color.parseColor("#CFC6B4"),
+                infoValueText = Color.parseColor("#E0E3DC"),
+                buttonStart = Color.parseColor("#8ED4B4"),
+                buttonEnd = Color.parseColor("#4E9A7C"),
+                buttonText = Color.parseColor("#1B3D2E"),
+            )
+        } else {
+            ThemePalette(
+                background = Color.parseColor("#F7F5F0"),
+                cardBackground = Color.parseColor("#FFFFFFFF"),
+                cardBorder = Color.parseColor("#CFC6B4"),
+                titleText = Color.parseColor("#1C2E24"),
+                bodyText = Color.parseColor("#4A4539"),
+                infoCardBackground = Color.parseColor("#F0E6D6"),
+                infoLabelText = Color.parseColor("#3D3224"),
+                infoValueText = Color.parseColor("#1C2E24"),
+                buttonStart = Color.parseColor("#4E9A7C"),
+                buttonEnd = Color.parseColor("#2E6B52"),
+                buttonText = Color.parseColor("#FFFFFF"),
+            )
+        }
     }
 
     private fun normalizeMode(activeMode: String?): String? {
@@ -242,66 +287,57 @@ class FocusBlockedActivity : Activity() {
         }
     }
 
-    private fun modeTitle(activeMode: String?): String {
+    private fun modeContent(activeMode: String?): ModeContent {
         return when (activeMode) {
-            "child" -> "Child Mode Active"
-            "nightDiscipline" -> "Sleep Lock Active"
-            "salah" -> "Prayer Lock Active"
-            else -> "Focus Mode Active"
+            "salah" -> ModeContent(
+                badge = "Prayer Mode",
+                title = "Salah Time - Stay Focused",
+                description = "Step away from distractions and answer the call to prayer.\nTake this moment to connect with Allah.",
+                instruction = "Return after completing your Salah in DeenFocus.",
+                quote = "\"Establish prayer for My remembrance.\"\n(Quran 20:14)",
+                actionLabel = "Start My Salah",
+                topGradientStart = Color.parseColor("#C8E6D8"),
+                topGradientEnd = Color.parseColor("#F0E6D6"),
+                badgeBg = Color.parseColor("#C8E6D8"),
+                badgeText = Color.parseColor("#1B3D2E"),
+            )
+            "child" -> ModeContent(
+                badge = "Child Mode",
+                title = "Child Focus Mode",
+                description = "This device is currently in child focus mode to help maintain a safe and balanced digital experience.",
+                instruction = "Some apps are temporarily unavailable.",
+                quote = "\"Teach your children prayer when they are seven.\"\n(Hadith - Abu Dawood)",
+                actionLabel = "Continue in Safe Mode",
+                topGradientStart = Color.parseColor("#C8E4F0"),
+                topGradientEnd = Color.parseColor("#F0E6D6"),
+                badgeBg = Color.parseColor("#C8E4F0"),
+                badgeText = Color.parseColor("#163545"),
+            )
+            "nightDiscipline" -> ModeContent(
+                badge = "Night Mode",
+                title = "Night Focus Mode",
+                description = "It's time to rest and disconnect from digital distractions.",
+                instruction = "Put your device aside and enjoy a peaceful night.",
+                quote = "\"And We made your sleep a means for rest.\"\n(Quran 78:9)",
+                actionLabel = "Good Night 🌙",
+                topGradientStart = Color.parseColor("#E9E5DB"),
+                topGradientEnd = Color.parseColor("#C8E6D8"),
+                badgeBg = Color.parseColor("#E3DFD5"),
+                badgeText = Color.parseColor("#1C2E24"),
+            )
+            else -> ModeContent(
+                badge = "Focus Mode",
+                title = "Stay Focused",
+                description = "Distractions are paused while your focus mode is active.",
+                instruction = "Return once your focus session is complete in DeenFocus.",
+                quote = "\"And seek help through patience and prayer.\"\n(Quran 2:45)",
+                actionLabel = "Continue",
+                topGradientStart = Color.parseColor("#C8E6D8"),
+                topGradientEnd = Color.parseColor("#F0E6D6"),
+                badgeBg = Color.parseColor("#C8E6D8"),
+                badgeText = Color.parseColor("#1B3D2E"),
+            )
         }
-    }
-
-    private fun modeSummary(activeMode: String?, appName: String): String {
-        val appRef = if (appName.isBlank()) "This app" else appName
-        return when (activeMode) {
-            "child" -> "$appRef is being kept closed because Child Mode is protecting the device right now."
-            "nightDiscipline" -> "$appRef is paused because Sleep Lock is active during your protected sleep schedule."
-            "salah" -> "$appRef is paused because Prayer Lock is active for the current salah window."
-            else -> "$appRef is unavailable while your current focus protection is active."
-        }
-    }
-
-    private fun fallbackReason(activeMode: String?): String {
-        return when (activeMode) {
-            "child" -> "Child Mode is currently on, so selected apps stay blocked until the mode is turned off or the timed session ends."
-            "nightDiscipline" -> "Sleep Lock is active during your protected schedule, so selected apps stay blocked inside that time window."
-            "salah" -> "Prayer Lock keeps selected apps blocked during the active prayer time window."
-            else -> "A focus mode is active, so this app is temporarily unavailable."
-        }
-    }
-
-    private fun formatNextChange(nextChangeAt: String?): String {
-        if (nextChangeAt.isNullOrBlank()) {
-            return "This block stays in place until the active mode changes."
-        }
-
-        val millis = runCatching { nextChangeAt.toLong() }.getOrNull()
-        if (millis != null) {
-            return SimpleDateFormat("MMM d, h:mm a", Locale.getDefault()).format(Date(millis))
-        }
-
-        val isoPatterns = listOf(
-            "yyyy-MM-dd'T'HH:mm:ss.SSSX",
-            "yyyy-MM-dd'T'HH:mm:ssX",
-            "yyyy-MM-dd'T'HH:mm:ss.SSS",
-            "yyyy-MM-dd'T'HH:mm:ss",
-        )
-        val parsed = isoPatterns.asSequence()
-            .mapNotNull { pattern ->
-                runCatching {
-                    SimpleDateFormat(pattern, Locale.US).apply {
-                        // Flutter sends local ISO strings without a timezone suffix most of the time.
-                        // Parsing those as UTC shifts the time and makes the "unlocks at" UI wrong.
-                        timeZone = TimeZone.getDefault()
-                    }.parse(nextChangeAt)
-                }.getOrNull()
-            }
-            .firstOrNull()
-        if (parsed != null) {
-            return SimpleDateFormat("MMM d, h:mm a", Locale.getDefault()).format(parsed)
-        }
-
-        return "This block stays in place until the active mode changes."
     }
 
     private fun navigateHome() {

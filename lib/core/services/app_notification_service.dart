@@ -45,6 +45,10 @@ class AppNotificationService {
     'com.app.deenly.deenly/focus',
   );
   bool _initialized = false;
+  Future<void> _prayerSyncSerial = Future<void>.value();
+  Future<void> _focusSyncSerial = Future<void>.value();
+  String? _lastPrayerScheduleSignature;
+  String? _lastFocusScheduleSignature;
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -105,53 +109,78 @@ class AppNotificationService {
     required double latitude,
     required double longitude,
   }) async {
-    await initialize();
-    if (!await _hasNotificationPermission()) {
-      return;
-    }
-    await _ensureAndroidExactAlarmOrFallback();
-    // Match device timezone after travel / DST changes.
-    await _setLocalTimezone();
-    // Cancel only our prayer slot IDs. Do not use [cancelAll] — it removes every
-    // notification from the tray (delivered + other channels), so reminders and
-    // focus notifications would vanish whenever we reschedule (resume, refresh).
-    await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
-
-    final now = DateTime.now();
-    // Schedule a full week — many devices batch or drop inexact alarms; using
-    // [AndroidScheduleMode.alarmClock] per-slot avoids only the first firing.
-    const daysAhead = 7;
-    final datasets = <({int dayOffset, HomePrayerTimesData data})>[
-      for (var d = 0; d < daysAhead; d++)
-        (
-          dayOffset: d,
-          data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-            latitude: latitude,
-            longitude: longitude,
-            now: now.add(Duration(days: d)),
-          ),
-        ),
-    ];
-
-    for (final dataset in datasets) {
-      for (final slot in dataset.data.slots.where(
-        (slot) => slot.id != HomePrayerId.sunrise,
-      )) {
-        final id =
-            _prayerNotificationIdStart +
-            dataset.dayOffset * 20 +
-            _slotIndex(slot.id);
-        await _scheduleIfFuture(
-          id: id,
-          when: slot.time,
-          title: "It's time for ${_prayerLabel(slot.id)}",
-          body: 'Take a moment for ${_prayerLabel(slot.id)} prayer.',
-          details: _prayerNotificationDetails,
-          // Avoid alarm-clock UI side effects ("approaching"/upcoming alarm).
-          preferAlarmClock: false,
-        );
+    final run = _prayerSyncSerial.then((_) async {
+      await initialize();
+      if (!await _hasNotificationPermission()) {
+        _lastPrayerScheduleSignature = null;
+        return;
       }
-    }
+      await _ensureAndroidExactAlarmOrFallback();
+      // Match device timezone after travel / DST changes.
+      await _setLocalTimezone();
+
+      final now = DateTime.now();
+      const daysAhead = 7;
+      final datasets = <({int dayOffset, HomePrayerTimesData data})>[
+        for (var d = 0; d < daysAhead; d++)
+          (
+            dayOffset: d,
+            // Keep prayer reminder times deterministic and aligned with focus
+            // scheduling. The cached helper can briefly lag across resume/day
+            // boundaries, which is enough to fire a reminder that does not line
+            // up with the active lock window.
+            data: await HomePrayerTimesHelper.generatePrayerTimesForDate(
+              latitude: latitude,
+              longitude: longitude,
+              date: now.add(Duration(days: d)),
+            ),
+          ),
+      ];
+
+      final signature = _buildPrayerScheduleSignature(
+        latitude: latitude,
+        longitude: longitude,
+        datasets: datasets,
+      );
+      if (_lastPrayerScheduleSignature == signature) {
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.prayer.sync',
+          'skipped reschedule because signature is unchanged',
+        );
+        return;
+      }
+
+      // Cancel only our prayer slot IDs. Do not use [cancelAll] — it removes every
+      // notification from the tray (delivered + other channels), so reminders and
+      // focus notifications would vanish whenever we reschedule (resume, refresh).
+      await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
+
+      // Schedule a full week — many devices batch or drop inexact alarms; using
+      // stable IDs keeps replacements deterministic across refreshes.
+      for (final dataset in datasets) {
+        for (final slot in dataset.data.slots.where(
+          (slot) => slot.id != HomePrayerId.sunrise,
+        )) {
+          final id =
+              _prayerNotificationIdStart +
+              dataset.dayOffset * 20 +
+              _slotIndex(slot.id);
+          await _scheduleIfFuture(
+            id: id,
+            when: slot.time,
+            title: "It's time for ${_prayerLabel(slot.id)}",
+            body: 'Take a moment for ${_prayerLabel(slot.id)} prayer.',
+            details: _prayerNotificationDetails,
+            // Avoid alarm-clock UI side effects ("approaching"/upcoming alarm).
+            preferAlarmClock: false,
+          );
+        }
+      }
+
+      _lastPrayerScheduleSignature = signature;
+    });
+    _prayerSyncSerial = run.catchError((Object _) {});
+    await run;
   }
 
   /// Night discipline: one ID per upcoming lock / unlock (same horizon as prayer batch).
@@ -159,47 +188,67 @@ class AppNotificationService {
   static const int _nightUnlockNotificationIdStart = 4010;
   static const int _nightUnlockNotificationIdEnd = 4016;
   static const int _salahLockNotificationIdStart = 3000;
-  static const int _salahLockNotificationIdEnd = 3059;
-  static const int _salahUnlockNotificationIdStart = 3060;
   static const int _salahUnlockNotificationIdEnd = 3119;
 
   Future<void> syncFocusNotifications({required FocusSettings settings}) async {
-    await initialize();
-    if (!await _hasNotificationPermission()) {
+    final run = _focusSyncSerial.then((_) async {
+      await initialize();
+      if (!await _hasNotificationPermission()) {
+        _lastFocusScheduleSignature = null;
+        await _cancelRange(2000, 2059);
+        await _cancelRange(
+          _salahLockNotificationIdStart,
+          _salahUnlockNotificationIdEnd,
+        );
+        await _cancelRange(
+          _nightLockNotificationIdStart,
+          _nightUnlockNotificationIdEnd,
+        );
+        return;
+      }
+      await _ensureAndroidExactAlarmOrFallback();
+      await _setLocalTimezone();
+
+      final includeUnlockNotifications =
+          settings.temporarilyUnlockedUntil == null;
+      final signature = _buildFocusScheduleSignature(
+        settings: settings,
+        includeUnlockNotifications: includeUnlockNotifications,
+      );
+      if (_lastFocusScheduleSignature == signature) {
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.focus.sync',
+          'skipped reschedule because signature is unchanged',
+        );
+        return;
+      }
+
       await _cancelRange(2000, 2059);
-      await _cancelRange(3000, 3059);
+      // Clear legacy Salah/night ID ranges as part of the rebuild so old
+      // pending requests cannot pile up after upgrading to the deduped flow.
+      await _cancelRange(
+        _salahLockNotificationIdStart,
+        _salahUnlockNotificationIdEnd,
+      );
       await _cancelRange(
         _nightLockNotificationIdStart,
         _nightUnlockNotificationIdEnd,
       );
-      return;
-    }
-    await _ensureAndroidExactAlarmOrFallback();
-    await _setLocalTimezone();
-    await _cancelRange(2000, 2059);
-    await _cancelRange(_salahLockNotificationIdStart, _salahLockNotificationIdEnd);
-    await _cancelRange(
-      _salahUnlockNotificationIdStart,
-      _salahUnlockNotificationIdEnd,
-    );
-    await _cancelRange(
-      _nightLockNotificationIdStart,
-      _nightUnlockNotificationIdEnd,
-    );
 
-    final includeUnlockNotifications = settings.temporarilyUnlockedUntil == null;
+      // Salah already has prayer reminders in the 1000-range. Scheduling a
+      // second focus notification for the same prayer window was the most
+      // common source of "multiple notifications" reports.
+      if (settings.nightDisciplineEnabled) {
+        await _scheduleNightNotifications(
+          settings: settings,
+          includeUnlockNotifications: includeUnlockNotifications,
+        );
+      }
 
-    if (settings.nightDisciplineEnabled) {
-      await _scheduleNightNotifications(
-        settings: settings,
-        includeUnlockNotifications: includeUnlockNotifications,
-      );
-    }
-    if (settings.salahModeEnabled) {
-      await _scheduleSalahNotifications(
-        includeUnlockNotifications: includeUnlockNotifications,
-      );
-    }
+      _lastFocusScheduleSignature = signature;
+    });
+    _focusSyncSerial = run.catchError((Object _) {});
+    await run;
   }
 
   Future<void> _scheduleNightNotifications({
@@ -258,78 +307,6 @@ class AppNotificationService {
         when: at,
         title: 'Sleep time over',
         body: "Selected apps are unlocked until tonight's sleep time.",
-        details: _nightTransitionNotificationDetails,
-        preferAlarmClock: false,
-      );
-      unlockId++;
-    }
-  }
-
-  Future<void> _scheduleSalahNotifications({
-    required bool includeUnlockNotifications,
-  }) async {
-    final now = DateTime.now();
-    final latitude = await StorageService.locationLatitude;
-    final longitude = await StorageService.locationLongitude;
-    if (latitude == null || longitude == null) return;
-
-    final datasets = <({int dayOffset, HomePrayerTimesData data})>[
-      for (var d = 0; d < 7; d++)
-        (
-          dayOffset: d,
-          data: await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
-            latitude: latitude,
-            longitude: longitude,
-            now: now.add(Duration(days: d)),
-          ),
-        ),
-    ];
-
-    final lockTimes = <({DateTime at, HomePrayerId id})>[];
-    final unlockTimes = <({DateTime at, HomePrayerId id})>[];
-    for (final dataset in datasets) {
-      for (final slot in dataset.data.slots.where(
-        (slot) => slot.id != HomePrayerId.sunrise,
-      )) {
-        if (slot.time.isAfter(now)) {
-          lockTimes.add((at: slot.time, id: slot.id));
-          unlockTimes.add(
-            (at: slot.time.add(const Duration(minutes: 15)), id: slot.id),
-          );
-        }
-      }
-    }
-
-    var lockId = _salahLockNotificationIdStart;
-    for (final item in lockTimes) {
-      await FocusEnforcementService.appendDebugLog(
-        'notifications.salahLock.schedule',
-        'id=$lockId at=${item.at.toIso8601String()} prayer=${item.id.name}',
-      );
-      await _scheduleIfFuture(
-        id: lockId,
-        when: item.at,
-        title: "${_prayerLabel(item.id)} focus started",
-        body: 'Selected apps are now locked for prayer time.',
-        details: _nightTransitionNotificationDetails,
-        preferAlarmClock: false,
-      );
-      lockId++;
-    }
-
-    if (!includeUnlockNotifications) return;
-
-    var unlockId = _salahUnlockNotificationIdStart;
-    for (final item in unlockTimes) {
-      await FocusEnforcementService.appendDebugLog(
-        'notifications.salahUnlock.schedule',
-        'id=$unlockId at=${item.at.toIso8601String()} prayer=${item.id.name}',
-      );
-      await _scheduleIfFuture(
-        id: unlockId,
-        when: item.at,
-        title: "${_prayerLabel(item.id)} focus ended",
-        body: 'Selected apps are unlocked until the next focus window.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -437,18 +414,22 @@ class AppNotificationService {
     required NotificationDetails details,
     bool preferAlarmClock = false,
   }) async {
+    final safeTitle = title.trim().isEmpty ? 'Deenly' : title.trim();
+    final safeBody = body.trim().isEmpty
+        ? 'Open Deenly for details.'
+        : body.trim();
     final scheduledAt = when.toLocal();
     if (!scheduledAt.isAfter(DateTime.now())) {
       await FocusEnforcementService.appendDebugLog(
         'notifications.skip',
-        'id=$id title=$title scheduledAt=${scheduledAt.toIso8601String()} reason=past',
+        'id=$id title=$safeTitle scheduledAt=${scheduledAt.toIso8601String()} reason=past',
       );
       return;
     }
 
     await FocusEnforcementService.appendDebugLog(
       'notifications.schedule',
-      'id=$id title=$title scheduledAt=${scheduledAt.toIso8601String()}',
+      'id=$id title=$safeTitle scheduledAt=${scheduledAt.toIso8601String()}',
     );
 
     final whenTz = tz.TZDateTime.from(scheduledAt, tz.local);
@@ -457,8 +438,8 @@ class AppNotificationService {
       Future<void> scheduleWith(AndroidScheduleMode mode) {
         return _plugin.zonedSchedule(
           id,
-          title,
-          body,
+          safeTitle,
+          safeBody,
           whenTz,
           details,
           androidScheduleMode: mode,
@@ -496,8 +477,8 @@ class AppNotificationService {
     } else {
       await _plugin.zonedSchedule(
         id,
-        title,
-        body,
+        safeTitle,
+        safeBody,
         whenTz,
         details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -594,5 +575,38 @@ class AppNotificationService {
       case HomePrayerId.isha:
         return 'Isha';
     }
+  }
+
+  String _buildPrayerScheduleSignature({
+    required double latitude,
+    required double longitude,
+    required List<({int dayOffset, HomePrayerTimesData data})> datasets,
+  }) {
+    final prayerParts = <String>[
+      latitude.toStringAsFixed(4),
+      longitude.toStringAsFixed(4),
+    ];
+    for (final dataset in datasets) {
+      for (final slot in dataset.data.slots.where(
+        (slot) => slot.id != HomePrayerId.sunrise,
+      )) {
+        prayerParts.add(
+          '${dataset.dayOffset}:${slot.id.name}:${slot.time.toIso8601String()}',
+        );
+      }
+    }
+    return prayerParts.join('|');
+  }
+
+  String _buildFocusScheduleSignature({
+    required FocusSettings settings,
+    required bool includeUnlockNotifications,
+  }) {
+    return <String>[
+      'night=${settings.nightDisciplineEnabled}',
+      'start=${settings.nightRange.startHour}:${settings.nightRange.startMinute}',
+      'end=${settings.nightRange.endHour}:${settings.nightRange.endMinute}',
+      'unlock=$includeUnlockNotifications',
+    ].join('|');
   }
 }
