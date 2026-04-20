@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
+import 'focus_enforcement_service.dart';
 import 'storage_service.dart';
 import 'widget_sync_service.dart';
 
@@ -26,6 +30,13 @@ class ThemeService extends ChangeNotifier {
     }
     notifyListeners();
     await WidgetSyncService.instance.syncTimeline();
+    if (Platform.isIOS) {
+      unawaited(
+        FocusEnforcementService.persistIosShieldTheme(
+          isDark: _themeMode == ThemeMode.dark,
+        ),
+      );
+    }
   }
 
   Future<void> setDarkModeEnabled(bool value) async {
@@ -35,5 +46,8 @@ class ThemeService extends ChangeNotifier {
     notifyListeners();
     await StorageService.setDarkModeEnabled(value);
     await WidgetSyncService.instance.syncTimeline();
+    if (Platform.isIOS) {
+      unawaited(FocusEnforcementService.persistIosShieldTheme(isDark: value));
+    }
   }
 }

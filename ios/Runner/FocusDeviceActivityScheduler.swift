@@ -93,6 +93,8 @@ enum FocusDeviceActivityScheduler {
   static let shieldLockReasonKey = "focus_shield_lock_reason"
   static let shieldFlutterLockedKey = "focus_flutter_is_locked"
   static let shieldNativeLockedKey = "focus_native_shield_locked"
+  /// Mirrors the Flutter dark-mode toggle for shield UI (the app extension cannot read the main app theme).
+  static let shieldAppThemeIsDarkKey = "focus_shield_app_theme_is_dark"
   static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let selectionKey = "focus_device_activity_selection_b64"

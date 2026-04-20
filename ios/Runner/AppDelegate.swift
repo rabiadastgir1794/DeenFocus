@@ -9,6 +9,12 @@ import CoreLocation
 import MapKit
 import UserNotifications
 
+/// Shared with `FocusDeviceActivityScheduler` / shield extension (no iOS 16 gate — used for theme prefs from any OS version).
+private enum FocusShieldThemeUserDefaults {
+  static let suiteName = "group.com.rnr.deenfocus"
+  static let appThemeIsDarkKey = "focus_shield_app_theme_is_dark"
+}
+
 @available(iOS 16.0, *)
 private enum ManagedSettingsStoreHolder {
   static let name = ManagedSettingsStore.Name("FocusShield")
@@ -65,6 +71,8 @@ private enum ManagedSettingsStoreHolder {
           self.presentFamilyActivityPicker(call: call, result: result)
         case "syncFocusState":
           self.syncFocusState(call: call, result: result)
+        case "setFocusShieldTheme":
+          self.setFocusShieldTheme(call: call, result: result)
         case "appendFocusDebugLog":
           self.appendFocusDebugLog(call: call, result: result)
         case "clearFocusDebugLog":
@@ -377,6 +385,19 @@ private enum ManagedSettingsStoreHolder {
     }
   }
 
+  private func setFocusShieldTheme(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard
+      let args = call.arguments as? [String: Any],
+      let isDark = args["isDark"] as? Bool
+    else {
+      result(nil)
+      return
+    }
+    let sharedDefaults = UserDefaults(suiteName: FocusShieldThemeUserDefaults.suiteName)
+    sharedDefaults?.set(isDark, forKey: FocusShieldThemeUserDefaults.appThemeIsDarkKey)
+    result(nil)
+  }
+
   private func syncFocusState(call: FlutterMethodCall, result: @escaping FlutterResult) {
     guard #available(iOS 16.0, *) else {
       result(nil)
@@ -386,6 +407,11 @@ private enum ManagedSettingsStoreHolder {
     guard let args = call.arguments as? [String: Any] else {
       result(nil)
       return
+    }
+
+    let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
+    if let appThemeIsDark = args["appThemeIsDark"] as? Bool {
+      sharedDefaults?.set(appThemeIsDark, forKey: FocusDeviceActivityScheduler.shieldAppThemeIsDarkKey)
     }
 
     let isLocked = args["isLocked"] as? Bool ?? false
@@ -403,7 +429,6 @@ private enum ManagedSettingsStoreHolder {
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
     let lockReason = args["lockReason"] as? String
-    let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
     let nativeShieldLocked =
       sharedDefaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false
     FocusIOSDebugLogger.append(

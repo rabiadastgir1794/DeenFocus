@@ -6,6 +6,8 @@ import UIKit
 private enum FocusShieldSharedState {
   static let appGroupId = "group.com.rnr.deenfocus"
   static let activeModeKey = "focus_shield_active_mode"
+  /// Written by the main app via app-group UserDefaults (same key as the Runner target).
+  static let appThemeIsDarkKey = "focus_shield_app_theme_is_dark"
 }
 
 private enum FocusShieldMode: String {
@@ -146,19 +148,24 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
   }
 
   private func themePalette() -> ThemePalette {
+    // Prefer the in-app theme (Settings) over system appearance. `backgroundBlurStyle` blurs the
+    // blocked app and reads as grey; use a solid scaffold color matching Flutter AppColors.background*.
+    let storedIsDark = sharedDefaults?.object(forKey: FocusShieldSharedState.appThemeIsDarkKey) as? Bool
     let screenStyle = UIScreen.main.traitCollection.userInterfaceStyle
     let currentStyle = screenStyle == .unspecified
       ? UITraitCollection.current.userInterfaceStyle
       : screenStyle
-    let isDarkMode = currentStyle != .light
+    let systemIsDark = currentStyle != .light
+    let isDarkMode = storedIsDark ?? systemIsDark
+
     if isDarkMode {
       return ThemePalette(
-        blurStyle: .dark,
-        backgroundColor: .black,
-        titleColor: .white,
-        subtitleColor: UIColor(white: 0.92, alpha: 1.0),
-        buttonBackgroundColor: UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0),  // #4E9A7C
-        buttonTextColor: .white
+        blurStyle: nil,
+        backgroundColor: UIColor(red: 0.067, green: 0.106, blue: 0.078, alpha: 1.0),  // #111B14
+        titleColor: UIColor(red: 0.878, green: 0.890, blue: 0.863, alpha: 1.0),  // #E0E3DC
+        subtitleColor: UIColor(red: 0.812, green: 0.776, blue: 0.706, alpha: 1.0),  // #CFC6B4
+        buttonBackgroundColor: UIColor(red: 0.557, green: 0.831, blue: 0.706, alpha: 1.0),  // #8ED4B4
+        buttonTextColor: UIColor(red: 0.106, green: 0.239, blue: 0.180, alpha: 1.0)  // #1B3D2E
       )
     }
 
