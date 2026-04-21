@@ -21,6 +21,7 @@ class OnboardingSubscriptionPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lockedPlan = SubscriptionPlan.yearly;
     final glassBackground = Colors.white.withValues(
       alpha: isDark ? 0.06 : 0.72,
     );
@@ -106,8 +107,9 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                         _PricingCard(
                           glassBackground: glassBackground,
                           colorScheme: colorScheme,
-                          selected: selectedPlan == SubscriptionPlan.monthly,
-                          onTap: () => onPlanSelected(SubscriptionPlan.monthly),
+                          selected: lockedPlan == SubscriptionPlan.monthly,
+                          enabled: false,
+                          onTap: null,
                           primaryPrice: l10n.monthlyPriceValue,
                           suffix: l10n.monthlyPriceSuffix,
                           subtitle: l10n.monthlyPlanSubtitle,
@@ -116,7 +118,7 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                         _PricingCard(
                           glassBackground: glassBackground,
                           colorScheme: colorScheme,
-                          selected: selectedPlan == SubscriptionPlan.yearly,
+                          selected: true,
                           featured: true,
                           onTap: () => onPlanSelected(SubscriptionPlan.yearly),
                           primaryPrice: l10n.yearlyPriceValue,
@@ -129,9 +131,9 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                         _PricingCard(
                           glassBackground: glassBackground,
                           colorScheme: colorScheme,
-                          selected: selectedPlan == SubscriptionPlan.lifetime,
-                          onTap: () =>
-                              onPlanSelected(SubscriptionPlan.lifetime),
+                          selected: lockedPlan == SubscriptionPlan.lifetime,
+                          enabled: false,
+                          onTap: null,
                           primaryPrice: l10n.lifetimePriceValue,
                           suffix: l10n.lifetimePriceSuffix,
                           subtitle: l10n.lifetimePlanSubtitle,
@@ -327,6 +329,7 @@ class _PricingCard extends StatelessWidget {
     required this.suffix,
     required this.subtitle,
     this.featured = false,
+    this.enabled = true,
     this.badgeText,
     this.popularityText,
   });
@@ -334,11 +337,12 @@ class _PricingCard extends StatelessWidget {
   final Color glassBackground;
   final ColorScheme colorScheme;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String primaryPrice;
   final String suffix;
   final String subtitle;
   final bool featured;
+  final bool enabled;
   final String? badgeText;
   final String? popularityText;
 
@@ -347,6 +351,12 @@ class _PricingCard extends StatelessWidget {
     final borderColor = selected || featured
         ? colorScheme.primary.withValues(alpha: featured ? 0.3 : 0.45)
         : colorScheme.outlineVariant.withValues(alpha: 0.65);
+    final effectiveTitleColor = enabled
+        ? colorScheme.onSurface
+        : colorScheme.onSurfaceVariant.withValues(alpha: 0.78);
+    final effectiveSubtitleColor = enabled
+        ? colorScheme.onSurfaceVariant
+        : colorScheme.onSurfaceVariant.withValues(alpha: 0.72);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.r),
@@ -355,7 +365,7 @@ class _PricingCard extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: onTap,
+            onTap: enabled ? onTap : null,
             borderRadius: BorderRadius.circular(16.r),
             child: Container(
               width: double.infinity,
@@ -412,7 +422,7 @@ class _PricingCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 18.sp,
                                   fontWeight: FontWeight.w700,
-                                  color: colorScheme.onSurface,
+                                  color: effectiveTitleColor,
                                 ),
                               ),
                               TextSpan(
@@ -420,7 +430,7 @@ class _PricingCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
-                                  color: colorScheme.onSurfaceVariant,
+                                  color: effectiveSubtitleColor,
                                 ),
                               ),
                             ],
@@ -431,7 +441,7 @@ class _PricingCard extends StatelessWidget {
                           subtitle,
                           style: TextStyle(
                             fontSize: 10.sp,
-                            color: colorScheme.onSurfaceVariant,
+                            color: effectiveSubtitleColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -449,7 +459,11 @@ class _PricingCard extends StatelessWidget {
                                 popularityText ?? '',
                                 style: TextStyle(
                                   fontSize: 10.sp,
-                                  color: colorScheme.primary,
+                                  color: enabled
+                                      ? colorScheme.primary
+                                      : colorScheme.primary.withValues(
+                                          alpha: 0.6,
+                                        ),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),

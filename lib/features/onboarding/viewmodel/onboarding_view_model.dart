@@ -13,6 +13,7 @@ import '../model/subscription_plan.dart';
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel() {
     _totalSteps = 10;
+    _selectedPlan = SubscriptionPlan.yearly;
   }
 
   late int _totalSteps;
@@ -45,7 +46,7 @@ class OnboardingViewModel extends ChangeNotifier {
 
   /// Screens that show Skip on top right.
   bool get showLanguageChangeOption => _currentIndex == 0;
-  bool get showSkip => _currentIndex == 0 || _currentIndex == _totalSteps - 1;
+  bool get showSkip => _currentIndex == 0;
 
   /// Continue disabled: sect (4), name (5), location (6). Notifications (7), screen time (8), and subscription (9) are optional.
   bool get isContinueDisabled {
@@ -125,7 +126,10 @@ class OnboardingViewModel extends ChangeNotifier {
         // Do not await: refresh loads prayer data, notifications, widgets and can
         // take multiple seconds. Home tab loads the same data on open anyway.
         unawaited(
-          DailyRefreshService.instance.refreshNow().catchError((Object e, StackTrace st) {
+          DailyRefreshService.instance.refreshNow().catchError((
+            Object e,
+            StackTrace st,
+          ) {
             assert(() {
               debugPrint('Onboarding: refresh after location failed: $e\n$st');
               return true;
@@ -144,8 +148,10 @@ class OnboardingViewModel extends ChangeNotifier {
   }
 
   void setSelectedPlan(SubscriptionPlan? value) {
-    _selectedPlan = value;
-    notifyListeners();
+    if (value == null || value == SubscriptionPlan.yearly) {
+      _selectedPlan = SubscriptionPlan.yearly;
+      notifyListeners();
+    }
   }
 
   void setUserName(String value) {
