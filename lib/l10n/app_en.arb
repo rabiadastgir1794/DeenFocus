@@ -157,5 +157,7 @@
   "tasbihGrandTotalLabel": "Total Tasbih",
   "tasbihTapMe": "Tap Me",
   "tasbihReset": "Reset",
+  "tasbihRestart": "Restart",
+  "tasbihCurrentCount": "Current Count",
   "tasbihResetTotal": "Reset total"
 }

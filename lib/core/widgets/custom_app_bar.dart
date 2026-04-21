@@ -26,36 +26,41 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: _toolbarHeight,
-      leadingWidth: showBackButton ? 40 : 16,
-      titleSpacing: 4,
+      titleSpacing: 0,
       elevation: 0,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      leading: showBackButton
-          ? Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 0, 16),
-              child: IconButton(
-                onPressed: onBack ?? () => Navigator.of(context).maybePop(),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints.tightFor(
-                  width: 60,
-                  height: 40,
-                ),
-                splashRadius: 20,
-                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                icon: Icon(
+
+      // 🚀 ONE clickable area
+      title: InkWell(
+        onTap: onBack ?? () => Navigator.of(context).maybePop(),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (showBackButton) ...[
+                Icon(
                   Icons.chevron_left_rounded,
                   size: 28,
                   color: colorScheme.onSurface,
                 ),
+                const SizedBox(width: 4),
+              ],
+              Flexible(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            )
-          : null,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ],
+          ),
+        ),
       ),
+
       actionsPadding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
       actions: actions,
     );

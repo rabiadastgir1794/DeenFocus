@@ -503,5 +503,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasbihReset => 'Reset';
 
   @override
+  String get tasbihRestart => 'Restart';
+
+  @override
+  String get tasbihCurrentCount => 'Current Count';
+
+  @override
   String get tasbihResetTotal => 'Reset total';
 }

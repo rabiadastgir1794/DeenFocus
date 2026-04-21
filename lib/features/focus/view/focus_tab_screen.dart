@@ -122,6 +122,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
             vm.settings.salahModeEnabled && !vm.settings.childModeEnabled;
         final nightMode =
             vm.settings.nightDisciplineEnabled && !vm.settings.childModeEnabled;
+        final topBannerText = childActive
+            ? 'Child Mode Active'
+            : salahMode && nightMode
+            ? 'Salah and Night Mode Active'
+            : salahMode
+            ? 'Salah Mode Active'
+            : nightMode
+            ? 'Night Mode Active'
+            : null;
 
         return Scaffold(
           body: SafeArea(
@@ -148,9 +157,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (childActive)
-                    _ChildModeBanner(
-                      countLabel: vm.selectedTargetPhrase,
+                  if (topBannerText != null)
+                    _ActiveModeBanner(
+                      title: topBannerText,
+                      detail: '${vm.selectedTargetPhrase} are currently blocked',
                       colorScheme: colorScheme,
                     ),
                   _GlassCard(
@@ -782,10 +792,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   }
 }
 
-class _ChildModeBanner extends StatelessWidget {
-  const _ChildModeBanner({required this.countLabel, required this.colorScheme});
+class _ActiveModeBanner extends StatelessWidget {
+  const _ActiveModeBanner({
+    required this.title,
+    required this.detail,
+    required this.colorScheme,
+  });
 
-  final String countLabel;
+  final String title;
+  final String detail;
   final ColorScheme colorScheme;
 
   @override
@@ -807,14 +822,14 @@ class _ChildModeBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Child Mode Active',
+                  title,
                   style: Theme.of(
                     context,
                   ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$countLabel blocked immediately',
+                  detail,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 11,
                     color: colorScheme.onSurfaceVariant,

@@ -34,15 +34,7 @@ class AppSuperwall {
   }
 
   static String? _apiKeyForPlatform() {
-    if (Platform.isAndroid) {
-      final k = AppConfig.superwallAndroidApiKey.trim();
-      if (k.isNotEmpty) return k;
-    } else if (Platform.isIOS) {
-      final k = AppConfig.superwallIosApiKey.trim();
-      if (k.isNotEmpty) return k;
-    }
-    final fallback = AppConfig.superwallApiKey.trim();
-    return fallback.isNotEmpty ? fallback : null;
+    return AppConfig.superwallApiKey.trim();
   }
 
   /// Presents a paywall when configured in Superwall for [placement], then

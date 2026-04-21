@@ -188,7 +188,8 @@ class AppNotificationService {
   static const int _nightUnlockNotificationIdStart = 4010;
   static const int _nightUnlockNotificationIdEnd = 4016;
   static const int _salahLockNotificationIdStart = 3000;
-  static const int _salahUnlockNotificationIdEnd = 3119;
+  static const int _salahUnlockNotificationIdStart = 3100;
+  static const int _salahUnlockNotificationIdEnd = 3139;
 
   Future<void> syncFocusNotifications({required FocusSettings settings}) async {
     final run = _focusSyncSerial.then((_) async {
@@ -238,6 +239,12 @@ class AppNotificationService {
       // Salah already has prayer reminders in the 1000-range. Scheduling a
       // second focus notification for the same prayer window was the most
       // common source of "multiple notifications" reports.
+      if (settings.salahModeEnabled) {
+        await _scheduleSalahFocusNotifications(
+          settings: settings,
+          includeUnlockNotifications: includeUnlockNotifications,
+        );
+      }
       if (settings.nightDisciplineEnabled) {
         await _scheduleNightNotifications(
           settings: settings,
@@ -307,6 +314,82 @@ class AppNotificationService {
         when: at,
         title: 'Sleep time over',
         body: "Selected apps are unlocked until tonight's sleep time.",
+        details: _nightTransitionNotificationDetails,
+        preferAlarmClock: false,
+      );
+      unlockId++;
+    }
+  }
+
+  Future<void> _scheduleSalahFocusNotifications({
+    required FocusSettings settings,
+    required bool includeUnlockNotifications,
+  }) async {
+    final latitude = await StorageService.locationLatitude;
+    final longitude = await StorageService.locationLongitude;
+    if (latitude == null || longitude == null) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.salahFocus.skip',
+        'location unavailable',
+      );
+      return;
+    }
+
+    final now = DateTime.now();
+    const daysAhead = 7;
+    final lockTimes = <DateTime>[];
+    final unlockTimes = <DateTime>[];
+
+    for (var dayOffset = 0; dayOffset < daysAhead; dayOffset++) {
+      final date = now.add(Duration(days: dayOffset));
+      final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
+        latitude: latitude,
+        longitude: longitude,
+        date: date,
+      );
+      for (final slot in data.slots.where((slot) => slot.id != HomePrayerId.sunrise)) {
+        if (slot.time.isAfter(now) && lockTimes.length < 40) {
+          lockTimes.add(slot.time);
+        }
+        final unlockAt = slot.time.add(const Duration(minutes: 15));
+        if (unlockAt.isAfter(now) && unlockTimes.length < 40) {
+          unlockTimes.add(unlockAt);
+        }
+      }
+    }
+
+    var lockId = _salahLockNotificationIdStart;
+    for (final at in lockTimes) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.salahLock.schedule',
+        'id=$lockId at=${at.toIso8601String()}',
+      );
+      await _scheduleIfFuture(
+        id: lockId,
+        when: at,
+        title: 'Salah focus started',
+        body: 'Selected apps are now locked for prayer focus.',
+        details: _nightTransitionNotificationDetails,
+        preferAlarmClock: false,
+      );
+      lockId++;
+    }
+
+    if (!includeUnlockNotifications) {
+      return;
+    }
+
+    var unlockId = _salahUnlockNotificationIdStart;
+    for (final at in unlockTimes) {
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.salahUnlock.schedule',
+        'id=$unlockId at=${at.toIso8601String()}',
+      );
+      await _scheduleIfFuture(
+        id: unlockId,
+        when: at,
+        title: 'Salah focus ended',
+        body: 'Selected apps are now unlocked until the next prayer time.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );

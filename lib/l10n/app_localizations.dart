@@ -1036,6 +1036,18 @@ abstract class AppLocalizations {
   /// **'Reset'**
   String get tasbihReset;
 
+  /// No description provided for @tasbihRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get tasbihRestart;
+
+  /// No description provided for @tasbihCurrentCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Count'**
+  String get tasbihCurrentCount;
+
   /// No description provided for @tasbihResetTotal.
   ///
   /// In en, this message translates to:

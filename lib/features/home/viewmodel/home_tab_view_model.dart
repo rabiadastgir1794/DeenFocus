@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/services/app_notification_service.dart';
+import '../../../core/services/app_review_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -32,7 +33,6 @@ class HomeTabViewModel extends ChangeNotifier {
 
   bool isLoading = true;
   bool isEventsLoading = false;
-  bool _locationDialogRequired = false;
   bool _initialized = false;
   String? _lastAppliedSect;
 
@@ -59,12 +59,6 @@ class HomeTabViewModel extends ChangeNotifier {
   HomePrayerStreakState get prayerStreakState => _prayerStreakState;
   List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
 
-  bool consumeLocationDialogFlag() {
-    if (!_locationDialogRequired) return false;
-    _locationDialogRequired = false;
-    return true;
-  }
-
   String? get qiblaInfo {
     if (latitude == null || longitude == null) return null;
     final coordinates = Coordinates(latitude!, longitude!);
@@ -84,6 +78,7 @@ class HomeTabViewModel extends ChangeNotifier {
     _initialized = true;
     await _loadAll();
     _startTicker();
+    unawaited(AppReviewService.onAppResumed());
   }
 
   Future<void> onAppResumed() {
@@ -95,7 +90,6 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _onAppResumedBody() async {
-    await _ensureLocationAccessIfNeeded();
     await _loadPrayerTimes();
     await _loadPrayerStreak();
     if (latitude != null && longitude != null) {
@@ -104,6 +98,7 @@ class HomeTabViewModel extends ChangeNotifier {
         longitude: longitude!,
       );
     }
+    await AppReviewService.onAppResumed();
     notifyListeners();
   }
 
@@ -118,8 +113,6 @@ class HomeTabViewModel extends ChangeNotifier {
       latitude = await StorageService.locationLatitude;
       longitude = await StorageService.locationLongitude;
       _lastAppliedSect = await StorageService.sect;
-
-      await _ensureLocationAccessIfNeeded();
       await _loadVerse();
       await _loadPrayerTimes();
       await _loadPrayerStreak();
@@ -153,23 +146,20 @@ class HomeTabViewModel extends ChangeNotifier {
     await _persistPrayerStreak();
   }
 
-  Future<void> _ensureLocationAccessIfNeeded() async {
+  Future<bool> ensureLocationAvailableForFeature() async {
     final hasStoredLocation = latitude != null && longitude != null;
-    if (hasStoredLocation) return;
+    if (hasStoredLocation) return true;
 
     final currentStatus = await Permission.location.status;
-    if (currentStatus.isGranted) {
-      await _captureCurrentLocation();
-      return;
+    if (!currentStatus.isGranted) {
+      final requestStatus = await PermissionService.requestLocationStatus();
+      if (!requestStatus.isGranted) {
+        return false;
+      }
     }
 
-    final requestStatus = await PermissionService.requestLocationStatus();
-    if (requestStatus.isGranted) {
-      await _captureCurrentLocation();
-      return;
-    }
-
-    _locationDialogRequired = true;
+    await _captureCurrentLocation();
+    return latitude != null && longitude != null;
   }
 
   Future<void> _captureCurrentLocation() async {

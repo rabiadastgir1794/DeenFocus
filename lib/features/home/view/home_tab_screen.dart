@@ -49,8 +49,6 @@ class _HomeTabView extends StatefulWidget {
 
 class _HomeTabViewState extends State<_HomeTabView>
     with WidgetsBindingObserver {
-  bool _locationDialogOpen = false;
-
   @override
   void initState() {
     super.initState();
@@ -71,12 +69,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     }
   }
 
-  Future<void> _showBlockingLocationDialogIfNeeded(
-    BuildContext context,
-    HomeTabViewModel vm,
-  ) async {
-    if (_locationDialogOpen || !vm.consumeLocationDialogFlag()) return;
-    _locationDialogOpen = true;
+  Future<void> _showLocationRequiredDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     await AppPermissionDialog.show(
       context,
@@ -85,7 +78,6 @@ class _HomeTabViewState extends State<_HomeTabView>
       primaryButtonText: l10n.openSettings,
       onPrimaryTap: PermissionService.openLocationSettings,
     );
-    _locationDialogOpen = false;
   }
 
   @override
@@ -103,7 +95,6 @@ class _HomeTabViewState extends State<_HomeTabView>
       ThemeService
     >(
       builder: (context, vm, focusVm, profile, themeService, _) {
-        unawaited(_showBlockingLocationDialogIfNeeded(context, vm));
         unawaited(vm.syncSectIfChanged(profile.sect.name));
 
         if (vm.isLoading) {
@@ -194,21 +185,8 @@ class _HomeTabViewState extends State<_HomeTabView>
                   masjidSubtitle: l10n.homeSearchNearbyMosques,
                   isFocusLocked: focusVm.isAppsLocked,
                   onOpenFocus: widget.onOpenFocusTab,
-                  onOpenQibla: () => _openQiblaScreen(
-                    context,
-                    locationName: vm.locationName,
-                    latitude: vm.latitude,
-                    longitude: vm.longitude,
-                  ),
-                  onOpenMasjid: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => HomeNearbyMosquesScreen(
-                        initialLatitude: vm.latitude,
-                        initialLongitude: vm.longitude,
-                        initialLocationName: vm.locationName,
-                      ),
-                    ),
-                  ),
+                  onOpenQibla: () => _openQiblaScreen(context, vm),
+                  onOpenMasjid: () => _openMasjidScreen(context, vm),
                 ),
                 const SizedBox(height: 12),
                 HomePrayerStreakSection(
@@ -334,18 +312,42 @@ class _HomeTabViewState extends State<_HomeTabView>
     }
   }
 
-  void _openQiblaScreen(
-    BuildContext context, {
-    required String? locationName,
-    required double? latitude,
-    required double? longitude,
-  }) {
+  Future<void> _openQiblaScreen(BuildContext context, HomeTabViewModel vm) async {
+    final hasLocation = await vm.ensureLocationAvailableForFeature();
+    if (!hasLocation) {
+      if (!context.mounted) return;
+      await _showLocationRequiredDialog(context);
+      return;
+    }
+    if (!context.mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => HomeQiblaScreen(
-          locationName: locationName,
-          latitude: latitude,
-          longitude: longitude,
+          locationName: vm.locationName,
+          latitude: vm.latitude,
+          longitude: vm.longitude,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openMasjidScreen(
+    BuildContext context,
+    HomeTabViewModel vm,
+  ) async {
+    final hasLocation = await vm.ensureLocationAvailableForFeature();
+    if (!hasLocation) {
+      if (!context.mounted) return;
+      await _showLocationRequiredDialog(context);
+      return;
+    }
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => HomeNearbyMosquesScreen(
+          initialLatitude: vm.latitude,
+          initialLongitude: vm.longitude,
+          initialLocationName: vm.locationName,
         ),
       ),
     );

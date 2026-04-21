@@ -119,18 +119,19 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
                 child: FadeTransition(
                   opacity: _fadeAnimation,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 56, 20, 24),
+                    padding: const EdgeInsets.fromLTRB(20, 26, 20, 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           cityLabel,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontSize: 32,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Expanded(
