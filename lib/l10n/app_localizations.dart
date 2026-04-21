@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTagline.
   ///
   /// In en, this message translates to:
-  /// **'Where faith meets focus'**
+  /// **'Faith. Focus. Consistency'**
   String get appTagline;
 
   /// No description provided for @welcomeTagline.
@@ -115,7 +115,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Track prayers, read Quran, count Tasbih, build streaks - everything for your spiritual journey in one app.'**
+  /// **'Track your prayers, read the Quran, count Tasbih, and build meaningful streaks — all in one place.'**
   String get welcomeDescription;
 
   /// No description provided for @skip.
@@ -700,6 +700,12 @@ abstract class AppLocalizations {
   /// **'Enable location to calculate Qibla direction.'**
   String get homeLocationMissingForQibla;
 
+  /// No description provided for @homeQiblaSubtitleGuiding.
+  ///
+  /// In en, this message translates to:
+  /// **'Guiding you toward the Qibla'**
+  String get homeQiblaSubtitleGuiding;
+
   /// No description provided for @homeToMakkah.
   ///
   /// In en, this message translates to:
@@ -721,7 +727,7 @@ abstract class AppLocalizations {
   /// No description provided for @homePrayerStreak.
   ///
   /// In en, this message translates to:
-  /// **'Prayer Streak'**
+  /// **'Prayer Streaks'**
   String get homePrayerStreak;
 
   /// No description provided for @homeOpenStreakDetails.
@@ -799,7 +805,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeThisWeek.
   ///
   /// In en, this message translates to:
-  /// **'This Week'**
+  /// **'Deen Highlights This Week'**
   String get homeThisWeek;
 
   /// No description provided for @homeJummahMubarak.
@@ -819,6 +825,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ask anything about prayer times, Quran, and Islamic guidance.'**
   String get homeAiChatDescription;
+
+  /// No description provided for @homeDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get homeDay;
 
   /// No description provided for @homeDays.
   ///
@@ -973,13 +985,13 @@ abstract class AppLocalizations {
   /// No description provided for @tasbihChooseOrAddSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose a dhikr or add your own'**
+  /// **'Select a dhikr or create your own'**
   String get tasbihChooseOrAddSubtitle;
 
   /// No description provided for @tasbihAddCustomTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add Custom Dhikr'**
+  /// **'Add Dhikr'**
   String get tasbihAddCustomTitle;
 
   /// No description provided for @tasbihEditCustomTitle.
@@ -1051,8 +1063,44 @@ abstract class AppLocalizations {
   /// No description provided for @tasbihResetTotal.
   ///
   /// In en, this message translates to:
-  /// **'Reset total'**
+  /// **'Clear History'**
   String get tasbihResetTotal;
+
+  /// No description provided for @focusModeActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Mode Activated'**
+  String get focusModeActivated;
+
+  /// No description provided for @focusTabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay focused when it matters most'**
+  String get focusTabSubtitle;
+
+  /// No description provided for @focusNightDisciplineCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build better night habits'**
+  String get focusNightDisciplineCardSubtitle;
+
+  /// No description provided for @focusPrayerBlockingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps will be blocked during prayer and unlock automatically after 15 minutes, or you can unlock them anytime from the home screen.'**
+  String get focusPrayerBlockingDescription;
+
+  /// No description provided for @focusNightBlockingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps will be blocked during your sleep cycle and unlock automatically, or you can unlock them anytime from the home screen'**
+  String get focusNightBlockingDescription;
+
+  /// No description provided for @focusChildBlockingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are blocked instantly in Child Mode. Unlock them using the toggle or from the home screen'**
+  String get focusChildBlockingDescription;
 }
 
 class _AppLocalizationsDelegate

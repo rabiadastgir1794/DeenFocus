@@ -8,6 +8,7 @@ import '../../../core/services/device_apps_service.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
 import '../../home/model/home_models.dart';
 import '../model/focus_models.dart';
@@ -551,9 +552,9 @@ class FocusController extends ChangeNotifier {
     }
   }
 
-  String get homeCardTitle {
-    if (_lockState.isLocked) return 'Apps Locked';
-    if (isAnyModeEnabled) return 'Focus mode armed';
+  String homeCardTitle(AppLocalizations l10n) {
+    if (_lockState.isLocked) return l10n.homeAppsLocked;
+    if (isAnyModeEnabled) return l10n.focusModeActivated;
     return 'Set up focus modes';
   }
 

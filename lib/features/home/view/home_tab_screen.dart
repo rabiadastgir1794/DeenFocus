@@ -175,12 +175,14 @@ class _HomeTabViewState extends State<_HomeTabView>
                 const SizedBox(height: 12),
                 _QuickActionsCard(
                   backgroundColor: softCardColor,
-                  focusTitle: focusVm.homeCardTitle,
+                  focusTitle: focusVm.homeCardTitle(l10n),
                   focusSubtitle: focusVm.homeCardSubtitle,
                   qiblaTitle: l10n.homeQiblaDirection,
                   qiblaSubtitle: vm.qiblaInfo == null
                       ? l10n.homeLocationMissingForQibla
-                      : '${vm.qiblaInfo} ${l10n.homeToMakkah}',
+                      : vm.showQiblaBearingDetails
+                      ? '${vm.qiblaInfo} ${l10n.homeToMakkah}'
+                      : l10n.homeQiblaSubtitleGuiding,
                   masjidTitle: l10n.homeFindMasjid,
                   masjidSubtitle: l10n.homeSearchNearbyMosques,
                   isFocusLocked: focusVm.isAppsLocked,

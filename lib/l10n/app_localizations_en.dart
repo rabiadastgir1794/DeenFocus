@@ -12,14 +12,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Deen Focus';
 
   @override
-  String get appTagline => 'Where faith meets focus';
+  String get appTagline => 'Faith. Focus. Consistency';
 
   @override
   String get welcomeTagline => 'Prayer Mode. Child Mode. Sleep Mode.';
 
   @override
   String get welcomeDescription =>
-      'Track prayers, read Quran, count Tasbih, build streaks - everything for your spiritual journey in one app.';
+      'Track your prayers, read the Quran, count Tasbih, and build meaningful streaks — all in one place.';
 
   @override
   String get skip => 'Skip';
@@ -333,6 +333,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enable location to calculate Qibla direction.';
 
   @override
+  String get homeQiblaSubtitleGuiding => 'Guiding you toward the Qibla';
+
+  @override
   String get homeToMakkah => 'to Makkah';
 
   @override
@@ -342,7 +345,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSearchNearbyMosques => 'Search nearby mosques.';
 
   @override
-  String get homePrayerStreak => 'Prayer Streak';
+  String get homePrayerStreak => 'Prayer Streaks';
 
   @override
   String get homeOpenStreakDetails => 'Open streak details.';
@@ -382,7 +385,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeMonth => 'Month';
 
   @override
-  String get homeThisWeek => 'This Week';
+  String get homeThisWeek => 'Deen Highlights This Week';
 
   @override
   String get homeJummahMubarak => 'Jummah Mubarak';
@@ -393,6 +396,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get homeAiChatDescription =>
       'Ask anything about prayer times, Quran, and Islamic guidance.';
+
+  @override
+  String get homeDay => 'Day';
 
   @override
   String get homeDays => 'Days';
@@ -470,10 +476,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasbihTabTitle => 'Tasbih';
 
   @override
-  String get tasbihChooseOrAddSubtitle => 'Choose a dhikr or add your own';
+  String get tasbihChooseOrAddSubtitle => 'Select a dhikr or create your own';
 
   @override
-  String get tasbihAddCustomTitle => 'Add Custom Dhikr';
+  String get tasbihAddCustomTitle => 'Add Dhikr';
 
   @override
   String get tasbihEditCustomTitle => 'Edit Custom Dhikr';
@@ -509,5 +515,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasbihCurrentCount => 'Current Count';
 
   @override
-  String get tasbihResetTotal => 'Reset total';
+  String get tasbihResetTotal => 'Clear History';
+
+  @override
+  String get focusModeActivated => 'Focus Mode Activated';
+
+  @override
+  String get focusTabSubtitle => 'Stay focused when it matters most';
+
+  @override
+  String get focusNightDisciplineCardSubtitle => 'Build better night habits';
+
+  @override
+  String get focusPrayerBlockingDescription =>
+      'Apps will be blocked during prayer and unlock automatically after 15 minutes, or you can unlock them anytime from the home screen.';
+
+  @override
+  String get focusNightBlockingDescription =>
+      'Apps will be blocked during your sleep cycle and unlock automatically, or you can unlock them anytime from the home screen';
+
+  @override
+  String get focusChildBlockingDescription =>
+      'Apps are blocked instantly in Child Mode. Unlock them using the toggle or from the home screen';
 }

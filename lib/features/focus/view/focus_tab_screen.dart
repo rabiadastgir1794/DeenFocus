@@ -10,6 +10,7 @@ import '../../../core/services/permission_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
+import '../../../l10n/app_localizations.dart';
 import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
 
@@ -97,10 +98,26 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     return false;
   }
 
+  String _activeModeBannerDetail(FocusController vm, AppLocalizations l10n) {
+    final childActive = vm.settings.childModeEnabled && vm.hasSelectedApps;
+    final salahMode =
+        vm.settings.salahModeEnabled && !vm.settings.childModeEnabled;
+    final nightMode =
+        vm.settings.nightDisciplineEnabled && !vm.settings.childModeEnabled;
+    if (childActive) {
+      return l10n.focusChildBlockingDescription;
+    }
+    final parts = <String>[];
+    if (salahMode) parts.add(l10n.focusPrayerBlockingDescription);
+    if (nightMode) parts.add(l10n.focusNightBlockingDescription);
+    return parts.join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<FocusController>(
       builder: (context, vm, _) {
+        final l10n = AppLocalizations.of(context)!;
         final colorScheme = Theme.of(context).colorScheme;
         final installedAppsByPackage = {
           for (final app in vm.installedApps) app.packageName: app,
@@ -147,7 +164,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Protect your spiritual moments',
+                    l10n.focusTabSubtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -156,8 +173,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   if (topBannerText != null)
                     _ActiveModeBanner(
                       title: topBannerText,
-                      detail:
-                          '${vm.selectedTargetPhrase} are currently blocked',
+                      detail: _activeModeBannerDetail(vm, l10n),
                       colorScheme: colorScheme,
                     ),
                   _GlassCard(
@@ -412,14 +428,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                             ),
                           ),
                         ),
-                        if (defaultTargetPlatform == TargetPlatform.iOS) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            'On iOS, Apple shows a native Screen Time picker. The app receives opaque tokens and a selected item count for apps, categories, and websites, not a normal installed-app name list.',
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: colorScheme.onSurfaceVariant),
-                          ),
-                        ] else if (_showGlobalSelector) ...[
+                        if (_showGlobalSelector) ...[
                           const SizedBox(height: 12),
                           _AppsGrid(vm: vm),
                         ],
@@ -441,8 +450,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         _toggleMode(vm, FocusModeType.salah, value),
                     child: salahMode
                         ? _ModeStatusBanner(
-                            text:
-                                '⚠ ${vm.selectedTargetPhrase} blocked during prayer times',
+                            text: l10n.focusPrayerBlockingDescription,
                             color: colorScheme.error,
                           )
                         : null,
@@ -453,7 +461,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     iconBackground: colorScheme.primary.withValues(alpha: 0.2),
                     iconColor: colorScheme.onSurface,
                     title: 'Night Discipline',
-                    subtitle: 'Protect sleep & Fajr',
+                    subtitle: l10n.focusNightDisciplineCardSubtitle,
                     value: nightMode,
                     isLoading:
                         _modesInFlight.contains(
@@ -497,8 +505,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               ),
                               const SizedBox(height: 12),
                               _ModeStatusBanner(
-                                text:
-                                    '⚠ ${vm.selectedTargetPhrase} blocked during sleep hours',
+                                text: l10n.focusNightBlockingDescription,
                                 color: colorScheme.error,
                               ),
                             ],
@@ -519,8 +526,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         _toggleMode(vm, FocusModeType.child, value),
                     child: childMode
                         ? _ModeStatusBanner(
-                            text:
-                                '⚠ ${vm.selectedTargetPhrase} blocked immediately',
+                            text: l10n.focusChildBlockingDescription,
                             color: colorScheme.error,
                           )
                         : null,

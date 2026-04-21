@@ -37,7 +37,7 @@ class HomePrayerStreakDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
               children: [
                 Text(
-                  '🔥 ${vm.streakDays} Days',
+                  '🔥 ${vm.streakDays} ${vm.streakDays == 1 ? l10n.homeDay : l10n.homeDays}',
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w800,

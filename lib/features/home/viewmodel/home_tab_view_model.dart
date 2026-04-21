@@ -5,6 +5,7 @@ import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/app_review_service.dart';
@@ -12,6 +13,7 @@ import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/daily_refresh_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
 import '../helpers/home_prayer_times_helper.dart';
@@ -49,6 +51,9 @@ class HomeTabViewModel extends ChangeNotifier {
   Timer? _ticker;
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
+  /// When Superwall is enabled, bearing/distance subtitle is shown only for active subscribers.
+  bool _subscriptionActive = false;
+
   /// Avoids overlapping prayer loads (resume + periodic ticker) so next-prayer
   /// does not briefly flip (e.g. Fajr vs current) when async work completes out of order.
   Future<void> _prayerTimesSerial = Future<void>.value();
@@ -73,6 +78,11 @@ class HomeTabViewModel extends ChangeNotifier {
     return '${qibla.toStringAsFixed(0)}° • ${distanceKm.toStringAsFixed(0)} km';
   }
 
+  bool get showQiblaBearingDetails {
+    if (!AppSuperwall.isEnabled) return true;
+    return _subscriptionActive;
+  }
+
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
@@ -90,6 +100,7 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _onAppResumedBody() async {
+    await _loadSubscriptionStatus();
     await _loadPrayerTimes();
     await _loadPrayerStreak();
     if (latitude != null && longitude != null) {
@@ -114,6 +125,7 @@ class HomeTabViewModel extends ChangeNotifier {
       longitude = await StorageService.locationLongitude;
       _lastAppliedSect = await StorageService.sect;
       await _loadVerse();
+      await _loadSubscriptionStatus();
       await _loadPrayerTimes();
       await _loadPrayerStreak();
       _loadEvents();
@@ -122,6 +134,19 @@ class HomeTabViewModel extends ChangeNotifier {
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> _loadSubscriptionStatus() async {
+    if (!AppSuperwall.isEnabled) {
+      _subscriptionActive = false;
+      return;
+    }
+    try {
+      final status = await Superwall.shared.getSubscriptionStatus();
+      _subscriptionActive = status.isActive;
+    } catch (_) {
+      _subscriptionActive = false;
     }
   }
 

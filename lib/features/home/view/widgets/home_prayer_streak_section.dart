@@ -57,7 +57,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                 children: [
                   const SizedBox(height: 6),
                   Text(
-                    '${streakDays > 1 ? "🔥" : ""} $streakDays ${l10n.homeDays}',
+                    '${streakDays > 1 ? "🔥" : ""} $streakDays ${streakDays == 1 ? l10n.homeDay : l10n.homeDays}',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: colorScheme.primary,
                       fontWeight: FontWeight.w800,
