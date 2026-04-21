@@ -279,7 +279,7 @@ private enum ManagedSettingsStoreHolder {
       return
     }
 
-    Task {
+    Task { @MainActor in
       do {
         try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
         result([

@@ -16,6 +16,9 @@ class OnboardingViewModel extends ChangeNotifier {
     _selectedPlan = SubscriptionPlan.yearly;
   }
 
+  /// PageView index for [OnboardingLocationPage] (compulsory).
+  static const int locationStepIndex = 6;
+
   late int _totalSteps;
 
   int _currentIndex = 0;
@@ -46,7 +49,7 @@ class OnboardingViewModel extends ChangeNotifier {
 
   /// Screens that show Skip on top right.
   bool get showLanguageChangeOption => _currentIndex == 0;
-  bool get showSkip => _currentIndex == 0;
+  bool get showSkip => _currentIndex < 4;
 
   /// Continue disabled: sect (4), name (5), location (6). Notifications (7), screen time (8), and subscription (9) are optional.
   bool get isContinueDisabled {
@@ -99,10 +102,6 @@ class OnboardingViewModel extends ChangeNotifier {
     } else {
       _completeOnboarding();
     }
-  }
-
-  void skip() {
-    _completeOnboarding();
   }
 
   Future<void> _completeOnboarding() async {

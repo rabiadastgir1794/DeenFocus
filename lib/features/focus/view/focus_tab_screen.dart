@@ -134,11 +134,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
         return Scaffold(
           body: SafeArea(
-            child: Stack(
-              children: [
-                AbsorbPointer(
-                  absorbing: _isAuthorizingScreenTime,
-                  child: SingleChildScrollView(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,7 +156,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   if (topBannerText != null)
                     _ActiveModeBanner(
                       title: topBannerText,
-                      detail: '${vm.selectedTargetPhrase} are currently blocked',
+                      detail:
+                          '${vm.selectedTargetPhrase} are currently blocked',
                       colorScheme: colorScheme,
                     ),
                   _GlassCard(
@@ -324,7 +321,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               final authResult =
                                   await PermissionService.requestScreenTimeAccessDetailed();
                               if (mounted) {
-                                setState(() => _isAuthorizingScreenTime = false);
+                                setState(
+                                  () => _isAuthorizingScreenTime = false,
+                                );
                               }
                               if (!mounted) return;
                               if (!authResult.granted) {
@@ -435,7 +434,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     title: 'Salah Focus Mode',
                     subtitle: 'Block apps during prayer',
                     value: salahMode,
-                    isLoading: _modesInFlight.contains(FocusModeType.salah),
+                    isLoading:
+                        _modesInFlight.contains(FocusModeType.salah) ||
+                        _isAuthorizingScreenTime,
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.salah, value),
                     child: salahMode
@@ -454,9 +455,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     title: 'Night Discipline',
                     subtitle: 'Protect sleep & Fajr',
                     value: nightMode,
-                    isLoading: _modesInFlight.contains(
-                      FocusModeType.nightDiscipline,
-                    ),
+                    isLoading:
+                        _modesInFlight.contains(
+                          FocusModeType.nightDiscipline,
+                        ) ||
+                        _isAuthorizingScreenTime,
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.nightDiscipline, value),
                     child: nightMode
@@ -509,7 +512,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     title: 'Child Mode',
                     subtitle: 'Block apps immediately',
                     value: childMode,
-                    isLoading: _modesInFlight.contains(FocusModeType.child),
+                    isLoading:
+                        _modesInFlight.contains(FocusModeType.child) ||
+                        _isAuthorizingScreenTime,
                     onChanged: (value) =>
                         _toggleMode(vm, FocusModeType.child, value),
                     child: childMode
@@ -522,16 +527,6 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                   ),
                 ],
               ),
-                  ),
-                ),
-                if (_isAuthorizingScreenTime)
-                  Positioned.fill(
-                    child: ColoredBox(
-                      color: Colors.black.withValues(alpha: 0.18),
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                  ),
-              ],
             ),
           ),
         );
@@ -649,8 +644,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         );
       }
     } finally {
-      final remaining =
-          _modeSwitchLoaderMinDuration - loaderStopwatch.elapsed;
+      final remaining = _modeSwitchLoaderMinDuration - loaderStopwatch.elapsed;
       if (remaining > Duration.zero) {
         await Future<void>.delayed(remaining);
       }
@@ -691,7 +685,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     ).formatTimeOfDay(TimeOfDay(hour: hour, minute: minute));
   }
 
-  Future<void> _pickNightTime(FocusController vm, {required bool isSleep}) async {
+  Future<void> _pickNightTime(
+    FocusController vm, {
+    required bool isSleep,
+  }) async {
     final sleep = TimeOfDay(
       hour: vm.settings.nightRange.startHour,
       minute: vm.settings.nightRange.startMinute,
@@ -720,13 +717,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     String? title,
   }) {
     final use24h = MediaQuery.of(context).alwaysUse24HourFormat;
-    var selected = DateTime(
-      2020,
-      1,
-      1,
-      initialTime.hour,
-      initialTime.minute,
-    );
+    var selected = DateTime(2020, 1, 1, initialTime.hour, initialTime.minute);
 
     return showCupertinoModalPopup<TimeOfDay>(
       context: context,
@@ -952,10 +943,7 @@ class _ModeCard extends StatelessWidget {
                           height: 22,
                           child: CircularProgressIndicator(strokeWidth: 2.4),
                         )
-                      : Switch(
-                          value: value,
-                          onChanged: onChanged,
-                        ),
+                      : Switch(value: value, onChanged: onChanged),
                 ),
               ),
             ],
@@ -1043,9 +1031,9 @@ class _NightTimePill extends StatelessWidget {
               Text(
                 timeText,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),

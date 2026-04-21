@@ -291,6 +291,14 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     );
   }
 
+  Future<void> _skipToLocationStep(OnboardingViewModel vm) async {
+    await widget.pageController.animateToPage(
+      OnboardingViewModel.locationStepIndex,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   Widget _buildTopBar(
     BuildContext context,
     OnboardingViewModel vm,
@@ -324,14 +332,12 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
             maintainAnimation: true,
             maintainState: true,
             child: TextButton(
-              onPressed: vm.skip,
+              onPressed: () => _skipToLocationStep(vm),
               child: Text(
                 l10n.skip,
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: vm.currentIndex == vm.totalSteps - 1
-                      ? Theme.of(context).colorScheme.onSurfaceVariant
-                      : Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
