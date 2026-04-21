@@ -4,9 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/config/app_config.dart';
 import '../../../../core/constants/app_languages.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/services/app_notification_service.dart';
@@ -21,9 +19,14 @@ import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'app_demo_video_settings_card.dart';
 
 class SettingsTabScreen extends StatefulWidget {
-  const SettingsTabScreen({super.key});
+  const SettingsTabScreen({super.key, this.isTabActive = false});
+
+  /// True when this tab is the selected bottom-nav destination (avoids
+  /// initializing the demo video while other tabs are visible).
+  final bool isTabActive;
 
   @override
   State<SettingsTabScreen> createState() => _SettingsTabScreenState();
@@ -443,22 +446,10 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _DemoCard(
-              hasVideo: AppConfig.hasAppDemoVideoUrl,
-              onTap: AppConfig.hasAppDemoVideoUrl
-                  ? () async {
-                      await launchUrl(
-                        Uri.parse(AppConfig.appDemoVideoUrl),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    }
-                  : null,
-            ),
+            AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
             const SizedBox(height: 8),
             Text(
-              AppConfig.hasAppDemoVideoUrl
-                  ? 'Tap to watch the app demo.'
-                  : 'No video available',
+              'Tap to watch. Playback pauses when you leave and resumes from there next time.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -821,84 +812,6 @@ class _SettingsSwitchRow extends StatelessWidget {
           const SizedBox(width: 12),
           Switch.adaptive(value: value, onChanged: enabled ? onChanged : null),
         ],
-      ),
-    );
-  }
-}
-
-class _DemoCard extends StatelessWidget {
-  const _DemoCard({required this.hasVideo, this.onTap});
-
-  final bool hasVideo;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Ink(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'App Demo',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 14),
-              Container(
-                width: double.infinity,
-                height: 180,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  color: colorScheme.surfaceContainerHighest,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 58,
-                        height: 58,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: colorScheme.primary.withValues(alpha: 0.14),
-                        ),
-                        child: Icon(
-                          hasVideo
-                              ? Icons.play_arrow_rounded
-                              : Icons.videocam_off_outlined,
-                          size: 30,
-                          color: colorScheme.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        hasVideo ? 'Watch demo' : 'No video available',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -415,13 +415,9 @@ private enum ManagedSettingsStoreHolder {
     }
 
     let isLocked = args["isLocked"] as? Bool ?? false
-    let isTemporarilyUnlocked = args["isTemporarilyUnlocked"] as? Bool ?? false
     let activeMode = args["activeMode"] as? String
     let encodedSelection = args["iosSelectionData"] as? String
-    let childModeEnabled = args["childModeEnabled"] as? Bool ?? false
     let nightDisciplineEnabled = args["nightDisciplineEnabled"] as? Bool ?? false
-    let salahModeEnabled = args["salahModeEnabled"] as? Bool ?? false
-    let hasAnyModeEnabled = childModeEnabled || nightDisciplineEnabled || salahModeEnabled
     let nightStartHour = args["nightStartHour"] as? Int ?? 22
     let nightStartMinute = args["nightStartMinute"] as? Int ?? 0
     let nightEndHour = args["nightEndHour"] as? Int ?? 6
@@ -429,21 +425,15 @@ private enum ManagedSettingsStoreHolder {
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
     let lockReason = args["lockReason"] as? String
-    let nativeShieldLocked =
-      sharedDefaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false
     FocusIOSDebugLogger.append(
       "ios.sync",
       "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
     )
 
-    if !isLocked && nativeShieldLocked && !isTemporarilyUnlocked && hasAnyModeEnabled {
-      FocusIOSDebugLogger.append(
-        "ios.sync",
-        "preserved native monitor lock and skipped scheduler sync because flutter state is stale"
-      )
-      result(nil)
-      return
-    }
+    // Always apply Flutter sync: it runs only after a full focus recompute, so `isLocked`
+    // matches persisted settings. A previous guard here skipped sync when `nativeShieldLocked`
+    // was true and any mode stayed enabled (e.g. Salah), which left shields up after the user
+    // turned off Night Discipline while Salah remained on.
 
     FocusDeviceActivityScheduler.sync(
       activeMode: activeMode,

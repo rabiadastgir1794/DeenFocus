@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player_android/video_player_android.dart';
+import 'package:video_player_avfoundation/video_player_avfoundation.dart';
 
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
@@ -16,11 +20,24 @@ import 'core/services/theme_service.dart';
 import 'core/services/user_profile_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/focus/viewmodel/focus_controller.dart';
+import 'features/home/view/settings/app_demo_video_manager.dart';
 import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+        AVFoundationVideoPlayer.registerWith();
+        break;
+      case TargetPlatform.android:
+        AndroidVideoPlayer.registerWith();
+        break;
+      default:
+        break;
+    }
+  }
   await Hive.initFlutter();
   await AppSuperwall.configureIfNeeded();
   await AppNotificationService.instance.initialize();
@@ -47,6 +64,7 @@ class _DeenlyAppState extends State<DeenlyApp> {
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
         ChangeNotifierProvider(create: (_) => FocusController()..initialize()),
+        ChangeNotifierProvider(create: (_) => AppDemoVideoManager()),
       ],
       child: _AppLifecycleFocusRefresher(
         child: _DeenlyMaterialApp(router: _router),

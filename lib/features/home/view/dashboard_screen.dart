@@ -44,7 +44,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const FocusTabScreen(),
       const TasbihTabScreen(),
       const QuranTabScreen(),
-      const SettingsTabScreen(),
+      SettingsTabScreen(isTabActive: _currentIndex == 4),
     ];
 
     return Scaffold(
