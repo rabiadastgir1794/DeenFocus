@@ -105,6 +105,17 @@ enum FocusDeviceActivityScheduler {
   private static let activityScheduleSignatureKey = "focus_device_activity_schedule_signature"
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
 
+  /// iOS can occasionally drop DeviceActivity monitors while our persisted
+  /// signature/names remain unchanged. Validate runtime registrations before
+  /// deciding to skip re-registration.
+  private static func hasRegistrationDrift(expectedNames: [String]) -> Bool {
+    guard !expectedNames.isEmpty else { return false }
+    let center = DeviceActivityCenter()
+    let runtimeNames = Set(center.activities.map(\.rawValue))
+    let expected = Set(expectedNames)
+    return runtimeNames != expected
+  }
+
   static func cancelAllSchedules() {
     let defaults = UserDefaults(suiteName: appGroupId)
     let rawNames = defaults?.stringArray(forKey: activityNamesKey) ?? []
@@ -151,12 +162,21 @@ enum FocusDeviceActivityScheduler {
     let previousSignature = defaults?.string(forKey: activityScheduleSignatureKey)
     let existingNames = defaults?.stringArray(forKey: activityNamesKey) ?? []
 
-    if previousSignature == scheduleSignature && (!hasSchedulingInputs || !existingNames.isEmpty) {
+    let registrationDrift = hasRegistrationDrift(expectedNames: existingNames)
+    if previousSignature == scheduleSignature && (!hasSchedulingInputs || !existingNames.isEmpty)
+      && !registrationDrift
+    {
       FocusIOSDebugLogger.append(
         "ios.scheduler.sync",
         "skipped re-registration because schedule signature is unchanged"
       )
       return
+    }
+    if registrationDrift {
+      FocusIOSDebugLogger.append(
+        "ios.scheduler.sync",
+        "forcing re-registration because runtime monitor set drifted from persisted names"
+      )
     }
 
     cancelAllSchedules()

@@ -291,8 +291,8 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: lockId,
         when: at,
-        title: 'Sleep time',
-        body: 'Selected apps are locked for your sleep schedule.',
+        title: 'Night Mode On',
+        body: 'Night mode is on. Let your mind and body rest.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -312,8 +312,8 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: unlockId,
         when: at,
-        title: 'Sleep time over',
-        body: "Selected apps are unlocked until tonight's sleep time.",
+        title: 'Good Morning',
+        body: 'Good morning! Apps are now available.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -337,7 +337,7 @@ class AppNotificationService {
 
     final now = DateTime.now();
     const daysAhead = 7;
-    final lockTimes = <DateTime>[];
+    final lockTimes = <({DateTime at, HomePrayerId prayerId})>[];
     final unlockTimes = <DateTime>[];
 
     for (var dayOffset = 0; dayOffset < daysAhead; dayOffset++) {
@@ -347,9 +347,11 @@ class AppNotificationService {
         longitude: longitude,
         date: date,
       );
-      for (final slot in data.slots.where((slot) => slot.id != HomePrayerId.sunrise)) {
+      for (final slot in data.slots.where(
+        (slot) => slot.id != HomePrayerId.sunrise,
+      )) {
         if (slot.time.isAfter(now) && lockTimes.length < 40) {
-          lockTimes.add(slot.time);
+          lockTimes.add((at: slot.time, prayerId: slot.id));
         }
         final unlockAt = slot.time.add(const Duration(minutes: 15));
         if (unlockAt.isAfter(now) && unlockTimes.length < 40) {
@@ -359,15 +361,15 @@ class AppNotificationService {
     }
 
     var lockId = _salahLockNotificationIdStart;
-    for (final at in lockTimes) {
+    for (final lock in lockTimes) {
       await FocusEnforcementService.appendDebugLog(
         'notifications.salahLock.schedule',
-        'id=$lockId at=${at.toIso8601String()}',
+        'id=$lockId at=${lock.at.toIso8601String()}',
       );
       await _scheduleIfFuture(
         id: lockId,
-        when: at,
-        title: 'Salah focus started',
+        when: lock.at,
+        title: '${_prayerLabel(lock.prayerId)} Time',
         body: 'Selected apps are now locked for prayer focus.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
@@ -388,8 +390,8 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: unlockId,
         when: at,
-        title: 'Salah focus ended',
-        body: 'Selected apps are now unlocked until the next prayer time.',
+        title: 'Salah Complete',
+        body: 'Apps are now unlocked. May your prayer be accepted.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );

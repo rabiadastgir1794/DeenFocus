@@ -376,7 +376,15 @@ class HomeTabViewModel extends ChangeNotifier {
 
   void _recomputeStreakDays(DateTime now) {
     var count = 0;
-    var cursor = DateTime(now.year, now.month, now.day);
+    final today = DateTime(now.year, now.month, now.day);
+    final todayKey = _dayKeyFormat.format(today);
+
+    // Keep the current streak visible throughout the day. A streak should only
+    // break after a full missed day, not immediately at midnight before the
+    // user has had a chance to complete today's prayers.
+    var cursor = _prayerStreakState.completedDateKeys.contains(todayKey)
+        ? today
+        : today.subtract(const Duration(days: 1));
     while (_prayerStreakState.completedDateKeys.contains(
       _dayKeyFormat.format(cursor),
     )) {

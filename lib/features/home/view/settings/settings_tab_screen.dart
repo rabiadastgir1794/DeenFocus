@@ -412,18 +412,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             const SizedBox(height: 16),
             _SettingsGroup(
               children: [
-                _SettingsSwitchRow(
-                  icon: Icons.notifications_none_rounded,
-                  label: 'Notifications',
-                  value: _notificationsEnabled,
-                  enabled: _notificationsInitialized,
-                  onChanged: _toggleNotifications,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _SettingsGroup(
-              children: [
                 _SettingsRow(
                   icon: Icons.info_outline_rounded,
                   label: 'About Deen Focus',
