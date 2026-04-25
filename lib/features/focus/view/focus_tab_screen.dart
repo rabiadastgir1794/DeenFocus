@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/storage_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
@@ -356,6 +357,18 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               await vm.requestInstalledApps();
                               return;
                             }
+                            final acceptedDisclosure =
+                                await _ensureFocusAccessibilityDisclosureAccepted();
+                            if (!acceptedDisclosure) {
+                              messenger?.showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Please accept the accessibility disclosure to continue.',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
                             final shouldShow = !_showGlobalSelector;
                             setState(() {
                               _showGlobalSelector = shouldShow;
@@ -563,6 +576,44 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         FocusEnforcementService.openBlockingPermissionSettings();
       },
     );
+    return false;
+  }
+
+  Future<bool> _ensureFocusAccessibilityDisclosureAccepted() async {
+    if (defaultTargetPlatform != TargetPlatform.android) return true;
+    final accepted = await StorageService.focusAccessibilityDisclosureAccepted;
+    if (accepted) return true;
+    if (!mounted) return false;
+
+    final choice = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Accessibility permission disclosure'),
+          content: const Text(
+            'Deenly uses Android Accessibility to enforce Focus mode app blocking.\n\n'
+            'Why we need it: to detect when you open an app you selected for blocking.\n\n'
+            'How we use it: only to identify the foreground app and show the Focus block screen for selected apps. We do not use it to read typed text or personal content.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Not now'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('I understand'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (choice == true) {
+      await StorageService.setFocusAccessibilityDisclosureAccepted(true);
+      return true;
+    }
     return false;
   }
 
@@ -1053,6 +1104,7 @@ class _AppsGrid extends StatelessWidget {
   const _AppsGrid({required this.vm});
 
   final FocusController vm;
+  static const int _maxRows = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -1089,65 +1141,71 @@ class _AppsGrid extends StatelessWidget {
       );
     }
 
-    final maxHeight = MediaQuery.sizeOf(context).height * 0.56;
-    return SizedBox(
-      height: maxHeight.clamp(260.0, 500.0),
-      child: GridView.builder(
-        itemCount: apps.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 0.82,
-        ),
-        itemBuilder: (context, index) {
-          final app = apps[index];
-          final selected = vm.settings.selectedApps.containsKey(
-            app.packageName,
-          );
-          return InkWell(
-            onTap: () => vm.toggleSelectedApp(app),
-            borderRadius: BorderRadius.circular(14),
-            child: Ink(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                color: selected
-                    ? colorScheme.primary.withValues(alpha: 0.15)
-                    : colorScheme.surfaceContainerHighest.withValues(
-                        alpha: 0.5,
-                      ),
-                border: Border.all(
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.58;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: SizedBox(
+        width: double.infinity,
+        height: maxHeight.clamp(280.0, 460.0),
+        child: GridView.builder(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.hardEdge,
+          itemCount: apps.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _maxRows,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            mainAxisExtent: 88,
+          ),
+          itemBuilder: (context, index) {
+            final app = apps[index];
+            final selected = vm.settings.selectedApps.containsKey(
+              app.packageName,
+            );
+            return InkWell(
+              onTap: () => vm.toggleSelectedApp(app),
+              borderRadius: BorderRadius.circular(14),
+              child: Ink(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
                   color: selected
-                      ? colorScheme.primary.withValues(alpha: 0.3)
-                      : Colors.transparent,
+                      ? colorScheme.primary.withValues(alpha: 0.15)
+                      : colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.5,
+                        ),
+                  border: Border.all(
+                    color: selected
+                        ? colorScheme.primary.withValues(alpha: 0.3)
+                        : Colors.transparent,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FocusAppIcon(
+                      label: app.appName,
+                      iconBytes: app.iconBytes,
+                      size: 28,
+                      radius: 10,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      app.appName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FocusAppIcon(
-                    label: app.appName,
-                    iconBytes: app.iconBytes,
-                    size: 28,
-                    radius: 10,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    app.appName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

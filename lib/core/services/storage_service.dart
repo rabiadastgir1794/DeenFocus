@@ -41,6 +41,8 @@ abstract class StorageService {
   static const String _keyAppFirstOpenMs = 'app_first_open_ms';
   static const String _keyAppReviewPromptCompleted =
       'app_review_prompt_completed';
+  static const String _keyFocusAccessibilityDisclosureAccepted =
+      'focus_accessibility_disclosure_accepted';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -379,5 +381,15 @@ abstract class StorageService {
   static Future<void> setAppReviewPromptCompleted() async {
     final prefs = await _prefs;
     await prefs.setBool(_keyAppReviewPromptCompleted, true);
+  }
+
+  static Future<bool> get focusAccessibilityDisclosureAccepted async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyFocusAccessibilityDisclosureAccepted) ?? false;
+  }
+
+  static Future<void> setFocusAccessibilityDisclosureAccepted(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyFocusAccessibilityDisclosureAccepted, value);
   }
 }

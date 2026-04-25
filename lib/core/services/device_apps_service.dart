@@ -15,7 +15,7 @@ abstract class DeviceAppsService {
     try {
       final raw = await _channel.invokeListMethod<dynamic>(
         'getInstalledApps',
-        <String, dynamic>{'includeIcons': false},
+        <String, dynamic>{'includeIcons': true},
       );
       if (raw == null) return const <FocusInstalledApp>[];
       return raw
