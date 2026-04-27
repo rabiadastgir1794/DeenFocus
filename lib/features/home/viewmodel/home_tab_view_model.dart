@@ -309,6 +309,21 @@ class HomeTabViewModel extends ChangeNotifier {
         .toList(growable: false);
   }
 
+  List<int> get weekPrayerCounts {
+    final dates = currentWeekDates;
+    return dates
+        .map((date) {
+          final dateKey = _dayKeyFormat.format(date);
+          return _prayerStreakState.weekDays
+                  .where((item) => item.dateKey == dateKey)
+                  .firstOrNull
+                  ?.selectedPrayers
+                  .length ??
+              0;
+        })
+        .toList(growable: false);
+  }
+
   List<HomePrayerChecklistDay> get currentWeekChecklistDays =>
       currentWeekDates.map((date) => dayFor(date)).toList(growable: false);
 

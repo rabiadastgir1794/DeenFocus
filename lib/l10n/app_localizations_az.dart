@@ -318,8 +318,20 @@ class AppLocalizationsAz extends AppLocalizations {
   String get homeAppsLocked => 'Proqramlar Kilidi';
 
   @override
+  String get homeAppsUnlocked => 'Apps Unlocked';
+
+  @override
   String get homeTapToUnlock =>
       'Tətbiqləri müvəqqəti olaraq açmaq üçün toxunun';
+
+  @override
+  String get homeTapToRelock => 'Tap to relock blocked apps now';
+
+  @override
+  String get homeRelock => 'Relock';
+
+  @override
+  String get homeUnlock => 'Unlock';
 
   @override
   String get homePrayerModeActive => 'Namaz Rejimi Aktivdir';

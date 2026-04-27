@@ -690,11 +690,35 @@ abstract class AppLocalizations {
   /// **'Apps Locked'**
   String get homeAppsLocked;
 
+  /// No description provided for @homeAppsUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps Unlocked'**
+  String get homeAppsUnlocked;
+
   /// No description provided for @homeTapToUnlock.
   ///
   /// In en, this message translates to:
   /// **'Tap to unlock apps temporarily'**
   String get homeTapToUnlock;
+
+  /// No description provided for @homeTapToRelock.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to relock blocked apps now'**
+  String get homeTapToRelock;
+
+  /// No description provided for @homeRelock.
+  ///
+  /// In en, this message translates to:
+  /// **'Relock'**
+  String get homeRelock;
+
+  /// No description provided for @homeUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get homeUnlock;
 
   /// No description provided for @homePrayerModeActive.
   ///

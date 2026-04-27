@@ -110,6 +110,7 @@ class AppNotificationService {
     required double longitude,
   }) async {
     final run = _prayerSyncSerial.then((_) async {
+      final isSpanish = await _isSpanishLocale();
       await initialize();
       if (!await _hasNotificationPermission()) {
         _lastPrayerScheduleSignature = null;
@@ -168,8 +169,8 @@ class AppNotificationService {
           await _scheduleIfFuture(
             id: id,
             when: slot.time,
-            title: "It's time for ${_prayerLabel(slot.id)}",
-            body: 'Take a moment for ${_prayerLabel(slot.id)} prayer.',
+            title: _prayerTimeTitle(slot.id, isSpanish: isSpanish),
+            body: _prayerTimeBody(slot.id, isSpanish: isSpanish),
             details: _prayerNotificationDetails,
             // Avoid alarm-clock UI side effects ("approaching"/upcoming alarm).
             preferAlarmClock: false,
@@ -262,6 +263,7 @@ class AppNotificationService {
     required FocusSettings settings,
     required bool includeUnlockNotifications,
   }) async {
+    final isSpanish = await _isSpanishLocale();
     final range = settings.nightRange;
     final now = DateTime.now();
     final lockTimes = <DateTime>[];
@@ -291,8 +293,10 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: lockId,
         when: at,
-        title: 'Night Mode On',
-        body: 'Night mode is on. Let your mind and body rest.',
+        title: isSpanish ? '🌙 Modo nocturno activado' : '🌙 Night Mode On',
+        body: isSpanish
+            ? '🌙 El modo nocturno está activo. Deja que tu mente y cuerpo descansen.'
+            : '🌙 Night mode is on. Let your mind and body rest.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -312,8 +316,10 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: unlockId,
         when: at,
-        title: 'Good Morning',
-        body: 'Good morning! Apps are now available.',
+        title: isSpanish ? '🌙 Buenos días' : '🌙 Good Morning',
+        body: isSpanish
+            ? '🌙 ¡Buenos días! Las aplicaciones ya están disponibles.'
+            : '🌙 Good morning! Apps are now available.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -325,6 +331,7 @@ class AppNotificationService {
     required FocusSettings settings,
     required bool includeUnlockNotifications,
   }) async {
+    final isSpanish = await _isSpanishLocale();
     final latitude = await StorageService.locationLatitude;
     final longitude = await StorageService.locationLongitude;
     if (latitude == null || longitude == null) {
@@ -369,8 +376,12 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: lockId,
         when: lock.at,
-        title: '${_prayerLabel(lock.prayerId)} Time',
-        body: 'Selected apps are now locked for prayer focus.',
+        title: isSpanish
+            ? '🕌 Hora de ${_prayerLabel(lock.prayerId, isSpanish: true)}'
+            : '🕌 ${_prayerLabel(lock.prayerId)} Time',
+        body: isSpanish
+            ? '🕌 Tómate un momento para la oración de ${_prayerLabel(lock.prayerId, isSpanish: true)}.'
+            : '🕌 Take a moment for ${_prayerLabel(lock.prayerId)} prayer.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -390,8 +401,10 @@ class AppNotificationService {
       await _scheduleIfFuture(
         id: unlockId,
         when: at,
-        title: 'Salah Complete',
-        body: 'Apps are now unlocked. May your prayer be accepted.',
+        title: isSpanish ? '🕌 Salah completada' : '🕌 Salah Complete',
+        body: isSpanish
+            ? '🕌 Las aplicaciones ya están desbloqueadas. Que tu oración sea aceptada.'
+            : '🕌 Apps are now unlocked. May your prayer be accepted.',
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
@@ -645,7 +658,23 @@ class AppNotificationService {
     }
   }
 
-  String _prayerLabel(HomePrayerId id) {
+  String _prayerLabel(HomePrayerId id, {bool isSpanish = false}) {
+    if (isSpanish) {
+      switch (id) {
+        case HomePrayerId.fajr:
+          return 'Fajr';
+        case HomePrayerId.sunrise:
+          return 'Amanecer';
+        case HomePrayerId.dhuhr:
+          return 'Dhuhr';
+        case HomePrayerId.asr:
+          return 'Asr';
+        case HomePrayerId.maghrib:
+          return 'Maghrib';
+        case HomePrayerId.isha:
+          return 'Isha';
+      }
+    }
     switch (id) {
       case HomePrayerId.fajr:
         return 'Fajr';
@@ -660,6 +689,25 @@ class AppNotificationService {
       case HomePrayerId.isha:
         return 'Isha';
     }
+  }
+
+  String _prayerTimeTitle(HomePrayerId id, {required bool isSpanish}) {
+    if (isSpanish) {
+      return 'Es hora de ${_prayerLabel(id, isSpanish: true)}';
+    }
+    return "It's time for ${_prayerLabel(id)}";
+  }
+
+  String _prayerTimeBody(HomePrayerId id, {required bool isSpanish}) {
+    if (isSpanish) {
+      return 'Tómate un momento para la oración de ${_prayerLabel(id, isSpanish: true)}.';
+    }
+    return 'Take a moment for ${_prayerLabel(id)} prayer.';
+  }
+
+  Future<bool> _isSpanishLocale() async {
+    final code = (await StorageService.localeCode)?.toLowerCase();
+    return code != null && code.startsWith('es');
   }
 
   String _buildPrayerScheduleSignature({

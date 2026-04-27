@@ -317,8 +317,20 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeAppsLocked => 'ऐप्स लॉक हो गए';
 
   @override
+  String get homeAppsUnlocked => 'Apps Unlocked';
+
+  @override
   String get homeTapToUnlock =>
       'ऐप्स को अस्थायी रूप से अनलॉक करने के लिए टैप करें';
+
+  @override
+  String get homeTapToRelock => 'Tap to relock blocked apps now';
+
+  @override
+  String get homeRelock => 'Relock';
+
+  @override
+  String get homeUnlock => 'Unlock';
 
   @override
   String get homePrayerModeActive => 'प्रार्थना मोड सक्रिय';

@@ -212,11 +212,20 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              l10n.tasbihCurrentCount,
+                              l10n.tasbihGrandTotalLabel,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                                 color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              _item.totalCount.toString(),
+                              style: TextStyle(
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.w700,
+                                color: colorScheme.primary,
                               ),
                             ),
                           ],

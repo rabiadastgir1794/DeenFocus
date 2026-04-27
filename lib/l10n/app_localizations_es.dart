@@ -318,8 +318,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeAppsLocked => 'Aplicaciones bloqueadas';
 
   @override
+  String get homeAppsUnlocked => 'Aplicaciones desbloqueadas';
+
+  @override
   String get homeTapToUnlock =>
       'Toca para desbloquear aplicaciones temporalmente';
+
+  @override
+  String get homeTapToRelock =>
+      'Toca para volver a bloquear las aplicaciones ahora';
+
+  @override
+  String get homeRelock => 'Volver a bloquear';
+
+  @override
+  String get homeUnlock => 'Desbloquear';
 
   @override
   String get homePrayerModeActive => 'Modo de oración activo';
@@ -536,90 +549,92 @@ class AppLocalizationsEs extends AppLocalizations {
   String get focusTabSubtitle => 'Manténgase enfocado cuando más importa';
 
   @override
-  String get focusChildModeActive => 'Child Mode Active';
+  String get focusChildModeActive => 'Modo infantil activo';
 
   @override
-  String get focusSalahAndNightModeActive => 'Salah and Night Mode Active';
+  String get focusSalahAndNightModeActive => 'Modo Salah y nocturno activos';
 
   @override
-  String get focusSalahModeActive => 'Salah Mode Active';
+  String get focusSalahModeActive => 'Modo Salah activo';
 
   @override
-  String get focusNightModeActive => 'Night Mode Active';
+  String get focusNightModeActive => 'Modo nocturno activo';
 
   @override
-  String get focusAppsToBlockTitle => 'Apps to Block';
+  String get focusAppsToBlockTitle => 'Aplicaciones para bloquear';
 
   @override
-  String get focusAppliesAllModes => 'Applies to all focus modes';
+  String get focusAppliesAllModes => 'Se aplica a todos los modos de enfoque';
 
   @override
   String get focusScreenTimeRequiredSelectApps =>
-      'Screen Time access is required to view and select apps.';
+      'Se requiere acceso a Tiempo en pantalla para ver y seleccionar aplicaciones.';
 
   @override
   String get focusAcceptAccessibilityDisclosure =>
-      'Please accept the accessibility disclosure to continue.';
+      'Acepta la divulgación de accesibilidad para continuar.';
 
   @override
-  String get focusSelectAppsToBlock => 'Select apps to block';
+  String get focusSelectAppsToBlock => 'Seleccionar aplicaciones para bloquear';
 
   @override
-  String get focusLoading => 'Loading...';
+  String get focusLoading => 'Cargando...';
 
   @override
-  String get focusOpen => 'Open';
+  String get focusOpen => 'Abrir';
 
   @override
-  String get focusHide => 'Hide';
+  String get focusHide => 'Ocultar';
 
   @override
-  String get focusLoad => 'Load';
+  String get focusLoad => 'Cargar';
 
   @override
-  String get focusShow => 'Show';
+  String get focusShow => 'Mostrar';
 
   @override
-  String get focusSalahFocusModeTitle => 'Salah Focus Mode';
+  String get focusSalahFocusModeTitle => 'Modo de enfoque Salah';
 
   @override
-  String get focusBlockAppsDuringPrayer => 'Block apps during prayer';
+  String get focusBlockAppsDuringPrayer =>
+      'Bloquear aplicaciones durante la oración';
 
   @override
-  String get focusNightDisciplineTitle => 'Night Discipline';
+  String get focusNightDisciplineTitle => 'Disciplina nocturna';
 
   @override
-  String get focusSleepLabel => 'Sleep';
+  String get focusSleepLabel => 'Dormir';
 
   @override
-  String get focusWakeLabel => 'Wake';
+  String get focusWakeLabel => 'Despertar';
 
   @override
-  String get focusBlockAppsImmediately => 'Block apps immediately';
+  String get focusBlockAppsImmediately => 'Bloquear aplicaciones de inmediato';
 
   @override
-  String get focusEnableAndroidAppBlocking => 'Enable Android app blocking';
+  String get focusEnableAndroidAppBlocking =>
+      'Activar bloqueo de aplicaciones en Android';
 
   @override
   String get focusEnableAndroidAppBlockingMessage =>
-      'To block other apps on Android, Deenly needs its accessibility permission turned on. We will open the correct settings screen for you.';
+      'Para bloquear otras aplicaciones en Android, Deenly necesita el permiso de accesibilidad activado. Te abriremos la pantalla de ajustes correcta.';
 
   @override
   String get focusAccessibilityDisclosureTitle =>
-      'Accessibility permission disclosure';
+      'Divulgación del permiso de accesibilidad';
 
   @override
   String get focusAccessibilityDisclosureMessage =>
-      'Deenly uses Android Accessibility to enforce Focus mode app blocking.\n\nWhy we need it: to detect when you open an app you selected for blocking.\n\nHow we use it: only to identify the foreground app and show the Focus block screen for selected apps. We do not use it to read typed text or personal content.';
+      'Deenly usa Accesibilidad de Android para aplicar el bloqueo de aplicaciones del modo Enfoque.\n\nPor qué lo necesitamos: para detectar cuando abres una aplicación que seleccionaste para bloquear.\n\nCómo lo usamos: solo para identificar la app en primer plano y mostrar la pantalla de bloqueo de Enfoque para las aplicaciones seleccionadas. No lo usamos para leer texto escrito ni contenido personal.';
 
   @override
-  String get focusNotNow => 'Not now';
+  String get focusNotNow => 'Ahora no';
 
   @override
-  String get focusIUnderstand => 'I understand';
+  String get focusIUnderstand => 'Entiendo';
 
   @override
-  String get focusDone => 'Done';
+  String get focusDone => 'Listo';
 
   @override
   String get focusNightDisciplineCardSubtitle =>
@@ -638,112 +653,114 @@ class AppLocalizationsEs extends AppLocalizations {
       'Las aplicaciones se bloquean instantáneamente en el modo infantil. Desbloquéalos usando el interruptor o desde la pantalla de inicio.';
 
   @override
-  String get settingsEditUsername => 'Edit Username';
+  String get settingsEditUsername => 'Editar nombre de usuario';
 
   @override
-  String get settingsEnterYourName => 'Enter your name';
+  String get settingsEnterYourName => 'Ingresa tu nombre';
 
   @override
   String get settingsPremiumTitle => 'Deen Focus Premium';
 
   @override
-  String get settingsPremiumSubtitle => 'Unlock all features';
+  String get settingsPremiumSubtitle => 'Desbloquea todas las funciones';
 
   @override
-  String get settingsUsernameLabel => 'Username';
+  String get settingsUsernameLabel => 'Nombre de usuario';
 
   @override
-  String get settingsLocationLabel => 'Location';
+  String get settingsLocationLabel => 'Ubicación';
 
   @override
-  String get settingsDarkModeLabel => 'Dark Mode';
+  String get settingsDarkModeLabel => 'Modo oscuro';
 
   @override
-  String get settingsAboutTitle => 'About Deen Focus';
+  String get settingsAboutTitle => 'Acerca de Deen Focus';
 
   @override
   String get settingsDemoPlaybackHint =>
-      'Tap to watch. Playback pauses when you leave and resumes from there next time.';
+      'Toca para ver. La reproducción se pausa cuando sales y se reanuda desde ahí la próxima vez.';
 
   @override
-  String get settingsSavingLocation => 'Saving...';
+  String get settingsSavingLocation => 'Guardando...';
 
   @override
-  String get settingsSaveLocation => 'Save Location';
+  String get settingsSaveLocation => 'Guardar ubicación';
 
   @override
-  String get settingsAboutTagline => 'Focus. Discipline. Consistency.';
+  String get settingsAboutTagline => 'Enfoque. Disciplina. Constancia.';
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus helps you stay grounded with prayer times, Quran, Qibla, Tasbih, nearby mosques, and distraction-free focus modes built around your routines.';
+      'Deen Focus te ayuda a mantenerte firme con horarios de oración, Corán, Qibla, Tasbih, mezquitas cercanas y modos de enfoque sin distracciones adaptados a tus rutinas.';
 
   @override
   String get settingsEnableSystemNotifications =>
-      'Enable system notifications to turn this on.';
+      'Activa las notificaciones del sistema para habilitar esto.';
 
   @override
-  String get appDemoTitle => 'App Demo';
+  String get appDemoTitle => 'Demostración de la app';
 
   @override
-  String get appDemoLoadFailed => 'Could not load the demo video.';
+  String get appDemoLoadFailed => 'No se pudo cargar el video de demostración.';
 
   @override
   String get appDemoRestartHint =>
-      'Video needs a full app restart (hot restart can break playback).';
+      'El video requiere reiniciar por completo la app (el hot restart puede romper la reproducción).';
 
   @override
-  String get appDemoPreviewLoadFailed => 'Could not load the demo.';
+  String get appDemoPreviewLoadFailed => 'No se pudo cargar la demostración.';
 
   @override
-  String get appDemoTryAgain => 'Try again';
+  String get appDemoTryAgain => 'Intentar de nuevo';
 
   @override
-  String get appDemoWatchLabel => 'Watch demo';
+  String get appDemoWatchLabel => 'Ver demo';
 
   @override
-  String get homeAiChatTitle => 'Deen Focus AI';
+  String get homeAiChatTitle => 'IA de Deen Focus';
 
   @override
-  String get homeAiAskQuestionHint => 'Ask a question...';
+  String get homeAiAskQuestionHint => 'Haz una pregunta...';
 
   @override
-  String get homeAiSend => 'Send';
+  String get homeAiSend => 'Enviar';
 
   @override
   String get homeAiErrorPrefix =>
-      'Sorry, I ran into an issue while connecting to Deen Focus AI.';
+      'Lo siento, tuve un problema al conectarme con la IA de Deen Focus.';
 
   @override
-  String get homeAiEmptyTitle => 'Ask anything about Islam';
+  String get homeAiEmptyTitle => 'Pregunta cualquier cosa sobre el Islam';
 
   @override
   String get homeAiEmptySubtitle =>
-      'Prayer times, Quran, Hadith, Islamic events, and spiritual guidance';
+      'Horarios de oración, Corán, Hadiz, eventos islámicos y guía espiritual';
 
   @override
-  String get onboardingTypeCityName => 'Type your city name..';
+  String get onboardingTypeCityName => 'Escribe el nombre de tu ciudad..';
 
   @override
-  String get onboardingNoLocationsFound => 'No locations found';
+  String get onboardingNoLocationsFound => 'No se encontraron ubicaciones';
 
   @override
-  String get onboardingTryAnotherCityName => 'Try another city name.';
+  String get onboardingTryAnotherCityName =>
+      'Prueba con otro nombre de ciudad.';
 
   @override
-  String get qiblaCompassUnavailable => 'Compass unavailable on this device';
+  String get qiblaCompassUnavailable =>
+      'Brújula no disponible en este dispositivo';
 
   @override
-  String get qiblaFacing => '✓ Facing Qibla';
+  String get qiblaFacing => '✓ Orientado a la Qibla';
 
   @override
-  String get qiblaTurnToFind => 'Turn to find Qibla';
+  String get qiblaTurnToFind => 'Gira para encontrar la Qibla';
 
   @override
-  String get qiblaDistanceToMakkah => 'Distance to Makkah';
+  String get qiblaDistanceToMakkah => 'Distancia a La Meca';
 
   @override
-  String get qiblaFromNorth => 'from North';
+  String get qiblaFromNorth => 'desde el norte';
 
   @override
   String get qiblaNorthShort => 'N';
@@ -755,100 +772,102 @@ class AppLocalizationsEs extends AppLocalizations {
   String get qiblaEastShort => 'E';
 
   @override
-  String get qiblaWestShort => 'W';
+  String get qiblaWestShort => 'O';
 
   @override
-  String get nearbyMosquesTitle => 'Nearby Mosques';
+  String get nearbyMosquesTitle => 'Mezquitas cercanas';
 
   @override
-  String get nearbyMosquesTryAgain => 'Try again';
+  String get nearbyMosquesTryAgain => 'Intentar de nuevo';
 
   @override
-  String get nearbyMosquesOpenGoogle => 'Open in Google Maps';
+  String get nearbyMosquesOpenGoogle => 'Abrir en Google Maps';
 
   @override
-  String get nearbyMosquesOpenApple => 'Open in Apple Maps';
+  String get nearbyMosquesOpenApple => 'Abrir en Apple Maps';
 
   @override
-  String get nearbyMosquesNoMosquesFoundWithin => 'No mosques found within';
+  String get nearbyMosquesNoMosquesFoundWithin =>
+      'No se encontraron mezquitas dentro de';
 
   @override
-  String get nearbyMosquesSearchRadius => 'Search radius: 5 km';
+  String get nearbyMosquesSearchRadius => 'Radio de búsqueda: 5 km';
 
   @override
   String get nearbyMosquesMapPreviewUnavailable =>
-      'Map preview unavailable right now.';
+      'La vista previa del mapa no está disponible en este momento.';
 
   @override
-  String get nearbyMosquesWaitingForLocation => 'Waiting for your location.';
+  String get nearbyMosquesWaitingForLocation => 'Esperando tu ubicación.';
 
   @override
   String get nearbyMosquesAppearAfterLoad =>
-      'Nearby mosques will appear here once results load.';
+      'Las mezquitas cercanas aparecerán aquí cuando se carguen los resultados.';
 
   @override
-  String get nearbyMosquesNoneWithinRadius => 'No mosques found within 5 km';
+  String get nearbyMosquesNoneWithinRadius =>
+      'No se encontraron mezquitas en 5 km';
 
   @override
   String get nearbyMosquesLocationRequired =>
-      'Location access is required to find nearby mosques.';
+      'Se requiere acceso a la ubicación para encontrar mezquitas cercanas.';
 
   @override
   String get nearbyMosquesPermissionOff =>
-      'Location permission is turned off. Enable it in settings to see nearby mosques.';
+      'El permiso de ubicación está desactivado. Actívalo en Configuración para ver mezquitas cercanas.';
 
   @override
   String get nearbyMosquesLocationUnavailable =>
-      'We could not read your current location right now.';
+      'No pudimos leer tu ubicación actual en este momento.';
 
   @override
   String get nearbyMosquesLiveUpdateFailed =>
-      'Live update failed. Showing last saved results. Pull to refresh.';
+      'La actualización en vivo falló. Mostrando los últimos resultados guardados. Desliza para actualizar.';
 
   @override
   String get nearbyMosquesPermissionDenied =>
-      'Location access was denied. Enable it in Settings to see nearby mosques.';
+      'Se denegó el acceso a la ubicación. Actívalo en Configuración para ver mezquitas cercanas.';
 
   @override
   String get nearbyMosquesLocationTurnedOff =>
-      'Location is turned off on this device. Turn it on in Settings, then try again.';
+      'La ubicación está desactivada en este dispositivo. Actívala en Configuración y vuelve a intentarlo.';
 
   @override
   String get nearbyMosquesPermissionProcessing =>
-      'Location permission is still being processed. Please try again in a moment.';
+      'El permiso de ubicación aún se está procesando. Vuelve a intentarlo en un momento.';
 
   @override
   String get nearbyMosquesRequestTimeout =>
-      'The request took too long. Check your internet connection and try again.';
+      'La solicitud tardó demasiado. Revisa tu conexión a internet e inténtalo de nuevo.';
 
   @override
   String get nearbyMosquesOfflineOrUnreachable =>
-      'No internet connection or the service is unreachable. Check your connection and try again.';
+      'Sin conexión a internet o el servicio no está disponible. Revisa tu conexión e inténtalo de nuevo.';
 
   @override
   String get nearbyMosquesFormatError =>
-      'We could not read the mosque list right now. Please try again later.';
+      'No pudimos leer la lista de mezquitas en este momento. Inténtalo más tarde.';
 
   @override
   String get nearbyMosquesPlatformError =>
-      'We could not complete that step. Check your connection and try again.';
+      'No pudimos completar ese paso. Revisa tu conexión e inténtalo de nuevo.';
 
   @override
   String get nearbyMosquesSomethingWentWrong =>
-      'Something went wrong. Please try again.';
+      'Algo salió mal. Inténtalo de nuevo.';
 
   @override
   String get nearbyMosquesEmptyHint =>
-      'Nothing listed within 5 km on OpenStreetMap for this spot. Try again later or move the map.';
+      'No hay resultados dentro de 5 km en OpenStreetMap para este punto. Inténtalo más tarde o mueve el mapa.';
 
   @override
   String nearbyMosquesFoundWithin(int count) {
-    return '$count mosques found within 5 km';
+    return '$count mezquitas encontradas dentro de 5 km';
   }
 
   @override
-  String get tasbihDeleteDhikrTitle => 'Delete dhikr?';
+  String get tasbihDeleteDhikrTitle => '¿Eliminar dhikr?';
 
   @override
-  String get tasbihDelete => 'Delete';
+  String get tasbihDelete => 'Eliminar';
 }

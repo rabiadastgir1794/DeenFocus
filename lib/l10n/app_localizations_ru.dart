@@ -320,8 +320,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeAppsLocked => 'Приложения заблокированы';
 
   @override
+  String get homeAppsUnlocked => 'Apps Unlocked';
+
+  @override
   String get homeTapToUnlock =>
       'Нажмите, чтобы временно разблокировать приложения';
+
+  @override
+  String get homeTapToRelock => 'Tap to relock blocked apps now';
+
+  @override
+  String get homeRelock => 'Relock';
+
+  @override
+  String get homeUnlock => 'Unlock';
 
   @override
   String get homePrayerModeActive => 'Режим молитвы активен';

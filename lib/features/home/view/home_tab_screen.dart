@@ -76,7 +76,9 @@ class _HomeTabViewState extends State<_HomeTabView>
       title: l10n.locationRequired,
       message: l10n.locationRequiredMessage,
       primaryButtonText: l10n.openSettings,
+      secondaryButtonText: l10n.cancel,
       onPrimaryTap: PermissionService.openLocationSettings,
+      onSecondaryTap: () {},
     );
   }
 
@@ -193,7 +195,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                 const SizedBox(height: 12),
                 HomePrayerStreakSection(
                   streakDays: vm.streakDays,
-                  weekFlags: vm.weekStreakFlags,
+                  weekPrayerCounts: vm.weekPrayerCounts,
                   backgroundColor: softCardColor,
                   onTap: () => _openPrayerStreakDetail(context, vm),
                 ),
@@ -314,7 +316,10 @@ class _HomeTabViewState extends State<_HomeTabView>
     }
   }
 
-  Future<void> _openQiblaScreen(BuildContext context, HomeTabViewModel vm) async {
+  Future<void> _openQiblaScreen(
+    BuildContext context,
+    HomeTabViewModel vm,
+  ) async {
     final hasLocation = await vm.ensureLocationAvailableForFeature();
     if (!hasLocation) {
       if (!context.mounted) return;
@@ -490,6 +495,7 @@ class _FocusLockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isTemporarilyUnlocked = focusVm.isTemporarilyUnlocked;
 
@@ -503,9 +509,7 @@ class _FocusLockCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(
-            color: colorScheme.error.withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: colorScheme.error.withValues(alpha: 0.3)),
           color: colorScheme.errorContainer.withValues(alpha: 0.32),
           boxShadow: [
             BoxShadow(
@@ -526,10 +530,7 @@ class _FocusLockCard extends StatelessWidget {
                   context,
                 ).colorScheme.surface.withValues(alpha: 0.72),
               ),
-              child: Icon(
-                Icons.lock_outline,
-                color: colorScheme.error,
-              ),
+              child: Icon(Icons.lock_outline, color: colorScheme.error),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -537,7 +538,9 @@ class _FocusLockCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isTemporarilyUnlocked ? 'Apps Unlocked' : 'Apps Locked',
+                    isTemporarilyUnlocked
+                        ? l10n.homeAppsUnlocked
+                        : l10n.homeAppsLocked,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -545,8 +548,8 @@ class _FocusLockCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isTemporarilyUnlocked
-                        ? 'Tap to relock blocked apps now'
-                        : 'Tap to unlock apps temporarily',
+                        ? l10n.homeTapToRelock
+                        : l10n.homeTapToUnlock,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -559,7 +562,7 @@ class _FocusLockCard extends StatelessWidget {
                 color: colorScheme.error.withValues(alpha: 0.1),
               ),
               child: Text(
-                isTemporarilyUnlocked ? 'Relock' : 'Unlock',
+                isTemporarilyUnlocked ? l10n.homeRelock : l10n.homeUnlock,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: colorScheme.error,
                   fontWeight: FontWeight.w700,

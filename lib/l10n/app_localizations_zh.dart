@@ -296,7 +296,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeAppsLocked => '应用程序锁定';
 
   @override
+  String get homeAppsUnlocked => 'Apps Unlocked';
+
+  @override
   String get homeTapToUnlock => '点击可暂时解锁应用程序';
+
+  @override
+  String get homeTapToRelock => 'Tap to relock blocked apps now';
+
+  @override
+  String get homeRelock => 'Relock';
+
+  @override
+  String get homeUnlock => 'Unlock';
 
   @override
   String get homePrayerModeActive => '祈祷模式激活';

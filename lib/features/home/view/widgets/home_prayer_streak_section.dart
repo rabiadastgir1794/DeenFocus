@@ -7,13 +7,13 @@ class HomePrayerStreakSection extends StatelessWidget {
   const HomePrayerStreakSection({
     super.key,
     required this.streakDays,
-    required this.weekFlags,
+    required this.weekPrayerCounts,
     required this.backgroundColor,
     required this.onTap,
   });
 
   final int streakDays;
-  final List<bool> weekFlags;
+  final List<int> weekPrayerCounts;
   final Color backgroundColor;
   final VoidCallback onTap;
 
@@ -83,17 +83,28 @@ class HomePrayerStreakSection extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            height: weekFlags[index]
-                                ? 18.0 + (index * 4)
-                                : 12.0,
+                            height: 42,
                             width: double.infinity,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              color: weekFlags[index]
-                                  ? colorScheme.primary
-                                  : colorScheme.outlineVariant.withValues(
-                                      alpha: isDark ? 0.6 : 0.35,
-                                    ),
+                              color: colorScheme.outlineVariant.withValues(
+                                alpha: isDark ? 0.6 : 0.35,
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: FractionallySizedBox(
+                                heightFactor: (weekPrayerCounts[index] / 5)
+                                    .clamp(0.0, 1.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: weekPrayerCounts[index] > 0
+                                        ? colorScheme.primary
+                                        : Colors.transparent,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 5),

@@ -320,8 +320,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get homeAppsLocked => 'Applications verrouillées';
 
   @override
+  String get homeAppsUnlocked => 'Apps Unlocked';
+
+  @override
   String get homeTapToUnlock =>
       'Appuyez pour déverrouiller temporairement les applications';
+
+  @override
+  String get homeTapToRelock => 'Tap to relock blocked apps now';
+
+  @override
+  String get homeRelock => 'Relock';
+
+  @override
+  String get homeUnlock => 'Unlock';
 
   @override
   String get homePrayerModeActive => 'Mode prière actif';

@@ -80,7 +80,9 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
         title: l10n.locationRequired,
         message: l10n.locationRequiredMessage,
         primaryButtonText: l10n.openSettings,
+        secondaryButtonText: l10n.cancel,
         onPrimaryTap: () => PermissionService.openLocationSettings(),
+        onSecondaryTap: () {},
       );
     }
   }
@@ -210,98 +212,103 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                SizedBox(height: Spacing.md.h),
-                AppIconCircle(
-                  size: 64.8.r,
-                  iconSize: 28.8.sp,
-                  icon: const Icon(CupertinoIcons.location),
-                ),
-                SizedBox(height: Spacing.xl.h),
-                Text(
-                  l10n.locationTitle,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.sp,
-                  ),
-                ),
-                SizedBox(height: Spacing.md.h),
-                Text(
-                  l10n.locationSubtitle,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    height: 1.5,
-                    fontSize: 12.sp,
-                  ),
-                ),
-                SizedBox(height: Spacing.xl.h),
-                AppTextField(
-                  controller: _cityController,
-                  placeholder: l10n.onboardingTypeCityName,
-                  textAlign: TextAlign.center,
-                  onChanged: _onQueryChanged,
-                ),
-                SizedBox(height: Spacing.md.h),
-                if (_isSearching)
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24.h),
-                    child: const Center(child: CircularProgressIndicator()),
-                  )
-                else if (_results.isNotEmpty)
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: maxSuggestionHeight),
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: _results.length,
-                      separatorBuilder: (_, _) =>
-                          SizedBox(height: Spacing.sm.h),
-                      itemBuilder: (context, index) {
-                        final item = _results[index];
-                        final isSelected =
-                            _selectedLocation?.title == item.title &&
-                            _selectedLocation?.subtitle == item.subtitle;
+                      SizedBox(height: Spacing.md.h),
+                      AppIconCircle(
+                        size: 64.8.r,
+                        iconSize: 28.8.sp,
+                        icon: const Icon(CupertinoIcons.location),
+                      ),
+                      SizedBox(height: Spacing.xl.h),
+                      Text(
+                        l10n.locationTitle,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                            ),
+                      ),
+                      SizedBox(height: Spacing.md.h),
+                      Text(
+                        l10n.locationSubtitle,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          height: 1.5,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      SizedBox(height: Spacing.xl.h),
+                      AppTextField(
+                        controller: _cityController,
+                        placeholder: l10n.onboardingTypeCityName,
+                        textAlign: TextAlign.center,
+                        onChanged: _onQueryChanged,
+                      ),
+                      SizedBox(height: Spacing.md.h),
+                      if (_isSearching)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24.h),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      else if (_results.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: maxSuggestionHeight,
+                          ),
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: _results.length,
+                            separatorBuilder: (_, _) =>
+                                SizedBox(height: Spacing.sm.h),
+                            itemBuilder: (context, index) {
+                              final item = _results[index];
+                              final isSelected =
+                                  _selectedLocation?.title == item.title &&
+                                  _selectedLocation?.subtitle == item.subtitle;
 
-                        return ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                            side: BorderSide(
-                              color: isSelected
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(
-                                      context,
-                                    ).colorScheme.outlineVariant,
-                            ),
-                          ),
-                          title: Text(
-                            item.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 11.25.sp,
-                            ),
-                          ),
-                          subtitle: item.subtitle.trim().isEmpty
-                              ? null
-                              : Text(
-                                  item.subtitle,
-                                  style: TextStyle(
-                                    fontSize: 9.75.sp,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
+                              return ListTile(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  side: BorderSide(
+                                    color: isSelected
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(
+                                            context,
+                                          ).colorScheme.outlineVariant,
                                   ),
                                 ),
-                          onTap: () => _onLocationTap(item),
-                        );
-                      },
-                    ),
-                  )
-                else if (_activeQuery.isNotEmpty)
-                  AppEmptyState(
-                    title: l10n.onboardingNoLocationsFound,
-                    subtitle: l10n.onboardingTryAnotherCityName,
-                  ),
-                SizedBox(height: Spacing.xl.h),
+                                title: Text(
+                                  item.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 11.25.sp,
+                                  ),
+                                ),
+                                subtitle: item.subtitle.trim().isEmpty
+                                    ? null
+                                    : Text(
+                                        item.subtitle,
+                                        style: TextStyle(
+                                          fontSize: 9.75.sp,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                onTap: () => _onLocationTap(item),
+                              );
+                            },
+                          ),
+                        )
+                      else if (_activeQuery.isNotEmpty)
+                        AppEmptyState(
+                          title: l10n.onboardingNoLocationsFound,
+                          subtitle: l10n.onboardingTryAnotherCityName,
+                        ),
+                      SizedBox(height: Spacing.xl.h),
                     ],
                   ),
                 ),

@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -38,11 +39,6 @@ class FocusBlockedActivity : Activity() {
         val description: String,
         val instruction: String,
         val quote: String,
-        val actionLabel: String,
-        val topGradientStart: Int,
-        val topGradientEnd: Int,
-        val badgeBg: Int,
-        val badgeText: Int,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,12 +115,12 @@ class FocusBlockedActivity : Activity() {
 
         val modeBadge = TextView(this).apply {
             text = content.badge
-            setTextColor(content.badgeText)
+            setTextColor(Color.parseColor("#1C2E24"))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             setTypeface(typeface, Typeface.BOLD)
             background = GradientDrawable().apply {
                 cornerRadius = dpF(999)
-                setColor(content.badgeBg)
+                setColor(Color.parseColor("#E3DFD5"))
             }
             setPadding(dp(12), dp(6), dp(12), dp(6))
         }
@@ -159,10 +155,15 @@ class FocusBlockedActivity : Activity() {
         )
 
         val homeButton = Button(this).apply {
-            text = content.actionLabel
+            text = homeButtonLabel()
             setTextColor(palette.buttonText)
-            textSize = 16f
+            textSize = 15f
             typeface = Typeface.DEFAULT_BOLD
+            isAllCaps = false
+            isSingleLine = true
+            ellipsize = TextUtils.TruncateAt.END
+            minHeight = dp(56)
+            minimumWidth = dp(280)
             background = GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 intArrayOf(
@@ -172,7 +173,7 @@ class FocusBlockedActivity : Activity() {
             ).apply {
                 cornerRadius = dpF(18)
             }
-            setPadding(dp(16), dp(16), dp(16), dp(16))
+            setPadding(dp(20), dp(16), dp(20), dp(16))
             setOnClickListener { navigateHome() }
         }
 
@@ -295,11 +296,6 @@ class FocusBlockedActivity : Activity() {
                 description = "Step away from distractions and answer the call to prayer.\nTake this moment to connect with Allah.",
                 instruction = "Return after completing your Salah in DeenFocus.",
                 quote = "\"Establish prayer for My remembrance.\"\n(Quran 20:14)",
-                actionLabel = "Start My Salah",
-                topGradientStart = Color.parseColor("#C8E6D8"),
-                topGradientEnd = Color.parseColor("#F0E6D6"),
-                badgeBg = Color.parseColor("#C8E6D8"),
-                badgeText = Color.parseColor("#1B3D2E"),
             )
             "child" -> ModeContent(
                 badge = "Child Mode",
@@ -307,11 +303,6 @@ class FocusBlockedActivity : Activity() {
                 description = "This device is currently in child focus mode to help maintain a safe and balanced digital experience.",
                 instruction = "Some apps are temporarily unavailable.",
                 quote = "\"Teach your children prayer when they are seven.\"\n(Hadith - Abu Dawood)",
-                actionLabel = "Continue in Safe Mode",
-                topGradientStart = Color.parseColor("#C8E4F0"),
-                topGradientEnd = Color.parseColor("#F0E6D6"),
-                badgeBg = Color.parseColor("#C8E4F0"),
-                badgeText = Color.parseColor("#163545"),
             )
             "nightDiscipline" -> ModeContent(
                 badge = "Night Mode",
@@ -319,11 +310,6 @@ class FocusBlockedActivity : Activity() {
                 description = "It's time to rest and disconnect from digital distractions.",
                 instruction = "Put your device aside and enjoy a peaceful night.",
                 quote = "\"And We made your sleep a means for rest.\"\n(Quran 78:9)",
-                actionLabel = "Good Night 🌙",
-                topGradientStart = Color.parseColor("#E9E5DB"),
-                topGradientEnd = Color.parseColor("#C8E6D8"),
-                badgeBg = Color.parseColor("#E3DFD5"),
-                badgeText = Color.parseColor("#1C2E24"),
             )
             else -> ModeContent(
                 badge = "Focus Mode",
@@ -331,13 +317,12 @@ class FocusBlockedActivity : Activity() {
                 description = "Distractions are paused while your focus mode is active.",
                 instruction = "Return once your focus session is complete in DeenFocus.",
                 quote = "\"And seek help through patience and prayer.\"\n(Quran 2:45)",
-                actionLabel = "Continue",
-                topGradientStart = Color.parseColor("#C8E6D8"),
-                topGradientEnd = Color.parseColor("#F0E6D6"),
-                badgeBg = Color.parseColor("#C8E6D8"),
-                badgeText = Color.parseColor("#1B3D2E"),
             )
         }
+    }
+
+    private fun homeButtonLabel(): String {
+        return "Go to Home"
     }
 
     private fun navigateHome() {

@@ -127,17 +127,6 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                           badgeText: l10n.bestValueTag,
                           popularityText: l10n.mostPopularChoice,
                         ),
-                        SizedBox(height: 12.h),
-                        _PricingCard(
-                          glassBackground: glassBackground,
-                          colorScheme: colorScheme,
-                          selected: lockedPlan == SubscriptionPlan.lifetime,
-                          enabled: false,
-                          onTap: null,
-                          primaryPrice: l10n.lifetimePriceValue,
-                          suffix: l10n.lifetimePriceSuffix,
-                          subtitle: l10n.lifetimePlanSubtitle,
-                        ),
                       ],
                     ),
                   ),
@@ -151,41 +140,6 @@ class OnboardingSubscriptionPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16.h),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 320.w),
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 10.sp,
-                          color: colorScheme.onSurfaceVariant,
-                          height: 1.35,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: l10n.socialProofPrefix,
-                            style: TextStyle(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          TextSpan(
-                            text: l10n.socialProofHighlight,
-                            style: TextStyle(
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          TextSpan(
-                            text: l10n.socialProofSuffix,
-                            style: TextStyle(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
                 ],
               ),
             ),
@@ -568,8 +522,6 @@ class _BenefitsCard extends StatelessWidget {
     l10n.featureMasjidGeofencing,
     l10n.featureQuranAudioTranslations,
     l10n.featureAiAssistant,
-    l10n.featureNoAdsForever,
-    l10n.featurePrioritySupportEarlyAccess,
   ];
 }
 

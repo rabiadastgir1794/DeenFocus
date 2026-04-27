@@ -318,7 +318,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get homeAppsLocked => 'Apps vergrendeld';
 
   @override
+  String get homeAppsUnlocked => 'Apps Unlocked';
+
+  @override
   String get homeTapToUnlock => 'Tik om apps tijdelijk te ontgrendelen';
+
+  @override
+  String get homeTapToRelock => 'Tap to relock blocked apps now';
+
+  @override
+  String get homeRelock => 'Relock';
+
+  @override
+  String get homeUnlock => 'Unlock';
 
   @override
   String get homePrayerModeActive => 'Gebedsmodus actief';
