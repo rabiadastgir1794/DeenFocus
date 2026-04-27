@@ -536,6 +536,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get focusModeActivated => 'تم تنشيط وضع التركيز';
 
   @override
+  String get focusSetUpHomeCardTitle => 'إعداد وضع التركيز';
+
+  @override
   String get focusTabSubtitle => 'حافظ على تركيزك عندما يكون الأمر أكثر أهمية';
 
   @override
@@ -854,4 +857,53 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tasbihDelete => 'يمسح';
+
+  @override
+  String get focusAndroidBlockingNotReady =>
+      'حظر التطبيقات على أندرويد ما زال يجهّز. أبقِ خدمات إمكانية الوصول مفعّلة وانتظر قليلًا حتى يكتمل الاتصال.';
+
+  @override
+  String get focusNoAppsSelectedSnack =>
+      'لم يُحدَّد أي تطبيق. اختر أولًا التطبيقات التي تريد حظرها.';
+
+  @override
+  String get focusScreenTimeRequiredBlockIphone =>
+      'يلزم الوصول إلى «وقت الشاشة» لحظر التطبيقات على آيفون.';
+
+  @override
+  String get focusModeUpdateFailedSnack =>
+      'حدث خطأ أثناء تحديث وضع التركيز. حاول مرة أخرى.';
+
+  @override
+  String get focusLoadingInstalledApps => 'جارٍ تحميل التطبيقات المثبتة...';
+
+  @override
+  String get focusNoInstalledAppsToShow => 'لا توجد تطبيقات مثبتة لعرضها.';
+
+  @override
+  String get homeAiSuggestion1 => 'ما هو رمضان؟';
+
+  @override
+  String get homeAiSuggestion2 => 'أوقات الصلاة';
+
+  @override
+  String get homeAiSuggestion3 => 'خطة لقراءة القرآن';
+
+  @override
+  String get homeAiDeveloperPrompt =>
+      'أنت مساعد عالم إسلامي محترم. ساعد المستخدمين على تعلّم التقاليد الإسلامية والمناسبات والصلاة ودراسة القرآن والممارسات الروحية. كن دافئًا ومختصرًا وتعليميًا وحساسًا ثقافيًا. إن سُئل عن شيء خارج الإرشاد الإسلامي فأجب بفائدة دون ادّعاء يقين ديني.';
+
+  @override
+  String get homeAiErrorMissingApiKey => 'إعدادات واجهة البرمجة مفقودة.';
+
+  @override
+  String homeAiErrorApi(String statusCode, String detail) {
+    return 'خطأ في واجهة البرمجة $statusCode: $detail';
+  }
+
+  @override
+  String get homeAiErrorEmptyResponse => 'لم يُرجَع أي رد من المساعد.';
+
+  @override
+  String get homeAiErrorEmptyContent => 'محتوى الرد فارغ.';
 }

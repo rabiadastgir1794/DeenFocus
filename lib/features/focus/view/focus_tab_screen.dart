@@ -66,11 +66,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     final granted = await _waitForBlockingPermissionReady();
     if (!granted) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.',
-          ),
+        SnackBar(
+          content: Text(l10n.focusAndroidBlockingNotReady),
         ),
       );
       return;
@@ -632,6 +631,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   ) async {
     if (_modesInFlight.contains(mode)) return;
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.maybeOf(context);
     final loaderStopwatch = Stopwatch()..start();
     setState(() => _modesInFlight.add(mode));
@@ -650,10 +650,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       );
       if (enabled && !vm.hasSelectedApps) {
         messenger?.showSnackBar(
-          const SnackBar(
-            content: Text(
-              'No apps selected. Please select apps to block first.',
-            ),
+          SnackBar(
+            content: Text(l10n.focusNoAppsSelectedSnack),
           ),
         );
         return;
@@ -673,7 +671,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
               SnackBar(
                 content: Text(
                   authResult.userFacingMessage() ??
-                      'Screen Time access is required to block apps on iPhone.',
+                      l10n.focusScreenTimeRequiredBlockIphone,
                 ),
               ),
             );
@@ -691,10 +689,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     } catch (_) {
       if (mounted) {
         messenger?.showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Something went wrong while updating Focus mode. Please try again.',
-            ),
+          SnackBar(
+            content: Text(l10n.focusModeUpdateFailedSnack),
           ),
         );
       }
@@ -753,10 +749,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       minute: vm.settings.nightRange.endMinute,
     );
     final initial = isSleep ? sleep : wake;
+    final l10n = AppLocalizations.of(context)!;
     final picked = await _showCupertinoTimePicker(
       context,
       initialTime: initial,
-      title: isSleep ? 'Sleep' : 'Wake',
+      title: isSleep ? l10n.focusSleepLabel : l10n.focusWakeLabel,
     );
     if (picked == null || !mounted) return;
     if (isSleep) {
@@ -1106,6 +1103,7 @@ class _AppsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final apps = vm.installedApps;
 
@@ -1117,7 +1115,7 @@ class _AppsGrid extends StatelessWidget {
             const Center(child: CircularProgressIndicator()),
             const SizedBox(height: 12),
             Text(
-              'Loading installed apps...',
+              l10n.focusLoadingInstalledApps,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -1131,7 +1129,7 @@ class _AppsGrid extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Text(
-          'No installed apps available to show.',
+          l10n.focusNoInstalledAppsToShow,
           style: Theme.of(
             context,
           ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),

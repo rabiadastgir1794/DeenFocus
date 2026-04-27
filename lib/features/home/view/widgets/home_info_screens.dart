@@ -18,12 +18,6 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   final TextEditingController _inputController = TextEditingController();
   final List<_ChatMessage> _messages = <_ChatMessage>[];
 
-  static const List<String> _suggestionPrompts = <String>[
-    'What is Ramadan?',
-    'Prayer times',
-    'Quran reading plan',
-  ];
-
   bool _isLoading = false;
 
   @override
@@ -61,7 +55,11 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                     ? _HomeAiChatEmptyState(
                         colorScheme: colorScheme,
                         onSuggestion: _applySuggestion,
-                        suggestions: _suggestionPrompts,
+                        suggestions: [
+                          l10n.homeAiSuggestion1,
+                          l10n.homeAiSuggestion2,
+                          l10n.homeAiSuggestion3,
+                        ],
                       )
                     : ListView.builder(
                         reverse: true,
@@ -169,28 +167,36 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     if (!mounted) return;
 
     try {
-      final reply = await _callOpenAi();
+      final reply = await _callOpenAi(l10n);
       if (!mounted) return;
       _replaceLoadingMessage(reply);
     } catch (error) {
       if (!mounted) return;
       _replaceLoadingMessage(
-        '${l10n.homeAiErrorPrefix} ${error.toString()}',
+        '${l10n.homeAiErrorPrefix} ${_userVisibleChatError(error)}',
       );
     }
   }
 
-  Future<String> _callOpenAi() async {
+  String _userVisibleChatError(Object error) {
+    final raw = error.toString();
+    const prefix = 'Exception: ';
+    if (raw.startsWith(prefix)) {
+      return raw.substring(prefix.length);
+    }
+    return raw;
+  }
+
+  Future<String> _callOpenAi(AppLocalizations l10n) async {
     if (!AppConfig.hasOpenAiApiKey) {
-      throw Exception('Missing OPENAI_API_KEY.');
+      throw Exception(l10n.homeAiErrorMissingApiKey);
     }
 
     final uri = Uri.parse('${AppConfig.openAiBaseUrl}/chat/completions');
     final requestMessages = <Map<String, String>>[
-      const <String, String>{
+      <String, String>{
         'role': 'developer',
-        'content':
-            'You are a knowledgeable and respectful Islamic scholar assistant. Help users learn about Islamic traditions, holidays, prayers, Quran study, and spiritual practices. Be warm, concise, educational, and culturally sensitive. If the user asks something outside Islamic guidance, answer helpfully without pretending religious certainty.',
+        'content': l10n.homeAiDeveloperPrompt,
       },
       for (final message in _messages)
         if (message.content != 'LOADING_PLACEHOLDER')
@@ -217,13 +223,17 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
         .timeout(const Duration(seconds: 40));
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('API error ${response.statusCode}: ${response.body}');
+      final body = response.body;
+      final detail = body.length > 200 ? '${body.substring(0, 200)}…' : body;
+      throw Exception(
+        l10n.homeAiErrorApi(response.statusCode.toString(), detail),
+      );
     }
 
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     final choices = decoded['choices'] as List<dynamic>? ?? const <dynamic>[];
     if (choices.isEmpty) {
-      throw Exception('No response returned from the API.');
+      throw Exception(l10n.homeAiErrorEmptyResponse);
     }
 
     final firstChoice = choices.first as Map<String, dynamic>;
@@ -245,7 +255,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
       if (text.isNotEmpty) return text;
     }
 
-    throw Exception('Empty response content.');
+    throw Exception(l10n.homeAiErrorEmptyContent);
   }
 
   void _replaceLoadingMessage(String reply) {

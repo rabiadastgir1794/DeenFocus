@@ -168,6 +168,7 @@
   "tasbihCurrentCount": "العدد الحالي",
   "tasbihResetTotal": "مسح التاريخ",
   "focusModeActivated": "تم تنشيط وضع التركيز",
+  "focusSetUpHomeCardTitle": "إعداد وضع التركيز",
   "focusTabSubtitle": "حافظ على تركيزك عندما يكون الأمر أكثر أهمية",
   "focusChildModeActive": "وضع الطفل نشط",
   "focusSalahAndNightModeActive": "صلاح والوضع الليلي نشط",
@@ -270,5 +271,29 @@
     }
   },
   "tasbihDeleteDhikrTitle": "حذف الذكر؟",
-  "tasbihDelete": "يمسح"
+  "tasbihDelete": "يمسح",
+  "focusAndroidBlockingNotReady": "حظر التطبيقات على أندرويد ما زال يجهّز. أبقِ خدمات إمكانية الوصول مفعّلة وانتظر قليلًا حتى يكتمل الاتصال.",
+  "focusNoAppsSelectedSnack": "لم يُحدَّد أي تطبيق. اختر أولًا التطبيقات التي تريد حظرها.",
+  "focusScreenTimeRequiredBlockIphone": "يلزم الوصول إلى «وقت الشاشة» لحظر التطبيقات على آيفون.",
+  "focusModeUpdateFailedSnack": "حدث خطأ أثناء تحديث وضع التركيز. حاول مرة أخرى.",
+  "focusLoadingInstalledApps": "جارٍ تحميل التطبيقات المثبتة...",
+  "focusNoInstalledAppsToShow": "لا توجد تطبيقات مثبتة لعرضها.",
+  "homeAiSuggestion1": "ما هو رمضان؟",
+  "homeAiSuggestion2": "أوقات الصلاة",
+  "homeAiSuggestion3": "خطة لقراءة القرآن",
+  "homeAiDeveloperPrompt": "أنت مساعد عالم إسلامي محترم. ساعد المستخدمين على تعلّم التقاليد الإسلامية والمناسبات والصلاة ودراسة القرآن والممارسات الروحية. كن دافئًا ومختصرًا وتعليميًا وحساسًا ثقافيًا. إن سُئل عن شيء خارج الإرشاد الإسلامي فأجب بفائدة دون ادّعاء يقين ديني.",
+  "homeAiErrorMissingApiKey": "إعدادات واجهة البرمجة مفقودة.",
+  "homeAiErrorApi": "خطأ في واجهة البرمجة {statusCode}: {detail}",
+  "homeAiErrorEmptyResponse": "لم يُرجَع أي رد من المساعد.",
+  "homeAiErrorEmptyContent": "محتوى الرد فارغ.",
+  "@homeAiErrorApi": {
+    "placeholders": {
+      "statusCode": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
 }

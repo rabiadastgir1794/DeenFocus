@@ -168,6 +168,7 @@
   "tasbihCurrentCount": "Current Count",
   "tasbihResetTotal": "Clear History",
   "focusModeActivated": "Focus Mode Activated",
+  "focusSetUpHomeCardTitle": "Set up Focus mode",
   "focusTabSubtitle": "Stay focused when it matters most",
   "focusChildModeActive": "Child Mode Active",
   "focusSalahAndNightModeActive": "Salah and Night Mode Active",
@@ -270,5 +271,29 @@
     }
   },
   "tasbihDeleteDhikrTitle": "Delete dhikr?",
-  "tasbihDelete": "Delete"
+  "tasbihDelete": "Delete",
+  "focusAndroidBlockingNotReady": "Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.",
+  "focusNoAppsSelectedSnack": "No apps selected. Please select apps to block first.",
+  "focusScreenTimeRequiredBlockIphone": "Screen Time access is required to block apps on iPhone.",
+  "focusModeUpdateFailedSnack": "Something went wrong while updating Focus mode. Please try again.",
+  "focusLoadingInstalledApps": "Loading installed apps...",
+  "focusNoInstalledAppsToShow": "No installed apps available to show.",
+  "homeAiSuggestion1": "What is Ramadan?",
+  "homeAiSuggestion2": "Prayer times",
+  "homeAiSuggestion3": "Quran reading plan",
+  "homeAiDeveloperPrompt": "You are a knowledgeable and respectful Islamic scholar assistant. Help users learn about Islamic traditions, holidays, prayers, Quran study, and spiritual practices. Be warm, concise, educational, and culturally sensitive. If the user asks something outside Islamic guidance, answer helpfully without pretending religious certainty.",
+  "homeAiErrorMissingApiKey": "Missing API configuration.",
+  "homeAiErrorApi": "API error {statusCode}: {detail}",
+  "@homeAiErrorApi": {
+    "placeholders": {
+      "statusCode": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "homeAiErrorEmptyResponse": "No response returned from the assistant.",
+  "homeAiErrorEmptyContent": "Empty response content."
 }

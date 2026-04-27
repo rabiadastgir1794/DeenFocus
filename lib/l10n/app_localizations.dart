@@ -1128,6 +1128,12 @@ abstract class AppLocalizations {
   /// **'Focus Mode Activated'**
   String get focusModeActivated;
 
+  /// No description provided for @focusSetUpHomeCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up Focus mode'**
+  String get focusSetUpHomeCardTitle;
+
   /// No description provided for @focusTabSubtitle.
   ///
   /// In en, this message translates to:
@@ -1703,6 +1709,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get tasbihDelete;
+
+  /// No description provided for @focusAndroidBlockingNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.'**
+  String get focusAndroidBlockingNotReady;
+
+  /// No description provided for @focusNoAppsSelectedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'No apps selected. Please select apps to block first.'**
+  String get focusNoAppsSelectedSnack;
+
+  /// No description provided for @focusScreenTimeRequiredBlockIphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time access is required to block apps on iPhone.'**
+  String get focusScreenTimeRequiredBlockIphone;
+
+  /// No description provided for @focusModeUpdateFailedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while updating Focus mode. Please try again.'**
+  String get focusModeUpdateFailedSnack;
+
+  /// No description provided for @focusLoadingInstalledApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading installed apps...'**
+  String get focusLoadingInstalledApps;
+
+  /// No description provided for @focusNoInstalledAppsToShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No installed apps available to show.'**
+  String get focusNoInstalledAppsToShow;
+
+  /// No description provided for @homeAiSuggestion1.
+  ///
+  /// In en, this message translates to:
+  /// **'What is Ramadan?'**
+  String get homeAiSuggestion1;
+
+  /// No description provided for @homeAiSuggestion2.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times'**
+  String get homeAiSuggestion2;
+
+  /// No description provided for @homeAiSuggestion3.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran reading plan'**
+  String get homeAiSuggestion3;
+
+  /// No description provided for @homeAiDeveloperPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'You are a knowledgeable and respectful Islamic scholar assistant. Help users learn about Islamic traditions, holidays, prayers, Quran study, and spiritual practices. Be warm, concise, educational, and culturally sensitive. If the user asks something outside Islamic guidance, answer helpfully without pretending religious certainty.'**
+  String get homeAiDeveloperPrompt;
+
+  /// No description provided for @homeAiErrorMissingApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing API configuration.'**
+  String get homeAiErrorMissingApiKey;
+
+  /// No description provided for @homeAiErrorApi.
+  ///
+  /// In en, this message translates to:
+  /// **'API error {statusCode}: {detail}'**
+  String homeAiErrorApi(String statusCode, String detail);
+
+  /// No description provided for @homeAiErrorEmptyResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'No response returned from the assistant.'**
+  String get homeAiErrorEmptyResponse;
+
+  /// No description provided for @homeAiErrorEmptyContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty response content.'**
+  String get homeAiErrorEmptyContent;
 }
 
 class _AppLocalizationsDelegate

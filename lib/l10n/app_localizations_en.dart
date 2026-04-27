@@ -536,6 +536,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focusModeActivated => 'Focus Mode Activated';
 
   @override
+  String get focusSetUpHomeCardTitle => 'Set up Focus mode';
+
+  @override
   String get focusTabSubtitle => 'Stay focused when it matters most';
 
   @override
@@ -853,4 +856,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tasbihDelete => 'Delete';
+
+  @override
+  String get focusAndroidBlockingNotReady =>
+      'Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.';
+
+  @override
+  String get focusNoAppsSelectedSnack =>
+      'No apps selected. Please select apps to block first.';
+
+  @override
+  String get focusScreenTimeRequiredBlockIphone =>
+      'Screen Time access is required to block apps on iPhone.';
+
+  @override
+  String get focusModeUpdateFailedSnack =>
+      'Something went wrong while updating Focus mode. Please try again.';
+
+  @override
+  String get focusLoadingInstalledApps => 'Loading installed apps...';
+
+  @override
+  String get focusNoInstalledAppsToShow =>
+      'No installed apps available to show.';
+
+  @override
+  String get homeAiSuggestion1 => 'What is Ramadan?';
+
+  @override
+  String get homeAiSuggestion2 => 'Prayer times';
+
+  @override
+  String get homeAiSuggestion3 => 'Quran reading plan';
+
+  @override
+  String get homeAiDeveloperPrompt =>
+      'You are a knowledgeable and respectful Islamic scholar assistant. Help users learn about Islamic traditions, holidays, prayers, Quran study, and spiritual practices. Be warm, concise, educational, and culturally sensitive. If the user asks something outside Islamic guidance, answer helpfully without pretending religious certainty.';
+
+  @override
+  String get homeAiErrorMissingApiKey => 'Missing API configuration.';
+
+  @override
+  String homeAiErrorApi(String statusCode, String detail) {
+    return 'API error $statusCode: $detail';
+  }
+
+  @override
+  String get homeAiErrorEmptyResponse =>
+      'No response returned from the assistant.';
+
+  @override
+  String get homeAiErrorEmptyContent => 'Empty response content.';
 }

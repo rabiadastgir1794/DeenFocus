@@ -37,7 +37,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get cancel => 'Anula';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'Bine';
 
   @override
   String get openSettings => 'Deschide Setări';
@@ -317,20 +317,21 @@ class AppLocalizationsRo extends AppLocalizations {
   String get homeAppsLocked => 'Aplicații blocate';
 
   @override
-  String get homeAppsUnlocked => 'Apps Unlocked';
+  String get homeAppsUnlocked => 'Aplicații deblocate';
 
   @override
   String get homeTapToUnlock =>
       'Atingeți pentru a debloca temporar aplicațiile';
 
   @override
-  String get homeTapToRelock => 'Tap to relock blocked apps now';
+  String get homeTapToRelock =>
+      'Atingeți pentru a rebloca aplicațiile blocate acum';
 
   @override
-  String get homeRelock => 'Relock';
+  String get homeRelock => 'Reblochează';
 
   @override
-  String get homeUnlock => 'Unlock';
+  String get homeUnlock => 'Deblocați';
 
   @override
   String get homePrayerModeActive => 'Mod de rugăciune activ';
@@ -523,7 +524,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get tasbihTotalCount => 'Număr total';
 
   @override
-  String get tasbihGrandTotalLabel => 'Total Tasbih';
+  String get tasbihGrandTotalLabel => 'Total tasbih';
 
   @override
   String get tasbihTapMe => 'Atingeți-mă';
@@ -544,94 +545,100 @@ class AppLocalizationsRo extends AppLocalizations {
   String get focusModeActivated => 'Modul de focalizare activat';
 
   @override
+  String get focusSetUpHomeCardTitle => 'Configurează modul Focus';
+
+  @override
   String get focusTabSubtitle =>
       'Rămâi concentrat atunci când contează cel mai mult';
 
   @override
-  String get focusChildModeActive => 'Child Mode Active';
+  String get focusChildModeActive => 'Mod copil activ';
 
   @override
-  String get focusSalahAndNightModeActive => 'Salah and Night Mode Active';
+  String get focusSalahAndNightModeActive => 'Salah și modul noapte activ';
 
   @override
-  String get focusSalahModeActive => 'Salah Mode Active';
+  String get focusSalahModeActive => 'Modul Salah activ';
 
   @override
-  String get focusNightModeActive => 'Night Mode Active';
+  String get focusNightModeActive => 'Mod noapte activ';
 
   @override
-  String get focusAppsToBlockTitle => 'Apps to Block';
+  String get focusAppsToBlockTitle => 'Aplicații de blocat';
 
   @override
-  String get focusAppliesAllModes => 'Applies to all focus modes';
+  String get focusAppliesAllModes =>
+      'Se aplică tuturor modurilor de focalizare';
 
   @override
   String get focusScreenTimeRequiredSelectApps =>
-      'Screen Time access is required to view and select apps.';
+      'Este necesar accesul în timpul ecranului pentru a vizualiza și selecta aplicații.';
 
   @override
   String get focusAcceptAccessibilityDisclosure =>
-      'Please accept the accessibility disclosure to continue.';
+      'Vă rugăm să acceptați dezvăluirea accesibilității pentru a continua.';
 
   @override
-  String get focusSelectAppsToBlock => 'Select apps to block';
+  String get focusSelectAppsToBlock => 'Selectați aplicațiile de blocat';
 
   @override
-  String get focusLoading => 'Loading...';
+  String get focusLoading => 'Încărcare...';
 
   @override
-  String get focusOpen => 'Open';
+  String get focusOpen => 'Deschide';
 
   @override
-  String get focusHide => 'Hide';
+  String get focusHide => 'Ascunde';
 
   @override
-  String get focusLoad => 'Load';
+  String get focusLoad => 'Încărca';
 
   @override
-  String get focusShow => 'Show';
+  String get focusShow => 'Spectacol';
 
   @override
-  String get focusSalahFocusModeTitle => 'Salah Focus Mode';
+  String get focusSalahFocusModeTitle => 'Modul de focalizare Salah';
 
   @override
-  String get focusBlockAppsDuringPrayer => 'Block apps during prayer';
+  String get focusBlockAppsDuringPrayer =>
+      'Blocați aplicațiile în timpul rugăciunii';
 
   @override
-  String get focusNightDisciplineTitle => 'Night Discipline';
+  String get focusNightDisciplineTitle => 'Disciplina de noapte';
 
   @override
-  String get focusSleepLabel => 'Sleep';
+  String get focusSleepLabel => 'Dormi';
 
   @override
-  String get focusWakeLabel => 'Wake';
+  String get focusWakeLabel => 'Trezi';
 
   @override
-  String get focusBlockAppsImmediately => 'Block apps immediately';
+  String get focusBlockAppsImmediately => 'Blocați imediat aplicațiile';
 
   @override
-  String get focusEnableAndroidAppBlocking => 'Enable Android app blocking';
+  String get focusEnableAndroidAppBlocking =>
+      'Activați blocarea aplicațiilor Android';
 
   @override
   String get focusEnableAndroidAppBlockingMessage =>
-      'To block other apps on Android, Deenly needs its accessibility permission turned on. We will open the correct settings screen for you.';
+      'Pentru a bloca alte aplicații pe Android, Deenly are nevoie de permisiunea de accesibilitate activată. Vom deschide ecranul de setări corect pentru dvs.';
 
   @override
   String get focusAccessibilityDisclosureTitle =>
-      'Accessibility permission disclosure';
+      'Dezvăluirea permisiunii de accesibilitate';
 
   @override
   String get focusAccessibilityDisclosureMessage =>
-      'Deenly uses Android Accessibility to enforce Focus mode app blocking.\n\nWhy we need it: to detect when you open an app you selected for blocking.\n\nHow we use it: only to identify the foreground app and show the Focus block screen for selected apps. We do not use it to read typed text or personal content.';
+      'Deenly folosește Accesibilitatea Android pentru a impune blocarea aplicației în modul Focus.\n\nDe ce avem nevoie de el: pentru a detecta când deschideți o aplicație pe care ați selectat-o ​​pentru blocare.\n\nCum îl folosim: doar pentru a identifica aplicația din prim-plan și pentru a afișa ecranul de blocare Focus pentru aplicațiile selectate. Nu îl folosim pentru a citi text scris sau conținut personal.';
 
   @override
-  String get focusNotNow => 'Not now';
+  String get focusNotNow => 'Nu acum';
 
   @override
-  String get focusIUnderstand => 'I understand';
+  String get focusIUnderstand => 'Am înțeles';
 
   @override
-  String get focusDone => 'Done';
+  String get focusDone => 'Făcut';
 
   @override
   String get focusNightDisciplineCardSubtitle =>
@@ -650,112 +657,115 @@ class AppLocalizationsRo extends AppLocalizations {
       'Aplicațiile sunt blocate instantaneu în modul Copil. Deblocați-le folosind comutatorul sau de pe ecranul de pornire';
 
   @override
-  String get settingsEditUsername => 'Edit Username';
+  String get settingsEditUsername => 'Editați numele de utilizator';
 
   @override
-  String get settingsEnterYourName => 'Enter your name';
+  String get settingsEnterYourName => 'Introduceți numele dvs';
 
   @override
   String get settingsPremiumTitle => 'Deen Focus Premium';
 
   @override
-  String get settingsPremiumSubtitle => 'Unlock all features';
+  String get settingsPremiumSubtitle => 'Deblocați toate funcțiile';
 
   @override
-  String get settingsUsernameLabel => 'Username';
+  String get settingsUsernameLabel => 'Nume de utilizator';
 
   @override
-  String get settingsLocationLabel => 'Location';
+  String get settingsLocationLabel => 'Locaţie';
 
   @override
-  String get settingsDarkModeLabel => 'Dark Mode';
+  String get settingsDarkModeLabel => 'Modul întunecat';
 
   @override
-  String get settingsAboutTitle => 'About Deen Focus';
+  String get settingsAboutTitle => 'Despre Deen Focus';
 
   @override
   String get settingsDemoPlaybackHint =>
-      'Tap to watch. Playback pauses when you leave and resumes from there next time.';
+      'Atingeți pentru a viziona. Redarea se întrerupe când pleci și reia de acolo data viitoare.';
 
   @override
-  String get settingsSavingLocation => 'Saving...';
+  String get settingsSavingLocation => 'Economisire...';
 
   @override
-  String get settingsSaveLocation => 'Save Location';
+  String get settingsSaveLocation => 'Salvați locația';
 
   @override
-  String get settingsAboutTagline => 'Focus. Discipline. Consistency.';
+  String get settingsAboutTagline =>
+      'Concentrează-te. Disciplina. Consecvență.';
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus helps you stay grounded with prayer times, Quran, Qibla, Tasbih, nearby mosques, and distraction-free focus modes built around your routines.';
+      'Deen Focus te ajută să rămâi la pământ cu orele de rugăciune, Coran, Qibla, Tasbih, moscheile din apropiere și moduri de focalizare fără distragere, construite în jurul rutinelor tale.';
 
   @override
   String get settingsEnableSystemNotifications =>
-      'Enable system notifications to turn this on.';
+      'Activați notificările de sistem pentru a activa acest lucru.';
 
   @override
-  String get appDemoTitle => 'App Demo';
+  String get appDemoTitle => 'Demo aplicație';
 
   @override
-  String get appDemoLoadFailed => 'Could not load the demo video.';
+  String get appDemoLoadFailed =>
+      'Nu s-a putut încărca videoclipul demonstrativ.';
 
   @override
   String get appDemoRestartHint =>
-      'Video needs a full app restart (hot restart can break playback).';
+      'Videoclipul necesită o repornire completă a aplicației (repornirea la cald poate întrerupe redarea).';
 
   @override
-  String get appDemoPreviewLoadFailed => 'Could not load the demo.';
+  String get appDemoPreviewLoadFailed => 'Demo-ul nu a putut fi încărcat.';
 
   @override
-  String get appDemoTryAgain => 'Try again';
+  String get appDemoTryAgain => 'Încearcă din nou';
 
   @override
-  String get appDemoWatchLabel => 'Watch demo';
+  String get appDemoWatchLabel => 'Urmăriți demonstrația';
 
   @override
   String get homeAiChatTitle => 'Deen Focus AI';
 
   @override
-  String get homeAiAskQuestionHint => 'Ask a question...';
+  String get homeAiAskQuestionHint => 'Pune o intrebare...';
 
   @override
-  String get homeAiSend => 'Send';
+  String get homeAiSend => 'Trimite';
 
   @override
   String get homeAiErrorPrefix =>
-      'Sorry, I ran into an issue while connecting to Deen Focus AI.';
+      'Ne pare rău, am întâmpinat o problemă în timp ce mă conectez la Deen Focus AI.';
 
   @override
-  String get homeAiEmptyTitle => 'Ask anything about Islam';
+  String get homeAiEmptyTitle => 'Întrebați orice despre islam';
 
   @override
   String get homeAiEmptySubtitle =>
-      'Prayer times, Quran, Hadith, Islamic events, and spiritual guidance';
+      'Orele de rugăciune, Coran, Hadith, evenimente islamice și îndrumări spirituale';
 
   @override
-  String get onboardingTypeCityName => 'Type your city name..';
+  String get onboardingTypeCityName => 'Introduceți numele orașului dvs..';
 
   @override
-  String get onboardingNoLocationsFound => 'No locations found';
+  String get onboardingNoLocationsFound => 'Nu s-au găsit locații';
 
   @override
-  String get onboardingTryAnotherCityName => 'Try another city name.';
+  String get onboardingTryAnotherCityName => 'Încercați un alt nume de oraș.';
 
   @override
-  String get qiblaCompassUnavailable => 'Compass unavailable on this device';
+  String get qiblaCompassUnavailable =>
+      'Busola indisponibilă pe acest dispozitiv';
 
   @override
-  String get qiblaFacing => '✓ Facing Qibla';
+  String get qiblaFacing => '✓ Cu fața la Qibla';
 
   @override
-  String get qiblaTurnToFind => 'Turn to find Qibla';
+  String get qiblaTurnToFind => 'Întoarceți-vă pentru a găsi Qibla';
 
   @override
-  String get qiblaDistanceToMakkah => 'Distance to Makkah';
+  String get qiblaDistanceToMakkah => 'Distanța până la Mecca';
 
   @override
-  String get qiblaFromNorth => 'from North';
+  String get qiblaFromNorth => 'din Nord';
 
   @override
   String get qiblaNorthShort => 'N';
@@ -770,97 +780,149 @@ class AppLocalizationsRo extends AppLocalizations {
   String get qiblaWestShort => 'W';
 
   @override
-  String get nearbyMosquesTitle => 'Nearby Mosques';
+  String get nearbyMosquesTitle => 'Moscheile din apropiere';
 
   @override
-  String get nearbyMosquesTryAgain => 'Try again';
+  String get nearbyMosquesTryAgain => 'Încearcă din nou';
 
   @override
-  String get nearbyMosquesOpenGoogle => 'Open in Google Maps';
+  String get nearbyMosquesOpenGoogle => 'Deschideți în Google Maps';
 
   @override
-  String get nearbyMosquesOpenApple => 'Open in Apple Maps';
+  String get nearbyMosquesOpenApple => 'Deschideți în Apple Maps';
 
   @override
-  String get nearbyMosquesNoMosquesFoundWithin => 'No mosques found within';
+  String get nearbyMosquesNoMosquesFoundWithin =>
+      'Nu s-au găsit moschei înăuntru';
 
   @override
-  String get nearbyMosquesSearchRadius => 'Search radius: 5 km';
+  String get nearbyMosquesSearchRadius => 'Raza de cautare: 5 km';
 
   @override
   String get nearbyMosquesMapPreviewUnavailable =>
-      'Map preview unavailable right now.';
+      'Previzualizarea hărții nu este disponibilă momentan.';
 
   @override
-  String get nearbyMosquesWaitingForLocation => 'Waiting for your location.';
+  String get nearbyMosquesWaitingForLocation => 'În așteptarea locației dvs.';
 
   @override
   String get nearbyMosquesAppearAfterLoad =>
-      'Nearby mosques will appear here once results load.';
+      'Moscheile din apropiere vor apărea aici odată ce rezultatele se încarcă.';
 
   @override
-  String get nearbyMosquesNoneWithinRadius => 'No mosques found within 5 km';
+  String get nearbyMosquesNoneWithinRadius =>
+      'Nu s-au găsit moschei pe o rază de 5 km';
 
   @override
   String get nearbyMosquesLocationRequired =>
-      'Location access is required to find nearby mosques.';
+      'Accesul la locație este necesar pentru a găsi moscheile din apropiere.';
 
   @override
   String get nearbyMosquesPermissionOff =>
-      'Location permission is turned off. Enable it in settings to see nearby mosques.';
+      'Permisiunea pentru locație este dezactivată. Activați-l în setări pentru a vedea moscheile din apropiere.';
 
   @override
   String get nearbyMosquesLocationUnavailable =>
-      'We could not read your current location right now.';
+      'Nu am putut citi locația dvs. actuală în acest moment.';
 
   @override
   String get nearbyMosquesLiveUpdateFailed =>
-      'Live update failed. Showing last saved results. Pull to refresh.';
+      'Actualizarea live a eșuat. Se afișează ultimele rezultate salvate. Trageți pentru a reîmprospăta.';
 
   @override
   String get nearbyMosquesPermissionDenied =>
-      'Location access was denied. Enable it in Settings to see nearby mosques.';
+      'Accesul la locație a fost interzis. Activați-l în Setări pentru a vedea moscheile din apropiere.';
 
   @override
   String get nearbyMosquesLocationTurnedOff =>
-      'Location is turned off on this device. Turn it on in Settings, then try again.';
+      'Locația este dezactivată pe acest dispozitiv. Activați-l în Setări, apoi încercați din nou.';
 
   @override
   String get nearbyMosquesPermissionProcessing =>
-      'Location permission is still being processed. Please try again in a moment.';
+      'Permisiunea pentru locație este încă în curs de procesare. Vă rugăm să încercați din nou peste un moment.';
 
   @override
   String get nearbyMosquesRequestTimeout =>
-      'The request took too long. Check your internet connection and try again.';
+      'Solicitarea a durat prea mult. Verificați-vă conexiunea la internet și încercați din nou.';
 
   @override
   String get nearbyMosquesOfflineOrUnreachable =>
-      'No internet connection or the service is unreachable. Check your connection and try again.';
+      'Nu există conexiune la internet sau serviciul este inaccesibil. Verificați conexiunea și încercați din nou.';
 
   @override
   String get nearbyMosquesFormatError =>
-      'We could not read the mosque list right now. Please try again later.';
+      'Nu am putut citi lista moscheilor chiar acum. Vă rugăm să încercați din nou mai târziu.';
 
   @override
   String get nearbyMosquesPlatformError =>
-      'We could not complete that step. Check your connection and try again.';
+      'Nu am putut finaliza acel pas. Verificați conexiunea și încercați din nou.';
 
   @override
   String get nearbyMosquesSomethingWentWrong =>
-      'Something went wrong. Please try again.';
+      'Ceva a mers prost. Vă rugăm să încercați din nou.';
 
   @override
   String get nearbyMosquesEmptyHint =>
-      'Nothing listed within 5 km on OpenStreetMap for this spot. Try again later or move the map.';
+      'Nimic nu este listat în termen de 5 km pe OpenStreetMap pentru acest loc. Încercați din nou mai târziu sau mutați harta.';
 
   @override
   String nearbyMosquesFoundWithin(int count) {
-    return '$count mosques found within 5 km';
+    return '$count moschei găsite pe o rază de 5 km';
   }
 
   @override
-  String get tasbihDeleteDhikrTitle => 'Delete dhikr?';
+  String get tasbihDeleteDhikrTitle => 'Ștergeți dhikr?';
 
   @override
-  String get tasbihDelete => 'Delete';
+  String get tasbihDelete => 'Şterge';
+
+  @override
+  String get focusAndroidBlockingNotReady =>
+      'Blocarea aplicațiilor pe Android nu e încă gata. Păstrează accesibilitatea activă și așteaptă conectarea.';
+
+  @override
+  String get focusNoAppsSelectedSnack =>
+      'Nicio aplicație selectată. Alege mai întâi aplicațiile de blocat.';
+
+  @override
+  String get focusScreenTimeRequiredBlockIphone =>
+      'Este necesar accesul la Timp ecran pentru a bloca aplicații pe iPhone.';
+
+  @override
+  String get focusModeUpdateFailedSnack =>
+      'Ceva nu a mers la actualizarea modului Focus. Încearcă din nou.';
+
+  @override
+  String get focusLoadingInstalledApps => 'Se încarcă aplicațiile instalate...';
+
+  @override
+  String get focusNoInstalledAppsToShow =>
+      'Nu există aplicații instalate de afișat.';
+
+  @override
+  String get homeAiSuggestion1 => 'Ce este Ramadanul?';
+
+  @override
+  String get homeAiSuggestion2 => 'Ore de rugăciune';
+
+  @override
+  String get homeAiSuggestion3 => 'Plan de citire a Coranului';
+
+  @override
+  String get homeAiDeveloperPrompt =>
+      'Ești un asistent învățat și respectuos în studii islamice. Ajută utilizatorii să învețe tradiții islamice, sărbători, rugăciune, studiul Coranului și practici spirituale. Fii cald, concis, educativ și sensibil cultural. În afara ghidării islamice, răspunde util fără a pretinde certitudine religioasă.';
+
+  @override
+  String get homeAiErrorMissingApiKey => 'Lipsește configurarea API.';
+
+  @override
+  String homeAiErrorApi(String statusCode, String detail) {
+    return 'Eroare API $statusCode: $detail';
+  }
+
+  @override
+  String get homeAiErrorEmptyResponse => 'Niciun răspuns de la asistent.';
+
+  @override
+  String get homeAiErrorEmptyContent => 'Conținut gol al răspunsului.';
 }

@@ -569,7 +569,7 @@ class FocusController extends ChangeNotifier {
   String homeCardTitle(AppLocalizations l10n) {
     if (_lockState.isLocked) return l10n.homeAppsLocked;
     if (isAnyModeEnabled) return l10n.focusModeActivated;
-    return 'Set up focus modes';
+    return l10n.focusSetUpHomeCardTitle;
   }
 
   String get homeCardSubtitle {

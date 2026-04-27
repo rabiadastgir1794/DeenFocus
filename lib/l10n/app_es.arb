@@ -9,6 +9,7 @@
   "getStarted": "Empezar",
   "language": "Idioma",
   "cancel": "Cancelar",
+  "ok": "DE ACUERDO",
   "openSettings": "Abrir configuración",
   "locationRequired": "Ubicación requerida",
   "locationRequiredMessage": "Se requiere acceso a la ubicación para calcular los tiempos de oración precisos y la dirección de la Qibla. Debe habilitarlo para usar la aplicación.",
@@ -160,13 +161,14 @@
   "tasbihMeaningOptionalHint": "Significado (opcional)",
   "tasbihNoTransliteration": "Sin transliteración",
   "tasbihTotalCount": "Recuento total",
-  "tasbihGrandTotalLabel": "Tasbih total",
+  "tasbihGrandTotalLabel": "Total acumulado",
   "tasbihTapMe": "Tocame",
   "tasbihReset": "Reiniciar",
   "tasbihRestart": "Reanudar",
   "tasbihCurrentCount": "Conteo actual",
   "tasbihResetTotal": "Borrar historial",
   "focusModeActivated": "Modo de enfoque activado",
+  "focusSetUpHomeCardTitle": "Configura el modo Enfoque",
   "focusTabSubtitle": "Manténgase enfocado cuando más importa",
   "focusChildModeActive": "Modo infantil activo",
   "focusSalahAndNightModeActive": "Modo Salah y nocturno activos",
@@ -233,9 +235,9 @@
   "qiblaTurnToFind": "Gira para encontrar la Qibla",
   "qiblaDistanceToMakkah": "Distancia a La Meca",
   "qiblaFromNorth": "desde el norte",
-  "qiblaNorthShort": "N",
+  "qiblaNorthShort": "norte",
   "qiblaSouthShort": "S",
-  "qiblaEastShort": "E",
+  "qiblaEastShort": "mi",
   "qiblaWestShort": "O",
   "nearbyMosquesTitle": "Mezquitas cercanas",
   "nearbyMosquesTryAgain": "Intentar de nuevo",
@@ -270,5 +272,28 @@
   },
   "tasbihDeleteDhikrTitle": "¿Eliminar dhikr?",
   "tasbihDelete": "Eliminar",
-  "ok": "OK"
+  "focusAndroidBlockingNotReady": "El bloqueo de apps en Android aún se está preparando. Mantén la accesibilidad activada y espera un momento a que se conecte.",
+  "focusNoAppsSelectedSnack": "No hay apps seleccionadas. Elige primero las apps a bloquear.",
+  "focusScreenTimeRequiredBlockIphone": "Se necesita acceso a Tiempo en pantalla para bloquear apps en el iPhone.",
+  "focusModeUpdateFailedSnack": "Algo salió mal al actualizar el modo Enfoque. Inténtalo de nuevo.",
+  "focusLoadingInstalledApps": "Cargando apps instaladas...",
+  "focusNoInstalledAppsToShow": "No hay apps instaladas para mostrar.",
+  "homeAiSuggestion1": "¿Qué es el Ramadán?",
+  "homeAiSuggestion2": "Horarios de oración",
+  "homeAiSuggestion3": "Plan de lectura del Corán",
+  "homeAiDeveloperPrompt": "Eres un asistente erudito islámico cordial y respetuoso. Ayuda a los usuarios a aprender sobre tradiciones islámicas, festividades, oración, estudio del Corán y prácticas espirituales. Sé cálido, conciso, educativo y culturalmente sensible. Si preguntan algo fuera de la guía islámica, responde con utilidad sin fingir certeza religiosa.",
+  "homeAiErrorMissingApiKey": "Falta la configuración de la API.",
+  "homeAiErrorApi": "Error de la API {statusCode}: {detail}",
+  "homeAiErrorEmptyResponse": "No hubo respuesta del asistente.",
+  "homeAiErrorEmptyContent": "La respuesta estaba vacía.",
+  "@homeAiErrorApi": {
+    "placeholders": {
+      "statusCode": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -38,7 +38,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancel => 'Cancelar';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'DE ACUERDO';
 
   @override
   String get openSettings => 'Abrir configuración';
@@ -525,7 +525,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tasbihTotalCount => 'Recuento total';
 
   @override
-  String get tasbihGrandTotalLabel => 'Tasbih total';
+  String get tasbihGrandTotalLabel => 'Total acumulado';
 
   @override
   String get tasbihTapMe => 'Tocame';
@@ -544,6 +544,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get focusModeActivated => 'Modo de enfoque activado';
+
+  @override
+  String get focusSetUpHomeCardTitle => 'Configura el modo Enfoque';
 
   @override
   String get focusTabSubtitle => 'Manténgase enfocado cuando más importa';
@@ -763,13 +766,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get qiblaFromNorth => 'desde el norte';
 
   @override
-  String get qiblaNorthShort => 'N';
+  String get qiblaNorthShort => 'norte';
 
   @override
   String get qiblaSouthShort => 'S';
 
   @override
-  String get qiblaEastShort => 'E';
+  String get qiblaEastShort => 'mi';
 
   @override
   String get qiblaWestShort => 'O';
@@ -870,4 +873,54 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tasbihDelete => 'Eliminar';
+
+  @override
+  String get focusAndroidBlockingNotReady =>
+      'El bloqueo de apps en Android aún se está preparando. Mantén la accesibilidad activada y espera un momento a que se conecte.';
+
+  @override
+  String get focusNoAppsSelectedSnack =>
+      'No hay apps seleccionadas. Elige primero las apps a bloquear.';
+
+  @override
+  String get focusScreenTimeRequiredBlockIphone =>
+      'Se necesita acceso a Tiempo en pantalla para bloquear apps en el iPhone.';
+
+  @override
+  String get focusModeUpdateFailedSnack =>
+      'Algo salió mal al actualizar el modo Enfoque. Inténtalo de nuevo.';
+
+  @override
+  String get focusLoadingInstalledApps => 'Cargando apps instaladas...';
+
+  @override
+  String get focusNoInstalledAppsToShow =>
+      'No hay apps instaladas para mostrar.';
+
+  @override
+  String get homeAiSuggestion1 => '¿Qué es el Ramadán?';
+
+  @override
+  String get homeAiSuggestion2 => 'Horarios de oración';
+
+  @override
+  String get homeAiSuggestion3 => 'Plan de lectura del Corán';
+
+  @override
+  String get homeAiDeveloperPrompt =>
+      'Eres un asistente erudito islámico cordial y respetuoso. Ayuda a los usuarios a aprender sobre tradiciones islámicas, festividades, oración, estudio del Corán y prácticas espirituales. Sé cálido, conciso, educativo y culturalmente sensible. Si preguntan algo fuera de la guía islámica, responde con utilidad sin fingir certeza religiosa.';
+
+  @override
+  String get homeAiErrorMissingApiKey => 'Falta la configuración de la API.';
+
+  @override
+  String homeAiErrorApi(String statusCode, String detail) {
+    return 'Error de la API $statusCode: $detail';
+  }
+
+  @override
+  String get homeAiErrorEmptyResponse => 'No hubo respuesta del asistente.';
+
+  @override
+  String get homeAiErrorEmptyContent => 'La respuesta estaba vacía.';
 }
