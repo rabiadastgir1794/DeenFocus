@@ -64,6 +64,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
             final isSelected = states.contains(WidgetState.selected);
             return TextStyle(
+              fontSize: 10,
+              height: 1,
               color: isSelected
                   ? selectedNavColor
                   : colorScheme.onSurfaceVariant,
