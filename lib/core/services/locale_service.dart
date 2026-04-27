@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/app_languages.dart';
 import 'storage_service.dart';
 
 /// Holds the app's current locale, persists it, and notifies when it changes.
@@ -23,17 +24,19 @@ class LocaleService extends ChangeNotifier {
   Future<void> _loadSavedLocale() async {
     final code = await StorageService.localeCode;
     if (code != null && code.isNotEmpty) {
-      _locale = _localeFromCode(code);
+      _locale = _normalizeSupportedLocale(_localeFromCode(code));
       notifyListeners();
     }
   }
 
   Future<void> setLocale(Locale value) async {
-    if (_locale == value) return;
-    _locale = value;
-    final code = value.countryCode != null && value.countryCode!.isNotEmpty
-        ? '${value.languageCode}_${value.countryCode}'
-        : value.languageCode;
+    final normalized = _normalizeSupportedLocale(value);
+    if (_locale == normalized) return;
+    _locale = normalized;
+    final code =
+        normalized.countryCode != null && normalized.countryCode!.isNotEmpty
+        ? '${normalized.languageCode}_${normalized.countryCode}'
+        : normalized.languageCode;
     await StorageService.setLocaleCode(code);
     notifyListeners();
   }
@@ -50,5 +53,19 @@ class LocaleService extends ChangeNotifier {
       return Locale(parts[0], parts[1]);
     }
     return Locale(code);
+  }
+
+  Locale _normalizeSupportedLocale(Locale locale) {
+    for (final language in kAppLanguages) {
+      if (language.locale == locale) {
+        return language.locale;
+      }
+    }
+    for (final language in kAppLanguages) {
+      if (language.locale.languageCode == locale.languageCode) {
+        return language.locale;
+      }
+    }
+    return const Locale('en');
   }
 }
