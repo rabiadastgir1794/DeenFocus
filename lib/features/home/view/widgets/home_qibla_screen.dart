@@ -93,7 +93,7 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
         1000;
     final cityLabel = (widget.locationName?.trim().isNotEmpty ?? false)
         ? widget.locationName!.trim()
-        : 'Current location';
+        : l10n.settingsLocationLabel;
 
     final distanceFormatted = NumberFormat.decimalPattern(
       'en_US',
@@ -222,6 +222,7 @@ class _QiblaCompassViewState extends State<_QiblaCompassView>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     const compassSize = 288.0;
@@ -278,25 +279,25 @@ class _QiblaCompassViewState extends State<_QiblaCompassView>
                         ),
                       ),
                       _CardinalLabel(
-                        label: 'N',
+                        label: l10n.qiblaNorthShort,
                         alignment: Alignment.topCenter,
                         offset: const EdgeInsets.only(top: 8),
                         heading: widget.heading,
                       ),
                       _CardinalLabel(
-                        label: 'S',
+                        label: l10n.qiblaSouthShort,
                         alignment: Alignment.bottomCenter,
                         offset: const EdgeInsets.only(bottom: 8),
                         heading: widget.heading,
                       ),
                       _CardinalLabel(
-                        label: 'E',
+                        label: l10n.qiblaEastShort,
                         alignment: Alignment.centerRight,
                         offset: const EdgeInsets.only(right: 8),
                         heading: widget.heading,
                       ),
                       _CardinalLabel(
-                        label: 'W',
+                        label: l10n.qiblaWestShort,
                         alignment: Alignment.centerLeft,
                         offset: const EdgeInsets.only(left: 8),
                         heading: widget.heading,
@@ -368,16 +369,16 @@ class _QiblaCompassViewState extends State<_QiblaCompassView>
           ),
           child: Text(
             !widget.hasLiveHeading
-                ? 'Compass unavailable on this device'
+                ? l10n.qiblaCompassUnavailable
                 : widget.aligned
-                ? '✓ Facing Qibla'
-                : 'Turn to find Qibla',
+                ? l10n.qiblaFacing
+                : l10n.qiblaTurnToFind,
             textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Distance to Makkah: ${widget.distanceFormatted} km',
+          '${l10n.qiblaDistanceToMakkah}: ${widget.distanceFormatted} km',
           style: textTheme.labelSmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
@@ -385,7 +386,7 @@ class _QiblaCompassViewState extends State<_QiblaCompassView>
         ),
         const SizedBox(height: 4),
         Text(
-          '${widget.qiblaDirection.toStringAsFixed(0)}° from North',
+          '${widget.qiblaDirection.toStringAsFixed(0)}° ${l10n.qiblaFromNorth}',
           style: textTheme.labelSmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),

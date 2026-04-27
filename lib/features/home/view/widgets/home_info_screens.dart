@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class HomeAiChatScreen extends StatefulWidget {
   const HomeAiChatScreen({super.key});
@@ -33,6 +34,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final chatBackground = colorScheme.surface;
@@ -45,7 +47,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
       backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
-        title: 'Deen Focus AI',
+        title: l10n.homeAiChatTitle,
         onBack: () => Navigator.of(context).pop(),
       ),
       body: SafeArea(
@@ -93,7 +95,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                             onChanged: (_) => setState(() {}),
                             onSubmitted: (_) => _sendMessage(),
                             decoration: InputDecoration(
-                              hintText: 'Ask a question...',
+                              hintText: l10n.homeAiAskQuestionHint,
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
@@ -121,7 +123,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
                           ),
                         ),
                         child: Text(
-                          'Send',
+                          l10n.homeAiSend,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -148,6 +150,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
   bool get _canSend => _inputController.text.trim().isNotEmpty && !_isLoading;
 
   Future<void> _sendMessage() async {
+    final l10n = AppLocalizations.of(context)!;
     final input = _inputController.text.trim();
     if (input.isEmpty || _isLoading) return;
 
@@ -172,7 +175,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     } catch (error) {
       if (!mounted) return;
       _replaceLoadingMessage(
-        'Sorry, I ran into an issue while connecting to Deen Focus AI. ${error.toString()}',
+        '${l10n.homeAiErrorPrefix} ${error.toString()}',
       );
     }
   }
@@ -277,6 +280,7 @@ class _HomeAiChatEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final muted = colorScheme.surfaceContainerHighest.withValues(alpha: 0.75);
     final textTheme = Theme.of(context).textTheme;
 
@@ -306,7 +310,7 @@ class _HomeAiChatEmptyState extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Ask anything about Islam',
+                    l10n.homeAiEmptyTitle,
                     style: textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
@@ -314,7 +318,7 @@ class _HomeAiChatEmptyState extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Prayer times, Quran, Hadith, Islamic events, and spiritual guidance',
+                    l10n.homeAiEmptySubtitle,
                     textAlign: TextAlign.center,
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,

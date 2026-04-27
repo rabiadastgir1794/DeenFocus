@@ -17,6 +17,7 @@ import '../../../../core/services/nearby_mosques_cache.dart';
 import '../../../../core/services/nearby_mosques_service.dart';
 import '../../../../core/services/permission_service.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class HomeNearbyMosquesScreen extends StatefulWidget {
   const HomeNearbyMosquesScreen({
@@ -38,8 +39,6 @@ class HomeNearbyMosquesScreen extends StatefulWidget {
 class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
   final NearbyMosquesService _service = NearbyMosquesService();
   static const double _searchRadiusMeters = 5000;
-  static const String _emptyMosquesHint =
-      'Nothing listed within 5 km on OpenStreetMap for this spot. Try again later or move the map.';
 
   bool _isLoading = true;
   /// Set only for real failures (network, permission, location). Empty results use [_mosques.isEmpty] instead.
@@ -74,8 +73,8 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
       final latitude = _latitude;
       final longitude = _longitude;
       if (latitude == null || longitude == null) {
-        throw const NearbyMosquesException(
-          'Location access is required to find nearby mosques.',
+        throw NearbyMosquesException(
+          AppLocalizations.of(context)!.nearbyMosquesLocationRequired,
         );
       }
 
@@ -137,10 +136,13 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
         if (fallback != null && fallback.mosques.isNotEmpty) {
           _mosques = fallback.mosques;
           _errorMessage =
-              'Live update failed. Showing last saved results. Pull to refresh.';
+              AppLocalizations.of(context)!.nearbyMosquesLiveUpdateFailed;
           _errorSuggestOpenSettings = false;
         } else {
-          _errorMessage = _nearbyMosquesFriendlyError(error);
+          _errorMessage = _nearbyMosquesFriendlyError(
+            error,
+            AppLocalizations.of(context)!,
+          );
           _errorSuggestOpenSettings =
               _nearbyMosquesErrorSuggestsOpenSettings(error);
         }
@@ -150,11 +152,12 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
 
   Future<void> _ensureLocation() async {
     if (_latitude != null && _longitude != null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     final status = await PermissionService.requestLocationStatus();
     if (status != PermissionStatus.granted) {
-      throw const NearbyMosquesException(
-        'Location permission is turned off. Enable it in settings to see nearby mosques.',
+      throw NearbyMosquesException(
+        l10n.nearbyMosquesPermissionOff,
       );
     }
 
@@ -163,7 +166,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
         location.latitude == null ||
         location.longitude == null) {
       throw const NearbyMosquesException(
-        'We could not read your current location right now.',
+        'location_unavailable',
       );
     }
 
@@ -174,11 +177,12 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Nearby Mosques',
+        title: l10n.nearbyMosquesTitle,
         onBack: () => Navigator.of(context).pop(),
       ),
       body: SafeArea(
@@ -215,7 +219,9 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
                 _StatusCard(
                   message: _errorMessage!,
                   actionLabel:
-                      _errorSuggestOpenSettings ? 'Open Settings' : 'Try Again',
+                      _errorSuggestOpenSettings
+                      ? l10n.openSettings
+                      : l10n.nearbyMosquesTryAgain,
                   onAction: _errorSuggestOpenSettings
                       ? () async {
                           await PermissionService.openLocationSettings();
@@ -224,7 +230,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
                 )
               else if (_mosques.isEmpty)
                 _NoMosquesFoundCard(
-                  hint: _emptyMosquesHint,
+                  hint: l10n.nearbyMosquesEmptyHint,
                   onRetry: () => _load(forceRefresh: true),
                 )
               else ...[
@@ -287,7 +293,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.map_outlined),
-                title: const Text('Open in Google Maps'),
+                title: Text(AppLocalizations.of(ctx)!.nearbyMosquesOpenGoogle),
                 onTap: () async {
                   Navigator.of(ctx).pop();
                   final uri = hasGoogle ? googleAppUri : googleWebUri;
@@ -296,7 +302,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.navigation_outlined),
-                title: const Text('Open in Apple Maps'),
+                title: Text(AppLocalizations.of(ctx)!.nearbyMosquesOpenApple),
                 onTap: () async {
                   Navigator.of(ctx).pop();
                   final uri = hasApple ? appleAppUri : appleWebUri;
@@ -336,13 +342,14 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
   final MapController _mapController = MapController();
 
   String _mapFooterCaption() {
+    final l10n = AppLocalizations.of(context)!;
     if (widget.mosques.isNotEmpty) {
-      return '${widget.mosques.length} mosques found within 5 km';
+      return l10n.nearbyMosquesFoundWithin(widget.mosques.length);
     }
     if (!widget.awaitingMosqueResults) {
-      return 'Nearby mosques will appear here once results load.';
+      return l10n.nearbyMosquesAppearAfterLoad;
     }
-    return 'No mosques found within 5 km';
+    return l10n.nearbyMosquesNoneWithinRadius;
   }
 
   @override
@@ -534,6 +541,7 @@ class _MapPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
@@ -545,8 +553,8 @@ class _MapPlaceholder extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               hasLocation
-                  ? 'Map preview unavailable right now.'
-                  : 'Waiting for your location.',
+                  ? l10n.nearbyMosquesMapPreviewUnavailable
+                  : l10n.nearbyMosquesWaitingForLocation,
               style: Theme.of(
                 context,
               ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -570,6 +578,7 @@ class _NoMosquesFoundCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
@@ -590,7 +599,7 @@ class _NoMosquesFoundCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'No mosques found within',
+            l10n.nearbyMosquesNoMosquesFoundWithin,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -607,7 +616,7 @@ class _NoMosquesFoundCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Search radius: 5 km',
+            l10n.nearbyMosquesSearchRadius,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
@@ -616,7 +625,7 @@ class _NoMosquesFoundCard extends StatelessWidget {
           const SizedBox(height: 16),
           FilledButton.tonal(
             onPressed: onRetry,
-            child: const Text('Try again'),
+            child: Text(l10n.nearbyMosquesTryAgain),
           ),
         ],
       ),
@@ -732,9 +741,6 @@ class _MosqueTile extends StatelessWidget {
   }
 }
 
-const String _offlineOrUnreachableMessage =
-    'No internet connection or the service is unreachable. Check your connection and try again.';
-
 bool _nearbyMosquesErrorSuggestsOpenSettings(Object error) {
   if (error is NearbyMosquesException) {
     final m = error.message.toLowerCase();
@@ -745,34 +751,37 @@ bool _nearbyMosquesErrorSuggestsOpenSettings(Object error) {
   return false;
 }
 
-String _nearbyMosquesFriendlyError(Object error) {
+String _nearbyMosquesFriendlyError(Object error, AppLocalizations l10n) {
   if (error is NearbyMosquesException) {
+    if (error.message == 'location_unavailable') {
+      return l10n.nearbyMosquesLocationUnavailable;
+    }
     return error.message;
   }
   if (error is PermissionDeniedException) {
-    return 'Location access was denied. Enable it in Settings to see nearby mosques.';
+    return l10n.nearbyMosquesPermissionDenied;
   }
   if (error is LocationServiceDisabledException) {
-    return 'Location is turned off on this device. Turn it on in Settings, then try again.';
+    return l10n.nearbyMosquesLocationTurnedOff;
   }
   if (error is PermissionRequestInProgressException) {
-    return 'Location permission is still being processed. Please try again in a moment.';
+    return l10n.nearbyMosquesPermissionProcessing;
   }
   if (error is TimeoutException) {
-    return 'The request took too long. Check your internet connection and try again.';
+    return l10n.nearbyMosquesRequestTimeout;
   }
   if (error is SocketException ||
       error is ClientException ||
       error is HttpException ||
       error is HandshakeException ||
       error is TlsException) {
-    return _offlineOrUnreachableMessage;
+    return l10n.nearbyMosquesOfflineOrUnreachable;
   }
   if (error is FormatException) {
-    return 'We could not read the mosque list right now. Please try again later.';
+    return l10n.nearbyMosquesFormatError;
   }
   if (error is PlatformException) {
-    return 'We could not complete that step. Check your connection and try again.';
+    return l10n.nearbyMosquesPlatformError;
   }
-  return 'Something went wrong. Please try again.';
+  return l10n.nearbyMosquesSomethingWentWrong;
 }

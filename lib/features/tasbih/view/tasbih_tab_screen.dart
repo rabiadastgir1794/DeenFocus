@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../home/view/widgets/home_circle_icon_button.dart';
 import '../../home/view/widgets/home_rounded_icon_button.dart';
 import '../data/tasbih_local_repository.dart';
 import 'tasbih_detail_screen.dart';
@@ -151,7 +150,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete dhikr?'),
+          title: Text(l10n.tasbihDeleteDhikrTitle),
           content: Text(item.label),
           actions: [
             TextButton(
@@ -160,7 +159,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Delete'),
+              child: Text(l10n.tasbihDelete),
             ),
           ],
         );

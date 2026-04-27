@@ -141,13 +141,13 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         final nightMode =
             vm.settings.nightDisciplineEnabled && !vm.settings.childModeEnabled;
         final topBannerText = childActive
-            ? 'Child Mode Active'
+            ? l10n.focusChildModeActive
             : salahMode && nightMode
-            ? 'Salah and Night Mode Active'
+            ? l10n.focusSalahAndNightModeActive
             : salahMode
-            ? 'Salah Mode Active'
+            ? l10n.focusSalahModeActive
             : nightMode
-            ? 'Night Mode Active'
+            ? l10n.focusNightModeActive
             : null;
 
         return Scaffold(
@@ -158,7 +158,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Focus',
+                    l10n.tabFocus,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -189,7 +189,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Apps to Block',
+                                    l10n.focusAppsToBlockTitle,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall
@@ -197,7 +197,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
-                                    'Applies to all focus modes',
+                                    l10n.focusAppliesAllModes,
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
                                           fontSize: 12,
@@ -348,7 +348,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                   SnackBar(
                                     content: Text(
                                       authResult.userFacingMessage() ??
-                                          'Screen Time access is required to view and select apps.',
+                                          l10n.focusScreenTimeRequiredSelectApps,
                                     ),
                                   ),
                                 );
@@ -361,9 +361,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                 await _ensureFocusAccessibilityDisclosureAccepted();
                             if (!acceptedDisclosure) {
                               messenger?.showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Please accept the accessibility disclosure to continue.',
+                                    l10n.focusAcceptAccessibilityDisclosure,
                                   ),
                                 ),
                               );
@@ -390,7 +390,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Select apps to block',
+                                    l10n.focusSelectAppsToBlock,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge
@@ -406,7 +406,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                           color: colorScheme.onSurfaceVariant,
                                         ) ??
                                         const TextStyle(),
-                                    child: const Row(
+                                    child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         SizedBox(
@@ -417,19 +417,19 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                           ),
                                         ),
                                         SizedBox(width: 8),
-                                        Text('Loading...'),
+                                        Text(l10n.focusLoading),
                                       ],
                                     ),
                                   )
                                 else
                                   Text(
                                     defaultTargetPlatform == TargetPlatform.iOS
-                                        ? 'Open'
+                                        ? l10n.focusOpen
                                         : _showGlobalSelector
-                                        ? 'Hide'
+                                        ? l10n.focusHide
                                         : vm.installedApps.isEmpty
-                                        ? 'Load'
-                                        : 'Show',
+                                        ? l10n.focusLoad
+                                        : l10n.focusShow,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelSmall
@@ -453,8 +453,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     icon: Icons.shield_outlined,
                     iconBackground: colorScheme.primary.withValues(alpha: 0.1),
                     iconColor: colorScheme.primary,
-                    title: 'Salah Focus Mode',
-                    subtitle: 'Block apps during prayer',
+                    title: l10n.focusSalahFocusModeTitle,
+                    subtitle: l10n.focusBlockAppsDuringPrayer,
                     value: salahMode,
                     isLoading:
                         _modesInFlight.contains(FocusModeType.salah) ||
@@ -473,7 +473,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     icon: Icons.nightlight_outlined,
                     iconBackground: colorScheme.primary.withValues(alpha: 0.2),
                     iconColor: colorScheme.onSurface,
-                    title: 'Night Discipline',
+                    title: l10n.focusNightDisciplineTitle,
                     subtitle: l10n.focusNightDisciplineCardSubtitle,
                     value: nightMode,
                     isLoading:
@@ -491,7 +491,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                 children: [
                                   Expanded(
                                     child: _NightTimePill(
-                                      label: 'Sleep',
+                                      label: l10n.focusSleepLabel,
                                       timeText: _formatTime(
                                         context,
                                         vm.settings.nightRange.startHour,
@@ -504,7 +504,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: _NightTimePill(
-                                      label: 'Wake',
+                                      label: l10n.focusWakeLabel,
                                       timeText: _formatTime(
                                         context,
                                         vm.settings.nightRange.endHour,
@@ -529,8 +529,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     icon: Icons.child_care_outlined,
                     iconBackground: colorScheme.error.withValues(alpha: 0.1),
                     iconColor: colorScheme.error,
-                    title: 'Child Mode',
-                    subtitle: 'Block apps immediately',
+                    title: l10n.focusChildModeTitle,
+                    subtitle: l10n.focusBlockAppsImmediately,
                     value: childMode,
                     isLoading:
                         _modesInFlight.contains(FocusModeType.child) ||
@@ -555,6 +555,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   Future<bool> _ensureAndroidBlockingAccess(FocusModeType mode) async {
     if (defaultTargetPlatform != TargetPlatform.android) return true;
+    final l10n = AppLocalizations.of(context)!;
 
     unawaited(
       FocusEnforcementService.appendDebugLog(
@@ -569,9 +570,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     _awaitingBlockingPermission = true;
     await AppPermissionDialog.show(
       context,
-      title: 'Enable Android app blocking',
+      title: l10n.focusEnableAndroidAppBlocking,
       message:
-          'To block other apps on Android, Deenly needs its accessibility permission turned on. We will open the correct settings screen for you.',
+          l10n.focusEnableAndroidAppBlockingMessage,
       onPrimaryTap: () {
         FocusEnforcementService.openBlockingPermissionSettings();
       },
@@ -581,6 +582,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   Future<bool> _ensureFocusAccessibilityDisclosureAccepted() async {
     if (defaultTargetPlatform != TargetPlatform.android) return true;
+    final l10n = AppLocalizations.of(context)!;
     final accepted = await StorageService.focusAccessibilityDisclosureAccepted;
     if (accepted) return true;
     if (!mounted) return false;
@@ -590,20 +592,16 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Accessibility permission disclosure'),
-          content: const Text(
-            'Deenly uses Android Accessibility to enforce Focus mode app blocking.\n\n'
-            'Why we need it: to detect when you open an app you selected for blocking.\n\n'
-            'How we use it: only to identify the foreground app and show the Focus block screen for selected apps. We do not use it to read typed text or personal content.',
-          ),
+          title: Text(l10n.focusAccessibilityDisclosureTitle),
+          content: Text(l10n.focusAccessibilityDisclosureMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Not now'),
+              child: Text(l10n.focusNotNow),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('I understand'),
+              child: Text(l10n.focusIUnderstand),
             ),
           ],
         );
@@ -798,7 +796,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                     children: [
                       CupertinoButton(
                         onPressed: () => Navigator.of(ctx).pop(),
-                        child: const Text('Cancel'),
+                        child: Text(AppLocalizations.of(ctx)!.cancel),
                       ),
                       if (title != null)
                         Text(
@@ -816,7 +814,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                             ),
                           );
                         },
-                        child: const Text('Done'),
+                        child: Text(AppLocalizations.of(ctx)!.focusDone),
                       ),
                     ],
                   ),

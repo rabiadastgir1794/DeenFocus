@@ -27,6 +27,7 @@ class FocusController extends ChangeNotifier {
   List<FocusInstalledApp> _installedApps = const <FocusInstalledApp>[];
   bool _isInitialized = false;
   Future<void>? _initializeFuture;
+  Future<void>? _refreshFuture;
   bool _isLoadingApps = false;
   Timer? _refreshTimer;
 
@@ -83,6 +84,19 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    if (_refreshFuture != null) {
+      await _refreshFuture;
+      return;
+    }
+    _refreshFuture = _refreshBody();
+    try {
+      await _refreshFuture;
+    } finally {
+      _refreshFuture = null;
+    }
+  }
+
+  Future<void> _refreshBody() async {
     // Refresh can be triggered by multiple lifecycle listeners. Ensure any
     // in-flight initialize/load has completed to avoid persisting defaults
     // over previously saved mode settings.
@@ -691,23 +705,28 @@ class FocusController extends ChangeNotifier {
     _lockState = updatedLockState;
     await _persist();
     notifyListeners();
-    unawaited(
-      FocusEnforcementService.sync(
+    try {
+      await FocusEnforcementService.sync(
         settings: _settings,
         lockState: _lockState,
         scheduledTransitions: scheduledTransitions,
-      ),
-    );
-    unawaited(
-      AppNotificationService.instance
-          .syncFocusNotifications(settings: _settings)
-          .catchError((Object e, StackTrace st) {
-            assert(() {
-              debugPrint('focus: syncFocusNotifications failed: $e\n$st');
-              return true;
-            }());
-          }),
-    );
+      );
+    } catch (e, st) {
+      assert(() {
+        debugPrint('focus: native sync failed: $e\n$st');
+        return true;
+      }());
+    }
+    try {
+      await AppNotificationService.instance.syncFocusNotifications(
+        settings: _settings,
+      );
+    } catch (e, st) {
+      assert(() {
+        debugPrint('focus: syncFocusNotifications failed: $e\n$st');
+        return true;
+      }());
+    }
     unawaited(
       FocusEnforcementService.appendDebugLog(
         'focus.recompute',

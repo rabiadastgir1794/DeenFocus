@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_manager.dart';
 import 'app_demo_video_screen.dart';
 
@@ -51,6 +52,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     return Consumer<AppDemoVideoManager>(
       builder: (context, demo, _) {
         final c = demo.controller;
@@ -84,7 +86,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'App Demo',
+                    l10n.appDemoTitle,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -100,6 +102,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                         demo,
                         c,
                         channelBroken,
+                        l10n,
                       ),
                     ),
                   ),
@@ -117,6 +120,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
     AppDemoVideoManager demo,
     VideoPlayerController? c,
     bool channelBroken,
+    AppLocalizations l10n,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -137,8 +141,8 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                 const SizedBox(height: 8),
                 Text(
                   channelBroken
-                      ? 'Video needs a full app restart (hot restart can break playback).'
-                      : 'Could not load the demo.',
+                      ? l10n.appDemoRestartHint
+                      : l10n.appDemoPreviewLoadFailed,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
@@ -147,7 +151,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () => unawaited(demo.retry()),
-                  child: const Text('Try again'),
+                  child: Text(l10n.appDemoTryAgain),
                 ),
               ],
             ),
@@ -195,7 +199,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Watch demo',
+                l10n.appDemoWatchLabel,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: Colors.white,

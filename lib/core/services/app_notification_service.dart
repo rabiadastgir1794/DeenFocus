@@ -212,7 +212,7 @@ class AppNotificationService {
 
       final includeUnlockNotifications =
           settings.temporarilyUnlockedUntil == null;
-      final signature = _buildFocusScheduleSignature(
+      final signature = await _buildFocusScheduleSignature(
         settings: settings,
         includeUnlockNotifications: includeUnlockNotifications,
       );
@@ -683,15 +683,46 @@ class AppNotificationService {
     return prayerParts.join('|');
   }
 
-  String _buildFocusScheduleSignature({
+  Future<String> _buildFocusScheduleSignature({
     required FocusSettings settings,
     required bool includeUnlockNotifications,
-  }) {
-    return <String>[
+  }) async {
+    final parts = <String>[
       'night=${settings.nightDisciplineEnabled}',
+      'salah=${settings.salahModeEnabled}',
       'start=${settings.nightRange.startHour}:${settings.nightRange.startMinute}',
       'end=${settings.nightRange.endHour}:${settings.nightRange.endMinute}',
       'unlock=$includeUnlockNotifications',
-    ].join('|');
+      'tempUnlockUntil=${settings.temporarilyUnlockedUntil?.millisecondsSinceEpoch ?? 0}',
+    ];
+
+    if (settings.salahModeEnabled) {
+      final latitude = await StorageService.locationLatitude;
+      final longitude = await StorageService.locationLongitude;
+      parts.add('lat=${latitude?.toStringAsFixed(4) ?? "nil"}');
+      parts.add('lng=${longitude?.toStringAsFixed(4) ?? "nil"}');
+
+      if (latitude != null && longitude != null) {
+        final now = DateTime.now();
+        const daysAhead = 7;
+        for (var dayOffset = 0; dayOffset < daysAhead; dayOffset++) {
+          final date = now.add(Duration(days: dayOffset));
+          final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
+            latitude: latitude,
+            longitude: longitude,
+            date: date,
+          );
+          for (final slot in data.slots.where(
+            (slot) => slot.id != HomePrayerId.sunrise,
+          )) {
+            parts.add(
+              'salah:$dayOffset:${slot.id.name}:${slot.time.toIso8601String()}',
+            );
+          }
+        }
+      }
+    }
+
+    return parts.join('|');
   }
 }

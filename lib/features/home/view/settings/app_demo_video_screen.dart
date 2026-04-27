@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_manager.dart';
 
 class AppDemoVideoScreen extends StatefulWidget {
@@ -54,9 +55,10 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App Demo'),
+        title: Text(l10n.appDemoTitle),
       ),
       body: Consumer<AppDemoVideoManager>(
         builder: (context, demo, _) {
@@ -66,7 +68,7 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Could not load the demo video.',
+                  l10n.appDemoLoadFailed,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: colorScheme.error,

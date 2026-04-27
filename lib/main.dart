@@ -125,7 +125,7 @@ class _DeenlyMaterialApp extends StatelessWidget {
         return Consumer2<LocaleService, ThemeService>(
           builder: (context, localeService, themeService, _) {
             return MaterialApp.router(
-              title: 'Deenly',
+              title: AppLocalizations.of(context)?.appTitle ?? 'Deenly',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.light,
               darkTheme: AppTheme.dark,

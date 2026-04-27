@@ -53,13 +53,14 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
 
   Future<void> _toggleNotifications(bool value) async {
     final focusSettings = context.read<FocusController>().settings;
+    final l10n = AppLocalizations.of(context)!;
     if (value) {
       final granted = await PermissionService.requestNotification();
       if (!granted) {
         if (!mounted) return;
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-          const SnackBar(
-            content: Text('Enable system notifications to turn this on.'),
+          SnackBar(
+            content: Text(l10n.settingsEnableSystemNotifications),
           ),
         );
         return;
@@ -211,6 +212,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
 
   Future<void> _presentEditUsernameSheet(BuildContext context) async {
     final profile = context.read<UserProfileService>();
+    final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController(text: profile.userName);
 
     await showModalBottomSheet<void>(
@@ -233,7 +235,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Edit Username',
+                l10n.settingsEditUsername,
                 style: Theme.of(
                   ctx,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -247,7 +249,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   await profile.setUserName(controller.text);
                   if (ctx.mounted) Navigator.of(ctx).pop();
                 },
-                decoration: const InputDecoration(hintText: 'Enter your name'),
+                decoration: InputDecoration(hintText: l10n.settingsEnterYourName),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -257,7 +259,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                     await profile.setUserName(controller.text);
                     if (ctx.mounted) Navigator.of(ctx).pop();
                   },
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ),
             ],
@@ -283,7 +285,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Sect',
+                  l10n.sectTitle,
                   style: Theme.of(
                     ctx,
                   ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -355,8 +357,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               iconBackground: const LinearGradient(
                 colors: [Color(0xFF0F766E), Color(0xFF34D399)],
               ),
-              title: 'Deen Focus Premium',
-              subtitle: 'Unlock all features',
+              title: l10n.settingsPremiumTitle,
+              subtitle: l10n.settingsPremiumSubtitle,
               onTap: () {},
             ),
             const SizedBox(height: 16),
@@ -364,19 +366,19 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               children: [
                 _SettingsRow(
                   icon: Icons.person_outline_rounded,
-                  label: 'Username',
+                  label: l10n.settingsUsernameLabel,
                   value: profile.userName,
                   onTap: () => unawaited(_onEditUsernameTapped(context)),
                 ),
                 _SettingsRow(
                   icon: Icons.language_rounded,
-                  label: 'Language',
+                  label: l10n.language,
                   value: '${currentLang.flag} ${currentLang.label}',
                   onTap: () => _showLanguagePicker(context),
                 ),
                 _SettingsRow(
                   icon: Icons.location_on_outlined,
-                  label: 'Location',
+                  label: l10n.settingsLocationLabel,
                   value: profile.locationLabel,
                   onTap: () {
                     Navigator.of(context).push(
@@ -390,7 +392,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 ),
                 _SettingsRow(
                   icon: Icons.access_time_rounded,
-                  label: 'Sect',
+                  label: l10n.sectTitle,
                   value: _sectLabel(profile.sect, l10n),
                   onTap: () => _showSectPicker(context),
                 ),
@@ -403,7 +405,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   icon: themeService.isDarkModeEnabled
                       ? Icons.dark_mode_outlined
                       : Icons.light_mode_outlined,
-                  label: 'Dark Mode',
+                  label: l10n.settingsDarkModeLabel,
                   value: themeService.isDarkModeEnabled,
                   onChanged: themeService.setDarkModeEnabled,
                 ),
@@ -414,7 +416,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               children: [
                 _SettingsRow(
                   icon: Icons.info_outline_rounded,
-                  label: 'About Deen Focus',
+                  label: l10n.settingsAboutTitle,
                   onTap: () {
                     unawaited(
                       AppSuperwall.registerPlacement(
@@ -437,7 +439,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
             const SizedBox(height: 8),
             Text(
-              'Tap to watch. Playback pauses when you leave and resumes from there next time.',
+              l10n.settingsDemoPlaybackHint,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -472,8 +474,9 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
   @override
   Widget build(BuildContext context) {
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Location'),
+      appBar: CustomAppBar(title: l10n.settingsLocationLabel),
       body: Column(
         children: [
           Expanded(
@@ -501,7 +504,11 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
                           );
                           if (context.mounted) Navigator.of(context).pop();
                         },
-                  child: Text(_saving ? 'Saving...' : 'Save Location'),
+                  child: Text(
+                    _saving
+                        ? l10n.settingsSavingLocation
+                        : l10n.settingsSaveLocation,
+                  ),
                 ),
               ),
             ),
@@ -517,8 +524,9 @@ class SettingsAboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: const CustomAppBar(title: 'About Deen Focus'),
+      appBar: CustomAppBar(title: l10n.settingsAboutTitle),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -548,14 +556,14 @@ class SettingsAboutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Deen Focus',
+                  l10n.appTitle,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Focus. Discipline. Consistency.',
+                  l10n.settingsAboutTagline,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -563,7 +571,7 @@ class SettingsAboutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Deen Focus helps you stay grounded with prayer times, Quran, Qibla, Tasbih, nearby mosques, and distraction-free focus modes built around your routines.',
+                  l10n.settingsAboutDescription,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),

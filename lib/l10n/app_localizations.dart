@@ -174,6 +174,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
   /// No description provided for @openSettings.
   ///
   /// In en, this message translates to:
@@ -1104,6 +1110,168 @@ abstract class AppLocalizations {
   /// **'Stay focused when it matters most'**
   String get focusTabSubtitle;
 
+  /// No description provided for @focusChildModeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Mode Active'**
+  String get focusChildModeActive;
+
+  /// No description provided for @focusSalahAndNightModeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah and Night Mode Active'**
+  String get focusSalahAndNightModeActive;
+
+  /// No description provided for @focusSalahModeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah Mode Active'**
+  String get focusSalahModeActive;
+
+  /// No description provided for @focusNightModeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Mode Active'**
+  String get focusNightModeActive;
+
+  /// No description provided for @focusAppsToBlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps to Block'**
+  String get focusAppsToBlockTitle;
+
+  /// No description provided for @focusAppliesAllModes.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to all focus modes'**
+  String get focusAppliesAllModes;
+
+  /// No description provided for @focusScreenTimeRequiredSelectApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time access is required to view and select apps.'**
+  String get focusScreenTimeRequiredSelectApps;
+
+  /// No description provided for @focusAcceptAccessibilityDisclosure.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the accessibility disclosure to continue.'**
+  String get focusAcceptAccessibilityDisclosure;
+
+  /// No description provided for @focusSelectAppsToBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Select apps to block'**
+  String get focusSelectAppsToBlock;
+
+  /// No description provided for @focusLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get focusLoading;
+
+  /// No description provided for @focusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get focusOpen;
+
+  /// No description provided for @focusHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get focusHide;
+
+  /// No description provided for @focusLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get focusLoad;
+
+  /// No description provided for @focusShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get focusShow;
+
+  /// No description provided for @focusSalahFocusModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah Focus Mode'**
+  String get focusSalahFocusModeTitle;
+
+  /// No description provided for @focusBlockAppsDuringPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Block apps during prayer'**
+  String get focusBlockAppsDuringPrayer;
+
+  /// No description provided for @focusNightDisciplineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Discipline'**
+  String get focusNightDisciplineTitle;
+
+  /// No description provided for @focusSleepLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get focusSleepLabel;
+
+  /// No description provided for @focusWakeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake'**
+  String get focusWakeLabel;
+
+  /// No description provided for @focusBlockAppsImmediately.
+  ///
+  /// In en, this message translates to:
+  /// **'Block apps immediately'**
+  String get focusBlockAppsImmediately;
+
+  /// No description provided for @focusEnableAndroidAppBlocking.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Android app blocking'**
+  String get focusEnableAndroidAppBlocking;
+
+  /// No description provided for @focusEnableAndroidAppBlockingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'To block other apps on Android, Deenly needs its accessibility permission turned on. We will open the correct settings screen for you.'**
+  String get focusEnableAndroidAppBlockingMessage;
+
+  /// No description provided for @focusAccessibilityDisclosureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility permission disclosure'**
+  String get focusAccessibilityDisclosureTitle;
+
+  /// No description provided for @focusAccessibilityDisclosureMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deenly uses Android Accessibility to enforce Focus mode app blocking.\n\nWhy we need it: to detect when you open an app you selected for blocking.\n\nHow we use it: only to identify the foreground app and show the Focus block screen for selected apps. We do not use it to read typed text or personal content.'**
+  String get focusAccessibilityDisclosureMessage;
+
+  /// No description provided for @focusNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get focusNotNow;
+
+  /// No description provided for @focusIUnderstand.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand'**
+  String get focusIUnderstand;
+
+  /// No description provided for @focusDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get focusDone;
+
   /// No description provided for @focusNightDisciplineCardSubtitle.
   ///
   /// In en, this message translates to:
@@ -1127,6 +1295,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apps are blocked instantly in Child Mode. Unlock them using the toggle or from the home screen'**
   String get focusChildBlockingDescription;
+
+  /// No description provided for @settingsEditUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Username'**
+  String get settingsEditUsername;
+
+  /// No description provided for @settingsEnterYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get settingsEnterYourName;
+
+  /// No description provided for @settingsPremiumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deen Focus Premium'**
+  String get settingsPremiumTitle;
+
+  /// No description provided for @settingsPremiumSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock all features'**
+  String get settingsPremiumSubtitle;
+
+  /// No description provided for @settingsUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get settingsUsernameLabel;
+
+  /// No description provided for @settingsLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get settingsLocationLabel;
+
+  /// No description provided for @settingsDarkModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get settingsDarkModeLabel;
+
+  /// No description provided for @settingsAboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About Deen Focus'**
+  String get settingsAboutTitle;
+
+  /// No description provided for @settingsDemoPlaybackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to watch. Playback pauses when you leave and resumes from there next time.'**
+  String get settingsDemoPlaybackHint;
+
+  /// No description provided for @settingsSavingLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get settingsSavingLocation;
+
+  /// No description provided for @settingsSaveLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Location'**
+  String get settingsSaveLocation;
+
+  /// No description provided for @settingsAboutTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus. Discipline. Consistency.'**
+  String get settingsAboutTagline;
+
+  /// No description provided for @settingsAboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Deen Focus helps you stay grounded with prayer times, Quran, Qibla, Tasbih, nearby mosques, and distraction-free focus modes built around your routines.'**
+  String get settingsAboutDescription;
+
+  /// No description provided for @settingsEnableSystemNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable system notifications to turn this on.'**
+  String get settingsEnableSystemNotifications;
+
+  /// No description provided for @appDemoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App Demo'**
+  String get appDemoTitle;
+
+  /// No description provided for @appDemoLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the demo video.'**
+  String get appDemoLoadFailed;
+
+  /// No description provided for @appDemoRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Video needs a full app restart (hot restart can break playback).'**
+  String get appDemoRestartHint;
+
+  /// No description provided for @appDemoPreviewLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the demo.'**
+  String get appDemoPreviewLoadFailed;
+
+  /// No description provided for @appDemoTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get appDemoTryAgain;
+
+  /// No description provided for @appDemoWatchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch demo'**
+  String get appDemoWatchLabel;
+
+  /// No description provided for @homeAiChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deen Focus AI'**
+  String get homeAiChatTitle;
+
+  /// No description provided for @homeAiAskQuestionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a question...'**
+  String get homeAiAskQuestionHint;
+
+  /// No description provided for @homeAiSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get homeAiSend;
+
+  /// No description provided for @homeAiErrorPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, I ran into an issue while connecting to Deen Focus AI.'**
+  String get homeAiErrorPrefix;
+
+  /// No description provided for @homeAiEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything about Islam'**
+  String get homeAiEmptyTitle;
+
+  /// No description provided for @homeAiEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times, Quran, Hadith, Islamic events, and spiritual guidance'**
+  String get homeAiEmptySubtitle;
+
+  /// No description provided for @onboardingTypeCityName.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your city name..'**
+  String get onboardingTypeCityName;
+
+  /// No description provided for @onboardingNoLocationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No locations found'**
+  String get onboardingNoLocationsFound;
+
+  /// No description provided for @onboardingTryAnotherCityName.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another city name.'**
+  String get onboardingTryAnotherCityName;
+
+  /// No description provided for @qiblaCompassUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Compass unavailable on this device'**
+  String get qiblaCompassUnavailable;
+
+  /// No description provided for @qiblaFacing.
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Facing Qibla'**
+  String get qiblaFacing;
+
+  /// No description provided for @qiblaTurnToFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn to find Qibla'**
+  String get qiblaTurnToFind;
+
+  /// No description provided for @qiblaDistanceToMakkah.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance to Makkah'**
+  String get qiblaDistanceToMakkah;
+
+  /// No description provided for @qiblaFromNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'from North'**
+  String get qiblaFromNorth;
+
+  /// No description provided for @qiblaNorthShort.
+  ///
+  /// In en, this message translates to:
+  /// **'N'**
+  String get qiblaNorthShort;
+
+  /// No description provided for @qiblaSouthShort.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get qiblaSouthShort;
+
+  /// No description provided for @qiblaEastShort.
+  ///
+  /// In en, this message translates to:
+  /// **'E'**
+  String get qiblaEastShort;
+
+  /// No description provided for @qiblaWestShort.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get qiblaWestShort;
+
+  /// No description provided for @nearbyMosquesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby Mosques'**
+  String get nearbyMosquesTitle;
+
+  /// No description provided for @nearbyMosquesTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get nearbyMosquesTryAgain;
+
+  /// No description provided for @nearbyMosquesOpenGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Google Maps'**
+  String get nearbyMosquesOpenGoogle;
+
+  /// No description provided for @nearbyMosquesOpenApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Apple Maps'**
+  String get nearbyMosquesOpenApple;
+
+  /// No description provided for @nearbyMosquesNoMosquesFoundWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'No mosques found within'**
+  String get nearbyMosquesNoMosquesFoundWithin;
+
+  /// No description provided for @nearbyMosquesSearchRadius.
+  ///
+  /// In en, this message translates to:
+  /// **'Search radius: 5 km'**
+  String get nearbyMosquesSearchRadius;
+
+  /// No description provided for @nearbyMosquesMapPreviewUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Map preview unavailable right now.'**
+  String get nearbyMosquesMapPreviewUnavailable;
+
+  /// No description provided for @nearbyMosquesWaitingForLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your location.'**
+  String get nearbyMosquesWaitingForLocation;
+
+  /// No description provided for @nearbyMosquesAppearAfterLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby mosques will appear here once results load.'**
+  String get nearbyMosquesAppearAfterLoad;
+
+  /// No description provided for @nearbyMosquesNoneWithinRadius.
+  ///
+  /// In en, this message translates to:
+  /// **'No mosques found within 5 km'**
+  String get nearbyMosquesNoneWithinRadius;
+
+  /// No description provided for @nearbyMosquesLocationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Location access is required to find nearby mosques.'**
+  String get nearbyMosquesLocationRequired;
+
+  /// No description provided for @nearbyMosquesPermissionOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is turned off. Enable it in settings to see nearby mosques.'**
+  String get nearbyMosquesPermissionOff;
+
+  /// No description provided for @nearbyMosquesLocationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not read your current location right now.'**
+  String get nearbyMosquesLocationUnavailable;
+
+  /// No description provided for @nearbyMosquesLiveUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Live update failed. Showing last saved results. Pull to refresh.'**
+  String get nearbyMosquesLiveUpdateFailed;
+
+  /// No description provided for @nearbyMosquesPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location access was denied. Enable it in Settings to see nearby mosques.'**
+  String get nearbyMosquesPermissionDenied;
+
+  /// No description provided for @nearbyMosquesLocationTurnedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is turned off on this device. Turn it on in Settings, then try again.'**
+  String get nearbyMosquesLocationTurnedOff;
+
+  /// No description provided for @nearbyMosquesPermissionProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is still being processed. Please try again in a moment.'**
+  String get nearbyMosquesPermissionProcessing;
+
+  /// No description provided for @nearbyMosquesRequestTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The request took too long. Check your internet connection and try again.'**
+  String get nearbyMosquesRequestTimeout;
+
+  /// No description provided for @nearbyMosquesOfflineOrUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection or the service is unreachable. Check your connection and try again.'**
+  String get nearbyMosquesOfflineOrUnreachable;
+
+  /// No description provided for @nearbyMosquesFormatError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not read the mosque list right now. Please try again later.'**
+  String get nearbyMosquesFormatError;
+
+  /// No description provided for @nearbyMosquesPlatformError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not complete that step. Check your connection and try again.'**
+  String get nearbyMosquesPlatformError;
+
+  /// No description provided for @nearbyMosquesSomethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get nearbyMosquesSomethingWentWrong;
+
+  /// No description provided for @nearbyMosquesEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing listed within 5 km on OpenStreetMap for this spot. Try again later or move the map.'**
+  String get nearbyMosquesEmptyHint;
+
+  /// No description provided for @nearbyMosquesFoundWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} mosques found within 5 km'**
+  String nearbyMosquesFoundWithin(int count);
+
+  /// No description provided for @tasbihDeleteDhikrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete dhikr?'**
+  String get tasbihDeleteDhikrTitle;
+
+  /// No description provided for @tasbihDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get tasbihDelete;
 }
 
 class _AppLocalizationsDelegate

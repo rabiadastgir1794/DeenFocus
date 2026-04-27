@@ -238,7 +238,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                 SizedBox(height: Spacing.xl.h),
                 AppTextField(
                   controller: _cityController,
-                  placeholder: 'Type your city name..',
+                  placeholder: l10n.onboardingTypeCityName,
                   textAlign: TextAlign.center,
                   onChanged: _onQueryChanged,
                 ),
@@ -297,9 +297,9 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                     ),
                   )
                 else if (_activeQuery.isNotEmpty)
-                  const AppEmptyState(
-                    title: 'No locations found',
-                    subtitle: 'Try another city name.',
+                  AppEmptyState(
+                    title: l10n.onboardingNoLocationsFound,
+                    subtitle: l10n.onboardingTryAnotherCityName,
                   ),
                 SizedBox(height: Spacing.xl.h),
                     ],

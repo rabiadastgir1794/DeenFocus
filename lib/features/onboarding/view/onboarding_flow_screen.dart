@@ -272,7 +272,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
       context,
       title: l10n.screenTimeTitle,
       message: authResult.userFacingMessage() ?? l10n.screenTimeSubtitle,
-      primaryButtonText: 'OK',
+      primaryButtonText: l10n.ok,
       onPrimaryTap: () {},
     );
     await vm.recheckPermissions();
