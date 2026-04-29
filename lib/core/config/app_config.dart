@@ -4,7 +4,8 @@ abstract class AppConfig {
   /// fields when your project has different keys.
   ///
   /// https://superwall.com/docs/home
-  static const String superwallApiKey = 'pk_mBLowYWwk1tvka_ZSLM3b';
+  static const String superwallApiKeyAndroid = 'pk_eto5ZxwTG6izKc6PXVIzh';
+  static const String superwallApiKeyIOS = 'pk_mBLowYWwk1tvka_ZSLM3b';
 
   /// Optional override for flutter_map raster tiles (`{z}`/`{x}`/`{y}`).
   /// Default uses the OSM public tile server (no key). For heavy production

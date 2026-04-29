@@ -210,6 +210,62 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
     });
   }
 
+  Future<void> _onAboutTapped(BuildContext context) async {
+    _showVerifyingLoader(context);
+    try {
+      await AppSuperwall.verifyPlacementPaywall(
+        SuperwallPlacements.premiumFeature,
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(
+          content: Text('Failed to verify subscription. Please try again.'),
+        ),
+      );
+    } finally {
+      if (!context.mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  void _showVerifyingLoader(BuildContext context) {
+    showGeneralDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: 'Verifying',
+      barrierColor: Colors.black.withValues(alpha: 0.72),
+      pageBuilder: (_, __, ___) {
+        return PopScope(
+          canPop: false,
+          child: Material(
+            color: Colors.transparent,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: CircularProgressIndicator(strokeWidth: 3),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Verifying...',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _presentEditUsernameSheet(BuildContext context) async {
     final profile = context.read<UserProfileService>();
     final l10n = AppLocalizations.of(context)!;
@@ -417,21 +473,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 _SettingsRow(
                   icon: Icons.info_outline_rounded,
                   label: l10n.settingsAboutTitle,
-                  onTap: () {
-                    unawaited(
-                      AppSuperwall.registerPlacement(
-                        SuperwallPlacements.aboutDeenFocus,
-                        () {
-                          if (!context.mounted) return;
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const SettingsAboutScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
+                  onTap: () => unawaited(_onAboutTapped(context)),
                 ),
               ],
             ),
