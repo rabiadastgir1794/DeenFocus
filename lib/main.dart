@@ -40,6 +40,9 @@ Future<void> main() async {
   }
   await Hive.initFlutter();
   await AppSuperwall.configureIfNeeded();
+  if (AppSuperwall.isEnabled) {
+    await AppSuperwall.syncAttributesAndResolvePaywallRoute();
+  }
   await AppNotificationService.instance.initialize();
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
   unawaited(DailyRefreshService.instance.initialize());
@@ -85,7 +88,8 @@ class _AppLifecycleFocusRefresher extends StatefulWidget {
       _AppLifecycleFocusRefresherState();
 }
 
-class _AppLifecycleFocusRefresherState extends State<_AppLifecycleFocusRefresher>
+class _AppLifecycleFocusRefresherState
+    extends State<_AppLifecycleFocusRefresher>
     with WidgetsBindingObserver {
   @override
   void initState() {

@@ -6,6 +6,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ComponentName
+import android.content.ContentUris
+import android.content.ContentValues
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -195,38 +198,75 @@ object FocusDebugLogger {
         }
     }
 
-    private fun writeViaMediaStore(context: Context, contents: String, append: Boolean) {
-        runCatching {
-            val resolver = context.contentResolver
-            val existingUri =
-                resolver.query(
-                    MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                    arrayOf(MediaStore.Downloads._ID),
-                    "${MediaStore.Downloads.DISPLAY_NAME}=?",
-                    arrayOf(focusDebugFileName),
-                    null,
-                )?.use { cursor ->
-                    if (!cursor.moveToFirst()) return@use null
-                    val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+    private fun resolvePublicDebugLogUri(resolver: ContentResolver): Uri? {
+        val downloadDir = Environment.DIRECTORY_DOWNLOADS
+        val downloadDirPrefix = "$downloadDir/"
+        resolver.query(
+            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.RELATIVE_PATH),
+            "${MediaStore.Downloads.DISPLAY_NAME} = ?",
+            arrayOf(focusDebugFileName),
+            null,
+        )?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+            val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.Downloads.RELATIVE_PATH)
+            while (cursor.moveToNext()) {
+                val rel = cursor.getString(pathIndex).orEmpty()
+                if (rel == downloadDir ||
+                    rel == downloadDirPrefix ||
+                    rel.startsWith(downloadDirPrefix)
+                ) {
                     val id = cursor.getLong(idIndex)
-                    Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id.toString())
-                }
-
-            val uri =
-                existingUri
-                    ?: resolver.insert(
+                    return ContentUris.withAppendedId(
                         MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                        android.content.ContentValues().apply {
-                            put(MediaStore.Downloads.DISPLAY_NAME, focusDebugFileName)
-                            put(MediaStore.Downloads.MIME_TYPE, "text/plain")
-                            put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                        },
+                        id,
                     )
-                    ?: return
+                }
+            }
+        }
+        return null
+    }
+
+    private fun writeViaMediaStore(context: Context, contents: String, append: Boolean) {
+        val resolver = context.contentResolver
+        var uri = resolvePublicDebugLogUri(resolver)
+        var pendingInsertUri: Uri? = null
+        try {
+            if (uri == null) {
+                val values =
+                    ContentValues().apply {
+                        put(MediaStore.Downloads.DISPLAY_NAME, focusDebugFileName)
+                        put(MediaStore.Downloads.MIME_TYPE, "text/plain")
+                        put(MediaStore.Downloads.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            put(MediaStore.Downloads.IS_PENDING, 1)
+                        }
+                    }
+                uri =
+                    resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                        ?: return
+                pendingInsertUri = uri
+            }
 
             val mode = if (append) "wa" else "wt"
-            resolver.openOutputStream(uri, mode)?.use { output ->
-                writeText(output, contents)
+            val output =
+                resolver.openOutputStream(uri, mode) ?: run {
+                    pendingInsertUri?.let { runCatching { resolver.delete(it, null, null) } }
+                    return
+                }
+            output.use { writeText(it, contents) }
+        } catch (_: Throwable) {
+            pendingInsertUri?.let { runCatching { resolver.delete(it, null, null) } }
+        } finally {
+            if (pendingInsertUri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                runCatching {
+                    resolver.update(
+                        pendingInsertUri,
+                        ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) },
+                        null,
+                        null,
+                    )
+                }
             }
         }
     }

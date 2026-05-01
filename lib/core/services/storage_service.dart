@@ -43,6 +43,7 @@ abstract class StorageService {
       'app_review_prompt_completed';
   static const String _keyFocusAccessibilityDisclosureAccepted =
       'focus_accessibility_disclosure_accepted';
+  static const String _keyHasUsedIntroOffer = 'has_used_intro_offer';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -388,8 +389,20 @@ abstract class StorageService {
     return prefs.getBool(_keyFocusAccessibilityDisclosureAccepted) ?? false;
   }
 
-  static Future<void> setFocusAccessibilityDisclosureAccepted(bool value) async {
+  static Future<void> setFocusAccessibilityDisclosureAccepted(
+    bool value,
+  ) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyFocusAccessibilityDisclosureAccepted, value);
+  }
+
+  static Future<bool> get hasUsedIntroOffer async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHasUsedIntroOffer) ?? false;
+  }
+
+  static Future<void> setHasUsedIntroOffer(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHasUsedIntroOffer, value);
   }
 }
