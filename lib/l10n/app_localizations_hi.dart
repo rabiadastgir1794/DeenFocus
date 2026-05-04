@@ -663,6 +663,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsPremiumSubtitle => 'सभी सुविधाएं अनलॉक करें';
 
   @override
+  String get settingsManageSubscriptionTitle => 'सदस्यता प्रबंधित करें';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'योजना देखें या बिलिंग अपडेट करें';
+
+  @override
   String get settingsUsernameLabel => 'उपयोगकर्ता नाम';
 
   @override

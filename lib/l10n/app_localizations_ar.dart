@@ -654,6 +654,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsPremiumSubtitle => 'فتح كافة الميزات';
 
   @override
+  String get settingsManageSubscriptionTitle => 'إدارة الاشتراك';
+
+  @override
+  String get settingsManageSubscriptionSubtitle => 'اعرض خطتك أو حدّث الفوترة';
+
+  @override
   String get settingsUsernameLabel => 'اسم المستخدم';
 
   @override

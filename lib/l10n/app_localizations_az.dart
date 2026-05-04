@@ -666,6 +666,13 @@ class AppLocalizationsAz extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Bütün xüsusiyyətlərin kilidini açın';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Abunəliyi idarə et';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'Planı görün və ya ödənişi yeniləyin';
+
+  @override
   String get settingsUsernameLabel => 'İstifadəçi adı';
 
   @override

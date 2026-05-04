@@ -205,6 +205,8 @@
   "settingsEnterYourName": "Enter your name",
   "settingsPremiumTitle": "Deen Focus Premium",
   "settingsPremiumSubtitle": "Unlock all features",
+  "settingsManageSubscriptionTitle": "Manage subscription",
+  "settingsManageSubscriptionSubtitle": "View plan or update billing",
   "settingsUsernameLabel": "Username",
   "settingsLocationLabel": "Location",
   "settingsDarkModeLabel": "Dark Mode",

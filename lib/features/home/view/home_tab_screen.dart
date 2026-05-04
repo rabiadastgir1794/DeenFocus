@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/theme_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
@@ -138,9 +139,16 @@ class _HomeTabViewState extends State<_HomeTabView>
                     HomeCircleIconButton(
                       icon: Icons.chat_bubble_outline,
                       onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => const HomeAiChatScreen(),
+                        unawaited(
+                          AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
+                            () {
+                              if (!context.mounted) return;
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const HomeAiChatScreen(),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
@@ -197,7 +205,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   streakDays: vm.streakDays,
                   weekPrayerCounts: vm.weekPrayerCounts,
                   backgroundColor: softCardColor,
-                  onTap: () => _openPrayerStreakDetail(context, vm),
+                  onTap: () => unawaited(_openPrayerStreakDetail(context, vm)),
                 ),
                 const SizedBox(height: 12),
                 HomeCalendarSection(
@@ -360,15 +368,21 @@ class _HomeTabViewState extends State<_HomeTabView>
     );
   }
 
-  void _openPrayerStreakDetail(BuildContext context, HomeTabViewModel vm) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
-          value: vm,
-          child: const HomePrayerStreakDetailScreen(),
+  Future<void> _openPrayerStreakDetail(
+    BuildContext context,
+    HomeTabViewModel vm,
+  ) async {
+    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
+      if (!context.mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
+            value: vm,
+            child: const HomePrayerStreakDetailScreen(),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 

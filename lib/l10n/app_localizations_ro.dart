@@ -669,6 +669,13 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Deblocați toate funcțiile';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Gestionează abonamentul';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'Vezi planul sau actualizează facturarea';
+
+  @override
   String get settingsUsernameLabel => 'Nume de utilizator';
 
   @override

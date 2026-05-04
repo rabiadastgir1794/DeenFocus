@@ -631,6 +631,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsPremiumSubtitle => '解锁所有功能';
 
   @override
+  String get settingsManageSubscriptionTitle => '管理订阅';
+
+  @override
+  String get settingsManageSubscriptionSubtitle => '查看方案或更新账单';
+
+  @override
   String get settingsUsernameLabel => '用户名';
 
   @override

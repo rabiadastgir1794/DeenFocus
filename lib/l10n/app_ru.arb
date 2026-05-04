@@ -205,6 +205,8 @@
   "settingsEnterYourName": "Введите свое имя",
   "settingsPremiumTitle": "Deen Focus Premium",
   "settingsPremiumSubtitle": "Разблокируйте все функции",
+  "settingsManageSubscriptionTitle": "Управление подпиской",
+  "settingsManageSubscriptionSubtitle": "План или способ оплаты",
   "settingsUsernameLabel": "Имя пользователя",
   "settingsLocationLabel": "Расположение",
   "settingsDarkModeLabel": "Темный режим",

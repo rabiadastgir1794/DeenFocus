@@ -106,8 +106,20 @@ class _AppLifecycleFocusRefresherState
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      unawaited(context.read<FocusController>().refresh());
+      unawaited(_onResumed());
     }
+  }
+
+  Future<void> _onResumed() async {
+    if (AppSuperwall.isEnabled) {
+      await AppSuperwall.syncAttributesAndResolvePaywallRoute();
+      if (!mounted) return;
+      if (!AppSuperwall.subscriptionActiveNotifier.value) {
+        await context.read<FocusController>().disableAllModesDueToSubscription();
+      }
+    }
+    if (!mounted) return;
+    unawaited(context.read<FocusController>().refresh());
   }
 
   @override

@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_languages.dart';
+import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/services/app_notification_service.dart';
 import '../../../../core/services/locale_service.dart';
@@ -203,66 +207,57 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
     );
   }
 
+  Future<void> _onPremiumCardTap() async {
+    final manageMode =
+        AppSuperwall.isEnabled && AppSuperwall.subscriptionActiveNotifier.value;
+    if (manageMode) {
+      if (kIsWeb) return;
+      final Uri uri;
+      if (Platform.isIOS) {
+        uri = StoreSubscriptionLinks.appleManageSubscriptions;
+      } else if (Platform.isAndroid) {
+        uri = StoreSubscriptionLinks.playStoreManageSubscription();
+      } else {
+        return;
+      }
+      try {
+        final launched = await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+        if (!launched && mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            const SnackBar(content: Text('Could not open the store.')),
+          );
+        }
+      } catch (_) {
+        if (mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            const SnackBar(content: Text('Could not open the store.')),
+          );
+        }
+      }
+      return;
+    }
+
+    await AppSuperwall.registerPlacement(
+      SuperwallPlacements.premiumFeature,
+      () {},
+      fallbackToAccessWhenNoPaywall: true,
+    );
+  }
+
   Future<void> _onEditUsernameTapped(BuildContext context) async {
-    await AppSuperwall.registerPlacement(SuperwallPlacements.changeUsername, () {
-      if (!context.mounted) return;
-      unawaited(_presentEditUsernameSheet(context));
-    });
+    if (!context.mounted) return;
+    await _presentEditUsernameSheet(context);
   }
 
   Future<void> _onAboutTapped(BuildContext context) async {
-    _showVerifyingLoader(context);
-    try {
-      await AppSuperwall.verifyPlacementPaywall(
-        SuperwallPlacements.premiumFeature,
-      );
-    } catch (_) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        const SnackBar(
-          content: Text('Failed to verify subscription. Please try again.'),
-        ),
-      );
-    } finally {
-      if (!context.mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-    }
-  }
-
-  void _showVerifyingLoader(BuildContext context) {
-    showGeneralDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      barrierLabel: 'Verifying',
-      barrierColor: Colors.black.withValues(alpha: 0.72),
-      pageBuilder: (_, __, ___) {
-        return PopScope(
-          canPop: false,
-          child: Material(
-            color: Colors.transparent,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: CircularProgressIndicator(strokeWidth: 3),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Verifying...',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+    if (!context.mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => const SettingsAboutScreen(),
+      ),
     );
   }
 
@@ -408,16 +403,33 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
-            _SettingsCardButton(
-              icon: Icons.workspace_premium_rounded,
-              iconBackground: const LinearGradient(
-                colors: [Color(0xFF0F766E), Color(0xFF34D399)],
-              ),
-              title: l10n.settingsPremiumTitle,
-              subtitle: l10n.settingsPremiumSubtitle,
-              onTap: () {},
+            ValueListenableBuilder<bool>(
+              valueListenable: AppSuperwall.subscriptionActiveNotifier,
+              builder: (context, isSubscribed, _) {
+                final manageMode =
+                    AppSuperwall.isEnabled && isSubscribed;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SettingsCardButton(
+                      icon: Icons.workspace_premium_rounded,
+                      iconBackground: const LinearGradient(
+                        colors: [Color(0xFF0F766E), Color(0xFF34D399)],
+                      ),
+                      title: manageMode
+                          ? l10n.settingsManageSubscriptionTitle
+                          : l10n.settingsPremiumTitle,
+                      subtitle: manageMode
+                          ? l10n.settingsManageSubscriptionSubtitle
+                          : l10n.settingsPremiumSubtitle,
+                      onTap: () => unawaited(_onPremiumCardTap()),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              },
             ),
-            const SizedBox(height: 16),
             _SettingsGroup(
               children: [
                 _SettingsRow(

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
@@ -82,6 +83,13 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     if (!mounted) return;
 
     if (pendingMode != null) {
+      if (AppSuperwall.isEnabled) {
+        final sub = await AppSuperwall.syncAttributesAndResolvePaywallRoute();
+        if (!sub.isSubscribed) {
+          await vm.refresh();
+          return;
+        }
+      }
       await vm.enableMode(pendingMode);
     } else {
       await vm.refresh();
@@ -310,8 +318,12 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                                       ),
                                       const SizedBox(width: 8),
                                       InkWell(
-                                        onTap: () =>
-                                            _removeSelectedApp(vm, app),
+                                        onTap: () => unawaited(
+                                          _removeSelectedAppWithSubscription(
+                                            vm,
+                                            app,
+                                          ),
+                                        ),
                                         child: Icon(
                                           Icons.close,
                                           size: 14,
@@ -327,55 +339,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         ],
                         const SizedBox(height: 12),
                         InkWell(
-                          onTap: () async {
-                            if (_isAuthorizingScreenTime) return;
-                            final messenger = ScaffoldMessenger.maybeOf(
-                              context,
-                            );
-                            if (defaultTargetPlatform == TargetPlatform.iOS) {
-                              setState(() => _isAuthorizingScreenTime = true);
-                              final authResult =
-                                  await PermissionService.requestScreenTimeAccessDetailed();
-                              if (mounted) {
-                                setState(
-                                  () => _isAuthorizingScreenTime = false,
-                                );
-                              }
-                              if (!mounted) return;
-                              if (!authResult.granted) {
-                                messenger?.showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      authResult.userFacingMessage() ??
-                                          l10n.focusScreenTimeRequiredSelectApps,
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                              await vm.requestInstalledApps();
-                              return;
-                            }
-                            final acceptedDisclosure =
-                                await _ensureFocusAccessibilityDisclosureAccepted();
-                            if (!acceptedDisclosure) {
-                              messenger?.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    l10n.focusAcceptAccessibilityDisclosure,
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
-                            final shouldShow = !_showGlobalSelector;
-                            setState(() {
-                              _showGlobalSelector = shouldShow;
-                            });
-                            if (shouldShow && vm.installedApps.isEmpty) {
-                              await vm.requestInstalledApps();
-                            }
-                          },
+                          onTap: () => unawaited(
+                            _onSelectAppsRowTapped(vm, l10n),
+                          ),
                           borderRadius: BorderRadius.circular(14),
                           child: Ink(
                             width: double.infinity,
@@ -442,7 +408,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         ),
                         if (_showGlobalSelector) ...[
                           const SizedBox(height: 12),
-                          _AppsGrid(vm: vm),
+                          _AppsGrid(
+                            vm: vm,
+                            onAppToggle: (app) =>
+                                _toggleSelectedAppWithSubscription(vm, app),
+                          ),
                         ],
                       ],
                     ),
@@ -624,6 +594,118 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     await WidgetsBinding.instance.endOfFrame;
   }
 
+  Future<void> _onSelectAppsRowTapped(
+    FocusController vm,
+    AppLocalizations l10n,
+  ) async {
+    if (_isAuthorizingScreenTime) return;
+    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
+      if (!mounted) return;
+      unawaited(_runSelectAppsFlowAfterSubscription(vm, l10n));
+    });
+  }
+
+  Future<void> _runSelectAppsFlowAfterSubscription(
+    FocusController vm,
+    AppLocalizations l10n,
+  ) async {
+    if (!mounted || _isAuthorizingScreenTime) return;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      setState(() => _isAuthorizingScreenTime = true);
+      final authResult =
+          await PermissionService.requestScreenTimeAccessDetailed();
+      if (mounted) {
+        setState(() => _isAuthorizingScreenTime = false);
+      }
+      if (!mounted) return;
+      if (!authResult.granted) {
+        messenger?.showSnackBar(
+          SnackBar(
+            content: Text(
+              authResult.userFacingMessage() ??
+                  l10n.focusScreenTimeRequiredSelectApps,
+            ),
+          ),
+        );
+        return;
+      }
+      await vm.requestInstalledApps();
+      return;
+    }
+    final acceptedDisclosure =
+        await _ensureFocusAccessibilityDisclosureAccepted();
+    if (!acceptedDisclosure) {
+      messenger?.showSnackBar(
+        SnackBar(
+          content: Text(l10n.focusAcceptAccessibilityDisclosure),
+        ),
+      );
+      return;
+    }
+    final shouldShow = !_showGlobalSelector;
+    setState(() {
+      _showGlobalSelector = shouldShow;
+    });
+    if (shouldShow && vm.installedApps.isEmpty) {
+      await vm.requestInstalledApps();
+    }
+  }
+
+  Future<void> _toggleSelectedAppWithSubscription(
+    FocusController vm,
+    FocusInstalledApp app,
+  ) async {
+    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
+      if (!mounted) return;
+      unawaited(vm.toggleSelectedApp(app));
+    });
+  }
+
+  Future<void> _removeSelectedAppWithSubscription(
+    FocusController vm,
+    _SelectedAppChipData app,
+  ) async {
+    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
+      if (!mounted) return;
+      unawaited(_removeSelectedApp(vm, app));
+    });
+  }
+
+  Future<void> _enableModeAfterPremium(
+    FocusController vm,
+    FocusModeType mode,
+    ScaffoldMessengerState? messenger,
+    AppLocalizations l10n,
+  ) async {
+    if (!mounted) return;
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      setState(() => _isAuthorizingScreenTime = true);
+      final authResult =
+          await PermissionService.requestScreenTimeAccessDetailed();
+      if (mounted) {
+        setState(() => _isAuthorizingScreenTime = false);
+      }
+      if (!mounted) return;
+      if (!authResult.granted) {
+        messenger?.showSnackBar(
+          SnackBar(
+            content: Text(
+              authResult.userFacingMessage() ??
+                  l10n.focusScreenTimeRequiredBlockIphone,
+            ),
+          ),
+        );
+        return;
+      }
+    }
+
+    final canBlock = await _ensureAndroidBlockingAccess(mode);
+    if (!canBlock) return;
+
+    await vm.enableMode(mode);
+  }
+
   Future<void> _toggleMode(
     FocusController vm,
     FocusModeType mode,
@@ -658,31 +740,22 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       }
 
       if (enabled) {
-        if (defaultTargetPlatform == TargetPlatform.iOS) {
-          setState(() => _isAuthorizingScreenTime = true);
-          final authResult =
-              await PermissionService.requestScreenTimeAccessDetailed();
-          if (mounted) {
-            setState(() => _isAuthorizingScreenTime = false);
-          }
-          if (!mounted) return;
-          if (!authResult.granted) {
-            messenger?.showSnackBar(
-              SnackBar(
-                content: Text(
-                  authResult.userFacingMessage() ??
-                      l10n.focusScreenTimeRequiredBlockIphone,
-                ),
-              ),
-            );
-            return;
-          }
+        final completeEnable = Completer<void>();
+        var paywallGrantedCallback = false;
+        await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
+          paywallGrantedCallback = true;
+          scheduleMicrotask(() async {
+            try {
+              await _enableModeAfterPremium(vm, mode, messenger, l10n);
+            } finally {
+              if (!completeEnable.isCompleted) completeEnable.complete();
+            }
+          });
+        });
+        if (!paywallGrantedCallback && !completeEnable.isCompleted) {
+          completeEnable.complete();
         }
-
-        final canBlock = await _ensureAndroidBlockingAccess(mode);
-        if (!canBlock) return;
-
-        await vm.enableMode(mode);
+        await completeEnable.future;
         return;
       }
       await vm.disableMode(mode);
@@ -1096,9 +1169,13 @@ class _NightTimePill extends StatelessWidget {
 }
 
 class _AppsGrid extends StatelessWidget {
-  const _AppsGrid({required this.vm});
+  const _AppsGrid({
+    required this.vm,
+    required this.onAppToggle,
+  });
 
   final FocusController vm;
+  final Future<void> Function(FocusInstalledApp app) onAppToggle;
   static const int _maxRows = 5;
 
   @override
@@ -1159,7 +1236,7 @@ class _AppsGrid extends StatelessWidget {
               app.packageName,
             );
             return InkWell(
-              onTap: () => vm.toggleSelectedApp(app),
+              onTap: () => unawaited(onAppToggle(app)),
               borderRadius: BorderRadius.circular(14),
               child: Ink(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),

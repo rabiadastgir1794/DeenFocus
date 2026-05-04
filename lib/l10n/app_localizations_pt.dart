@@ -671,6 +671,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Desbloqueie todos os recursos';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Gerenciar assinatura';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'Ver plano ou atualizar cobrança';
+
+  @override
   String get settingsUsernameLabel => 'Nome de usuário';
 
   @override

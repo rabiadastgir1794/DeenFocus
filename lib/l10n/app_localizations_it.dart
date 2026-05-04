@@ -671,6 +671,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Sblocca tutte le funzionalità';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Gestisci abbonamento';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'Vedi piano o aggiorna fatturazione';
+
+  @override
   String get settingsUsernameLabel => 'Nome utente';
 
   @override

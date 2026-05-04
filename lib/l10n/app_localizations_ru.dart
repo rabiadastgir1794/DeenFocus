@@ -670,6 +670,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Разблокируйте все функции';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Управление подпиской';
+
+  @override
+  String get settingsManageSubscriptionSubtitle => 'План или способ оплаты';
+
+  @override
   String get settingsUsernameLabel => 'Имя пользователя';
 
   @override

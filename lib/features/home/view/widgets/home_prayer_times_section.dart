@@ -101,16 +101,31 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               ),
             )
           else
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: prayerTimes.slots
-                  .map(
-                    (slot) =>
-                        HomePrayerTile(slot: slot, prayerTimes: prayerTimes),
-                  )
-                  .toList(growable: false),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                const minTileWidth = 104.0;
+                const spacing = 8.0;
+                final maxW = constraints.maxWidth;
+                final width = maxW.isFinite ? maxW : minTileWidth * 3 + 2 * spacing;
+                var cols = ((width + spacing) / (minTileWidth + spacing)).floor();
+                cols = cols.clamp(1, 3);
+                final tileWidth = (width - (cols - 1) * spacing) / cols;
+
+                return Wrap(
+                  spacing: spacing,
+                  runSpacing: spacing,
+                  alignment: WrapAlignment.start,
+                  children: prayerTimes.slots
+                      .map(
+                        (slot) => HomePrayerTile(
+                          slot: slot,
+                          prayerTimes: prayerTimes,
+                          width: tileWidth,
+                        ),
+                      )
+                      .toList(growable: false),
+                );
+              },
             ),
           const SizedBox(height: 10),
           if (_dynamicRemaining(prayerTimes) case final remaining?)
@@ -171,10 +186,12 @@ class HomePrayerTile extends StatelessWidget {
     super.key,
     required this.slot,
     required this.prayerTimes,
+    this.width = 104,
   });
 
   final HomePrayerSlot slot;
   final HomePrayerTimesData prayerTimes;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +244,7 @@ class HomePrayerTile extends StatelessWidget {
     }
 
     final tile = Container(
-      width: 104,
+      width: width,
       height: 76,
       decoration: BoxDecoration(
         color: background,

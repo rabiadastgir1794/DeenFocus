@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Launch theme -->
+    <!-- Launch theme (pre–Android 12 uses windowBackground; API 31+ see values-v31). -->
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <!-- Remove splash background -->
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
 
     <!-- Normal theme -->

@@ -1350,6 +1350,18 @@ abstract class AppLocalizations {
   /// **'Unlock all features'**
   String get settingsPremiumSubtitle;
 
+  /// No description provided for @settingsManageSubscriptionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get settingsManageSubscriptionTitle;
+
+  /// No description provided for @settingsManageSubscriptionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View plan or update billing'**
+  String get settingsManageSubscriptionSubtitle;
+
   /// No description provided for @settingsUsernameLabel.
   ///
   /// In en, this message translates to:

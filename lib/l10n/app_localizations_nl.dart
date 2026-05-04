@@ -667,6 +667,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Ontgrendel alle functies';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Abonnement beheren';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'Bekijk plan of werk facturatie bij';
+
+  @override
   String get settingsUsernameLabel => 'Gebruikersnaam';
 
   @override

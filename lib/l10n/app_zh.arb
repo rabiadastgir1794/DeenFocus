@@ -205,6 +205,8 @@
   "settingsEnterYourName": "输入你的名字",
   "settingsPremiumTitle": "Deen Focus Premium",
   "settingsPremiumSubtitle": "解锁所有功能",
+  "settingsManageSubscriptionTitle": "管理订阅",
+  "settingsManageSubscriptionSubtitle": "查看方案或更新账单",
   "settingsUsernameLabel": "用户名",
   "settingsLocationLabel": "地点",
   "settingsDarkModeLabel": "深色模式",

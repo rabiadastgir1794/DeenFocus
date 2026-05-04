@@ -8,6 +8,7 @@ import '../../../core/services/device_apps_service.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
 import '../../home/model/home_models.dart';
@@ -410,6 +411,36 @@ class FocusController extends ChangeNotifier {
     await disableMode(mode);
   }
 
+  /// Turns off every focus mode and temporary unlock when subscription lapses.
+  Future<void> disableAllModesDueToSubscription() async {
+    if (!isAnyModeEnabled && _settings.temporarilyUnlockedUntil == null) {
+      return;
+    }
+    await FocusEnforcementService.appendDebugLog(
+      'focus.subscription.lapse',
+      'disabling all modes',
+    );
+    _settings = _settings.copyWith(
+      childModeEnabled: false,
+      clearChildLockedUntil: true,
+      nightDisciplineEnabled: false,
+      salahModeEnabled: false,
+      clearTemporaryUnlock: true,
+      clearSalahTestAnchorAt: true,
+      clearNightDisciplineBeforeChild: true,
+      clearSalahModeBeforeChild: true,
+    );
+    await _recomputeAndPersist();
+  }
+
+  Future<void> _enforceSubscriptionOrDisableModes() async {
+    if (!AppSuperwall.isEnabled) return;
+    await AppSuperwall.syncAttributesAndResolvePaywallRoute();
+    if (!AppSuperwall.subscriptionActiveNotifier.value) {
+      await disableAllModesDueToSubscription();
+    }
+  }
+
   /// Home "unlock" action: does **not** turn off Salah or Night Discipline — it
   /// only sets [FocusSettings.temporarilyUnlockedUntil] until the end of the
   /// current prayer window and/or current night window so blocking resumes on
@@ -647,6 +678,7 @@ class FocusController extends ChangeNotifier {
     }
     notifyListeners();
     await _recomputeAndPersist();
+    await _enforceSubscriptionOrDisableModes();
   }
 
   bool get _isStaleChildLockReason {

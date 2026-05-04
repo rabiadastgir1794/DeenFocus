@@ -655,6 +655,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsPremiumSubtitle => 'Unlock all features';
 
   @override
+  String get settingsManageSubscriptionTitle => 'Manage subscription';
+
+  @override
+  String get settingsManageSubscriptionSubtitle =>
+      'View plan or update billing';
+
+  @override
   String get settingsUsernameLabel => 'Username';
 
   @override
