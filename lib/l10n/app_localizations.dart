@@ -453,7 +453,7 @@ abstract class AppLocalizations {
   /// No description provided for @investYourDeenPrice.
   ///
   /// In en, this message translates to:
-  /// **'\$4.99/mo'**
+  /// **'\$9.99/mo'**
   String get investYourDeenPrice;
 
   /// No description provided for @investComparisonQuote.
@@ -546,29 +546,11 @@ abstract class AppLocalizations {
   /// **'Advanced prayer analytics & streaks'**
   String get featurePrayerAnalyticsStreaks;
 
-  /// No description provided for @featureMasjidGeofencing.
-  ///
-  /// In en, this message translates to:
-  /// **'Masjid auto-detection & geofencing'**
-  String get featureMasjidGeofencing;
-
-  /// No description provided for @featureQuranAudioTranslations.
-  ///
-  /// In en, this message translates to:
-  /// **'Full Quran with audio & translations'**
-  String get featureQuranAudioTranslations;
-
   /// No description provided for @featureAiAssistant.
   ///
   /// In en, this message translates to:
   /// **'AI Islamic assistant'**
   String get featureAiAssistant;
-
-  /// No description provided for @featureNoAdsForever.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove all ads forever'**
-  String get featureNoAdsForever;
 
   /// No description provided for @featurePrioritySupportEarlyAccess.
   ///
@@ -1140,6 +1122,84 @@ abstract class AppLocalizations {
   /// **'Stay focused when it matters most'**
   String get focusTabSubtitle;
 
+  /// No description provided for @focusChooseAppsEnableMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose apps and enable focus mode'**
+  String get focusChooseAppsEnableMode;
+
+  /// No description provided for @focusNotifAppsLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps Locked'**
+  String get focusNotifAppsLockedTitle;
+
+  /// No description provided for @focusNotifAppsUnlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps Unlocked'**
+  String get focusNotifAppsUnlockedTitle;
+
+  /// No description provided for @focusNotifNightModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode'**
+  String get focusNotifNightModeTitle;
+
+  /// No description provided for @focusNotifGoodMorningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Morning!'**
+  String get focusNotifGoodMorningTitle;
+
+  /// No description provided for @focusNotifAppsNowAvailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are now available.'**
+  String get focusNotifAppsNowAvailableBody;
+
+  /// No description provided for @focusNotifSalahLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are locked during Salah.'**
+  String get focusNotifSalahLockedBody;
+
+  /// No description provided for @focusNotifNightLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode is on. Let your mind and body rest.'**
+  String get focusNotifNightLockedBody;
+
+  /// No description provided for @focusNotifGenericLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected apps are locked.'**
+  String get focusNotifGenericLockedBody;
+
+  /// No description provided for @focusNotifMorningUnlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are not available.'**
+  String get focusNotifMorningUnlockBody;
+
+  /// No description provided for @widgetDailyVerseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Verse'**
+  String get widgetDailyVerseTitle;
+
+  /// No description provided for @widgetOpenAppTimelineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Deen Focus to prepare your daily verse and prayer widget data.'**
+  String get widgetOpenAppTimelineHint;
+
+  /// No description provided for @widgetSetLocationForPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your location in Deen Focus to load prayers and the daily verse.'**
+  String get widgetSetLocationForPrayers;
+
   /// No description provided for @focusChildModeActive.
   ///
   /// In en, this message translates to:
@@ -1385,12 +1445,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About Deen Focus'**
   String get settingsAboutTitle;
-
-  /// No description provided for @settingsDemoPlaybackHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap to watch. Playback pauses when you leave and resumes from there next time.'**
-  String get settingsDemoPlaybackHint;
 
   /// No description provided for @settingsSavingLocation.
   ///

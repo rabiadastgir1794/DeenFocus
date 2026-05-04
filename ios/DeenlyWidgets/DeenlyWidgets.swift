@@ -45,7 +45,15 @@ private enum WidgetDateParser {
 }
 
 private struct WidgetTimelinePayload: Decodable {
+  let ui: WidgetUiStrings?
   let entries: [WidgetPayloadEntry]
+}
+
+private struct WidgetUiStrings: Decodable {
+  let brandName: String?
+  let dailyVerseTitle: String?
+  let timelinePlaceholder: String?
+  let setLocationMessage: String?
 }
 
 private struct WidgetPayloadEntry: Decodable {
@@ -73,6 +81,7 @@ private struct WidgetPrayer: Decodable {
 private struct DeenlyWidgetEntry: TimelineEntry {
   let date: Date
   let payload: WidgetPayloadEntry
+  let ui: WidgetUiStrings?
 
   static let placeholder = DeenlyWidgetEntry(
     date: Date(),
@@ -94,7 +103,8 @@ private struct DeenlyWidgetEntry: TimelineEntry {
         WidgetPrayer(id: "maghrib", label: "Maghrib", timeLabel: "6:31 PM", isoTime: "2026-03-28T18:31:00"),
         WidgetPrayer(id: "isha", label: "Isha", timeLabel: "7:46 PM", isoTime: "2026-03-28T19:46:00"),
       ]
-    )
+    ),
+    ui: nil
   )
 }
 
@@ -137,21 +147,21 @@ private struct DeenlyProvider: TimelineProvider {
     guard
       let raw = defaults?.string(forKey: "widget_timeline_json"),
       let data = raw.data(using: .utf8),
-      let payload = try? JSONDecoder().decode(WidgetTimelinePayload.self, from: data)
+      let timeline = try? JSONDecoder().decode(WidgetTimelinePayload.self, from: data)
     else {
       return []
     }
 
-    return payload.entries.flatMap { payloadEntry -> [DeenlyWidgetEntry] in
+    return timeline.entries.flatMap { payloadEntry -> [DeenlyWidgetEntry] in
       let date = WidgetDateParser.parse(payloadEntry.timestamp)
       guard let date else { return [] }
-      var entries = [DeenlyWidgetEntry(date: date, payload: payloadEntry)]
+      var entries = [DeenlyWidgetEntry(date: date, payload: payloadEntry, ui: timeline.ui)]
       let prayerTransitions = payloadEntry.prayers.compactMap {
         WidgetDateParser.parse($0.isoTime)
       }
       entries.append(
         contentsOf: prayerTransitions.map {
-          DeenlyWidgetEntry(date: $0, payload: payloadEntry)
+          DeenlyWidgetEntry(date: $0, payload: payloadEntry, ui: timeline.ui)
         }
       )
       return entries
@@ -225,10 +235,10 @@ private struct DeenlyWidgetView: View {
     VStack(alignment: .leading, spacing: 10) {
       header(fontSize: 16 * fontScale, dateSize: 12 * fontScale)
       Divider().overlay(Color.white.opacity(0.16))
-      Text("Daily Verse")
+      Text(entry.ui?.dailyVerseTitle ?? "Daily Verse")
         .font(.system(size: 9 * fontScale, weight: .medium, design: .rounded))
         .foregroundColor(palette.foreground.opacity(0.9))
-      Text(entry.payload.verse?.text ?? "Open Deenly to prepare your daily verse and prayer widget data.")
+      Text(entry.payload.verse?.text ?? entry.ui?.timelinePlaceholder ?? "Open Deenly to prepare your daily verse and prayer widget data.")
         .font(.system(size: 11.25 * fontScale, weight: .bold, design: .rounded))
         .foregroundColor(palette.foreground)
         .lineLimit(5)
@@ -253,7 +263,7 @@ private struct DeenlyWidgetView: View {
     HStack {
       Spacer()
       VStack(alignment: .trailing, spacing: 2) {
-        Text("Deenly")
+        Text(entry.ui?.brandName ?? "Deen Focus")
           .font(.system(size: fontSize, weight: .bold, design: .rounded))
           .foregroundColor(palette.foreground)
         Text(entry.payload.dateLabel)
@@ -520,8 +530,8 @@ struct DeenlyWidgets: Widget {
     StaticConfiguration(kind: kind, provider: DeenlyProvider()) { entry in
       DeenlyWidgetView(entry: entry)
     }
-    .configurationDisplayName("Deenly Prayer Widget")
-    .description("Prayer times and the daily verse in small, medium, and large sizes.")
+    .configurationDisplayName("Deen Focus — Prayer")
+    .description("Prayer times and daily verse. Open the app once to refresh language and content.")
     .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     .contentMarginsDisabled()
   }

@@ -239,18 +239,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Erweiterte Gebetsanalysen und Streaks';
 
   @override
-  String get featureMasjidGeofencing =>
-      'Automatische Erkennung und Geofencing der Moschee';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Vollständiger Koran mit Audio und Übersetzungen';
-
-  @override
   String get featureAiAssistant => 'KI-islamischer Assistent';
-
-  @override
-  String get featureNoAdsForever => 'Entfernen Sie alle Anzeigen für immer';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -553,6 +542,50 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bleiben Sie konzentriert, wenn es darauf ankommt';
 
   @override
+  String get focusChooseAppsEnableMode =>
+      'Apps wählen und Fokusmodus aktivieren';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Apps gesperrt';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Apps entsperrt';
+
+  @override
+  String get focusNotifNightModeTitle => 'Nachtmodus';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'Guten Morgen!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'Apps sind jetzt verfügbar.';
+
+  @override
+  String get focusNotifSalahLockedBody =>
+      'Während des Gebets sind Apps gesperrt.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'Nachtmodus ist an. Gönn Geist und Körper Ruhe.';
+
+  @override
+  String get focusNotifGenericLockedBody => 'Ausgewählte Apps sind gesperrt.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'Apps sind nicht verfügbar.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Tagesvers';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Öffne Deen Focus, um Tagesvers und Gebet-Widget-Daten vorzubereiten.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Lege in Deen Focus deinen Standort fest, um Gebete und den Tagesvers zu laden.';
+
+  @override
   String get focusChildModeActive => 'Kindermodus aktiv';
 
   @override
@@ -686,10 +719,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'Über Deen Focus';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'Zum Ansehen tippen. Die Wiedergabe wird beim Verlassen angehalten und beim nächsten Mal von dort aus fortgesetzt.';
 
   @override
   String get settingsSavingLocation => 'Sparen...';

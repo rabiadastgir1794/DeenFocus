@@ -71,10 +71,7 @@
   "everythingYouGet": "Todo lo que obtienes",
   "featureFocusModeAllModes": "Modo de enfoque ilimitado con los 3 modos",
   "featurePrayerAnalyticsStreaks": "Análisis y rachas de oración avanzadas",
-  "featureMasjidGeofencing": "Autodetección y geocercado de Masjid",
-  "featureQuranAudioTranslations": "Corán completo con audio y traducciones.",
   "featureAiAssistant": "Asistente islámico de IA",
-  "featureNoAdsForever": "Eliminar todos los anuncios para siempre",
   "featurePrioritySupportEarlyAccess": "Soporte prioritario y acceso temprano",
   "socialProofPrefix": "Unirse",
   "socialProofHighlight": "10,000+",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Ubicación",
   "settingsDarkModeLabel": "Modo oscuro",
   "settingsAboutTitle": "Acerca de Deen Focus",
-  "settingsDemoPlaybackHint": "Toca para ver. La reproducción se pausa cuando sales y se reanuda desde ahí la próxima vez.",
   "settingsSavingLocation": "Guardando...",
   "settingsSaveLocation": "Guardar ubicación",
   "settingsAboutTagline": "Enfoque. Disciplina. Constancia.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Elige apps y activa el modo Enfoque",
+  "focusNotifAppsLockedTitle": "Apps bloqueadas",
+  "focusNotifAppsUnlockedTitle": "Apps desbloqueadas",
+  "focusNotifNightModeTitle": "Modo nocturno",
+  "focusNotifGoodMorningTitle": "¡Buenos días!",
+  "focusNotifAppsNowAvailableBody": "Las aplicaciones ya están disponibles.",
+  "focusNotifSalahLockedBody": "Las aplicaciones están bloqueadas durante Salah.",
+  "focusNotifNightLockedBody": "El modo nocturno está activo. Deja que tu mente y cuerpo descansen.",
+  "focusNotifGenericLockedBody": "Las aplicaciones seleccionadas están bloqueadas.",
+  "focusNotifMorningUnlockBody": "Las aplicaciones no están disponibles.",
+  "widgetDailyVerseTitle": "Verso del día",
+  "widgetOpenAppTimelineHint": "Abre Deen Focus para preparar el verso del día y los datos del widget de oración.",
+  "widgetSetLocationForPrayers": "Establece tu ubicación en Deen Focus para cargar oraciones y el verso del día."
 }

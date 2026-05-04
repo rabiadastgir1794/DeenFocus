@@ -186,7 +186,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                 _QuickActionsCard(
                   backgroundColor: softCardColor,
                   focusTitle: focusVm.homeCardTitle(l10n),
-                  focusSubtitle: focusVm.homeCardSubtitle,
+                  focusSubtitle: focusVm.homeCardSubtitle(l10n),
                   qiblaTitle: l10n.homeQiblaDirection,
                   qiblaSubtitle: vm.qiblaInfo == null
                       ? l10n.homeLocationMissingForQibla
@@ -264,7 +264,9 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   String _verseText(AppLocalizations l10n, HomeDailyVerse? verse) {
     if (verse == null) return l10n.homeDailyVerseFallback;
-    return '"${verse.englishText}" — ${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}';
+    final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
+    final quote = useArabic ? verse.arabicText : verse.englishText;
+    return '"$quote" — ${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}';
   }
 
   Future<void> _onCalendarTap(

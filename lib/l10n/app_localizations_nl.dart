@@ -240,18 +240,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Geavanceerde gebedsanalyses en -reeksen';
 
   @override
-  String get featureMasjidGeofencing =>
-      'Automatische detectie en geofencing van Masjid';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Volledige Koran met audio en vertalingen';
-
-  @override
   String get featureAiAssistant => 'AI islamitische assistent';
-
-  @override
-  String get featureNoAdsForever => 'Verwijder alle advertenties voor altijd';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -552,6 +541,51 @@ class AppLocalizationsNl extends AppLocalizations {
       'Blijf gefocust wanneer het er het meest toe doet';
 
   @override
+  String get focusChooseAppsEnableMode =>
+      'Kies apps en schakel de focusmodus in';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Apps vergrendeld';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Apps ontgrendeld';
+
+  @override
+  String get focusNotifNightModeTitle => 'Nachtmodus';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'Goedemorgen!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'Apps zijn nu beschikbaar.';
+
+  @override
+  String get focusNotifSalahLockedBody =>
+      'Apps zijn vergrendeld tijdens Salah.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'Nachtmodus staat aan. Laat geest en lichaam rusten.';
+
+  @override
+  String get focusNotifGenericLockedBody =>
+      'Geselecteerde apps zijn vergrendeld.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'Apps zijn niet beschikbaar.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Dagvers';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Open Deen Focus om je dagvers en gebed-widgetgegevens klaar te zetten.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Stel je locatie in Deen Focus in om gebeden en het dagvers te laden.';
+
+  @override
   String get focusChildModeActive => 'Kindmodus actief';
 
   @override
@@ -684,10 +718,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'Over Deen Focus';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'Tik om te kijken. Het afspelen wordt gepauzeerd wanneer u weggaat en wordt de volgende keer vanaf daar hervat.';
 
   @override
   String get settingsSavingLocation => 'Besparing...';

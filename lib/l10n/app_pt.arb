@@ -71,10 +71,7 @@
   "everythingYouGet": "Tudo que você consegue",
   "featureFocusModeAllModes": "Modo de foco ilimitado com todos os 3 modos",
   "featurePrayerAnalyticsStreaks": "Análises e sequências avançadas de oração",
-  "featureMasjidGeofencing": "Detecção automática e cerca geográfica de Masjid",
-  "featureQuranAudioTranslations": "Alcorão completo com áudio e traduções",
   "featureAiAssistant": "Assistente islâmico de IA",
-  "featureNoAdsForever": "Remova todos os anúncios para sempre",
   "featurePrioritySupportEarlyAccess": "Suporte prioritário e acesso antecipado",
   "socialProofPrefix": "Juntar",
   "socialProofHighlight": "Mais de 10.000",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Localização",
   "settingsDarkModeLabel": "Modo escuro",
   "settingsAboutTitle": "Sobre Deen Focus",
-  "settingsDemoPlaybackHint": "Toque para assistir. A reprodução é pausada quando você sai e continua a partir daí na próxima vez.",
   "settingsSavingLocation": "Salvando...",
   "settingsSaveLocation": "Salvar localização",
   "settingsAboutTagline": "Foco. Disciplina. Consistência.",
@@ -223,7 +219,7 @@
   "appDemoPreviewLoadFailed": "Não foi possível carregar a demonstração.",
   "appDemoTryAgain": "Tente novamente",
   "appDemoWatchLabel": "Assista à demonstração",
-  "homeAiChatTitle": "Deen Focus AI",
+  "homeAiChatTitle": "IA Deen Focus",
   "homeAiAskQuestionHint": "Faça uma pergunta...",
   "homeAiSend": "Enviar",
   "homeAiErrorPrefix": "Desculpe, tive um problema ao me conectar ao Deen Focus AI.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Escolha apps e ative o modo Foco",
+  "focusNotifAppsLockedTitle": "Apps bloqueados",
+  "focusNotifAppsUnlockedTitle": "Apps desbloqueados",
+  "focusNotifNightModeTitle": "Modo noturno",
+  "focusNotifGoodMorningTitle": "Bom dia!",
+  "focusNotifAppsNowAvailableBody": "Os aplicativos já estão disponíveis.",
+  "focusNotifSalahLockedBody": "Os aplicativos ficam bloqueados durante a Salah.",
+  "focusNotifNightLockedBody": "O modo noturno está ativo. Deixe sua mente e corpo descansarem.",
+  "focusNotifGenericLockedBody": "Os aplicativos selecionados estão bloqueados.",
+  "focusNotifMorningUnlockBody": "Os aplicativos não estão disponíveis.",
+  "widgetDailyVerseTitle": "Verso do dia",
+  "widgetOpenAppTimelineHint": "Abra o Deen Focus para preparar o verso do dia e os dados do widget de oração.",
+  "widgetSetLocationForPrayers": "Defina sua localização no Deen Focus para carregar orações e o verso do dia."
 }

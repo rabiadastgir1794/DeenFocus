@@ -241,18 +241,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Расширенная аналитика молитв и серии';
 
   @override
-  String get featureMasjidGeofencing =>
-      'Автоматическое обнаружение мечети и геозона';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Полный Коран с аудио и переводами';
-
-  @override
   String get featureAiAssistant => 'ИИ исламский помощник';
-
-  @override
-  String get featureNoAdsForever => 'Удалить всю рекламу навсегда';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -554,6 +543,51 @@ class AppLocalizationsRu extends AppLocalizations {
       'Оставайтесь сосредоточенными, когда это важнее всего';
 
   @override
+  String get focusChooseAppsEnableMode =>
+      'Выберите приложения и включите режим фокуса';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Приложения заблокированы';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Приложения разблокированы';
+
+  @override
+  String get focusNotifNightModeTitle => 'Ночной режим';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'Доброе утро!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'Приложения снова доступны.';
+
+  @override
+  String get focusNotifSalahLockedBody =>
+      'Приложения заблокированы во время намаза.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'Ночной режим включён. Дайте отдохнуть разуму и телу.';
+
+  @override
+  String get focusNotifGenericLockedBody =>
+      'Выбранные приложения заблокированы.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'Приложения недоступны.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Аят дня';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Откройте Deen Focus, чтобы подготовить аят дня и данные виджета намаза.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Укажите местоположение в Deen Focus, чтобы загрузить намазы и аят дня.';
+
+  @override
   String get focusChildModeActive => 'Детский режим активен';
 
   @override
@@ -664,7 +698,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsEnterYourName => 'Введите свое имя';
 
   @override
-  String get settingsPremiumTitle => 'Deen Focus Premium';
+  String get settingsPremiumTitle => 'Премиум Deen Focus';
 
   @override
   String get settingsPremiumSubtitle => 'Разблокируйте все функции';
@@ -686,10 +720,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'О Дин Фокус';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'Нажмите, чтобы посмотреть. Воспроизведение приостанавливается, когда вы уходите, и возобновляется с этого момента в следующий раз.';
 
   @override
   String get settingsSavingLocation => 'Сохранение...';
@@ -729,7 +759,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get appDemoWatchLabel => 'Посмотреть демо';
 
   @override
-  String get homeAiChatTitle => 'Дин Фокус ИИ';
+  String get homeAiChatTitle => 'ИИ Deen Focus';
 
   @override
   String get homeAiAskQuestionHint => 'Задайте вопрос...';

@@ -71,10 +71,7 @@
   "everythingYouGet": "Все, что вы получаете",
   "featureFocusModeAllModes": "Неограниченный режим фокусировки со всеми 3 режимами",
   "featurePrayerAnalyticsStreaks": "Расширенная аналитика молитв и серии",
-  "featureMasjidGeofencing": "Автоматическое обнаружение мечети и геозона",
-  "featureQuranAudioTranslations": "Полный Коран с аудио и переводами",
   "featureAiAssistant": "ИИ исламский помощник",
-  "featureNoAdsForever": "Удалить всю рекламу навсегда",
   "featurePrioritySupportEarlyAccess": "Приоритетная поддержка и ранний доступ",
   "socialProofPrefix": "Присоединиться",
   "socialProofHighlight": "10 000+",
@@ -203,7 +200,7 @@
   "focusChildBlockingDescription": "Приложения мгновенно блокируются в детском режиме. Разблокируйте их с помощью переключателя или с главного экрана.",
   "settingsEditUsername": "Изменить имя пользователя",
   "settingsEnterYourName": "Введите свое имя",
-  "settingsPremiumTitle": "Deen Focus Premium",
+  "settingsPremiumTitle": "Премиум Deen Focus",
   "settingsPremiumSubtitle": "Разблокируйте все функции",
   "settingsManageSubscriptionTitle": "Управление подпиской",
   "settingsManageSubscriptionSubtitle": "План или способ оплаты",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Расположение",
   "settingsDarkModeLabel": "Темный режим",
   "settingsAboutTitle": "О Дин Фокус",
-  "settingsDemoPlaybackHint": "Нажмите, чтобы посмотреть. Воспроизведение приостанавливается, когда вы уходите, и возобновляется с этого момента в следующий раз.",
   "settingsSavingLocation": "Сохранение...",
   "settingsSaveLocation": "Сохранить местоположение",
   "settingsAboutTagline": "Фокус. Дисциплина. Последовательность.",
@@ -223,7 +219,7 @@
   "appDemoPreviewLoadFailed": "Не удалось загрузить демо-версию.",
   "appDemoTryAgain": "Попробуйте еще раз",
   "appDemoWatchLabel": "Посмотреть демо",
-  "homeAiChatTitle": "Дин Фокус ИИ",
+  "homeAiChatTitle": "ИИ Deen Focus",
   "homeAiAskQuestionHint": "Задайте вопрос...",
   "homeAiSend": "Отправлять",
   "homeAiErrorPrefix": "Извините, у меня возникла проблема при подключении к Deen Focus AI.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Выберите приложения и включите режим фокуса",
+  "focusNotifAppsLockedTitle": "Приложения заблокированы",
+  "focusNotifAppsUnlockedTitle": "Приложения разблокированы",
+  "focusNotifNightModeTitle": "Ночной режим",
+  "focusNotifGoodMorningTitle": "Доброе утро!",
+  "focusNotifAppsNowAvailableBody": "Приложения снова доступны.",
+  "focusNotifSalahLockedBody": "Приложения заблокированы во время намаза.",
+  "focusNotifNightLockedBody": "Ночной режим включён. Дайте отдохнуть разуму и телу.",
+  "focusNotifGenericLockedBody": "Выбранные приложения заблокированы.",
+  "focusNotifMorningUnlockBody": "Приложения недоступны.",
+  "widgetDailyVerseTitle": "Аят дня",
+  "widgetOpenAppTimelineHint": "Откройте Deen Focus, чтобы подготовить аят дня и данные виджета намаза.",
+  "widgetSetLocationForPrayers": "Укажите местоположение в Deen Focus, чтобы загрузить намазы и аят дня."
 }

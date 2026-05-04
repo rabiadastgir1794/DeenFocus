@@ -605,7 +605,7 @@ class FocusController extends ChangeNotifier {
     return l10n.focusSetUpHomeCardTitle;
   }
 
-  String get homeCardSubtitle {
+  String homeCardSubtitle(AppLocalizations l10n) {
     if (_lockState.isLocked) {
       if (_isStaleChildLockReason) {
         if (_settings.nightDisciplineEnabled && _settings.salahModeEnabled) {
@@ -639,7 +639,7 @@ class FocusController extends ChangeNotifier {
       }
       return '${parts.join(' and ')} are enabled.';
     }
-    return 'Choose apps and enable focus modes.';
+    return l10n.focusChooseAppsEnableMode;
   }
 
   String get statusCaption {
@@ -1152,6 +1152,7 @@ class FocusController extends ChangeNotifier {
               reason:
                   snap.reason ?? 'Night Discipline is blocking selected apps.',
               nextChangeAt: snap.nextChangeAt ?? window.end,
+              notificationHint: 'nightLock',
             ),
           );
         }
@@ -1172,6 +1173,7 @@ class FocusController extends ChangeNotifier {
                 snap.reason ??
                 'Night Discipline will start at ${_formatTime(range.startHour, range.startMinute)}.',
             nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
+            notificationHint: snap.isLocked ? null : 'nightMorning',
           ),
         );
       }
@@ -1199,6 +1201,7 @@ class FocusController extends ChangeNotifier {
             reason:
                 snap.reason ?? 'Night Discipline is blocking selected apps.',
             nextChangeAt: snap.nextChangeAt ?? currentWindow.end,
+            notificationHint: 'nightLock',
           ),
         );
       }
@@ -1345,6 +1348,7 @@ class FocusController extends ChangeNotifier {
     required FocusModeType activeMode,
     required String reason,
     required DateTime? nextChangeAt,
+    String? notificationHint,
   }) {
     return <String, dynamic>{
       'at': at.toIso8601String(),
@@ -1355,6 +1359,7 @@ class FocusController extends ChangeNotifier {
       'nextChangeAt': nextChangeAt?.toIso8601String(),
       if (nextChangeAt != null)
         'nextChangeAtMillis': nextChangeAt.millisecondsSinceEpoch,
+      if (notificationHint != null) 'notificationHint': notificationHint,
     };
   }
 

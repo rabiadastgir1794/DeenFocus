@@ -71,10 +71,7 @@
   "everythingYouGet": "Aldığınız hər şey",
   "featureFocusModeAllModes": "Bütün 3 rejimi ilə limitsiz Fokus rejimi",
   "featurePrayerAnalyticsStreaks": "Qabaqcıl dua analitikası və xətlər",
-  "featureMasjidGeofencing": "Məscidin avtomatik aşkarlanması və geofencing",
-  "featureQuranAudioTranslations": "Audio və tərcümələri ilə tam Quran",
   "featureAiAssistant": "AI İslam köməkçisi",
-  "featureNoAdsForever": "Bütün reklamları həmişəlik silin",
   "featurePrioritySupportEarlyAccess": "Prioritet dəstək və erkən giriş",
   "socialProofPrefix": "Qoşulun",
   "socialProofHighlight": "10.000+",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Məkan",
   "settingsDarkModeLabel": "Qaranlıq rejim",
   "settingsAboutTitle": "Deen Focus haqqında",
-  "settingsDemoPlaybackHint": "Baxmaq üçün toxunun. Siz ayrıldığınız zaman oxutma dayandırılır və növbəti dəfə oradan davam etdirilir.",
   "settingsSavingLocation": "Yadda saxlanılır...",
   "settingsSaveLocation": "Məkanı Saxla",
   "settingsAboutTagline": "Fokus. İntizam. Ardıcıllıq.",
@@ -223,7 +219,7 @@
   "appDemoPreviewLoadFailed": "Demonu yükləmək mümkün olmadı.",
   "appDemoTryAgain": "Yenidən cəhd edin",
   "appDemoWatchLabel": "Demoya baxın",
-  "homeAiChatTitle": "Deen Focus AI",
+  "homeAiChatTitle": "Deen Focus Süni İntellekt",
   "homeAiAskQuestionHint": "Sual verin...",
   "homeAiSend": "Göndər",
   "homeAiErrorPrefix": "Bağışlayın, Deen Focus AI-ə qoşularkən problemlə üzləşdim.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Tətbiqləri seçin və fokus rejimini aktivləşdirin",
+  "focusNotifAppsLockedTitle": "Tətbiqlər kilidlənib",
+  "focusNotifAppsUnlockedTitle": "Tətbiqlər açılıb",
+  "focusNotifNightModeTitle": "Gecə rejimi",
+  "focusNotifGoodMorningTitle": "Sabahınız xeyir!",
+  "focusNotifAppsNowAvailableBody": "Tətbiqlər indi əlçatandır.",
+  "focusNotifSalahLockedBody": "Namaz zamanı tətbiqlər kilidlənir.",
+  "focusNotifNightLockedBody": "Gecə rejimi aktivdir. Zehninizə və bədənizə istirahət verin.",
+  "focusNotifGenericLockedBody": "Seçilmiş tətbiqlər kilidlənib.",
+  "focusNotifMorningUnlockBody": "Tətbiqlər əlçatan deyil.",
+  "widgetDailyVerseTitle": "Günün ayəsi",
+  "widgetOpenAppTimelineHint": "Gündəlik ayə və namaz vidcet məlumatı üçün Deen Focus-u açın.",
+  "widgetSetLocationForPrayers": "Namazlar və gündəlik ayə üçün Deen Focus-da yerinizi təyin edin."
 }

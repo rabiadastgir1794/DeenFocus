@@ -519,8 +519,6 @@ class _BenefitsCard extends StatelessWidget {
   List<String> get _benefits => [
     l10n.featureFocusModeAllModes,
     l10n.featurePrayerAnalyticsStreaks,
-    l10n.featureMasjidGeofencing,
-    l10n.featureQuranAudioTranslations,
     l10n.featureAiAssistant,
   ];
 }

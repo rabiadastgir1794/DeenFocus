@@ -71,10 +71,7 @@
   "everythingYouGet": "Tutto quello che ottieni",
   "featureFocusModeAllModes": "Modalità di messa a fuoco illimitata con tutte e 3 le modalità",
   "featurePrayerAnalyticsStreaks": "Analisi e serie di preghiere avanzate",
-  "featureMasjidGeofencing": "Rilevamento automatico e geofencing della Masjid",
-  "featureQuranAudioTranslations": "Corano completo con audio e traduzioni",
   "featureAiAssistant": "Assistente islamico dell'AI",
-  "featureNoAdsForever": "Rimuovi tutti gli annunci per sempre",
   "featurePrioritySupportEarlyAccess": "Supporto prioritario e accesso anticipato",
   "socialProofPrefix": "Giuntura",
   "socialProofHighlight": "10.000+",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Posizione",
   "settingsDarkModeLabel": "Modalità oscura",
   "settingsAboutTitle": "A proposito di Deen Focus",
-  "settingsDemoPlaybackHint": "Tocca per guardare. La riproduzione viene messa in pausa quando esci e riprende da lì la volta successiva.",
   "settingsSavingLocation": "Risparmio...",
   "settingsSaveLocation": "Salva posizione",
   "settingsAboutTagline": "Messa a fuoco. Disciplina. Coerenza.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Scegli le app e attiva la modalità Focus",
+  "focusNotifAppsLockedTitle": "App bloccate",
+  "focusNotifAppsUnlockedTitle": "App sbloccate",
+  "focusNotifNightModeTitle": "Modalità notte",
+  "focusNotifGoodMorningTitle": "Buongiorno!",
+  "focusNotifAppsNowAvailableBody": "Le app sono ora disponibili.",
+  "focusNotifSalahLockedBody": "Le app sono bloccate durante la Salah.",
+  "focusNotifNightLockedBody": "La modalità notte è attiva. Concedi riposo a mente e corpo.",
+  "focusNotifGenericLockedBody": "Le app selezionate sono bloccate.",
+  "focusNotifMorningUnlockBody": "Le app non sono disponibili.",
+  "widgetDailyVerseTitle": "Versetto del giorno",
+  "widgetOpenAppTimelineHint": "Apri Deen Focus per preparare il versetto del giorno e i dati del widget delle preghiere.",
+  "widgetSetLocationForPrayers": "Imposta la posizione in Deen Focus per caricare preghiere e versetto del giorno."
 }

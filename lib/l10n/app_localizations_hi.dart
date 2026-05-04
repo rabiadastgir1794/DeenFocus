@@ -240,17 +240,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'उन्नत प्रार्थना विश्लेषण और स्ट्रीक्स';
 
   @override
-  String get featureMasjidGeofencing => 'मस्जिद ऑटो-डिटेक्शन और जियोफेंसिंग';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'ऑडियो और अनुवाद के साथ पूर्ण कुरान';
-
-  @override
   String get featureAiAssistant => 'एआई इस्लामिक सहायक';
-
-  @override
-  String get featureNoAdsForever => 'सभी विज्ञापन हमेशा के लिए हटा दें';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -550,6 +540,48 @@ class AppLocalizationsHi extends AppLocalizations {
       'जब यह सबसे ज्यादा मायने रखता हो तो ध्यान केंद्रित रखें';
 
   @override
+  String get focusChooseAppsEnableMode => 'ऐप चुनें और फ़ोकस मोड चालू करें';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'ऐप लॉक हैं';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'ऐप अनलॉक हैं';
+
+  @override
+  String get focusNotifNightModeTitle => 'नाइट मोड';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'सुप्रभात!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'ऐप अब उपलब्ध हैं।';
+
+  @override
+  String get focusNotifSalahLockedBody => 'नमाज़ के दौरान ऐप लॉक हैं।';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'नाइट मोड चालू है। अपने मन और शरीर को आराम दें।';
+
+  @override
+  String get focusNotifGenericLockedBody => 'चुने गए ऐप लॉक हैं।';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'ऐप उपलब्ध नहीं हैं।';
+
+  @override
+  String get widgetDailyVerseTitle => 'दैनिक आयत';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'दैनिक आयत और प्रार्थना विजेट डेटा तैयार करने के लिए Deen Focus खोलें।';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'नमाज़ और दैनिक आयत लोड करने के लिए Deen Focus में अपना स्थान सेट करें।';
+
+  @override
   String get focusChildModeActive => 'चाइल्ड मोड सक्रिय';
 
   @override
@@ -657,7 +689,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsEnterYourName => 'अपना नाम दर्ज करें';
 
   @override
-  String get settingsPremiumTitle => 'Deen Focus Premium';
+  String get settingsPremiumTitle => 'दीन फोकस प्रीमियम';
 
   @override
   String get settingsPremiumSubtitle => 'सभी सुविधाएं अनलॉक करें';
@@ -680,10 +712,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'दीन फोकस के बारे में';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'देखने के लिए टैप करें. जब आप चले जाते हैं तो प्लेबैक रुक जाता है और अगली बार वहीं से शुरू होता है।';
 
   @override
   String get settingsSavingLocation => 'सहेजा जा रहा है...';

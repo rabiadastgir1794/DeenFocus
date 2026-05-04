@@ -118,7 +118,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     final parts = <String>[];
     if (salahMode) parts.add(l10n.focusPrayerBlockingDescription);
     if (nightMode) parts.add(l10n.focusNightBlockingDescription);
-    return parts.join(' ');
+    return parts.join('\n');
   }
 
   @override
@@ -949,6 +949,7 @@ class _ActiveModeBanner extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 11,
                     color: colorScheme.onSurfaceVariant,
+                    height: 1.35,
                   ),
                 ),
               ],

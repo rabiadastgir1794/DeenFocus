@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Locale;
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -11,6 +12,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'focus_enforcement_service.dart';
 import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
+import '../../l10n/app_localizations.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import '../../features/home/model/home_models.dart';
 
@@ -255,7 +257,7 @@ class AppNotificationService {
     required List<Map<String, dynamic>> scheduledTransitions,
     required bool includeUnlockNotifications,
   }) async {
-    final isSpanish = await _isSpanishLocale();
+    final l10n = await _focusNotificationsLocalizations();
     final transitions = scheduledTransitions
         .where((transition) {
           final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
@@ -272,19 +274,23 @@ class AppNotificationService {
       if (atMillis <= 0) continue;
       final isLocked = transition['isLocked'] as bool? ?? false;
       final mode = transition['activeMode'] as String?;
+      final hint = transition['notificationHint'] as String?;
       final at = DateTime.fromMillisecondsSinceEpoch(atMillis);
       final id = isLocked ? lockId++ : unlockId++;
-      final title = isLocked
-          ? (isSpanish ? 'Apps bloqueadas' : 'Apps Locked')
-          : (isSpanish ? 'Apps desbloqueadas' : 'Apps Unlocked');
+      final title = _focusTransitionTitle(
+        isLocked: isLocked,
+        notificationHint: hint,
+        l10n: l10n,
+      );
       final body = _focusTransitionBody(
         isLocked: isLocked,
         mode: mode,
-        isSpanish: isSpanish,
+        notificationHint: hint,
+        l10n: l10n,
       );
       await FocusEnforcementService.appendDebugLog(
         'notifications.focusTransition.schedule',
-        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode',
+        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode hint=$hint',
       );
       await _scheduleIfFuture(
         id: id,
@@ -297,29 +303,56 @@ class AppNotificationService {
     }
   }
 
+  Future<AppLocalizations> _focusNotificationsLocalizations() async {
+    final code = await StorageService.localeCode;
+    try {
+      return lookupAppLocalizations(_localeFromPrefsCode(code));
+    } catch (_) {
+      return lookupAppLocalizations(const Locale('en'));
+    }
+  }
+
+  Locale _localeFromPrefsCode(String? code) {
+    if (code == null || code.isEmpty) return const Locale('en');
+    final primary = code.replaceAll('_', '-').split('-').first.toLowerCase();
+    return Locale(primary);
+  }
+
+  String _focusTransitionTitle({
+    required bool isLocked,
+    required String? notificationHint,
+    required AppLocalizations l10n,
+  }) {
+    if (notificationHint == 'nightLock') {
+      return l10n.focusNotifNightModeTitle;
+    }
+    if (notificationHint == 'nightMorning') {
+      return l10n.focusNotifGoodMorningTitle;
+    }
+    if (isLocked) return l10n.focusNotifAppsLockedTitle;
+    return l10n.focusNotifAppsUnlockedTitle;
+  }
+
   String _focusTransitionBody({
     required bool isLocked,
     required String? mode,
-    required bool isSpanish,
+    required String? notificationHint,
+    required AppLocalizations l10n,
   }) {
-    if (isSpanish) {
-      if (!isLocked) return 'Las aplicaciones ya están disponibles.';
-      if (mode == FocusModeType.salah.name) {
-        return 'Las aplicaciones están bloqueadas durante Salah.';
-      }
-      if (mode == FocusModeType.nightDiscipline.name) {
-        return 'El modo nocturno está activo. Deja que tu mente y cuerpo descansen.';
-      }
-      return 'Las aplicaciones seleccionadas están bloqueadas.';
+    if (notificationHint == 'nightLock') {
+      return l10n.focusNotifNightLockedBody;
     }
-    if (!isLocked) return 'Apps are now available.';
+    if (notificationHint == 'nightMorning') {
+      return l10n.focusNotifMorningUnlockBody;
+    }
+    if (!isLocked) return l10n.focusNotifAppsNowAvailableBody;
     if (mode == FocusModeType.salah.name) {
-      return 'Apps are locked during Salah.';
+      return l10n.focusNotifSalahLockedBody;
     }
     if (mode == FocusModeType.nightDiscipline.name) {
-      return 'Night mode is on. Let your mind and body rest.';
+      return l10n.focusNotifNightLockedBody;
     }
-    return 'Selected apps are locked.';
+    return l10n.focusNotifGenericLockedBody;
   }
 
   NotificationDetails get _nightTransitionNotificationDetails =>
@@ -588,7 +621,9 @@ class AppNotificationService {
     required bool includeUnlockNotifications,
     required List<Map<String, dynamic>> scheduledTransitions,
   }) async {
+    final localeCode = await StorageService.localeCode ?? 'en';
     final parts = <String>[
+      'locale=$localeCode',
       'night=${settings.nightDisciplineEnabled}',
       'salah=${settings.salahModeEnabled}',
       'start=${settings.nightRange.startHour}:${settings.nightRange.startMinute}',
@@ -600,7 +635,8 @@ class AppNotificationService {
       final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
       final isLocked = transition['isLocked'] as bool? ?? false;
       final mode = transition['activeMode'] as String? ?? '';
-      parts.add('transition=$atMillis:${isLocked ? 1 : 0}:$mode');
+      final hint = transition['notificationHint'] as String? ?? '';
+      parts.add('transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint');
     }
 
     return parts.join('|');

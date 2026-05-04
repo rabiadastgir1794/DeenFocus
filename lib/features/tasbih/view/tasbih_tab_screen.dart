@@ -188,8 +188,6 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final grandTotal = _items.fold<int>(0, (sum, item) => sum + item.totalCount);
-
     return Stack(
       children: [
         Scaffold(
@@ -231,7 +229,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 12.h),
                   Container(
                     margin: EdgeInsets.zero,
                     decoration: BoxDecoration(
@@ -256,7 +254,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                             ),
                           ),
                           Text(
-                            '$grandTotal',
+                            '${_items.length}',
                             style: TextStyle(
                               color: colorScheme.primary,
                               fontSize: 18.sp,

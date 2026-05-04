@@ -238,17 +238,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تحليلات الصلاة المتقدمة والشرائط';
 
   @override
-  String get featureMasjidGeofencing =>
-      'الكشف التلقائي عن المسجد والسياج الجغرافي';
-
-  @override
-  String get featureQuranAudioTranslations => 'القرآن كاملا بالصوت والترجمة';
-
-  @override
   String get featureAiAssistant => 'مساعد إسلامي';
-
-  @override
-  String get featureNoAdsForever => 'إزالة كافة الإعلانات إلى الأبد';
 
   @override
   String get featurePrioritySupportEarlyAccess => 'دعم الأولوية والوصول المبكر';
@@ -542,6 +532,48 @@ class AppLocalizationsAr extends AppLocalizations {
   String get focusTabSubtitle => 'حافظ على تركيزك عندما يكون الأمر أكثر أهمية';
 
   @override
+  String get focusChooseAppsEnableMode => 'اختر التطبيقات وفعّل وضع التركيز';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'التطبيقات مقفلة';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'التطبيقات متاحة';
+
+  @override
+  String get focusNotifNightModeTitle => 'الوضع الليلي';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'صباح الخير!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'التطبيقات متاحة الآن.';
+
+  @override
+  String get focusNotifSalahLockedBody => 'التطبيقات مقفلة أثناء الصلاة.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'الوضع الليلي مفعّل. دع عقلك وجسمك يرتاحان.';
+
+  @override
+  String get focusNotifGenericLockedBody => 'التطبيقات المحددة مقفلة.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'التطبيقات غير متاحة.';
+
+  @override
+  String get widgetDailyVerseTitle => 'آية اليوم';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'افتح Deen Focus لتحضير آية اليوم وبيانات أداة الصلاة.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'حدد موقعك في Deen Focus لتحميل أوقات الصلاة وآية اليوم.';
+
+  @override
   String get focusChildModeActive => 'وضع الطفل نشط';
 
   @override
@@ -648,7 +680,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsEnterYourName => 'أدخل اسمك';
 
   @override
-  String get settingsPremiumTitle => 'Deen Focus Premium';
+  String get settingsPremiumTitle => 'دين فوكس بريميوم';
 
   @override
   String get settingsPremiumSubtitle => 'فتح كافة الميزات';
@@ -670,10 +702,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'نبذة عن دين فوكس';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'انقر للمشاهدة. يتوقف التشغيل مؤقتًا عند المغادرة ويستأنف من هناك في المرة القادمة.';
 
   @override
   String get settingsSavingLocation => 'توفير...';
@@ -712,7 +740,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appDemoWatchLabel => 'شاهد العرض التوضيحي';
 
   @override
-  String get homeAiChatTitle => 'دين فوكس منظمة العفو الدولية';
+  String get homeAiChatTitle => 'دين فوكس للذكاء الاصطناعي';
 
   @override
   String get homeAiAskQuestionHint => 'اطرح سؤالا...';

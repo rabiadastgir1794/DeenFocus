@@ -240,18 +240,7 @@ class AppLocalizationsAz extends AppLocalizations {
       'Qabaqcıl dua analitikası və xətlər';
 
   @override
-  String get featureMasjidGeofencing =>
-      'Məscidin avtomatik aşkarlanması və geofencing';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Audio və tərcümələri ilə tam Quran';
-
-  @override
   String get featureAiAssistant => 'AI İslam köməkçisi';
-
-  @override
-  String get featureNoAdsForever => 'Bütün reklamları həmişəlik silin';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -551,6 +540,49 @@ class AppLocalizationsAz extends AppLocalizations {
   String get focusTabSubtitle => 'Ən vacib məqamda diqqətinizi cəmləyin';
 
   @override
+  String get focusChooseAppsEnableMode =>
+      'Tətbiqləri seçin və fokus rejimini aktivləşdirin';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Tətbiqlər kilidlənib';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Tətbiqlər açılıb';
+
+  @override
+  String get focusNotifNightModeTitle => 'Gecə rejimi';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'Sabahınız xeyir!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'Tətbiqlər indi əlçatandır.';
+
+  @override
+  String get focusNotifSalahLockedBody => 'Namaz zamanı tətbiqlər kilidlənir.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'Gecə rejimi aktivdir. Zehninizə və bədənizə istirahət verin.';
+
+  @override
+  String get focusNotifGenericLockedBody => 'Seçilmiş tətbiqlər kilidlənib.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'Tətbiqlər əlçatan deyil.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Günün ayəsi';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Gündəlik ayə və namaz vidcet məlumatı üçün Deen Focus-u açın.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Namazlar və gündəlik ayə üçün Deen Focus-da yerinizi təyin edin.';
+
+  @override
   String get focusChildModeActive => 'Uşaq Rejimi Aktivdir';
 
   @override
@@ -685,10 +717,6 @@ class AppLocalizationsAz extends AppLocalizations {
   String get settingsAboutTitle => 'Deen Focus haqqında';
 
   @override
-  String get settingsDemoPlaybackHint =>
-      'Baxmaq üçün toxunun. Siz ayrıldığınız zaman oxutma dayandırılır və növbəti dəfə oradan davam etdirilir.';
-
-  @override
   String get settingsSavingLocation => 'Yadda saxlanılır...';
 
   @override
@@ -725,7 +753,7 @@ class AppLocalizationsAz extends AppLocalizations {
   String get appDemoWatchLabel => 'Demoya baxın';
 
   @override
-  String get homeAiChatTitle => 'Deen Focus AI';
+  String get homeAiChatTitle => 'Deen Focus Süni İntellekt';
 
   @override
   String get homeAiAskQuestionHint => 'Sual verin...';

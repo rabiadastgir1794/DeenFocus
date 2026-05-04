@@ -71,10 +71,7 @@
   "everythingYouGet": "Alles, was Sie bekommen",
   "featureFocusModeAllModes": "Unbegrenzter Fokusmodus mit allen 3 Modi",
   "featurePrayerAnalyticsStreaks": "Erweiterte Gebetsanalysen und Streaks",
-  "featureMasjidGeofencing": "Automatische Erkennung und Geofencing der Moschee",
-  "featureQuranAudioTranslations": "Vollständiger Koran mit Audio und Übersetzungen",
   "featureAiAssistant": "KI-islamischer Assistent",
-  "featureNoAdsForever": "Entfernen Sie alle Anzeigen für immer",
   "featurePrioritySupportEarlyAccess": "Vorrangiger Support und früher Zugang",
   "socialProofPrefix": "Verbinden",
   "socialProofHighlight": "10.000+",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Standort",
   "settingsDarkModeLabel": "Dunkler Modus",
   "settingsAboutTitle": "Über Deen Focus",
-  "settingsDemoPlaybackHint": "Zum Ansehen tippen. Die Wiedergabe wird beim Verlassen angehalten und beim nächsten Mal von dort aus fortgesetzt.",
   "settingsSavingLocation": "Sparen...",
   "settingsSaveLocation": "Standort speichern",
   "settingsAboutTagline": "Fokus. Disziplin. Konsistenz.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Apps wählen und Fokusmodus aktivieren",
+  "focusNotifAppsLockedTitle": "Apps gesperrt",
+  "focusNotifAppsUnlockedTitle": "Apps entsperrt",
+  "focusNotifNightModeTitle": "Nachtmodus",
+  "focusNotifGoodMorningTitle": "Guten Morgen!",
+  "focusNotifAppsNowAvailableBody": "Apps sind jetzt verfügbar.",
+  "focusNotifSalahLockedBody": "Während des Gebets sind Apps gesperrt.",
+  "focusNotifNightLockedBody": "Nachtmodus ist an. Gönn Geist und Körper Ruhe.",
+  "focusNotifGenericLockedBody": "Ausgewählte Apps sind gesperrt.",
+  "focusNotifMorningUnlockBody": "Apps sind nicht verfügbar.",
+  "widgetDailyVerseTitle": "Tagesvers",
+  "widgetOpenAppTimelineHint": "Öffne Deen Focus, um Tagesvers und Gebet-Widget-Daten vorzubereiten.",
+  "widgetSetLocationForPrayers": "Lege in Deen Focus deinen Standort fest, um Gebete und den Tagesvers zu laden."
 }

@@ -52,6 +52,18 @@ data class WidgetEntry(
     val prayers: List<WidgetPrayer>,
 )
 
+data class WidgetUi(
+    val brandName: String,
+    val dailyVerseTitle: String,
+    val timelinePlaceholder: String,
+    val setLocationMessage: String,
+)
+
+data class WidgetTimelineBundle(
+    val entry: WidgetEntry?,
+    val ui: WidgetUi?,
+)
+
 internal object DeenWidgetStore {
     private val timestampFormatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
 
@@ -62,57 +74,80 @@ internal object DeenWidgetStore {
             .apply()
     }
 
-    fun loadEntry(context: Context, today: LocalDate = LocalDate.now()): WidgetEntry? {
+    fun loadTimelineBundle(context: Context, today: LocalDate = LocalDate.now()): WidgetTimelineBundle {
         val raw = context.getSharedPreferences(widgetPrefsName, Context.MODE_PRIVATE)
-            .getString(widgetTimelineKey, null) ?: return null
+            .getString(widgetTimelineKey, null) ?: return WidgetTimelineBundle(null, null)
         return runCatching {
             val root = JSONObject(raw)
-            val entries = root.optJSONArray("entries") ?: JSONArray()
-            val todayKey = today.toString()
-            val parsed = buildList {
-                for (index in 0 until entries.length()) {
-                    val row = entries.optJSONObject(index) ?: continue
-                    add(
-                        WidgetEntry(
-                            timestamp = row.optString("timestamp"),
-                            dayKey = row.optString("dayKey"),
-                            dateLabel = row.optString("dateLabel"),
-                            timeLabel = row.optString("timeLabel"),
-                            isDarkMode = row.optBoolean("isDarkMode", false),
-                            verse = row.optJSONObject("verse")?.let {
-                                WidgetVerse(
-                                    text = it.optString("text"),
-                                    source = it.optString("source"),
+            WidgetTimelineBundle(
+                entry = pickCurrentEntry(root, today),
+                ui = parseUi(context, root),
+            )
+        }.getOrElse { WidgetTimelineBundle(null, null) }
+    }
+
+    private fun parseUi(context: Context, root: JSONObject): WidgetUi? {
+        val ui = root.optJSONObject("ui") ?: return null
+        return WidgetUi(
+            brandName = ui.optString("brandName", "").ifEmpty { context.getString(R.string.app_name) },
+            dailyVerseTitle = ui.optString("dailyVerseTitle", "").ifEmpty {
+                context.getString(R.string.daily_verse)
+            },
+            timelinePlaceholder = ui.optString("timelinePlaceholder", "").ifEmpty {
+                context.getString(R.string.widget_empty_verse)
+            },
+            setLocationMessage = ui.optString("setLocationMessage", "").ifEmpty {
+                context.getString(R.string.widget_set_location)
+            },
+        )
+    }
+
+    private fun pickCurrentEntry(root: JSONObject, today: LocalDate): WidgetEntry? {
+        val entries = root.optJSONArray("entries") ?: JSONArray()
+        val todayKey = today.toString()
+        val parsed = buildList {
+            for (index in 0 until entries.length()) {
+                val row = entries.optJSONObject(index) ?: continue
+                add(
+                    WidgetEntry(
+                        timestamp = row.optString("timestamp"),
+                        dayKey = row.optString("dayKey"),
+                        dateLabel = row.optString("dateLabel"),
+                        timeLabel = row.optString("timeLabel"),
+                        isDarkMode = row.optBoolean("isDarkMode", false),
+                        verse = row.optJSONObject("verse")?.let {
+                            WidgetVerse(
+                                text = it.optString("text"),
+                                source = it.optString("source"),
+                            )
+                        },
+                        prayers = buildList {
+                            val prayerRows = row.optJSONArray("prayers") ?: JSONArray()
+                            for (prayerIndex in 0 until prayerRows.length()) {
+                                val prayer = prayerRows.optJSONObject(prayerIndex) ?: continue
+                                add(
+                                    WidgetPrayer(
+                                        id = prayer.optString("id"),
+                                        label = prayer.optString("label"),
+                                        timeLabel = prayer.optString("timeLabel"),
+                                        isoTime = prayer.optString("isoTime"),
+                                    ),
                                 )
-                            },
-                            prayers = buildList {
-                                val prayerRows = row.optJSONArray("prayers") ?: JSONArray()
-                                for (prayerIndex in 0 until prayerRows.length()) {
-                                    val prayer = prayerRows.optJSONObject(prayerIndex) ?: continue
-                                    add(
-                                        WidgetPrayer(
-                                            id = prayer.optString("id"),
-                                            label = prayer.optString("label"),
-                                            timeLabel = prayer.optString("timeLabel"),
-                                            isoTime = prayer.optString("isoTime"),
-                                        ),
-                                    )
-                                }
-                            },
-                        ),
-                    )
-                }
+                            }
+                        },
+                    ),
+                )
             }
-            val now = LocalDateTime.now()
-            parsed
-                .lastOrNull { entry ->
-                    runCatching { LocalDateTime.parse(entry.timestamp, timestampFormatter) }
-                        .getOrNull()
-                        ?.let { !it.isAfter(now) } == true
-                }
-                ?: parsed.firstOrNull { it.dayKey == todayKey }
-                ?: parsed.firstOrNull()
-        }.getOrNull()
+        }
+        val now = LocalDateTime.now()
+        return parsed
+            .lastOrNull { entry ->
+                runCatching { LocalDateTime.parse(entry.timestamp, timestampFormatter) }
+                    .getOrNull()
+                    ?.let { !it.isAfter(now) } == true
+            }
+            ?: parsed.firstOrNull { it.dayKey == todayKey }
+            ?: parsed.firstOrNull()
     }
 }
 
@@ -149,9 +184,9 @@ internal object DeenWidgetUpdater {
         appWidgetIds: IntArray,
         size: WidgetSize,
     ) {
-        val entry = DeenWidgetStore.loadEntry(context)
+        val bundle = DeenWidgetStore.loadTimelineBundle(context)
         for (appWidgetId in appWidgetIds) {
-            val views = buildViews(context, size, entry)
+            val views = buildViews(context, size, bundle.entry, bundle.ui)
             manager.updateAppWidget(appWidgetId, views)
         }
     }
@@ -314,6 +349,7 @@ internal object DeenWidgetUpdater {
         context: Context,
         size: WidgetSize,
         entry: WidgetEntry?,
+        ui: WidgetUi?,
     ): RemoteViews {
         val layoutId = when (size) {
             WidgetSize.SMALL -> R.layout.widget_small
@@ -321,12 +357,15 @@ internal object DeenWidgetUpdater {
             WidgetSize.LARGE -> R.layout.widget_large
         }
         val views = RemoteViews(context.packageName, layoutId)
-        views.setTextViewText(R.id.appName, context.getString(R.string.app_name))
-        views.setTextViewText(R.id.currentDate, entry?.dateLabel ?: "Open Deenly")
+        views.setTextViewText(R.id.appName, ui?.brandName ?: context.getString(R.string.app_name))
+        views.setTextViewText(
+            R.id.currentDate,
+            entry?.dateLabel ?: ui?.timelinePlaceholder ?: context.getString(R.string.widget_empty_verse),
+        )
         views.setOnClickPendingIntent(R.id.root, launchPendingIntent(context))
 
         if (entry == null) {
-            bindEmptyState(views, size)
+            bindEmptyState(context, views, size, ui)
             return views
         }
 
@@ -404,10 +443,13 @@ internal object DeenWidgetUpdater {
                 ),
             )
             WidgetSize.LARGE -> {
-                views.setTextViewText(R.id.heading, context.getString(R.string.daily_verse))
+                views.setTextViewText(
+                    R.id.heading,
+                    ui?.dailyVerseTitle ?: context.getString(R.string.daily_verse),
+                )
                 views.setTextViewText(
                     R.id.dailyVerse,
-                    entry.verse?.text ?: context.getString(R.string.widget_empty_verse),
+                    entry.verse?.text ?: ui?.timelinePlaceholder ?: context.getString(R.string.widget_empty_verse),
                 )
                 views.setTextViewText(R.id.dailyVerseSource, entry.verse?.source ?: "")
                 bindPrayerGrid(
@@ -472,11 +514,17 @@ internal object DeenWidgetUpdater {
         }
     }
 
-    private fun bindEmptyState(views: RemoteViews, size: WidgetSize) {
+    private fun bindEmptyState(context: Context, views: RemoteViews, size: WidgetSize, ui: WidgetUi?) {
         when (size) {
             WidgetSize.LARGE -> {
-                views.setTextViewText(R.id.heading, "Daily Verse")
-                views.setTextViewText(R.id.dailyVerse, "Set your location in Deenly to load prayers and the daily verse.")
+                views.setTextViewText(
+                    R.id.heading,
+                    ui?.dailyVerseTitle ?: context.getString(R.string.daily_verse),
+                )
+                views.setTextViewText(
+                    R.id.dailyVerse,
+                    ui?.setLocationMessage ?: context.getString(R.string.widget_set_location),
+                )
                 views.setTextViewText(R.id.dailyVerseSource, "")
             }
             WidgetSize.SMALL,

@@ -241,17 +241,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Análisis y rachas de oración avanzadas';
 
   @override
-  String get featureMasjidGeofencing => 'Autodetección y geocercado de Masjid';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Corán completo con audio y traducciones.';
-
-  @override
   String get featureAiAssistant => 'Asistente islámico de IA';
-
-  @override
-  String get featureNoAdsForever => 'Eliminar todos los anuncios para siempre';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -552,6 +542,52 @@ class AppLocalizationsEs extends AppLocalizations {
   String get focusTabSubtitle => 'Manténgase enfocado cuando más importa';
 
   @override
+  String get focusChooseAppsEnableMode => 'Elige apps y activa el modo Enfoque';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Apps bloqueadas';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Apps desbloqueadas';
+
+  @override
+  String get focusNotifNightModeTitle => 'Modo nocturno';
+
+  @override
+  String get focusNotifGoodMorningTitle => '¡Buenos días!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody =>
+      'Las aplicaciones ya están disponibles.';
+
+  @override
+  String get focusNotifSalahLockedBody =>
+      'Las aplicaciones están bloqueadas durante Salah.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'El modo nocturno está activo. Deja que tu mente y cuerpo descansen.';
+
+  @override
+  String get focusNotifGenericLockedBody =>
+      'Las aplicaciones seleccionadas están bloqueadas.';
+
+  @override
+  String get focusNotifMorningUnlockBody =>
+      'Las aplicaciones no están disponibles.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Verso del día';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Abre Deen Focus para preparar el verso del día y los datos del widget de oración.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Establece tu ubicación en Deen Focus para cargar oraciones y el verso del día.';
+
+  @override
   String get focusChildModeActive => 'Modo infantil activo';
 
   @override
@@ -685,10 +721,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'Acerca de Deen Focus';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'Toca para ver. La reproducción se pausa cuando sales y se reanuda desde ahí la próxima vez.';
 
   @override
   String get settingsSavingLocation => 'Guardando...';

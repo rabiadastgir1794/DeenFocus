@@ -224,16 +224,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get featurePrayerAnalyticsStreaks => '高级祷告分析和连续祷告';
 
   @override
-  String get featureMasjidGeofencing => '清真寺自动检测和地理围栏';
-
-  @override
-  String get featureQuranAudioTranslations => '完整的《古兰经》，带音频和翻译';
-
-  @override
   String get featureAiAssistant => 'AI伊斯兰助手';
-
-  @override
-  String get featureNoAdsForever => '永久删除所有广告';
 
   @override
   String get featurePrioritySupportEarlyAccess => '优先支持和抢先体验';
@@ -521,6 +512,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focusTabSubtitle => '在最重要的时候保持专注';
 
   @override
+  String get focusChooseAppsEnableMode => '选择应用并启用专注模式';
+
+  @override
+  String get focusNotifAppsLockedTitle => '应用已锁定';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => '应用已解锁';
+
+  @override
+  String get focusNotifNightModeTitle => '夜间模式';
+
+  @override
+  String get focusNotifGoodMorningTitle => '早上好！';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => '应用现在可用。';
+
+  @override
+  String get focusNotifSalahLockedBody => '礼拜期间应用已锁定。';
+
+  @override
+  String get focusNotifNightLockedBody => '夜间模式已开启。让身心休息。';
+
+  @override
+  String get focusNotifGenericLockedBody => '所选应用已锁定。';
+
+  @override
+  String get focusNotifMorningUnlockBody => '应用不可用。';
+
+  @override
+  String get widgetDailyVerseTitle => '每日经文';
+
+  @override
+  String get widgetOpenAppTimelineHint => '打开 Deen Focus 以准备每日经文和礼拜小组件数据。';
+
+  @override
+  String get widgetSetLocationForPrayers => '在 Deen Focus 中设置位置以加载礼拜和每日经文。';
+
+  @override
   String get focusChildModeActive => '儿童模式激活';
 
   @override
@@ -625,7 +655,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsEnterYourName => '输入你的名字';
 
   @override
-  String get settingsPremiumTitle => 'Deen Focus Premium';
+  String get settingsPremiumTitle => 'Deen Focus 高级版';
 
   @override
   String get settingsPremiumSubtitle => '解锁所有功能';
@@ -647,9 +677,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => '关于德恩焦点';
-
-  @override
-  String get settingsDemoPlaybackHint => '点按即可观看。当您离开时播放会暂停，并在下次播放时从那里恢复。';
 
   @override
   String get settingsSavingLocation => '保存...';
@@ -686,7 +713,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appDemoWatchLabel => '观看演示';
 
   @override
-  String get homeAiChatTitle => '德恩焦点人工智能';
+  String get homeAiChatTitle => 'Deen Focus 人工智能';
 
   @override
   String get homeAiAskQuestionHint => '问一个问题...';

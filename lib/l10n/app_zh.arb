@@ -71,10 +71,7 @@
   "everythingYouGet": "你得到的一切",
   "featureFocusModeAllModes": "具有全部 3 种模式的无限对焦模式",
   "featurePrayerAnalyticsStreaks": "高级祷告分析和连续祷告",
-  "featureMasjidGeofencing": "清真寺自动检测和地理围栏",
-  "featureQuranAudioTranslations": "完整的《古兰经》，带音频和翻译",
   "featureAiAssistant": "AI伊斯兰助手",
-  "featureNoAdsForever": "永久删除所有广告",
   "featurePrioritySupportEarlyAccess": "优先支持和抢先体验",
   "socialProofPrefix": "加入",
   "socialProofHighlight": "10,000+",
@@ -203,7 +200,7 @@
   "focusChildBlockingDescription": "应用程序在儿童模式下会立即被阻止。使用切换开关或从主屏幕解锁它们",
   "settingsEditUsername": "编辑用户名",
   "settingsEnterYourName": "输入你的名字",
-  "settingsPremiumTitle": "Deen Focus Premium",
+  "settingsPremiumTitle": "Deen Focus 高级版",
   "settingsPremiumSubtitle": "解锁所有功能",
   "settingsManageSubscriptionTitle": "管理订阅",
   "settingsManageSubscriptionSubtitle": "查看方案或更新账单",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "地点",
   "settingsDarkModeLabel": "深色模式",
   "settingsAboutTitle": "关于德恩焦点",
-  "settingsDemoPlaybackHint": "点按即可观看。当您离开时播放会暂停，并在下次播放时从那里恢复。",
   "settingsSavingLocation": "保存...",
   "settingsSaveLocation": "保存位置",
   "settingsAboutTagline": "重点。纪律。一致性。",
@@ -223,7 +219,7 @@
   "appDemoPreviewLoadFailed": "无法加载演示。",
   "appDemoTryAgain": "再试一次",
   "appDemoWatchLabel": "观看演示",
-  "homeAiChatTitle": "德恩焦点人工智能",
+  "homeAiChatTitle": "Deen Focus 人工智能",
   "homeAiAskQuestionHint": "问一个问题...",
   "homeAiSend": "发送",
   "homeAiErrorPrefix": "抱歉，我在连接 Deen Focus AI 时遇到了问题。",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "选择应用并启用专注模式",
+  "focusNotifAppsLockedTitle": "应用已锁定",
+  "focusNotifAppsUnlockedTitle": "应用已解锁",
+  "focusNotifNightModeTitle": "夜间模式",
+  "focusNotifGoodMorningTitle": "早上好！",
+  "focusNotifAppsNowAvailableBody": "应用现在可用。",
+  "focusNotifSalahLockedBody": "礼拜期间应用已锁定。",
+  "focusNotifNightLockedBody": "夜间模式已开启。让身心休息。",
+  "focusNotifGenericLockedBody": "所选应用已锁定。",
+  "focusNotifMorningUnlockBody": "应用不可用。",
+  "widgetDailyVerseTitle": "每日经文",
+  "widgetOpenAppTimelineHint": "打开 Deen Focus 以准备每日经文和礼拜小组件数据。",
+  "widgetSetLocationForPrayers": "在 Deen Focus 中设置位置以加载礼拜和每日经文。"
 }

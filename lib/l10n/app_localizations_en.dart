@@ -188,7 +188,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get investYourDeen => 'Your Deen';
 
   @override
-  String get investYourDeenPrice => '\$4.99/mo';
+  String get investYourDeenPrice => '\$9.99/mo';
 
   @override
   String get investComparisonQuote =>
@@ -239,17 +239,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Advanced prayer analytics & streaks';
 
   @override
-  String get featureMasjidGeofencing => 'Masjid auto-detection & geofencing';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Full Quran with audio & translations';
-
-  @override
   String get featureAiAssistant => 'AI Islamic assistant';
-
-  @override
-  String get featureNoAdsForever => 'Remove all ads forever';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -542,6 +532,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focusTabSubtitle => 'Stay focused when it matters most';
 
   @override
+  String get focusChooseAppsEnableMode => 'Choose apps and enable focus mode';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Apps Locked';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Apps Unlocked';
+
+  @override
+  String get focusNotifNightModeTitle => 'Night mode';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'Good Morning!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody => 'Apps are now available.';
+
+  @override
+  String get focusNotifSalahLockedBody => 'Apps are locked during Salah.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'Night mode is on. Let your mind and body rest.';
+
+  @override
+  String get focusNotifGenericLockedBody => 'Selected apps are locked.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'Apps are not available.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Daily Verse';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Open Deen Focus to prepare your daily verse and prayer widget data.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Set your location in Deen Focus to load prayers and the daily verse.';
+
+  @override
   String get focusChildModeActive => 'Child Mode Active';
 
   @override
@@ -672,10 +704,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'About Deen Focus';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'Tap to watch. Playback pauses when you leave and resumes from there next time.';
 
   @override
   String get settingsSavingLocation => 'Saving...';

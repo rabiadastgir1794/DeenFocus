@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart' show Locale;
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../features/home/helpers/home_daily_verse_helper.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import '../../features/home/model/home_models.dart';
+import '../../l10n/app_localizations.dart';
 import 'storage_service.dart';
 
 class WidgetSyncService {
@@ -17,9 +19,20 @@ class WidgetSyncService {
     'com.app.deenly.deenly/widgets',
   );
   static const int _timelineDays = 7;
-  static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
-  static final DateFormat _dateLabelFormat = DateFormat('EEE, MMM d');
-  static final DateFormat _timeLabelFormat = DateFormat('h:mm a');
+
+  static Locale _localeFromPrefsCode(String? code) {
+    if (code == null || code.isEmpty) return const Locale('en');
+    final primary = code.replaceAll('_', '-').split('-').first.toLowerCase();
+    return Locale(primary);
+  }
+
+  static AppLocalizations _widgetLocalizations(Locale locale) {
+    try {
+      return lookupAppLocalizations(locale);
+    } catch (_) {
+      return lookupAppLocalizations(const Locale('en'));
+    }
+  }
 
   Future<void> syncTimeline({DateTime? fromDate}) async {
     final seedDate = fromDate ?? DateTime.now();
@@ -29,13 +42,27 @@ class WidgetSyncService {
     final locationName = await StorageService.locationName;
     final sect = await StorageService.sect;
     final isDarkMode = await StorageService.darkModeEnabled ?? false;
+    final l10n = _widgetLocalizations(
+      _localeFromPrefsCode(await StorageService.localeCode),
+    );
+    final useArabicVerse = l10n.localeName.toLowerCase().startsWith('ar');
+    final dayKeyFormat = DateFormat('yyyy-MM-dd', l10n.localeName);
+    final dateLabelFormat = DateFormat('EEE, MMM d', l10n.localeName);
+    final timeLabelFormat = DateFormat('h:mm a', l10n.localeName);
     final prayerCache = <String, HomePrayerTimesData>{};
     final verseCache = <String, HomeDailyVerse?>{};
+
+    final ui = <String, dynamic>{
+      'brandName': l10n.appTitle,
+      'dailyVerseTitle': l10n.widgetDailyVerseTitle,
+      'timelinePlaceholder': l10n.widgetOpenAppTimelineHint,
+      'setLocationMessage': l10n.widgetSetLocationForPrayers,
+    };
 
     final entries = <Map<String, dynamic>>[];
     for (var index = 0; index < _timelineDays; index++) {
       final date = startDate.add(Duration(days: index));
-      final dayKey = _dayKeyFormat.format(date);
+      final dayKey = dayKeyFormat.format(date);
       final ref = HomeDailyVerseHelper.getDailyVerseRefForDate(date);
       final verseKey = '${ref.surahNumber}:${ref.ayahNumber}';
       final verse = verseCache.containsKey(verseKey)
@@ -58,14 +85,14 @@ class WidgetSyncService {
       entries.add(<String, dynamic>{
         'timestamp': date.toIso8601String(),
         'dayKey': dayKey,
-        'dateLabel': _dateLabelFormat.format(date),
-        'timeLabel': _timeLabelFormat.format(date),
+        'dateLabel': dateLabelFormat.format(date),
+        'timeLabel': timeLabelFormat.format(date),
         'locationName': locationName,
         'isDarkMode': isDarkMode,
         'verse': verse == null
             ? null
             : <String, dynamic>{
-                'text': verse.englishText,
+                'text': useArabicVerse ? verse.arabicText : verse.englishText,
                 'source':
                     '${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}',
               },
@@ -74,8 +101,8 @@ class WidgetSyncService {
                 .map(
                   (slot) => <String, dynamic>{
                     'id': slot.id.name,
-                    'label': _labelForPrayer(slot.id),
-                    'timeLabel': _timeLabelFormat.format(slot.time),
+                    'label': _labelForPrayer(slot.id, l10n),
+                    'timeLabel': timeLabelFormat.format(slot.time),
                     'isoTime': slot.time.toIso8601String(),
                   },
                 )
@@ -86,6 +113,7 @@ class WidgetSyncService {
 
     final payload = jsonEncode(<String, dynamic>{
       'generatedAt': DateTime.now().toIso8601String(),
+      'ui': ui,
       'entries': entries,
     });
 
@@ -94,20 +122,20 @@ class WidgetSyncService {
     });
   }
 
-  String _labelForPrayer(HomePrayerId id) {
+  String _labelForPrayer(HomePrayerId id, AppLocalizations l10n) {
     switch (id) {
       case HomePrayerId.fajr:
-        return 'Fajr';
+        return l10n.homePrayerFajr;
       case HomePrayerId.sunrise:
-        return 'Sunrise';
+        return l10n.homePrayerSunrise;
       case HomePrayerId.dhuhr:
-        return 'Dhuhr';
+        return l10n.homePrayerDhuhr;
       case HomePrayerId.asr:
-        return 'Asr';
+        return l10n.homePrayerAsr;
       case HomePrayerId.maghrib:
-        return 'Maghrib';
+        return l10n.homePrayerMaghrib;
       case HomePrayerId.isha:
-        return 'Isha';
+        return l10n.homePrayerIsha;
     }
   }
 }

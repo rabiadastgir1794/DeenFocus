@@ -485,14 +485,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             ),
             const SizedBox(height: 16),
             AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
-            const SizedBox(height: 8),
-            Text(
-              l10n.settingsDemoPlaybackHint,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
           ],
         ),
       ),

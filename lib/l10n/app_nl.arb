@@ -71,10 +71,7 @@
   "everythingYouGet": "Alles wat je krijgt",
   "featureFocusModeAllModes": "Onbeperkte focusmodus met alle 3 de modi",
   "featurePrayerAnalyticsStreaks": "Geavanceerde gebedsanalyses en -reeksen",
-  "featureMasjidGeofencing": "Automatische detectie en geofencing van Masjid",
-  "featureQuranAudioTranslations": "Volledige Koran met audio en vertalingen",
   "featureAiAssistant": "AI islamitische assistent",
-  "featureNoAdsForever": "Verwijder alle advertenties voor altijd",
   "featurePrioritySupportEarlyAccess": "Prioritaire ondersteuning en vroege toegang",
   "socialProofPrefix": "Meedoen",
   "socialProofHighlight": "10.000+",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Locatie",
   "settingsDarkModeLabel": "Donkere modus",
   "settingsAboutTitle": "Over Deen Focus",
-  "settingsDemoPlaybackHint": "Tik om te kijken. Het afspelen wordt gepauzeerd wanneer u weggaat en wordt de volgende keer vanaf daar hervat.",
   "settingsSavingLocation": "Besparing...",
   "settingsSaveLocation": "Locatie opslaan",
   "settingsAboutTagline": "Focus. Discipline. Samenhang.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Kies apps en schakel de focusmodus in",
+  "focusNotifAppsLockedTitle": "Apps vergrendeld",
+  "focusNotifAppsUnlockedTitle": "Apps ontgrendeld",
+  "focusNotifNightModeTitle": "Nachtmodus",
+  "focusNotifGoodMorningTitle": "Goedemorgen!",
+  "focusNotifAppsNowAvailableBody": "Apps zijn nu beschikbaar.",
+  "focusNotifSalahLockedBody": "Apps zijn vergrendeld tijdens Salah.",
+  "focusNotifNightLockedBody": "Nachtmodus staat aan. Laat geest en lichaam rusten.",
+  "focusNotifGenericLockedBody": "Geselecteerde apps zijn vergrendeld.",
+  "focusNotifMorningUnlockBody": "Apps zijn niet beschikbaar.",
+  "widgetDailyVerseTitle": "Dagvers",
+  "widgetOpenAppTimelineHint": "Open Deen Focus om je dagvers en gebed-widgetgegevens klaar te zetten.",
+  "widgetSetLocationForPrayers": "Stel je locatie in Deen Focus in om gebeden en het dagvers te laden."
 }

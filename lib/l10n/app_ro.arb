@@ -71,10 +71,7 @@
   "everythingYouGet": "Tot ce primești",
   "featureFocusModeAllModes": "Mod de focalizare nelimitat cu toate cele 3 moduri",
   "featurePrayerAnalyticsStreaks": "Analize avansate de rugăciune și linii",
-  "featureMasjidGeofencing": "Auto-detecție și geofencing Masjid",
-  "featureQuranAudioTranslations": "Coran complet cu audio și traduceri",
   "featureAiAssistant": "Asistent islamic AI",
-  "featureNoAdsForever": "Eliminați pentru totdeauna toate anunțurile",
   "featurePrioritySupportEarlyAccess": "Asistență prioritară și acces timpuriu",
   "socialProofPrefix": "Alăturați-vă",
   "socialProofHighlight": "10.000+",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "Locaţie",
   "settingsDarkModeLabel": "Modul întunecat",
   "settingsAboutTitle": "Despre Deen Focus",
-  "settingsDemoPlaybackHint": "Atingeți pentru a viziona. Redarea se întrerupe când pleci și reia de acolo data viitoare.",
   "settingsSavingLocation": "Economisire...",
   "settingsSaveLocation": "Salvați locația",
   "settingsAboutTagline": "Concentrează-te. Disciplina. Consecvență.",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "Alege aplicații și activează modul Focus",
+  "focusNotifAppsLockedTitle": "Aplicații blocate",
+  "focusNotifAppsUnlockedTitle": "Aplicații deblocate",
+  "focusNotifNightModeTitle": "Mod nocturn",
+  "focusNotifGoodMorningTitle": "Bună dimineața!",
+  "focusNotifAppsNowAvailableBody": "Aplicațiile sunt acum disponibile.",
+  "focusNotifSalahLockedBody": "Aplicațiile sunt blocate în timpul Salah.",
+  "focusNotifNightLockedBody": "Modul nocturn este activ. Lasă-ți mintea și corpul să se odihnească.",
+  "focusNotifGenericLockedBody": "Aplicațiile selectate sunt blocate.",
+  "focusNotifMorningUnlockBody": "Aplicațiile nu sunt disponibile.",
+  "widgetDailyVerseTitle": "Versetul zilei",
+  "widgetOpenAppTimelineHint": "Deschide Deen Focus pentru a pregăti versetul zilei și datele widgetului de rugăciune.",
+  "widgetSetLocationForPrayers": "Setează locația în Deen Focus pentru a încărca rugăciunile și versetul zilei."
 }

@@ -240,18 +240,7 @@ class AppLocalizationsRo extends AppLocalizations {
       'Analize avansate de rugăciune și linii';
 
   @override
-  String get featureMasjidGeofencing => 'Auto-detecție și geofencing Masjid';
-
-  @override
-  String get featureQuranAudioTranslations =>
-      'Coran complet cu audio și traduceri';
-
-  @override
   String get featureAiAssistant => 'Asistent islamic AI';
-
-  @override
-  String get featureNoAdsForever =>
-      'Eliminați pentru totdeauna toate anunțurile';
 
   @override
   String get featurePrioritySupportEarlyAccess =>
@@ -552,6 +541,52 @@ class AppLocalizationsRo extends AppLocalizations {
       'Rămâi concentrat atunci când contează cel mai mult';
 
   @override
+  String get focusChooseAppsEnableMode =>
+      'Alege aplicații și activează modul Focus';
+
+  @override
+  String get focusNotifAppsLockedTitle => 'Aplicații blocate';
+
+  @override
+  String get focusNotifAppsUnlockedTitle => 'Aplicații deblocate';
+
+  @override
+  String get focusNotifNightModeTitle => 'Mod nocturn';
+
+  @override
+  String get focusNotifGoodMorningTitle => 'Bună dimineața!';
+
+  @override
+  String get focusNotifAppsNowAvailableBody =>
+      'Aplicațiile sunt acum disponibile.';
+
+  @override
+  String get focusNotifSalahLockedBody =>
+      'Aplicațiile sunt blocate în timpul Salah.';
+
+  @override
+  String get focusNotifNightLockedBody =>
+      'Modul nocturn este activ. Lasă-ți mintea și corpul să se odihnească.';
+
+  @override
+  String get focusNotifGenericLockedBody =>
+      'Aplicațiile selectate sunt blocate.';
+
+  @override
+  String get focusNotifMorningUnlockBody => 'Aplicațiile nu sunt disponibile.';
+
+  @override
+  String get widgetDailyVerseTitle => 'Versetul zilei';
+
+  @override
+  String get widgetOpenAppTimelineHint =>
+      'Deschide Deen Focus pentru a pregăti versetul zilei și datele widgetului de rugăciune.';
+
+  @override
+  String get widgetSetLocationForPrayers =>
+      'Setează locația în Deen Focus pentru a încărca rugăciunile și versetul zilei.';
+
+  @override
   String get focusChildModeActive => 'Mod copil activ';
 
   @override
@@ -686,10 +721,6 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get settingsAboutTitle => 'Despre Deen Focus';
-
-  @override
-  String get settingsDemoPlaybackHint =>
-      'Atingeți pentru a viziona. Redarea se întrerupe când pleci și reia de acolo data viitoare.';
 
   @override
   String get settingsSavingLocation => 'Economisire...';

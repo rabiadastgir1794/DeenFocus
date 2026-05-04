@@ -71,10 +71,7 @@
   "everythingYouGet": "सब कुछ तुम्हें मिलता है",
   "featureFocusModeAllModes": "सभी 3 मोड के साथ असीमित फोकस मोड",
   "featurePrayerAnalyticsStreaks": "उन्नत प्रार्थना विश्लेषण और स्ट्रीक्स",
-  "featureMasjidGeofencing": "मस्जिद ऑटो-डिटेक्शन और जियोफेंसिंग",
-  "featureQuranAudioTranslations": "ऑडियो और अनुवाद के साथ पूर्ण कुरान",
   "featureAiAssistant": "एआई इस्लामिक सहायक",
-  "featureNoAdsForever": "सभी विज्ञापन हमेशा के लिए हटा दें",
   "featurePrioritySupportEarlyAccess": "प्राथमिकता समर्थन और शीघ्र पहुंच",
   "socialProofPrefix": "जोड़ना",
   "socialProofHighlight": "10,000+",
@@ -203,7 +200,7 @@
   "focusChildBlockingDescription": "चाइल्ड मोड में ऐप्स तुरंत ब्लॉक हो जाते हैं। टॉगल का उपयोग करके या होम स्क्रीन से उन्हें अनलॉक करें",
   "settingsEditUsername": "उपयोक्तानाम संपादित करें",
   "settingsEnterYourName": "अपना नाम दर्ज करें",
-  "settingsPremiumTitle": "Deen Focus Premium",
+  "settingsPremiumTitle": "दीन फोकस प्रीमियम",
   "settingsPremiumSubtitle": "सभी सुविधाएं अनलॉक करें",
   "settingsManageSubscriptionTitle": "सदस्यता प्रबंधित करें",
   "settingsManageSubscriptionSubtitle": "योजना देखें या बिलिंग अपडेट करें",
@@ -211,7 +208,6 @@
   "settingsLocationLabel": "जगह",
   "settingsDarkModeLabel": "डार्क मोड",
   "settingsAboutTitle": "दीन फोकस के बारे में",
-  "settingsDemoPlaybackHint": "देखने के लिए टैप करें. जब आप चले जाते हैं तो प्लेबैक रुक जाता है और अगली बार वहीं से शुरू होता है।",
   "settingsSavingLocation": "सहेजा जा रहा है...",
   "settingsSaveLocation": "स्थान सहेजें",
   "settingsAboutTagline": "केंद्र। अनुशासन। स्थिरता।",
@@ -297,5 +293,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "focusChooseAppsEnableMode": "ऐप चुनें और फ़ोकस मोड चालू करें",
+  "focusNotifAppsLockedTitle": "ऐप लॉक हैं",
+  "focusNotifAppsUnlockedTitle": "ऐप अनलॉक हैं",
+  "focusNotifNightModeTitle": "नाइट मोड",
+  "focusNotifGoodMorningTitle": "सुप्रभात!",
+  "focusNotifAppsNowAvailableBody": "ऐप अब उपलब्ध हैं।",
+  "focusNotifSalahLockedBody": "नमाज़ के दौरान ऐप लॉक हैं।",
+  "focusNotifNightLockedBody": "नाइट मोड चालू है। अपने मन और शरीर को आराम दें।",
+  "focusNotifGenericLockedBody": "चुने गए ऐप लॉक हैं।",
+  "focusNotifMorningUnlockBody": "ऐप उपलब्ध नहीं हैं।",
+  "widgetDailyVerseTitle": "दैनिक आयत",
+  "widgetOpenAppTimelineHint": "दैनिक आयत और प्रार्थना विजेट डेटा तैयार करने के लिए Deen Focus खोलें।",
+  "widgetSetLocationForPrayers": "नमाज़ और दैनिक आयत लोड करने के लिए Deen Focus में अपना स्थान सेट करें।"
 }

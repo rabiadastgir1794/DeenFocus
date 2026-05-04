@@ -77,9 +77,10 @@ private enum FocusShieldMode: String {
     case .salah:
       return "Start My Salah"
     case .child:
-      return "Continue in Safe Mode"
+      // Narrow no-break spaces help the system shield button stay on one line on smaller widths.
+      return "Continue\u{00a0}in\u{00a0}Safe\u{00a0}Mode"
     case .nightDiscipline:
-      return "Good Night 🌙"
+      return "Good Night"
     }
   }
 }
@@ -159,13 +160,14 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
     let isDarkMode = storedIsDark ?? systemIsDark
 
     if isDarkMode {
+      // Stronger contrast on the dark scaffold — Shield labels can render slightly washed out otherwise.
       return ThemePalette(
         blurStyle: nil,
         backgroundColor: UIColor(red: 0.067, green: 0.106, blue: 0.078, alpha: 1.0),  // #111B14
-        titleColor: UIColor(red: 0.878, green: 0.890, blue: 0.863, alpha: 1.0),  // #E0E3DC
-        subtitleColor: UIColor(red: 0.812, green: 0.776, blue: 0.706, alpha: 1.0),  // #CFC6B4
+        titleColor: UIColor(red: 0.96, green: 0.97, blue: 0.95, alpha: 1.0),
+        subtitleColor: UIColor(red: 0.90, green: 0.91, blue: 0.88, alpha: 1.0),
         buttonBackgroundColor: UIColor(red: 0.557, green: 0.831, blue: 0.706, alpha: 1.0),  // #8ED4B4
-        buttonTextColor: UIColor(red: 0.106, green: 0.239, blue: 0.180, alpha: 1.0)  // #1B3D2E
+        buttonTextColor: UIColor(red: 0.06, green: 0.14, blue: 0.11, alpha: 1.0)
       )
     }
 
