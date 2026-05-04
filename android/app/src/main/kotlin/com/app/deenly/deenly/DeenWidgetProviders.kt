@@ -23,7 +23,6 @@ private const val widgetTimelineKey = "widget_timeline_json"
 private const val widgetRefreshAction = "com.rnr.deenfocus.WIDGET_REFRESH"
 private const val widgetHighlightAlarmBase = 8300
 private const val widgetHighlightAlarmMax = 64
-private const val highlightGraceMinutes = 10L
 
 enum class WidgetSize {
     SMALL,
@@ -185,8 +184,7 @@ internal object DeenWidgetUpdater {
     }
 
     /**
-     * Refreshes widgets when the "next prayer" highlight should advance (each prayer time + 10 min),
-     * matching in-app salah focus windows.
+     * Refreshes widgets when the current prayer highlight should advance.
      */
     private fun schedulePrayerHighlightAlarms(context: Context) {
         val manager = AppWidgetManager.getInstance(context)
@@ -220,7 +218,7 @@ internal object DeenWidgetUpdater {
                     val p = prayers.optJSONObject(j) ?: continue
                     val iso = p.optString("isoTime")
                     val dt = parsePrayerLocalDateTime(iso) ?: continue
-                    val boundary = dt.plusMinutes(highlightGraceMinutes)
+                    val boundary = dt
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
                         .toEpochMilli()
@@ -336,7 +334,7 @@ internal object DeenWidgetUpdater {
             WidgetSize.SMALL -> bindPrayerGrid(
                 views = views,
                 prayers = entry.prayers.filterNot { it.id == "sunrise" }.take(5),
-                highlightPrayerId = findNextPrayerId(
+                highlightPrayerId = findCurrentPrayerId(
                     entry.prayers.filterNot { it.id == "sunrise" },
                 ),
                 topIds = intArrayOf(
@@ -371,7 +369,7 @@ internal object DeenWidgetUpdater {
             WidgetSize.MEDIUM -> bindPrayerGrid(
                 views = views,
                 prayers = entry.prayers.take(6),
-                highlightPrayerId = findNextPrayerId(entry.prayers),
+                highlightPrayerId = findCurrentPrayerId(entry.prayers),
                 topIds = intArrayOf(
                     R.id.grid1Top,
                     R.id.grid2Top,
@@ -415,7 +413,7 @@ internal object DeenWidgetUpdater {
                 bindPrayerGrid(
                     views = views,
                     prayers = entry.prayers.filterNot { it.id == "sunrise" }.take(5),
-                    highlightPrayerId = findNextPrayerId(
+                    highlightPrayerId = findCurrentPrayerId(
                         entry.prayers.filterNot { it.id == "sunrise" },
                     ),
                     topIds = intArrayOf(
@@ -507,16 +505,17 @@ internal object DeenWidgetUpdater {
     }
 
     /**
-     * Highlights the current "next" slot until [highlightGraceMinutes] after that prayer's time,
-     * then advances (aligned with salah focus windows).
+     * Resolves the current prayer from system time on every widget refresh.
      */
-    private fun findNextPrayerId(prayers: List<WidgetPrayer>): String? {
+    private fun findCurrentPrayerId(prayers: List<WidgetPrayer>): String? {
         val now = LocalDateTime.now()
-        return prayers.firstOrNull { prayer ->
-            val start = parsePrayerLocalDateTime(prayer.isoTime) ?: return@firstOrNull false
-            val endOfGrace = start.plusMinutes(highlightGraceMinutes)
-            now.isBefore(endOfGrace)
-        }?.id
+        val parsed = prayers.mapNotNull { prayer ->
+            val start = parsePrayerLocalDateTime(prayer.isoTime) ?: return@mapNotNull null
+            prayer to start
+        }.sortedBy { it.second }
+        if (parsed.isEmpty()) return null
+        return parsed.lastOrNull { (_, start) -> !start.isAfter(now) }?.first?.id
+            ?: parsed.first().first.id
     }
 
     private fun iconForPrayer(id: String?): Int {

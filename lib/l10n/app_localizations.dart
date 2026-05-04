@@ -477,7 +477,7 @@ abstract class AppLocalizations {
   /// No description provided for @monthlyPriceValue.
   ///
   /// In en, this message translates to:
-  /// **'\$4.99'**
+  /// **'\$9.99'**
   String get monthlyPriceValue;
 
   /// No description provided for @monthlyPriceSuffix.
@@ -495,7 +495,7 @@ abstract class AppLocalizations {
   /// No description provided for @yearlyPriceValue.
   ///
   /// In en, this message translates to:
-  /// **'\$29.99'**
+  /// **'\$49.99'**
   String get yearlyPriceValue;
 
   /// No description provided for @yearlyPriceSuffix.

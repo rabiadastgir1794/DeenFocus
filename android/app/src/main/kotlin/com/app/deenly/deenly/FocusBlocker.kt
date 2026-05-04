@@ -47,7 +47,7 @@ private const val syncGenerationKey = "sync_generation"
 private const val scheduledTransitionsKey = "scheduled_transitions"
 private const val focusScheduleAction = "com.app.deenly.deenly.FOCUS_SCHEDULE"
 private const val focusScheduleIdBase = 6100
-private const val focusScheduleMaxCount = 64
+private const val focusScheduleMaxCount = 160
 private const val focusDebugFileName = "deenly_focus_debug_log.txt"
 private const val focusDebugSectionPrefs = "focus_debug_log_sections"
 private const val focusDebugKeyLastDate = "last_section_date"
@@ -103,12 +103,6 @@ object FocusDebugLogger {
             chunk.append("${formatter.format(now)} [$tag] $message\n")
             val text = chunk.toString()
 
-            val file = appFile(context)
-            file.parentFile?.mkdirs()
-            if (!file.exists()) {
-                file.createNewFile()
-            }
-            file.appendText(text)
             appendToPublicDownloads(context, text)
         }
     }
@@ -131,26 +125,12 @@ object FocusDebugLogger {
                 .putString(focusDebugKeyLastHour, hourKeyFormat.format(now))
                 .apply()
 
-            val file = appFile(context)
-            if (file.exists()) {
-                file.writeText("")
-            } else {
-                file.parentFile?.mkdirs()
-                file.createNewFile()
-            }
-            file.appendText(line)
             overwritePublicDownloads(context, line)
         }
     }
 
     fun path(context: Context): String {
         return publicDownloadsPath()
-    }
-
-    private fun appFile(context: Context): File {
-        val baseDir =
-            context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
-        return File(baseDir, focusDebugFileName)
     }
 
     private fun publicDownloadsPath(): String {
@@ -201,6 +181,7 @@ object FocusDebugLogger {
     private fun resolvePublicDebugLogUri(resolver: ContentResolver): Uri? {
         val downloadDir = Environment.DIRECTORY_DOWNLOADS
         val downloadDirPrefix = "$downloadDir/"
+        val matches = mutableListOf<Uri>()
         resolver.query(
             MediaStore.Downloads.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.RELATIVE_PATH),
@@ -217,14 +198,15 @@ object FocusDebugLogger {
                     rel.startsWith(downloadDirPrefix)
                 ) {
                     val id = cursor.getLong(idIndex)
-                    return ContentUris.withAppendedId(
-                        MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                        id,
-                    )
+                    matches.add(ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id))
                 }
             }
         }
-        return null
+        val primary = matches.firstOrNull()
+        matches.drop(1).forEach { duplicate ->
+            runCatching { resolver.delete(duplicate, null, null) }
+        }
+        return primary
     }
 
     private fun writeViaMediaStore(context: Context, contents: String, append: Boolean) {
@@ -948,20 +930,26 @@ class FocusScheduleReceiver : BroadcastReceiver() {
             "schedule.fire",
             "action=${intent.action} isLocked=$isLocked mode=${intent.getStringExtra("activeMode")} nextChangeAt=${intent.getStringExtra("nextChangeAt")}",
         )
-        val current = FocusBlockerStore.currentState(context)
+        val resolved = FocusBlockerStore.currentState(context)
         FocusBlockerStore.save(
             context = context,
-            selectedPackages = current.selectedPackages.toList(),
-            activeMode = intent.getStringExtra("activeMode"),
-            isLocked = isLocked,
-            lockReason = intent.getStringExtra("lockReason"),
-            nextChangeAt = intent.getStringExtra("nextChangeAt"),
+            selectedPackages = resolved.selectedPackages.toList(),
+            activeMode = resolved.activeMode ?: intent.getStringExtra("activeMode"),
+            isLocked = resolved.isLocked,
+            lockReason = resolved.lockReason ?: intent.getStringExtra("lockReason"),
+            nextChangeAt = resolved.nextChangeAt ?: intent.getStringExtra("nextChangeAt"),
         )
-        if (!isLocked) {
+        if (!resolved.isLocked) {
             FocusDebugLogger.append(
                 context,
                 "schedule.unlock",
-                "applied persisted unlock (parity with iOS shield clear on scheduled unlock)",
+                "applied unlock after validating no persisted mode still requires blocking",
+            )
+        } else if (!isLocked) {
+            FocusDebugLogger.append(
+                context,
+                "schedule.unlock",
+                "skipped unlock because persisted schedule still requires ${resolved.activeMode}",
             )
         }
     }

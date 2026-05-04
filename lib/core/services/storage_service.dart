@@ -31,6 +31,7 @@ abstract class StorageService {
       'home_islamic_events_last_year';
   static const String _keyHomePrayerStreakJson = 'home_prayer_streak_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
+  static const String _keyFocusScheduleJson = 'focus_schedule_json';
   static const String _keyDarkModeEnabled = 'dark_mode_enabled';
   static const String _keyAppNotificationsEnabled = 'app_notifications_enabled';
   static const String _keyNearbyMosquesCacheLat = 'nearby_mosques_cache_lat';
@@ -303,6 +304,16 @@ abstract class StorageService {
   static Future<void> setFocusSettingsJson(String value) async {
     final prefs = await _prefs;
     await prefs.setString(_keyFocusSettingsJson, value);
+  }
+
+  static Future<String?> get focusScheduleJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyFocusScheduleJson);
+  }
+
+  static Future<void> setFocusScheduleJson(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyFocusScheduleJson, value);
   }
 
   static Future<bool?> get darkModeEnabled async {

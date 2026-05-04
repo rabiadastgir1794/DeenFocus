@@ -201,7 +201,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mostPopularChoice => 'Most popular choice';
 
   @override
-  String get monthlyPriceValue => '\$4.99';
+  String get monthlyPriceValue => '\$9.99';
 
   @override
   String get monthlyPriceSuffix => '/month';
@@ -210,7 +210,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthlyPlanSubtitle => 'Billed monthly • Cancel anytime';
 
   @override
-  String get yearlyPriceValue => '\$29.99';
+  String get yearlyPriceValue => '\$49.99';
 
   @override
   String get yearlyPriceSuffix => '/year';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class FocusController extends ChangeNotifier {
   static const Duration _salahTestInitialDelay = Duration(minutes: 2);
   static const Duration _salahTestLockDuration = Duration(minutes: 4);
   static const Duration _salahTestGapDuration = Duration(minutes: 2);
+  static const int _rollingScheduleDays = 7;
 
   FocusSettings _settings = FocusSettings.defaults();
   FocusLockState _lockState = const FocusLockState.unlocked();
@@ -736,6 +738,7 @@ class FocusController extends ChangeNotifier {
     _settings = updatedSettings;
     _lockState = updatedLockState;
     await _persist();
+    await StorageService.setFocusScheduleJson(jsonEncode(scheduledTransitions));
     notifyListeners();
     try {
       await FocusEnforcementService.sync(
@@ -752,6 +755,7 @@ class FocusController extends ChangeNotifier {
     try {
       await AppNotificationService.instance.syncFocusNotifications(
         settings: _settings,
+        scheduledTransitions: scheduledTransitions,
       );
     } catch (e, st) {
       assert(() {
@@ -1017,24 +1021,20 @@ class FocusController extends ChangeNotifier {
       return const <SalahWindow>[];
     }
 
-    // Focus scheduling must be deterministic. Using the shared prayer cache
-    // here can race with notification/home refreshes and briefly feed Focus
-    // the wrong day's windows, which then pushes stale transitions to iOS.
-    final today = await HomePrayerTimesHelper.generatePrayerTimesForDate(
-      latitude: _cachedLatitude!,
-      longitude: _cachedLongitude!,
-      date: now,
-    );
-    final tomorrow = await HomePrayerTimesHelper.generatePrayerTimesForDate(
-      latitude: _cachedLatitude!,
-      longitude: _cachedLongitude!,
-      date: now.add(const Duration(days: 1)),
-    );
-
-    final prayers = <HomePrayerSlot>[
-      ...today.slots.where((slot) => slot.id != HomePrayerId.sunrise),
-      ...tomorrow.slots.where((slot) => slot.id == HomePrayerId.fajr).take(1),
-    ];
+    final prayers = <HomePrayerSlot>[];
+    final startDate = DateTime(now.year, now.month, now.day);
+    final sect = await StorageService.sect;
+    for (var offset = 0; offset < _rollingScheduleDays; offset++) {
+      final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
+        latitude: _cachedLatitude!,
+        longitude: _cachedLongitude!,
+        date: startDate.add(Duration(days: offset)),
+        sectRaw: sect,
+      );
+      prayers.addAll(
+        data.slots.where((slot) => slot.id != HomePrayerId.sunrise),
+      );
+    }
 
     return prayers
         .map(
@@ -1097,9 +1097,9 @@ class FocusController extends ChangeNotifier {
     return _dedupeTransitionsByTimestamp(events);
   }
 
-  /// When night and salah overlap, two transitions can share the same instant
-  /// (e.g. salah window end and sleep window end). Prefer lock so we never
-  /// clear the shield while another mode still requires blocking.
+  /// When night and salah overlap, transitions can share the same instant.
+  /// Recompute the lock state at that instant so Salah keeps priority while
+  /// unlocks are only emitted when no enabled mode still requires blocking.
   List<Map<String, dynamic>> _dedupeTransitionsByTimestamp(
     List<Map<String, dynamic>> events,
   ) {
@@ -1109,15 +1109,21 @@ class FocusController extends ChangeNotifier {
     while (i < events.length) {
       final ms = events[i]['atMillis'] as int;
       var j = i + 1;
-      var anyLock = events[i]['isLocked'] as bool;
       while (j < events.length && events[j]['atMillis'] == ms) {
-        anyLock = anyLock || (events[j]['isLocked'] as bool);
         j++;
       }
-      final pick = anyLock
-          ? events.sublist(i, j).firstWhere((e) => e['isLocked'] == true)
-          : events[i];
-      out.add(Map<String, dynamic>.from(pick));
+      final group = events.sublist(i, j);
+      group.sort((a, b) {
+        final aLocked = a['isLocked'] == true ? 0 : 1;
+        final bLocked = b['isLocked'] == true ? 0 : 1;
+        if (aLocked != bLocked) return aLocked.compareTo(bLocked);
+        final aMode = a['activeMode'] as String?;
+        final bMode = b['activeMode'] as String?;
+        final aPriority = aMode == FocusModeType.salah.name ? 0 : 1;
+        final bPriority = bMode == FocusModeType.salah.name ? 0 : 1;
+        return aPriority.compareTo(bPriority);
+      });
+      out.add(Map<String, dynamic>.from(group.first));
       i = j;
     }
     return out;
@@ -1130,49 +1136,55 @@ class FocusController extends ChangeNotifier {
   ) {
     final range = settings.nightRange;
     final events = <Map<String, dynamic>>[];
-    final window = _nightWindowContainingOrNext(range, now);
-    if (window == null) return events;
+    var probe = now;
+    for (var count = 0; count < _rollingScheduleDays; count++) {
+      final window = _nightWindowContainingOrNext(range, probe);
+      if (window == null) break;
 
-    final isWithinWindow = range.contains(now);
-    if (window.start.isAfter(now)) {
-      final snap = _lockStateAtInstant(settings, window.start, windows);
-      if (snap.isLocked) {
+      if (window.start.isAfter(now)) {
+        final snap = _lockStateAtInstant(settings, window.start, windows);
+        if (snap.isLocked) {
+          events.add(
+            _scheduledTransition(
+              at: window.start,
+              isLocked: true,
+              activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
+              reason:
+                  snap.reason ?? 'Night Discipline is blocking selected apps.',
+              nextChangeAt: snap.nextChangeAt ?? window.end,
+            ),
+          );
+        }
+      }
+
+      if (window.end.isAfter(now)) {
+        final snap = _lockStateAtInstant(settings, window.end, windows);
+        final nextWindow = _nightWindowContainingOrNext(
+          range,
+          window.end.add(const Duration(seconds: 1)),
+        );
         events.add(
           _scheduledTransition(
-            at: window.start,
-            isLocked: true,
+            at: window.end,
+            isLocked: snap.isLocked,
             activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
             reason:
-                snap.reason ?? 'Night Discipline is blocking selected apps.',
-            nextChangeAt: snap.nextChangeAt ?? window.end,
+                snap.reason ??
+                'Night Discipline will start at ${_formatTime(range.startHour, range.startMinute)}.',
+            nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
           ),
         );
       }
+
+      probe = window.end.add(const Duration(seconds: 1));
     }
 
-    if (window.end.isAfter(now)) {
-      final snap = _lockStateAtInstant(settings, window.end, windows);
-      final nextWindow = _nightWindowContainingOrNext(
-        range,
-        window.end.add(const Duration(seconds: 1)),
-      );
-      events.add(
-        _scheduledTransition(
-          at: window.end,
-          isLocked: snap.isLocked,
-          activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
-          reason:
-              snap.reason ??
-              'Night Discipline will start at ${_formatTime(range.startHour, range.startMinute)}.',
-          nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
-        ),
-      );
-    }
-
-    if (isWithinWindow &&
+    final currentWindow = _nightWindowContainingOrNext(range, now);
+    if (currentWindow != null &&
+        range.contains(now) &&
         settings.temporarilyUnlockedUntil != null &&
         settings.temporarilyUnlockedUntil!.isAfter(now) &&
-        settings.temporarilyUnlockedUntil!.isBefore(window.end)) {
+        settings.temporarilyUnlockedUntil!.isBefore(currentWindow.end)) {
       final snap = _lockStateAtInstant(
         settings,
         settings.temporarilyUnlockedUntil!,
@@ -1186,7 +1198,7 @@ class FocusController extends ChangeNotifier {
             activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
             reason:
                 snap.reason ?? 'Night Discipline is blocking selected apps.',
-            nextChangeAt: snap.nextChangeAt ?? window.end,
+            nextChangeAt: snap.nextChangeAt ?? currentWindow.end,
           ),
         );
       }

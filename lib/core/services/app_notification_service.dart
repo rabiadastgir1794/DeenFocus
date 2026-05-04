@@ -186,13 +186,15 @@ class AppNotificationService {
 
   /// Night discipline: one ID per upcoming lock / unlock (same horizon as prayer batch).
   static const int _nightLockNotificationIdStart = 4000;
-  static const int _nightUnlockNotificationIdStart = 4010;
   static const int _nightUnlockNotificationIdEnd = 4016;
   static const int _salahLockNotificationIdStart = 3000;
   static const int _salahUnlockNotificationIdStart = 3100;
   static const int _salahUnlockNotificationIdEnd = 3139;
 
-  Future<void> syncFocusNotifications({required FocusSettings settings}) async {
+  Future<void> syncFocusNotifications({
+    required FocusSettings settings,
+    required List<Map<String, dynamic>> scheduledTransitions,
+  }) async {
     final run = _focusSyncSerial.then((_) async {
       await initialize();
       if (!await _hasNotificationPermission()) {
@@ -216,6 +218,7 @@ class AppNotificationService {
       final signature = await _buildFocusScheduleSignature(
         settings: settings,
         includeUnlockNotifications: includeUnlockNotifications,
+        scheduledTransitions: scheduledTransitions,
       );
       if (_lastFocusScheduleSignature == signature) {
         await FocusEnforcementService.appendDebugLog(
@@ -237,21 +240,10 @@ class AppNotificationService {
         _nightUnlockNotificationIdEnd,
       );
 
-      // Salah already has prayer reminders in the 1000-range. Scheduling a
-      // second focus notification for the same prayer window was the most
-      // common source of "multiple notifications" reports.
-      if (settings.salahModeEnabled) {
-        await _scheduleSalahFocusNotifications(
-          settings: settings,
-          includeUnlockNotifications: includeUnlockNotifications,
-        );
-      }
-      if (settings.nightDisciplineEnabled) {
-        await _scheduleNightNotifications(
-          settings: settings,
-          includeUnlockNotifications: includeUnlockNotifications,
-        );
-      }
+      await _scheduleFocusTransitionNotifications(
+        scheduledTransitions: scheduledTransitions,
+        includeUnlockNotifications: includeUnlockNotifications,
+      );
 
       _lastFocusScheduleSignature = signature;
     });
@@ -259,157 +251,75 @@ class AppNotificationService {
     await run;
   }
 
-  Future<void> _scheduleNightNotifications({
-    required FocusSettings settings,
+  Future<void> _scheduleFocusTransitionNotifications({
+    required List<Map<String, dynamic>> scheduledTransitions,
     required bool includeUnlockNotifications,
   }) async {
     final isSpanish = await _isSpanishLocale();
-    final range = settings.nightRange;
-    final now = DateTime.now();
-    final lockTimes = <DateTime>[];
-    final unlockTimes = <DateTime>[];
-    var probe = now;
-    for (
-      var iter = 0;
-      iter < 48 && (lockTimes.length < 7 || unlockTimes.length < 7);
-      iter++
-    ) {
-      final w = _nightWindowContainingOrNext(range, probe);
-      if (w.start.isAfter(now) && lockTimes.length < 7) {
-        lockTimes.add(w.start);
-      }
-      if (w.end.isAfter(now) && unlockTimes.length < 7) {
-        unlockTimes.add(w.end);
-      }
-      probe = w.end.add(const Duration(seconds: 1));
-    }
+    final transitions = scheduledTransitions
+        .where((transition) {
+          final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
+          if (atMillis <= DateTime.now().millisecondsSinceEpoch) return false;
+          final isLocked = transition['isLocked'] as bool? ?? false;
+          return isLocked || includeUnlockNotifications;
+        })
+        .toList(growable: false);
 
-    var lockId = _nightLockNotificationIdStart;
-    for (final at in lockTimes) {
+    var lockId = _salahLockNotificationIdStart;
+    var unlockId = _salahUnlockNotificationIdStart;
+    for (final transition in transitions) {
+      final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
+      if (atMillis <= 0) continue;
+      final isLocked = transition['isLocked'] as bool? ?? false;
+      final mode = transition['activeMode'] as String?;
+      final at = DateTime.fromMillisecondsSinceEpoch(atMillis);
+      final id = isLocked ? lockId++ : unlockId++;
+      final title = isLocked
+          ? (isSpanish ? 'Apps bloqueadas' : 'Apps Locked')
+          : (isSpanish ? 'Apps desbloqueadas' : 'Apps Unlocked');
+      final body = _focusTransitionBody(
+        isLocked: isLocked,
+        mode: mode,
+        isSpanish: isSpanish,
+      );
       await FocusEnforcementService.appendDebugLog(
-        'notifications.nightLock.schedule',
-        'id=$lockId at=${at.toIso8601String()}',
+        'notifications.focusTransition.schedule',
+        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode',
       );
       await _scheduleIfFuture(
-        id: lockId,
+        id: id,
         when: at,
-        title: isSpanish ? '🌙 Modo nocturno activado' : '🌙 Night Mode On',
-        body: isSpanish
-            ? '🌙 El modo nocturno está activo. Deja que tu mente y cuerpo descansen.'
-            : '🌙 Night mode is on. Let your mind and body rest.',
+        title: title,
+        body: body,
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
-      lockId++;
-    }
-
-    if (!includeUnlockNotifications) {
-      return;
-    }
-
-    var unlockId = _nightUnlockNotificationIdStart;
-    for (final at in unlockTimes) {
-      await FocusEnforcementService.appendDebugLog(
-        'notifications.nightUnlock.schedule',
-        'id=$unlockId at=${at.toIso8601String()}',
-      );
-      await _scheduleIfFuture(
-        id: unlockId,
-        when: at,
-        title: isSpanish ? '🌙 Buenos días' : '🌙 Good Morning',
-        body: isSpanish
-            ? '🌙 ¡Buenos días! Las aplicaciones ya están disponibles.'
-            : '🌙 Good morning! Apps are now available.',
-        details: _nightTransitionNotificationDetails,
-        preferAlarmClock: false,
-      );
-      unlockId++;
     }
   }
 
-  Future<void> _scheduleSalahFocusNotifications({
-    required FocusSettings settings,
-    required bool includeUnlockNotifications,
-  }) async {
-    final isSpanish = await _isSpanishLocale();
-    final latitude = await StorageService.locationLatitude;
-    final longitude = await StorageService.locationLongitude;
-    if (latitude == null || longitude == null) {
-      await FocusEnforcementService.appendDebugLog(
-        'notifications.salahFocus.skip',
-        'location unavailable',
-      );
-      return;
-    }
-
-    final now = DateTime.now();
-    const daysAhead = 7;
-    final lockTimes = <({DateTime at, HomePrayerId prayerId})>[];
-    final unlockTimes = <DateTime>[];
-
-    for (var dayOffset = 0; dayOffset < daysAhead; dayOffset++) {
-      final date = now.add(Duration(days: dayOffset));
-      final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
-        latitude: latitude,
-        longitude: longitude,
-        date: date,
-      );
-      for (final slot in data.slots.where(
-        (slot) => slot.id != HomePrayerId.sunrise,
-      )) {
-        if (slot.time.isAfter(now) && lockTimes.length < 40) {
-          lockTimes.add((at: slot.time, prayerId: slot.id));
-        }
-        final unlockAt = slot.time.add(const Duration(minutes: 15));
-        if (unlockAt.isAfter(now) && unlockTimes.length < 40) {
-          unlockTimes.add(unlockAt);
-        }
+  String _focusTransitionBody({
+    required bool isLocked,
+    required String? mode,
+    required bool isSpanish,
+  }) {
+    if (isSpanish) {
+      if (!isLocked) return 'Las aplicaciones ya están disponibles.';
+      if (mode == FocusModeType.salah.name) {
+        return 'Las aplicaciones están bloqueadas durante Salah.';
       }
+      if (mode == FocusModeType.nightDiscipline.name) {
+        return 'El modo nocturno está activo. Deja que tu mente y cuerpo descansen.';
+      }
+      return 'Las aplicaciones seleccionadas están bloqueadas.';
     }
-
-    var lockId = _salahLockNotificationIdStart;
-    for (final lock in lockTimes) {
-      await FocusEnforcementService.appendDebugLog(
-        'notifications.salahLock.schedule',
-        'id=$lockId at=${lock.at.toIso8601String()}',
-      );
-      await _scheduleIfFuture(
-        id: lockId,
-        when: lock.at,
-        title: isSpanish
-            ? '🕌 Hora de ${_prayerLabel(lock.prayerId, isSpanish: true)}'
-            : '🕌 ${_prayerLabel(lock.prayerId)} Time',
-        body: isSpanish
-            ? '🕌 Tómate un momento para la oración de ${_prayerLabel(lock.prayerId, isSpanish: true)}.'
-            : '🕌 Take a moment for ${_prayerLabel(lock.prayerId)} prayer.',
-        details: _nightTransitionNotificationDetails,
-        preferAlarmClock: false,
-      );
-      lockId++;
+    if (!isLocked) return 'Apps are now available.';
+    if (mode == FocusModeType.salah.name) {
+      return 'Apps are locked during Salah.';
     }
-
-    if (!includeUnlockNotifications) {
-      return;
+    if (mode == FocusModeType.nightDiscipline.name) {
+      return 'Night mode is on. Let your mind and body rest.';
     }
-
-    var unlockId = _salahUnlockNotificationIdStart;
-    for (final at in unlockTimes) {
-      await FocusEnforcementService.appendDebugLog(
-        'notifications.salahUnlock.schedule',
-        'id=$unlockId at=${at.toIso8601String()}',
-      );
-      await _scheduleIfFuture(
-        id: unlockId,
-        when: at,
-        title: isSpanish ? '🕌 Salah completada' : '🕌 Salah Complete',
-        body: isSpanish
-            ? '🕌 Las aplicaciones ya están desbloqueadas. Que tu oración sea aceptada.'
-            : '🕌 Apps are now unlocked. May your prayer be accepted.',
-        details: _nightTransitionNotificationDetails,
-        preferAlarmClock: false,
-      );
-      unlockId++;
-    }
+    return 'Selected apps are locked.';
   }
 
   NotificationDetails get _nightTransitionNotificationDetails =>
@@ -432,64 +342,6 @@ class AppNotificationService {
           presentSound: true,
         ),
       );
-
-  /// Matches [FocusController._nightWindowContainingOrNext] — sleep window boundaries.
-  ({DateTime start, DateTime end}) _nightWindowContainingOrNext(
-    FocusTimeRange range,
-    DateTime now,
-  ) {
-    final todayStart = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      range.startHour,
-      range.startMinute,
-    );
-    var todayEnd = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      range.endHour,
-      range.endMinute,
-    );
-
-    if (range.startTotalMinutes >= range.endTotalMinutes) {
-      if (!todayEnd.isAfter(todayStart)) {
-        todayEnd = todayEnd.add(const Duration(days: 1));
-      }
-
-      if (now.isBefore(todayStart)) {
-        final previousStart = todayStart.subtract(const Duration(days: 1));
-        final previousEnd = todayEnd.subtract(const Duration(days: 1));
-        if (!now.isBefore(previousStart) && now.isBefore(previousEnd)) {
-          return (start: previousStart, end: previousEnd);
-        }
-        return (start: todayStart, end: todayEnd);
-      }
-
-      if (!now.isBefore(todayStart) && now.isBefore(todayEnd)) {
-        return (start: todayStart, end: todayEnd);
-      }
-
-      return (
-        start: todayStart.add(const Duration(days: 1)),
-        end: todayEnd.add(const Duration(days: 1)),
-      );
-    }
-
-    if (now.isBefore(todayStart)) {
-      return (start: todayStart, end: todayEnd);
-    }
-
-    if (now.isBefore(todayEnd)) {
-      return (start: todayStart, end: todayEnd);
-    }
-
-    return (
-      start: todayStart.add(const Duration(days: 1)),
-      end: todayEnd.add(const Duration(days: 1)),
-    );
-  }
 
   NotificationDetails get _prayerNotificationDetails =>
       const NotificationDetails(
@@ -734,6 +586,7 @@ class AppNotificationService {
   Future<String> _buildFocusScheduleSignature({
     required FocusSettings settings,
     required bool includeUnlockNotifications,
+    required List<Map<String, dynamic>> scheduledTransitions,
   }) async {
     final parts = <String>[
       'night=${settings.nightDisciplineEnabled}',
@@ -743,32 +596,11 @@ class AppNotificationService {
       'unlock=$includeUnlockNotifications',
       'tempUnlockUntil=${settings.temporarilyUnlockedUntil?.millisecondsSinceEpoch ?? 0}',
     ];
-
-    if (settings.salahModeEnabled) {
-      final latitude = await StorageService.locationLatitude;
-      final longitude = await StorageService.locationLongitude;
-      parts.add('lat=${latitude?.toStringAsFixed(4) ?? "nil"}');
-      parts.add('lng=${longitude?.toStringAsFixed(4) ?? "nil"}');
-
-      if (latitude != null && longitude != null) {
-        final now = DateTime.now();
-        const daysAhead = 7;
-        for (var dayOffset = 0; dayOffset < daysAhead; dayOffset++) {
-          final date = now.add(Duration(days: dayOffset));
-          final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
-            latitude: latitude,
-            longitude: longitude,
-            date: date,
-          );
-          for (final slot in data.slots.where(
-            (slot) => slot.id != HomePrayerId.sunrise,
-          )) {
-            parts.add(
-              'salah:$dayOffset:${slot.id.name}:${slot.time.toIso8601String()}',
-            );
-          }
-        }
-      }
+    for (final transition in scheduledTransitions) {
+      final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
+      final isLocked = transition['isLocked'] as bool? ?? false;
+      final mode = transition['activeMode'] as String? ?? '';
+      parts.add('transition=$atMillis:${isLocked ? 1 : 0}:$mode');
     }
 
     return parts.join('|');

@@ -142,10 +142,19 @@ private struct DeenlyProvider: TimelineProvider {
       return []
     }
 
-    return payload.entries.compactMap { payloadEntry in
+    return payload.entries.flatMap { payloadEntry -> [DeenlyWidgetEntry] in
       let date = WidgetDateParser.parse(payloadEntry.timestamp)
-      guard let date else { return nil }
-      return DeenlyWidgetEntry(date: date, payload: payloadEntry)
+      guard let date else { return [] }
+      var entries = [DeenlyWidgetEntry(date: date, payload: payloadEntry)]
+      let prayerTransitions = payloadEntry.prayers.compactMap {
+        WidgetDateParser.parse($0.isoTime)
+      }
+      entries.append(
+        contentsOf: prayerTransitions.map {
+          DeenlyWidgetEntry(date: $0, payload: payloadEntry)
+        }
+      )
+      return entries
     }
     .sorted(by: { $0.date < $1.date })
   }
@@ -155,9 +164,6 @@ private struct DeenlyWidgetView: View {
   @Environment(\.widgetFamily) private var family
   let entry: DeenlyWidgetEntry
   private let fontScale: CGFloat = 1.25
-  /// Matches salah focus: highlight stays on a prayer until 10 minutes after its time, then moves on.
-  private let highlightGraceSeconds: TimeInterval = 10 * 60
-
   private var palette: WidgetPalette {
     entry.payload.isDarkMode ? .dark : .light
   }
@@ -267,7 +273,7 @@ private struct DeenlyWidgetView: View {
     let rows = stride(from: 0, to: prayers.count, by: columns).map {
       Array(prayers[$0..<min($0 + columns, prayers.count)])
     }
-    let nextPrayerId = findNextPrayerId(prayers: highlightSource, now: now)
+    let currentPrayerId = findCurrentPrayerId(prayers: highlightSource, now: now)
 
     let rowSpacing: CGFloat = {
       if showVerse { return 4 }
@@ -280,7 +286,7 @@ private struct DeenlyWidgetView: View {
           ForEach(row, id: \.id) { prayer in
             PrayerCell(
               prayer: prayer,
-              isHighlighted: prayer.id == nextPrayerId,
+              isHighlighted: prayer.id == currentPrayerId,
               palette: palette,
               family: family,
               fontScale: fontScale
@@ -300,14 +306,14 @@ private struct DeenlyWidgetView: View {
   /// Use 3 prayers on the first row and 2 on the second so everything fits.
   @ViewBuilder
   private func smallPrayerGrid(prayers: [WidgetPrayer], now: Date) -> some View {
-    let nextPrayerId = findNextPrayerId(prayers: prayersForHighlightNoSunrise, now: now)
+    let currentPrayerId = findCurrentPrayerId(prayers: prayersForHighlightNoSunrise, now: now)
     if prayers.count >= 5 {
       VStack(spacing: 3) {
         HStack(spacing: 2) {
           ForEach(Array(prayers.prefix(3)), id: \.id) { prayer in
             PrayerCell(
               prayer: prayer,
-              isHighlighted: prayer.id == nextPrayerId,
+              isHighlighted: prayer.id == currentPrayerId,
               palette: palette,
               family: family,
               fontScale: fontScale
@@ -318,7 +324,7 @@ private struct DeenlyWidgetView: View {
           ForEach(Array(prayers.dropFirst(3).prefix(2)), id: \.id) { prayer in
             PrayerCell(
               prayer: prayer,
-              isHighlighted: prayer.id == nextPrayerId,
+              isHighlighted: prayer.id == currentPrayerId,
               palette: palette,
               family: family,
               fontScale: fontScale
@@ -344,12 +350,15 @@ private struct DeenlyWidgetView: View {
     return Array(prayers.prefix(limit))
   }
 
-  private func findNextPrayerId(prayers: [WidgetPrayer], now: Date) -> String? {
-    prayers.first { prayer in
-      guard let start = WidgetDateParser.parse(prayer.isoTime) else { return false }
-      let endOfGrace = start.addingTimeInterval(highlightGraceSeconds)
-      return now < endOfGrace
-    }?.id
+  private func findCurrentPrayerId(prayers: [WidgetPrayer], now: Date) -> String? {
+    let parsed = prayers
+      .compactMap { prayer -> (WidgetPrayer, Date)? in
+        guard let start = WidgetDateParser.parse(prayer.isoTime) else { return nil }
+        return (prayer, start)
+      }
+      .sorted { $0.1 < $1.1 }
+    guard let first = parsed.first else { return nil }
+    return parsed.last(where: { $0.1 <= now })?.0.id ?? first.0.id
   }
 }
 

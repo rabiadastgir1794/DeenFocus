@@ -11,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_languages.dart';
 import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
-import '../../../../core/services/app_notification_service.dart';
 import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/permission_service.dart';
 import '../../../../core/services/storage_service.dart';
@@ -56,24 +55,20 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
   }
 
   Future<void> _toggleNotifications(bool value) async {
-    final focusSettings = context.read<FocusController>().settings;
+    final focusController = context.read<FocusController>();
     final l10n = AppLocalizations.of(context)!;
     if (value) {
       final granted = await PermissionService.requestNotification();
       if (!granted) {
         if (!mounted) return;
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-          SnackBar(
-            content: Text(l10n.settingsEnableSystemNotifications),
-          ),
+          SnackBar(content: Text(l10n.settingsEnableSystemNotifications)),
         );
         return;
       }
     }
     await StorageService.setAppNotificationsEnabled(value);
-    await AppNotificationService.instance.syncFocusNotifications(
-      settings: focusSettings,
-    );
+    await focusController.refresh();
     if (!mounted) return;
     setState(() => _notificationsEnabled = value);
   }
@@ -255,9 +250,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
   Future<void> _onAboutTapped(BuildContext context) async {
     if (!context.mounted) return;
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const SettingsAboutScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (_) => const SettingsAboutScreen()),
     );
   }
 
@@ -300,7 +293,9 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   await profile.setUserName(controller.text);
                   if (ctx.mounted) Navigator.of(ctx).pop();
                 },
-                decoration: InputDecoration(hintText: l10n.settingsEnterYourName),
+                decoration: InputDecoration(
+                  hintText: l10n.settingsEnterYourName,
+                ),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -406,8 +401,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             ValueListenableBuilder<bool>(
               valueListenable: AppSuperwall.subscriptionActiveNotifier,
               builder: (context, isSubscribed, _) {
-                final manageMode =
-                    AppSuperwall.isEnabled && isSubscribed;
+                final manageMode = AppSuperwall.isEnabled && isSubscribed;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
