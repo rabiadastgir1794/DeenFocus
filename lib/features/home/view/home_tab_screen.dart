@@ -50,10 +50,21 @@ class _HomeTabView extends StatefulWidget {
 
 class _HomeTabViewState extends State<_HomeTabView>
     with WidgetsBindingObserver {
+  String? _lastSyncedSect;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final sect = context.read<UserProfileService>().sect.name;
+    if (_lastSyncedSect == sect) return;
+    _lastSyncedSect = sect;
+    unawaited(context.read<HomeTabViewModel>().syncSectIfChanged(sect));
   }
 
   @override
@@ -87,178 +98,168 @@ class _HomeTabViewState extends State<_HomeTabView>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final vm = context.watch<HomeTabViewModel>();
+    final focusVm = context.watch<FocusController>();
+    final profile = context.watch<UserProfileService>();
+    final isDarkModeEnabled = context.select<ThemeService, bool>(
+      (service) => service.isDarkModeEnabled,
+    );
     final softCardColor = colorScheme.surfaceContainerHighest.withValues(
       alpha: 0.20,
     );
+    if (vm.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-    return Consumer4<
-      HomeTabViewModel,
-      FocusController,
-      UserProfileService,
-      ThemeService
-    >(
-      builder: (context, vm, focusVm, profile, themeService, _) {
-        unawaited(vm.syncSectIfChanged(profile.sect.name));
+    final currentMonth = DateFormat.yMMMM(
+      l10n.localeName,
+    ).format(vm.visibleMonth);
+    final showHomeFocusLockCard =
+        focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked;
 
-        if (vm.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final currentMonth = DateFormat.yMMMM(
-          l10n.localeName,
-        ).format(vm.visibleMonth);
-        final showHomeFocusLockCard =
-            focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked;
-
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.homeSalam,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          Text(
-                            profile.userName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.homeSalam,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                    ),
-                    HomeCircleIconButton(
-                      icon: Icons.chat_bubble_outline,
-                      onTap: () {
-                        unawaited(
-                          AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
-                            () {
-                              if (!context.mounted) return;
-                              Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const HomeAiChatScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    HomeCircleIconButton(
-                      icon: themeService.isDarkModeEnabled
-                          ? Icons.light_mode_outlined
-                          : Icons.dark_mode_outlined,
-                      onTap: () {
-                        unawaited(
-                          themeService.setDarkModeEnabled(
-                            !themeService.isDarkModeEnabled,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                HomeVerseMarquee(
-                  text: _verseText(l10n, vm.dailyVerse),
-                  color: colorScheme.primary,
-                ),
-                if (showHomeFocusLockCard) ...[
-                  const SizedBox(height: 14),
-                  _FocusLockCard(focusVm: focusVm),
-                ],
-                const SizedBox(height: 14),
-                HomePrayerTimesSection(
-                  prayerTimes: vm.prayerTimes,
-                  backgroundColor: softCardColor,
-                ),
-                const SizedBox(height: 12),
-                _QuickActionsCard(
-                  backgroundColor: softCardColor,
-                  focusTitle: focusVm.homeCardTitle(l10n),
-                  focusSubtitle: focusVm.homeCardSubtitle(l10n),
-                  qiblaTitle: l10n.homeQiblaDirection,
-                  qiblaSubtitle: vm.qiblaInfo == null
-                      ? l10n.homeLocationMissingForQibla
-                      : vm.showQiblaBearingDetails
-                      ? '${vm.qiblaInfo} ${l10n.homeToMakkah}'
-                      : l10n.homeQiblaSubtitleGuiding,
-                  masjidTitle: l10n.homeFindMasjid,
-                  masjidSubtitle: l10n.homeSearchNearbyMosques,
-                  isFocusLocked: focusVm.isAppsLocked,
-                  onOpenFocus: widget.onOpenFocusTab,
-                  onOpenQibla: () => _openQiblaScreen(context, vm),
-                  onOpenMasjid: () => _openMasjidScreen(context, vm),
-                ),
-                const SizedBox(height: 12),
-                HomePrayerStreakSection(
-                  streakDays: vm.streakDays,
-                  weekPrayerCounts: vm.weekPrayerCounts,
-                  backgroundColor: softCardColor,
-                  onTap: () => unawaited(_openPrayerStreakDetail(context, vm)),
-                ),
-                const SizedBox(height: 12),
-                HomeCalendarSection(
-                  backgroundColor: softCardColor,
-                  monthTitle: currentMonth,
-                  visibleMonth: vm.visibleMonth,
-                  isLoading: vm.isEventsLoading,
-                  weekly: vm.weeklyCalendar,
-                  monthEvents: vm.monthEvents,
-                  weekEvents: vm.weekEvents,
-                  selectedDate: vm.selectedDate,
-                  onToggleMode: vm.setWeeklyCalendar,
-                  onPreviousMonth: vm.goToPreviousMonth,
-                  onNextMonth: vm.goToNextMonth,
-                  onDateTap: (date) => _onCalendarTap(context, vm, date),
-                ),
-                if (vm.isFriday) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color: colorScheme.primary.withValues(alpha: 0.20),
+                      Text(
+                        profile.userName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.w700),
                       ),
-                    ),
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          l10n.homeJummahMubarak,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n.homeJummahReminder,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                ],
+                ),
+                HomeCircleIconButton(
+                  icon: Icons.chat_bubble_outline,
+                  onTap: () {
+                    unawaited(
+                      AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
+                        () {
+                          if (!context.mounted) return;
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const HomeAiChatScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
+                HomeCircleIconButton(
+                  icon: isDarkModeEnabled
+                      ? Icons.light_mode_outlined
+                      : Icons.dark_mode_outlined,
+                  onTap: () {
+                    unawaited(
+                      context.read<ThemeService>().setDarkModeEnabled(
+                        !isDarkModeEnabled,
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 10),
+            HomeVerseMarquee(
+              text: _verseText(l10n, vm.dailyVerse),
+              color: colorScheme.primary,
+            ),
+            if (showHomeFocusLockCard) ...[
+              const SizedBox(height: 14),
+              _FocusLockCard(focusVm: focusVm),
+            ],
+            const SizedBox(height: 14),
+            HomePrayerTimesSection(
+              prayerTimes: vm.prayerTimes,
+              backgroundColor: softCardColor,
+            ),
+            const SizedBox(height: 12),
+            _QuickActionsCard(
+              backgroundColor: softCardColor,
+              focusTitle: focusVm.homeCardTitle(l10n),
+              focusSubtitle: focusVm.homeCardSubtitle(l10n),
+              qiblaTitle: l10n.homeQiblaDirection,
+              qiblaSubtitle: vm.qiblaInfo == null
+                  ? l10n.homeLocationMissingForQibla
+                  : vm.showQiblaBearingDetails
+                  ? '${vm.qiblaInfo} ${l10n.homeToMakkah}'
+                  : l10n.homeQiblaSubtitleGuiding,
+              masjidTitle: l10n.homeFindMasjid,
+              masjidSubtitle: l10n.homeSearchNearbyMosques,
+              isFocusLocked: focusVm.isAppsLocked,
+              onOpenFocus: widget.onOpenFocusTab,
+              onOpenQibla: () => _openQiblaScreen(context, vm),
+              onOpenMasjid: () => _openMasjidScreen(context, vm),
+            ),
+            const SizedBox(height: 12),
+            HomePrayerStreakSection(
+              streakDays: vm.streakDays,
+              weekPrayerCounts: vm.weekPrayerCounts,
+              backgroundColor: softCardColor,
+              onTap: () => unawaited(_openPrayerStreakDetail(context, vm)),
+            ),
+            const SizedBox(height: 12),
+            HomeCalendarSection(
+              backgroundColor: softCardColor,
+              monthTitle: currentMonth,
+              visibleMonth: vm.visibleMonth,
+              isLoading: vm.isEventsLoading,
+              weekly: vm.weeklyCalendar,
+              monthEvents: vm.monthEvents,
+              weekEvents: vm.weekEvents,
+              selectedDate: vm.selectedDate,
+              onToggleMode: vm.setWeeklyCalendar,
+              onPreviousMonth: vm.goToPreviousMonth,
+              onNextMonth: vm.goToNextMonth,
+              onDateTap: (date) => _onCalendarTap(context, vm, date),
+            ),
+            if (vm.isFriday) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.20),
+                  ),
+                ),
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      l10n.homeJummahMubarak,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(l10n.homeJummahReminder, textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 

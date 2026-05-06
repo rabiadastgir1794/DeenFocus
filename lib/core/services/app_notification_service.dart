@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -15,6 +16,15 @@ import '../../features/focus/model/focus_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import '../../features/home/model/home_models.dart';
+
+void _onNotificationResponse(NotificationResponse response) {
+  unawaited(
+    FocusEnforcementService.appendDebugLog(
+      'notifications.response',
+      'id=${response.id} actionId=${response.actionId} payload=${response.payload} input=${response.input} type=${response.notificationResponseType.name}',
+    ),
+  );
+}
 
 class AppNotificationService {
   AppNotificationService._();
@@ -76,6 +86,7 @@ class AppNotificationService {
         iOS: darwinSettings,
         macOS: darwinSettings,
       ),
+      onDidReceiveNotificationResponse: _onNotificationResponse,
     );
 
     final androidPlugin = _plugin

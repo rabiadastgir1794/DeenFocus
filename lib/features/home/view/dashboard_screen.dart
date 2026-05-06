@@ -17,6 +17,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
+  final Set<int> _visitedIndexes = <int>{0};
 
   static const List<_AppTab> _tabs = <_AppTab>[
     _AppTab(id: 'home', icon: Icons.home_outlined),
@@ -35,17 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final backgroundColor = isDark
         ? colorScheme.outlineVariant.withValues(alpha: 0.25)
         : AppColors.outlineVariantLight.withValues(alpha: 0.25);
-    final pages = <Widget>[
-      HomeTabScreen(
-        onOpenFocusTab: () {
-          setState(() => _currentIndex = 1);
-        },
-      ),
-      const FocusTabScreen(),
-      const TasbihTabScreen(),
-      const QuranTabScreen(),
-      SettingsTabScreen(isTabActive: _currentIndex == 4),
-    ];
+    final pages = List<Widget>.generate(_tabs.length, _buildTabPage);
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: pages),
@@ -76,7 +67,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: NavigationBar(
           selectedIndex: _currentIndex,
           onDestinationSelected: (index) {
-            setState(() => _currentIndex = index);
+            setState(() {
+              _currentIndex = index;
+              _visitedIndexes.add(index);
+            });
           },
           destinations: _tabs
               .map(
@@ -89,6 +83,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildTabPage(int index) {
+    if (!_visitedIndexes.contains(index)) {
+      // Keep startup fast: avoid building non-visible tabs until first visit.
+      return const SizedBox.shrink();
+    }
+    switch (index) {
+      case 0:
+        return HomeTabScreen(
+          onOpenFocusTab: () {
+            setState(() {
+              _currentIndex = 1;
+              _visitedIndexes.add(1);
+            });
+          },
+        );
+      case 1:
+        return const FocusTabScreen();
+      case 2:
+        return const TasbihTabScreen();
+      case 3:
+        return const QuranTabScreen();
+      case 4:
+        return SettingsTabScreen(isTabActive: _currentIndex == 4);
+      default:
+        return const SizedBox.shrink();
+    }
   }
 
   String _labelForTab(AppLocalizations l10n, String id) {

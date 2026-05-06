@@ -43,14 +43,14 @@ class FocusBlockedActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate intent=$intent")
+        FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate")
         renderContent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        FocusDebugLogger.append(applicationContext, "blocked.activity", "onNewIntent intent=$intent")
+        FocusDebugLogger.append(applicationContext, "blocked.activity", "onNewIntent")
         renderContent(intent)
     }
 
@@ -60,7 +60,17 @@ class FocusBlockedActivity : Activity() {
     }
 
     private fun renderContent(intent: Intent) {
-        val activeMode = normalizeMode(intent.getStringExtra("activeMode"))
+        val blockedPackage = intent.getStringExtra("blockedPackage")
+        val blockedAppName = intent.getStringExtra("blockedAppName")
+        val lockReason = intent.getStringExtra("lockReason")
+        val nextChangeAt = intent.getStringExtra("nextChangeAt")
+        val activeModeRaw = intent.getStringExtra("activeMode")
+        FocusDebugLogger.append(
+            applicationContext,
+            "blocked.view.displayed",
+            "package=$blockedPackage appName=$blockedAppName activeMode=$activeModeRaw lockReason=$lockReason nextChangeAt=$nextChangeAt",
+        )
+        val activeMode = normalizeMode(activeModeRaw)
         val content = modeContent(activeMode)
         val palette = themePalette()
 
@@ -326,6 +336,11 @@ class FocusBlockedActivity : Activity() {
     }
 
     private fun navigateHome() {
+        FocusDebugLogger.append(
+            applicationContext,
+            "blocked.view.action",
+            "goHome tapped",
+        )
         startActivity(
             Intent(Intent.ACTION_MAIN).apply {
                 addCategory(Intent.CATEGORY_HOME)

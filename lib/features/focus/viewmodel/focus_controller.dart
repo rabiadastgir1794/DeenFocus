@@ -711,6 +711,9 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> _recomputeAndPersistBody() async {
+    final prevLocked = _lockState.isLocked;
+    final prevMode = _lockState.activeMode;
+    final prevReason = _lockState.reason;
     unawaited(
       FocusEnforcementService.appendDebugLog(
         'focus.recompute',
@@ -737,6 +740,16 @@ class FocusController extends ChangeNotifier {
     );
     _settings = updatedSettings;
     _lockState = updatedLockState;
+    if (prevLocked != _lockState.isLocked ||
+        prevMode != _lockState.activeMode ||
+        prevReason != _lockState.reason) {
+      unawaited(
+        FocusEnforcementService.appendDebugLog(
+          'focus.lockTransition',
+          'locked=$prevLocked->${_lockState.isLocked} mode=$prevMode->${_lockState.activeMode} reason=$prevReason->${_lockState.reason} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()}',
+        ),
+      );
+    }
     await _persist();
     await StorageService.setFocusScheduleJson(jsonEncode(scheduledTransitions));
     notifyListeners();

@@ -1,14 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart'
-    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player_android/video_player_android.dart';
-import 'package:video_player_avfoundation/video_player_avfoundation.dart';
 
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
@@ -26,27 +22,24 @@ import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-        AVFoundationVideoPlayer.registerWith();
-        break;
-      case TargetPlatform.android:
-        AndroidVideoPlayer.registerWith();
-        break;
-      default:
-        break;
-    }
-  }
+  // Plugin auto-registration handles video players; manual registration is
+  // intentionally removed to keep startup minimal.
   await Hive.initFlutter();
-  await AppSuperwall.configureIfNeeded();
-  if (AppSuperwall.isEnabled) {
-    await AppSuperwall.syncAttributesAndResolvePaywallRoute();
-  }
-  await AppNotificationService.instance.initialize();
+  runApp(const DeenlyApp());
+  // Startup performance: defer non-critical services so first frame is not
+  // blocked by IO, plugin channels, or network-bound subscription sync.
+  Future<void>.microtask(_initializeServices);
+}
+
+Future<void> _initializeServices() async {
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
   unawaited(DailyRefreshService.instance.initialize());
-  runApp(const DeenlyApp());
+  unawaited(AppNotificationService.instance.initialize());
+
+  await AppSuperwall.configureIfNeeded();
+  if (AppSuperwall.isEnabled) {
+    unawaited(AppSuperwall.syncAttributesAndResolvePaywallRoute());
+  }
 }
 
 class DeenlyApp extends StatefulWidget {
@@ -66,7 +59,9 @@ class _DeenlyAppState extends State<DeenlyApp> {
         ChangeNotifierProvider(create: (_) => LocaleService()),
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
-        ChangeNotifierProvider(create: (_) => FocusController()..initialize()),
+        // Startup performance: FocusController performs async disk/native work,
+        // so initialization is triggered lazily by screens that need it.
+        ChangeNotifierProvider(create: (_) => FocusController()),
         ChangeNotifierProvider(create: (_) => AppDemoVideoManager()),
       ],
       child: _AppLifecycleFocusRefresher(
@@ -115,7 +110,9 @@ class _AppLifecycleFocusRefresherState
       await AppSuperwall.syncAttributesAndResolvePaywallRoute();
       if (!mounted) return;
       if (!AppSuperwall.subscriptionActiveNotifier.value) {
-        await context.read<FocusController>().disableAllModesDueToSubscription();
+        await context
+            .read<FocusController>()
+            .disableAllModesDueToSubscription();
       }
     }
     if (!mounted) return;
@@ -138,20 +135,22 @@ class _DeenlyMaterialApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return Consumer2<LocaleService, ThemeService>(
-          builder: (context, localeService, themeService, _) {
-            return MaterialApp.router(
-              title: AppLocalizations.of(context)?.appTitle ?? 'Deenly',
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme.light,
-              darkTheme: AppTheme.dark,
-              themeMode: themeService.themeMode,
-              locale: localeService.locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: kSupportedLocales,
-              routerConfig: router,
-            );
-          },
+        final locale = context.select<LocaleService, Locale?>(
+          (service) => service.locale,
+        );
+        final themeMode = context.select<ThemeService, ThemeMode>(
+          (service) => service.themeMode,
+        );
+        return MaterialApp.router(
+          title: 'Deenly',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeMode,
+          locale: locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: kSupportedLocales,
+          routerConfig: router,
         );
       },
     );

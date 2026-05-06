@@ -1,7 +1,46 @@
 import FamilyControls
+import Foundation
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
+
+/// Writes to the same app-group log as the main app (throttled — shield config is queried often).
+private enum FocusShieldDebugLogger {
+  private static let appGroupId = "group.com.rnr.deenfocus"
+  private static let fileName = "focus_debug.log"
+
+  private static let formatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS Z"
+    return formatter
+  }()
+
+  private static func sharedLogURL() -> URL? {
+    FileManager.default
+      .containerURL(forSecurityApplicationGroupIdentifier: appGroupId)?
+      .appendingPathComponent(fileName)
+  }
+
+  static func append(_ tag: String, _ message: String) {
+    guard let url = sharedLogURL() else { return }
+    let line = "[\(formatter.string(from: Date()))] [\(tag)] \(message)\n"
+    let data = Data(line.utf8)
+
+    if FileManager.default.fileExists(atPath: url.path) {
+      do {
+        let handle = try FileHandle(forWritingTo: url)
+        handle.seekToEndOfFile()
+        handle.write(data)
+        handle.closeFile()
+      } catch {
+        try? data.write(to: url, options: .atomic)
+      }
+    } else {
+      try? data.write(to: url, options: .atomic)
+    }
+  }
+}
 
 private enum FocusShieldSharedState {
   static let appGroupId = "group.com.rnr.deenfocus"
@@ -87,6 +126,9 @@ private enum FocusShieldMode: String {
 
 @available(iOSApplicationExtension 16.0, *)
 final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
+  private static var lastShieldLogMono: TimeInterval = 0
+  private static let shieldLogMinInterval: TimeInterval = 2.0
+
   private struct ThemePalette {
     let blurStyle: UIBlurEffect.Style?
     let backgroundColor: UIColor
@@ -101,25 +143,46 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
   }
 
   override func configuration(shielding application: Application) -> ShieldConfiguration {
-    makeConfiguration()
+    logShieldDisplayIfNeeded(kind: "application", detail: String(describing: application))
+    return makeConfiguration()
   }
 
   override func configuration(
     shielding application: Application,
     in category: ActivityCategory
   ) -> ShieldConfiguration {
-    makeConfiguration()
+    logShieldDisplayIfNeeded(
+      kind: "application.category",
+      detail: "\(String(describing: application)) category=\(String(describing: category))"
+    )
+    return makeConfiguration()
   }
 
   override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
-    makeConfiguration()
+    logShieldDisplayIfNeeded(kind: "webDomain", detail: String(describing: webDomain))
+    return makeConfiguration()
   }
 
   override func configuration(
     shielding webDomain: WebDomain,
     in category: ActivityCategory
   ) -> ShieldConfiguration {
-    makeConfiguration()
+    logShieldDisplayIfNeeded(
+      kind: "webDomain.category",
+      detail: "\(String(describing: webDomain)) category=\(String(describing: category))"
+    )
+    return makeConfiguration()
+  }
+
+  private func logShieldDisplayIfNeeded(kind: String, detail: String) {
+    let now = ProcessInfo.processInfo.systemUptime
+    if now - Self.lastShieldLogMono < Self.shieldLogMinInterval { return }
+    Self.lastShieldLogMono = now
+    let mode = sharedDefaults?.string(forKey: FocusShieldSharedState.activeModeKey) ?? "?"
+    FocusShieldDebugLogger.append(
+      "ios.shield.display",
+      "\(kind) mode=\(mode) detail=\(detail)"
+    )
   }
 
   private func makeConfiguration() -> ShieldConfiguration {

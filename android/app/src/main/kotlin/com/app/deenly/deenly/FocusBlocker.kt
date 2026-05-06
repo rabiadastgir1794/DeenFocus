@@ -6,9 +6,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ComponentName
-import android.content.ContentUris
 import android.content.ContentValues
-import android.content.ContentResolver
+import android.content.pm.ApplicationInfo
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,7 +28,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -52,6 +50,7 @@ private const val focusDebugFileName = "deenly_focus_debug_log.txt"
 private const val focusDebugSectionPrefs = "focus_debug_log_sections"
 private const val focusDebugKeyLastDate = "last_section_date"
 private const val focusDebugKeyLastHour = "last_section_hour"
+private const val focusDebugDownloadsUriKey = "debug_log_downloads_content_uri"
 
 private const val nightDisciplineEnabledKey = "night_discipline_enabled"
 private const val nightStartHourKey = "night_start_hour"
@@ -65,10 +64,103 @@ object FocusDebugLogger {
     private val hourKeyFormat = SimpleDateFormat("yyyy-MM-dd-HH", Locale.US)
     private val dateBannerFormat = SimpleDateFormat("dd MMMM, yyyy", Locale.US)
     private val hourBannerFormat = SimpleDateFormat("HH:mm", Locale.US)
-    private const val publicDownloadsRelativePath = "Download/$focusDebugFileName"
+
+    /** Canonical copy — always writable, survives MediaStore quirks. */
+    private fun logFile(context: Context): File = File(context.filesDir, focusDebugFileName)
 
     private fun sectionPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(focusDebugSectionPrefs, Context.MODE_PRIVATE)
+    }
+
+    /**
+     * Public Downloads copy (API 29+): one MediaStore row; URI cached in prefs so we never
+     * `insert` on every line (that caused hundreds of duplicate files).
+     */
+    private fun appendPublicDownloadsMirror(context: Context, text: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            appendPublicDownloadsMirrorQ(context, text)
+        } else {
+            runCatching {
+                val file =
+                    File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        focusDebugFileName,
+                    )
+                file.parentFile?.mkdirs()
+                file.appendText(text)
+            }
+        }
+    }
+
+    private fun appendPublicDownloadsMirrorQ(context: Context, text: String) {
+        val resolver = context.contentResolver
+        val prefs = sectionPrefs(context)
+        val uriStr = prefs.getString(focusDebugDownloadsUriKey, null)
+        val existing = uriStr?.let { Uri.parse(it) }
+        if (existing != null) {
+            val ok =
+                runCatching {
+                    resolver.openOutputStream(existing, "wa")?.use { out ->
+                        out.write(text.toByteArray(Charsets.UTF_8))
+                    } != null
+                }.getOrDefault(false)
+            if (ok) return
+            runCatching { resolver.delete(existing, null, null) }
+            prefs.edit().remove(focusDebugDownloadsUriKey).apply()
+        }
+        val full =
+            runCatching { logFile(context).readText(Charsets.UTF_8) }.getOrElse { text }
+        createNewDownloadsDocument(context, full, prefs)
+    }
+
+    private fun createNewDownloadsDocument(
+        context: Context,
+        contents: String,
+        prefs: SharedPreferences,
+    ) {
+        val resolver = context.contentResolver
+        val values =
+            ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, focusDebugFileName)
+                put(MediaStore.Downloads.MIME_TYPE, "text/plain")
+                put(MediaStore.Downloads.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/")
+                put(MediaStore.Downloads.IS_PENDING, 1)
+            }
+        val doc = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return
+        try {
+            resolver.openOutputStream(doc, "wt")?.use { out ->
+                out.write(contents.toByteArray(Charsets.UTF_8))
+            } ?: run {
+                resolver.delete(doc, null, null)
+                return
+            }
+            resolver.update(
+                doc,
+                ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) },
+                null,
+                null,
+            )
+            prefs.edit().putString(focusDebugDownloadsUriKey, doc.toString()).apply()
+        } catch (_: Throwable) {
+            runCatching { resolver.delete(doc, null, null) }
+        }
+    }
+
+    private fun clearPublicDownloadsMirror(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val prefs = sectionPrefs(context)
+            prefs.getString(focusDebugDownloadsUriKey, null)?.let { s ->
+                runCatching { context.contentResolver.delete(Uri.parse(s), null, null) }
+            }
+            prefs.edit().remove(focusDebugDownloadsUriKey).apply()
+        } else {
+            runCatching {
+                File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    focusDebugFileName,
+                ).delete()
+            }
+        }
     }
 
     /**
@@ -103,7 +195,10 @@ object FocusDebugLogger {
             chunk.append("${formatter.format(now)} [$tag] $message\n")
             val text = chunk.toString()
 
-            appendToPublicDownloads(context, text)
+            val file = logFile(context)
+            file.parentFile?.mkdirs()
+            file.appendText(text)
+            appendPublicDownloadsMirror(context, text)
         }
     }
 
@@ -125,137 +220,26 @@ object FocusDebugLogger {
                 .putString(focusDebugKeyLastHour, hourKeyFormat.format(now))
                 .apply()
 
-            overwritePublicDownloads(context, line)
+            clearPublicDownloadsMirror(context)
+            val file = logFile(context)
+            file.parentFile?.mkdirs()
+            file.writeText(line)
+            appendPublicDownloadsMirror(context, line)
         }
     }
 
     fun path(context: Context): String {
-        return publicDownloadsPath()
-    }
-
-    private fun publicDownloadsPath(): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            publicDownloadsRelativePath
-        } else {
-            File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                focusDebugFileName,
-            ).absolutePath
-        }
-    }
-
-    private fun appendToPublicDownloads(context: Context, line: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            writeViaMediaStore(context, line, append = true)
-            return
-        }
-
-        runCatching {
-            val file =
+        val internal = logFile(context).absolutePath
+        val publicHint =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                "${Environment.DIRECTORY_DOWNLOADS}/$focusDebugFileName"
+            } else {
                 File(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                     focusDebugFileName,
-                )
-            file.parentFile?.mkdirs()
-            file.appendText(line)
-        }
-    }
-
-    private fun overwritePublicDownloads(context: Context, contents: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            writeViaMediaStore(context, contents, append = false)
-            return
-        }
-
-        runCatching {
-            val file =
-                File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                    focusDebugFileName,
-                )
-            file.parentFile?.mkdirs()
-            file.writeText(contents)
-        }
-    }
-
-    private fun resolvePublicDebugLogUri(resolver: ContentResolver): Uri? {
-        val downloadDir = Environment.DIRECTORY_DOWNLOADS
-        val downloadDirPrefix = "$downloadDir/"
-        val matches = mutableListOf<Uri>()
-        resolver.query(
-            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-            arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.RELATIVE_PATH),
-            "${MediaStore.Downloads.DISPLAY_NAME} = ?",
-            arrayOf(focusDebugFileName),
-            null,
-        )?.use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
-            val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.Downloads.RELATIVE_PATH)
-            while (cursor.moveToNext()) {
-                val rel = cursor.getString(pathIndex).orEmpty()
-                if (rel == downloadDir ||
-                    rel == downloadDirPrefix ||
-                    rel.startsWith(downloadDirPrefix)
-                ) {
-                    val id = cursor.getLong(idIndex)
-                    matches.add(ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id))
-                }
+                ).absolutePath
             }
-        }
-        val primary = matches.firstOrNull()
-        matches.drop(1).forEach { duplicate ->
-            runCatching { resolver.delete(duplicate, null, null) }
-        }
-        return primary
-    }
-
-    private fun writeViaMediaStore(context: Context, contents: String, append: Boolean) {
-        val resolver = context.contentResolver
-        var uri = resolvePublicDebugLogUri(resolver)
-        var pendingInsertUri: Uri? = null
-        try {
-            if (uri == null) {
-                val values =
-                    ContentValues().apply {
-                        put(MediaStore.Downloads.DISPLAY_NAME, focusDebugFileName)
-                        put(MediaStore.Downloads.MIME_TYPE, "text/plain")
-                        put(MediaStore.Downloads.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/")
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            put(MediaStore.Downloads.IS_PENDING, 1)
-                        }
-                    }
-                uri =
-                    resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
-                        ?: return
-                pendingInsertUri = uri
-            }
-
-            val mode = if (append) "wa" else "wt"
-            val output =
-                resolver.openOutputStream(uri, mode) ?: run {
-                    pendingInsertUri?.let { runCatching { resolver.delete(it, null, null) } }
-                    return
-                }
-            output.use { writeText(it, contents) }
-        } catch (_: Throwable) {
-            pendingInsertUri?.let { runCatching { resolver.delete(it, null, null) } }
-        } finally {
-            if (pendingInsertUri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                runCatching {
-                    resolver.update(
-                        pendingInsertUri,
-                        ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) },
-                        null,
-                        null,
-                    )
-                }
-            }
-        }
-    }
-
-    private fun writeText(output: OutputStream, contents: String) {
-        output.write(contents.toByteArray())
-        output.flush()
+        return "$internal | Public: $publicHint"
     }
 }
 
@@ -282,13 +266,16 @@ object FocusBlockerStore {
         nightEndMinute: Int? = null,
     ) {
         val syncGeneration = System.currentTimeMillis()
+        val p = prefs(context)
+        val prevLocked = p.getBoolean(isLockedKey, false)
+        val prevMode = p.getString(activeModeKey, null)
         FocusDebugLogger.append(
             context,
             "store.save",
             "packages=${selectedPackages.size} activeMode=$activeMode isLocked=$isLocked nextChangeAt=$nextChangeAt reason=$lockReason",
         )
         val edit =
-            prefs(context).edit()
+            p.edit()
                 .putStringSet(selectedPackagesKey, selectedPackages.toSet())
                 .putString(activeModeKey, activeMode)
                 .putBoolean(isLockedKey, isLocked)
@@ -303,6 +290,13 @@ object FocusBlockerStore {
         if (nightEndHour != null) edit.putInt(nightEndHourKey, nightEndHour)
         if (nightEndMinute != null) edit.putInt(nightEndMinuteKey, nightEndMinute)
         edit.commit()
+        if (prevLocked != isLocked || prevMode != activeMode) {
+            FocusDebugLogger.append(
+                context,
+                "store.lockTransition",
+                "locked $prevLocked->$isLocked activeMode $prevMode->$activeMode reason=$lockReason nextChangeAt=$nextChangeAt",
+            )
+        }
     }
 
     fun isPackageBlocked(context: Context, packageName: String): Boolean {
@@ -744,10 +738,11 @@ class FocusAccessibilityService : AccessibilityService() {
         lastBlockedPackage = packageName
         lastBlockedAtMillis = now
 
+        val blockedLabel = FocusBlockerStore.appLabel(applicationContext, packageName)
         FocusDebugLogger.append(
             applicationContext,
-            "service.block",
-            "blocking package=$packageName mode=${state.activeMode} nextChangeAt=${state.nextChangeAt}",
+            "service.block.attempt",
+            "userOpenedBlockedApp package=$packageName label=$blockedLabel mode=${state.activeMode} reason=${state.lockReason} nextChangeAt=${state.nextChangeAt} eventType=${event.eventType}",
         )
         performGlobalAction(GLOBAL_ACTION_HOME)
 
@@ -759,7 +754,7 @@ class FocusAccessibilityService : AccessibilityService() {
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS,
             )
             putExtra("blockedPackage", packageName)
-            putExtra("blockedAppName", FocusBlockerStore.appLabel(applicationContext, packageName))
+            putExtra("blockedAppName", blockedLabel)
             putExtra("activeMode", state.activeMode)
             putExtra("lockReason", state.lockReason)
             putExtra("nextChangeAt", state.nextChangeAt)
@@ -767,8 +762,8 @@ class FocusAccessibilityService : AccessibilityService() {
         mainHandler.postDelayed({
             FocusDebugLogger.append(
                 applicationContext,
-                "service.block",
-                "showing blocked activity for package=$packageName",
+                "service.block.show",
+                "starting FocusBlockedActivity package=$packageName label=$blockedLabel",
             )
             startActivity(intent)
         }, 120L)
@@ -924,32 +919,44 @@ class FocusScheduleReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != focusScheduleAction) return
 
-        val isLocked = intent.getBooleanExtra("isLocked", false)
+        val alarmWantsLocked = intent.getBooleanExtra("isLocked", false)
+        val before = FocusBlockerStore.currentState(context)
         FocusDebugLogger.append(
             context,
             "schedule.fire",
-            "action=${intent.action} isLocked=$isLocked mode=${intent.getStringExtra("activeMode")} nextChangeAt=${intent.getStringExtra("nextChangeAt")}",
+            "alarmWantsLocked=$alarmWantsLocked at=${intent.getStringExtra("at")} mode=${intent.getStringExtra("activeMode")} reason=${intent.getStringExtra("lockReason")} nextChangeAt=${intent.getStringExtra("nextChangeAt")} beforeLocked=${before.isLocked} beforeMode=${before.activeMode}",
         )
-        val resolved = FocusBlockerStore.currentState(context)
         FocusBlockerStore.save(
             context = context,
-            selectedPackages = resolved.selectedPackages.toList(),
-            activeMode = resolved.activeMode ?: intent.getStringExtra("activeMode"),
-            isLocked = resolved.isLocked,
-            lockReason = resolved.lockReason ?: intent.getStringExtra("lockReason"),
-            nextChangeAt = resolved.nextChangeAt ?: intent.getStringExtra("nextChangeAt"),
+            selectedPackages = before.selectedPackages.toList(),
+            activeMode = before.activeMode ?: intent.getStringExtra("activeMode"),
+            isLocked = before.isLocked,
+            lockReason = before.lockReason ?: intent.getStringExtra("lockReason"),
+            nextChangeAt = before.nextChangeAt ?: intent.getStringExtra("nextChangeAt"),
         )
-        if (!resolved.isLocked) {
+        val after = FocusBlockerStore.currentState(context)
+        FocusDebugLogger.append(
+            context,
+            "schedule.afterSave",
+            "persistedLocked=${after.isLocked} mode=${after.activeMode} reason=${after.lockReason} nextChangeAt=${after.nextChangeAt}",
+        )
+        if (!after.isLocked) {
             FocusDebugLogger.append(
                 context,
                 "schedule.unlock",
-                "applied unlock after validating no persisted mode still requires blocking",
+                "apps unlocked (persisted state no longer locked)",
             )
-        } else if (!isLocked) {
+        } else if (!alarmWantsLocked) {
             FocusDebugLogger.append(
                 context,
-                "schedule.unlock",
-                "skipped unlock because persisted schedule still requires ${resolved.activeMode}",
+                "schedule.lockHeld",
+                "alarm was unlock edge but schedule still locked mode=${after.activeMode}",
+            )
+        } else {
+            FocusDebugLogger.append(
+                context,
+                "schedule.lock",
+                "apps locked mode=${after.activeMode} reason=${after.lockReason}",
             )
         }
     }

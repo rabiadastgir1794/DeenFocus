@@ -37,6 +37,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Startup performance: initialize only when the Focus tab is actually used.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(context.read<FocusController>().initialize());
+    });
   }
 
   @override
@@ -69,9 +74,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        SnackBar(
-          content: Text(l10n.focusAndroidBlockingNotReady),
-        ),
+        SnackBar(content: Text(l10n.focusAndroidBlockingNotReady)),
       );
       return;
     }
@@ -339,9 +342,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                         ],
                         const SizedBox(height: 12),
                         InkWell(
-                          onTap: () => unawaited(
-                            _onSelectAppsRowTapped(vm, l10n),
-                          ),
+                          onTap: () =>
+                              unawaited(_onSelectAppsRowTapped(vm, l10n)),
                           borderRadius: BorderRadius.circular(14),
                           child: Ink(
                             width: double.infinity,
@@ -540,8 +542,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     await AppPermissionDialog.show(
       context,
       title: l10n.focusEnableAndroidAppBlocking,
-      message:
-          l10n.focusEnableAndroidAppBlockingMessage,
+      message: l10n.focusEnableAndroidAppBlockingMessage,
       onPrimaryTap: () {
         FocusEnforcementService.openBlockingPermissionSettings();
       },
@@ -637,9 +638,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         await _ensureFocusAccessibilityDisclosureAccepted();
     if (!acceptedDisclosure) {
       messenger?.showSnackBar(
-        SnackBar(
-          content: Text(l10n.focusAcceptAccessibilityDisclosure),
-        ),
+        SnackBar(content: Text(l10n.focusAcceptAccessibilityDisclosure)),
       );
       return;
     }
@@ -732,9 +731,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       );
       if (enabled && !vm.hasSelectedApps) {
         messenger?.showSnackBar(
-          SnackBar(
-            content: Text(l10n.focusNoAppsSelectedSnack),
-          ),
+          SnackBar(content: Text(l10n.focusNoAppsSelectedSnack)),
         );
         return;
       }
@@ -762,9 +759,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     } catch (_) {
       if (mounted) {
         messenger?.showSnackBar(
-          SnackBar(
-            content: Text(l10n.focusModeUpdateFailedSnack),
-          ),
+          SnackBar(content: Text(l10n.focusModeUpdateFailedSnack)),
         );
       }
     } finally {
@@ -1170,10 +1165,7 @@ class _NightTimePill extends StatelessWidget {
 }
 
 class _AppsGrid extends StatelessWidget {
-  const _AppsGrid({
-    required this.vm,
-    required this.onAppToggle,
-  });
+  const _AppsGrid({required this.vm, required this.onAppToggle});
 
   final FocusController vm;
   final Future<void> Function(FocusInstalledApp app) onAppToggle;
@@ -1240,7 +1232,10 @@ class _AppsGrid extends StatelessWidget {
               onTap: () => unawaited(onAppToggle(app)),
               borderRadius: BorderRadius.circular(14),
               child: Ink(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
                   color: selected
