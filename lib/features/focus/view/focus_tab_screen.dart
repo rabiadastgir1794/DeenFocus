@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/focus_enforcement_service.dart';
@@ -126,402 +127,95 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FocusController>(
-      builder: (context, vm, _) {
-        final l10n = AppLocalizations.of(context)!;
-        final colorScheme = Theme.of(context).colorScheme;
-        final installedAppsByPackage = {
-          for (final app in vm.installedApps) app.packageName: app,
-        };
-        final globalApps = vm.settings.selectedApps.entries
-            .map(
-              (entry) => _SelectedAppChipData(
-                packageName: entry.key,
-                label: entry.value,
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _FocusHeader(textTheme: textTheme, colorScheme: colorScheme, l10n: l10n),
+              Selector<FocusController, _TopBannerData?>(
+                selector: (_, vm) => _computeTopBannerData(vm, l10n),
+                builder: (context, banner, _) {
+                  if (banner == null) return const SizedBox.shrink();
+                  return _ActiveModeBanner(
+                    title: banner.title,
+                    detail: banner.detail,
+                    colorScheme: colorScheme,
+                  );
+                },
               ),
-            )
-            .toList(growable: false);
-        final isIosSelection =
-            defaultTargetPlatform == TargetPlatform.iOS &&
-            vm.settings.iosSelectionCount > 0;
-        final childMode = vm.settings.childModeEnabled;
-        final childActive = childMode && vm.hasSelectedApps;
-        final salahMode =
-            vm.settings.salahModeEnabled && !vm.settings.childModeEnabled;
-        final nightMode =
-            vm.settings.nightDisciplineEnabled && !vm.settings.childModeEnabled;
-        final topBannerText = childActive
-            ? l10n.focusChildModeActive
-            : salahMode && nightMode
-            ? l10n.focusSalahAndNightModeActive
-            : salahMode
-            ? l10n.focusSalahModeActive
-            : nightMode
-            ? l10n.focusNightModeActive
-            : null;
-
-        return Scaffold(
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.tabFocus,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.focusTabSubtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  if (topBannerText != null)
-                    _ActiveModeBanner(
-                      title: topBannerText,
-                      detail: _activeModeBannerDetail(vm, l10n),
-                      colorScheme: colorScheme,
-                    ),
-                  _GlassCard(
-                    marginBottom: 16,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.focusAppsToBlockTitle,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    l10n.focusAppliesAllModes,
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(
-                                          fontSize: 12,
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colorScheme.primary.withValues(
-                                  alpha: 0.1,
-                                ),
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                vm.selectedTargetPhrase,
-                                style: Theme.of(context).textTheme.labelSmall
-                                    ?.copyWith(
-                                      color: colorScheme.primary,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (isIosSelection) ...[
-                          const SizedBox(height: 12),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colorScheme.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  '📱',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    vm.selectedAppsSummary(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium
-                                        ?.copyWith(fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ] else if (globalApps.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          SizedBox(
-                            height: 44,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: globalApps.length,
-                              separatorBuilder: (_, _) =>
-                                  const SizedBox(width: 8),
-                              itemBuilder: (context, index) {
-                                final app = globalApps[index];
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primary.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      FocusAppIcon(
-                                        label: app.label,
-                                        iconBytes:
-                                            installedAppsByPackage[app
-                                                    .packageName]
-                                                ?.iconBytes ??
-                                            vm.settings.iconBytesForPackage(
-                                              app.packageName,
-                                            ),
-                                        size: 18,
-                                        radius: 6,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        app.label,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      InkWell(
-                                        onTap: () => unawaited(
-                                          _removeSelectedAppWithSubscription(
-                                            vm,
-                                            app,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.close,
-                                          size: 14,
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        InkWell(
-                          onTap: () =>
-                              unawaited(_onSelectAppsRowTapped(vm, l10n)),
-                          borderRadius: BorderRadius.circular(14),
-                          child: Ink(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    l10n.focusSelectAppsToBlock,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                if (vm.isLoadingApps)
-                                  DefaultTextStyle(
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.labelSmall?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ) ??
-                                        const TextStyle(),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(
-                                          width: 14,
-                                          height: 14,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(l10n.focusLoading),
-                                      ],
-                                    ),
-                                  )
-                                else
-                                  Text(
-                                    defaultTargetPlatform == TargetPlatform.iOS
-                                        ? l10n.focusOpen
-                                        : _showGlobalSelector
-                                        ? l10n.focusHide
-                                        : vm.installedApps.isEmpty
-                                        ? l10n.focusLoad
-                                        : l10n.focusShow,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        if (_showGlobalSelector) ...[
-                          const SizedBox(height: 12),
-                          _AppsGrid(
-                            vm: vm,
-                            onAppToggle: (app) =>
-                                _toggleSelectedAppWithSubscription(vm, app),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  _ModeCard(
-                    marginBottom: 16,
-                    icon: Icons.shield_outlined,
-                    iconBackground: colorScheme.primary.withValues(alpha: 0.1),
-                    iconColor: colorScheme.primary,
-                    title: l10n.focusSalahFocusModeTitle,
-                    subtitle: l10n.focusBlockAppsDuringPrayer,
-                    value: salahMode,
-                    isLoading:
-                        _modesInFlight.contains(FocusModeType.salah) ||
-                        _isAuthorizingScreenTime,
-                    onChanged: (value) =>
-                        _toggleMode(vm, FocusModeType.salah, value),
-                    child: salahMode
-                        ? _ModeStatusBanner(
-                            text: l10n.focusPrayerBlockingDescription,
-                            color: colorScheme.error,
-                          )
-                        : null,
-                  ),
-                  _ModeCard(
-                    marginBottom: 16,
-                    icon: Icons.nightlight_outlined,
-                    iconBackground: colorScheme.primary.withValues(alpha: 0.2),
-                    iconColor: colorScheme.onSurface,
-                    title: l10n.focusNightDisciplineTitle,
-                    subtitle: l10n.focusNightDisciplineCardSubtitle,
-                    value: nightMode,
-                    isLoading:
-                        _modesInFlight.contains(
-                          FocusModeType.nightDiscipline,
-                        ) ||
-                        _isAuthorizingScreenTime,
-                    onChanged: (value) =>
-                        _toggleMode(vm, FocusModeType.nightDiscipline, value),
-                    child: nightMode
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _NightTimePill(
-                                      label: l10n.focusSleepLabel,
-                                      timeText: _formatTime(
-                                        context,
-                                        vm.settings.nightRange.startHour,
-                                        vm.settings.nightRange.startMinute,
-                                      ),
-                                      onTap: () =>
-                                          _pickNightTime(vm, isSleep: true),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: _NightTimePill(
-                                      label: l10n.focusWakeLabel,
-                                      timeText: _formatTime(
-                                        context,
-                                        vm.settings.nightRange.endHour,
-                                        vm.settings.nightRange.endMinute,
-                                      ),
-                                      onTap: () =>
-                                          _pickNightTime(vm, isSleep: false),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              _ModeStatusBanner(
-                                text: l10n.focusNightBlockingDescription,
-                                color: colorScheme.error,
-                              ),
-                            ],
-                          )
-                        : null,
-                  ),
-                  _ModeCard(
-                    icon: Icons.child_care_outlined,
-                    iconBackground: colorScheme.error.withValues(alpha: 0.1),
-                    iconColor: colorScheme.error,
-                    title: l10n.focusChildModeTitle,
-                    subtitle: l10n.focusBlockAppsImmediately,
-                    value: childMode,
-                    isLoading:
-                        _modesInFlight.contains(FocusModeType.child) ||
-                        _isAuthorizingScreenTime,
-                    onChanged: (value) =>
-                        _toggleMode(vm, FocusModeType.child, value),
-                    child: childMode
-                        ? _ModeStatusBanner(
-                            text: l10n.focusChildBlockingDescription,
-                            color: colorScheme.error,
-                          )
-                        : null,
-                  ),
-                ],
+              _SelectedAppsSection(
+                showGlobalSelector: _showGlobalSelector,
+                isAuthorizingScreenTime: _isAuthorizingScreenTime,
+                onSelectAppsTap: _handleSelectAppsTap,
+                onRemoveSelectedApp: _handleRemoveSelectedApp,
+                onToggleApp: _handleToggleApp,
               ),
-            ),
+              _ModeCardsSection(
+                modesInFlight: _modesInFlight,
+                isAuthorizingScreenTime: _isAuthorizingScreenTime,
+                formatTime: _formatTime,
+                onToggleMode: _handleToggleMode,
+                onPickNightTime: _handlePickNightTime,
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  }
+
+  _TopBannerData? _computeTopBannerData(FocusController vm, AppLocalizations l10n) {
+    final childMode = vm.settings.childModeEnabled;
+    final childActive = childMode && vm.hasSelectedApps;
+    final salahMode = vm.settings.salahModeEnabled && !childMode;
+    final nightMode = vm.settings.nightDisciplineEnabled && !childMode;
+    final topBannerText = childActive
+        ? l10n.focusChildModeActive
+        : salahMode && nightMode
+        ? l10n.focusSalahAndNightModeActive
+        : salahMode
+        ? l10n.focusSalahModeActive
+        : nightMode
+        ? l10n.focusNightModeActive
+        : null;
+    if (topBannerText == null) return null;
+    return _TopBannerData(
+      title: topBannerText,
+      detail: _activeModeBannerDetail(vm, l10n),
+    );
+  }
+
+  void _handleSelectAppsTap() {
+    final vm = context.read<FocusController>();
+    final l10n = AppLocalizations.of(context)!;
+    unawaited(_onSelectAppsRowTapped(vm, l10n));
+  }
+
+  void _handleRemoveSelectedApp(_SelectedAppChipData app) {
+    final vm = context.read<FocusController>();
+    unawaited(_removeSelectedAppWithSubscription(vm, app));
+  }
+
+  Future<void> _handleToggleApp(FocusInstalledApp app) {
+    final vm = context.read<FocusController>();
+    return _toggleSelectedAppWithSubscription(vm, app);
+  }
+
+  void _handleToggleMode(FocusModeType mode, bool enabled) {
+    final vm = context.read<FocusController>();
+    unawaited(_toggleMode(vm, mode, enabled));
+  }
+
+  void _handlePickNightTime({required bool isSleep}) {
+    final vm = context.read<FocusController>();
+    unawaited(_pickNightTime(vm, isSleep: isSleep));
   }
 
   Future<bool> _ensureAndroidBlockingAccess(FocusModeType mode) async {
@@ -590,9 +284,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   /// A single [endOfFrame] can complete in the same turn as the gesture, before the
   /// frame that contains the loading UI — so we yield once, then wait two frame boundaries.
   Future<void> _waitUntilLoaderPainted() async {
+    await SchedulerBinding.instance.endOfFrame;
+    await WidgetsBinding.instance.endOfFrame;
     await Future<void>.delayed(Duration.zero);
-    await WidgetsBinding.instance.endOfFrame;
-    await WidgetsBinding.instance.endOfFrame;
   }
 
   Future<void> _onSelectAppsRowTapped(
@@ -737,25 +431,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       }
 
       if (enabled) {
-        final completeEnable = Completer<void>();
-        var paywallGrantedCallback = false;
-        await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
-          paywallGrantedCallback = true;
-          scheduleMicrotask(() async {
-            try {
-              await _enableModeAfterPremium(vm, mode, messenger, l10n);
-            } finally {
-              if (!completeEnable.isCompleted) completeEnable.complete();
-            }
-          });
-        });
-        if (!paywallGrantedCallback && !completeEnable.isCompleted) {
-          completeEnable.complete();
-        }
-        await completeEnable.future;
-        return;
+        await _runEnableModeFlow(
+          vm: vm,
+          mode: mode,
+          messenger: messenger,
+          l10n: l10n,
+        );
+      } else {
+        await vm.disableMode(mode);
       }
-      await vm.disableMode(mode);
     } catch (_) {
       if (mounted) {
         messenger?.showSnackBar(
@@ -773,6 +457,32 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         _modesInFlight.remove(mode);
       }
     }
+  }
+
+  Future<void> _runEnableModeFlow({
+    required FocusController vm,
+    required FocusModeType mode,
+    required ScaffoldMessengerState? messenger,
+    required AppLocalizations l10n,
+  }) async {
+    final completeEnable = Completer<void>();
+    var paywallGrantedCallback = false;
+    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
+      paywallGrantedCallback = true;
+      unawaited(
+        Future<void>(() async {
+          try {
+            await _enableModeAfterPremium(vm, mode, messenger, l10n);
+          } finally {
+            if (!completeEnable.isCompleted) completeEnable.complete();
+          }
+        }),
+      );
+    });
+    if (!paywallGrantedCallback && !completeEnable.isCompleted) {
+      completeEnable.complete();
+    }
+    await completeEnable.future;
   }
 
   Future<void> _removeSelectedApp(
@@ -952,6 +662,465 @@ class _ActiveModeBanner extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _FocusHeader extends StatelessWidget {
+  const _FocusHeader({
+    required this.textTheme,
+    required this.colorScheme,
+    required this.l10n,
+  });
+
+  final TextTheme textTheme;
+  final ColorScheme colorScheme;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.tabFocus,
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l10n.focusTabSubtitle,
+          style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+class _SelectedAppsSection extends StatelessWidget {
+  const _SelectedAppsSection({
+    required this.showGlobalSelector,
+    required this.isAuthorizingScreenTime,
+    required this.onSelectAppsTap,
+    required this.onRemoveSelectedApp,
+    required this.onToggleApp,
+  });
+
+  final bool showGlobalSelector;
+  final bool isAuthorizingScreenTime;
+  final VoidCallback onSelectAppsTap;
+  final ValueChanged<_SelectedAppChipData> onRemoveSelectedApp;
+  final Future<void> Function(FocusInstalledApp app) onToggleApp;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context)!;
+    return _GlassCard(
+      marginBottom: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SelectedAppsHeader(textTheme: textTheme, colorScheme: colorScheme, l10n: l10n),
+          Selector<FocusController, _SelectedAppsData>(
+            selector: (_, vm) => _SelectedAppsData.fromVm(vm),
+            builder: (context, data, _) {
+              if (data.isIosSelection) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: _IosSelectedAppsBanner(summary: data.iosSummary),
+                );
+              }
+              if (data.globalApps.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: _SelectedAppsList(
+                  apps: data.globalApps,
+                  iconBytesByPackage: data.iconBytesByPackage,
+                  onRemoveSelectedApp: onRemoveSelectedApp,
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          Selector<FocusController, _SelectAppsRowData>(
+            selector: (_, vm) => _SelectAppsRowData.fromVm(
+              vm: vm,
+              showGlobalSelector: showGlobalSelector,
+            ),
+            builder: (context, data, _) {
+              return _SelectAppsRow(
+                data: data,
+                isAuthorizingScreenTime: isAuthorizingScreenTime,
+                onTap: onSelectAppsTap,
+              );
+            },
+          ),
+          if (showGlobalSelector) ...[
+            const SizedBox(height: 12),
+            _AppsGrid(onAppToggle: onToggleApp),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SelectedAppsHeader extends StatelessWidget {
+  const _SelectedAppsHeader({
+    required this.textTheme,
+    required this.colorScheme,
+    required this.l10n,
+  });
+
+  final TextTheme textTheme;
+  final ColorScheme colorScheme;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryTint = colorScheme.primary.withValues(alpha: 0.1);
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.focusAppsToBlockTitle,
+                style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                l10n.focusAppliesAllModes,
+                style: textTheme.bodySmall?.copyWith(
+                  fontSize: 12,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Selector<FocusController, String>(
+          selector: (_, vm) => vm.selectedTargetPhrase,
+          builder: (context, selectedPhrase, _) {
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: primaryTint,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                selectedPhrase,
+                style: textTheme.labelSmall?.copyWith(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _IosSelectedAppsBanner extends StatelessWidget {
+  const _IosSelectedAppsBanner({required this.summary});
+
+  final String summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          const Text('📱', style: TextStyle(fontSize: 16)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              summary,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SelectedAppsList extends StatelessWidget {
+  const _SelectedAppsList({
+    required this.apps,
+    required this.iconBytesByPackage,
+    required this.onRemoveSelectedApp,
+  });
+
+  final List<_SelectedAppChipData> apps;
+  final Map<String, Uint8List?> iconBytesByPackage;
+  final ValueChanged<_SelectedAppChipData> onRemoveSelectedApp;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 44,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: apps.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final app = apps[index];
+          return _SelectedAppChip(
+            key: ValueKey<String>('selected-${app.packageName}'),
+            app: app,
+            iconBytes: iconBytesByPackage[app.packageName],
+            onRemove: onRemoveSelectedApp,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SelectedAppChip extends StatelessWidget {
+  const _SelectedAppChip({
+    super.key,
+    required this.app,
+    required this.iconBytes,
+    required this.onRemove,
+  });
+
+  final _SelectedAppChipData app;
+  final Uint8List? iconBytes;
+  final ValueChanged<_SelectedAppChipData> onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FocusAppIcon(label: app.label, iconBytes: iconBytes, size: 18, radius: 6),
+          const SizedBox(width: 8),
+          Text(
+            app.label,
+            style: textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(width: 8),
+          InkWell(
+            onTap: () => onRemove(app),
+            child: Icon(Icons.close, size: 14, color: colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SelectAppsRow extends StatelessWidget {
+  const _SelectAppsRow({
+    required this.data,
+    required this.isAuthorizingScreenTime,
+    required this.onTap,
+  });
+
+  final _SelectAppsRowData data;
+  final bool isAuthorizingScreenTime;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+    final l10n = AppLocalizations.of(context)!;
+    return InkWell(
+      onTap: isAuthorizingScreenTime ? null : onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Ink(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.focusSelectAppsToBlock,
+                style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            if (data.isLoadingApps)
+              DefaultTextStyle(
+                style: textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ) ??
+                    const TextStyle(),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(l10n.focusLoading),
+                  ],
+                ),
+              )
+            else
+              Text(
+                data.actionLabel(l10n),
+                style: textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ModeCardsSection extends StatelessWidget {
+  const _ModeCardsSection({
+    required this.modesInFlight,
+    required this.isAuthorizingScreenTime,
+    required this.formatTime,
+    required this.onToggleMode,
+    required this.onPickNightTime,
+  });
+
+  final Set<FocusModeType> modesInFlight;
+  final bool isAuthorizingScreenTime;
+  final String Function(BuildContext context, int hour, int minute) formatTime;
+  final void Function(FocusModeType mode, bool enabled) onToggleMode;
+  final void Function({required bool isSleep}) onPickNightTime;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    return Selector<FocusController, _ModesSectionData>(
+      selector: (_, vm) => _ModesSectionData.fromVm(vm),
+      builder: (context, data, _) {
+        final salahLoading =
+            modesInFlight.contains(FocusModeType.salah) || isAuthorizingScreenTime;
+        final nightLoading = modesInFlight.contains(FocusModeType.nightDiscipline) ||
+            isAuthorizingScreenTime;
+        final childLoading =
+            modesInFlight.contains(FocusModeType.child) || isAuthorizingScreenTime;
+        return Column(
+          children: [
+            _ModeCard(
+              marginBottom: 16,
+              icon: Icons.shield_outlined,
+              iconBackground: colorScheme.primary.withValues(alpha: 0.1),
+              iconColor: colorScheme.primary,
+              title: l10n.focusSalahFocusModeTitle,
+              subtitle: l10n.focusBlockAppsDuringPrayer,
+              value: data.salahMode,
+              isLoading: salahLoading,
+              onChanged: (value) => onToggleMode(FocusModeType.salah, value),
+              child: data.salahMode
+                  ? _ModeStatusBanner(
+                      text: l10n.focusPrayerBlockingDescription,
+                      color: colorScheme.error,
+                    )
+                  : null,
+            ),
+            _ModeCard(
+              marginBottom: 16,
+              icon: Icons.nightlight_outlined,
+              iconBackground: colorScheme.primary.withValues(alpha: 0.2),
+              iconColor: colorScheme.onSurface,
+              title: l10n.focusNightDisciplineTitle,
+              subtitle: l10n.focusNightDisciplineCardSubtitle,
+              value: data.nightMode,
+              isLoading: nightLoading,
+              onChanged: (value) => onToggleMode(FocusModeType.nightDiscipline, value),
+              child: data.nightMode
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _NightTimePill(
+                                label: l10n.focusSleepLabel,
+                                timeText: formatTime(
+                                  context,
+                                  data.nightStartHour,
+                                  data.nightStartMinute,
+                                ),
+                                onTap: () => onPickNightTime(isSleep: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _NightTimePill(
+                                label: l10n.focusWakeLabel,
+                                timeText: formatTime(
+                                  context,
+                                  data.nightEndHour,
+                                  data.nightEndMinute,
+                                ),
+                                onTap: () => onPickNightTime(isSleep: false),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        _ModeStatusBanner(
+                          text: l10n.focusNightBlockingDescription,
+                          color: colorScheme.error,
+                        ),
+                      ],
+                    )
+                  : null,
+            ),
+            _ModeCard(
+              icon: Icons.child_care_outlined,
+              iconBackground: colorScheme.error.withValues(alpha: 0.1),
+              iconColor: colorScheme.error,
+              title: l10n.focusChildModeTitle,
+              subtitle: l10n.focusBlockAppsImmediately,
+              value: data.childMode,
+              isLoading: childLoading,
+              onChanged: (value) => onToggleMode(FocusModeType.child, value),
+              child: data.childMode
+                  ? _ModeStatusBanner(
+                      text: l10n.focusChildBlockingDescription,
+                      color: colorScheme.error,
+                    )
+                  : null,
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -1165,9 +1334,8 @@ class _NightTimePill extends StatelessWidget {
 }
 
 class _AppsGrid extends StatelessWidget {
-  const _AppsGrid({required this.vm, required this.onAppToggle});
+  const _AppsGrid({required this.onAppToggle});
 
-  final FocusController vm;
   final Future<void> Function(FocusInstalledApp app) onAppToggle;
   static const int _maxRows = 5;
 
@@ -1175,109 +1343,329 @@ class _AppsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final apps = vm.installedApps;
-
-    if (vm.isLoadingApps) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          children: [
-            const Center(child: CircularProgressIndicator()),
-            const SizedBox(height: 12),
-            Text(
-              l10n.focusLoadingInstalledApps,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (apps.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text(
-          l10n.focusNoInstalledAppsToShow,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-        ),
-      );
-    }
-
-    final maxHeight = MediaQuery.sizeOf(context).height * 0.58;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: SizedBox(
-        width: double.infinity,
-        height: maxHeight.clamp(280.0, 460.0),
-        child: GridView.builder(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.hardEdge,
-          itemCount: apps.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _maxRows,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            mainAxisExtent: 88,
-          ),
-          itemBuilder: (context, index) {
-            final app = apps[index];
-            final selected = vm.settings.selectedApps.containsKey(
-              app.packageName,
-            );
-            return InkWell(
-              onTap: () => unawaited(onAppToggle(app)),
-              borderRadius: BorderRadius.circular(14),
-              child: Ink(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: selected
-                      ? colorScheme.primary.withValues(alpha: 0.15)
-                      : colorScheme.surfaceContainerHighest.withValues(
-                          alpha: 0.5,
-                        ),
-                  border: Border.all(
-                    color: selected
-                        ? colorScheme.primary.withValues(alpha: 0.3)
-                        : Colors.transparent,
+    return Selector<FocusController, _AppsGridData>(
+      selector: (_, vm) =>
+          _AppsGridData(isLoadingApps: vm.isLoadingApps, apps: vm.installedApps),
+      builder: (context, data, _) {
+        if (data.isLoadingApps) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                const Center(child: CircularProgressIndicator()),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.focusLoadingInstalledApps,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FocusAppIcon(
-                      label: app.appName,
-                      iconBytes: app.iconBytes,
-                      size: 28,
-                      radius: 10,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      app.appName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+              ],
+            ),
+          );
+        }
+
+        if (data.apps.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              l10n.focusNoInstalledAppsToShow,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+            ),
+          );
+        }
+
+        final maxHeight = MediaQuery.sizeOf(context).height * 0.58;
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: SizedBox(
+            width: double.infinity,
+            height: maxHeight.clamp(280.0, 460.0),
+            child: GridView.builder(
+              scrollDirection: Axis.horizontal,
+              clipBehavior: Clip.hardEdge,
+              itemCount: data.apps.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: _maxRows,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                mainAxisExtent: 88,
               ),
-            );
-          },
+              itemBuilder: (context, index) {
+                final app = data.apps[index];
+                return RepaintBoundary(
+                  key: ValueKey<String>('focus-app-${app.packageName}'),
+                  child: _GridAppTile(
+                    app: app,
+                    colorScheme: colorScheme,
+                    onTap: onAppToggle,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _GridAppTile extends StatelessWidget {
+  const _GridAppTile({
+    required this.app,
+    required this.colorScheme,
+    required this.onTap,
+  });
+
+  final FocusInstalledApp app;
+  final ColorScheme colorScheme;
+  final Future<void> Function(FocusInstalledApp app) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = context.select<FocusController, bool>(
+      (vm) => vm.settings.selectedApps.containsKey(app.packageName),
+    );
+    final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
+    );
+    final selectedColor = colorScheme.primary.withValues(alpha: 0.15);
+    final unselectedColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
+    final selectedBorderColor = colorScheme.primary.withValues(alpha: 0.3);
+    return InkWell(
+      onTap: () => unawaited(onTap(app)),
+      borderRadius: BorderRadius.circular(14),
+      child: Ink(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: selected ? selectedColor : unselectedColor,
+          border: Border.all(
+            color: selected ? selectedBorderColor : Colors.transparent,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FocusAppIcon(
+              label: app.appName,
+              iconBytes: app.iconBytes,
+              size: 28,
+              radius: 10,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              app.appName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: textStyle,
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class _TopBannerData {
+  const _TopBannerData({required this.title, required this.detail});
+
+  final String title;
+  final String detail;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _TopBannerData &&
+        other.title == title &&
+        other.detail == detail;
+  }
+
+  @override
+  int get hashCode => Object.hash(title, detail);
+}
+
+class _SelectedAppsData {
+  const _SelectedAppsData({
+    required this.globalApps,
+    required this.iconBytesByPackage,
+    required this.isIosSelection,
+    required this.iosSummary,
+  });
+
+  factory _SelectedAppsData.fromVm(FocusController vm) {
+    final installedAppsByPackage = {
+      for (final app in vm.installedApps) app.packageName: app,
+    };
+    final globalApps = vm.settings.selectedApps.entries
+        .map(
+          (entry) => _SelectedAppChipData(
+            packageName: entry.key,
+            label: entry.value,
+          ),
+        )
+        .toList(growable: false);
+    final iconBytesByPackage = <String, Uint8List?>{
+      for (final app in globalApps)
+        app.packageName:
+            installedAppsByPackage[app.packageName]?.iconBytes ??
+            vm.settings.iconBytesForPackage(app.packageName),
+    };
+    final isIosSelection =
+        defaultTargetPlatform == TargetPlatform.iOS &&
+        vm.settings.iosSelectionCount > 0;
+    return _SelectedAppsData(
+      globalApps: globalApps,
+      iconBytesByPackage: iconBytesByPackage,
+      isIosSelection: isIosSelection,
+      iosSummary: vm.selectedAppsSummary(),
+    );
+  }
+
+  final List<_SelectedAppChipData> globalApps;
+  final Map<String, Uint8List?> iconBytesByPackage;
+  final bool isIosSelection;
+  final String iosSummary;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _SelectedAppsData &&
+        listEquals(other.globalApps, globalApps) &&
+        mapEquals(other.iconBytesByPackage, iconBytesByPackage) &&
+        other.isIosSelection == isIosSelection &&
+        other.iosSummary == iosSummary;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(Object.hashAll(globalApps), Object.hashAll(iconBytesByPackage.entries), isIosSelection, iosSummary);
+}
+
+class _SelectAppsRowData {
+  const _SelectAppsRowData({
+    required this.isLoadingApps,
+    required this.isIos,
+    required this.showGlobalSelector,
+    required this.hasInstalledApps,
+  });
+
+  factory _SelectAppsRowData.fromVm({
+    required FocusController vm,
+    required bool showGlobalSelector,
+  }) {
+    return _SelectAppsRowData(
+      isLoadingApps: vm.isLoadingApps,
+      isIos: defaultTargetPlatform == TargetPlatform.iOS,
+      showGlobalSelector: showGlobalSelector,
+      hasInstalledApps: vm.installedApps.isNotEmpty,
+    );
+  }
+
+  final bool isLoadingApps;
+  final bool isIos;
+  final bool showGlobalSelector;
+  final bool hasInstalledApps;
+
+  String actionLabel(AppLocalizations l10n) {
+    if (isIos) return l10n.focusOpen;
+    if (showGlobalSelector) return l10n.focusHide;
+    return hasInstalledApps ? l10n.focusShow : l10n.focusLoad;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _SelectAppsRowData &&
+        other.isLoadingApps == isLoadingApps &&
+        other.isIos == isIos &&
+        other.showGlobalSelector == showGlobalSelector &&
+        other.hasInstalledApps == hasInstalledApps;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(isLoadingApps, isIos, showGlobalSelector, hasInstalledApps);
+}
+
+class _ModesSectionData {
+  const _ModesSectionData({
+    required this.childMode,
+    required this.salahMode,
+    required this.nightMode,
+    required this.nightStartHour,
+    required this.nightStartMinute,
+    required this.nightEndHour,
+    required this.nightEndMinute,
+  });
+
+  factory _ModesSectionData.fromVm(FocusController vm) {
+    final childMode = vm.settings.childModeEnabled;
+    return _ModesSectionData(
+      childMode: childMode,
+      salahMode: vm.settings.salahModeEnabled && !childMode,
+      nightMode: vm.settings.nightDisciplineEnabled && !childMode,
+      nightStartHour: vm.settings.nightRange.startHour,
+      nightStartMinute: vm.settings.nightRange.startMinute,
+      nightEndHour: vm.settings.nightRange.endHour,
+      nightEndMinute: vm.settings.nightRange.endMinute,
+    );
+  }
+
+  final bool childMode;
+  final bool salahMode;
+  final bool nightMode;
+  final int nightStartHour;
+  final int nightStartMinute;
+  final int nightEndHour;
+  final int nightEndMinute;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _ModesSectionData &&
+        other.childMode == childMode &&
+        other.salahMode == salahMode &&
+        other.nightMode == nightMode &&
+        other.nightStartHour == nightStartHour &&
+        other.nightStartMinute == nightStartMinute &&
+        other.nightEndHour == nightEndHour &&
+        other.nightEndMinute == nightEndMinute;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    childMode,
+    salahMode,
+    nightMode,
+    nightStartHour,
+    nightStartMinute,
+    nightEndHour,
+    nightEndMinute,
+  );
+}
+
+class _AppsGridData {
+  const _AppsGridData({required this.isLoadingApps, required this.apps});
+
+  final bool isLoadingApps;
+  final List<FocusInstalledApp> apps;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _AppsGridData &&
+        other.isLoadingApps == isLoadingApps &&
+        listEquals(other.apps, apps);
+  }
+
+  @override
+  int get hashCode => Object.hash(isLoadingApps, Object.hashAll(apps));
 }
 
 class _SelectedAppChipData {
@@ -1285,4 +1673,15 @@ class _SelectedAppChipData {
 
   final String packageName;
   final String label;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _SelectedAppChipData &&
+        other.packageName == packageName &&
+        other.label == label;
+  }
+
+  @override
+  int get hashCode => Object.hash(packageName, label);
 }

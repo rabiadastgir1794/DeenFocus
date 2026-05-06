@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/device_apps_service.dart';
@@ -248,73 +249,13 @@ class FocusController extends ChangeNotifier {
       ),
     );
 
+    _settings = _buildEnabledModeSettings(mode, baseSettings: _settings);
+    // Publish immediate switch state first so loader/controls remain responsive.
+    notifyListeners();
+    await _yieldForUiFrame();
     if (mode == FocusModeType.salah) {
       await _reloadLocation();
     }
-
-    final childLockedUntil =
-        mode == FocusModeType.child &&
-            _settings.childLockType == ChildLockType.timed
-        ? DateTime.now().add(
-            Duration(minutes: _settings.childLockDurationMinutes),
-          )
-        : null;
-
-    final now = DateTime.now();
-    if (mode == FocusModeType.child) {
-      _settings = _settings.copyWith(
-        childModeEnabled: true,
-        nightDisciplineBeforeChild: _settings.nightDisciplineEnabled,
-        salahModeBeforeChild: _settings.salahModeEnabled,
-        nightDisciplineEnabled: false,
-        salahModeEnabled: false,
-        salahTestAnchorAt: _salahTestModeEnabled
-            ? (_settings.salahTestAnchorAt ?? now)
-            : null,
-        clearSalahTestAnchorAt: !_salahTestModeEnabled,
-        childLockedUntil: childLockedUntil,
-        clearChildLockedUntil:
-            _settings.childLockType == ChildLockType.indefinite,
-        clearTemporaryUnlock: true,
-      );
-    } else {
-      final childWasOn = _settings.childModeEnabled;
-      final stashedNight = _settings.nightDisciplineBeforeChild;
-      final stashedSalah = _settings.salahModeBeforeChild;
-
-      final bool nextNight;
-      final bool nextSalah;
-      if (childWasOn) {
-        nextNight = mode == FocusModeType.nightDiscipline
-            ? true
-            : (stashedNight ?? false);
-        nextSalah = mode == FocusModeType.salah
-            ? true
-            : (stashedSalah ?? false);
-      } else {
-        nextNight = mode == FocusModeType.nightDiscipline
-            ? true
-            : _settings.nightDisciplineEnabled;
-        nextSalah = mode == FocusModeType.salah
-            ? true
-            : _settings.salahModeEnabled;
-      }
-
-      _settings = _settings.copyWith(
-        childModeEnabled: false,
-        clearChildLockedUntil: true,
-        nightDisciplineEnabled: nextNight,
-        salahModeEnabled: nextSalah,
-        salahTestAnchorAt: _salahTestModeEnabled && nextSalah
-            ? (_settings.salahTestAnchorAt ?? now)
-            : null,
-        clearSalahTestAnchorAt: !nextSalah || !_salahTestModeEnabled,
-        clearTemporaryUnlock: true,
-        clearNightDisciplineBeforeChild: childWasOn,
-        clearSalahModeBeforeChild: childWasOn,
-      );
-    }
-
     await _recomputeAndPersist();
     unawaited(
       FocusEnforcementService.appendDebugLog(
@@ -322,6 +263,76 @@ class FocusController extends ChangeNotifier {
         'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} reason=${_lockState.reason}',
       ),
     );
+  }
+
+  FocusSettings _buildEnabledModeSettings(
+    FocusModeType mode, {
+    required FocusSettings baseSettings,
+  }) {
+    final childLockedUntil =
+        mode == FocusModeType.child &&
+            baseSettings.childLockType == ChildLockType.timed
+        ? DateTime.now().add(
+            Duration(minutes: baseSettings.childLockDurationMinutes),
+          )
+        : null;
+    final now = DateTime.now();
+    if (mode == FocusModeType.child) {
+      return baseSettings.copyWith(
+        childModeEnabled: true,
+        nightDisciplineBeforeChild: baseSettings.nightDisciplineEnabled,
+        salahModeBeforeChild: baseSettings.salahModeEnabled,
+        nightDisciplineEnabled: false,
+        salahModeEnabled: false,
+        salahTestAnchorAt: _salahTestModeEnabled
+            ? (baseSettings.salahTestAnchorAt ?? now)
+            : null,
+        clearSalahTestAnchorAt: !_salahTestModeEnabled,
+        childLockedUntil: childLockedUntil,
+        clearChildLockedUntil:
+            baseSettings.childLockType == ChildLockType.indefinite,
+        clearTemporaryUnlock: true,
+      );
+    }
+
+    final childWasOn = baseSettings.childModeEnabled;
+    final stashedNight = baseSettings.nightDisciplineBeforeChild;
+    final stashedSalah = baseSettings.salahModeBeforeChild;
+
+    final bool nextNight;
+    final bool nextSalah;
+    if (childWasOn) {
+      nextNight = mode == FocusModeType.nightDiscipline
+          ? true
+          : (stashedNight ?? false);
+      nextSalah = mode == FocusModeType.salah ? true : (stashedSalah ?? false);
+    } else {
+      nextNight = mode == FocusModeType.nightDiscipline
+          ? true
+          : baseSettings.nightDisciplineEnabled;
+      nextSalah = mode == FocusModeType.salah
+          ? true
+          : baseSettings.salahModeEnabled;
+    }
+
+    return baseSettings.copyWith(
+      childModeEnabled: false,
+      clearChildLockedUntil: true,
+      nightDisciplineEnabled: nextNight,
+      salahModeEnabled: nextSalah,
+      salahTestAnchorAt: _salahTestModeEnabled && nextSalah
+          ? (baseSettings.salahTestAnchorAt ?? now)
+          : null,
+      clearSalahTestAnchorAt: !nextSalah || !_salahTestModeEnabled,
+      clearTemporaryUnlock: true,
+      clearNightDisciplineBeforeChild: childWasOn,
+      clearSalahModeBeforeChild: childWasOn,
+    );
+  }
+
+  Future<void> _yieldForUiFrame() async {
+    await SchedulerBinding.instance.endOfFrame;
+    await Future<void>.delayed(Duration.zero);
   }
 
   Future<void> disableMode(FocusModeType mode) async {
@@ -676,7 +687,8 @@ class FocusController extends ChangeNotifier {
     );
     await _reloadLocation();
     if (Platform.isAndroid && _settings.selectedApps.isNotEmpty) {
-      unawaited(_warmInstalledAppsCache());
+      // Avoid expensive PackageManager + icon decode work during launch.
+      unawaited(_warmInstalledAppsCacheDeferred());
     }
     notifyListeners();
     await _recomputeAndPersist();
@@ -688,8 +700,9 @@ class FocusController extends ChangeNotifier {
     return !_settings.childModeEnabled && reason.startsWith('Child mode');
   }
 
-  Future<void> _warmInstalledAppsCache() async {
-    final apps = await DeviceAppsService.getInstalledApps();
+  Future<void> _warmInstalledAppsCacheDeferred() async {
+    await Future<void>.delayed(const Duration(seconds: 3));
+    final apps = await DeviceAppsService.getInstalledApps(includeIcons: false);
     if (apps.isEmpty) return;
     _installedApps = apps;
     notifyListeners();
@@ -750,9 +763,27 @@ class FocusController extends ChangeNotifier {
         ),
       );
     }
-    await _persist();
-    await StorageService.setFocusScheduleJson(jsonEncode(scheduledTransitions));
+    await Future.wait<void>([
+      _persist(),
+      StorageService.setFocusScheduleJson(jsonEncode(scheduledTransitions)),
+    ]);
     notifyListeners();
+    await Future.wait<void>([
+      _syncNativeFocusEnforcement(scheduledTransitions),
+      _syncFocusNotifications(scheduledTransitions),
+    ]);
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.recompute',
+        'done mode=${_lockState.activeMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} reason=${_lockState.reason}',
+      ),
+    );
+    _scheduleNextRefresh();
+  }
+
+  Future<void> _syncNativeFocusEnforcement(
+    List<Map<String, dynamic>> scheduledTransitions,
+  ) async {
     try {
       await FocusEnforcementService.sync(
         settings: _settings,
@@ -765,6 +796,11 @@ class FocusController extends ChangeNotifier {
         return true;
       }());
     }
+  }
+
+  Future<void> _syncFocusNotifications(
+    List<Map<String, dynamic>> scheduledTransitions,
+  ) async {
     try {
       await AppNotificationService.instance.syncFocusNotifications(
         settings: _settings,
@@ -776,13 +812,6 @@ class FocusController extends ChangeNotifier {
         return true;
       }());
     }
-    unawaited(
-      FocusEnforcementService.appendDebugLog(
-        'focus.recompute',
-        'done mode=${_lockState.activeMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} reason=${_lockState.reason}',
-      ),
-    );
-    _scheduleNextRefresh();
   }
 
   FocusSettings _applyChildModeExit(FocusSettings s) {
@@ -1370,9 +1399,11 @@ class FocusController extends ChangeNotifier {
       'activeMode': activeMode.name,
       'lockReason': reason,
       'nextChangeAt': nextChangeAt?.toIso8601String(),
-      if (nextChangeAt != null)
-        'nextChangeAtMillis': nextChangeAt.millisecondsSinceEpoch,
-      if (notificationHint != null) 'notificationHint': notificationHint,
+      // ignore: use_null_aware_elements
+      if (nextChangeAt case final nextAt?)
+        'nextChangeAtMillis': nextAt.millisecondsSinceEpoch,
+      // ignore: use_null_aware_elements
+      if (notificationHint case final hint?) 'notificationHint': hint,
     };
   }
 

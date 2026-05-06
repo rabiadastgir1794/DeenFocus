@@ -9,13 +9,15 @@ abstract class DeviceAppsService {
     'com.app.deenly.deenly/focus',
   );
 
-  static Future<List<FocusInstalledApp>> getInstalledApps() async {
+  static Future<List<FocusInstalledApp>> getInstalledApps({
+    bool includeIcons = true,
+  }) async {
     if (!Platform.isAndroid) return const <FocusInstalledApp>[];
 
     try {
       final raw = await _channel.invokeListMethod<dynamic>(
         'getInstalledApps',
-        <String, dynamic>{'includeIcons': true},
+        <String, dynamic>{'includeIcons': includeIcons},
       );
       if (raw == null) return const <FocusInstalledApp>[];
       return raw
