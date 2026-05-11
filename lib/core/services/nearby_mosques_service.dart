@@ -32,10 +32,16 @@ class NearbyMosquesService {
   NearbyMosquesService({http.Client? client})
     : _client = client ?? http.Client();
 
+  /// Prefer mirrors that are less often overloaded than the main FOSSGIS instance.
+  /// See: https://wiki.openstreetmap.org/wiki/Overpass_API
   static const _overpassInterpreters = <String>[
-    'https://overpass-api.de/api/interpreter',
+    'https://overpass.private.coffee/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
+    'https://overpass-api.de/api/interpreter',
   ];
+
+  static const _overpassUserAgent =
+      'Deenly/com.rnr.deenfocus (nearby mosques; +https://www.openstreetmap.org/copyright)';
 
   final http.Client _client;
 
@@ -67,6 +73,7 @@ out center;
               headers: const <String, String>{
                 'Content-Type': 'text/plain; charset=utf-8',
                 'Accept': 'application/json',
+                'User-Agent': _overpassUserAgent,
               },
               body: query,
             )
@@ -85,7 +92,9 @@ out center;
 
     if (response.statusCode == 429) {
       throw const NearbyMosquesException(
-        'Too many map requests. Please try again in a minute.',
+        'The public mosque data service is rate-limiting requests from your '
+        'network (this can happen on the first try on shared Wi-Fi or '
+        'cellular). Try again in a minute or switch network.',
       );
     }
     if (response.statusCode < 200 || response.statusCode >= 300) {
