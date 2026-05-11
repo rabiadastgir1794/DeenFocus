@@ -27,6 +27,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _AppTab(id: 'settings', icon: Icons.settings_outlined),
   ];
 
+  void _onDestinationSelected(int index) {
+    // Tabs are not gated by Superwall — paywalls are surfaced by the
+    // individual premium features themselves (AI chat, prayer streak,
+    // focus mode app/enable flows).
+    if (!mounted) return;
+    setState(() {
+      _currentIndex = index;
+      _visitedIndexes.add(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -66,12 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: NavigationBar(
           selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            setState(() {
-              _currentIndex = index;
-              _visitedIndexes.add(index);
-            });
-          },
+          onDestinationSelected: (index) => _onDestinationSelected(index),
           destinations: _tabs
               .map(
                 (tab) => NavigationDestination(

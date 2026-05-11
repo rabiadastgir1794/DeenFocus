@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../../core/logger/trace_helpers.dart';
 import '../../../core/services/storage_service.dart';
 
 class TasbihItem {
@@ -117,19 +118,25 @@ class TasbihLocalRepository {
   }
 
   Future<void> _openBoxesAndSeed() async {
-    _itemsBox = await Hive.openBox<Map>(_itemsBoxName);
-    _sessionsBox = await Hive.openBox<Map>(_sessionsBoxName);
+    await TraceHelpers.traceDatabase(
+      'tasbih_open_boxes_seed',
+      () async {
+        _itemsBox = await Hive.openBox<Map>(_itemsBoxName);
+        _sessionsBox = await Hive.openBox<Map>(_sessionsBoxName);
 
-    final seedVersion = await StorageService.tasbihSeedVersion;
-    final needsSeed = _itemsBox.isEmpty || seedVersion < _seedVersion;
-    if (needsSeed) {
-      await _seedDefaults();
-      await StorageService.setTasbihSeedVersion(_seedVersion);
-    }
+        final seedVersion = await StorageService.tasbihSeedVersion;
+        final needsSeed = _itemsBox.isEmpty || seedVersion < _seedVersion;
+        if (needsSeed) {
+          await _seedDefaults();
+          await StorageService.setTasbihSeedVersion(_seedVersion);
+        }
 
-    await _reconcileTotalsFromSessions();
+        await _reconcileTotalsFromSessions();
 
-    _initialized = true;
+        _initialized = true;
+      },
+      logSuccess: true,
+    );
   }
 
   Future<List<TasbihItem>> getItems() async {

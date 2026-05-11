@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/theme_service.dart';
-import '../../../core/superwall/app_superwall.dart';
+import '../../../core/superwall/premium_gate.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
@@ -147,8 +147,9 @@ class _HomeTabViewState extends State<_HomeTabView>
                   icon: Icons.chat_bubble_outline,
                   onTap: () {
                     unawaited(
-                      AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
-                        () {
+                      PremiumGate.presentIfNeeded(
+                        context: context,
+                        onAccess: () {
                           if (!context.mounted) return;
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute<void>(
@@ -156,6 +157,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                             ),
                           );
                         },
+                        debugContext: 'home:islamic_chat',
                       ),
                     );
                   },
@@ -375,17 +377,21 @@ class _HomeTabViewState extends State<_HomeTabView>
     BuildContext context,
     HomeTabViewModel vm,
   ) async {
-    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
-      if (!context.mounted) return;
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
-            value: vm,
-            child: const HomePrayerStreakDetailScreen(),
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        if (!context.mounted) return;
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
+              value: vm,
+              child: const HomePrayerStreakDetailScreen(),
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+      debugContext: 'home:prayer_streak',
+    );
   }
 }
 

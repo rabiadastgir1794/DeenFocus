@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_languages.dart';
 import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
+import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/permission_service.dart';
 import '../../../../core/services/storage_service.dart';
@@ -23,6 +24,9 @@ import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
+
+/// Flip to `true` to show the Deen Focus Premium card in settings again.
+const bool _kShowSettingsPremiumSection = false;
 
 class SettingsTabScreen extends StatefulWidget {
   const SettingsTabScreen({super.key, this.isTabActive = false});
@@ -235,10 +239,11 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
       return;
     }
 
-    await AppSuperwall.registerPlacement(
-      SuperwallPlacements.premiumFeature,
-      () {},
-      fallbackToAccessWhenNoPaywall: true,
+    if (!mounted) return;
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {},
+      debugContext: 'settings:premium_card',
     );
   }
 
@@ -398,32 +403,33 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
-            ValueListenableBuilder<bool>(
-              valueListenable: AppSuperwall.subscriptionActiveNotifier,
-              builder: (context, isSubscribed, _) {
-                final manageMode = AppSuperwall.isEnabled && isSubscribed;
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _SettingsCardButton(
-                      icon: Icons.workspace_premium_rounded,
-                      iconBackground: const LinearGradient(
-                        colors: [Color(0xFF0F766E), Color(0xFF34D399)],
+            if (_kShowSettingsPremiumSection)
+              ValueListenableBuilder<bool>(
+                valueListenable: AppSuperwall.subscriptionActiveNotifier,
+                builder: (context, isSubscribed, _) {
+                  final manageMode = AppSuperwall.isEnabled && isSubscribed;
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _SettingsCardButton(
+                        icon: Icons.workspace_premium_rounded,
+                        iconBackground: const LinearGradient(
+                          colors: [Color(0xFF0F766E), Color(0xFF34D399)],
+                        ),
+                        title: manageMode
+                            ? l10n.settingsManageSubscriptionTitle
+                            : l10n.settingsPremiumTitle,
+                        subtitle: manageMode
+                            ? l10n.settingsManageSubscriptionSubtitle
+                            : l10n.settingsPremiumSubtitle,
+                        onTap: () => unawaited(_onPremiumCardTap()),
                       ),
-                      title: manageMode
-                          ? l10n.settingsManageSubscriptionTitle
-                          : l10n.settingsPremiumTitle,
-                      subtitle: manageMode
-                          ? l10n.settingsManageSubscriptionSubtitle
-                          : l10n.settingsPremiumSubtitle,
-                      onTap: () => unawaited(_onPremiumCardTap()),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                );
-              },
-            ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
             _SettingsGroup(
               children: [
                 _SettingsRow(

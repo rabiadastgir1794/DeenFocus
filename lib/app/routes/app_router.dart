@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/logger/logging_navigation_observer.dart';
 import '../../features/home/view/dashboard_screen.dart';
 import '../../features/splash/view/splash_screen.dart';
 import '../../features/onboarding/view/onboarding_flow_screen.dart';
@@ -7,9 +8,13 @@ import 'route_names.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
+final LoggingNavigationObserver _loggingNavigationObserver =
+    LoggingNavigationObserver();
+
 GoRouter createAppRouter() {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
+    observers: <NavigatorObserver>[_loggingNavigationObserver],
     initialLocation: RouteNames.splash,
     routes: [
       GoRoute(

@@ -10,6 +10,7 @@ import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
+import '../../../core/superwall/premium_gate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
@@ -88,14 +89,14 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
     if (pendingMode != null) {
       if (AppSuperwall.isEnabled) {
-        final sub = await AppSuperwall.syncAttributesAndResolvePaywallRoute();
-        if (!sub.isSubscribed) {
+        await AppSuperwall.syncSubscriptionState();
+
+        if (!AppSuperwall.subscriptionActiveNotifier.value) {
           await vm.refresh();
           return;
         }
       }
-      await vm.enableMode(pendingMode);
-    } else {
+    }else {
       await vm.refresh();
     }
   }
@@ -200,12 +201,12 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   void _handleRemoveSelectedApp(_SelectedAppChipData app) {
     final vm = context.read<FocusController>();
-    unawaited(_removeSelectedAppWithSubscription(vm, app));
+    unawaited(_removeSelectedApp(vm, app));
   }
 
-  Future<void> _handleToggleApp(FocusInstalledApp app) {
+  Future<void> _handleToggleApp(FocusInstalledApp app) async {
     final vm = context.read<FocusController>();
-    return _toggleSelectedAppWithSubscription(vm, app);
+    await vm.toggleSelectedApp(app);
   }
 
   void _handleToggleMode(FocusModeType mode, bool enabled) {
@@ -294,13 +295,23 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     AppLocalizations l10n,
   ) async {
     if (_isAuthorizingScreenTime) return;
-    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
-      if (!mounted) return;
-      unawaited(_runSelectAppsFlowAfterSubscription(vm, l10n));
-    });
+    await _runSelectAppsFlow(vm, l10n);
   }
 
-  Future<void> _runSelectAppsFlowAfterSubscription(
+  /// Premium is required only when fetching/opening the installed-app list, not
+  /// when toggling individual apps or showing an already-loaded grid.
+  Future<void> _requestInstalledAppsAfterPremium(FocusController vm) async {
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        if (!mounted) return;
+        unawaited(vm.requestInstalledApps());
+      },
+      debugContext: 'focus:load_apps',
+    );
+  }
+
+  Future<void> _runSelectAppsFlow(
     FocusController vm,
     AppLocalizations l10n,
   ) async {
@@ -325,7 +336,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         );
         return;
       }
-      await vm.requestInstalledApps();
+      await _requestInstalledAppsAfterPremium(vm);
       return;
     }
     final acceptedDisclosure =
@@ -341,28 +352,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       _showGlobalSelector = shouldShow;
     });
     if (shouldShow && vm.installedApps.isEmpty) {
-      await vm.requestInstalledApps();
+      await _requestInstalledAppsAfterPremium(vm);
     }
-  }
-
-  Future<void> _toggleSelectedAppWithSubscription(
-    FocusController vm,
-    FocusInstalledApp app,
-  ) async {
-    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
-      if (!mounted) return;
-      unawaited(vm.toggleSelectedApp(app));
-    });
-  }
-
-  Future<void> _removeSelectedAppWithSubscription(
-    FocusController vm,
-    _SelectedAppChipData app,
-  ) async {
-    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
-      if (!mounted) return;
-      unawaited(_removeSelectedApp(vm, app));
-    });
   }
 
   Future<void> _enableModeAfterPremium(
@@ -467,18 +458,22 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   }) async {
     final completeEnable = Completer<void>();
     var paywallGrantedCallback = false;
-    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(() {
-      paywallGrantedCallback = true;
-      unawaited(
-        Future<void>(() async {
-          try {
-            await _enableModeAfterPremium(vm, mode, messenger, l10n);
-          } finally {
-            if (!completeEnable.isCompleted) completeEnable.complete();
-          }
-        }),
-      );
-    });
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        paywallGrantedCallback = true;
+        unawaited(
+          Future<void>(() async {
+            try {
+              await _enableModeAfterPremium(vm, mode, messenger, l10n);
+            } finally {
+              if (!completeEnable.isCompleted) completeEnable.complete();
+            }
+          }),
+        );
+      },
+      debugContext: 'focus:enable_mode:${mode.name}',
+    );
     if (!paywallGrantedCallback && !completeEnable.isCompleted) {
       completeEnable.complete();
     }

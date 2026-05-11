@@ -33,6 +33,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  path_provider: ^2.1.5
+  synchronized: ^3.3.0
   cupertino_icons: ^1.0.8
 
   # Architecture & state

@@ -138,19 +138,10 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadSubscriptionStatus() async {
-    if (!AppSuperwall.isEnabled) {
-      _subscriptionActive = false;
-      AppSuperwall.updateSubscriptionNotifierFromStore(false);
-      return;
-    }
-    try {
-      final status = await Superwall.shared.getSubscriptionStatus();
-      _subscriptionActive = status.isActive;
-      AppSuperwall.updateSubscriptionNotifierFromStore(_subscriptionActive);
-    } catch (_) {
-      _subscriptionActive = false;
-      AppSuperwall.updateSubscriptionNotifierFromStore(false);
-    }
+    await AppSuperwall.syncSubscriptionState();
+
+    _subscriptionActive =
+        AppSuperwall.subscriptionActiveNotifier.value;
   }
 
   Future<void> _loadPrayerStreak() async {

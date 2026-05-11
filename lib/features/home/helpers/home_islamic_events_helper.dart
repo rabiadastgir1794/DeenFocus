@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../../../core/logger/trace_helpers.dart';
 import '../../../core/services/storage_service.dart';
 import '../model/home_models.dart';
 
@@ -33,7 +34,12 @@ abstract class HomeIslamicEventsHelper {
       final sorted = _dedupeAndSort(all);
       await _saveToCache(sorted, targetLastYear);
       return sorted;
-    } catch (_) {
+    } catch (e, st) {
+      TraceHelpers.traceNetworkFailure(
+        'loadIslamicEvents',
+        e,
+        stackTrace: st,
+      );
       if (cachedEvents.isNotEmpty) return cachedEvents;
       return _fallbackFridayEvents(currentYear, yearsAhead);
     }
@@ -46,7 +52,10 @@ abstract class HomeIslamicEventsHelper {
       final uri = Uri.parse(
         'https://api.aladhan.com/v1/gToHCalendar/$month/$year',
       );
-      final response = await http.get(uri).timeout(const Duration(seconds: 30));
+      final response = await TraceHelpers.traceApi(
+        'GET aladhan.com/v1/gToHCalendar/$month/$year',
+        () => http.get(uri).timeout(const Duration(seconds: 30)),
+      );
       if (response.statusCode != 200) continue;
 
       final decoded = jsonDecode(response.body) as Map<String, dynamic>;

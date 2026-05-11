@@ -6,6 +6,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ComponentName
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.pm.ApplicationInfo
 import android.content.Context
@@ -28,6 +30,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -92,22 +95,91 @@ object FocusDebugLogger {
         }
     }
 
+    /**
+     * MediaStore Downloads: `openOutputStream(uri, "wa")` is unreliable on several OEMs; each
+     * failure used to fall through to [MediaStore.insert] and create another `DISPLAY_NAME` copy.
+     * Prefer [ContentResolver.openFileDescriptor] in append mode, then rediscover by display name.
+     */
+    private fun appendToDownloadsUri(
+        resolver: ContentResolver,
+        uri: Uri,
+        text: String,
+    ): Boolean {
+        val bytes = text.toByteArray(Charsets.UTF_8)
+        val fdOk =
+            runCatching {
+                resolver.openFileDescriptor(uri, "wa")?.use { pfd ->
+                    FileOutputStream(pfd.fileDescriptor).use { fos -> fos.write(bytes) }
+                } != null
+            }.getOrDefault(false)
+        if (fdOk) return true
+        return runCatching {
+            resolver.openOutputStream(uri, "wa")?.use { out -> out.write(bytes) } != null
+        }.getOrDefault(false)
+    }
+
+    /** Reuse an existing public Downloads row after prefs were cleared or URI expired. */
+    private fun findExistingPublicDownloadsLogUri(context: Context): Uri? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
+        val resolver = context.contentResolver
+        val projection = arrayOf(MediaStore.Downloads._ID)
+        val selection = "${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
+        val args = arrayOf(focusDebugFileName)
+        resolver.query(
+            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            args,
+            "${MediaStore.MediaColumns.DATE_MODIFIED} DESC",
+        )?.use { c ->
+            if (c.moveToFirst()) {
+                val id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Downloads._ID))
+                return ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id)
+            }
+        }
+        return null
+    }
+
+    private fun writeFullDownloadsContents(
+        resolver: ContentResolver,
+        uri: Uri,
+        contents: String,
+    ): Boolean {
+        return runCatching {
+            resolver.openOutputStream(uri, "wt")?.use { out ->
+                out.write(contents.toByteArray(Charsets.UTF_8))
+            } != null
+        }.getOrDefault(false)
+    }
+
     private fun appendPublicDownloadsMirrorQ(context: Context, text: String) {
         val resolver = context.contentResolver
         val prefs = sectionPrefs(context)
         val uriStr = prefs.getString(focusDebugDownloadsUriKey, null)
-        val existing = uriStr?.let { Uri.parse(it) }
-        if (existing != null) {
-            val ok =
-                runCatching {
-                    resolver.openOutputStream(existing, "wa")?.use { out ->
-                        out.write(text.toByteArray(Charsets.UTF_8))
-                    } != null
-                }.getOrDefault(false)
-            if (ok) return
-            runCatching { resolver.delete(existing, null, null) }
+        val cached = uriStr?.let { Uri.parse(it) }
+        if (cached != null && appendToDownloadsUri(resolver, cached, text)) {
+            return
+        }
+
+        val discovered = findExistingPublicDownloadsLogUri(context)
+        if (discovered != null) {
+            if (appendToDownloadsUri(resolver, discovered, text)) {
+                prefs.edit().putString(focusDebugDownloadsUriKey, discovered.toString()).apply()
+                return
+            }
+            val fullRecover =
+                runCatching { logFile(context).readText(Charsets.UTF_8) }.getOrElse { text }
+            if (writeFullDownloadsContents(resolver, discovered, fullRecover)) {
+                prefs.edit().putString(focusDebugDownloadsUriKey, discovered.toString()).apply()
+                return
+            }
+        }
+
+        if (cached != null) {
+            runCatching { resolver.delete(cached, null, null) }
             prefs.edit().remove(focusDebugDownloadsUriKey).apply()
         }
+
         val full =
             runCatching { logFile(context).readText(Charsets.UTF_8) }.getOrElse { text }
         createNewDownloadsDocument(context, full, prefs)
@@ -119,6 +191,11 @@ object FocusDebugLogger {
         prefs: SharedPreferences,
     ) {
         val resolver = context.contentResolver
+        val reuse = findExistingPublicDownloadsLogUri(context)
+        if (reuse != null && writeFullDownloadsContents(resolver, reuse, contents)) {
+            prefs.edit().putString(focusDebugDownloadsUriKey, reuse.toString()).apply()
+            return
+        }
         val values =
             ContentValues().apply {
                 put(MediaStore.Downloads.DISPLAY_NAME, focusDebugFileName)
@@ -688,6 +765,7 @@ class FocusAccessibilityService : AccessibilityService() {
     private var lastBlockedAtMillis: Long = 0L
     private var lastSeenSyncGeneration: Long = 0L
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var pendingOverlayAfterHome: Runnable? = null
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -703,6 +781,8 @@ class FocusAccessibilityService : AccessibilityService() {
     }
 
     override fun onDestroy() {
+        pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
+        pendingOverlayAfterHome = null
         isConnected = false
         FocusDebugLogger.append(applicationContext, "service.destroy", "accessibility service destroyed")
         super.onDestroy()
@@ -723,6 +803,8 @@ class FocusAccessibilityService : AccessibilityService() {
             lastSeenSyncGeneration = state.syncGeneration
             lastBlockedPackage = null
             lastBlockedAtMillis = 0L
+            pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
+            pendingOverlayAfterHome = null
         }
 
         if (!state.isLocked || !state.selectedPackages.contains(packageName)) {
@@ -744,13 +826,15 @@ class FocusAccessibilityService : AccessibilityService() {
             "service.block.attempt",
             "userOpenedBlockedApp package=$packageName label=$blockedLabel mode=${state.activeMode} reason=${state.lockReason} nextChangeAt=${state.nextChangeAt} eventType=${event.eventType}",
         )
-        performGlobalAction(GLOBAL_ACTION_HOME)
 
         val intent = Intent(applicationContext, FocusBlockedActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
+                    Intent.FLAG_ACTIVITY_NO_ANIMATION or
+                    Intent.FLAG_ACTIVITY_NO_USER_ACTION or
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS,
             )
             putExtra("blockedPackage", packageName)
@@ -759,14 +843,35 @@ class FocusAccessibilityService : AccessibilityService() {
             putExtra("lockReason", state.lockReason)
             putExtra("nextChangeAt", state.nextChangeAt)
         }
-        mainHandler.postDelayed({
+
+        fun launchBlockingActivity(reason: String) {
             FocusDebugLogger.append(
                 applicationContext,
                 "service.block.show",
-                "starting FocusBlockedActivity package=$packageName label=$blockedLabel",
+                "$reason starting FocusBlockedActivity package=$packageName label=$blockedLabel",
             )
-            startActivity(intent)
-        }, 120L)
+            runCatching { startActivity(intent) }.onFailure { error ->
+                FocusDebugLogger.append(
+                    applicationContext,
+                    "service.block.error",
+                    "$reason startActivity failed: ${error.message}",
+                )
+            }
+        }
+
+        // One transition: send the blocked app to the background, then show the
+        // overlay a single time after the home animation settles. The old flow
+        // (startActivity + HOME + delayed second startActivity) reliably produced
+        // a visible open → close → open flash.
+        pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
+        val afterHome =
+            Runnable {
+                pendingOverlayAfterHome = null
+                launchBlockingActivity("after_home")
+            }
+        pendingOverlayAfterHome = afterHome
+        performGlobalAction(GLOBAL_ACTION_HOME)
+        mainHandler.postDelayed(afterHome, 320L)
     }
 
     override fun onInterrupt() {

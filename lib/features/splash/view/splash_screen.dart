@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,9 +9,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/routes/route_names.dart';
 import '../../../core/constants/spacing.dart';
+import '../../../core/logger/trace_helpers.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/app_icon_circle.dart';
 import '../../../l10n/app_localizations.dart';
+
+/// 1×1 PNG — decodes a real image pipeline on low-end GPUs without adding assets.
+final Uint8List _kSplashWarmupPngBytes = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+);
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,18 +43,30 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeInOut,
     );
     _controller.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(
+        TraceHelpers.traceImageLoad(
+          'splash_png_decode_warmup',
+          context,
+          MemoryImage(_kSplashWarmupPngBytes),
+        ),
+      );
+    });
     _navigateNext();
   }
 
   Future<void> _navigateNext() async {
-    await Future.delayed(const Duration(milliseconds: 1900));
-    final completed = await StorageService.onboardingCompleted;
-    if (!mounted) return;
-    if (completed) {
-      context.go(RouteNames.home);
-    } else {
-      context.go(RouteNames.onboarding);
-    }
+    await TraceHelpers.traceScreen('SplashScreen', () async {
+      await Future<void>.delayed(const Duration(milliseconds: 1900));
+      final completed = await StorageService.onboardingCompleted;
+      if (!mounted) return;
+      if (completed) {
+        context.go(RouteNames.home);
+      } else {
+        context.go(RouteNames.onboarding);
+      }
+    });
   }
 
   @override

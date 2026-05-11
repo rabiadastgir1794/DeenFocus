@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../core/logger/trace_helpers.dart';
+
 /// Bundled walkthrough clip (see `pubspec.yaml` assets).
 const String kAppDemoVideoAsset = 'assets/video/about_deen_focus.mp4';
 
@@ -83,27 +85,30 @@ class AppDemoVideoManager extends ChangeNotifier {
       unawaited(() async {
         VideoPlayerController? ctrl;
         try {
-          ctrl = VideoPlayerController.asset(kAppDemoVideoAsset);
-          await ctrl.initialize();
-          _controller = ctrl;
-          ctrl = null;
-          _lastError = null;
-          await _controller!.setVolume(0);
-          await _controller!.pause();
-          await _controller!.seekTo(Duration.zero);
-          notifyListeners();
+          await TraceHelpers.traceAsync(
+            'MEDIA',
+            'VideoPlayerController.initialize asset=$kAppDemoVideoAsset',
+            () async {
+              ctrl = VideoPlayerController.asset(kAppDemoVideoAsset);
+              await ctrl!.initialize();
+              _controller = ctrl;
+              ctrl = null;
+              _lastError = null;
+              await _controller!.setVolume(0);
+              await _controller!.pause();
+              await _controller!.seekTo(Duration.zero);
+              notifyListeners();
+            },
+            logSuccess: true,
+          );
           completer.complete();
         } on PlatformException catch (e) {
-          if (ctrl != null) {
-            await ctrl.dispose();
-          }
+          await ctrl?.dispose();
           _lastError = e;
           notifyListeners();
           completer.completeError(e);
         } catch (e) {
-          if (ctrl != null) {
-            await ctrl.dispose();
-          }
+          await ctrl?.dispose();
           _lastError = e;
           notifyListeners();
           completer.completeError(e);

@@ -26,6 +26,12 @@ class FocusController extends ChangeNotifier {
   static const Duration _salahTestGapDuration = Duration(minutes: 2);
   static const int _rollingScheduleDays = 7;
 
+  FocusController() {
+    AppSuperwall.subscriptionActiveNotifier.addListener(
+      _handleSubscriptionStatusChange,
+    );
+  }
+
   FocusSettings _settings = FocusSettings.defaults();
   FocusLockState _lockState = const FocusLockState.unlocked();
   List<FocusInstalledApp> _installedApps = const <FocusInstalledApp>[];
@@ -110,7 +116,17 @@ class FocusController extends ChangeNotifier {
       'manual refresh start',
     );
     await _reloadLocation();
+    await _enforceSubscriptionOrDisableModes();
     await _recomputeAndPersist();
+  }
+
+  /// Reacts to live subscription updates (e.g. paywall dismiss, lifecycle
+  /// resume sync) so any active focus modes are torn down the instant the
+  /// user loses their entitlement.
+  void _handleSubscriptionStatusChange() {
+    if (!_isInitialized) return;
+    if (AppSuperwall.subscriptionActiveNotifier.value) return;
+    unawaited(disableAllModesDueToSubscription());
   }
 
   Future<void> requestInstalledApps() async {
@@ -448,7 +464,9 @@ class FocusController extends ChangeNotifier {
 
   Future<void> _enforceSubscriptionOrDisableModes() async {
     if (!AppSuperwall.isEnabled) return;
-    await AppSuperwall.syncAttributesAndResolvePaywallRoute();
+
+    await AppSuperwall.syncSubscriptionState();
+
     if (!AppSuperwall.subscriptionActiveNotifier.value) {
       await disableAllModesDueToSubscription();
     }
@@ -1460,6 +1478,9 @@ class FocusController extends ChangeNotifier {
 
   @override
   void dispose() {
+    AppSuperwall.subscriptionActiveNotifier.removeListener(
+      _handleSubscriptionStatusChange,
+    );
     _refreshTimer?.cancel();
     super.dispose();
   }

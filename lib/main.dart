@@ -1,3 +1,5 @@
+// main.dart
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,12 +10,15 @@ import 'package:provider/provider.dart';
 
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
-import 'core/superwall/app_superwall.dart';
+import 'core/logger/app_logging.dart';
+import 'core/logger/logger_service.dart';
+import 'core/logger/trace_helpers.dart';
 import 'core/services/app_notification_service.dart';
 import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
 import 'core/services/theme_service.dart';
 import 'core/services/user_profile_service.dart';
+import 'core/superwall/app_superwall.dart';
 import 'core/theme/app_theme.dart';
 import 'features/focus/viewmodel/focus_controller.dart';
 import 'features/home/view/settings/app_demo_video_manager.dart';
@@ -22,24 +27,49 @@ import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Plugin auto-registration handles video players; manual registration is
-  // intentionally removed to keep startup minimal.
-  await Hive.initFlutter();
-  runApp(const DeenlyApp());
-  // Startup performance: defer non-critical services so first frame is not
-  // blocked by IO, plugin channels, or network-bound subscription sync.
-  Future<void>.microtask(_initializeServices);
+
+  final startupWatch = Stopwatch()..start();
+  await LoggerService.instance.initialize();
+  AppLogging.installFrameworkHooks();
+  LoggerService.instance.info(
+    'STARTUP',
+    'binding + logger hooks installed ${startupWatch.elapsedMilliseconds}ms',
+  );
+
+  await TraceHelpers.traceDatabase('hive_init', () => Hive.initFlutter(), logSuccess: true);
+  LoggerService.instance.info(
+    'STARTUP',
+    'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
+  );
+
+  runZonedGuarded(
+    () {
+      /// Configure Superwall ONCE in the background. Splash must not block on it —
+      /// premium gates will wait for [AppSuperwall.configure] when first invoked.
+      unawaited(
+        TraceHelpers.traceAsync(
+          'STARTUP',
+          'AppSuperwall.configure (background)',
+          AppSuperwall.configure,
+          logSuccess: true,
+        ),
+      );
+
+      runApp(const DeenlyApp());
+      LoggerService.instance.info(
+        'STARTUP',
+        'runApp scheduled ${startupWatch.elapsedMilliseconds}ms',
+      );
+      unawaited(_initializeServices());
+    },
+    AppLogging.recordZoneError,
+  );
 }
 
 Future<void> _initializeServices() async {
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
   unawaited(DailyRefreshService.instance.initialize());
   unawaited(AppNotificationService.instance.initialize());
-
-  await AppSuperwall.configureIfNeeded();
-  if (AppSuperwall.isEnabled) {
-    unawaited(AppSuperwall.syncAttributesAndResolvePaywallRoute());
-  }
 }
 
 class DeenlyApp extends StatefulWidget {
@@ -50,7 +80,7 @@ class DeenlyApp extends StatefulWidget {
 }
 
 class _DeenlyAppState extends State<DeenlyApp> {
-  late final _router = createAppRouter();
+  late final GoRouter _router = createAppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -59,32 +89,30 @@ class _DeenlyAppState extends State<DeenlyApp> {
         ChangeNotifierProvider(create: (_) => LocaleService()),
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
-        // Startup performance: FocusController performs async disk/native work,
-        // so initialization is triggered lazily by screens that need it.
         ChangeNotifierProvider(create: (_) => FocusController()),
         ChangeNotifierProvider(create: (_) => AppDemoVideoManager()),
       ],
-      child: _AppLifecycleFocusRefresher(
+      child: _AppLifecycleObserver(
         child: _DeenlyMaterialApp(router: _router),
       ),
     );
   }
 }
 
-/// Refreshes focus lock state whenever the app returns to foreground so
-/// prayer windows stay aligned even if the user was on a tab without its own observer.
-class _AppLifecycleFocusRefresher extends StatefulWidget {
-  const _AppLifecycleFocusRefresher({required this.child});
+class _AppLifecycleObserver extends StatefulWidget {
+  const _AppLifecycleObserver({
+    required this.child,
+  });
 
   final Widget child;
 
   @override
-  State<_AppLifecycleFocusRefresher> createState() =>
-      _AppLifecycleFocusRefresherState();
+  State<_AppLifecycleObserver> createState() =>
+      _AppLifecycleObserverState();
 }
 
-class _AppLifecycleFocusRefresherState
-    extends State<_AppLifecycleFocusRefresher>
+class _AppLifecycleObserverState
+    extends State<_AppLifecycleObserver>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -101,30 +129,43 @@ class _AppLifecycleFocusRefresherState
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      unawaited(_onResumed());
+      unawaited(_handleResume());
     }
   }
 
-  Future<void> _onResumed() async {
-    if (AppSuperwall.isEnabled) {
-      await AppSuperwall.syncAttributesAndResolvePaywallRoute();
-      if (!mounted) return;
-      if (!AppSuperwall.subscriptionActiveNotifier.value) {
-        await context
-            .read<FocusController>()
-            .disableAllModesDueToSubscription();
-      }
-    }
+  /// OS signals memory pressure first on low-RAM devices before Java OOM kills.
+  /// Logging here helps correlate jank / ANR heuristics with GC storms.
+  @override
+  void didHaveMemoryPressure() {
+    LoggerService.instance.warning(
+      'MEMORY',
+      'didHaveMemoryPressure — OS is reclaiming memory',
+    );
+    super.didHaveMemoryPressure();
+  }
+
+  Future<void> _handleResume() async {
+    /// Refresh only subscription state
+    /// DO NOT configure again
+    await AppSuperwall.syncSubscriptionState();
+
     if (!mounted) return;
-    unawaited(context.read<FocusController>().refresh());
+
+    unawaited(
+      context.read<FocusController>().refresh(),
+    );
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
 }
 
 class _DeenlyMaterialApp extends StatelessWidget {
-  const _DeenlyMaterialApp({required this.router});
+  const _DeenlyMaterialApp({
+    required this.router,
+  });
 
   final GoRouter router;
 
@@ -136,11 +177,13 @@ class _DeenlyMaterialApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         final locale = context.select<LocaleService, Locale?>(
-          (service) => service.locale,
+              (service) => service.locale,
         );
+
         final themeMode = context.select<ThemeService, ThemeMode>(
-          (service) => service.themeMode,
+              (service) => service.themeMode,
         );
+
         return MaterialApp.router(
           title: 'Deenly',
           debugShowCheckedModeBanner: false,
@@ -148,7 +191,8 @@ class _DeenlyMaterialApp extends StatelessWidget {
           darkTheme: AppTheme.dark,
           themeMode: themeMode,
           locale: locale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates:
+          AppLocalizations.localizationsDelegates,
           supportedLocales: kSupportedLocales,
           routerConfig: router,
         );
