@@ -80,10 +80,15 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
           if (c == null) {
             return const Center(child: CircularProgressIndicator());
           }
-          return Center(
-            child: AspectRatio(
-              aspectRatio: c.value.aspectRatio,
-              child: VideoPlayer(c),
+          // Body [Center] is the middle of the area below the app bar, which sits
+          // ~half a toolbar below the screen's visual center; nudge up to match.
+          return Transform.translate(
+            offset: const Offset(0, -kToolbarHeight / 2),
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: c.value.aspectRatio,
+                child: VideoPlayer(c),
+              ),
             ),
           );
         },

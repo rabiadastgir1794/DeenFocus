@@ -117,6 +117,7 @@ class HomeCalendarSection extends StatelessWidget {
               const SizedBox(height: 10),
               weekly
                   ? _HomeWeeklyCalendar(
+                      visibleMonth: visibleMonth,
                       selectedDate: selectedDate,
                       eventDates: weekEvents
                           .map((e) => e.date)
@@ -180,11 +181,13 @@ class HomeCalendarSection extends StatelessWidget {
 
 class _HomeWeeklyCalendar extends StatelessWidget {
   const _HomeWeeklyCalendar({
+    required this.visibleMonth,
     required this.selectedDate,
     required this.eventDates,
     required this.onTap,
   });
 
+  final DateTime visibleMonth;
   final DateTime? selectedDate;
   final List<DateTime> eventDates;
   final ValueChanged<DateTime> onTap;
@@ -193,7 +196,14 @@ class _HomeWeeklyCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final today = DateTime.now();
-    final weekStart = today.subtract(Duration(days: today.weekday % 7));
+    final firstOfVisibleMonth = DateTime(
+      visibleMonth.year,
+      visibleMonth.month,
+      1,
+    );
+    final weekStart = firstOfVisibleMonth.subtract(
+      Duration(days: firstOfVisibleMonth.weekday % 7),
+    );
 
     return Row(
       children: List.generate(7, (index) {

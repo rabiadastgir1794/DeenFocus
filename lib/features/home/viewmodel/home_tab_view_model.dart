@@ -248,25 +248,31 @@ class HomeTabViewModel extends ChangeNotifier {
       visibleMonth,
       allIslamicEvents,
     );
+    final weekAnchorDay = weeklyCalendar
+        ? DateTime(visibleMonth.year, visibleMonth.month, 1)
+        : DateTime.now();
     weekEvents = HomeIslamicEventsHelper.eventsForWeek(
-      DateTime.now(),
+      weekAnchorDay,
       allIslamicEvents,
     );
   }
 
   void setWeeklyCalendar(bool value) {
     weeklyCalendar = value;
+    _refreshVisibleEvents();
     notifyListeners();
   }
 
   void goToNextMonth() {
     visibleMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 1);
+    selectedDate = null;
     _refreshVisibleEvents();
     notifyListeners();
   }
 
   void goToPreviousMonth() {
     visibleMonth = DateTime(visibleMonth.year, visibleMonth.month - 1, 1);
+    selectedDate = null;
     _refreshVisibleEvents();
     notifyListeners();
   }

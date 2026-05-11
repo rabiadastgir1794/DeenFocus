@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:adhan/adhan.dart';
@@ -5,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/services/daily_refresh_service.dart';
+import '../../../../core/services/location/location_service.dart';
+import '../../../../core/services/permission_service.dart';
 import '../../../../core/services/qibla_compass_service.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -27,19 +32,20 @@ class HomeQiblaScreen extends StatefulWidget {
 
 class _HomeQiblaScreenState extends State<HomeQiblaScreen>
     with SingleTickerProviderStateMixin {
-  late final Stream<double> _headingStream;
+  Stream<double>? _headingStream;
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
+
+  bool _resolving = true;
+  bool _permissionDenied = false;
+  bool _locationUnavailable = false;
+  double? _latitude;
+  double? _longitude;
+  String? _locationName;
 
   @override
   void initState() {
     super.initState();
-    _headingStream = QiblaCompassService.headingStream();
-    final latitude = widget.latitude;
-    final longitude = widget.longitude;
-    if (latitude != null && longitude != null) {
-      QiblaCompassService.setLocation(latitude: latitude, longitude: longitude);
-    }
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -48,7 +54,66 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
       parent: _fadeController,
       curve: Curves.easeOut,
     );
-    _fadeController.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_bootstrapLocationAndCompass());
+    });
+  }
+
+  Future<void> _bootstrapLocationAndCompass() async {
+    var granted = await PermissionService.checkLocation();
+    if (!granted) {
+      granted = await PermissionService.requestLocation();
+    }
+
+    if (!mounted) return;
+    if (!granted) {
+      setState(() {
+        _resolving = false;
+        _permissionDenied = true;
+      });
+      return;
+    }
+
+    var lat = widget.latitude;
+    var lng = widget.longitude;
+    var name = widget.locationName;
+
+    if (lat == null || lng == null) {
+      final location = await LocationService.fetchCurrentCity();
+      if (!mounted) return;
+      if (location == null ||
+          location.latitude == null ||
+          location.longitude == null) {
+        setState(() {
+          _resolving = false;
+          _locationUnavailable = true;
+        });
+        return;
+      }
+      lat = location.latitude;
+      lng = location.longitude;
+      name = location.title;
+      await StorageService.setUserLocation(
+        name: location.title,
+        subtitle: location.subtitle,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      );
+      await DailyRefreshService.instance.refreshNow();
+    }
+
+    await QiblaCompassService.setLocation(latitude: lat!, longitude: lng!);
+    if (!mounted) return;
+    setState(() {
+      _latitude = lat;
+      _longitude = lng;
+      _locationName = name;
+      _headingStream = QiblaCompassService.headingStream();
+      _resolving = false;
+      _permissionDenied = false;
+      _locationUnavailable = false;
+    });
+    _fadeController.forward(from: 0);
   }
 
   @override
@@ -60,10 +125,18 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final latitude = widget.latitude;
-    final longitude = widget.longitude;
 
-    if (latitude == null || longitude == null) {
+    if (_resolving) {
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: l10n.homeQiblaDirection,
+          onBack: () => Navigator.of(context).pop(),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_permissionDenied) {
       return Scaffold(
         appBar: CustomAppBar(
           title: l10n.homeQiblaDirection,
@@ -72,14 +145,82 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Text(
-              l10n.homeLocationMissingForQibla,
-              textAlign: TextAlign.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.locationRequiredMessage,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () {
+                    unawaited(PermissionService.openLocationSettings());
+                  },
+                  child: Text(l10n.openSettings),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _resolving = true;
+                      _permissionDenied = false;
+                    });
+                    unawaited(_bootstrapLocationAndCompass());
+                  },
+                  child: Text(l10n.nearbyMosquesTryAgain),
+                ),
+              ],
             ),
           ),
         ),
       );
     }
+
+    if (_locationUnavailable) {
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: l10n.homeQiblaDirection,
+          onBack: () => Navigator.of(context).pop(),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.nearbyMosquesLocationUnavailable,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () {
+                    setState(() {
+                      _resolving = true;
+                      _locationUnavailable = false;
+                    });
+                    unawaited(_bootstrapLocationAndCompass());
+                  },
+                  child: Text(l10n.nearbyMosquesTryAgain),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {
+                    unawaited(PermissionService.openLocationSettings());
+                  },
+                  child: Text(l10n.openSettings),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    final latitude = _latitude!;
+    final longitude = _longitude!;
+    final stream = _headingStream!;
 
     final coordinates = Coordinates(latitude, longitude);
     final qiblaDirection = Qibla(coordinates).direction;
@@ -91,8 +232,8 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
           Qibla.MAKKAH.longitude,
         ) /
         1000;
-    final cityLabel = (widget.locationName?.trim().isNotEmpty ?? false)
-        ? widget.locationName!.trim()
+    final cityLabel = (_locationName?.trim().isNotEmpty ?? false)
+        ? _locationName!.trim()
         : l10n.settingsLocationLabel;
 
     final distanceFormatted = NumberFormat.decimalPattern(
@@ -106,7 +247,7 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
         onBack: () => Navigator.of(context).pop(),
       ),
       body: StreamBuilder<double>(
-        stream: _headingStream,
+        stream: stream,
         builder: (context, snapshot) {
           final heading = snapshot.data ?? 0;
           final hasLiveHeading = snapshot.hasData;
