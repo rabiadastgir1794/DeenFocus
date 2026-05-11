@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_manager.dart';
 import 'app_demo_video_screen.dart';
 
-/// Settings "App Demo" row: live first-frame preview, tap opens fullscreen.
+const String _kAppDemoVideoThumbnailAsset = 'assets/video/video_thumbnail.png';
+
+/// Settings "App Demo" row: static thumbnail preview, tap opens fullscreen.
 class AppDemoVideoSettingsCard extends StatefulWidget {
   const AppDemoVideoSettingsCard({super.key, required this.isTabActive});
 
@@ -63,15 +64,15 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
         return Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: c != null && !demo.hasError
-                ? () {
+            onTap: demo.hasError && c == null
+                ? null
+                : () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => const AppDemoVideoScreen(),
                       ),
                     );
-                  }
-                : null,
+                  },
             borderRadius: BorderRadius.circular(24),
             child: Ink(
               padding: const EdgeInsets.all(20),
@@ -100,7 +101,6 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                       child: _buildPreviewBody(
                         context,
                         demo,
-                        c,
                         channelBroken,
                         l10n,
                       ),
@@ -118,13 +118,12 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
   Widget _buildPreviewBody(
     BuildContext context,
     AppDemoVideoManager demo,
-    VideoPlayerController? c,
     bool channelBroken,
     AppLocalizations l10n,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (demo.hasError && c == null) {
+    if (demo.hasError && demo.controller == null) {
       return ColoredBox(
         color: colorScheme.surfaceContainerHighest,
         child: Center(
@@ -160,22 +159,19 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
       );
     }
 
-    if (c == null) {
-      return ColoredBox(
-        color: colorScheme.surfaceContainerHighest,
-        child: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Stack(
       fit: StackFit.expand,
       children: [
-        FittedBox(
+        Image.asset(
+          _kAppDemoVideoThumbnailAsset,
           fit: BoxFit.cover,
-          child: SizedBox(
-            width: c.value.size.width,
-            height: c.value.size.height,
-            child: VideoPlayer(c),
+          errorBuilder: (context, error, stackTrace) => ColoredBox(
+            color: colorScheme.surfaceContainerHighest,
+            child: Icon(
+              Icons.ondemand_video_rounded,
+              size: 48,
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
         Container(

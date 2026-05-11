@@ -100,6 +100,7 @@ flutter:
     - assets/raw/quran_paak.json
     - assets/raw/english_translation.json
     - assets/video/about_deen_focus.mp4
+    - assets/video/video_thumbnail.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
