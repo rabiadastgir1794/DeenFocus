@@ -353,6 +353,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                           key: ValueKey(item.id),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(
+                            isThreeLine: true,
                             onTap: () => _openDetail(item),
                             title: Row(
                               children: [
@@ -367,7 +368,13 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                       ).colorScheme.primary,
                                     ),
                                   ),
-                                Expanded(child: Text(item.label)),
+                                Expanded(
+                                  child: Text(
+                                    item.label,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                             subtitle: Padding(
@@ -380,8 +387,24 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                     item.transliteration.isEmpty
                                         ? l10n.tasbihNoTransliteration
                                         : item.transliteration,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  if (item.totalCount > 0)
+                                  if (item.meaning.isNotEmpty) ...[
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      item.meaning,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ],
+                                  if (item.totalCount > 0) ...[
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -404,6 +427,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                         ),
                                       ],
                                     ),
+                                  ],
                                 ],
                               ),
                             ),

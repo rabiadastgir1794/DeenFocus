@@ -170,13 +170,33 @@
   "focusChooseAppsEnableMode": "Choose apps and enable focus mode",
   "focusNotifAppsLockedTitle": "Apps Locked",
   "focusNotifAppsUnlockedTitle": "Apps Unlocked",
-  "focusNotifNightModeTitle": "Night mode",
-  "focusNotifGoodMorningTitle": "Good Morning!",
+  "focusNotifNightModeTitle": "Night Mode On",
+  "focusNotifGoodMorningTitle": "Good Morning",
   "focusNotifAppsNowAvailableBody": "Apps are now available.",
   "focusNotifSalahLockedBody": "Apps are locked during Salah.",
+  "focusNotifSalahCompleteTitle": "Salah Complete",
+  "focusNotifSalahCompleteBody": "Apps are now unlocked. May your prayer be accepted.",
+  "focusNotifSalahPrayerTimeTitle": "{prayerName} Time",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "focusNotifSalahPrayerMomentBody": "Take a moment for {prayerName} prayer.",
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
   "focusNotifNightLockedBody": "Night mode is on. Let your mind and body rest.",
   "focusNotifGenericLockedBody": "Selected apps are locked.",
-  "focusNotifMorningUnlockBody": "Apps are not available.",
+  "focusNotifMorningUnlockBody": "Good morning! Apps are now available.",
   "widgetDailyVerseTitle": "Daily Verse",
   "widgetOpenAppTimelineHint": "Open Deen Focus to prepare your daily verse and prayer widget data.",
   "widgetSetLocationForPrayers": "Set your location in Deen Focus to load prayers and the daily verse.",
@@ -258,6 +278,7 @@
   "nearbyMosquesSearchRadius": "Search radius: 5 km",
   "nearbyMosquesMapPreviewUnavailable": "Map preview unavailable right now.",
   "nearbyMosquesWaitingForLocation": "Waiting for your location.",
+  "nearbyMosquesCurrentLocationLabel": "Current location",
   "nearbyMosquesAppearAfterLoad": "Nearby mosques will appear here once results load.",
   "nearbyMosquesNoneWithinRadius": "No mosques found within 5 km",
   "nearbyMosquesLocationRequired": "Location access is required to find nearby mosques.",

@@ -267,6 +267,17 @@ enum FocusDeviceActivityScheduler {
       guard startMs > 0 else { continue }
 
       let action = locked ? "lock" : "unlock"
+      // iOS Salah: do not register scheduled unlock at prayer-window end — the user
+      // uses home temporary unlock; shields clear on next Flutter foreground sync.
+      // Night (and combined wake) unlock one-shots stay registered.
+      if !locked, transitionMode == "salah" {
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "skipped salah scheduled auto-unlock name=deenly_focus_unlock_\(startMs) at=\(Date(timeIntervalSince1970: Double(startMs) / 1000.0))"
+        )
+        continue
+      }
+
       let nameStr = "deenly_focus_\(action)_\(startMs)"
       let start = Date(timeIntervalSince1970: Double(startMs) / 1000.0)
       if !start.timeIntervalSince(now).isFinite || start <= now {

@@ -11,6 +11,7 @@ class HomeCalendarSection extends StatelessWidget {
     required this.backgroundColor,
     required this.monthTitle,
     required this.visibleMonth,
+    required this.weeklyWeekStart,
     required this.isLoading,
     required this.weekly,
     required this.monthEvents,
@@ -25,6 +26,8 @@ class HomeCalendarSection extends StatelessWidget {
   final Color backgroundColor;
   final String monthTitle;
   final DateTime visibleMonth;
+  /// Sunday-start week row for weekly mode (from [HomeTabViewModel.weeklyVisibleWeekStart]).
+  final DateTime weeklyWeekStart;
   final bool isLoading;
   final bool weekly;
   final List<HomeIslamicEvent> monthEvents;
@@ -117,7 +120,7 @@ class HomeCalendarSection extends StatelessWidget {
               const SizedBox(height: 10),
               weekly
                   ? _HomeWeeklyCalendar(
-                      visibleMonth: visibleMonth,
+                      weekStart: weeklyWeekStart,
                       selectedDate: selectedDate,
                       eventDates: weekEvents
                           .map((e) => e.date)
@@ -181,13 +184,13 @@ class HomeCalendarSection extends StatelessWidget {
 
 class _HomeWeeklyCalendar extends StatelessWidget {
   const _HomeWeeklyCalendar({
-    required this.visibleMonth,
+    required this.weekStart,
     required this.selectedDate,
     required this.eventDates,
     required this.onTap,
   });
 
-  final DateTime visibleMonth;
+  final DateTime weekStart;
   final DateTime? selectedDate;
   final List<DateTime> eventDates;
   final ValueChanged<DateTime> onTap;
@@ -196,14 +199,6 @@ class _HomeWeeklyCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final today = DateTime.now();
-    final firstOfVisibleMonth = DateTime(
-      visibleMonth.year,
-      visibleMonth.month,
-      1,
-    );
-    final weekStart = firstOfVisibleMonth.subtract(
-      Duration(days: firstOfVisibleMonth.weekday % 7),
-    );
 
     return Row(
       children: List.generate(7, (index) {

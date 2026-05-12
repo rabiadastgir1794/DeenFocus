@@ -17,6 +17,10 @@ abstract final class SuperwallPlacements {
 class AppSuperwall {
   AppSuperwall._();
 
+  /// Temporary development override: grants premium access without paywalls.
+  /// Set to `false` before any production release.
+  static const bool kTemporarilyBypassPremiumRestrictions = true;
+
   static bool _enabled = false;
 
   static Future<void>? _configureFuture;
@@ -78,7 +82,8 @@ class AppSuperwall {
 
       final isSubscribed = status.isActive;
 
-      subscriptionActiveNotifier.value = isSubscribed;
+      subscriptionActiveNotifier.value =
+          kTemporarilyBypassPremiumRestrictions || isSubscribed;
 
       var hasUsedIntroOffer =
       await StorageService.hasUsedIntroOffer;
@@ -106,6 +111,10 @@ class AppSuperwall {
       void Function() onAccess, {
         String debugContext = '',
       }) async {
+    if (kTemporarilyBypassPremiumRestrictions) {
+      onAccess();
+      return;
+    }
     try {
       await configure();
 

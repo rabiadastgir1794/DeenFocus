@@ -33,6 +33,11 @@ class PremiumGate {
     required VoidCallback onAccess,
     required String debugContext,
   }) async {
+    if (AppSuperwall.kTemporarilyBypassPremiumRestrictions) {
+      _log('bypass active context=$debugContext — granting access');
+      onAccess();
+      return;
+    }
     final overlayState = Overlay.maybeOf(context, rootOverlay: true);
     if (overlayState == null) {
       // No overlay available — fall back to the direct flow so the user is

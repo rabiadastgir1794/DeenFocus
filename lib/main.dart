@@ -151,9 +151,7 @@ class _AppLifecycleObserverState
 
     if (!mounted) return;
 
-    unawaited(
-      context.read<FocusController>().refresh(),
-    );
+    unawaited(context.read<FocusController>().refresh());
   }
 
   @override

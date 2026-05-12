@@ -118,6 +118,24 @@ class FocusController extends ChangeNotifier {
     await _reloadLocation();
     await _enforceSubscriptionOrDisableModes();
     await _recomputeAndPersist();
+    await _reschedulePrayerIfDualSalahNightAfterInteraction();
+  }
+
+  /// Refills prayer-time notifications (next 4 days) after foreground / home
+  /// unlock when Salah and Night are both on, so iOS pending slots stay filled
+  /// alongside focus transition alerts.
+  Future<void> _reschedulePrayerIfDualSalahNightAfterInteraction() async {
+    final s = _settings;
+    if (!s.salahModeEnabled || !s.nightDisciplineEnabled) return;
+    final lat = _cachedLatitude;
+    final lng = _cachedLongitude;
+    if (lat == null || lng == null) return;
+    await AppNotificationService.instance.reschedulePrayerNotifications(
+      latitude: lat,
+      longitude: lng,
+      forceReschedule: true,
+      daysAheadOverride: 4,
+    );
   }
 
   /// Reacts to live subscription updates (e.g. paywall dismiss, lifecycle
@@ -514,10 +532,12 @@ class FocusController extends ChangeNotifier {
 
     if (until != null && !until.isAfter(now)) {
       await _recomputeAndPersist();
+      await _reschedulePrayerIfDualSalahNightAfterInteraction();
       return;
     }
     if (until == null) {
       await temporarilyUnlock();
+      await _reschedulePrayerIfDualSalahNightAfterInteraction();
       return;
     }
 
@@ -528,6 +548,7 @@ class FocusController extends ChangeNotifier {
     _settings = _settings.copyWith(temporarilyUnlockedUntil: until);
     await _persist();
     await _recomputeAndPersist();
+    await _reschedulePrayerIfDualSalahNightAfterInteraction();
   }
 
   /// Home action while temporarily unlocked: clear temporary unlock and enforce
@@ -1158,8 +1179,8 @@ class FocusController extends ChangeNotifier {
   }
 
   /// When night and salah overlap, transitions can share the same instant.
-  /// Recompute the lock state at that instant so Salah keeps priority while
-  /// unlocks are only emitted when no enabled mode still requires blocking.
+  /// Locks prefer Salah ordering; simultaneous unlocks prefer [nightMorning] so
+  /// iOS keeps wake-time unlock + notifications when Salah ends with night.
   List<Map<String, dynamic>> _dedupeTransitionsByTimestamp(
     List<Map<String, dynamic>> events,
   ) {
@@ -1183,7 +1204,17 @@ class FocusController extends ChangeNotifier {
         final bPriority = bMode == FocusModeType.salah.name ? 0 : 1;
         return aPriority.compareTo(bPriority);
       });
-      out.add(Map<String, dynamic>.from(group.first));
+      var chosen = Map<String, dynamic>.from(group.first);
+      final allUnlock = group.every((e) => e['isLocked'] != true);
+      if (allUnlock) {
+        final nightMorning = group
+            .where((e) => e['notificationHint'] == 'nightMorning')
+            .toList();
+        if (nightMorning.isNotEmpty) {
+          chosen = Map<String, dynamic>.from(nightMorning.first);
+        }
+      }
+      out.add(chosen);
       i = j;
     }
     return out;
@@ -1294,6 +1325,7 @@ class FocusController extends ChangeNotifier {
                   snap.reason ??
                   'Salah mode is active for ${_prayerLabel(window.prayer.id)}.',
               nextChangeAt: snap.nextChangeAt ?? window.end,
+              prayerId: window.prayer.id.name,
             ),
           );
         }
@@ -1337,6 +1369,7 @@ class FocusController extends ChangeNotifier {
                 snap.reason ??
                 'Salah mode is active for ${_prayerLabel(activeWindow.prayer.id)}.',
             nextChangeAt: snap.nextChangeAt ?? activeWindow.end,
+            prayerId: activeWindow.prayer.id.name,
           ),
         );
       }
@@ -1409,6 +1442,7 @@ class FocusController extends ChangeNotifier {
     required String reason,
     required DateTime? nextChangeAt,
     String? notificationHint,
+    String? prayerId,
   }) {
     return <String, dynamic>{
       'at': at.toIso8601String(),
@@ -1422,6 +1456,8 @@ class FocusController extends ChangeNotifier {
         'nextChangeAtMillis': nextAt.millisecondsSinceEpoch,
       // ignore: use_null_aware_elements
       if (notificationHint case final hint?) 'notificationHint': hint,
+      // ignore: use_null_aware_elements
+      if (prayerId case final pid?) 'prayerId': pid,
     };
   }
 

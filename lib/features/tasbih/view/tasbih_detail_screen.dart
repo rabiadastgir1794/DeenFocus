@@ -135,11 +135,40 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                     Text(
                       _item.label,
                       textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
+                    if (_item.transliteration.isNotEmpty) ...[
+                      SizedBox(height: 8.h),
+                      Text(
+                        _item.transliteration,
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    if (_item.meaning.isNotEmpty) ...[
+                      SizedBox(height: 6.h),
+                      Text(
+                        _item.meaning,
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                     Expanded(
                       child: Align(
                         alignment: const Alignment(-0.04, -0.45),

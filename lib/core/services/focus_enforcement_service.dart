@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../features/focus/model/focus_models.dart';
@@ -53,9 +52,10 @@ abstract class FocusEnforcementService {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
     try {
-      final savedDark = await StorageService.darkModeEnabled;
-      final appThemeIsDark = savedDark ??
-          (PlatformDispatcher.instance.platformBrightness == Brightness.dark);
+      // Shield UI must follow the in-app theme only. Do not infer from platform brightness here:
+      // that races ThemeService / storage and can set `focus_shield_app_theme_is_dark` true while
+      // the shield chrome is still light → near-white label text on a light surface.
+      final shieldUiIsDark = await StorageService.darkModeEnabled ?? false;
       await appendDebugLog(
         'flutter.sync',
         'selected=${settings.selectedApps.length} mode=${lockState.activeMode?.name} isLocked=${lockState.isLocked} nextChangeAt=${lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length}',
@@ -77,8 +77,12 @@ abstract class FocusEnforcementService {
         'lockReason': lockState.reason,
         'nextChangeAt': lockState.nextChangeAt?.toIso8601String(),
         'scheduledTransitions': scheduledTransitions,
-        'appThemeIsDark': appThemeIsDark,
       });
+      if (Platform.isIOS) {
+        await _channel.invokeMethod<void>('setFocusShieldTheme', <String, dynamic>{
+          'isDark': shieldUiIsDark,
+        });
+      }
     } on PlatformException {
       // Native enforcement is optional in this pass. UI/state remains functional.
     }

@@ -1143,13 +1143,13 @@ abstract class AppLocalizations {
   /// No description provided for @focusNotifNightModeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Night mode'**
+  /// **'Night Mode On'**
   String get focusNotifNightModeTitle;
 
   /// No description provided for @focusNotifGoodMorningTitle.
   ///
   /// In en, this message translates to:
-  /// **'Good Morning!'**
+  /// **'Good Morning'**
   String get focusNotifGoodMorningTitle;
 
   /// No description provided for @focusNotifAppsNowAvailableBody.
@@ -1163,6 +1163,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apps are locked during Salah.'**
   String get focusNotifSalahLockedBody;
+
+  /// No description provided for @focusNotifSalahCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah Complete'**
+  String get focusNotifSalahCompleteTitle;
+
+  /// No description provided for @focusNotifSalahCompleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are now unlocked. May your prayer be accepted.'**
+  String get focusNotifSalahCompleteBody;
+
+  /// No description provided for @focusNotifSalahPrayerTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayerName} Time'**
+  String focusNotifSalahPrayerTimeTitle(String prayerName);
+
+  /// No description provided for @focusNotifSalahPrayerMomentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a moment for {prayerName} prayer.'**
+  String focusNotifSalahPrayerMomentBody(String prayerName);
 
   /// No description provided for @focusNotifNightLockedBody.
   ///
@@ -1179,7 +1203,7 @@ abstract class AppLocalizations {
   /// No description provided for @focusNotifMorningUnlockBody.
   ///
   /// In en, this message translates to:
-  /// **'Apps are not available.'**
+  /// **'Good morning! Apps are now available.'**
   String get focusNotifMorningUnlockBody;
 
   /// No description provided for @widgetDailyVerseTitle.
@@ -1667,6 +1691,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for your location.'**
   String get nearbyMosquesWaitingForLocation;
+
+  /// No description provided for @nearbyMosquesCurrentLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current location'**
+  String get nearbyMosquesCurrentLocationLabel;
 
   /// No description provided for @nearbyMosquesAppearAfterLoad.
   ///

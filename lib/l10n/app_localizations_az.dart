@@ -562,6 +562,23 @@ class AppLocalizationsAz extends AppLocalizations {
   String get focusNotifSalahLockedBody => 'Namaz zamanı tətbiqlər kilidlənir.';
 
   @override
+  String get focusNotifSalahCompleteTitle => 'Salah Complete';
+
+  @override
+  String get focusNotifSalahCompleteBody =>
+      'Apps are now unlocked. May your prayer be accepted.';
+
+  @override
+  String focusNotifSalahPrayerTimeTitle(String prayerName) {
+    return '$prayerName Time';
+  }
+
+  @override
+  String focusNotifSalahPrayerMomentBody(String prayerName) {
+    return 'Take a moment for $prayerName prayer.';
+  }
+
+  @override
   String get focusNotifNightLockedBody =>
       'Gecə rejimi aktivdir. Zehninizə və bədənizə istirahət verin.';
 
@@ -833,6 +850,9 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get nearbyMosquesWaitingForLocation => 'Məkanınızı gözləyirik.';
+
+  @override
+  String get nearbyMosquesCurrentLocationLabel => 'Current location';
 
   @override
   String get nearbyMosquesAppearAfterLoad =>

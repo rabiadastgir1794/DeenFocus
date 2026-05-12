@@ -17,26 +17,24 @@ import '../../../../core/services/nearby_mosques_cache.dart';
 import '../../../../core/services/nearby_mosques_service.dart';
 import '../../../../core/services/permission_service.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../l10n/app_localizations.dart';
 
-class HomeNearbyMosquesScreen extends StatefulWidget {
-  const HomeNearbyMosquesScreen({
-    super.key,
-    this.initialLatitude,
-    this.initialLongitude,
-    this.initialLocationName,
-  });
+/// Thrown after prompting the user to open Settings; [AppLifecycleState.resumed] triggers a reload.
+class _PendingLocationResume implements Exception {
+  const _PendingLocationResume();
+}
 
-  final double? initialLatitude;
-  final double? initialLongitude;
-  final String? initialLocationName;
+class HomeNearbyMosquesScreen extends StatefulWidget {
+  const HomeNearbyMosquesScreen({super.key});
 
   @override
   State<HomeNearbyMosquesScreen> createState() =>
       _HomeNearbyMosquesScreenState();
 }
 
-class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
+class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
+    with WidgetsBindingObserver {
   final NearbyMosquesService _service = NearbyMosquesService();
   static const double _searchRadiusMeters = 5000;
 
@@ -48,14 +46,27 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
   double? _latitude;
   double? _longitude;
   List<NearbyMosque> _mosques = const <NearbyMosque>[];
+  bool _pendingResumeReload = false;
 
   @override
   void initState() {
     super.initState();
-    _locationName = widget.initialLocationName;
-    _latitude = widget.initialLatitude;
-    _longitude = widget.initialLongitude;
-    _load();
+    WidgetsBinding.instance.addObserver(this);
+    unawaited(_load());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _pendingResumeReload) {
+      _pendingResumeReload = false;
+      unawaited(_load(forceRefresh: true));
+    }
   }
 
   Future<void> _load({bool forceRefresh = false}) async {
@@ -113,6 +124,16 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
         _errorMessage = null;
       });
     } catch (error, stackTrace) {
+      if (error is _PendingLocationResume) {
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+          _errorMessage = null;
+          _errorSuggestOpenSettings = false;
+          _mosques = const <NearbyMosque>[];
+        });
+        return;
+      }
       if (kDebugMode) {
         debugPrint('Nearby mosques load failed: $error');
         debugPrint('$stackTrace');
@@ -151,17 +172,56 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
   }
 
   Future<void> _ensureLocation() async {
-    if (_latitude != null && _longitude != null) return;
     final l10n = AppLocalizations.of(context)!;
 
-    final status = await PermissionService.requestLocationStatus();
-    if (status != PermissionStatus.granted) {
-      throw NearbyMosquesException(
-        l10n.nearbyMosquesPermissionOff,
+    final permStatus = await PermissionService.requestLocationStatus();
+    if (!permStatus.isGranted) {
+      if (!mounted) return;
+      var openedSettings = false;
+      await AppPermissionDialog.show(
+        context,
+        title: l10n.locationRequired,
+        message: l10n.nearbyMosquesPermissionOff,
+        primaryButtonText: l10n.openSettings,
+        secondaryButtonText: l10n.cancel,
+        onPrimaryTap: () {
+          openedSettings = true;
+          _pendingResumeReload = true;
+          unawaited(PermissionService.openLocationSettings());
+        },
+        onSecondaryTap: () {},
       );
+      if (!mounted) return;
+      if (openedSettings) {
+        throw const _PendingLocationResume();
+      }
+      throw NearbyMosquesException(l10n.nearbyMosquesPermissionOff);
     }
 
-    final location = await LocationService.fetchCurrentCity();
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      if (!mounted) return;
+      var openedSettings = false;
+      await AppPermissionDialog.show(
+        context,
+        title: l10n.locationRequired,
+        message: l10n.nearbyMosquesLocationTurnedOff,
+        primaryButtonText: l10n.openSettings,
+        secondaryButtonText: l10n.cancel,
+        onPrimaryTap: () {
+          openedSettings = true;
+          _pendingResumeReload = true;
+          unawaited(Geolocator.openLocationSettings());
+        },
+        onSecondaryTap: () {},
+      );
+      if (!mounted) return;
+      if (openedSettings) {
+        throw const _PendingLocationResume();
+      }
+      throw NearbyMosquesException(l10n.nearbyMosquesLocationTurnedOff);
+    }
+
+    final location = await LocationService.fetchCurrentCoordinates();
     if (location == null ||
         location.latitude == null ||
         location.longitude == null) {
@@ -172,7 +232,22 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen> {
 
     _latitude = location.latitude;
     _longitude = location.longitude;
-    _locationName = location.title;
+    _locationName = _formatLocationLabel(location, l10n);
+  }
+
+  String _formatLocationLabel(
+    LocationSuggestion location,
+    AppLocalizations l10n,
+  ) {
+    final title = location.title.trim();
+    final sub = location.subtitle.trim();
+    if (title.isEmpty) {
+      return l10n.nearbyMosquesCurrentLocationLabel;
+    }
+    if (sub.isEmpty) {
+      return title;
+    }
+    return '$title, $sub';
   }
 
   @override

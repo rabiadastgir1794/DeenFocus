@@ -45,7 +45,7 @@ private enum FocusShieldDebugLogger {
 private enum FocusShieldSharedState {
   static let appGroupId = "group.com.rnr.deenfocus"
   static let activeModeKey = "focus_shield_active_mode"
-  /// Written by the main app via app-group UserDefaults (same key as the Runner target).
+  /// Same key as `FocusShieldThemeUserDefaults.appThemeIsDarkKey` / `FocusDeviceActivityScheduler.shieldAppThemeIsDarkKey`.
   static let appThemeIsDarkKey = "focus_shield_app_theme_is_dark"
 }
 
@@ -112,14 +112,15 @@ private enum FocusShieldMode: String {
   }
 
   var primaryButton: String {
+    // U+202F narrow no-break space keeps labels on one line in Shield buttons.
+    let nb = "\u{202f}"
     switch self {
     case .salah:
-      return "Start My Salah"
+      return "Start\(nb)My\(nb)Salah"
     case .child:
-      // Narrow no-break spaces help the system shield button stay on one line on smaller widths.
-      return "Continue\u{00a0}in\u{00a0}Safe\u{00a0}Mode"
+      return "Continue\(nb)in\(nb)Safe\(nb)Mode"
     case .nightDiscipline:
-      return "Good Night"
+      return "Good\(nb)Night"
     }
   }
 }
@@ -212,35 +213,32 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
   }
 
   private func themePalette() -> ThemePalette {
-    // Prefer the in-app theme (Settings) over system appearance. `backgroundBlurStyle` blurs the
-    // blocked app and reads as grey; use a solid scaffold color matching Flutter AppColors.background*.
-    let storedIsDark = sharedDefaults?.object(forKey: FocusShieldSharedState.appThemeIsDarkKey) as? Bool
-    let screenStyle = UIScreen.main.traitCollection.userInterfaceStyle
-    let currentStyle = screenStyle == .unspecified
-      ? UITraitCollection.current.userInterfaceStyle
-      : screenStyle
-    let systemIsDark = currentStyle != .light
-    let isDarkMode = storedIsDark ?? systemIsDark
-
-    if isDarkMode {
-      // Stronger contrast on the dark scaffold — Shield labels can render slightly washed out otherwise.
+    // Use explicit sRGB colors (not dynamic `UIColor.label`) so ManagedSettingsUI cannot pick
+    // mismatched semantic colors for the shield chrome. Theme comes from app-group prefs written
+    // by the main app (`setFocusShieldTheme`); missing key defaults to light.
+    let isDark = sharedDefaults?.bool(forKey: FocusShieldSharedState.appThemeIsDarkKey) ?? false
+    let accent = UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0)  // #4E9A7C
+    let white = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+    if isDark {
+      let surface = UIColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 1.0)
       return ThemePalette(
         blurStyle: nil,
-        backgroundColor: UIColor(red: 0.067, green: 0.106, blue: 0.078, alpha: 1.0),  // #111B14
-        titleColor: UIColor(red: 0.96, green: 0.97, blue: 0.95, alpha: 1.0),
-        subtitleColor: UIColor(red: 0.90, green: 0.91, blue: 0.88, alpha: 1.0),
-        buttonBackgroundColor: UIColor(red: 0.557, green: 0.831, blue: 0.706, alpha: 1.0),  // #8ED4B4
-        buttonTextColor: UIColor(red: 0.06, green: 0.14, blue: 0.11, alpha: 1.0)
+        backgroundColor: surface,
+        titleColor: white,
+        subtitleColor: white,
+        buttonBackgroundColor: accent,
+        buttonTextColor: white
       )
     }
-
+    let cream = UIColor(red: 0.969, green: 0.961, blue: 0.941, alpha: 1.0)  // #F7F5F0
+    let ink = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
     return ThemePalette(
       blurStyle: nil,
-      backgroundColor: UIColor(red: 0.969, green: 0.961, blue: 0.941, alpha: 1.0),  // #F7F5F0
-      titleColor: UIColor(red: 0.110, green: 0.239, blue: 0.180, alpha: 1.0),  // #1C2E24
-      subtitleColor: UIColor(red: 0.290, green: 0.271, blue: 0.224, alpha: 1.0),  // #4A4539
-      buttonBackgroundColor: UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0),  // #4E9A7C
-      buttonTextColor: .white
+      backgroundColor: cream,
+      titleColor: ink,
+      subtitleColor: ink,
+      buttonBackgroundColor: accent,
+      buttonTextColor: white
     )
   }
 }

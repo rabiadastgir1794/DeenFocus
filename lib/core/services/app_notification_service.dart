@@ -61,6 +61,8 @@ class AppNotificationService {
   Future<void> _focusSyncSerial = Future<void>.value();
   String? _lastPrayerScheduleSignature;
   String? _lastFocusScheduleSignature;
+  bool _hadIosFocusNotificationPendingCapSkip = false;
+  bool _iosFocusNotificationsRetryPending = false;
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -118,9 +120,15 @@ class AppNotificationService {
   static const int _prayerNotificationIdStart = 1000;
   static const int _prayerNotificationIdEnd = 1199;
 
+  /// iOS allows at most 64 pending local notifications per app; leave headroom
+  /// so focus transition alerts are not silently dropped after prayer reminders.
+  static const int _iosMaxPendingLocalNotifications = 62;
+
   Future<void> reschedulePrayerNotifications({
     required double latitude,
     required double longitude,
+    bool forceReschedule = false,
+    int? daysAheadOverride,
   }) async {
     final run = _prayerSyncSerial.then((_) async {
       final isSpanish = await _isSpanishLocale();
@@ -134,7 +142,14 @@ class AppNotificationService {
       await _setLocalTimezone();
 
       final now = DateTime.now();
-      const daysAhead = 7;
+      final int daysAhead;
+      if (daysAheadOverride != null) {
+        daysAhead = daysAheadOverride.clamp(1, 7);
+      } else {
+        // iOS: keep the prayer batch smaller so Salah/Night focus alerts still fit
+        // under the 64 pending-notification system limit alongside this batch.
+        daysAhead = Platform.isIOS ? 4 : 7;
+      }
       final datasets = <({int dayOffset, HomePrayerTimesData data})>[
         for (var d = 0; d < daysAhead; d++)
           (
@@ -156,7 +171,7 @@ class AppNotificationService {
         longitude: longitude,
         datasets: datasets,
       );
-      if (_lastPrayerScheduleSignature == signature) {
+      if (_lastPrayerScheduleSignature == signature && !forceReschedule) {
         await FocusEnforcementService.appendDebugLog(
           'notifications.prayer.sync',
           'skipped reschedule because signature is unchanged',
@@ -169,8 +184,7 @@ class AppNotificationService {
       // focus notifications would vanish whenever we reschedule (resume, refresh).
       await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
 
-      // Schedule a full week — many devices batch or drop inexact alarms; using
-      // stable IDs keeps replacements deterministic across refreshes.
+      // Schedule up to [daysAhead] days — stable IDs keep replacements deterministic.
       for (final dataset in datasets) {
         for (final slot in dataset.data.slots.where(
           (slot) => slot.id != HomePrayerId.sunrise,
@@ -212,6 +226,7 @@ class AppNotificationService {
       await initialize();
       if (!await _hasNotificationPermission()) {
         _lastFocusScheduleSignature = null;
+        _iosFocusNotificationsRetryPending = false;
         await _cancelRange(2000, 2059);
         await _cancelRange(
           _salahLockNotificationIdStart,
@@ -233,7 +248,8 @@ class AppNotificationService {
         includeUnlockNotifications: includeUnlockNotifications,
         scheduledTransitions: scheduledTransitions,
       );
-      if (_lastFocusScheduleSignature == signature) {
+      if (_lastFocusScheduleSignature == signature &&
+          !_iosFocusNotificationsRetryPending) {
         await FocusEnforcementService.appendDebugLog(
           'notifications.focus.sync',
           'skipped reschedule because signature is unchanged',
@@ -258,6 +274,15 @@ class AppNotificationService {
         includeUnlockNotifications: includeUnlockNotifications,
       );
 
+      if (_hadIosFocusNotificationPendingCapSkip) {
+        _iosFocusNotificationsRetryPending = true;
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.focus.sync',
+          'iOS pending-notification cap hit; will retry on next focus sync',
+        );
+      } else {
+        _iosFocusNotificationsRetryPending = false;
+      }
       _lastFocusScheduleSignature = signature;
     });
     _focusSyncSerial = run.catchError((Object _) {});
@@ -268,15 +293,30 @@ class AppNotificationService {
     required List<Map<String, dynamic>> scheduledTransitions,
     required bool includeUnlockNotifications,
   }) async {
+    _hadIosFocusNotificationPendingCapSkip = false;
     final l10n = await _focusNotificationsLocalizations();
     final transitions = scheduledTransitions
         .where((transition) {
           final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
           if (atMillis <= DateTime.now().millisecondsSinceEpoch) return false;
           final isLocked = transition['isLocked'] as bool? ?? false;
+          if (!isLocked && !includeUnlockNotifications) return false;
+          // iOS: Salah uses home temporary unlock only — no notification at
+          // scheduled prayer-window end (night unlock / morning stays).
+          if (Platform.isIOS &&
+              !isLocked &&
+              (transition['activeMode'] as String?) ==
+                  FocusModeType.salah.name) {
+            return false;
+          }
           return isLocked || includeUnlockNotifications;
         })
-        .toList(growable: false);
+        .toList(growable: false)
+      ..sort((a, b) {
+        final am = (a['atMillis'] as num?)?.toInt() ?? 0;
+        final bm = (b['atMillis'] as num?)?.toInt() ?? 0;
+        return am.compareTo(bm);
+      });
 
     var lockId = _salahLockNotificationIdStart;
     var unlockId = _salahUnlockNotificationIdStart;
@@ -286,24 +326,28 @@ class AppNotificationService {
       final isLocked = transition['isLocked'] as bool? ?? false;
       final mode = transition['activeMode'] as String?;
       final hint = transition['notificationHint'] as String?;
+      final prayerId = transition['prayerId'] as String?;
       final at = DateTime.fromMillisecondsSinceEpoch(atMillis);
       final id = isLocked ? lockId++ : unlockId++;
       final title = _focusTransitionTitle(
         isLocked: isLocked,
+        mode: mode,
         notificationHint: hint,
+        prayerId: prayerId,
         l10n: l10n,
       );
       final body = _focusTransitionBody(
         isLocked: isLocked,
         mode: mode,
         notificationHint: hint,
+        prayerId: prayerId,
         l10n: l10n,
       );
       await FocusEnforcementService.appendDebugLog(
         'notifications.focusTransition.schedule',
-        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode hint=$hint',
+        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode hint=$hint prayerId=$prayerId',
       );
-      await _scheduleIfFuture(
+      final scheduled = await _scheduleIfFuture(
         id: id,
         when: at,
         title: title,
@@ -311,6 +355,11 @@ class AppNotificationService {
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
+      if (Platform.isIOS &&
+          !scheduled &&
+          at.isAfter(DateTime.now())) {
+        _hadIosFocusNotificationPendingCapSkip = true;
+      }
     }
   }
 
@@ -331,7 +380,9 @@ class AppNotificationService {
 
   String _focusTransitionTitle({
     required bool isLocked,
+    required String? mode,
     required String? notificationHint,
+    required String? prayerId,
     required AppLocalizations l10n,
   }) {
     if (notificationHint == 'nightLock') {
@@ -339,6 +390,18 @@ class AppNotificationService {
     }
     if (notificationHint == 'nightMorning') {
       return l10n.focusNotifGoodMorningTitle;
+    }
+    if (!isLocked && mode == FocusModeType.salah.name) {
+      return l10n.focusNotifSalahCompleteTitle;
+    }
+    if (isLocked &&
+        mode == FocusModeType.salah.name &&
+        prayerId != null &&
+        prayerId.isNotEmpty) {
+      final name = _localizedPrayerNameForFocus(prayerId, l10n);
+      if (name != null) {
+        return l10n.focusNotifSalahPrayerTimeTitle(name);
+      }
     }
     if (isLocked) return l10n.focusNotifAppsLockedTitle;
     return l10n.focusNotifAppsUnlockedTitle;
@@ -348,6 +411,7 @@ class AppNotificationService {
     required bool isLocked,
     required String? mode,
     required String? notificationHint,
+    required String? prayerId,
     required AppLocalizations l10n,
   }) {
     if (notificationHint == 'nightLock') {
@@ -356,14 +420,51 @@ class AppNotificationService {
     if (notificationHint == 'nightMorning') {
       return l10n.focusNotifMorningUnlockBody;
     }
+    if (!isLocked && mode == FocusModeType.salah.name) {
+      return l10n.focusNotifSalahCompleteBody;
+    }
     if (!isLocked) return l10n.focusNotifAppsNowAvailableBody;
     if (mode == FocusModeType.salah.name) {
+      final name = _localizedPrayerNameForFocus(prayerId, l10n);
+      if (name != null) {
+        return l10n.focusNotifSalahPrayerMomentBody(name);
+      }
       return l10n.focusNotifSalahLockedBody;
     }
     if (mode == FocusModeType.nightDiscipline.name) {
       return l10n.focusNotifNightLockedBody;
     }
     return l10n.focusNotifGenericLockedBody;
+  }
+
+  String? _localizedPrayerNameForFocus(
+    String? prayerId,
+    AppLocalizations l10n,
+  ) {
+    final id = _homePrayerIdFromString(prayerId);
+    if (id == null) return null;
+    switch (id) {
+      case HomePrayerId.fajr:
+        return l10n.homePrayerFajr;
+      case HomePrayerId.sunrise:
+        return l10n.homePrayerSunrise;
+      case HomePrayerId.dhuhr:
+        return l10n.homePrayerDhuhr;
+      case HomePrayerId.asr:
+        return l10n.homePrayerAsr;
+      case HomePrayerId.maghrib:
+        return l10n.homePrayerMaghrib;
+      case HomePrayerId.isha:
+        return l10n.homePrayerIsha;
+    }
+  }
+
+  HomePrayerId? _homePrayerIdFromString(String? raw) {
+    if (raw == null || raw.isEmpty) return null;
+    for (final id in HomePrayerId.values) {
+      if (id.name == raw) return id;
+    }
+    return null;
   }
 
   NotificationDetails get _nightTransitionNotificationDetails =>
@@ -400,7 +501,7 @@ class AppNotificationService {
         macOS: _darwinPrayerDetails,
       );
 
-  Future<void> _scheduleIfFuture({
+  Future<bool> _scheduleIfFuture({
     required int id,
     required DateTime when,
     required String title,
@@ -418,7 +519,18 @@ class AppNotificationService {
         'notifications.skip',
         'id=$id title=$safeTitle scheduledAt=${scheduledAt.toIso8601String()} reason=past',
       );
-      return;
+      return false;
+    }
+
+    if (Platform.isIOS) {
+      final pending = await _plugin.pendingNotificationRequests();
+      if (pending.length >= _iosMaxPendingLocalNotifications) {
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.skip',
+          'id=$id title=$safeTitle reason=ios_pending_cap pending=${pending.length}',
+        );
+        return false;
+      }
     }
 
     await FocusEnforcementService.appendDebugLog(
@@ -480,6 +592,7 @@ class AppNotificationService {
             UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
+    return true;
   }
 
   /// Exact alarms while idle require [Permission.scheduleExactAlarm] on many
@@ -647,7 +760,8 @@ class AppNotificationService {
       final isLocked = transition['isLocked'] as bool? ?? false;
       final mode = transition['activeMode'] as String? ?? '';
       final hint = transition['notificationHint'] as String? ?? '';
-      parts.add('transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint');
+      final prayerId = transition['prayerId'] as String? ?? '';
+      parts.add('transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId');
     }
 
     return parts.join('|');

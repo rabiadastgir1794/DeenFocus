@@ -386,15 +386,23 @@ private enum ManagedSettingsStoreHolder {
   }
 
   private func setFocusShieldTheme(call: FlutterMethodCall, result: @escaping FlutterResult) {
-    guard
-      let args = call.arguments as? [String: Any],
-      let isDark = args["isDark"] as? Bool
-    else {
-      result(nil)
+    guard let args = call.arguments as? [String: Any] else {
+      result(FlutterError(code: "BAD_ARGS", message: "Missing arguments", details: nil))
+      return
+    }
+    let isDark: Bool
+    switch args["isDark"] {
+    case let b as Bool:
+      isDark = b
+    case let n as NSNumber:
+      isDark = n.boolValue
+    default:
+      result(FlutterError(code: "BAD_IS_DARK", message: "isDark must be bool", details: nil))
       return
     }
     let sharedDefaults = UserDefaults(suiteName: FocusShieldThemeUserDefaults.suiteName)
     sharedDefaults?.set(isDark, forKey: FocusShieldThemeUserDefaults.appThemeIsDarkKey)
+    sharedDefaults?.synchronize()
     result(nil)
   }
 
@@ -410,9 +418,6 @@ private enum ManagedSettingsStoreHolder {
     }
 
     let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
-    if let appThemeIsDark = args["appThemeIsDark"] as? Bool {
-      sharedDefaults?.set(appThemeIsDark, forKey: FocusDeviceActivityScheduler.shieldAppThemeIsDarkKey)
-    }
 
     let isLocked = args["isLocked"] as? Bool ?? false
     let activeMode = args["activeMode"] as? String

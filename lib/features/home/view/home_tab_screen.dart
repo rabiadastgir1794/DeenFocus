@@ -221,6 +221,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               backgroundColor: softCardColor,
               monthTitle: currentMonth,
               visibleMonth: vm.visibleMonth,
+              weeklyWeekStart: vm.weeklyVisibleWeekStart,
               isLoading: vm.isEventsLoading,
               weekly: vm.weeklyCalendar,
               monthEvents: vm.monthEvents,
@@ -364,11 +365,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     if (!context.mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => HomeNearbyMosquesScreen(
-          initialLatitude: vm.latitude,
-          initialLongitude: vm.longitude,
-          initialLocationName: vm.locationName,
-        ),
+        builder: (_) => const HomeNearbyMosquesScreen(),
       ),
     );
   }

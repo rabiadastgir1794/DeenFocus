@@ -541,16 +541,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focusNotifAppsUnlockedTitle => 'Apps Unlocked';
 
   @override
-  String get focusNotifNightModeTitle => 'Night mode';
+  String get focusNotifNightModeTitle => 'Night Mode On';
 
   @override
-  String get focusNotifGoodMorningTitle => 'Good Morning!';
+  String get focusNotifGoodMorningTitle => 'Good Morning';
 
   @override
   String get focusNotifAppsNowAvailableBody => 'Apps are now available.';
 
   @override
   String get focusNotifSalahLockedBody => 'Apps are locked during Salah.';
+
+  @override
+  String get focusNotifSalahCompleteTitle => 'Salah Complete';
+
+  @override
+  String get focusNotifSalahCompleteBody =>
+      'Apps are now unlocked. May your prayer be accepted.';
+
+  @override
+  String focusNotifSalahPrayerTimeTitle(String prayerName) {
+    return '$prayerName Time';
+  }
+
+  @override
+  String focusNotifSalahPrayerMomentBody(String prayerName) {
+    return 'Take a moment for $prayerName prayer.';
+  }
 
   @override
   String get focusNotifNightLockedBody =>
@@ -560,7 +577,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focusNotifGenericLockedBody => 'Selected apps are locked.';
 
   @override
-  String get focusNotifMorningUnlockBody => 'Apps are not available.';
+  String get focusNotifMorningUnlockBody =>
+      'Good morning! Apps are now available.';
 
   @override
   String get widgetDailyVerseTitle => 'Daily Verse';
@@ -821,6 +839,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nearbyMosquesWaitingForLocation => 'Waiting for your location.';
+
+  @override
+  String get nearbyMosquesCurrentLocationLabel => 'Current location';
 
   @override
   String get nearbyMosquesAppearAfterLoad =>

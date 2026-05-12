@@ -38,7 +38,15 @@ class HomeTabViewModel extends ChangeNotifier {
   bool _initialized = false;
   String? _lastAppliedSect;
 
-  DateTime visibleMonth = DateTime.now();
+  DateTime visibleMonth = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    1,
+  );
+  /// First day (Sunday) of the row shown in weekly calendar mode; advances by ±7 days.
+  DateTime weeklyVisibleWeekStart = HomeTabViewModel._startOfWeekFor(
+    DateTime.now(),
+  );
   DateTime? selectedDate;
   bool weeklyCalendar = true;
   int streakDays = 0;
@@ -249,7 +257,7 @@ class HomeTabViewModel extends ChangeNotifier {
       allIslamicEvents,
     );
     final weekAnchorDay = weeklyCalendar
-        ? DateTime(visibleMonth.year, visibleMonth.month, 1)
+        ? weeklyVisibleWeekStart
         : DateTime.now();
     weekEvents = HomeIslamicEventsHelper.eventsForWeek(
       weekAnchorDay,
@@ -259,22 +267,64 @@ class HomeTabViewModel extends ChangeNotifier {
 
   void setWeeklyCalendar(bool value) {
     weeklyCalendar = value;
+    if (value) {
+      final now = DateTime.now();
+      final viewingThisMonth =
+          visibleMonth.year == now.year && visibleMonth.month == now.month;
+      weeklyVisibleWeekStart = _startOfWeekFor(
+        viewingThisMonth
+            ? DateTime(now.year, now.month, now.day)
+            : DateTime(visibleMonth.year, visibleMonth.month, 1),
+      );
+      visibleMonth = DateTime(
+        weeklyVisibleWeekStart.year,
+        weeklyVisibleWeekStart.month,
+        1,
+      );
+    }
     _refreshVisibleEvents();
     notifyListeners();
   }
 
   void goToNextMonth() {
-    visibleMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 1);
+    if (weeklyCalendar) {
+      weeklyVisibleWeekStart =
+          weeklyVisibleWeekStart.add(const Duration(days: 7));
+      visibleMonth = DateTime(
+        weeklyVisibleWeekStart.year,
+        weeklyVisibleWeekStart.month,
+        1,
+      );
+    } else {
+      visibleMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 1);
+      weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
+    }
     selectedDate = null;
     _refreshVisibleEvents();
     notifyListeners();
   }
 
   void goToPreviousMonth() {
-    visibleMonth = DateTime(visibleMonth.year, visibleMonth.month - 1, 1);
+    if (weeklyCalendar) {
+      weeklyVisibleWeekStart =
+          weeklyVisibleWeekStart.subtract(const Duration(days: 7));
+      visibleMonth = DateTime(
+        weeklyVisibleWeekStart.year,
+        weeklyVisibleWeekStart.month,
+        1,
+      );
+    } else {
+      visibleMonth = DateTime(visibleMonth.year, visibleMonth.month - 1, 1);
+      weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
+    }
     selectedDate = null;
     _refreshVisibleEvents();
     notifyListeners();
+  }
+
+  static DateTime _startOfWeekFor(DateTime date) {
+    final d = DateTime(date.year, date.month, date.day);
+    return d.subtract(Duration(days: d.weekday % 7));
   }
 
   void selectDate(DateTime? date) {
