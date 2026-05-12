@@ -45,8 +45,6 @@ private enum FocusShieldDebugLogger {
 private enum FocusShieldSharedState {
   static let appGroupId = "group.com.rnr.deenfocus"
   static let activeModeKey = "focus_shield_active_mode"
-  /// Same key as `FocusShieldThemeUserDefaults.appThemeIsDarkKey` / `FocusDeviceActivityScheduler.shieldAppThemeIsDarkKey`.
-  static let appThemeIsDarkKey = "focus_shield_app_theme_is_dark"
 }
 
 private enum FocusShieldMode: String {
@@ -189,7 +187,12 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
   private func makeConfiguration() -> ShieldConfiguration {
     let modeRawValue = sharedDefaults?.string(forKey: FocusShieldSharedState.activeModeKey)
     let mode = FocusShieldMode(rawMode: modeRawValue)
-    let palette = themePalette()
+    sharedDefaults?.synchronize()
+    // Extension callbacks often run with an `.unspecified` trait; use the screen's traits so
+    // light appearance is not mistaken for dark (which produced an always-dark shield).
+    let palette = UITraitCollection.performAsCurrent(UIScreen.main.traitCollection) {
+      self.themePalette()
+    }
 
     return ShieldConfiguration(
       backgroundBlurStyle: palette.blurStyle,
@@ -212,31 +215,41 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
     )
   }
 
+  private func resolvedInterfaceStyle() -> UIUserInterfaceStyle {
+    let fromCurrent = UITraitCollection.current.userInterfaceStyle
+    if fromCurrent != .unspecified {
+      return fromCurrent
+    }
+    let fromScreen = UIScreen.main.traitCollection.userInterfaceStyle
+    if fromScreen != .unspecified {
+      return fromScreen
+    }
+    return .light
+  }
+
   private func themePalette() -> ThemePalette {
-    // Use explicit sRGB colors (not dynamic `UIColor.label`) so ManagedSettingsUI cannot pick
-    // mismatched semantic colors for the shield chrome. Theme comes from app-group prefs written
-    // by the main app (`setFocusShieldTheme`); missing key defaults to light.
-    let isDark = sharedDefaults?.bool(forKey: FocusShieldSharedState.appThemeIsDarkKey) ?? false
+    let isDark = resolvedInterfaceStyle() == .dark
     let accent = UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0)  // #4E9A7C
     let white = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
     if isDark {
       let surface = UIColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 1.0)
       return ThemePalette(
-        blurStyle: nil,
+        blurStyle: .systemChromeMaterialDark,
         backgroundColor: surface,
         titleColor: white,
-        subtitleColor: white,
+        subtitleColor: UIColor(white: 1.0, alpha: 0.92),
         buttonBackgroundColor: accent,
         buttonTextColor: white
       )
     }
     let cream = UIColor(red: 0.969, green: 0.961, blue: 0.941, alpha: 1.0)  // #F7F5F0
-    let ink = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+    let titleDark = UIColor(red: 28 / 255, green: 46 / 255, blue: 36 / 255, alpha: 1.0)  // onSurface light
+    let subtitleDark = UIColor(red: 74 / 255, green: 69 / 255, blue: 57 / 255, alpha: 1.0)  // onSurfaceVariant light
     return ThemePalette(
-      blurStyle: nil,
+      blurStyle: .systemChromeMaterialLight,
       backgroundColor: cream,
-      titleColor: ink,
-      subtitleColor: ink,
+      titleColor: titleDark,
+      subtitleColor: subtitleDark,
       buttonBackgroundColor: accent,
       buttonTextColor: white
     )

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -31,10 +30,8 @@ class ThemeService extends ChangeNotifier {
     notifyListeners();
     await WidgetSyncService.instance.syncTimeline();
     if (Platform.isIOS) {
-      unawaited(
-        FocusEnforcementService.persistIosShieldTheme(
-          isDark: _themeMode == ThemeMode.dark,
-        ),
+      await FocusEnforcementService.persistIosShieldTheme(
+        isDark: _themeMode == ThemeMode.dark,
       );
     }
   }
@@ -47,7 +44,7 @@ class ThemeService extends ChangeNotifier {
     await StorageService.setDarkModeEnabled(value);
     await WidgetSyncService.instance.syncTimeline();
     if (Platform.isIOS) {
-      unawaited(FocusEnforcementService.persistIosShieldTheme(isDark: value));
+      await FocusEnforcementService.persistIosShieldTheme(isDark: value);
     }
   }
 }

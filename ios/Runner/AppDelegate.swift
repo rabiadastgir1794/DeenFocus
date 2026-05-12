@@ -1,3 +1,4 @@
+import CoreFoundation
 import Flutter
 import UIKit
 import SwiftUI
@@ -385,6 +386,26 @@ private enum ManagedSettingsStoreHolder {
     }
   }
 
+  /// Resolves in-app dark mode for the Managed Settings shield (same key the extension reads).
+  private static func resolveShieldThemeIsDark(from args: [String: Any]) -> Bool {
+    switch args["shieldThemeIsDark"] {
+    case let b as Bool:
+      return b
+    case let n as NSNumber:
+      return n.boolValue
+    default:
+      let defaults = UserDefaults(suiteName: FocusShieldThemeUserDefaults.suiteName)
+      return defaults?.bool(forKey: FocusShieldThemeUserDefaults.appThemeIsDarkKey) ?? false
+    }
+  }
+
+  private static func writeShieldThemeToAppGroup(isDark: Bool) {
+    let defaults = UserDefaults(suiteName: FocusShieldThemeUserDefaults.suiteName)
+    defaults?.set(isDark, forKey: FocusShieldThemeUserDefaults.appThemeIsDarkKey)
+    defaults?.synchronize()
+    CFPreferencesAppSynchronize(FocusShieldThemeUserDefaults.suiteName as CFString)
+  }
+
   private func setFocusShieldTheme(call: FlutterMethodCall, result: @escaping FlutterResult) {
     guard let args = call.arguments as? [String: Any] else {
       result(FlutterError(code: "BAD_ARGS", message: "Missing arguments", details: nil))
@@ -400,9 +421,7 @@ private enum ManagedSettingsStoreHolder {
       result(FlutterError(code: "BAD_IS_DARK", message: "isDark must be bool", details: nil))
       return
     }
-    let sharedDefaults = UserDefaults(suiteName: FocusShieldThemeUserDefaults.suiteName)
-    sharedDefaults?.set(isDark, forKey: FocusShieldThemeUserDefaults.appThemeIsDarkKey)
-    sharedDefaults?.synchronize()
+    Self.writeShieldThemeToAppGroup(isDark: isDark)
     result(nil)
   }
 
@@ -416,6 +435,9 @@ private enum ManagedSettingsStoreHolder {
       result(nil)
       return
     }
+
+    let shieldThemeIsDark = Self.resolveShieldThemeIsDark(from: args)
+    Self.writeShieldThemeToAppGroup(isDark: shieldThemeIsDark)
 
     let sharedDefaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
 

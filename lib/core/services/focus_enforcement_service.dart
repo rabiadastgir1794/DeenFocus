@@ -52,9 +52,9 @@ abstract class FocusEnforcementService {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
     try {
-      // Shield UI must follow the in-app theme only. Do not infer from platform brightness here:
-      // that races ThemeService / storage and can set `focus_shield_app_theme_is_dark` true while
-      // the shield chrome is still light → near-white label text on a light surface.
+      // Shield UI must follow the in-app theme only. Do not infer from platform brightness here.
+      // `shieldThemeIsDark` is applied inside native `syncFocusState` (before any early return) so
+      // the shield extension never reads a stale app-group flag when the app is in light mode.
       final shieldUiIsDark = await StorageService.darkModeEnabled ?? false;
       await appendDebugLog(
         'flutter.sync',
@@ -77,6 +77,9 @@ abstract class FocusEnforcementService {
         'lockReason': lockState.reason,
         'nextChangeAt': lockState.nextChangeAt?.toIso8601String(),
         'scheduledTransitions': scheduledTransitions,
+        // iOS: applied inside `syncFocusState` before any early return so the shield extension
+        // never reads a stale `focus_shield_app_theme_is_dark` while the app is in light mode.
+        'shieldThemeIsDark': shieldUiIsDark,
       });
       if (Platform.isIOS) {
         await _channel.invokeMethod<void>('setFocusShieldTheme', <String, dynamic>{
