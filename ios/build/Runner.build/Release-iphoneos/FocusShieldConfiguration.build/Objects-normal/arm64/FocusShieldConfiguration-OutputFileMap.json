@@ -1,0 +1,16 @@
+{
+  "" : {
+    "const-values" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary.swiftconstvalues",
+    "dependencies" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary.d",
+    "diagnostics" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary.dia",
+    "emit-module-dependencies" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary-emit-module.dia",
+    "pch" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfiguration-primary.swiftdeps"
+  },
+  "/Users/umarsaleem/Projects/Projects/deenly/ios/FocusShieldConfiguration/FocusShieldConfigurationExtension.swift" : {
+    "index-unit-output-path" : "/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfigurationExtension.o",
+    "llvm-bc" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfigurationExtension.bc",
+    "object" : "/Users/umarsaleem/Projects/Projects/deenly/ios/build/Runner.build/Release-iphoneos/FocusShieldConfiguration.build/Objects-normal/arm64/FocusShieldConfigurationExtension.o"
+  }
+}

@@ -110,8 +110,8 @@ private enum FocusShieldMode: String {
   }
 
   var primaryButton: String {
-    // U+202F narrow no-break space keeps labels on one line in Shield buttons.
-    let nb = "\u{202f}"
+    // Shield buttons size from their label, so keep each mode's label unbreakable.
+    let nb = "\u{00a0}"
     switch self {
     case .salah:
       return "Start\(nb)My\(nb)Salah"
@@ -129,7 +129,6 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
   private static let shieldLogMinInterval: TimeInterval = 2.0
 
   private struct ThemePalette {
-    let blurStyle: UIBlurEffect.Style?
     let backgroundColor: UIColor
     let titleColor: UIColor
     let subtitleColor: UIColor
@@ -188,14 +187,10 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
     let modeRawValue = sharedDefaults?.string(forKey: FocusShieldSharedState.activeModeKey)
     let mode = FocusShieldMode(rawMode: modeRawValue)
     sharedDefaults?.synchronize()
-    // Extension callbacks often run with an `.unspecified` trait; use the screen's traits so
-    // light appearance is not mistaken for dark (which produced an always-dark shield).
-    let palette = UITraitCollection.performAsCurrent(UIScreen.main.traitCollection) {
-      self.themePalette()
-    }
+    let palette = themePalette()
 
     return ShieldConfiguration(
-      backgroundBlurStyle: palette.blurStyle,
+      backgroundBlurStyle: nil,
       backgroundColor: palette.backgroundColor,
       icon: nil,
       title: ShieldConfiguration.Label(
@@ -215,43 +210,22 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
     )
   }
 
-  private func resolvedInterfaceStyle() -> UIUserInterfaceStyle {
-    let fromCurrent = UITraitCollection.current.userInterfaceStyle
-    if fromCurrent != .unspecified {
-      return fromCurrent
-    }
-    let fromScreen = UIScreen.main.traitCollection.userInterfaceStyle
-    if fromScreen != .unspecified {
-      return fromScreen
-    }
-    return .light
-  }
-
   private func themePalette() -> ThemePalette {
-    let isDark = resolvedInterfaceStyle() == .dark
-    let accent = UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0)  // #4E9A7C
-    let white = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
-    if isDark {
-      let surface = UIColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 1.0)
-      return ThemePalette(
-        blurStyle: .systemChromeMaterialDark,
-        backgroundColor: surface,
-        titleColor: white,
-        subtitleColor: UIColor(white: 1.0, alpha: 0.92),
-        buttonBackgroundColor: accent,
-        buttonTextColor: white
-      )
+    let background = UIColor { traits in
+      traits.userInterfaceStyle == .dark ? .black : .white
     }
-    let cream = UIColor(red: 0.969, green: 0.961, blue: 0.941, alpha: 1.0)  // #F7F5F0
-    let titleDark = UIColor(red: 28 / 255, green: 46 / 255, blue: 36 / 255, alpha: 1.0)  // onSurface light
-    let subtitleDark = UIColor(red: 74 / 255, green: 69 / 255, blue: 57 / 255, alpha: 1.0)  // onSurfaceVariant light
+    let foreground = UIColor { traits in
+      traits.userInterfaceStyle == .dark ? .white : .black
+    }
+    let buttonBackground = UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0)  // #4E9A7C
+    let buttonText = UIColor.white
+
     return ThemePalette(
-      blurStyle: .systemChromeMaterialLight,
-      backgroundColor: cream,
-      titleColor: titleDark,
-      subtitleColor: subtitleDark,
-      buttonBackgroundColor: accent,
-      buttonTextColor: white
+      backgroundColor: background,
+      titleColor: foreground,
+      subtitleColor: foreground,
+      buttonBackgroundColor: buttonBackground,
+      buttonTextColor: buttonText
     )
   }
 }
