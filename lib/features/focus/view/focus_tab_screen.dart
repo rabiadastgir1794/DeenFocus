@@ -39,7 +39,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Startup performance: initialize only when the Focus tab is actually used.
+    // Idempotent: focus state is warmed from [_AppLifecycleObserver] after first
+    // frame so Home stays in sync; keep this so opening Focus before that callback
+    // (e.g. very fast tap) still initializes.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       unawaited(context.read<FocusController>().initialize());

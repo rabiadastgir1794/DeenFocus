@@ -118,6 +118,15 @@ class _AppLifecycleObserverState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // [DashboardScreen] lazy-builds non-selected tabs as [SizedBox.shrink], so
+    // [FocusTabScreen] (and its post-frame [FocusController.initialize]) never
+    // runs until the user opens Focus. Home reads the same controller for the
+    // lock/unlock card — warm it once after first frame so UI matches storage
+    // without blocking the initial build (heavy work stays async in the controller).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(context.read<FocusController>().initialize());
+    });
   }
 
   @override
