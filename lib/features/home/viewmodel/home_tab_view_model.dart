@@ -435,8 +435,8 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String weekdayLabel(DateTime date) {
-    return DateFormat('EEEE').format(date);
+  String weekdayLabel(DateTime date, String localeName) {
+    return DateFormat('EEEE', localeName).format(date);
   }
 
   void _recomputeStreakDays(DateTime now) {

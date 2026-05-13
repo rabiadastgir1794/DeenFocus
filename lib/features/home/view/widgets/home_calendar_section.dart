@@ -120,6 +120,7 @@ class HomeCalendarSection extends StatelessWidget {
               const SizedBox(height: 10),
               weekly
                   ? _HomeWeeklyCalendar(
+                      localeName: l10n.localeName,
                       weekStart: weeklyWeekStart,
                       selectedDate: selectedDate,
                       eventDates: weekEvents
@@ -184,12 +185,14 @@ class HomeCalendarSection extends StatelessWidget {
 
 class _HomeWeeklyCalendar extends StatelessWidget {
   const _HomeWeeklyCalendar({
+    required this.localeName,
     required this.weekStart,
     required this.selectedDate,
     required this.eventDates,
     required this.onTap,
   });
 
+  final String localeName;
   final DateTime weekStart;
   final DateTime? selectedDate;
   final List<DateTime> eventDates;
@@ -226,7 +229,12 @@ class _HomeWeeklyCalendar extends StatelessWidget {
             onTap: () => onTap(date),
             child: Column(
               children: [
-                Text(DateFormat.E().format(date).substring(0, 1)),
+                Text(
+                  DateFormat.E(localeName)
+                      .format(date)
+                      .characters
+                      .first,
+                ),
                 const SizedBox(height: 4),
                 Container(
                   width: 32,

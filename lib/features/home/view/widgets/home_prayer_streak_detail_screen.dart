@@ -97,6 +97,7 @@ class _PrayerWeekRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<HomeTabViewModel>();
+    final l10n = AppLocalizations.of(context)!;
     final day = vm.dayFor(date);
     final editable = vm.isPrayerDayEditable(date);
     final colorScheme = Theme.of(context).colorScheme;
@@ -107,7 +108,7 @@ class _PrayerWeekRow extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            vm.weekdayLabel(date),
+            vm.weekdayLabel(date, l10n.localeName),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: isCompleted
@@ -176,7 +177,7 @@ class _PrayerToggleChip extends StatelessWidget {
           opacity: enabled ? 1 : 0.55,
           child: Center(
             child: Text(
-              _labelForPrayer(prayer),
+              _localizedPrayerChipLetter(context, prayer),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.w800,
                 color: selected
@@ -190,18 +191,35 @@ class _PrayerToggleChip extends StatelessWidget {
     );
   }
 
-  String _labelForPrayer(TrackablePrayer prayer) {
+}
+
+String _localizedPrayerChipLetter(BuildContext context, TrackablePrayer prayer) {
+  final l10n = AppLocalizations.of(context)!;
+  final locale = l10n.localeName;
+  if (locale.startsWith('ar')) {
     switch (prayer) {
       case TrackablePrayer.fajr:
-        return 'F';
+        return 'ف';
       case TrackablePrayer.dhuhr:
-        return 'D';
+        return 'ظ';
       case TrackablePrayer.asr:
-        return 'A';
+        return 'ع';
       case TrackablePrayer.maghrib:
-        return 'M';
+        return 'م';
       case TrackablePrayer.isha:
-        return 'I';
+        return 'ش';
     }
   }
+  final String name = switch (prayer) {
+    TrackablePrayer.fajr => l10n.homePrayerFajr,
+    TrackablePrayer.dhuhr => l10n.homePrayerDhuhr,
+    TrackablePrayer.asr => l10n.homePrayerAsr,
+    TrackablePrayer.maghrib => l10n.homePrayerMaghrib,
+    TrackablePrayer.isha => l10n.homePrayerIsha,
+  };
+  final chars = name.characters;
+  if (chars.isEmpty) {
+    return '?';
+  }
+  return chars.first;
 }
