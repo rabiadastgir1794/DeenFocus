@@ -298,7 +298,7 @@ enum FocusDeviceActivityScheduler {
       )
 
     if preserveRepeatingNight {
-      cancelOneShotsPreservingRepeatingNightLock(true, defaults: defaults)
+        cancelOneShotsPreservingRepeatingNightLock(preserveRepeatingNight: true, defaults: defaults)
     } else {
       cancelAllSchedules()
     }
