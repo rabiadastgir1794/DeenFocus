@@ -165,7 +165,7 @@ class FocusBlockedActivity : Activity() {
         )
 
         val homeButton = Button(this).apply {
-            text = homeButtonLabel()
+            text = homeButtonLabel(activeMode)
             setTextColor(palette.buttonText)
             textSize = 15f
             typeface = Typeface.DEFAULT_BOLD
@@ -331,8 +331,13 @@ class FocusBlockedActivity : Activity() {
         }
     }
 
-    private fun homeButtonLabel(): String {
-        return "Go to Home"
+    private fun homeButtonLabel(activeMode: String?): String {
+        return when (activeMode) {
+            "child" -> "Continue in Safe Mode"
+            "nightDiscipline" -> "Good Night"
+            "salah" -> "Start My Salah"
+            else -> "Start My Salah"
+        }
     }
 
     private fun navigateHome() {
