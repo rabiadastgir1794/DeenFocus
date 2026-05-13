@@ -922,6 +922,16 @@ class FocusController extends ChangeNotifier {
     return _lockStateAtInstant(settings, now, windows);
   }
 
+  /// True on the timeline after some Salah window has ended and before the next
+  /// window starts (not inside night lock). Omits "before first prayer today"
+  /// gaps because [windows] only covers forward days from today.
+  bool _iosInSalahInterPrayerGap(DateTime at, List<SalahWindow> windows) {
+    if (windows.any((w) => !at.isBefore(w.start) && at.isBefore(w.end))) {
+      return false;
+    }
+    return windows.any((w) => !at.isAfter(w.end));
+  }
+
   /// Same rules as live lock state, for an arbitrary instant (used for iOS schedules).
   FocusLockState _lockStateAtInstant(
     FocusSettings settings,
@@ -958,6 +968,24 @@ class FocusController extends ChangeNotifier {
       }).firstOrNull;
     }
     final salahLocked = activeSalah != null;
+    if (Platform.isIOS &&
+        settings.salahModeEnabled &&
+        !nightLocked &&
+        !salahLocked &&
+        windows.isNotEmpty &&
+        _iosInSalahInterPrayerGap(at, windows)) {
+      final nextSalahStart = _nextSalahStart(windows, at);
+      final tempUnlocked = _isTemporaryUnlockActiveAt(settings, at);
+      return FocusLockState(
+        isLocked: !tempUnlocked,
+        activeMode: FocusModeType.salah,
+        reason:
+            'Salah mode keeps your selected apps blocked until the next prayer.',
+        nextChangeAt: nextSalahStart,
+        isTemporarilyUnlocked: tempUnlocked,
+      );
+    }
+
     final inScheduledWindow = nightLocked || salahLocked;
     final tempUnlocked =
         inScheduledWindow && _isTemporaryUnlockActiveAt(settings, at);
@@ -1331,7 +1359,7 @@ class FocusController extends ChangeNotifier {
         }
       }
 
-      if (window.end.isAfter(now)) {
+      if (window.end.isAfter(now) && !Platform.isIOS) {
         final snap = _lockStateAtInstant(settings, window.end, windows);
         events.add(
           _scheduledTransition(
