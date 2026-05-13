@@ -47,6 +47,21 @@ private enum FocusShieldSharedState {
   static let activeModeKey = "focus_shield_active_mode"
 }
 
+/// `ManagedSettingsUI.ShieldConfiguration` does not expose a minimum width for the primary
+/// button; the system sizes it from the label string. Padding with Braille pattern blank
+/// (U+2800) widens intrinsic layout metrics without using NBSP (which is in
+/// `CharacterSet.whitespaces` and may be trimmed) and typically renders as an empty cell in
+/// SF Pro.
+private enum FocusShieldPrimaryButtonLayout {
+  private static let brailleBlank = "\u{2800}"
+  private static let horizontalPadCount = 22
+
+  static func intrinsicWidthPadded(_ coreLabel: String) -> String {
+    let pad = String(repeating: brailleBlank, count: horizontalPadCount)
+    return pad + coreLabel + pad
+  }
+}
+
 private enum FocusShieldMode: String {
   case child
   case nightDiscipline
@@ -110,7 +125,8 @@ private enum FocusShieldMode: String {
   }
 
   var primaryButton: String {
-    // Shield buttons size from their label, so keep each mode's label unbreakable.
+    // Keep each mode's visible label unbreakable (NBSP). `FocusShieldPrimaryButtonLayout`
+    // adds horizontal intrinsic padding when building `ShieldConfiguration`.
     let nb = "\u{00a0}"
     switch self {
     case .salah:
@@ -202,7 +218,7 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
         color: palette.subtitleColor
       ),
       primaryButtonLabel: ShieldConfiguration.Label(
-        text: mode.primaryButton,
+        text: FocusShieldPrimaryButtonLayout.intrinsicWidthPadded(mode.primaryButton),
         color: palette.buttonTextColor
       ),
       primaryButtonBackgroundColor: palette.buttonBackgroundColor,
