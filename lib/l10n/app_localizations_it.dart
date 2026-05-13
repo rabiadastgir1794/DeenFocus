@@ -701,6 +701,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Le app verranno bloccate durante la preghiera e si sbloccheranno automaticamente dopo 15 minuti, oppure potrai sbloccarle in qualsiasi momento dalla schermata principale.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Le app verranno bloccate durante la preghiera, oppure potrai sbloccarle in qualsiasi momento dalla schermata principale.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Le app verranno bloccate durante il ciclo di sonno e si sbloccheranno automaticamente oppure potrai sbloccarle in qualsiasi momento dalla schermata principale';
 

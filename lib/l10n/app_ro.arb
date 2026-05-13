@@ -196,6 +196,7 @@
   "focusDone": "Făcut",
   "focusNightDisciplineCardSubtitle": "Creați obiceiuri de noapte mai bune",
   "focusPrayerBlockingDescription": "Aplicațiile vor fi blocate în timpul rugăciunii și se vor debloca automat după 15 minute sau le puteți debloca oricând din ecranul de pornire.",
+  "focusPrayerBlockingDescriptionIos": "Aplicațiile vor fi blocate în timpul rugăciunii sau le puteți debloca oricând din ecranul de pornire.",
   "focusNightBlockingDescription": "Aplicațiile vor fi blocate în timpul ciclului de somn și se vor debloca automat sau le puteți debloca oricând de pe ecranul de pornire",
   "focusChildBlockingDescription": "Aplicațiile sunt blocate instantaneu în modul Copil. Deblocați-le folosind comutatorul sau de pe ecranul de pornire",
   "settingsEditUsername": "Editați numele de utilizator",

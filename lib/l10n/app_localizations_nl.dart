@@ -698,6 +698,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Apps worden tijdens het gebed geblokkeerd en na 15 minuten automatisch ontgrendeld, of je kunt ze op elk gewenst moment ontgrendelen vanaf het startscherm.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Apps worden tijdens het gebed geblokkeerd, of je kunt ze op elk gewenst moment ontgrendelen vanaf het startscherm.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Apps worden tijdens uw slaapcyclus geblokkeerd en automatisch ontgrendeld, of u kunt ze op elk gewenst moment ontgrendelen vanaf het startscherm';
 

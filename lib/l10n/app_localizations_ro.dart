@@ -701,6 +701,10 @@ class AppLocalizationsRo extends AppLocalizations {
       'Aplicațiile vor fi blocate în timpul rugăciunii și se vor debloca automat după 15 minute sau le puteți debloca oricând din ecranul de pornire.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Aplicațiile vor fi blocate în timpul rugăciunii sau le puteți debloca oricând din ecranul de pornire.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Aplicațiile vor fi blocate în timpul ciclului de somn și se vor debloca automat sau le puteți debloca oricând de pe ecranul de pornire';
 

@@ -18,6 +18,13 @@ import '../../../l10n/app_localizations.dart';
 import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
 
+String _salahBlockingDescription(AppLocalizations l10n) {
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
+    return l10n.focusPrayerBlockingDescriptionIos;
+  }
+  return l10n.focusPrayerBlockingDescription;
+}
+
 class FocusTabScreen extends StatefulWidget {
   const FocusTabScreen({super.key});
 
@@ -123,7 +130,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       return l10n.focusChildBlockingDescription;
     }
     final parts = <String>[];
-    if (salahMode) parts.add(l10n.focusPrayerBlockingDescription);
+    if (salahMode) parts.add(_salahBlockingDescription(l10n));
     if (nightMode) parts.add(l10n.focusNightBlockingDescription);
     return parts.join('\n');
   }
@@ -1044,7 +1051,7 @@ class _ModeCardsSection extends StatelessWidget {
               onChanged: (value) => onToggleMode(FocusModeType.salah, value),
               child: data.salahMode
                   ? _ModeStatusBanner(
-                      text: l10n.focusPrayerBlockingDescription,
+                      text: _salahBlockingDescription(l10n),
                       color: colorScheme.error,
                     )
                   : null,

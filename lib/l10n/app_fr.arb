@@ -196,6 +196,7 @@
   "focusDone": "Fait",
   "focusNightDisciplineCardSubtitle": "Développez de meilleures habitudes nocturnes",
   "focusPrayerBlockingDescription": "Les applications seront bloquées pendant la prière et se déverrouilleront automatiquement après 15 minutes, ou vous pourrez les déverrouiller à tout moment depuis l'écran d'accueil.",
+  "focusPrayerBlockingDescriptionIos": "Les applications seront bloquées pendant la prière, ou vous pourrez les déverrouiller à tout moment depuis l'écran d'accueil.",
   "focusNightBlockingDescription": "Les applications seront bloquées pendant votre cycle de sommeil et se déverrouilleront automatiquement, ou vous pourrez les déverrouiller à tout moment depuis l'écran d'accueil",
   "focusChildBlockingDescription": "Les applications sont bloquées instantanément en mode enfant. Déverrouillez-les à l'aide de la bascule ou depuis l'écran d'accueil",
   "settingsEditUsername": "Modifier le nom d'utilisateur",

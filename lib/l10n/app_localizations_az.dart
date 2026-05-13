@@ -695,6 +695,10 @@ class AppLocalizationsAz extends AppLocalizations {
       'Tətbiqlər dua zamanı bloklanacaq və 15 dəqiqədən sonra avtomatik olaraq açılacaq və ya siz onları istənilən vaxt əsas ekrandan aça bilərsiniz.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Tətbiqlər dua zamanı bloklanacaq və ya siz onları istənilən vaxt əsas ekrandan aça bilərsiniz.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Tətbiqlər yuxu dövrünüz ərzində bloklanacaq və avtomatik kiliddən çıxarılacaq və ya siz onları istənilən vaxt əsas ekrandan aça bilərsiniz';
 

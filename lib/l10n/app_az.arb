@@ -196,6 +196,7 @@
   "focusDone": "Bitdi",
   "focusNightDisciplineCardSubtitle": "Daha yaxşı gecə vərdişləri yaradın",
   "focusPrayerBlockingDescription": "Tətbiqlər dua zamanı bloklanacaq və 15 dəqiqədən sonra avtomatik olaraq açılacaq və ya siz onları istənilən vaxt əsas ekrandan aça bilərsiniz.",
+  "focusPrayerBlockingDescriptionIos": "Tətbiqlər dua zamanı bloklanacaq və ya siz onları istənilən vaxt əsas ekrandan aça bilərsiniz.",
   "focusNightBlockingDescription": "Tətbiqlər yuxu dövrünüz ərzində bloklanacaq və avtomatik kiliddən çıxarılacaq və ya siz onları istənilən vaxt əsas ekrandan aça bilərsiniz",
   "focusChildBlockingDescription": "Uşaq rejimində proqramlar dərhal bloklanır. Dəyişdiricidən və ya əsas ekrandan istifadə edərək onları kiliddən çıxarın",
   "settingsEditUsername": "İstifadəçi adını redaktə edin",

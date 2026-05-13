@@ -683,6 +683,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'سيتم حظر التطبيقات أثناء الصلاة وسيتم فتحها تلقائيًا بعد 15 دقيقة، أو يمكنك فتحها في أي وقت من الشاشة الرئيسية.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'سيتم حظر التطبيقات أثناء الصلاة، أو يمكنك فتحها في أي وقت من الشاشة الرئيسية.';
+
+  @override
   String get focusNightBlockingDescription =>
       'سيتم حظر التطبيقات أثناء دورة نومك وسيتم إلغاء قفلها تلقائيًا، أو يمكنك إلغاء قفلها في أي وقت من الشاشة الرئيسية';
 

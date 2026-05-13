@@ -196,6 +196,7 @@
   "focusDone": "完毕",
   "focusNightDisciplineCardSubtitle": "养成更好的夜间习惯",
   "focusPrayerBlockingDescription": "应用程序将在祈祷期间被阻止，并在 15 分钟后自动解锁，或者您可以随时从主屏幕解锁它们。",
+  "focusPrayerBlockingDescriptionIos": "应用程序将在祈祷期间被阻止，或者您可以随时从主屏幕解锁它们。",
   "focusNightBlockingDescription": "应用程序将在您的睡眠周期期间被阻止并自动解锁，或者您可以随时从主屏幕解锁它们",
   "focusChildBlockingDescription": "应用程序在儿童模式下会立即被阻止。使用切换开关或从主屏幕解锁它们",
   "settingsEditUsername": "编辑用户名",

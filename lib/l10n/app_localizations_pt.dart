@@ -703,6 +703,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Os aplicativos serão bloqueados durante a oração e desbloqueados automaticamente após 15 minutos, ou você pode desbloqueá-los a qualquer momento na tela inicial.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Os aplicativos serão bloqueados durante a oração, ou você pode desbloqueá-los a qualquer momento na tela inicial.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Os aplicativos serão bloqueados durante o seu ciclo de sono e desbloqueados automaticamente, ou você pode desbloqueá-los a qualquer momento na tela inicial';
 

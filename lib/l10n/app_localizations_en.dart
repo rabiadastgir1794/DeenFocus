@@ -685,6 +685,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Apps will be blocked during prayer and unlock automatically after 15 minutes, or you can unlock them anytime from the home screen.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Apps will be blocked during prayer, or you can unlock them anytime from the home screen.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Apps will be blocked during your sleep cycle and unlock automatically, or you can unlock them anytime from the home screen';
 

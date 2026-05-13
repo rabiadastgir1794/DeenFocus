@@ -699,6 +699,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Apps werden während des Gebets blockiert und nach 15 Minuten automatisch entsperrt. Sie können sie aber auch jederzeit über den Startbildschirm entsperren.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Apps werden während des Gebets blockiert. Sie können sie jederzeit über den Startbildschirm entsperren.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Apps werden während Ihres Schlafzyklus blockiert und automatisch entsperrt. Sie können sie aber jederzeit über den Startbildschirm entsperren';
 

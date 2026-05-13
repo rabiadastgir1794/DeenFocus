@@ -229,6 +229,7 @@
   "focusDone": "Done",
   "focusNightDisciplineCardSubtitle": "Build better night habits",
   "focusPrayerBlockingDescription": "Apps will be blocked during prayer and unlock automatically after 15 minutes, or you can unlock them anytime from the home screen.",
+  "focusPrayerBlockingDescriptionIos": "Apps will be blocked during prayer, or you can unlock them anytime from the home screen.",
   "focusNightBlockingDescription": "Apps will be blocked during your sleep cycle and unlock automatically, or you can unlock them anytime from the home screen",
   "focusChildBlockingDescription": "Apps are blocked instantly in Child Mode. Unlock them using the toggle or from the home screen",
   "settingsEditUsername": "Edit Username",

@@ -196,6 +196,7 @@
   "focusDone": "Feito",
   "focusNightDisciplineCardSubtitle": "Crie melhores hábitos noturnos",
   "focusPrayerBlockingDescription": "Os aplicativos serão bloqueados durante a oração e desbloqueados automaticamente após 15 minutos, ou você pode desbloqueá-los a qualquer momento na tela inicial.",
+  "focusPrayerBlockingDescriptionIos": "Os aplicativos serão bloqueados durante a oração, ou você pode desbloqueá-los a qualquer momento na tela inicial.",
   "focusNightBlockingDescription": "Os aplicativos serão bloqueados durante o seu ciclo de sono e desbloqueados automaticamente, ou você pode desbloqueá-los a qualquer momento na tela inicial",
   "focusChildBlockingDescription": "Os aplicativos são bloqueados instantaneamente no modo infantil. Desbloqueie-os usando o botão de alternância ou na tela inicial",
   "settingsEditUsername": "Editar nome de usuário",

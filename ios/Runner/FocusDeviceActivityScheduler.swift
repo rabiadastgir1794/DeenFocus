@@ -134,6 +134,101 @@ enum FocusDeviceActivityScheduler {
     defaults?.removeObject(forKey: activityScheduleSignatureKey)
   }
 
+  /// Stops one-shot DeviceActivity monitors but leaves the repeating overnight night lock
+  /// running when [preserveRepeatingNight] is true. Restarting that repeating schedule
+  /// mid-window can prevent `intervalDidStart` from firing again until the next cycle,
+  /// which left apps unlocked after a Salah temporary unlock resynced native scheduling.
+  private static func cancelOneShotsPreservingRepeatingNightLock(
+    preserveRepeatingNight: Bool,
+    defaults: UserDefaults?
+  ) {
+    let rawNames = defaults?.stringArray(forKey: activityNamesKey) ?? []
+    guard !rawNames.isEmpty else { return }
+
+    let center = DeviceActivityCenter()
+    let actionsAll = defaults?.dictionary(forKey: activityActionsKey) as? [String: String] ?? [:]
+    let modesAll = defaults?.dictionary(forKey: activityModesKey) as? [String: String] ?? [:]
+    let reasonsAll = defaults?.dictionary(forKey: activityReasonsKey) as? [String: String] ?? [:]
+
+    if preserveRepeatingNight {
+      FocusIOSDebugLogger.append(
+        "ios.scheduler.cancel",
+        "preserving repeating night lock; stopping other schedules only"
+      )
+    } else {
+      FocusIOSDebugLogger.append(
+        "ios.scheduler.cancel",
+        "stopping \(rawNames.count) schedule(s): \(rawNames.joined(separator: ","))"
+      )
+    }
+
+    for name in rawNames {
+      if preserveRepeatingNight && name == repeatingNightLockActivityName {
+        continue
+      }
+      center.stopMonitoring([DeviceActivityName(name)])
+    }
+
+    if preserveRepeatingNight,
+      rawNames.contains(repeatingNightLockActivityName)
+    {
+      var names = [repeatingNightLockActivityName]
+      var actions: [String: String] = [:]
+      var modes: [String: String] = [:]
+      var reasons: [String: String] = [:]
+      if let a = actionsAll[repeatingNightLockActivityName] {
+        actions[repeatingNightLockActivityName] = a
+      }
+      if let m = modesAll[repeatingNightLockActivityName] {
+        modes[repeatingNightLockActivityName] = m
+      }
+      if let r = reasonsAll[repeatingNightLockActivityName] {
+        reasons[repeatingNightLockActivityName] = r
+      }
+      defaults?.set(names, forKey: activityNamesKey)
+      defaults?.set(actions, forKey: activityActionsKey)
+      defaults?.set(modes, forKey: activityModesKey)
+      defaults?.set(reasons, forKey: activityReasonsKey)
+    } else {
+      defaults?.removeObject(forKey: activityNamesKey)
+      defaults?.removeObject(forKey: activityActionsKey)
+      defaults?.removeObject(forKey: activityModesKey)
+      defaults?.removeObject(forKey: activityReasonsKey)
+      defaults?.removeObject(forKey: activityScheduleSignatureKey)
+    }
+  }
+
+  private static func extractSleepWakeSegment(from signature: String?) -> String? {
+    guard let signature else { return nil }
+    var sleep: String?
+    var wake: String?
+    for part in signature.split(separator: "|") {
+      let p = String(part)
+      if p.hasPrefix("sleep=") { sleep = p }
+      if p.hasPrefix("wake=") { wake = p }
+    }
+    guard let sleep, let wake else { return nil }
+    return "\(sleep)|\(wake)"
+  }
+
+  /// True when local time is inside an overnight sleep window (sleep start ≥ wake end on the clock).
+  private static func isNowInsideOvernightNightSchedule(
+    now: Date,
+    startHour: Int,
+    startMinute: Int,
+    endHour: Int,
+    endMinute: Int
+  ) -> Bool {
+    let startM = startHour * 60 + startMinute
+    let endM = endHour * 60 + endMinute
+    guard startM >= endM else { return false }
+    let cal = Calendar.current
+    let h = cal.component(.hour, from: now)
+    let mi = cal.component(.minute, from: now)
+    let cur = h * 60 + mi
+    return cur >= startM || cur < endM
+  }
+
   static func sync(
     activeMode: String?,
     encodedSelection: String?,
@@ -179,11 +274,38 @@ enum FocusDeviceActivityScheduler {
       )
     }
 
-    cancelAllSchedules()
+    let syncNow = Date()
+    let startMinutes = nightStartHour * 60 + nightStartMinute
+    let endMinutes = nightEndHour * 60 + nightEndMinute
+    let isOvernightNightRange = startMinutes >= endMinutes
+    let runtimeActivityNames = Set(DeviceActivityCenter().activities.map(\.rawValue))
+    let sleepWakeUnchanged =
+      extractSleepWakeSegment(from: previousSignature)
+      == extractSleepWakeSegment(from: scheduleSignature)
+    let preserveRepeatingNight =
+      !registrationDrift
+      && nightDisciplineEnabled
+      && isOvernightNightRange
+      && sleepWakeUnchanged
+      && existingNames.contains(repeatingNightLockActivityName)
+      && runtimeActivityNames.contains(repeatingNightLockActivityName)
+      && isNowInsideOvernightNightSchedule(
+        now: syncNow,
+        startHour: nightStartHour,
+        startMinute: nightStartMinute,
+        endHour: nightEndHour,
+        endMinute: nightEndMinute
+      )
+
+    if preserveRepeatingNight {
+      cancelOneShotsPreservingRepeatingNightLock(true, defaults: defaults)
+    } else {
+      cancelAllSchedules()
+    }
 
     FocusIOSDebugLogger.append(
       "ios.scheduler.sync",
-      "activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute))"
+      "activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute)) preserveRepeatingNight=\(preserveRepeatingNight)"
     )
     guard trackModes, let enc = encodedSelection, !enc.isEmpty else {
       defaults?.removeObject(forKey: selectionKey)
@@ -200,17 +322,25 @@ enum FocusDeviceActivityScheduler {
     let center = DeviceActivityCenter()
     let cal = Calendar.current
     let triggerDuration: TimeInterval = 15 * 60
-    let now = Date()
+    let now = syncNow
     var names: [String] = []
     var actionsByName: [String: String] = [:]
     var modesByName: [String: String] = [:]
     var reasonsByName: [String: String] = [:]
-    let startMinutes = nightStartHour * 60 + nightStartMinute
-    let endMinutes = nightEndHour * 60 + nightEndMinute
-    let isOvernightNightRange = startMinutes >= endMinutes
     var didRegisterRepeatingNightLock = false
 
-    if nightDisciplineEnabled && isOvernightNightRange {
+    if preserveRepeatingNight {
+      names.append(repeatingNightLockActivityName)
+      actionsByName[repeatingNightLockActivityName] = "lock"
+      modesByName[repeatingNightLockActivityName] = "nightDiscipline"
+      reasonsByName[repeatingNightLockActivityName] =
+        "Sleep Lock is active during your protected schedule."
+      didRegisterRepeatingNightLock = true
+      FocusIOSDebugLogger.append(
+        "ios.scheduler.register",
+        "preserved repeating night lock name=\(repeatingNightLockActivityName) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute))"
+      )
+    } else if nightDisciplineEnabled && isOvernightNightRange {
       let lockStart = DateComponents(
         hour: nightStartHour,
         minute: nightStartMinute,

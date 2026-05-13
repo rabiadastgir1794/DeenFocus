@@ -1398,6 +1398,12 @@ abstract class AppLocalizations {
   /// **'Apps will be blocked during prayer and unlock automatically after 15 minutes, or you can unlock them anytime from the home screen.'**
   String get focusPrayerBlockingDescription;
 
+  /// No description provided for @focusPrayerBlockingDescriptionIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps will be blocked during prayer, or you can unlock them anytime from the home screen.'**
+  String get focusPrayerBlockingDescriptionIos;
+
   /// No description provided for @focusNightBlockingDescription.
   ///
   /// In en, this message translates to:

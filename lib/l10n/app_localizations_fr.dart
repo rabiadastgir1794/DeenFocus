@@ -705,6 +705,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les applications seront bloquées pendant la prière et se déverrouilleront automatiquement après 15 minutes, ou vous pourrez les déverrouiller à tout moment depuis l\'écran d\'accueil.';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      'Les applications seront bloquées pendant la prière, ou vous pourrez les déverrouiller à tout moment depuis l\'écran d\'accueil.';
+
+  @override
   String get focusNightBlockingDescription =>
       'Les applications seront bloquées pendant votre cycle de sommeil et se déverrouilleront automatiquement, ou vous pourrez les déverrouiller à tout moment depuis l\'écran d\'accueil';
 

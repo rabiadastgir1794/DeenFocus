@@ -26,6 +26,11 @@ class FocusController extends ChangeNotifier {
   static const Duration _salahTestGapDuration = Duration(minutes: 2);
   static const int _rollingScheduleDays = 7;
 
+  /// iOS caps pending local notifications at 64; keep Salah/night transition
+  /// volume aligned with [AppNotificationService] prayer batch so both can fit.
+  static int get _scheduleHorizonDays =>
+      Platform.isIOS ? 2 : _rollingScheduleDays;
+
   FocusController() {
     AppSuperwall.subscriptionActiveNotifier.addListener(
       _handleSubscriptionStatusChange,
@@ -118,15 +123,14 @@ class FocusController extends ChangeNotifier {
     await _reloadLocation();
     await _enforceSubscriptionOrDisableModes();
     await _recomputeAndPersist();
-    await _reschedulePrayerIfDualSalahNightAfterInteraction();
   }
 
-  /// Refills prayer-time notifications (next 4 days) after foreground / home
-  /// unlock when Salah and Night are both on, so iOS pending slots stay filled
-  /// alongside focus transition alerts.
-  Future<void> _reschedulePrayerIfDualSalahNightAfterInteraction() async {
-    final s = _settings;
-    if (!s.salahModeEnabled || !s.nightDisciplineEnabled) return;
+  /// Refills the iOS prayer reminder batch after a Salah temporary unlock from
+  /// Home so the next prayer slots stay scheduled under the shorter horizon.
+  Future<void> _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
+    bool hadActiveSalahWindow,
+  ) async {
+    if (!Platform.isIOS || !hadActiveSalahWindow) return;
     final lat = _cachedLatitude;
     final lng = _cachedLongitude;
     if (lat == null || lng == null) return;
@@ -134,7 +138,7 @@ class FocusController extends ChangeNotifier {
       latitude: lat,
       longitude: lng,
       forceReschedule: true,
-      daysAheadOverride: 4,
+      daysAheadOverride: 2,
     );
   }
 
@@ -506,16 +510,18 @@ class FocusController extends ChangeNotifier {
     final windows = _settings.salahModeEnabled
         ? await _salahWindows(now)
         : const <SalahWindow>[];
+    SalahWindow? activeSalahNow;
     DateTime? until;
 
     if (_settings.salahModeEnabled) {
-      final activeSalah = windows.where((SalahWindow w) {
+      activeSalahNow = windows.where((SalahWindow w) {
         return !now.isBefore(w.start) && now.isBefore(w.end);
       }).firstOrNull;
-      if (activeSalah != null) {
-        until = activeSalah.end;
+      if (activeSalahNow != null) {
+        until = activeSalahNow.end;
       }
     }
+    final hadActiveSalahWindow = activeSalahNow != null;
 
     if (_settings.nightDisciplineEnabled &&
         _settings.nightRange.contains(now)) {
@@ -532,12 +538,16 @@ class FocusController extends ChangeNotifier {
 
     if (until != null && !until.isAfter(now)) {
       await _recomputeAndPersist();
-      await _reschedulePrayerIfDualSalahNightAfterInteraction();
+      await _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
+        hadActiveSalahWindow,
+      );
       return;
     }
     if (until == null) {
       await temporarilyUnlock();
-      await _reschedulePrayerIfDualSalahNightAfterInteraction();
+      await _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
+        hadActiveSalahWindow,
+      );
       return;
     }
 
@@ -548,7 +558,9 @@ class FocusController extends ChangeNotifier {
     _settings = _settings.copyWith(temporarilyUnlockedUntil: until);
     await _persist();
     await _recomputeAndPersist();
-    await _reschedulePrayerIfDualSalahNightAfterInteraction();
+    await _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
+      hadActiveSalahWindow,
+    );
   }
 
   /// Home action while temporarily unlocked: clear temporary unlock and enforce
@@ -922,16 +934,6 @@ class FocusController extends ChangeNotifier {
     return _lockStateAtInstant(settings, now, windows);
   }
 
-  /// True on the timeline after some Salah window has ended and before the next
-  /// window starts (not inside night lock). Omits "before first prayer today"
-  /// gaps because [windows] only covers forward days from today.
-  bool _iosInSalahInterPrayerGap(DateTime at, List<SalahWindow> windows) {
-    if (windows.any((w) => !at.isBefore(w.start) && at.isBefore(w.end))) {
-      return false;
-    }
-    return windows.any((w) => !at.isAfter(w.end));
-  }
-
   /// Same rules as live lock state, for an arbitrary instant (used for iOS schedules).
   FocusLockState _lockStateAtInstant(
     FocusSettings settings,
@@ -968,23 +970,6 @@ class FocusController extends ChangeNotifier {
       }).firstOrNull;
     }
     final salahLocked = activeSalah != null;
-    if (Platform.isIOS &&
-        settings.salahModeEnabled &&
-        !nightLocked &&
-        !salahLocked &&
-        windows.isNotEmpty &&
-        _iosInSalahInterPrayerGap(at, windows)) {
-      final nextSalahStart = _nextSalahStart(windows, at);
-      final tempUnlocked = _isTemporaryUnlockActiveAt(settings, at);
-      return FocusLockState(
-        isLocked: !tempUnlocked,
-        activeMode: FocusModeType.salah,
-        reason:
-            'Salah mode keeps your selected apps blocked until the next prayer.',
-        nextChangeAt: nextSalahStart,
-        isTemporarilyUnlocked: tempUnlocked,
-      );
-    }
 
     final inScheduledWindow = nightLocked || salahLocked;
     final tempUnlocked =
@@ -1133,7 +1118,7 @@ class FocusController extends ChangeNotifier {
     final prayers = <HomePrayerSlot>[];
     final startDate = DateTime(now.year, now.month, now.day);
     final sect = await StorageService.sect;
-    for (var offset = 0; offset < _rollingScheduleDays; offset++) {
+    for (var offset = 0; offset < _scheduleHorizonDays; offset++) {
       final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
         latitude: _cachedLatitude!,
         longitude: _cachedLongitude!,
@@ -1207,8 +1192,8 @@ class FocusController extends ChangeNotifier {
   }
 
   /// When night and salah overlap, transitions can share the same instant.
-  /// Locks prefer Salah ordering; simultaneous unlocks prefer [nightMorning] so
-  /// iOS keeps wake-time unlock + notifications when Salah ends with night.
+  /// Wake-time [nightMorning] events stay visible when Night and Salah share a
+  /// transition instant.
   List<Map<String, dynamic>> _dedupeTransitionsByTimestamp(
     List<Map<String, dynamic>> events,
   ) {
@@ -1222,6 +1207,14 @@ class FocusController extends ChangeNotifier {
         j++;
       }
       final group = events.sublist(i, j);
+      final nightMorning = group
+          .where((e) => e['notificationHint'] == 'nightMorning')
+          .toList();
+      if (nightMorning.isNotEmpty) {
+        out.add(Map<String, dynamic>.from(nightMorning.first));
+        i = j;
+        continue;
+      }
       group.sort((a, b) {
         final aLocked = a['isLocked'] == true ? 0 : 1;
         final bLocked = b['isLocked'] == true ? 0 : 1;
@@ -1232,16 +1225,7 @@ class FocusController extends ChangeNotifier {
         final bPriority = bMode == FocusModeType.salah.name ? 0 : 1;
         return aPriority.compareTo(bPriority);
       });
-      var chosen = Map<String, dynamic>.from(group.first);
-      final allUnlock = group.every((e) => e['isLocked'] != true);
-      if (allUnlock) {
-        final nightMorning = group
-            .where((e) => e['notificationHint'] == 'nightMorning')
-            .toList();
-        if (nightMorning.isNotEmpty) {
-          chosen = Map<String, dynamic>.from(nightMorning.first);
-        }
-      }
+      final chosen = Map<String, dynamic>.from(group.first);
       out.add(chosen);
       i = j;
     }
@@ -1256,7 +1240,7 @@ class FocusController extends ChangeNotifier {
     final range = settings.nightRange;
     final events = <Map<String, dynamic>>[];
     var probe = now;
-    for (var count = 0; count < _rollingScheduleDays; count++) {
+    for (var count = 0; count < _scheduleHorizonDays; count++) {
       final window = _nightWindowContainingOrNext(range, probe);
       if (window == null) break;
 
@@ -1292,7 +1276,7 @@ class FocusController extends ChangeNotifier {
                 snap.reason ??
                 'Night Discipline will start at ${_formatTime(range.startHour, range.startMinute)}.',
             nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
-            notificationHint: snap.isLocked ? null : 'nightMorning',
+            notificationHint: 'nightMorning',
           ),
         );
       }
@@ -1370,6 +1354,7 @@ class FocusController extends ChangeNotifier {
                 snap.reason ??
                 'Salah mode will lock apps around the next prayer.',
             nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
+            prayerId: window.prayer.id.name,
           ),
         );
       }

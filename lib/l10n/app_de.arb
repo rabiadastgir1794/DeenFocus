@@ -196,6 +196,7 @@
   "focusDone": "Erledigt",
   "focusNightDisciplineCardSubtitle": "Entwickeln Sie bessere Nachtgewohnheiten",
   "focusPrayerBlockingDescription": "Apps werden während des Gebets blockiert und nach 15 Minuten automatisch entsperrt. Sie können sie aber auch jederzeit über den Startbildschirm entsperren.",
+  "focusPrayerBlockingDescriptionIos": "Apps werden während des Gebets blockiert. Sie können sie jederzeit über den Startbildschirm entsperren.",
   "focusNightBlockingDescription": "Apps werden während Ihres Schlafzyklus blockiert und automatisch entsperrt. Sie können sie aber jederzeit über den Startbildschirm entsperren",
   "focusChildBlockingDescription": "Apps werden im Kindermodus sofort blockiert. Entsperren Sie sie mit dem Schalter oder über den Startbildschirm",
   "settingsEditUsername": "Benutzernamen bearbeiten",

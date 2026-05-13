@@ -658,6 +658,10 @@ class AppLocalizationsZh extends AppLocalizations {
       '应用程序将在祈祷期间被阻止，并在 15 分钟后自动解锁，或者您可以随时从主屏幕解锁它们。';
 
   @override
+  String get focusPrayerBlockingDescriptionIos =>
+      '应用程序将在祈祷期间被阻止，或者您可以随时从主屏幕解锁它们。';
+
+  @override
   String get focusNightBlockingDescription =>
       '应用程序将在您的睡眠周期期间被阻止并自动解锁，或者您可以随时从主屏幕解锁它们';
 

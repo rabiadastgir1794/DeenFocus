@@ -33,7 +33,7 @@ class AppNotificationService {
 
   static const _prayerChannel = AndroidNotificationChannel(
     'prayer_times',
-    'Prayer Times',
+    'General Reminder',
     description: 'Prayer time reminders from Deenly.',
     importance: Importance.max,
   );
@@ -49,6 +49,7 @@ class AppNotificationService {
     presentAlert: true,
     presentBadge: true,
     presentSound: true,
+    threadIdentifier: 'deenly.prayer_reminder',
   );
 
   final FlutterLocalNotificationsPlugin _plugin =
@@ -146,9 +147,9 @@ class AppNotificationService {
       if (daysAheadOverride != null) {
         daysAhead = daysAheadOverride.clamp(1, 7);
       } else {
-        // iOS: keep the prayer batch smaller so Salah/Night focus alerts still fit
-        // under the 64 pending-notification system limit alongside this batch.
-        daysAhead = Platform.isIOS ? 4 : 7;
+        // iOS: keep the prayer batch small so Salah/Night focus alerts still fit under
+        // the 64 pending-notification limit; refill extends on Salah home unlock.
+        daysAhead = Platform.isIOS ? 2 : 7;
       }
       final datasets = <({int dayOffset, HomePrayerTimesData data})>[
         for (var d = 0; d < daysAhead; d++)
@@ -241,8 +242,7 @@ class AppNotificationService {
       await _ensureAndroidExactAlarmOrFallback();
       await _setLocalTimezone();
 
-      final includeUnlockNotifications =
-          settings.temporarilyUnlockedUntil == null;
+      const includeUnlockNotifications = true;
       final signature = await _buildFocusScheduleSignature(
         settings: settings,
         includeUnlockNotifications: includeUnlockNotifications,
@@ -295,28 +295,36 @@ class AppNotificationService {
   }) async {
     _hadIosFocusNotificationPendingCapSkip = false;
     final l10n = await _focusNotificationsLocalizations();
-    final transitions = scheduledTransitions
-        .where((transition) {
-          final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
-          if (atMillis <= DateTime.now().millisecondsSinceEpoch) return false;
-          final isLocked = transition['isLocked'] as bool? ?? false;
-          if (!isLocked && !includeUnlockNotifications) return false;
-          // iOS: Salah uses home temporary unlock only — no notification at
-          // scheduled prayer-window end (night unlock / morning stays).
-          if (Platform.isIOS &&
-              !isLocked &&
-              (transition['activeMode'] as String?) ==
-                  FocusModeType.salah.name) {
-            return false;
-          }
-          return isLocked || includeUnlockNotifications;
-        })
-        .toList(growable: false)
-      ..sort((a, b) {
-        final am = (a['atMillis'] as num?)?.toInt() ?? 0;
-        final bm = (b['atMillis'] as num?)?.toInt() ?? 0;
-        return am.compareTo(bm);
-      });
+    final transitions =
+        scheduledTransitions
+            .where((transition) {
+              final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
+              if (atMillis <= DateTime.now().millisecondsSinceEpoch) {
+                return false;
+              }
+              final isLocked = transition['isLocked'] as bool? ?? false;
+              final mode = transition['activeMode'] as String?;
+              if (!isLocked && !includeUnlockNotifications) return false;
+              // Prayer reminders already cover Salah start; avoid a second alert.
+              if (isLocked && mode == FocusModeType.salah.name) {
+                return false;
+              }
+              // iOS Salah uses manual unlock from Home, so only suppress the
+              // Salah unlock alert there. Android keeps auto-unlock and its
+              // unlock notification behavior.
+              if (Platform.isIOS &&
+                  mode == FocusModeType.salah.name &&
+                  !isLocked) {
+                return false;
+              }
+              return isLocked || includeUnlockNotifications;
+            })
+            .toList(growable: false)
+          ..sort((a, b) {
+            final am = (a['atMillis'] as num?)?.toInt() ?? 0;
+            final bm = (b['atMillis'] as num?)?.toInt() ?? 0;
+            return am.compareTo(bm);
+          });
 
     var lockId = _salahLockNotificationIdStart;
     var unlockId = _salahUnlockNotificationIdStart;
@@ -355,9 +363,7 @@ class AppNotificationService {
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
       );
-      if (Platform.isIOS &&
-          !scheduled &&
-          at.isAfter(DateTime.now())) {
+      if (Platform.isIOS && !scheduled && at.isAfter(DateTime.now())) {
         _hadIosFocusNotificationPendingCapSkip = true;
       }
     }
@@ -389,19 +395,10 @@ class AppNotificationService {
       return l10n.focusNotifNightModeTitle;
     }
     if (notificationHint == 'nightMorning') {
-      return l10n.focusNotifGoodMorningTitle;
+      return 'Good Morning';
     }
     if (!isLocked && mode == FocusModeType.salah.name) {
       return l10n.focusNotifSalahCompleteTitle;
-    }
-    if (isLocked &&
-        mode == FocusModeType.salah.name &&
-        prayerId != null &&
-        prayerId.isNotEmpty) {
-      final name = _localizedPrayerNameForFocus(prayerId, l10n);
-      if (name != null) {
-        return l10n.focusNotifSalahPrayerTimeTitle(name);
-      }
     }
     if (isLocked) return l10n.focusNotifAppsLockedTitle;
     return l10n.focusNotifAppsUnlockedTitle;
@@ -418,53 +415,22 @@ class AppNotificationService {
       return l10n.focusNotifNightLockedBody;
     }
     if (notificationHint == 'nightMorning') {
-      return l10n.focusNotifMorningUnlockBody;
+      if (isLocked) {
+        return 'Night Focus Mode is complete. Open Deenly to unlock apps when you are ready.';
+      }
+      return 'Good morning! Apps are now available.';
     }
     if (!isLocked && mode == FocusModeType.salah.name) {
       return l10n.focusNotifSalahCompleteBody;
     }
     if (!isLocked) return l10n.focusNotifAppsNowAvailableBody;
-    if (mode == FocusModeType.salah.name) {
-      final name = _localizedPrayerNameForFocus(prayerId, l10n);
-      if (name != null) {
-        return l10n.focusNotifSalahPrayerMomentBody(name);
-      }
+    if (isLocked && mode == FocusModeType.salah.name) {
       return l10n.focusNotifSalahLockedBody;
     }
     if (mode == FocusModeType.nightDiscipline.name) {
       return l10n.focusNotifNightLockedBody;
     }
     return l10n.focusNotifGenericLockedBody;
-  }
-
-  String? _localizedPrayerNameForFocus(
-    String? prayerId,
-    AppLocalizations l10n,
-  ) {
-    final id = _homePrayerIdFromString(prayerId);
-    if (id == null) return null;
-    switch (id) {
-      case HomePrayerId.fajr:
-        return l10n.homePrayerFajr;
-      case HomePrayerId.sunrise:
-        return l10n.homePrayerSunrise;
-      case HomePrayerId.dhuhr:
-        return l10n.homePrayerDhuhr;
-      case HomePrayerId.asr:
-        return l10n.homePrayerAsr;
-      case HomePrayerId.maghrib:
-        return l10n.homePrayerMaghrib;
-      case HomePrayerId.isha:
-        return l10n.homePrayerIsha;
-    }
-  }
-
-  HomePrayerId? _homePrayerIdFromString(String? raw) {
-    if (raw == null || raw.isEmpty) return null;
-    for (final id in HomePrayerId.values) {
-      if (id.name == raw) return id;
-    }
-    return null;
   }
 
   NotificationDetails get _nightTransitionNotificationDetails =>
@@ -480,11 +446,13 @@ class AppNotificationService {
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
+          threadIdentifier: 'deenly.focus_transition',
         ),
         macOS: const DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
+          threadIdentifier: 'deenly.focus_transition',
         ),
       );
 
@@ -492,7 +460,7 @@ class AppNotificationService {
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'prayer_times',
-          'Prayer Times',
+          'General Reminder',
           channelDescription: 'Prayer time reminders from Deenly.',
           importance: Importance.max,
           priority: Priority.high,
@@ -623,12 +591,35 @@ class AppNotificationService {
       }
     }
 
-    // On macOS we limit to pending IDs first to reduce delivered clearing risk.
+    // On macOS, limit to pending IDs so delivered notifications are not cleared.
     if (Platform.isMacOS) {
       final pending = await _plugin.pendingNotificationRequests();
       for (final request in pending) {
         final id = request.id;
         if (id < startInclusive || id > endInclusive) continue;
+        await _plugin.cancel(id);
+      }
+      return;
+    }
+
+    // Android: `cancel(id)` clears the status bar entry for that id. Cancelling
+    // only [pendingNotificationRequests] is unsafe — the plugin cache can
+    // disagree with AlarmManager, leaving stale alarms and breaking new
+    // schedules. Cancel every id in range, but skip ids currently shown so tray
+    // alerts (e.g. night mode) stay until the user dismisses them.
+    if (Platform.isAndroid) {
+      final activeIds = <int>{};
+      try {
+        final active = await _plugin.getActiveNotifications();
+        for (final n in active) {
+          final nid = n.id;
+          if (nid != null) activeIds.add(nid);
+        }
+      } catch (_) {
+        // Older API / unsupported: fall through with empty set → full cancel.
+      }
+      for (var id = startInclusive; id <= endInclusive; id++) {
+        if (activeIds.contains(id)) continue;
         await _plugin.cancel(id);
       }
       return;
@@ -701,17 +692,11 @@ class AppNotificationService {
   }
 
   String _prayerTimeTitle(HomePrayerId id, {required bool isSpanish}) {
-    if (isSpanish) {
-      return 'Es hora de ${_prayerLabel(id, isSpanish: true)}';
-    }
-    return "It's time for ${_prayerLabel(id)}";
+    return "It's time for ${_prayerLabel(id, isSpanish: isSpanish)}";
   }
 
   String _prayerTimeBody(HomePrayerId id, {required bool isSpanish}) {
-    if (isSpanish) {
-      return 'Tómate un momento para la oración de ${_prayerLabel(id, isSpanish: true)}.';
-    }
-    return 'Take a moment for ${_prayerLabel(id)} prayer.';
+    return 'Take a moment for ${_prayerLabel(id, isSpanish: isSpanish)} prayer.';
   }
 
   Future<bool> _isSpanishLocale() async {
@@ -761,7 +746,9 @@ class AppNotificationService {
       final mode = transition['activeMode'] as String? ?? '';
       final hint = transition['notificationHint'] as String? ?? '';
       final prayerId = transition['prayerId'] as String? ?? '';
-      parts.add('transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId');
+      parts.add(
+        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId',
+      );
     }
 
     return parts.join('|');
