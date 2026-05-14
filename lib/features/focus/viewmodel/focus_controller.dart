@@ -1466,6 +1466,7 @@ class FocusController extends ChangeNotifier {
       );
       if (snap.isLocked) {
         final mode = snap.activeMode ?? FocusModeType.nightDiscipline;
+        final forceNative = mode == FocusModeType.nightDiscipline;
         events.add(
           _scheduledTransition(
             at: settings.temporarilyUnlockedUntil!,
@@ -1475,7 +1476,15 @@ class FocusController extends ChangeNotifier {
                 snap.reason ?? 'Night Discipline is blocking selected apps.',
             nextChangeAt: snap.nextChangeAt ?? currentWindow.end,
             notificationHint: 'nightLock',
-            forceNativeNightLock: mode == FocusModeType.nightDiscipline,
+            forceNativeNightLock: forceNative,
+          ),
+        );
+        unawaited(
+          FocusEnforcementService.appendDebugLog(
+            'focus.schedule.nightTempRelock',
+            'at=${settings.temporarilyUnlockedUntil!.toIso8601String()} '
+            'activeMode=${mode.name} forceNativeNightLock=$forceNative '
+            'nightWinEnd=${currentWindow.end.toIso8601String()}',
           ),
         );
       }
@@ -1543,6 +1552,19 @@ class FocusController extends ChangeNotifier {
                 ? 'nightResumeSilent'
                 : 'nightLock';
             forceNativeNightLock = true;
+            unawaited(
+              FocusEnforcementService.appendDebugLog(
+                'focus.schedule.salahEndNight',
+                'prayer=${window.prayer.id.name} '
+                'salahStart=${window.start.toIso8601String()} '
+                'salahEnd=${window.end.toIso8601String()} '
+                'nightWinStart=${nw.start.toIso8601String()} '
+                'nightWinEnd=${nw.end.toIso8601String()} '
+                'notificationHint=$nightHint '
+                'forceNativeNightLock=true '
+                'nightStartedBeforeSalah=${nw.start.isBefore(window.start)}',
+              ),
+            );
           }
         }
         events.add(
@@ -1576,6 +1598,7 @@ class FocusController extends ChangeNotifier {
       );
       if (snap.isLocked) {
         final mode = snap.activeMode ?? FocusModeType.salah;
+        final forceNative = mode == FocusModeType.nightDiscipline;
         events.add(
           _scheduledTransition(
             at: settings.temporarilyUnlockedUntil!,
@@ -1586,7 +1609,16 @@ class FocusController extends ChangeNotifier {
                 'Salah mode is active for ${_prayerLabel(activeWindow.prayer.id)}.',
             nextChangeAt: snap.nextChangeAt ?? activeWindow.end,
             prayerId: activeWindow.prayer.id.name,
-            forceNativeNightLock: mode == FocusModeType.nightDiscipline,
+            forceNativeNightLock: forceNative,
+          ),
+        );
+        unawaited(
+          FocusEnforcementService.appendDebugLog(
+            'focus.schedule.salahTempRelock',
+            'at=${settings.temporarilyUnlockedUntil!.toIso8601String()} '
+            'prayer=${activeWindow.prayer.id.name} '
+            'activeMode=${mode.name} forceNativeNightLock=$forceNative '
+            'salahWinEnd=${activeWindow.end.toIso8601String()}',
           ),
         );
       }

@@ -307,7 +307,16 @@ class AppNotificationService {
               if (!isLocked && !includeUnlockNotifications) return false;
               final hint = transition['notificationHint'] as String?;
               // Night already notified; Salah ended — re-lock without a duplicate night alert.
-              if (hint == 'nightResumeSilent') return false;
+              if (hint == 'nightResumeSilent') {
+                unawaited(
+                  FocusEnforcementService.appendDebugLog(
+                    'notifications.focus.skip',
+                    'nightResumeSilent atMillis=$atMillis '
+                    '(duplicate night notification suppressed)',
+                  ),
+                );
+                return false;
+              }
               // Prayer reminders already cover Salah start; avoid a second alert.
               if (isLocked && mode == FocusModeType.salah.name) {
                 return false;
