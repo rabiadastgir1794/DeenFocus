@@ -305,16 +305,19 @@ class AppNotificationService {
               final isLocked = transition['isLocked'] as bool? ?? false;
               final mode = transition['activeMode'] as String?;
               if (!isLocked && !includeUnlockNotifications) return false;
+              final hint = transition['notificationHint'] as String?;
+              // Night already notified; Salah ended — re-lock without a duplicate night alert.
+              if (hint == 'nightResumeSilent') return false;
               // Prayer reminders already cover Salah start; avoid a second alert.
               if (isLocked && mode == FocusModeType.salah.name) {
                 return false;
               }
-              // iOS Salah uses manual unlock from Home, so only suppress the
-              // Salah unlock alert there. Android keeps auto-unlock and its
-              // unlock notification behavior.
-              if (Platform.isIOS &&
-                  mode == FocusModeType.salah.name &&
-                  !isLocked) {
+              final prayerId = transition['prayerId'] as String?;
+              // iOS: prayer windows end without auto-opening apps (shield stays until
+              // Home unlock / latch rules). Do not schedule *any* Salah-boundary
+              // unlock local notification there. Android unchanged (auto-unlock +
+              // Salah complete / generic unlock alerts stay).
+              if (Platform.isIOS && !isLocked && prayerId != null) {
                 return false;
               }
               return isLocked || includeUnlockNotifications;
@@ -333,27 +336,27 @@ class AppNotificationService {
       if (atMillis <= 0) continue;
       final isLocked = transition['isLocked'] as bool? ?? false;
       final mode = transition['activeMode'] as String?;
-      final hint = transition['notificationHint'] as String?;
+      final notificationHint = transition['notificationHint'] as String?;
       final prayerId = transition['prayerId'] as String?;
       final at = DateTime.fromMillisecondsSinceEpoch(atMillis);
       final id = isLocked ? lockId++ : unlockId++;
       final title = _focusTransitionTitle(
         isLocked: isLocked,
         mode: mode,
-        notificationHint: hint,
+        notificationHint: notificationHint,
         prayerId: prayerId,
         l10n: l10n,
       );
       final body = _focusTransitionBody(
         isLocked: isLocked,
         mode: mode,
-        notificationHint: hint,
+        notificationHint: notificationHint,
         prayerId: prayerId,
         l10n: l10n,
       );
       await FocusEnforcementService.appendDebugLog(
         'notifications.focusTransition.schedule',
-        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode hint=$hint prayerId=$prayerId',
+        'id=$id at=${at.toIso8601String()} locked=$isLocked mode=$mode hint=$notificationHint prayerId=$prayerId',
       );
       final scheduled = await _scheduleIfFuture(
         id: id,
@@ -746,8 +749,10 @@ class AppNotificationService {
       final mode = transition['activeMode'] as String? ?? '';
       final hint = transition['notificationHint'] as String? ?? '';
       final prayerId = transition['prayerId'] as String? ?? '';
+      final forceNative =
+          transition['forceNativeNightLock'] == true ? 1 : 0;
       parts.add(
-        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId',
+        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId:$forceNative',
       );
     }
 

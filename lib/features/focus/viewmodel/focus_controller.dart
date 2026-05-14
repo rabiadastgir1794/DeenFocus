@@ -1423,6 +1423,8 @@ class FocusController extends ChangeNotifier {
                   snap.reason ?? 'Night Discipline is blocking selected apps.',
               nextChangeAt: snap.nextChangeAt ?? window.end,
               notificationHint: 'nightLock',
+              // Repeating overnight DeviceActivity handles this instant on iOS.
+              forceNativeNightLock: false,
             ),
           );
         }
@@ -1463,15 +1465,17 @@ class FocusController extends ChangeNotifier {
         windows,
       );
       if (snap.isLocked) {
+        final mode = snap.activeMode ?? FocusModeType.nightDiscipline;
         events.add(
           _scheduledTransition(
             at: settings.temporarilyUnlockedUntil!,
             isLocked: true,
-            activeMode: snap.activeMode ?? FocusModeType.nightDiscipline,
+            activeMode: mode,
             reason:
                 snap.reason ?? 'Night Discipline is blocking selected apps.',
             nextChangeAt: snap.nextChangeAt ?? currentWindow.end,
             notificationHint: 'nightLock',
+            forceNativeNightLock: mode == FocusModeType.nightDiscipline,
           ),
         );
       }
@@ -1519,6 +1523,28 @@ class FocusController extends ChangeNotifier {
           !Platform.isIOS || window.end.isAfter(now);
       if (shouldEmitSalahEnd) {
         final snap = _lockStateAtInstant(settings, window.end, windows);
+        String? nightHint;
+        var forceNativeNightLock = false;
+        if (snap.isLocked &&
+            snap.activeMode == FocusModeType.nightDiscipline &&
+            settings.nightDisciplineEnabled &&
+            settings.nightRange.contains(window.end)) {
+          final nw = _nightWindowContainingOrNext(
+            settings.nightRange,
+            window.end,
+          );
+          if (nw != null &&
+              !window.end.isBefore(nw.start) &&
+              window.end.isBefore(nw.end)) {
+            // Case 1 (night already on): resume night lock quietly — no second
+            // night notification. Case 2 (night began during this Salah window):
+            // treat as the real Night Focus entry — nightLock copy + notification.
+            nightHint = nw.start.isBefore(window.start)
+                ? 'nightResumeSilent'
+                : 'nightLock';
+            forceNativeNightLock = true;
+          }
+        }
         events.add(
           _scheduledTransition(
             at: window.end,
@@ -1529,6 +1555,8 @@ class FocusController extends ChangeNotifier {
                 'Salah mode will lock apps around the next prayer.',
             nextChangeAt: snap.nextChangeAt ?? nextWindow?.start,
             prayerId: window.prayer.id.name,
+            notificationHint: nightHint,
+            forceNativeNightLock: forceNativeNightLock,
           ),
         );
       }
@@ -1547,16 +1575,18 @@ class FocusController extends ChangeNotifier {
         windows,
       );
       if (snap.isLocked) {
+        final mode = snap.activeMode ?? FocusModeType.salah;
         events.add(
           _scheduledTransition(
             at: settings.temporarilyUnlockedUntil!,
             isLocked: true,
-            activeMode: snap.activeMode ?? FocusModeType.salah,
+            activeMode: mode,
             reason:
                 snap.reason ??
                 'Salah mode is active for ${_prayerLabel(activeWindow.prayer.id)}.',
             nextChangeAt: snap.nextChangeAt ?? activeWindow.end,
             prayerId: activeWindow.prayer.id.name,
+            forceNativeNightLock: mode == FocusModeType.nightDiscipline,
           ),
         );
       }
@@ -1630,6 +1660,10 @@ class FocusController extends ChangeNotifier {
     required DateTime? nextChangeAt,
     String? notificationHint,
     String? prayerId,
+    /// iOS: when the repeating overnight night monitor is active, one-shot
+    /// `nightDiscipline` lock transitions are skipped unless this is true
+    /// (Salah end → night, temp-unlock expiry, etc.).
+    bool forceNativeNightLock = false,
   }) {
     return <String, dynamic>{
       'at': at.toIso8601String(),
@@ -1645,6 +1679,7 @@ class FocusController extends ChangeNotifier {
       if (notificationHint case final hint?) 'notificationHint': hint,
       // ignore: use_null_aware_elements
       if (prayerId case final pid?) 'prayerId': pid,
+      if (forceNativeNightLock) 'forceNativeNightLock': true,
     };
   }
 

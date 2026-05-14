@@ -384,8 +384,12 @@ enum FocusDeviceActivityScheduler {
       guard let locked = t["isLocked"] as? Bool else { continue }
       let transitionMode = t["activeMode"] as? String
       let transitionReason = t["lockReason"] as? String
-      if transitionMode == "nightDiscipline" && locked && didRegisterRepeatingNightLock {
-        continue
+      if transitionMode == "nightDiscipline", locked, didRegisterRepeatingNightLock {
+        let force = (t["forceNativeNightLock"] as? NSNumber)?.boolValue == true
+          || (t["forceNativeNightLock"] as? Bool) == true
+        if !force {
+          continue
+        }
       }
 
       let startMs: Int64 = {
@@ -485,7 +489,7 @@ enum FocusDeviceActivityScheduler {
       selectionSignature = "len=\(selection.count)|\(prefixPart)|\(suffixPart)"
     }
 
-    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String) in
+    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String, Bool) in
       let atMillis: Int64 = {
         if let n = transition["atMillis"] as? NSNumber { return n.int64Value }
         if let i = transition["atMillis"] as? Int64 { return i }
@@ -495,16 +499,19 @@ enum FocusDeviceActivityScheduler {
       let isLocked = transition["isLocked"] as? Bool ?? false
       let mode = transition["activeMode"] as? String ?? ""
       let reason = transition["lockReason"] as? String ?? ""
-      return (atMillis, isLocked, mode, reason)
+      let forceNative = (transition["forceNativeNightLock"] as? NSNumber)?.boolValue == true
+        || (transition["forceNativeNightLock"] as? Bool) == true
+      return (atMillis, isLocked, mode, reason, forceNative)
     }
     .sorted {
       if $0.0 != $1.0 { return $0.0 < $1.0 }
       if $0.1 != $1.1 { return !$0.1 && $1.1 }
       if $0.2 != $1.2 { return $0.2 < $1.2 }
-      return $0.3 < $1.3
+      if $0.3 != $1.3 { return $0.3 < $1.3 }
+      return !$0.4 && $1.4
     }
-    .map { atMillis, isLocked, mode, reason in
-      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason)"
+    .map { atMillis, isLocked, mode, reason, forceNative in
+      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason):\(forceNative ? 1 : 0)"
     }
     .joined(separator: ",")
 
