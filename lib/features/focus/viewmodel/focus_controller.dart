@@ -1510,7 +1510,14 @@ class FocusController extends ChangeNotifier {
         }
       }
 
-      if (window.end.isAfter(now) && !Platform.isIOS) {
+      // Android: always emit Salah window ends in the horizon. Native
+      // [FocusBlockerStore.resolveScheduledState] applies the latest transition with
+      // `atMillis <= now`; if we drop past ends after Maghrib, an earlier same-day
+      // transition (e.g. daytime unlock) stays "newest" and keeps prefs unlocked while
+      // Flutter already recomputed locked=true — Night + Salah overlap made this visible.
+      final shouldEmitSalahEnd =
+          !Platform.isIOS || window.end.isAfter(now);
+      if (shouldEmitSalahEnd) {
         final snap = _lockStateAtInstant(settings, window.end, windows);
         events.add(
           _scheduledTransition(

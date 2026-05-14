@@ -864,6 +864,9 @@ class AppLocalizationsIt extends AppLocalizations {
       'In attesa della tua posizione.';
 
   @override
+  String get nearbyMosquesFetchingLocation => 'Fetching your location…';
+
+  @override
   String get nearbyMosquesCurrentLocationLabel => 'Current location';
 
   @override

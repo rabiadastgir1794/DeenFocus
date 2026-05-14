@@ -20,10 +20,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Thrown after prompting the user to open Settings; [AppLifecycleState.resumed] triggers a reload.
-class _PendingLocationResume implements Exception {
-  const _PendingLocationResume();
-}
+const String _kNearbyMosquesErrPermissionRequired = 'err_permission_required';
+const String _kNearbyMosquesErrLocationDisabled = 'err_location_disabled';
 
 class HomeNearbyMosquesScreen extends StatefulWidget {
   const HomeNearbyMosquesScreen({super.key});
@@ -39,6 +37,10 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
   static const double _searchRadiusMeters = 5000;
 
   bool _isLoading = true;
+  /// True until [_ensureLocation] completes (success or failure). Drives full-screen location progress.
+  bool _awaitingLocation = true;
+  /// When [_errorSuggestOpenSettings], use system location screen instead of app settings.
+  bool _errorOpenSystemLocationSettings = false;
   /// Set only for real failures (network, permission, location). Empty results use [_mosques.isEmpty] instead.
   String? _errorMessage;
   bool _errorSuggestOpenSettings = false;
@@ -72,14 +74,18 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
   Future<void> _load({bool forceRefresh = false}) async {
     setState(() {
       _isLoading = true;
+      _awaitingLocation = true;
       _errorMessage = null;
       _errorSuggestOpenSettings = false;
+      _errorOpenSystemLocationSettings = false;
     });
 
     try {
       await _ensureLocation();
       if (!mounted) return;
-      setState(() {});
+      setState(() {
+        _awaitingLocation = false;
+      });
 
       final latitude = _latitude;
       final longitude = _longitude;
@@ -124,16 +130,6 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
         _errorMessage = null;
       });
     } catch (error, stackTrace) {
-      if (error is _PendingLocationResume) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-          _errorMessage = null;
-          _errorSuggestOpenSettings = false;
-          _mosques = const <NearbyMosque>[];
-        });
-        return;
-      }
       if (kDebugMode) {
         debugPrint('Nearby mosques load failed: $error');
         debugPrint('$stackTrace');
@@ -154,11 +150,13 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
 
       setState(() {
         _isLoading = false;
+        _awaitingLocation = false;
         if (fallback != null && fallback.mosques.isNotEmpty) {
           _mosques = fallback.mosques;
           _errorMessage =
               AppLocalizations.of(context)!.nearbyMosquesLiveUpdateFailed;
           _errorSuggestOpenSettings = false;
+          _errorOpenSystemLocationSettings = false;
         } else {
           _errorMessage = _nearbyMosquesFriendlyError(
             error,
@@ -166,6 +164,8 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
           );
           _errorSuggestOpenSettings =
               _nearbyMosquesErrorSuggestsOpenSettings(error);
+          _errorOpenSystemLocationSettings =
+              _nearbyMosquesErrorUsesSystemLocationSettings(error);
         }
       });
     }
@@ -176,49 +176,11 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
 
     final permStatus = await PermissionService.requestLocationStatus();
     if (!permStatus.isGranted) {
-      if (!mounted) return;
-      var openedSettings = false;
-      await AppPermissionDialog.show(
-        context,
-        title: l10n.locationRequired,
-        message: l10n.nearbyMosquesPermissionOff,
-        primaryButtonText: l10n.openSettings,
-        secondaryButtonText: l10n.cancel,
-        onPrimaryTap: () {
-          openedSettings = true;
-          _pendingResumeReload = true;
-          unawaited(PermissionService.openLocationSettings());
-        },
-        onSecondaryTap: () {},
-      );
-      if (!mounted) return;
-      if (openedSettings) {
-        throw const _PendingLocationResume();
-      }
-      throw NearbyMosquesException(l10n.nearbyMosquesPermissionOff);
+      throw NearbyMosquesException(_kNearbyMosquesErrPermissionRequired);
     }
 
     if (!await Geolocator.isLocationServiceEnabled()) {
-      if (!mounted) return;
-      var openedSettings = false;
-      await AppPermissionDialog.show(
-        context,
-        title: l10n.locationRequired,
-        message: l10n.nearbyMosquesLocationTurnedOff,
-        primaryButtonText: l10n.openSettings,
-        secondaryButtonText: l10n.cancel,
-        onPrimaryTap: () {
-          openedSettings = true;
-          _pendingResumeReload = true;
-          unawaited(Geolocator.openLocationSettings());
-        },
-        onSecondaryTap: () {},
-      );
-      if (!mounted) return;
-      if (openedSettings) {
-        throw const _PendingLocationResume();
-      }
-      throw NearbyMosquesException(l10n.nearbyMosquesLocationTurnedOff);
+      throw NearbyMosquesException(_kNearbyMosquesErrLocationDisabled);
     }
 
     final location = await LocationService.fetchCurrentCoordinates();
@@ -264,61 +226,147 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
         top: false,
         child: RefreshIndicator(
           onRefresh: () => _load(forceRefresh: true),
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            children: [
-              _NearbyMosquesMapCard(
-                latitude: _latitude,
-                longitude: _longitude,
-                mosques: _mosques,
-                isDark: isDark,
-                awaitingMosqueResults: _isLoading,
-                onMosqueTap: _openMap,
-              ),
-              const SizedBox(height: 16),
-              if ((_locationName?.trim().isNotEmpty ?? false))
-                Text(
-                  _locationName!.trim(),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: _buildBody(l10n, isDark),
                 ),
-              if ((_locationName?.trim().isNotEmpty ?? false))
-                const SizedBox(height: 8),
-              if (_isLoading)
-                const Padding(
-                  padding: EdgeInsets.only(top: 40),
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (_errorMessage != null)
-                _StatusCard(
-                  message: _errorMessage!,
-                  actionLabel:
-                      _errorSuggestOpenSettings
-                      ? l10n.openSettings
-                      : l10n.nearbyMosquesTryAgain,
-                  onAction: _errorSuggestOpenSettings
-                      ? () async {
-                          await PermissionService.openLocationSettings();
-                        }
-                      : () => _load(forceRefresh: true),
-                )
-              else if (_mosques.isEmpty)
-                _NoMosquesFoundCard(
-                  hint: l10n.nearbyMosquesEmptyHint,
-                  onRetry: () => _load(forceRefresh: true),
-                )
-              else ...[
-                for (final mosque in _mosques) ...[
-                  _MosqueTile(mosque: mosque, onTap: () => _openMap(mosque)),
-                  const SizedBox(height: 10),
-                ],
-              ],
-            ],
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildBody(AppLocalizations l10n, bool isDark) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (_isLoading && _awaitingLocation) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 28),
+            Text(
+              l10n.nearbyMosquesFetchingLocation,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    height: 1.35,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    final hasCoords = _latitude != null && _longitude != null;
+    if (_errorMessage != null &&
+        !_isLoading &&
+        !hasCoords) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.location_off_outlined,
+              size: 56,
+              color: colorScheme.error,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              _errorMessage!,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    height: 1.45,
+                    color: colorScheme.onSurface,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 28),
+            if (_errorSuggestOpenSettings)
+              FilledButton.icon(
+                onPressed: _openLocationSettingsForError,
+                icon: const Icon(Icons.settings_outlined),
+                label: Text(l10n.openSettings),
+              ),
+            if (_errorSuggestOpenSettings) const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: () => _load(forceRefresh: true),
+              child: Text(l10n.nearbyMosquesTryAgain),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _NearbyMosquesMapCard(
+            latitude: _latitude,
+            longitude: _longitude,
+            mosques: _mosques,
+            isDark: isDark,
+            awaitingMosqueResults: _isLoading,
+            onMosqueTap: _openMap,
+          ),
+          const SizedBox(height: 16),
+          if ((_locationName?.trim().isNotEmpty ?? false))
+            Text(
+              _locationName!.trim(),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          if ((_locationName?.trim().isNotEmpty ?? false))
+            const SizedBox(height: 8),
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.only(top: 40),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_errorMessage != null)
+            _StatusCard(
+              message: _errorMessage!,
+              actionLabel: _errorSuggestOpenSettings
+                  ? l10n.openSettings
+                  : l10n.nearbyMosquesTryAgain,
+              onAction: _errorSuggestOpenSettings
+                  ? _openLocationSettingsForError
+                  : () => _load(forceRefresh: true),
+            )
+          else if (_mosques.isEmpty)
+            _NoMosquesFoundCard(
+              hint: l10n.nearbyMosquesEmptyHint,
+              onRetry: () => _load(forceRefresh: true),
+            )
+          else ...[
+            for (final mosque in _mosques) ...[
+              _MosqueTile(mosque: mosque, onTap: () => _openMap(mosque)),
+              const SizedBox(height: 10),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openLocationSettingsForError() async {
+    _pendingResumeReload = true;
+    if (_errorOpenSystemLocationSettings) {
+      await Geolocator.openLocationSettings();
+    } else {
+      await PermissionService.openLocationSettings();
+    }
   }
 
   Future<void> _openMap(NearbyMosque mosque) async {
@@ -818,6 +866,10 @@ class _MosqueTile extends StatelessWidget {
 
 bool _nearbyMosquesErrorSuggestsOpenSettings(Object error) {
   if (error is NearbyMosquesException) {
+    if (error.message == _kNearbyMosquesErrPermissionRequired ||
+        error.message == _kNearbyMosquesErrLocationDisabled) {
+      return true;
+    }
     final m = error.message.toLowerCase();
     return m.contains('permission') || m.contains('settings');
   }
@@ -826,10 +878,25 @@ bool _nearbyMosquesErrorSuggestsOpenSettings(Object error) {
   return false;
 }
 
+bool _nearbyMosquesErrorUsesSystemLocationSettings(Object error) {
+  if (error is LocationServiceDisabledException) return true;
+  if (error is NearbyMosquesException &&
+      error.message == _kNearbyMosquesErrLocationDisabled) {
+    return true;
+  }
+  return false;
+}
+
 String _nearbyMosquesFriendlyError(Object error, AppLocalizations l10n) {
   if (error is NearbyMosquesException) {
     if (error.message == 'location_unavailable') {
       return l10n.nearbyMosquesLocationUnavailable;
+    }
+    if (error.message == _kNearbyMosquesErrPermissionRequired) {
+      return l10n.nearbyMosquesPermissionOff;
+    }
+    if (error.message == _kNearbyMosquesErrLocationDisabled) {
+      return l10n.nearbyMosquesLocationTurnedOff;
     }
     return error.message;
   }

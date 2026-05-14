@@ -1698,6 +1698,12 @@ abstract class AppLocalizations {
   /// **'Waiting for your location.'**
   String get nearbyMosquesWaitingForLocation;
 
+  /// No description provided for @nearbyMosquesFetchingLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching your location…'**
+  String get nearbyMosquesFetchingLocation;
+
   /// No description provided for @nearbyMosquesCurrentLocationLabel.
   ///
   /// In en, this message translates to:

@@ -1025,43 +1025,44 @@ class FocusScheduleReceiver : BroadcastReceiver() {
         if (intent?.action != focusScheduleAction) return
 
         val alarmWantsLocked = intent.getBooleanExtra("isLocked", false)
+        val alarmMode = intent.getStringExtra("activeMode")
+        val alarmReason = intent.getStringExtra("lockReason")
+        val alarmNext = intent.getStringExtra("nextChangeAt")
         val before = FocusBlockerStore.currentState(context)
         FocusDebugLogger.append(
             context,
             "schedule.fire",
-            "alarmWantsLocked=$alarmWantsLocked at=${intent.getStringExtra("at")} mode=${intent.getStringExtra("activeMode")} reason=${intent.getStringExtra("lockReason")} nextChangeAt=${intent.getStringExtra("nextChangeAt")} beforeLocked=${before.isLocked} beforeMode=${before.activeMode}",
+            "alarmWantsLocked=$alarmWantsLocked at=${intent.getStringExtra("at")} mode=$alarmMode reason=$alarmReason nextChangeAt=$alarmNext beforeLocked=${before.isLocked} beforeMode=${before.activeMode}",
         )
         FocusBlockerStore.save(
             context = context,
             selectedPackages = before.selectedPackages.toList(),
-            activeMode = before.activeMode ?: intent.getStringExtra("activeMode"),
-            isLocked = before.isLocked,
-            lockReason = before.lockReason ?: intent.getStringExtra("lockReason"),
-            nextChangeAt = before.nextChangeAt ?: intent.getStringExtra("nextChangeAt"),
+            activeMode = alarmMode ?: before.activeMode,
+            isLocked = alarmWantsLocked,
+            lockReason = alarmReason ?: before.lockReason,
+            nextChangeAt = alarmNext ?: before.nextChangeAt,
         )
-        val after = FocusBlockerStore.currentState(context)
+        // Do not call [FocusBlockerStore.currentState] here: [resolveScheduledState] replays
+        // persisted transitions and could overwrite this alarm edge while the JSON still
+        // omits a same-day boundary (see Flutter Salah end emission for Android).
+        val persistedMode = alarmMode ?: before.activeMode
+        val persistedReason = alarmReason ?: before.lockReason
         FocusDebugLogger.append(
             context,
             "schedule.afterSave",
-            "persistedLocked=${after.isLocked} mode=${after.activeMode} reason=${after.lockReason} nextChangeAt=${after.nextChangeAt}",
+            "edgePersistedLocked=$alarmWantsLocked mode=$persistedMode reason=$persistedReason nextChangeAt=${alarmNext ?: before.nextChangeAt}",
         )
-        if (!after.isLocked) {
+        if (!alarmWantsLocked) {
             FocusDebugLogger.append(
                 context,
                 "schedule.unlock",
-                "apps unlocked (persisted state no longer locked)",
-            )
-        } else if (!alarmWantsLocked) {
-            FocusDebugLogger.append(
-                context,
-                "schedule.lockHeld",
-                "alarm was unlock edge but schedule still locked mode=${after.activeMode}",
+                "alarm edge: unlocked",
             )
         } else {
             FocusDebugLogger.append(
                 context,
                 "schedule.lock",
-                "apps locked mode=${after.activeMode} reason=${after.lockReason}",
+                "alarm edge: locked mode=$persistedMode reason=$persistedReason",
             )
         }
     }

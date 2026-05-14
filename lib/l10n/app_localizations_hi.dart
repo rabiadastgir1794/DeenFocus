@@ -853,6 +853,9 @@ class AppLocalizationsHi extends AppLocalizations {
       'आपके स्थान की प्रतीक्षा की जा रही है.';
 
   @override
+  String get nearbyMosquesFetchingLocation => 'Fetching your location…';
+
+  @override
   String get nearbyMosquesCurrentLocationLabel => 'Current location';
 
   @override

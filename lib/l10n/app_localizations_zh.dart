@@ -812,6 +812,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nearbyMosquesWaitingForLocation => '等待你的位置。';
 
   @override
+  String get nearbyMosquesFetchingLocation => 'Fetching your location…';
+
+  @override
   String get nearbyMosquesCurrentLocationLabel => 'Current location';
 
   @override

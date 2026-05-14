@@ -279,6 +279,7 @@
   "nearbyMosquesSearchRadius": "Search radius: 5 km",
   "nearbyMosquesMapPreviewUnavailable": "Map preview unavailable right now.",
   "nearbyMosquesWaitingForLocation": "Waiting for your location.",
+  "nearbyMosquesFetchingLocation": "Fetching your location…",
   "nearbyMosquesCurrentLocationLabel": "Current location",
   "nearbyMosquesAppearAfterLoad": "Nearby mosques will appear here once results load.",
   "nearbyMosquesNoneWithinRadius": "No mosques found within 5 km",
