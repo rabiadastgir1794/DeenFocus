@@ -103,6 +103,7 @@ class FocusSettings {
     required this.salahModeEnabled,
     required this.salahTestAnchorAt,
     required this.temporarilyUnlockedUntil,
+    required this.iosSalahShieldLatchEpochMillis,
     required this.nightDisciplineBeforeChild,
     required this.salahModeBeforeChild,
   });
@@ -125,6 +126,7 @@ class FocusSettings {
       salahModeEnabled: false,
       salahTestAnchorAt: null,
       temporarilyUnlockedUntil: null,
+      iosSalahShieldLatchEpochMillis: null,
       nightDisciplineBeforeChild: null,
       salahModeBeforeChild: null,
     );
@@ -168,6 +170,8 @@ class FocusSettings {
         temporarilyUnlockedUntil: _parseDateTime(
           map['temporarilyUnlockedUntil'],
         ),
+        iosSalahShieldLatchEpochMillis:
+            (map['iosSalahShieldLatchEpochMillis'] as num?)?.toInt(),
         nightDisciplineBeforeChild: map['nightDisciplineBeforeChild'] as bool?,
         salahModeBeforeChild: map['salahModeBeforeChild'] as bool?,
       );
@@ -192,6 +196,12 @@ class FocusSettings {
   final bool salahModeEnabled;
   final DateTime? salahTestAnchorAt;
   final DateTime? temporarilyUnlockedUntil;
+
+  /// iOS only: [SalahWindow.start] millis for the current Salah shield session.
+  /// Keeps [FocusLockState.isLocked] true after the 15-minute prayer reminder window
+  /// until the next prayer or [FocusController.unlockFromHome], so foreground
+  /// sync does not clear ManagedSettings while the user still owes a Home unlock.
+  final int? iosSalahShieldLatchEpochMillis;
 
   /// Snapshot taken when entering child mode; used to restore [nightDisciplineEnabled]
   /// and [salahModeEnabled] after child mode ends.
@@ -247,6 +257,8 @@ class FocusSettings {
     bool clearSalahTestAnchorAt = false,
     DateTime? temporarilyUnlockedUntil,
     bool clearTemporaryUnlock = false,
+    int? iosSalahShieldLatchEpochMillis,
+    bool clearIosSalahShieldLatch = false,
     bool? nightDisciplineBeforeChild,
     bool? salahModeBeforeChild,
     bool clearNightDisciplineBeforeChild = false,
@@ -282,6 +294,9 @@ class FocusSettings {
       temporarilyUnlockedUntil: clearTemporaryUnlock
           ? null
           : temporarilyUnlockedUntil ?? this.temporarilyUnlockedUntil,
+      iosSalahShieldLatchEpochMillis: clearIosSalahShieldLatch
+          ? null
+          : iosSalahShieldLatchEpochMillis ?? this.iosSalahShieldLatchEpochMillis,
       nightDisciplineBeforeChild: clearNightDisciplineBeforeChild
           ? null
           : nightDisciplineBeforeChild ?? this.nightDisciplineBeforeChild,
@@ -309,6 +324,7 @@ class FocusSettings {
       'salahModeEnabled': salahModeEnabled,
       'salahTestAnchorAt': salahTestAnchorAt?.toIso8601String(),
       'temporarilyUnlockedUntil': temporarilyUnlockedUntil?.toIso8601String(),
+      'iosSalahShieldLatchEpochMillis': iosSalahShieldLatchEpochMillis,
       'nightDisciplineBeforeChild': nightDisciplineBeforeChild,
       'salahModeBeforeChild': salahModeBeforeChild,
     });

@@ -401,6 +401,7 @@ class FocusController extends ChangeNotifier {
           salahModeEnabled: false,
           clearSalahTestAnchorAt: true,
           clearTemporaryUnlock: true,
+          clearIosSalahShieldLatch: true,
         );
         break;
     }
@@ -443,6 +444,7 @@ class FocusController extends ChangeNotifier {
 
   Future<void> temporarilyUnlock({
     Duration duration = const Duration(minutes: 15),
+    bool clearIosSalahShieldLatch = false,
   }) async {
     if (!_lockState.isLocked) return;
     await FocusEnforcementService.appendDebugLog(
@@ -451,6 +453,7 @@ class FocusController extends ChangeNotifier {
     );
     _settings = _settings.copyWith(
       temporarilyUnlockedUntil: DateTime.now().add(duration),
+      clearIosSalahShieldLatch: clearIosSalahShieldLatch,
     );
     await _persist();
     await _recomputeAndPersist();
@@ -480,6 +483,7 @@ class FocusController extends ChangeNotifier {
       clearSalahTestAnchorAt: true,
       clearNightDisciplineBeforeChild: true,
       clearSalahModeBeforeChild: true,
+      clearIosSalahShieldLatch: true,
     );
     await _recomputeAndPersist();
   }
@@ -537,6 +541,7 @@ class FocusController extends ChangeNotifier {
     }
 
     if (until != null && !until.isAfter(now)) {
+      _settings = _settings.copyWith(clearIosSalahShieldLatch: true);
       await _recomputeAndPersist();
       await _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
         hadActiveSalahWindow,
@@ -544,7 +549,7 @@ class FocusController extends ChangeNotifier {
       return;
     }
     if (until == null) {
-      await temporarilyUnlock();
+      await temporarilyUnlock(clearIosSalahShieldLatch: true);
       await _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
         hadActiveSalahWindow,
       );
@@ -555,7 +560,10 @@ class FocusController extends ChangeNotifier {
       'focus.unlockFromHome',
       'until=${until.toIso8601String()} mode=${mode?.name}',
     );
-    _settings = _settings.copyWith(temporarilyUnlockedUntil: until);
+    _settings = _settings.copyWith(
+      temporarilyUnlockedUntil: until,
+      clearIosSalahShieldLatch: true,
+    );
     await _persist();
     await _recomputeAndPersist();
     await _maybeIosRefillPrayerNotificationsAfterSalahHomeUnlock(
@@ -792,17 +800,44 @@ class FocusController extends ChangeNotifier {
       return memoizedSalahWindows!;
     }
 
-    final updatedLockState = await _computeLockState(
-      updatedSettings,
-      recomputeNow,
-      salahWindowsOnce,
-    );
+    var work = updatedSettings;
+    FocusLockState updatedLockState;
+    var latchIter = 0;
+    while (true) {
+      updatedLockState = await _computeLockState(
+        work,
+        recomputeNow,
+        salahWindowsOnce,
+      );
+      final windowsList = await salahWindowsOnce();
+      final merged = _mergeIosSalahShieldLatch(
+        settings: work,
+        lockState: updatedLockState,
+        now: recomputeNow,
+        windows: windowsList,
+      );
+      if (merged.iosSalahShieldLatchEpochMillis ==
+          work.iosSalahShieldLatchEpochMillis) {
+        work = merged;
+        break;
+      }
+      work = merged;
+      if (++latchIter > 8) {
+        updatedLockState = await _computeLockState(
+          work,
+          recomputeNow,
+          salahWindowsOnce,
+        );
+        break;
+      }
+    }
+
     final scheduledTransitions = await _buildScheduledTransitions(
-      updatedSettings,
+      work,
       recomputeNow,
       salahWindowsOnce,
     );
-    _settings = updatedSettings;
+    _settings = work;
     _lockState = updatedLockState;
     if (prevLocked != _lockState.isLocked ||
         prevMode != _lockState.activeMode ||
@@ -895,14 +930,21 @@ class FocusController extends ChangeNotifier {
         s.childLockType == ChildLockType.timed &&
         s.childLockedUntil != null &&
         !s.childLockedUntil!.isAfter(now)) {
-      return _applyChildModeExit(s);
+      return _stripIosSalahLatchIfSalahDisabled(_applyChildModeExit(s));
     }
 
     if (s.temporarilyUnlockedUntil != null &&
         !s.temporarilyUnlockedUntil!.isAfter(now)) {
-      return s.copyWith(clearTemporaryUnlock: true);
+      s = s.copyWith(clearTemporaryUnlock: true);
     }
 
+    return _stripIosSalahLatchIfSalahDisabled(s);
+  }
+
+  FocusSettings _stripIosSalahLatchIfSalahDisabled(FocusSettings s) {
+    if (!s.salahModeEnabled && s.iosSalahShieldLatchEpochMillis != null) {
+      return s.copyWith(clearIosSalahShieldLatch: true);
+    }
     return s;
   }
 
@@ -963,13 +1005,25 @@ class FocusController extends ChangeNotifier {
 
     final nightLocked =
         settings.nightDisciplineEnabled && settings.nightRange.contains(at);
-    SalahWindow? activeSalah;
+    SalahWindow? activeSalahReminder;
     if (settings.salahModeEnabled) {
-      activeSalah = windows.where((window) {
+      activeSalahReminder = windows.where((window) {
         return !at.isBefore(window.start) && at.isBefore(window.end);
       }).firstOrNull;
     }
-    final salahLocked = activeSalah != null;
+    final latchMs = settings.iosSalahShieldLatchEpochMillis;
+    final iosLatchLocks = Platform.isIOS &&
+        latchMs != null &&
+        _iosSalahLatchStillCoversMoment(at, latchMs, windows);
+
+    final salahLocked = activeSalahReminder != null || iosLatchLocks;
+
+    SalahWindow? activeSalahForLabel;
+    if (activeSalahReminder != null) {
+      activeSalahForLabel = activeSalahReminder;
+    } else if (iosLatchLocks) {
+      activeSalahForLabel = _salahWindowMatchingStartMillis(latchMs, windows);
+    }
 
     final inScheduledWindow = nightLocked || salahLocked;
     final tempUnlocked =
@@ -1012,8 +1066,10 @@ class FocusController extends ChangeNotifier {
       reason = 'Night Discipline and Salah mode are blocking selected apps.';
     } else if (salahLocked) {
       displayMode = FocusModeType.salah;
-      reason =
-          'Salah mode is active for ${_prayerLabel(activeSalah.prayer.id)}.';
+      final prayerId = activeSalahForLabel?.prayer.id;
+      reason = prayerId == null
+          ? 'Salah mode is blocking selected apps.'
+          : 'Salah mode is active for ${_prayerLabel(prayerId)}.';
     } else {
       displayMode = FocusModeType.nightDiscipline;
       reason = 'Night Discipline is blocking selected apps.';
@@ -1023,7 +1079,16 @@ class FocusController extends ChangeNotifier {
         ? settings.temporarilyUnlockedUntil
         : null;
     if (salahLocked) {
-      nextChangeAt = _earlierOf(nextChangeAt, activeSalah.end);
+      DateTime? salahBoundary;
+      if (activeSalahReminder != null) {
+        salahBoundary = activeSalahReminder.end;
+      } else if (iosLatchLocks && activeSalahForLabel != null) {
+        salahBoundary = _firstSalahStartStrictlyAfter(
+          activeSalahForLabel.start,
+          windows,
+        );
+      }
+      nextChangeAt = _earlierOf(nextChangeAt, salahBoundary);
     }
     if (nightLocked) {
       nextChangeAt = _earlierOf(
@@ -1039,6 +1104,108 @@ class FocusController extends ChangeNotifier {
       nextChangeAt: nextChangeAt,
       isTemporarilyUnlocked: tempUnlocked,
     );
+  }
+
+  bool _iosSalahLatchStillCoversMoment(
+    DateTime at,
+    int latchEpochMs,
+    List<SalahWindow> windows,
+  ) {
+    SalahWindow? matched;
+    for (final window in windows) {
+      if (window.start.millisecondsSinceEpoch == latchEpochMs) {
+        matched = window;
+        break;
+      }
+    }
+    if (matched == null) return false;
+    if (at.isBefore(matched.start)) return false;
+    final nextStart = _firstSalahStartStrictlyAfter(matched.start, windows);
+    if (nextStart != null && !at.isBefore(nextStart)) return false;
+    return true;
+  }
+
+  DateTime? _firstSalahStartStrictlyAfter(
+    DateTime start,
+    List<SalahWindow> windows,
+  ) {
+    DateTime? best;
+    for (final window in windows) {
+      if (!window.start.isAfter(start)) continue;
+      if (best == null || window.start.isBefore(best)) {
+        best = window.start;
+      }
+    }
+    return best;
+  }
+
+  SalahWindow? _salahWindowMatchingStartMillis(
+    int latchEpochMs,
+    List<SalahWindow> windows,
+  ) {
+    for (final window in windows) {
+      if (window.start.millisecondsSinceEpoch == latchEpochMs) {
+        return window;
+      }
+    }
+    return null;
+  }
+
+  SalahWindow? _activeSalahReminderAt(DateTime at, List<SalahWindow> windows) {
+    for (final window in windows) {
+      if (!at.isBefore(window.start) && at.isBefore(window.end)) {
+        return window;
+      }
+    }
+    return null;
+  }
+
+  FocusSettings _mergeIosSalahShieldLatch({
+    required FocusSettings settings,
+    required FocusLockState lockState,
+    required DateTime now,
+    required List<SalahWindow> windows,
+  }) {
+    if (!Platform.isIOS) {
+      if (settings.iosSalahShieldLatchEpochMillis != null) {
+        return settings.copyWith(clearIosSalahShieldLatch: true);
+      }
+      return settings;
+    }
+
+    if (!settings.salahModeEnabled) {
+      if (settings.iosSalahShieldLatchEpochMillis != null) {
+        return settings.copyWith(clearIosSalahShieldLatch: true);
+      }
+      return settings;
+    }
+
+    var nextLatch = settings.iosSalahShieldLatchEpochMillis;
+    final latchStill = nextLatch != null &&
+        _iosSalahLatchStillCoversMoment(now, nextLatch, windows);
+
+    if (!latchStill) {
+      nextLatch = null;
+    }
+
+    final reminder = _activeSalahReminderAt(now, windows);
+    final tempActive = _isTemporaryUnlockActiveAt(settings, now);
+    if (reminder != null &&
+        lockState.isLocked &&
+        lockState.activeMode == FocusModeType.salah &&
+        !tempActive) {
+      nextLatch = reminder.start.millisecondsSinceEpoch;
+    }
+
+    if (settings.iosSalahShieldLatchEpochMillis == nextLatch) {
+      return settings;
+    }
+    if (nextLatch == null) {
+      return settings.iosSalahShieldLatchEpochMillis == null
+          ? settings
+          : settings.copyWith(clearIosSalahShieldLatch: true);
+    }
+    return settings.copyWith(iosSalahShieldLatchEpochMillis: nextLatch);
   }
 
   bool _isTemporaryUnlockActive(FocusSettings settings) {
