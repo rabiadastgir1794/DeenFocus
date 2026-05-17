@@ -197,10 +197,11 @@ class FocusSettings {
   final DateTime? salahTestAnchorAt;
   final DateTime? temporarilyUnlockedUntil;
 
-  /// iOS only: [SalahWindow.start] millis for the current Salah shield session.
-  /// Keeps [FocusLockState.isLocked] true after the 15-minute prayer reminder window
-  /// until the next prayer or [FocusController.unlockFromHome], so foreground
-  /// sync does not clear ManagedSettings while the user still owes a Home unlock.
+  /// [SalahWindow.start] millis for the active Salah shield latch (iOS shield +
+  /// Android blocking parity until Home unlock).
+  /// Keeps [FocusLockState.isLocked] true from prayer start until the next prayer
+  /// or [FocusController.unlockFromHome], so foreground sync does not clear shields
+  /// while the user still owes a Home unlock.
   final int? iosSalahShieldLatchEpochMillis;
 
   /// Snapshot taken when entering child mode; used to restore [nightDisciplineEnabled]

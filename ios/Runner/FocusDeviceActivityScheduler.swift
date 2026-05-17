@@ -89,10 +89,14 @@ enum FocusIOSDebugLogger {
 @available(iOS 16.0, *)
 enum FocusDeviceActivityScheduler {
   static let appGroupId = "group.com.rnr.deenfocus"
+  /// Wall-clock millis (since 1970) when a Home temporary unlock ends; used by the monitor extension.
+  static let tempUnlockUntilMsKey = "focus_temp_unlock_until_ms"
   static let shieldActiveModeKey = "focus_shield_active_mode"
   static let shieldLockReasonKey = "focus_shield_lock_reason"
   static let shieldFlutterLockedKey = "focus_flutter_is_locked"
   static let shieldNativeLockedKey = "focus_native_shield_locked"
+  /// Salah shield latch epoch (ms); set by the monitor on Salah lock, mirrored by Flutter sync.
+  static let salahShieldLatchEpochMsKey = "focus_salah_shield_latch_epoch_ms"
   /// Mirrors the Flutter dark-mode toggle for shield UI (the app extension cannot read the main app theme).
   static let shieldAppThemeIsDarkKey = "focus_shield_app_theme_is_dark"
   static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
@@ -102,6 +106,7 @@ enum FocusDeviceActivityScheduler {
   private static let activityActionsKey = "focus_device_activity_actions"
   private static let activityModesKey = "focus_device_activity_modes"
   private static let activityReasonsKey = "focus_device_activity_reasons"
+  private static let activitySetsSalahLatchKey = "focus_device_activity_sets_salah_latch"
   private static let activityScheduleSignatureKey = "focus_device_activity_schedule_signature"
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
 
@@ -131,6 +136,7 @@ enum FocusDeviceActivityScheduler {
     defaults?.removeObject(forKey: activityActionsKey)
     defaults?.removeObject(forKey: activityModesKey)
     defaults?.removeObject(forKey: activityReasonsKey)
+    defaults?.removeObject(forKey: activitySetsSalahLatchKey)
     defaults?.removeObject(forKey: activityScheduleSignatureKey)
   }
 
@@ -194,6 +200,7 @@ enum FocusDeviceActivityScheduler {
       defaults?.removeObject(forKey: activityActionsKey)
       defaults?.removeObject(forKey: activityModesKey)
       defaults?.removeObject(forKey: activityReasonsKey)
+      defaults?.removeObject(forKey: activitySetsSalahLatchKey)
       defaults?.removeObject(forKey: activityScheduleSignatureKey)
     }
   }
@@ -327,6 +334,7 @@ enum FocusDeviceActivityScheduler {
     var actionsByName: [String: String] = [:]
     var modesByName: [String: String] = [:]
     var reasonsByName: [String: String] = [:]
+    var setsSalahLatchByName: [String: Bool] = [:]
     var didRegisterRepeatingNightLock = false
 
     if preserveRepeatingNight {
@@ -381,9 +389,20 @@ enum FocusDeviceActivityScheduler {
     }
 
     for t in transitions {
+      let skipNative = (t["skipNativeSchedule"] as? NSNumber)?.boolValue == true
+        || (t["skipNativeSchedule"] as? Bool) == true
+      if skipNative {
+        FocusIOSDebugLogger.append(
+          "ios.scheduler.register",
+          "skipped native schedule (skipNativeSchedule) atMillis=\(t["atMillis"] ?? "nil")"
+        )
+        continue
+      }
       guard let locked = t["isLocked"] as? Bool else { continue }
       let transitionMode = t["activeMode"] as? String
       let transitionReason = t["lockReason"] as? String
+      let setsSalahLatch = (t["setsSalahShieldLatch"] as? NSNumber)?.boolValue == true
+        || (t["setsSalahShieldLatch"] as? Bool) == true
       if transitionMode == "nightDiscipline", locked, didRegisterRepeatingNightLock {
         let force = (t["forceNativeNightLock"] as? NSNumber)?.boolValue == true
           || (t["forceNativeNightLock"] as? Bool) == true
@@ -401,10 +420,13 @@ enum FocusDeviceActivityScheduler {
       guard startMs > 0 else { continue }
 
       let action = locked ? "lock" : "unlock"
+      let notificationHint = t["notificationHint"] as? String
+      let clearsSalahLatch = (t["clearIosSalahShieldLatch"] as? NSNumber)?.boolValue == true
+        || (t["clearIosSalahShieldLatch"] as? Bool) == true
       // iOS Salah: do not register scheduled unlock at prayer-window end — the user
       // uses home temporary unlock; shields clear on next Flutter foreground sync.
-      // Night (and combined wake) unlock one-shots stay registered.
-      if !locked, transitionMode == "salah" {
+      // Night wake unlocks (nightMorning / clear latch) must still register.
+      if !locked, transitionMode == "salah", notificationHint != "nightMorning", !clearsSalahLatch {
         FocusIOSDebugLogger.append(
           "ios.scheduler.register",
           "skipped salah scheduled auto-unlock name=deenly_focus_unlock_\(startMs) at=\(Date(timeIntervalSince1970: Double(startMs) / 1000.0))"
@@ -445,6 +467,9 @@ enum FocusDeviceActivityScheduler {
         if let transitionReason, !transitionReason.isEmpty {
           reasonsByName[nameStr] = transitionReason
         }
+        if setsSalahLatch {
+          setsSalahLatchByName[nameStr] = true
+        }
         FocusIOSDebugLogger.append(
           "ios.scheduler.register",
           "registered one-shot action=\(action) name=\(nameStr) at=\(start) end=\(intervalEnd)"
@@ -462,6 +487,7 @@ enum FocusDeviceActivityScheduler {
     defaults?.set(actionsByName, forKey: activityActionsKey)
     defaults?.set(modesByName, forKey: activityModesKey)
     defaults?.set(reasonsByName, forKey: activityReasonsKey)
+    defaults?.set(setsSalahLatchByName, forKey: activitySetsSalahLatchKey)
     defaults?.set(scheduleSignature, forKey: activityScheduleSignatureKey)
     FocusIOSDebugLogger.append(
       "ios.scheduler.sync",
@@ -489,7 +515,7 @@ enum FocusDeviceActivityScheduler {
       selectionSignature = "len=\(selection.count)|\(prefixPart)|\(suffixPart)"
     }
 
-    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String, Bool) in
+    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String, Bool, Bool) in
       let atMillis: Int64 = {
         if let n = transition["atMillis"] as? NSNumber { return n.int64Value }
         if let i = transition["atMillis"] as? Int64 { return i }
@@ -501,17 +527,20 @@ enum FocusDeviceActivityScheduler {
       let reason = transition["lockReason"] as? String ?? ""
       let forceNative = (transition["forceNativeNightLock"] as? NSNumber)?.boolValue == true
         || (transition["forceNativeNightLock"] as? Bool) == true
-      return (atMillis, isLocked, mode, reason, forceNative)
+      let skipNative = (transition["skipNativeSchedule"] as? NSNumber)?.boolValue == true
+        || (transition["skipNativeSchedule"] as? Bool) == true
+      return (atMillis, isLocked, mode, reason, forceNative, skipNative)
     }
     .sorted {
       if $0.0 != $1.0 { return $0.0 < $1.0 }
       if $0.1 != $1.1 { return !$0.1 && $1.1 }
       if $0.2 != $1.2 { return $0.2 < $1.2 }
       if $0.3 != $1.3 { return $0.3 < $1.3 }
-      return !$0.4 && $1.4
+      if $0.4 != $1.4 { return !$0.4 && $1.4 }
+      return !$0.5 && $1.5
     }
-    .map { atMillis, isLocked, mode, reason, forceNative in
-      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason):\(forceNative ? 1 : 0)"
+    .map { atMillis, isLocked, mode, reason, forceNative, skipNative in
+      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason):\(forceNative ? 1 : 0):\(skipNative ? 1 : 0)"
     }
     .joined(separator: ",")
 

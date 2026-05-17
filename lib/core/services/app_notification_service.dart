@@ -62,6 +62,11 @@ class AppNotificationService {
   Future<void> _focusSyncSerial = Future<void>.value();
   String? _lastPrayerScheduleSignature;
   String? _lastFocusScheduleSignature;
+
+  /// Forces the next [syncFocusNotifications] to rebuild pending alerts.
+  void invalidateFocusScheduleCache() {
+    _lastFocusScheduleSignature = null;
+  }
   bool _hadIosFocusNotificationPendingCapSkip = false;
   bool _iosFocusNotificationsRetryPending = false;
 
@@ -117,7 +122,7 @@ class AppNotificationService {
     return status.isGranted || status.isLimited;
   }
 
-  /// Enough IDs for 7 days × 6 prayer indices (sunrise skipped when scheduling).
+  /// Enough IDs for multiple days × 6 prayer indices (sunrise skipped when scheduling).
   static const int _prayerNotificationIdStart = 1000;
   static const int _prayerNotificationIdEnd = 1199;
 
@@ -147,9 +152,10 @@ class AppNotificationService {
       if (daysAheadOverride != null) {
         daysAhead = daysAheadOverride.clamp(1, 7);
       } else {
-        // iOS: keep the prayer batch small so Salah/Night focus alerts still fit under
-        // the 64 pending-notification limit; refill extends on Salah home unlock.
-        daysAhead = Platform.isIOS ? 2 : 7;
+        // iOS: keep the batch small so Salah/Night focus alerts still fit under the
+        // 64 pending-notification limit. Android uses the same horizon as focus
+        // scheduling; refill extends on Salah home unlock.
+        daysAhead = 2;
       }
       final datasets = <({int dayOffset, HomePrayerTimesData data})>[
         for (var d = 0; d < daysAhead; d++)
@@ -318,15 +324,19 @@ class AppNotificationService {
                 return false;
               }
               // Prayer reminders already cover Salah start; avoid a second alert.
-              if (isLocked && mode == FocusModeType.salah.name) {
+              // Exception: nightLock during an active Salah window (night starts inside prayer).
+              if (isLocked &&
+                  mode == FocusModeType.salah.name &&
+                  hint != 'nightLock') {
                 return false;
               }
               final prayerId = transition['prayerId'] as String?;
-              // iOS: prayer windows end without auto-opening apps (shield stays until
-              // Home unlock / latch rules). Do not schedule *any* Salah-boundary
-              // unlock local notification there. Android unchanged (auto-unlock +
-              // Salah complete / generic unlock alerts stay).
-              if (Platform.isIOS && !isLocked && prayerId != null) {
+              // Salah windows do not auto-open apps (shield / latch until Home unlock).
+              // Do not schedule Salah-boundary unlock notifications on mobile.
+              if (!kIsWeb &&
+                  (Platform.isIOS || Platform.isAndroid) &&
+                  !isLocked &&
+                  prayerId != null) {
                 return false;
               }
               return isLocked || includeUnlockNotifications;
@@ -737,6 +747,19 @@ class AppNotificationService {
     return prayerParts.join('|');
   }
 
+  /// Stable signature for focus transition + native schedule sync deduplication.
+  Future<String> buildFocusScheduleSignature({
+    required FocusSettings settings,
+    required List<Map<String, dynamic>> scheduledTransitions,
+    bool includeUnlockNotifications = true,
+  }) {
+    return _buildFocusScheduleSignature(
+      settings: settings,
+      includeUnlockNotifications: includeUnlockNotifications,
+      scheduledTransitions: scheduledTransitions,
+    );
+  }
+
   Future<String> _buildFocusScheduleSignature({
     required FocusSettings settings,
     required bool includeUnlockNotifications,
@@ -751,6 +774,9 @@ class AppNotificationService {
       'end=${settings.nightRange.endHour}:${settings.nightRange.endMinute}',
       'unlock=$includeUnlockNotifications',
       'tempUnlockUntil=${settings.temporarilyUnlockedUntil?.millisecondsSinceEpoch ?? 0}',
+      'child=${settings.childModeEnabled}',
+      'childUntil=${settings.childLockedUntil?.millisecondsSinceEpoch ?? 0}',
+      'salahLatch=${settings.iosSalahShieldLatchEpochMillis ?? 0}',
     ];
     for (final transition in scheduledTransitions) {
       final atMillis = (transition['atMillis'] as num?)?.toInt() ?? 0;
@@ -760,8 +786,9 @@ class AppNotificationService {
       final prayerId = transition['prayerId'] as String? ?? '';
       final forceNative =
           transition['forceNativeNightLock'] == true ? 1 : 0;
+      final skipNative = transition['skipNativeSchedule'] == true ? 1 : 0;
       parts.add(
-        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId:$forceNative',
+        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId:$forceNative:$skipNative',
       );
     }
 

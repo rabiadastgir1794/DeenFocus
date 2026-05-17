@@ -118,8 +118,17 @@ class MainActivity : FlutterActivity() {
                     call.argument<List<String>>("selectedPackages").orEmpty()
                 val activeMode = call.argument<String>("activeMode")
                 val isLocked = call.argument<Boolean>("isLocked") ?: false
+                val isTemporarilyUnlocked =
+                    call.argument<Boolean>("isTemporarilyUnlocked") ?: false
                 val lockReason = call.argument<String>("lockReason")
                 val nextChangeAt = call.argument<String>("nextChangeAt")
+                val tempUnlockUntilEpochMillis: Long? =
+                    if (!isTemporarilyUnlocked) {
+                        0L
+                    } else {
+                        FocusBlockerStore.parseNextChangeAtToEpochMillis(nextChangeAt)
+                            .takeIf { it > 0L }
+                    }
                 val nightDisciplineEnabled = call.argument<Boolean>("nightDisciplineEnabled")
                 val nightStartHour = call.argument<Number>("nightStartHour")?.toInt()
                 val nightStartMinute = call.argument<Number>("nightStartMinute")?.toInt()
@@ -130,7 +139,7 @@ class MainActivity : FlutterActivity() {
                 FocusDebugLogger.append(
                     applicationContext,
                     "channel.syncFocusState",
-                    "selected=${selectedPackages.size} isLocked=$isLocked activeMode=$activeMode nextChangeAt=$nextChangeAt transitions=${scheduledTransitions.size}",
+                    "selected=${selectedPackages.size} isLocked=$isLocked isTempUnlock=$isTemporarilyUnlocked activeMode=$activeMode nextChangeAt=$nextChangeAt transitions=${scheduledTransitions.size}",
                 )
                 FocusBlockerStore.save(
                     context = applicationContext,
@@ -144,6 +153,7 @@ class MainActivity : FlutterActivity() {
                     nightStartMinute = nightStartMinute,
                     nightEndHour = nightEndHour,
                     nightEndMinute = nightEndMinute,
+                    tempUnlockUntilEpochMillis = tempUnlockUntilEpochMillis,
                 )
                 FocusScheduleManager.sync(
                     context = applicationContext,

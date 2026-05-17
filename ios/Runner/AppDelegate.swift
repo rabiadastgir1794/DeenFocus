@@ -83,6 +83,8 @@ private enum ManagedSettingsStoreHolder {
           result(FocusIOSDebugLogger.path())
         case "cancelPendingNotificationRange":
           self.cancelPendingNotificationRange(call: call, result: result)
+        case "readIosFocusBridgeState":
+          self.readIosFocusBridgeState(result: result)
         default:
           result(FlutterMethodNotImplemented)
         }
@@ -406,6 +408,32 @@ private enum ManagedSettingsStoreHolder {
     CFPreferencesAppSynchronize(FocusShieldThemeUserDefaults.suiteName as CFString)
   }
 
+  /// Parses Flutter `nextChangeAt` (epoch millis string or ISO local) into milliseconds since 1970.
+  private static func parseFocusNextChangeAtToMillis(_ raw: String?) -> Double? {
+    guard let raw, !raw.isEmpty else { return nil }
+    let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+    if let v = Int64(trimmed), v > 0 {
+      return Double(v)
+    }
+    let tz = TimeZone.current
+    let patterns = [
+      "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+      "yyyy-MM-dd'T'HH:mm:ssX",
+      "yyyy-MM-dd'T'HH:mm:ss.SSS",
+      "yyyy-MM-dd'T'HH:mm:ss",
+    ]
+    for pattern in patterns {
+      let df = DateFormatter()
+      df.locale = Locale(identifier: "en_US_POSIX")
+      df.timeZone = tz
+      df.dateFormat = pattern
+      if let d = df.date(from: trimmed) {
+        return d.timeIntervalSince1970 * 1000
+      }
+    }
+    return nil
+  }
+
   private func setFocusShieldTheme(call: FlutterMethodCall, result: @escaping FlutterResult) {
     guard let args = call.arguments as? [String: Any] else {
       result(FlutterError(code: "BAD_ARGS", message: "Missing arguments", details: nil))
@@ -423,6 +451,20 @@ private enum ManagedSettingsStoreHolder {
     }
     Self.writeShieldThemeToAppGroup(isDark: isDark)
     result(nil)
+  }
+
+  private func readIosFocusBridgeState(result: @escaping FlutterResult) {
+    guard #available(iOS 16.0, *) else {
+      result([String: Any]())
+      return
+    }
+    let defaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
+    let latchMs = defaults?.double(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey) ?? 0
+    result([
+      "nativeShieldLocked": defaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false,
+      "shieldActiveMode": defaults?.string(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey) as Any,
+      "salahLatchEpochMs": (latchMs > 0 ? NSNumber(value: Int(latchMs)) : NSNull()) as Any,
+    ])
   }
 
   private func syncFocusState(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -444,7 +486,26 @@ private enum ManagedSettingsStoreHolder {
     let isLocked = args["isLocked"] as? Bool ?? false
     let activeMode = args["activeMode"] as? String
     let encodedSelection = args["iosSelectionData"] as? String
+    let salahModeEnabled = args["salahModeEnabled"] as? Bool ?? false
     let nightDisciplineEnabled = args["nightDisciplineEnabled"] as? Bool ?? false
+    let clearLatch = args["clearIosSalahShieldLatch"] as? Bool ?? false
+    let latchMs: Double = {
+      if let n = args["iosSalahShieldLatchEpochMillis"] as? NSNumber {
+        return n.doubleValue
+      }
+      if let i = args["iosSalahShieldLatchEpochMillis"] as? Int {
+        return Double(i)
+      }
+      if let i = args["iosSalahShieldLatchEpochMillis"] as? Int64 {
+        return Double(i)
+      }
+      return 0
+    }()
+    if clearLatch || latchMs <= 0 {
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey)
+    } else {
+      sharedDefaults?.set(latchMs, forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey)
+    }
     let nightStartHour = args["nightStartHour"] as? Int ?? 22
     let nightStartMinute = args["nightStartMinute"] as? Int ?? 0
     let nightEndHour = args["nightEndHour"] as? Int ?? 6
@@ -452,6 +513,13 @@ private enum ManagedSettingsStoreHolder {
     let rawTransitions = args["scheduledTransitions"] as? [Any] ?? []
     let transitions: [[String: Any]] = rawTransitions.compactMap { $0 as? [String: Any] }
     let lockReason = args["lockReason"] as? String
+    let isTemporarilyUnlocked = args["isTemporarilyUnlocked"] as? Bool ?? false
+    let nextChangeAtStr = args["nextChangeAt"] as? String
+    if isTemporarilyUnlocked, let ms = Self.parseFocusNextChangeAtToMillis(nextChangeAtStr) {
+      sharedDefaults?.set(ms, forKey: FocusDeviceActivityScheduler.tempUnlockUntilMsKey)
+    } else {
+      sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.tempUnlockUntilMsKey)
+    }
     FocusIOSDebugLogger.append(
       "ios.sync",
       "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
@@ -475,6 +543,19 @@ private enum ManagedSettingsStoreHolder {
     let store = ManagedSettingsStoreHolder.shared
 
     if !isLocked {
+      let latchMs = sharedDefaults?.double(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey) ?? 0
+      let nativeStillLocked = sharedDefaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false
+      if clearLatch {
+        sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey)
+      }
+      if salahModeEnabled && latchMs > 0 && nativeStillLocked && !isTemporarilyUnlocked && !clearLatch {
+        FocusIOSDebugLogger.append(
+          "ios.sync",
+          "skipped clear because native salah latch is active latchMs=\(Int(latchMs)) activeMode=\(sharedDefaults?.string(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey) ?? "nil")"
+        )
+        result(nil)
+        return
+      }
       sharedDefaults?.set(false, forKey: FocusDeviceActivityScheduler.shieldFlutterLockedKey)
       sharedDefaults?.set(false, forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey)
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey)

@@ -50,10 +50,12 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let activityActionsKey = "focus_device_activity_actions"
   private static let activityModesKey = "focus_device_activity_modes"
   private static let activityReasonsKey = "focus_device_activity_reasons"
+  private static let activitySetsSalahLatchKey = "focus_device_activity_sets_salah_latch"
   private static let shieldActiveModeKey = "focus_shield_active_mode"
   private static let shieldLockReasonKey = "focus_shield_lock_reason"
   private static let shieldFlutterLockedKey = "focus_flutter_is_locked"
   private static let shieldNativeLockedKey = "focus_native_shield_locked"
+  private static let salahShieldLatchEpochMsKey = "focus_salah_shield_latch_epoch_ms"
   private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let clockJumpThresholdMs: Double = 90_000
@@ -61,6 +63,8 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
   private static let oneShotLockPrefix = "deenly_focus_lock_"
   private static let oneShotUnlockPrefix = "deenly_focus_unlock_"
+  /// Same key as [FocusDeviceActivityScheduler.tempUnlockUntilMsKey] in the main app.
+  private static let tempUnlockUntilMsKey = "focus_temp_unlock_until_ms"
 
   override func intervalDidStart(for activity: DeviceActivityName) {
     super.intervalDidStart(for: activity)
@@ -124,12 +128,38 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
       defaults?.set(false, forKey: Self.shieldNativeLockedKey)
       defaults?.removeObject(forKey: Self.shieldActiveModeKey)
       defaults?.removeObject(forKey: Self.shieldLockReasonKey)
+      defaults?.removeObject(forKey: Self.salahShieldLatchEpochMsKey)
       FocusMonitorDebugLogger.append(
         "ios.monitor.unlock",
-        "clearing managed settings for activity=\(activity.rawValue)"
+        "clearing managed settings and salah latch for activity=\(activity.rawValue)"
       )
       store.clearAllSettings()
       return
+    }
+
+    if effectiveAction == "lock" {
+      let tempUntilMs = defaults?.double(forKey: Self.tempUnlockUntilMsKey) ?? 0
+      let isNightLock =
+        mode == "nightDiscipline"
+        || activity.rawValue == Self.repeatingNightLockActivityName
+      if tempUntilMs > 0 {
+        let nowMs = Date().timeIntervalSince1970 * 1000
+        if nowMs < tempUntilMs - 1 {
+          if isNightLock {
+            FocusMonitorDebugLogger.append(
+              "ios.monitor.lock",
+              "night lock overrides home temp unlock untilMs=\(Int(tempUntilMs)) activity=\(activity.rawValue)"
+            )
+            defaults?.removeObject(forKey: Self.tempUnlockUntilMsKey)
+          } else {
+            FocusMonitorDebugLogger.append(
+              "ios.monitor.lock",
+              "skip scheduled lock during home temp unlock untilMs=\(Int(tempUntilMs)) nowMs=\(Int(nowMs)) activity=\(activity.rawValue)"
+            )
+            return
+          }
+        }
+      }
     }
 
     if let mode, !mode.isEmpty {
@@ -139,7 +169,34 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
       defaults?.set(reason, forKey: Self.shieldLockReasonKey)
     }
     defaults?.set(true, forKey: Self.shieldNativeLockedKey)
+    let setsSalahLatch =
+      defaults?.dictionary(forKey: Self.activitySetsSalahLatchKey)?[activity.rawValue] as? Bool
+      ?? false
+    if mode == "nightDiscipline" {
+      defaults?.set("nightDiscipline", forKey: Self.shieldActiveModeKey)
+    }
+    if mode == "salah", setsSalahLatch {
+      let latchMs = lockActivityEpochMs(for: activity.rawValue)
+      if latchMs > 0 {
+        defaults?.set(latchMs, forKey: Self.salahShieldLatchEpochMsKey)
+        FocusMonitorDebugLogger.append(
+          "ios.monitor.latch",
+          "set salah latch epochMs=\(Int(latchMs)) activity=\(activity.rawValue)"
+        )
+      }
+    } else if mode == "salah" {
+      FocusMonitorDebugLogger.append(
+        "ios.monitor.latch",
+        "skipped salah latch for activity=\(activity.rawValue) (not a prayer-window start)"
+      )
+    }
     applyShield()
+  }
+
+  private func lockActivityEpochMs(for activityName: String) -> Double {
+    guard activityName.hasPrefix(Self.oneShotLockPrefix) else { return 0 }
+    let suffix = String(activityName.dropFirst(Self.oneShotLockPrefix.count))
+    return Double(suffix) ?? 0
   }
 
   private func inferredAction(for activityName: String) -> String? {

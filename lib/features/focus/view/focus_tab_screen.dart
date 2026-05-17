@@ -19,10 +19,7 @@ import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
 
 String _salahBlockingDescription(AppLocalizations l10n) {
-  if (defaultTargetPlatform == TargetPlatform.iOS) {
-    return l10n.focusPrayerBlockingDescriptionIos;
-  }
-  return l10n.focusPrayerBlockingDescription;
+  return l10n.focusPrayerBlockingDescriptionIos;
 }
 
 class FocusTabScreen extends StatefulWidget {

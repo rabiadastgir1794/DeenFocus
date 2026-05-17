@@ -5,6 +5,19 @@ import 'package:flutter/services.dart';
 import '../../features/focus/model/focus_models.dart';
 import 'storage_service.dart';
 
+/// Native shield / latch state from the iOS app group (extension + sync).
+class IosFocusBridgeState {
+  const IosFocusBridgeState({
+    required this.nativeShieldLocked,
+    this.shieldActiveMode,
+    this.salahLatchEpochMs,
+  });
+
+  final bool nativeShieldLocked;
+  final String? shieldActiveMode;
+  final int? salahLatchEpochMs;
+}
+
 abstract class FocusEnforcementService {
   static const MethodChannel _channel = MethodChannel(
     'com.app.deenly.deenly/focus',
@@ -38,6 +51,29 @@ abstract class FocusEnforcementService {
 
     try {
       return await _channel.invokeMethod<String>('getFocusDebugLogPath');
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  static Future<IosFocusBridgeState?> readIosFocusBridgeState() async {
+    if (!Platform.isIOS) return null;
+
+    try {
+      final raw = await _channel.invokeMethod<Object?>('readIosFocusBridgeState');
+      if (raw is! Map) return null;
+      final latchRaw = raw['salahLatchEpochMs'];
+      int? latchMs;
+      if (latchRaw is int) {
+        latchMs = latchRaw > 0 ? latchRaw : null;
+      } else if (latchRaw is num) {
+        latchMs = latchRaw.toInt() > 0 ? latchRaw.toInt() : null;
+      }
+      return IosFocusBridgeState(
+        nativeShieldLocked: raw['nativeShieldLocked'] as bool? ?? false,
+        shieldActiveMode: raw['shieldActiveMode'] as String?,
+        salahLatchEpochMs: latchMs,
+      );
     } on PlatformException {
       return null;
     }
@@ -77,6 +113,10 @@ abstract class FocusEnforcementService {
         'lockReason': lockState.reason,
         'nextChangeAt': lockState.nextChangeAt?.toIso8601String(),
         'scheduledTransitions': scheduledTransitions,
+        'iosSalahShieldLatchEpochMillis':
+            settings.iosSalahShieldLatchEpochMillis ?? 0,
+        'clearIosSalahShieldLatch':
+            settings.iosSalahShieldLatchEpochMillis == null,
         // iOS: applied inside `syncFocusState` before any early return so the shield extension
         // never reads a stale `focus_shield_app_theme_is_dark` while the app is in light mode.
         'shieldThemeIsDark': shieldUiIsDark,

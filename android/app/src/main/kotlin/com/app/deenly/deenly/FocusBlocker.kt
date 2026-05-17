@@ -60,6 +60,8 @@ private const val nightStartHourKey = "night_start_hour"
 private const val nightStartMinuteKey = "night_start_minute"
 private const val nightEndHourKey = "night_end_hour"
 private const val nightEndMinuteKey = "night_end_minute"
+private const val tempUnlockUntilMillisKey = "temp_unlock_until_millis"
+private const val focusScheduleSignatureKey = "focus_schedule_signature"
 
 object FocusDebugLogger {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
@@ -329,6 +331,35 @@ object FocusBlockerStore {
 
     private const val clockJumpThresholdMillis: Long = 90_000L
 
+    /**
+     * Parses [nextChangeAt] from Flutter ([DateTime.toIso8601String] or epoch millis string)
+     * for temporary-unlock expiry. Uses the device default timezone for ISO strings without offset.
+     */
+    fun parseNextChangeAtToEpochMillis(nextChangeAt: String?): Long {
+        if (nextChangeAt.isNullOrBlank()) return 0L
+        val raw = nextChangeAt.trim()
+        raw.toLongOrNull()?.let { if (it > 0L) return it }
+        val tz = TimeZone.getDefault()
+        val isoPatterns =
+            listOf(
+                "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+                "yyyy-MM-dd'T'HH:mm:ssX",
+                "yyyy-MM-dd'T'HH:mm:ss.SSS",
+                "yyyy-MM-dd'T'HH:mm:ss",
+            )
+        for (pattern in isoPatterns) {
+            val parsed =
+                runCatching {
+                    val sdf = SimpleDateFormat(pattern, Locale.US)
+                    sdf.timeZone = tz
+                    val d = sdf.parse(raw) ?: return@runCatching null
+                    d.time
+                }.getOrNull()
+            if (parsed != null && parsed > 0L) return parsed
+        }
+        return 0L
+    }
+
     fun save(
         context: Context,
         selectedPackages: List<String>,
@@ -341,6 +372,11 @@ object FocusBlockerStore {
         nightStartMinute: Int? = null,
         nightEndHour: Int? = null,
         nightEndMinute: Int? = null,
+        /**
+         * When non-null, updates the temp-unlock window end used by [resolveScheduledState].
+         * Pass `0L` (or `<= 0`) to clear. Pass `null` from alarm handlers so the key is unchanged.
+         */
+        tempUnlockUntilEpochMillis: Long? = null,
     ) {
         val syncGeneration = System.currentTimeMillis()
         val p = prefs(context)
@@ -349,7 +385,7 @@ object FocusBlockerStore {
         FocusDebugLogger.append(
             context,
             "store.save",
-            "packages=${selectedPackages.size} activeMode=$activeMode isLocked=$isLocked nextChangeAt=$nextChangeAt reason=$lockReason",
+            "packages=${selectedPackages.size} activeMode=$activeMode isLocked=$isLocked nextChangeAt=$nextChangeAt reason=$lockReason tempUnlockUntil=${tempUnlockUntilEpochMillis ?: "unchanged"}",
         )
         val edit =
             p.edit()
@@ -359,6 +395,13 @@ object FocusBlockerStore {
                 .putString(lockReasonKey, lockReason)
                 .putString(nextChangeAtKey, nextChangeAt)
                 .putLong(syncGenerationKey, syncGeneration)
+        if (tempUnlockUntilEpochMillis != null) {
+            if (tempUnlockUntilEpochMillis > 0L) {
+                edit.putLong(tempUnlockUntilMillisKey, tempUnlockUntilEpochMillis)
+            } else {
+                edit.remove(tempUnlockUntilMillisKey)
+            }
+        }
         if (nightDisciplineEnabled != null) {
             edit.putBoolean(nightDisciplineEnabledKey, nightDisciplineEnabled)
         }
@@ -618,11 +661,33 @@ object FocusBlockerStore {
         context: Context,
         storedState: FocusBlockState,
     ): FocusBlockState {
+        val prefs = prefs(context)
+        val now = System.currentTimeMillis()
         val transitions = readScheduledTransitions(context)
         if (transitions.isEmpty()) return storedState
 
-        val now = System.currentTimeMillis()
         val applied = transitions.lastOrNull { it.atMillis <= now } ?: return storedState
+        val tempUnlockUntil = prefs.getLong(tempUnlockUntilMillisKey, 0L)
+        if (tempUnlockUntil > now) {
+            val nightOverridesTempUnlock =
+                applied.isLocked && applied.activeMode == "nightDiscipline"
+            if (nightOverridesTempUnlock) {
+                FocusDebugLogger.append(
+                    context,
+                    "store.resolve",
+                    "night lock atMillis=${applied.atMillis} overrides temp unlock untilMillis=$tempUnlockUntil",
+                )
+                prefs.edit().remove(tempUnlockUntilMillisKey).apply()
+            } else {
+                // Flutter reports temporary unlock; do not replay an older scheduled *lock* edge over it.
+                FocusDebugLogger.append(
+                    context,
+                    "store.resolve",
+                    "honoring temp unlock untilMillis=$tempUnlockUntil (skip transition replay)",
+                )
+                return storedState
+            }
+        }
         val next = transitions.firstOrNull { it.atMillis > now }
         val resolved = storedState.copy(
             isLocked = applied.isLocked,
@@ -635,7 +700,7 @@ object FocusBlockerStore {
             resolved.activeMode != storedState.activeMode ||
             resolved.nextChangeAt != storedState.nextChangeAt
         ) {
-            prefs(context).edit()
+            prefs.edit()
                 .putBoolean(isLockedKey, resolved.isLocked)
                 .putString(activeModeKey, resolved.activeMode)
                 .putString(lockReasonKey, resolved.lockReason)
@@ -880,19 +945,55 @@ class FocusAccessibilityService : AccessibilityService() {
 }
 
 object FocusScheduleManager {
+    private fun buildScheduleSignature(transitions: List<Map<String, Any?>>): String {
+        return transitions
+            .take(focusScheduleMaxCount)
+            .joinToString("|") { transition ->
+                val atMillis = (transition["atMillis"] as? Number)?.toLong() ?: 0L
+                val isLocked = transition["isLocked"] as? Boolean ?: false
+                val mode = transition["activeMode"] as? String ?: ""
+                val hint = transition["notificationHint"] as? String ?: ""
+                val force =
+                    if (transition["forceNativeNightLock"] == true) 1 else 0
+                "$atMillis:${if (isLocked) 1 else 0}:$mode:$hint:$force"
+            }
+    }
+
     fun sync(
         context: Context,
         transitions: List<Map<String, Any?>>,
+        force: Boolean = false,
     ) {
+        val signature = buildScheduleSignature(transitions)
+        val prefs = context.getSharedPreferences(focusPrefsName, Context.MODE_PRIVATE)
+        val previousSignature = prefs.getString(focusScheduleSignatureKey, null)
+        if (!force && previousSignature == signature && transitions.isNotEmpty()) {
+            FocusDebugLogger.append(
+                context,
+                "schedule.sync",
+                "skipped alarm reschedule (signature unchanged, ${transitions.size} transitions)",
+            )
+            return
+        }
+
         FocusDebugLogger.append(
             context,
             "schedule.sync",
             "received ${transitions.size} transitions path=${FocusDebugLogger.path(context)}",
         )
         FocusBlockerStore.saveScheduledTransitions(context, transitions)
+        prefs.edit().putString(focusScheduleSignatureKey, signature).apply()
         cancelAll(context)
 
         transitions.take(focusScheduleMaxCount).forEachIndexed { index, transition ->
+            if (transition["skipNativeSchedule"] == true) {
+                FocusDebugLogger.append(
+                    context,
+                    "schedule.set",
+                    "skipped alarm (skipNativeSchedule) atMillis=${transition["atMillis"]}",
+                )
+                return@forEachIndexed
+            }
             val at = transition["at"] as? String ?: return@forEachIndexed
             val atMillis = (transition["atMillis"] as? Number)?.toLong() ?: return@forEachIndexed
             val isLocked = transition["isLocked"] as? Boolean ?: return@forEachIndexed
@@ -1034,6 +1135,15 @@ class FocusScheduleReceiver : BroadcastReceiver() {
             "schedule.fire",
             "alarmWantsLocked=$alarmWantsLocked at=${intent.getStringExtra("at")} mode=$alarmMode reason=$alarmReason nextChangeAt=$alarmNext beforeLocked=${before.isLocked} beforeMode=${before.activeMode}",
         )
+        val prefs = context.getSharedPreferences(focusPrefsName, Context.MODE_PRIVATE)
+        if (alarmWantsLocked && alarmMode == "nightDiscipline") {
+            prefs.edit().remove(tempUnlockUntilMillisKey).apply()
+            FocusDebugLogger.append(
+                context,
+                "schedule.fire",
+                "cleared temp unlock for night lock at=${intent.getStringExtra("at")}",
+            )
+        }
         FocusBlockerStore.save(
             context = context,
             selectedPackages = before.selectedPackages.toList(),
