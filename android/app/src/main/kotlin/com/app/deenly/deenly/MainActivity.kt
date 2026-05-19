@@ -130,10 +130,19 @@ class MainActivity : FlutterActivity() {
                             .takeIf { it > 0L }
                     }
                 val nightDisciplineEnabled = call.argument<Boolean>("nightDisciplineEnabled")
+                val salahModeEnabled = call.argument<Boolean>("salahModeEnabled")
                 val nightStartHour = call.argument<Number>("nightStartHour")?.toInt()
                 val nightStartMinute = call.argument<Number>("nightStartMinute")?.toInt()
                 val nightEndHour = call.argument<Number>("nightEndHour")?.toInt()
                 val nightEndMinute = call.argument<Number>("nightEndMinute")?.toInt()
+                val salahLatchMs =
+                    call.argument<Number>("iosSalahShieldLatchEpochMillis")?.toLong()
+                val clearSalahLatch =
+                    call.argument<Boolean>("clearIosSalahShieldLatch") ?: false
+                val nightLastEndedMs =
+                    call.argument<Number>("nightDisciplineLastEndedEpochMillis")?.toLong()
+                val salahPausedUntilMs =
+                    call.argument<Number>("salahPausedUntilEpochMillis")?.toLong()
                 val scheduledTransitions =
                     call.argument<List<Map<String, Any?>>>("scheduledTransitions").orEmpty()
                 FocusDebugLogger.append(
@@ -149,10 +158,15 @@ class MainActivity : FlutterActivity() {
                     lockReason = lockReason,
                     nextChangeAt = nextChangeAt,
                     nightDisciplineEnabled = nightDisciplineEnabled,
+                    salahModeEnabled = salahModeEnabled,
                     nightStartHour = nightStartHour,
                     nightStartMinute = nightStartMinute,
                     nightEndHour = nightEndHour,
                     nightEndMinute = nightEndMinute,
+                    salahShieldLatchEpochMillis = salahLatchMs,
+                    clearSalahShieldLatch = clearSalahLatch,
+                    nightDisciplineLastEndedEpochMillis = nightLastEndedMs,
+                    salahPausedUntilEpochMillis = salahPausedUntilMs,
                     tempUnlockUntilEpochMillis = tempUnlockUntilEpochMillis,
                 )
                 FocusScheduleManager.sync(
@@ -191,6 +205,9 @@ class MainActivity : FlutterActivity() {
             }
             "getFocusDebugLogPath" -> {
                 result.success(FocusDebugLogger.path(applicationContext))
+            }
+            "readIosFocusBridgeState" -> {
+                result.success(FocusBlockerStore.readBridgeState(applicationContext))
             }
             else -> result.notImplemented()
         }

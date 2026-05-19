@@ -167,7 +167,7 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     if (!mounted) return;
 
     try {
-      final reply = await _callOpenAi(l10n);
+      final reply = await _callGroq(l10n);
       if (!mounted) return;
       _replaceLoadingMessage(reply);
     } catch (error) {
@@ -187,23 +187,29 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     return raw;
   }
 
-  Future<String> _callOpenAi(AppLocalizations l10n) async {
-    if (!AppConfig.hasOpenAiApiKey) {
+  Future<String> _callGroq(AppLocalizations l10n) async {
+    if (!AppConfig.hasGroqApiKey) {
       throw Exception(l10n.homeAiErrorMissingApiKey);
     }
 
-    final uri = Uri.parse('${AppConfig.openAiBaseUrl}/chat/completions');
+    final uri = Uri.parse(AppConfig.groqChatCompletionsUrl);
+    final recentMessages = _messages
+        .where((message) => message.content != 'LOADING_PLACEHOLDER')
+        .toList();
+    final limitedMessages = recentMessages.length > 6
+        ? recentMessages.sublist(recentMessages.length - 6)
+        : recentMessages;
+
     final requestMessages = <Map<String, String>>[
       <String, String>{
-        'role': 'developer',
+        'role': 'system',
         'content': l10n.homeAiDeveloperPrompt,
       },
-      for (final message in _messages)
-        if (message.content != 'LOADING_PLACEHOLDER')
-          <String, String>{
-            'role': message.role.name,
-            'content': message.content,
-          },
+      for (final message in limitedMessages)
+        <String, String>{
+          'role': message.role.name,
+          'content': message.content,
+        },
     ];
 
     final response = await http
@@ -211,13 +217,13 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
           uri,
           headers: <String, String>{
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ${AppConfig.openAiApiKey}',
+            'Authorization': 'Bearer ${AppConfig.groqApiKey}',
           },
           body: jsonEncode(<String, dynamic>{
-            'model': AppConfig.openAiChatModel,
+            'model': AppConfig.groqChatModel,
             'messages': requestMessages,
             'temperature': 0.7,
-            'max_completion_tokens': 800,
+            'max_tokens': AppConfig.groqChatMaxTokens,
           }),
         )
         .timeout(const Duration(seconds: 40));

@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "Apps zijn niet beschikbaar.",
   "widgetDailyVerseTitle": "Dagvers",
   "widgetOpenAppTimelineHint": "Open Deen Focus om je dagvers en gebed-widgetgegevens klaar te zetten.",
-  "widgetSetLocationForPrayers": "Stel je locatie in Deen Focus in om gebeden en het dagvers te laden."
+  "widgetSetLocationForPrayers": "Stel je locatie in Deen Focus in om gebeden en het dagvers te laden.",
+  "focusNotifSalahCompleteTitle": "Salah voltooid",
+  "focusNotifSalahCompleteBody": "Apps zijn nu ontgrendeld. Moge je gebed worden aangenomen.",
+  "focusNotifSalahPrayerTimeTitle": "{prayerName}-tijd",
+  "focusNotifSalahPrayerMomentBody": "Neem een moment voor het {prayerName}-gebed.",
+  "nearbyMosquesFetchingLocation": "Je locatie ophalen…",
+  "nearbyMosquesCurrentLocationLabel": "Huidige locatie",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

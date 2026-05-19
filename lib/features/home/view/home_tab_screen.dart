@@ -158,6 +158,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                           );
                         },
                         debugContext: 'home:islamic_chat',
+                        gatedByFeatureFlag: true,
                       ),
                     );
                   },
@@ -388,6 +389,7 @@ class _HomeTabViewState extends State<_HomeTabView>
         );
       },
       debugContext: 'home:prayer_streak',
+      gatedByFeatureFlag: true,
     );
   }
 }

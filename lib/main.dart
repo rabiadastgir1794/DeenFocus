@@ -26,24 +26,28 @@ import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final startupWatch = Stopwatch()..start();
-  await LoggerService.instance.initialize();
-  AppLogging.installFrameworkHooks();
-  LoggerService.instance.info(
-    'STARTUP',
-    'binding + logger hooks installed ${startupWatch.elapsedMilliseconds}ms',
-  );
-
-  await TraceHelpers.traceDatabase('hive_init', () => Hive.initFlutter(), logSuccess: true);
-  LoggerService.instance.info(
-    'STARTUP',
-    'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
-  );
-
   runZonedGuarded(
-    () {
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      final startupWatch = Stopwatch()..start();
+      await LoggerService.instance.initialize();
+      AppLogging.installFrameworkHooks();
+      LoggerService.instance.info(
+        'STARTUP',
+        'binding + logger hooks installed ${startupWatch.elapsedMilliseconds}ms',
+      );
+
+      await TraceHelpers.traceDatabase(
+        'hive_init',
+        () => Hive.initFlutter(),
+        logSuccess: true,
+      );
+      LoggerService.instance.info(
+        'STARTUP',
+        'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
+      );
+
       /// Configure Superwall ONCE in the background. Splash must not block on it —
       /// premium gates will wait for [AppSuperwall.configure] when first invoked.
       unawaited(

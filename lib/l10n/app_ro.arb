@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "Aplicațiile nu sunt disponibile.",
   "widgetDailyVerseTitle": "Versetul zilei",
   "widgetOpenAppTimelineHint": "Deschide Deen Focus pentru a pregăti versetul zilei și datele widgetului de rugăciune.",
-  "widgetSetLocationForPrayers": "Setează locația în Deen Focus pentru a încărca rugăciunile și versetul zilei."
+  "widgetSetLocationForPrayers": "Setează locația în Deen Focus pentru a încărca rugăciunile și versetul zilei.",
+  "focusNotifSalahCompleteTitle": "Salah finalizată",
+  "focusNotifSalahCompleteBody": "Aplicațiile sunt deblocate. Fie ca rugăciunea ta să fie acceptată.",
+  "focusNotifSalahPrayerTimeTitle": "Ora {prayerName}",
+  "focusNotifSalahPrayerMomentBody": "Acordă-ți un moment pentru rugăciunea {prayerName}.",
+  "nearbyMosquesFetchingLocation": "Se preia locația…",
+  "nearbyMosquesCurrentLocationLabel": "Locația curentă",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

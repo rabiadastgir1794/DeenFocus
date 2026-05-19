@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "ऐप उपलब्ध नहीं हैं।",
   "widgetDailyVerseTitle": "दैनिक आयत",
   "widgetOpenAppTimelineHint": "दैनिक आयत और प्रार्थना विजेट डेटा तैयार करने के लिए Deen Focus खोलें।",
-  "widgetSetLocationForPrayers": "नमाज़ और दैनिक आयत लोड करने के लिए Deen Focus में अपना स्थान सेट करें।"
+  "widgetSetLocationForPrayers": "नमाज़ और दैनिक आयत लोड करने के लिए Deen Focus में अपना स्थान सेट करें।",
+  "focusNotifSalahCompleteTitle": "नमाज़ पूरी",
+  "focusNotifSalahCompleteBody": "ऐप अब अनलॉक हैं। अल्लाह आपकी नमाज़ कबूल करे।",
+  "focusNotifSalahPrayerTimeTitle": "{prayerName} का समय",
+  "focusNotifSalahPrayerMomentBody": "{prayerName} की नमाज़ के लिए एक पल निकालें।",
+  "nearbyMosquesFetchingLocation": "आपका स्थान प्राप्त किया जा रहा है…",
+  "nearbyMosquesCurrentLocationLabel": "वर्तमान स्थान",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

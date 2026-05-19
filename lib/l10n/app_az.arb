@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "Tətbiqlər əlçatan deyil.",
   "widgetDailyVerseTitle": "Günün ayəsi",
   "widgetOpenAppTimelineHint": "Gündəlik ayə və namaz vidcet məlumatı üçün Deen Focus-u açın.",
-  "widgetSetLocationForPrayers": "Namazlar və gündəlik ayə üçün Deen Focus-da yerinizi təyin edin."
+  "widgetSetLocationForPrayers": "Namazlar və gündəlik ayə üçün Deen Focus-da yerinizi təyin edin.",
+  "focusNotifSalahCompleteTitle": "Namaz tamamlandı",
+  "focusNotifSalahCompleteBody": "Tətbiqlər açıldı. Namazınız qəbul olsun.",
+  "focusNotifSalahPrayerTimeTitle": "{prayerName} vaxtı",
+  "focusNotifSalahPrayerMomentBody": "{prayerName} namazı üçün bir an ayırın.",
+  "nearbyMosquesFetchingLocation": "Məkanınız müəyyən edilir…",
+  "nearbyMosquesCurrentLocationLabel": "Cari məkan",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

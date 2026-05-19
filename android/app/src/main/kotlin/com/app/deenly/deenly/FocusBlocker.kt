@@ -56,12 +56,16 @@ private const val focusDebugKeyLastHour = "last_section_hour"
 private const val focusDebugDownloadsUriKey = "debug_log_downloads_content_uri"
 
 private const val nightDisciplineEnabledKey = "night_discipline_enabled"
+private const val salahModeEnabledKey = "salah_mode_enabled"
 private const val nightStartHourKey = "night_start_hour"
 private const val nightStartMinuteKey = "night_start_minute"
 private const val nightEndHourKey = "night_end_hour"
 private const val nightEndMinuteKey = "night_end_minute"
 private const val tempUnlockUntilMillisKey = "temp_unlock_until_millis"
 private const val focusScheduleSignatureKey = "focus_schedule_signature"
+private const val salahShieldLatchEpochMsKey = "focus_salah_shield_latch_epoch_ms"
+private const val nightDisciplineLastEndedMsKey = "focus_night_discipline_last_ended_ms"
+private const val salahPausedUntilMillisKey = "salah_paused_until_millis"
 
 object FocusDebugLogger {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
@@ -372,6 +376,11 @@ object FocusBlockerStore {
         nightStartMinute: Int? = null,
         nightEndHour: Int? = null,
         nightEndMinute: Int? = null,
+        salahModeEnabled: Boolean? = null,
+        salahShieldLatchEpochMillis: Long? = null,
+        clearSalahShieldLatch: Boolean = false,
+        nightDisciplineLastEndedEpochMillis: Long? = null,
+        salahPausedUntilEpochMillis: Long? = null,
         /**
          * When non-null, updates the temp-unlock window end used by [resolveScheduledState].
          * Pass `0L` (or `<= 0`) to clear. Pass `null` from alarm handlers so the key is unchanged.
@@ -409,6 +418,35 @@ object FocusBlockerStore {
         if (nightStartMinute != null) edit.putInt(nightStartMinuteKey, nightStartMinute)
         if (nightEndHour != null) edit.putInt(nightEndHourKey, nightEndHour)
         if (nightEndMinute != null) edit.putInt(nightEndMinuteKey, nightEndMinute)
+        if (salahModeEnabled != null) {
+            edit.putBoolean(salahModeEnabledKey, salahModeEnabled)
+        }
+        if (clearSalahShieldLatch) {
+            edit.remove(salahShieldLatchEpochMsKey)
+        } else if (salahShieldLatchEpochMillis != null) {
+            if (salahShieldLatchEpochMillis > 0L) {
+                edit.putLong(salahShieldLatchEpochMsKey, salahShieldLatchEpochMillis)
+            } else {
+                edit.remove(salahShieldLatchEpochMsKey)
+            }
+        }
+        if (nightDisciplineLastEndedEpochMillis != null) {
+            if (nightDisciplineLastEndedEpochMillis > 0L) {
+                edit.putLong(
+                    nightDisciplineLastEndedMsKey,
+                    nightDisciplineLastEndedEpochMillis,
+                )
+            } else {
+                edit.remove(nightDisciplineLastEndedMsKey)
+            }
+        }
+        if (salahPausedUntilEpochMillis != null) {
+            if (salahPausedUntilEpochMillis > 0L) {
+                edit.putLong(salahPausedUntilMillisKey, salahPausedUntilEpochMillis)
+            } else {
+                edit.remove(salahPausedUntilMillisKey)
+            }
+        }
         edit.commit()
         if (prevLocked != isLocked || prevMode != activeMode) {
             FocusDebugLogger.append(
@@ -448,7 +486,68 @@ object FocusBlockerStore {
                 "clock jump detected; still resolving scheduled transitions (wake/sleep must apply unlocks)",
             )
         }
-        return correctNightDisciplineNextChangeOnAndroid(context, resolveScheduledState(context, storedState))
+        val resolved = resolveScheduledState(context, storedState)
+        val withPause = applySalahPauseAfterNightOverride(context, resolved)
+        return correctNightDisciplineNextChangeOnAndroid(context, withPause)
+    }
+
+    fun readBridgeState(context: Context): Map<String, Any?> {
+        val prefs = prefs(context)
+        val latchMs = prefs.getLong(salahShieldLatchEpochMsKey, 0L)
+        val nightEndMs = prefs.getLong(nightDisciplineLastEndedMsKey, 0L)
+        return mapOf(
+            "nativeShieldLocked" to prefs.getBoolean(isLockedKey, false),
+            "shieldActiveMode" to prefs.getString(activeModeKey, null),
+            "salahLatchEpochMs" to if (latchMs > 0L) latchMs else null,
+            "nightDisciplineLastEndedEpochMs" to if (nightEndMs > 0L) nightEndMs else null,
+        )
+    }
+
+    private fun applySalahPauseAfterNightOverride(
+        context: Context,
+        state: FocusBlockState,
+    ): FocusBlockState {
+        val prefs = prefs(context)
+        if (!prefs.getBoolean(nightDisciplineEnabledKey, false)) return state
+        if (!prefs.getBoolean(salahModeEnabledKey, false)) return state
+        val now = System.currentTimeMillis()
+        val pauseUntil = prefs.getLong(salahPausedUntilMillisKey, 0L)
+        val lastNightEnd = prefs.getLong(nightDisciplineLastEndedMsKey, 0L)
+        if (pauseUntil <= now || lastNightEnd <= 0L || now <= lastNightEnd) return state
+        if (isWithinNightRange(context, now)) return state
+        if (state.isLocked && state.activeMode == "nightDiscipline") return state
+        if (!state.isLocked) return state
+        FocusDebugLogger.append(
+            context,
+            "store.salahPause",
+            "override locked->unlocked pauseUntilMs=$pauseUntil lastNightEndMs=$lastNightEnd mode=${state.activeMode}",
+        )
+        prefs.edit()
+            .putBoolean(isLockedKey, false)
+            .commit()
+        return state.copy(
+            isLocked = false,
+            activeMode = state.activeMode ?: "salah",
+        )
+    }
+
+    private fun isWithinNightRange(context: Context, nowMillis: Long): Boolean {
+        val prefs = prefs(context)
+        if (!prefs.getBoolean(nightDisciplineEnabledKey, false)) return false
+        val sh = prefs.getInt(nightStartHourKey, 22)
+        val sm = prefs.getInt(nightStartMinuteKey, 0)
+        val eh = prefs.getInt(nightEndHourKey, 6)
+        val em = prefs.getInt(nightEndMinuteKey, 0)
+        val startTotal = sh * 60 + sm
+        val endTotal = eh * 60 + em
+        val cal = Calendar.getInstance(TimeZone.getDefault()).apply { timeInMillis = nowMillis }
+        val currentMinutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+        if (startTotal == endTotal) return true
+        return if (startTotal < endTotal) {
+            currentMinutes >= startTotal && currentMinutes < endTotal
+        } else {
+            currentMinutes >= startTotal || currentMinutes < endTotal
+        }
     }
 
     private fun didClockJump(context: Context): Boolean {
@@ -604,6 +703,18 @@ object FocusBlockerStore {
                         if (nextEndMs != null && nextEndMs > 0L) {
                             put("nextChangeAtMillis", nextEndMs)
                         }
+                        put(
+                            "notificationHint",
+                            transition["notificationHint"] as? String,
+                        )
+                        put(
+                            "clearIosSalahShieldLatch",
+                            transition["clearIosSalahShieldLatch"] == true,
+                        )
+                        put(
+                            "setsSalahShieldLatch",
+                            transition["setsSalahShieldLatch"] == true,
+                        )
                     },
                 )
             }
@@ -955,7 +1066,9 @@ object FocusScheduleManager {
                 val hint = transition["notificationHint"] as? String ?: ""
                 val force =
                     if (transition["forceNativeNightLock"] == true) 1 else 0
-                "$atMillis:${if (isLocked) 1 else 0}:$mode:$hint:$force"
+                val clearLatch =
+                    if (transition["clearIosSalahShieldLatch"] == true) 1 else 0
+                "$atMillis:${if (isLocked) 1 else 0}:$mode:$hint:$force:$clearLatch"
             }
     }
 
@@ -1000,6 +1113,18 @@ object FocusScheduleManager {
             val activeMode = transition["activeMode"] as? String
             val lockReason = transition["lockReason"] as? String
             val nextChangeAt = transition["nextChangeAt"] as? String
+            val notificationHint = transition["notificationHint"] as? String
+            val clearsSalahLatch = transition["clearIosSalahShieldLatch"] == true
+            if (!isLocked && activeMode == "salah" &&
+                notificationHint != "nightMorning" && !clearsSalahLatch
+            ) {
+                FocusDebugLogger.append(
+                    context,
+                    "schedule.set",
+                    "skipped salah scheduled auto-unlock atMillis=$atMillis hint=$notificationHint",
+                )
+                return@forEachIndexed
+            }
             schedule(
                 context = context,
                 requestCode = focusScheduleIdBase + index,
@@ -1009,6 +1134,9 @@ object FocusScheduleManager {
                 activeMode = activeMode,
                 lockReason = lockReason,
                 nextChangeAt = nextChangeAt,
+                notificationHint = notificationHint,
+                setsSalahShieldLatch = transition["setsSalahShieldLatch"] == true,
+                clearIosSalahShieldLatch = clearsSalahLatch,
             )
         }
     }
@@ -1022,12 +1150,15 @@ object FocusScheduleManager {
         activeMode: String?,
         lockReason: String?,
         nextChangeAt: String?,
+        notificationHint: String? = null,
+        setsSalahShieldLatch: Boolean = false,
+        clearIosSalahShieldLatch: Boolean = false,
     ) {
         if (atMillis <= System.currentTimeMillis()) return
         FocusDebugLogger.append(
             context,
             "schedule.set",
-            "requestCode=$requestCode at=$at atMillis=$atMillis isLocked=$isLocked mode=$activeMode nextChangeAt=$nextChangeAt",
+            "requestCode=$requestCode at=$at atMillis=$atMillis isLocked=$isLocked mode=$activeMode nextChangeAt=$nextChangeAt hint=$notificationHint",
         )
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -1035,10 +1166,14 @@ object FocusScheduleManager {
             context = context,
             requestCode = requestCode,
             at = at,
+            atMillis = atMillis,
             isLocked = isLocked,
             activeMode = activeMode,
             lockReason = lockReason,
             nextChangeAt = nextChangeAt,
+            notificationHint = notificationHint,
+            setsSalahShieldLatch = setsSalahShieldLatch,
+            clearIosSalahShieldLatch = clearIosSalahShieldLatch,
             flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         ) ?: return
 
@@ -1107,15 +1242,23 @@ object FocusScheduleManager {
         activeMode: String?,
         lockReason: String?,
         nextChangeAt: String?,
+        atMillis: Long = 0L,
+        notificationHint: String? = null,
+        setsSalahShieldLatch: Boolean = false,
+        clearIosSalahShieldLatch: Boolean = false,
         flags: Int,
     ): PendingIntent? {
         val intent = Intent(context, FocusScheduleReceiver::class.java).apply {
             action = focusScheduleAction
             putExtra("at", at)
+            putExtra("atMillis", atMillis)
             putExtra("isLocked", isLocked)
             putExtra("activeMode", activeMode)
             putExtra("lockReason", lockReason)
             putExtra("nextChangeAt", nextChangeAt)
+            putExtra("notificationHint", notificationHint)
+            putExtra("setsSalahShieldLatch", setsSalahShieldLatch)
+            putExtra("clearIosSalahShieldLatch", clearIosSalahShieldLatch)
         }
         return PendingIntent.getBroadcast(context, requestCode, intent, flags)
     }
@@ -1129,6 +1272,10 @@ class FocusScheduleReceiver : BroadcastReceiver() {
         val alarmMode = intent.getStringExtra("activeMode")
         val alarmReason = intent.getStringExtra("lockReason")
         val alarmNext = intent.getStringExtra("nextChangeAt")
+        val alarmAtMillis = intent.getLongExtra("atMillis", 0L)
+        val notificationHint = intent.getStringExtra("notificationHint")
+        val setsSalahLatch = intent.getBooleanExtra("setsSalahShieldLatch", false)
+        val clearSalahLatch = intent.getBooleanExtra("clearIosSalahShieldLatch", false)
         val before = FocusBlockerStore.currentState(context)
         FocusDebugLogger.append(
             context,
@@ -1137,12 +1284,43 @@ class FocusScheduleReceiver : BroadcastReceiver() {
         )
         val prefs = context.getSharedPreferences(focusPrefsName, Context.MODE_PRIVATE)
         if (alarmWantsLocked && alarmMode == "nightDiscipline") {
-            prefs.edit().remove(tempUnlockUntilMillisKey).apply()
+            prefs.edit()
+                .remove(tempUnlockUntilMillisKey)
+                .remove(salahPausedUntilMillisKey)
+                .apply()
             FocusDebugLogger.append(
                 context,
                 "schedule.fire",
-                "cleared temp unlock for night lock at=${intent.getStringExtra("at")}",
+                "cleared temp unlock and salah pause for night lock at=${intent.getStringExtra("at")}",
             )
+        }
+        if (!alarmWantsLocked) {
+            val unlockMs =
+                if (alarmAtMillis > 0L) {
+                    alarmAtMillis
+                } else {
+                    FocusBlockerStore.parseNextChangeAtToEpochMillis(
+                        intent.getStringExtra("at"),
+                    )
+                }
+            if (unlockMs > 0L) {
+                prefs.edit().putLong(nightDisciplineLastEndedMsKey, unlockMs).apply()
+                FocusDebugLogger.append(
+                    context,
+                    "schedule.fire",
+                    "recorded nightDisciplineLastEndedMs=$unlockMs hint=$notificationHint",
+                )
+            }
+            prefs.edit().remove(salahShieldLatchEpochMsKey).apply()
+        } else if (alarmMode == "salah" && setsSalahLatch && alarmAtMillis > 0L) {
+            prefs.edit().putLong(salahShieldLatchEpochMsKey, alarmAtMillis).apply()
+            FocusDebugLogger.append(
+                context,
+                "schedule.fire",
+                "set salah latch epochMs=$alarmAtMillis",
+            )
+        } else if (clearSalahLatch) {
+            prefs.edit().remove(salahShieldLatchEpochMsKey).apply()
         }
         FocusBlockerStore.save(
             context = context,

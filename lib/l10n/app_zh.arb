@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "应用不可用。",
   "widgetDailyVerseTitle": "每日经文",
   "widgetOpenAppTimelineHint": "打开 Deen Focus 以准备每日经文和礼拜小组件数据。",
-  "widgetSetLocationForPrayers": "在 Deen Focus 中设置位置以加载礼拜和每日经文。"
+  "widgetSetLocationForPrayers": "在 Deen Focus 中设置位置以加载礼拜和每日经文。",
+  "focusNotifSalahCompleteTitle": "礼拜完成",
+  "focusNotifSalahCompleteBody": "应用已解锁。愿您的主接受您的礼拜。",
+  "focusNotifSalahPrayerTimeTitle": "{prayerName}时间",
+  "focusNotifSalahPrayerMomentBody": "为{prayerName}礼拜留出片刻。",
+  "nearbyMosquesFetchingLocation": "正在获取您的位置…",
+  "nearbyMosquesCurrentLocationLabel": "当前位置",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

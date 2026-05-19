@@ -814,7 +814,7 @@ class FocusController extends ChangeNotifier {
       recomputeNow,
       salahWindowsOnce,
     );
-    work = _clearSalahLatchIfNightJustEnded(
+    work = _normalizeNightEndPauseState(
       work,
       recomputeNow,
       await salahWindowsOnce(),
@@ -874,7 +874,10 @@ class FocusController extends ChangeNotifier {
     notifyListeners();
     // Native sync always runs so lock state / temp-unlock stay aligned with the OS.
     // Focus notifications skip cancel+reschedule internally when the signature is unchanged.
-    await _syncNativeFocusEnforcement(scheduledTransitions);
+    await _syncNativeFocusEnforcement(
+      scheduledTransitions,
+      await salahWindowsOnce(),
+    );
     final scheduleSignature =
         await AppNotificationService.instance.buildFocusScheduleSignature(
       settings: work,
@@ -902,12 +905,22 @@ class FocusController extends ChangeNotifier {
 
   Future<void> _syncNativeFocusEnforcement(
     List<Map<String, dynamic>> scheduledTransitions,
+    List<SalahWindow> salahWindows,
   ) async {
     try {
+      final now = DateTime.now();
+      final salahPausedUntil = _salahLockPausedAfterNightEnd(
+        _settings,
+        now,
+        salahWindows,
+      )
+          ? _lockState.nextChangeAt
+          : null;
       await FocusEnforcementService.sync(
         settings: _settings,
         lockState: _lockState,
         scheduledTransitions: scheduledTransitions,
+        salahPausedUntil: salahPausedUntil,
       );
     } catch (e, st) {
       assert(() {
@@ -1173,6 +1186,15 @@ class FocusController extends ChangeNotifier {
     return settings.nightDisciplineEnabled && settings.nightRange.contains(at);
   }
 
+  /// Most recent night end used for post-night Salah pause (survives schedule edits).
+  DateTime? _nightEndAtForPauseLogic(FocusSettings settings, DateTime at) {
+    final persisted = settings.nightDisciplineLastEndedAt;
+    if (persisted != null && at.isAfter(persisted)) {
+      return persisted;
+    }
+    return _endedNightWindowForPauseLogic(settings.nightRange, at)?.end;
+  }
+
   /// After night ends inside an active Salah window, stay unlocked until the
   /// next prayer starts (night takes precedence for unlock; Salah re-locks then).
   bool _salahLockPausedAfterNightEnd(
@@ -1185,46 +1207,65 @@ class FocusController extends ChangeNotifier {
     }
     if (settings.nightRange.contains(at)) return false;
 
-    final nightWin = _endedNightWindowForPauseLogic(settings.nightRange, at);
-    if (nightWin == null) return false;
+    final nightEndAt = _nightEndAtForPauseLogic(settings, at);
+    if (nightEndAt == null || !at.isAfter(nightEndAt)) return false;
 
     final nightEndedDuringSalah = windows.any(
-      (w) => !nightWin.end.isBefore(w.start) && nightWin.end.isBefore(w.end),
+      (w) => !nightEndAt.isBefore(w.start) && nightEndAt.isBefore(w.end),
     );
     if (!nightEndedDuringSalah) return false;
 
-    final nextPrayer = _nextSalahStart(windows, nightWin.end);
+    final nextPrayer = _nextSalahStart(windows, nightEndAt);
     return nextPrayer != null && at.isBefore(nextPrayer);
   }
 
-  /// After night focus ends between prayers, clear the Salah shield latch so apps
-  /// unlock until the next prayer (scheduled night-end already emitted unlock).
-  FocusSettings _clearSalahLatchIfNightJustEnded(
+  /// Records when night last ended, clears stale pause markers, and drops Salah
+  /// latch while the post-night pause is active.
+  FocusSettings _normalizeNightEndPauseState(
     FocusSettings settings,
     DateTime now,
     List<SalahWindow> windows,
   ) {
-    if (settings.iosSalahShieldLatchEpochMillis == null) {
+    if (!settings.nightDisciplineEnabled || !settings.salahModeEnabled) {
+      if (settings.nightDisciplineLastEndedAt != null) {
+        return settings.copyWith(clearNightDisciplineLastEndedAt: true);
+      }
       return settings;
     }
-    if (!settings.nightDisciplineEnabled || settings.nightRange.contains(now)) {
-      return settings;
+
+    var work = settings;
+    final lastEnd = work.nightDisciplineLastEndedAt;
+    if (lastEnd != null) {
+      if (work.nightRange.contains(now)) {
+        return work.copyWith(clearNightDisciplineLastEndedAt: true);
+      }
+      final nextPrayer = _nextSalahStart(windows, lastEnd);
+      if (nextPrayer != null && !now.isBefore(nextPrayer)) {
+        return work.copyWith(clearNightDisciplineLastEndedAt: true);
+      }
     }
-    final nightWin = _endedNightWindowForPauseLogic(settings.nightRange, now);
-    if (nightWin == null) {
-      return settings;
+
+    final derivedWin = _endedNightWindowForPauseLogic(work.nightRange, now);
+    if (derivedWin != null) {
+      if (work.nightDisciplineLastEndedAt == null ||
+          derivedWin.end.isAfter(work.nightDisciplineLastEndedAt!)) {
+        work = work.copyWith(nightDisciplineLastEndedAt: derivedWin.end);
+      }
     }
-    final nextPrayer = _nextSalahStart(windows, nightWin.end);
-    if (nextPrayer != null && !now.isBefore(nextPrayer)) {
-      return settings;
+
+    if (_salahLockPausedAfterNightEnd(work, now, windows) &&
+        work.iosSalahShieldLatchEpochMillis != null) {
+      unawaited(
+        FocusEnforcementService.appendDebugLog(
+          'focus.latch.clearAfterNight',
+          'nightEnd=${_nightEndAtForPauseLogic(work, now)?.toIso8601String()} '
+          'now=${now.toIso8601String()}',
+        ),
+      );
+      work = work.copyWith(clearIosSalahShieldLatch: true);
     }
-    unawaited(
-      FocusEnforcementService.appendDebugLog(
-        'focus.latch.clearAfterNight',
-        'nightEnd=${nightWin.end.toIso8601String()} now=${now.toIso8601String()}',
-      ),
-    );
-    return settings.copyWith(clearIosSalahShieldLatch: true);
+
+    return work;
   }
 
   bool _iosSalahLatchStillCoversMoment(
@@ -1288,31 +1329,47 @@ class FocusController extends ChangeNotifier {
     DateTime now,
     Future<List<SalahWindow>> Function() getSalahWindows,
   ) async {
-    if (!Platform.isIOS || !settings.salahModeEnabled) {
+    if ((!Platform.isIOS && !Platform.isAndroid) ||
+        !settings.salahModeEnabled) {
       return settings;
     }
 
     final bridge = await FocusEnforcementService.readIosFocusBridgeState();
     if (bridge == null) return settings;
 
-    var latch = settings.iosSalahShieldLatchEpochMillis;
+    var work = settings;
+    final nightEndMs = bridge.nightDisciplineLastEndedEpochMs;
+    if (nightEndMs != null && nightEndMs > 0) {
+      final nativeEnd = DateTime.fromMillisecondsSinceEpoch(nightEndMs);
+      if (work.nightDisciplineLastEndedAt == null ||
+          nativeEnd.isAfter(work.nightDisciplineLastEndedAt!)) {
+        work = work.copyWith(nightDisciplineLastEndedAt: nativeEnd);
+      }
+    }
+
+    final windows = await getSalahWindows();
+    work = _normalizeNightEndPauseState(work, now, windows);
+    if (_salahLockPausedAfterNightEnd(work, now, windows)) {
+      return work;
+    }
+
+    var latch = work.iosSalahShieldLatchEpochMillis;
     final nativeLatch = bridge.salahLatchEpochMs;
     if (nativeLatch != null && nativeLatch > 0) {
       latch = nativeLatch;
-      if (settings.iosSalahShieldLatchEpochMillis != latch) {
+      if (work.iosSalahShieldLatchEpochMillis != latch) {
         unawaited(
           FocusEnforcementService.appendDebugLog(
             'focus.latch.import',
-            'native=$nativeLatch persisted=${settings.iosSalahShieldLatchEpochMillis} '
+            'native=$nativeLatch persisted=${work.iosSalahShieldLatchEpochMillis} '
             'nativeLocked=${bridge.nativeShieldLocked} mode=${bridge.shieldActiveMode}',
           ),
         );
       }
     }
 
-    if (latch == null) return settings;
+    if (latch == null) return work;
 
-    final windows = await getSalahWindows();
     if (!_iosSalahLatchStillCoversMoment(now, latch, windows)) {
       unawaited(
         FocusEnforcementService.appendDebugLog(
@@ -1320,13 +1377,13 @@ class FocusController extends ChangeNotifier {
           'clearing stale latch=$latch',
         ),
       );
-      return settings.copyWith(clearIosSalahShieldLatch: true);
+      return work.copyWith(clearIosSalahShieldLatch: true);
     }
 
-    if (settings.iosSalahShieldLatchEpochMillis == latch) {
-      return settings;
+    if (work.iosSalahShieldLatchEpochMillis == latch) {
+      return work;
     }
-    return settings.copyWith(iosSalahShieldLatchEpochMillis: latch);
+    return work.copyWith(iosSalahShieldLatchEpochMillis: latch);
   }
 
   FocusSettings _mergeIosSalahShieldLatch({

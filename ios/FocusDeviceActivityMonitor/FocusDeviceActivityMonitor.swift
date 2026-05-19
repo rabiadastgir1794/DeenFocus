@@ -56,6 +56,7 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let shieldFlutterLockedKey = "focus_flutter_is_locked"
   private static let shieldNativeLockedKey = "focus_native_shield_locked"
   private static let salahShieldLatchEpochMsKey = "focus_salah_shield_latch_epoch_ms"
+  private static let nightDisciplineLastEndedMsKey = "focus_night_discipline_last_ended_ms"
   private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
   private static let clockJumpThresholdMs: Double = 90_000
@@ -129,6 +130,14 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
       defaults?.removeObject(forKey: Self.shieldActiveModeKey)
       defaults?.removeObject(forKey: Self.shieldLockReasonKey)
       defaults?.removeObject(forKey: Self.salahShieldLatchEpochMsKey)
+      let unlockEpochMs = lockActivityEpochMs(for: activity.rawValue)
+      if unlockEpochMs > 0 {
+        defaults?.set(unlockEpochMs, forKey: Self.nightDisciplineLastEndedMsKey)
+        FocusMonitorDebugLogger.append(
+          "ios.monitor.unlock",
+          "recorded nightDisciplineLastEndedMs=\(Int(unlockEpochMs)) activity=\(activity.rawValue)"
+        )
+      }
       FocusMonitorDebugLogger.append(
         "ios.monitor.unlock",
         "clearing managed settings and salah latch for activity=\(activity.rawValue)"

@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "التطبيقات غير متاحة.",
   "widgetDailyVerseTitle": "آية اليوم",
   "widgetOpenAppTimelineHint": "افتح Deen Focus لتحضير آية اليوم وبيانات أداة الصلاة.",
-  "widgetSetLocationForPrayers": "حدد موقعك في Deen Focus لتحميل أوقات الصلاة وآية اليوم."
+  "widgetSetLocationForPrayers": "حدد موقعك في Deen Focus لتحميل أوقات الصلاة وآية اليوم.",
+  "focusNotifSalahCompleteTitle": "اكتملت الصلاة",
+  "focusNotifSalahCompleteBody": "التطبيقات متاحة الآن. تقبل الله صلاتك.",
+  "focusNotifSalahPrayerTimeTitle": "وقت {prayerName}",
+  "focusNotifSalahPrayerMomentBody": "خذ لحظة لصلاة {prayerName}.",
+  "nearbyMosquesFetchingLocation": "جارٍ تحديد موقعك…",
+  "nearbyMosquesCurrentLocationLabel": "الموقع الحالي",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

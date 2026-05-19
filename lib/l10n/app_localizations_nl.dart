@@ -564,20 +564,20 @@ class AppLocalizationsNl extends AppLocalizations {
       'Apps zijn vergrendeld tijdens Salah.';
 
   @override
-  String get focusNotifSalahCompleteTitle => 'Salah Complete';
+  String get focusNotifSalahCompleteTitle => 'Salah voltooid';
 
   @override
   String get focusNotifSalahCompleteBody =>
-      'Apps are now unlocked. May your prayer be accepted.';
+      'Apps zijn nu ontgrendeld. Moge je gebed worden aangenomen.';
 
   @override
   String focusNotifSalahPrayerTimeTitle(String prayerName) {
-    return '$prayerName Time';
+    return '$prayerName-tijd';
   }
 
   @override
   String focusNotifSalahPrayerMomentBody(String prayerName) {
-    return 'Take a moment for $prayerName prayer.';
+    return 'Neem een moment voor het $prayerName-gebed.';
   }
 
   @override
@@ -860,10 +860,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get nearbyMosquesWaitingForLocation => 'Wachten op uw locatie.';
 
   @override
-  String get nearbyMosquesFetchingLocation => 'Fetching your location…';
+  String get nearbyMosquesFetchingLocation => 'Je locatie ophalen…';
 
   @override
-  String get nearbyMosquesCurrentLocationLabel => 'Current location';
+  String get nearbyMosquesCurrentLocationLabel => 'Huidige locatie';
 
   @override
   String get nearbyMosquesAppearAfterLoad =>

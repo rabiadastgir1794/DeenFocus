@@ -25,9 +25,6 @@ import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
 
-/// Flip to `true` to show the Deen Focus Premium card in settings again.
-const bool _kShowSettingsPremiumSection = false;
-
 class SettingsTabScreen extends StatefulWidget {
   const SettingsTabScreen({super.key, this.isTabActive = false});
 
@@ -244,6 +241,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
       context: context,
       onAccess: () {},
       debugContext: 'settings:premium_card',
+      honorDevBypass: false,
     );
   }
 
@@ -403,33 +401,32 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
-            if (_kShowSettingsPremiumSection)
-              ValueListenableBuilder<bool>(
-                valueListenable: AppSuperwall.subscriptionActiveNotifier,
-                builder: (context, isSubscribed, _) {
-                  final manageMode = AppSuperwall.isEnabled && isSubscribed;
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _SettingsCardButton(
-                        icon: Icons.workspace_premium_rounded,
-                        iconBackground: const LinearGradient(
-                          colors: [Color(0xFF0F766E), Color(0xFF34D399)],
-                        ),
-                        title: manageMode
-                            ? l10n.settingsManageSubscriptionTitle
-                            : l10n.settingsPremiumTitle,
-                        subtitle: manageMode
-                            ? l10n.settingsManageSubscriptionSubtitle
-                            : l10n.settingsPremiumSubtitle,
-                        onTap: () => unawaited(_onPremiumCardTap()),
+            ValueListenableBuilder<bool>(
+              valueListenable: AppSuperwall.subscriptionActiveNotifier,
+              builder: (context, isSubscribed, _) {
+                final manageMode = AppSuperwall.isEnabled && isSubscribed;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SettingsCardButton(
+                      icon: Icons.workspace_premium_rounded,
+                      iconBackground: const LinearGradient(
+                        colors: [Color(0xFF0F766E), Color(0xFF34D399)],
                       ),
-                      const SizedBox(height: 16),
-                    ],
-                  );
-                },
-              ),
+                      title: manageMode
+                          ? l10n.settingsManageSubscriptionTitle
+                          : l10n.settingsPremiumTitle,
+                      subtitle: manageMode
+                          ? l10n.settingsManageSubscriptionSubtitle
+                          : l10n.settingsPremiumSubtitle,
+                      onTap: () => unawaited(_onPremiumCardTap()),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              },
+            ),
             _SettingsGroup(
               children: [
                 _SettingsRow(

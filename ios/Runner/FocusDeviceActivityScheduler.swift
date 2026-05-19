@@ -97,6 +97,7 @@ enum FocusDeviceActivityScheduler {
   static let shieldNativeLockedKey = "focus_native_shield_locked"
   /// Salah shield latch epoch (ms); set by the monitor on Salah lock, mirrored by Flutter sync.
   static let salahShieldLatchEpochMsKey = "focus_salah_shield_latch_epoch_ms"
+  static let nightDisciplineLastEndedMsKey = "focus_night_discipline_last_ended_ms"
   /// Mirrors the Flutter dark-mode toggle for shield UI (the app extension cannot read the main app theme).
   static let shieldAppThemeIsDarkKey = "focus_shield_app_theme_is_dark"
   static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"

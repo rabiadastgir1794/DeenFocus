@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "Приложения недоступны.",
   "widgetDailyVerseTitle": "Аят дня",
   "widgetOpenAppTimelineHint": "Откройте Deen Focus, чтобы подготовить аят дня и данные виджета намаза.",
-  "widgetSetLocationForPrayers": "Укажите местоположение в Deen Focus, чтобы загрузить намазы и аят дня."
+  "widgetSetLocationForPrayers": "Укажите местоположение в Deen Focus, чтобы загрузить намазы и аят дня.",
+  "focusNotifSalahCompleteTitle": "Намаз завершён",
+  "focusNotifSalahCompleteBody": "Приложения разблокированы. Пусть ваш намаз будет принят.",
+  "focusNotifSalahPrayerTimeTitle": "Время {prayerName}",
+  "focusNotifSalahPrayerMomentBody": "Уделите момент для намаза {prayerName}.",
+  "nearbyMosquesFetchingLocation": "Определение местоположения…",
+  "nearbyMosquesCurrentLocationLabel": "Текущее местоположение",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }

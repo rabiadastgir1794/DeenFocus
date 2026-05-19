@@ -314,6 +314,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         unawaited(vm.requestInstalledApps());
       },
       debugContext: 'focus:load_apps',
+      gatedByFeatureFlag: true,
     );
   }
 
@@ -479,6 +480,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         );
       },
       debugContext: 'focus:enable_mode:${mode.name}',
+      gatedByFeatureFlag: true,
     );
     if (!paywallGrantedCallback && !completeEnable.isCompleted) {
       completeEnable.complete();

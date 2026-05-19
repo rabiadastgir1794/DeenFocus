@@ -460,10 +460,12 @@ private enum ManagedSettingsStoreHolder {
     }
     let defaults = UserDefaults(suiteName: FocusDeviceActivityScheduler.appGroupId)
     let latchMs = defaults?.double(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey) ?? 0
+    let nightEndMs = defaults?.double(forKey: FocusDeviceActivityScheduler.nightDisciplineLastEndedMsKey) ?? 0
     result([
       "nativeShieldLocked": defaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false,
       "shieldActiveMode": defaults?.string(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey) as Any,
       "salahLatchEpochMs": (latchMs > 0 ? NSNumber(value: Int(latchMs)) : NSNull()) as Any,
+      "nightDisciplineLastEndedEpochMs": (nightEndMs > 0 ? NSNumber(value: Int(nightEndMs)) : NSNull()) as Any,
     ])
   }
 

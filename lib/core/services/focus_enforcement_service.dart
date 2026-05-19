@@ -11,11 +11,13 @@ class IosFocusBridgeState {
     required this.nativeShieldLocked,
     this.shieldActiveMode,
     this.salahLatchEpochMs,
+    this.nightDisciplineLastEndedEpochMs,
   });
 
   final bool nativeShieldLocked;
   final String? shieldActiveMode;
   final int? salahLatchEpochMs;
+  final int? nightDisciplineLastEndedEpochMs;
 }
 
 abstract class FocusEnforcementService {
@@ -57,7 +59,7 @@ abstract class FocusEnforcementService {
   }
 
   static Future<IosFocusBridgeState?> readIosFocusBridgeState() async {
-    if (!Platform.isIOS) return null;
+    if (!Platform.isIOS && !Platform.isAndroid) return null;
 
     try {
       final raw = await _channel.invokeMethod<Object?>('readIosFocusBridgeState');
@@ -69,10 +71,18 @@ abstract class FocusEnforcementService {
       } else if (latchRaw is num) {
         latchMs = latchRaw.toInt() > 0 ? latchRaw.toInt() : null;
       }
+      final nightEndRaw = raw['nightDisciplineLastEndedEpochMs'];
+      int? nightEndMs;
+      if (nightEndRaw is int) {
+        nightEndMs = nightEndRaw > 0 ? nightEndRaw : null;
+      } else if (nightEndRaw is num) {
+        nightEndMs = nightEndRaw.toInt() > 0 ? nightEndRaw.toInt() : null;
+      }
       return IosFocusBridgeState(
         nativeShieldLocked: raw['nativeShieldLocked'] as bool? ?? false,
         shieldActiveMode: raw['shieldActiveMode'] as String?,
         salahLatchEpochMs: latchMs,
+        nightDisciplineLastEndedEpochMs: nightEndMs,
       );
     } on PlatformException {
       return null;
@@ -84,6 +94,7 @@ abstract class FocusEnforcementService {
     required FocusLockState lockState,
     List<Map<String, dynamic>> scheduledTransitions =
         const <Map<String, dynamic>>[],
+    DateTime? salahPausedUntil,
   }) async {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
@@ -117,6 +128,10 @@ abstract class FocusEnforcementService {
             settings.iosSalahShieldLatchEpochMillis ?? 0,
         'clearIosSalahShieldLatch':
             settings.iosSalahShieldLatchEpochMillis == null,
+        'nightDisciplineLastEndedEpochMillis':
+            settings.nightDisciplineLastEndedAt?.millisecondsSinceEpoch ?? 0,
+        'salahPausedUntilEpochMillis':
+            salahPausedUntil?.millisecondsSinceEpoch ?? 0,
         // iOS: applied inside `syncFocusState` before any early return so the shield extension
         // never reads a stale `focus_shield_app_theme_is_dark` while the app is in light mode.
         'shieldThemeIsDark': shieldUiIsDark,

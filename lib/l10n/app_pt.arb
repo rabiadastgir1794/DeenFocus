@@ -307,5 +307,27 @@
   "focusNotifMorningUnlockBody": "Os aplicativos não estão disponíveis.",
   "widgetDailyVerseTitle": "Verso do dia",
   "widgetOpenAppTimelineHint": "Abra o Deen Focus para preparar o verso do dia e os dados do widget de oração.",
-  "widgetSetLocationForPrayers": "Defina sua localização no Deen Focus para carregar orações e o verso do dia."
+  "widgetSetLocationForPrayers": "Defina sua localização no Deen Focus para carregar orações e o verso do dia.",
+  "focusNotifSalahCompleteTitle": "Salah concluída",
+  "focusNotifSalahCompleteBody": "Os apps foram desbloqueados. Que a sua oração seja aceita.",
+  "focusNotifSalahPrayerTimeTitle": "Hora de {prayerName}",
+  "focusNotifSalahPrayerMomentBody": "Reserve um momento para a oração de {prayerName}.",
+  "nearbyMosquesFetchingLocation": "A obter a sua localização…",
+  "nearbyMosquesCurrentLocationLabel": "Localização atual",
+  "@focusNotifSalahPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "@focusNotifSalahPrayerMomentBody": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  }
 }
