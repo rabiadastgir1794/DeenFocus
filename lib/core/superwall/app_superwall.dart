@@ -29,6 +29,8 @@ class AppSuperwall {
 
   static final ValueNotifier<bool> subscriptionActiveNotifier =
   ValueNotifier(false);
+  static final ValueNotifier<bool> purchasedSubscriptionActiveNotifier =
+  ValueNotifier(false);
 
   static void _log(String message) {
     debugPrint('[Superwall] $message');
@@ -82,6 +84,7 @@ class AppSuperwall {
 
       final isSubscribed = status.isActive;
 
+      purchasedSubscriptionActiveNotifier.value = isSubscribed;
       subscriptionActiveNotifier.value =
           kTemporarilyBypassPremiumRestrictions || isSubscribed;
 

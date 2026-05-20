@@ -367,8 +367,8 @@ private struct DeenlyWidgetView: View {
         return (prayer, start)
       }
       .sorted { $0.1 < $1.1 }
-    guard let first = parsed.first else { return nil }
-    return parsed.last(where: { $0.1 <= now })?.0.id ?? first.0.id
+    guard !parsed.isEmpty else { return nil }
+    return parsed.last(where: { $0.1 <= now })?.0.id ?? parsed.last?.0.id
   }
 }
 

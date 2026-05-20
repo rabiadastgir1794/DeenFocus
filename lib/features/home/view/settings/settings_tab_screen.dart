@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,12 +14,9 @@ import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/locale_service.dart';
-import '../../../../core/services/permission_service.dart';
-import '../../../../core/services/storage_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../../features/focus/viewmodel/focus_controller.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
@@ -37,41 +35,12 @@ class SettingsTabScreen extends StatefulWidget {
 }
 
 class _SettingsTabScreenState extends State<SettingsTabScreen> {
-  bool _notificationsEnabled = true;
-  bool _notificationsInitialized = false;
+  late final Future<PackageInfo> _packageInfoFuture;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_loadNotificationToggle());
-  }
-
-  Future<void> _loadNotificationToggle() async {
-    final enabled = await StorageService.appNotificationsEnabled;
-    if (!mounted) return;
-    setState(() {
-      _notificationsEnabled = enabled;
-      _notificationsInitialized = true;
-    });
-  }
-
-  Future<void> _toggleNotifications(bool value) async {
-    final focusController = context.read<FocusController>();
-    final l10n = AppLocalizations.of(context)!;
-    if (value) {
-      final granted = await PermissionService.requestNotification();
-      if (!granted) {
-        if (!mounted) return;
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-          SnackBar(content: Text(l10n.settingsEnableSystemNotifications)),
-        );
-        return;
-      }
-    }
-    await StorageService.setAppNotificationsEnabled(value);
-    await focusController.refresh();
-    if (!mounted) return;
-    setState(() => _notificationsEnabled = value);
+    _packageInfoFuture = PackageInfo.fromPlatform();
   }
 
   Future<void> _showLanguagePicker(BuildContext context) async {
@@ -205,7 +174,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
 
   Future<void> _onPremiumCardTap() async {
     final manageMode =
-        AppSuperwall.isEnabled && AppSuperwall.subscriptionActiveNotifier.value;
+        AppSuperwall.isEnabled &&
+        AppSuperwall.purchasedSubscriptionActiveNotifier.value;
     if (manageMode) {
       if (kIsWeb) return;
       final Uri uri;
@@ -387,7 +357,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
         orElse: () => kAppLanguages.first,
       ),
     );
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -402,7 +371,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             ),
             const SizedBox(height: 24),
             ValueListenableBuilder<bool>(
-              valueListenable: AppSuperwall.subscriptionActiveNotifier,
+              valueListenable: AppSuperwall.purchasedSubscriptionActiveNotifier,
               builder: (context, isSubscribed, _) {
                 final manageMode = AppSuperwall.isEnabled && isSubscribed;
                 return Column(
@@ -488,9 +457,43 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             ),
             const SizedBox(height: 16),
             AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
+            const SizedBox(height: 12),
+            _AppVersionText(packageInfoFuture: _packageInfoFuture),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AppVersionText extends StatelessWidget {
+  const _AppVersionText({required this.packageInfoFuture});
+
+  final Future<PackageInfo> packageInfoFuture;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return FutureBuilder<PackageInfo>(
+      future: packageInfoFuture,
+      builder: (context, snapshot) {
+        final info = snapshot.data;
+        if (info == null || info.version.trim().isEmpty) {
+          return const SizedBox.shrink();
+        }
+        final buildNumber = info.buildNumber.trim();
+        final version = buildNumber.isEmpty
+            ? info.version.trim()
+            : '${info.version.trim()}+$buildNumber';
+        return Text(
+          'Version $version',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+          ),
+        );
+      },
     );
   }
 }
@@ -815,14 +818,12 @@ class _SettingsSwitchRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.onChanged,
-    this.enabled = true,
   });
 
   final IconData icon;
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -849,7 +850,7 @@ class _SettingsSwitchRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Switch.adaptive(value: value, onChanged: enabled ? onChanged : null),
+          Switch.adaptive(value: value, onChanged: onChanged),
         ],
       ),
     );

@@ -18,7 +18,7 @@ class WidgetSyncService {
   static const MethodChannel _channel = MethodChannel(
     'com.app.deenly.deenly/widgets',
   );
-  static const int _timelineDays = 7;
+  static const int _timelineDays = 2;
 
   static Locale _localeFromPrefsCode(String? code) {
     if (code == null || code.isEmpty) return const Locale('en');

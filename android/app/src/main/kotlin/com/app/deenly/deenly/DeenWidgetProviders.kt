@@ -23,6 +23,7 @@ private const val widgetTimelineKey = "widget_timeline_json"
 private const val widgetRefreshAction = "com.rnr.deenfocus.WIDGET_REFRESH"
 private const val widgetHighlightAlarmBase = 8300
 private const val widgetHighlightAlarmMax = 64
+private const val widgetHighlightScheduleDays = 2L
 
 enum class WidgetSize {
     SMALL,
@@ -246,6 +247,9 @@ internal object DeenWidgetUpdater {
             val root = JSONObject(raw)
             val entries = root.optJSONArray("entries") ?: return@runCatching
             val nowMillis = System.currentTimeMillis()
+            val scheduleUntilMillis = Instant.now()
+                .plus(widgetHighlightScheduleDays, ChronoUnit.DAYS)
+                .toEpochMilli()
             for (i in 0 until entries.length()) {
                 val row = entries.optJSONObject(i) ?: continue
                 val prayers = row.optJSONArray("prayers") ?: continue
@@ -257,7 +261,7 @@ internal object DeenWidgetUpdater {
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
                         .toEpochMilli()
-                    if (boundary > nowMillis) {
+                    if (boundary > nowMillis && boundary <= scheduleUntilMillis) {
                         boundaries.add(boundary)
                     }
                 }
@@ -563,7 +567,7 @@ internal object DeenWidgetUpdater {
         }.sortedBy { it.second }
         if (parsed.isEmpty()) return null
         return parsed.lastOrNull { (_, start) -> !start.isAfter(now) }?.first?.id
-            ?: parsed.first().first.id
+            ?: parsed.last().first.id
     }
 
     private fun iconForPrayer(id: String?): Int {

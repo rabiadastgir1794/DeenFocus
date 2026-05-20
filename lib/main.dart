@@ -18,6 +18,7 @@ import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
 import 'core/services/theme_service.dart';
 import 'core/services/user_profile_service.dart';
+import 'core/services/widget_sync_service.dart';
 import 'core/superwall/app_superwall.dart';
 import 'core/theme/app_theme.dart';
 import 'features/focus/viewmodel/focus_controller.dart';
@@ -165,6 +166,7 @@ class _AppLifecycleObserverState
     if (!mounted) return;
 
     unawaited(context.read<FocusController>().refresh());
+    unawaited(WidgetSyncService.instance.syncTimeline());
   }
 
   @override

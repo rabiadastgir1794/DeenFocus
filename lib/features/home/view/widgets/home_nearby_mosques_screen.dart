@@ -54,7 +54,10 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    unawaited(_load());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_load());
+    });
   }
 
   @override
@@ -246,22 +249,25 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
     final colorScheme = Theme.of(context).colorScheme;
 
     if (_isLoading && _awaitingLocation) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 28),
-            Text(
-              l10n.nearbyMosquesFetchingLocation,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    height: 1.35,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+      return SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 28),
+              Text(
+                l10n.nearbyMosquesFetchingLocation,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      height: 1.35,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }
