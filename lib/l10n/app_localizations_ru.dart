@@ -753,7 +753,31 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus поможет вам оставаться на связи во время молитв, Коране, Кибле, Тасбихе, близлежащих мечетях, а также режимах фокусировки, не отвлекающих внимание, созданных вокруг ваших повседневных дел.';
+      'Deen Focus помогает вам оставаться на связи с вашей верой, управляя ежедневными отвлечениями в современном мире.';
+
+  @override
+  String get settingsAboutFeature1 => 'Время молитвы с напоминаниями';
+
+  @override
+  String get settingsAboutFeature2 => 'Направление Киблы в любое время';
+
+  @override
+  String get settingsAboutFeature3 => 'Коран и Тасбих для ежедневного зикра';
+
+  @override
+  String get settingsAboutFeature4 => 'Ближайшие мечети';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'Умные режимы фокусировки для Салаха, сна и семейного времени';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'Умные режимы фокусировки помогают блокировать отвлекающие факторы во время Салаха, сна и важных моментов, чтобы вы могли оставаться сосредоточенными и дисциплинированными.';
+
+  @override
+  String get settingsAboutFooter =>
+      'Оставайтесь последовательными. Оставайтесь внимательными.\nОставайтесь на связи с вашим Дином.';
 
   @override
   String get settingsEnableSystemNotifications =>

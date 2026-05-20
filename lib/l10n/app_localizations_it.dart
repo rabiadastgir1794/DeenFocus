@@ -754,7 +754,32 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus ti aiuta a rimanere con i piedi per terra con i tempi di preghiera, il Corano, Qibla, Tasbih, le moschee vicine e le modalità di concentrazione senza distrazioni costruite attorno alle tue routine.';
+      'Deen Focus ti aiuta a rimanere connesso alla tua fede mentre gestisci le distrazioni quotidiane in un mondo moderno.';
+
+  @override
+  String get settingsAboutFeature1 => 'Orari di preghiera con promemoria';
+
+  @override
+  String get settingsAboutFeature2 =>
+      'Direzione della Qibla in qualsiasi momento';
+
+  @override
+  String get settingsAboutFeature3 => 'Corano e Tasbih per il dhikr quotidiano';
+
+  @override
+  String get settingsAboutFeature4 => 'Moschee vicine';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'Modalità di concentrazione intelligenti per Salah, sonno e tempo in famiglia';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'Le modalità di concentrazione intelligenti ti aiutano a bloccare le distrazioni durante Salah, il sonno e i momenti importanti, in modo da poterti rimanere presente e disciplinato.';
+
+  @override
+  String get settingsAboutFooter =>
+      'Rimani costante. Rimani consapevole.\nRimani connesso al tuo Deen.';
 
   @override
   String get settingsEnableSystemNotifications =>

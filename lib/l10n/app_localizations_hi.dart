@@ -745,7 +745,31 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'दीन फोकस आपको प्रार्थना के समय, कुरान, क़िबला, तस्बीह, आस-पास की मस्जिदों और आपकी दिनचर्या के आसपास निर्मित व्याकुलता-मुक्त फोकस मोड के साथ जुड़े रहने में मदद करता है।';
+      'दीन फोकस आधुनिक दुनिया में दैनिक विकर्षणों को प्रबंधित करते हुए आपको अपनी आस्था से जुड़े रहने में मदद करता है।';
+
+  @override
+  String get settingsAboutFeature1 => 'अनुस्मारक के साथ प्रार्थना समय';
+
+  @override
+  String get settingsAboutFeature2 => 'किसी भी समय क़िबला दिशा';
+
+  @override
+  String get settingsAboutFeature3 => 'दैनिक ज़िक्र के लिए कुरान और तस्बीह';
+
+  @override
+  String get settingsAboutFeature4 => 'आस-पास की मस्जिदें';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'सलाह, नींद और पारिवारिक समय के लिए स्मार्ट फोकस मोड';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'स्मार्ट फोकस मोड आपको सलाह, नींद और महत्वपूर्ण क्षणों के दौरान विकर्षणों को अवरुद्ध करने में मदद करते हैं, ताकि आप उपस्थित और अनुशासित रह सकें।';
+
+  @override
+  String get settingsAboutFooter =>
+      'सुसंगत रहें। सचेत रहें।\nअपनी दीन से जुड़े रहें।';
 
   @override
   String get settingsEnableSystemNotifications =>

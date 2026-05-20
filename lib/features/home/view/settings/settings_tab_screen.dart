@@ -591,15 +591,15 @@ class SettingsAboutScreen extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  width: 72,
-                  height: 72,
+                  width: 80,
+                  height: 80,
                   decoration: BoxDecoration(
                     color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(24),
                   ),
                   child: Icon(
                     Icons.mosque_outlined,
-                    size: 34,
+                    size: 40,
                     color: colorScheme.primary,
                   ),
                 ),
@@ -607,10 +607,10 @@ class SettingsAboutScreen extends StatelessWidget {
                 Text(
                   l10n.appTitle,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   l10n.settingsAboutTagline,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -618,17 +618,102 @@ class SettingsAboutScreen extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
                 Text(
                   l10n.settingsAboutDescription,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                _AboutFeatureItem(
+                  text: l10n.settingsAboutFeature1,
+                  colorScheme: colorScheme,
+                ),
+                const SizedBox(height: 10),
+                _AboutFeatureItem(
+                  text: l10n.settingsAboutFeature2,
+                  colorScheme: colorScheme,
+                ),
+                const SizedBox(height: 10),
+                _AboutFeatureItem(
+                  text: l10n.settingsAboutFeature3,
+                  colorScheme: colorScheme,
+                ),
+                const SizedBox(height: 10),
+                _AboutFeatureItem(
+                  text: l10n.settingsAboutFeature4,
+                  colorScheme: colorScheme,
+                ),
+                const SizedBox(height: 10),
+                _AboutFeatureItem(
+                  text: l10n.settingsAboutFeature5,
+                  colorScheme: colorScheme,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    l10n.settingsAboutFocusDescription,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    l10n.settingsAboutFooter,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AboutFeatureItem extends StatelessWidget {
+  const _AboutFeatureItem({
+    required this.text,
+    required this.colorScheme,
+  });
+
+  final String text;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          margin: const EdgeInsets.only(top: 2),
+          decoration: BoxDecoration(
+            color: colorScheme.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.check_rounded,
+            size: 14,
+            color: colorScheme.primary,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -755,7 +755,31 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus te ajută să rămâi la pământ cu orele de rugăciune, Coran, Qibla, Tasbih, moscheile din apropiere și moduri de focalizare fără distragere, construite în jurul rutinelor tale.';
+      'Deen Focus te ajută să rămâi conectat la credința ta în timp ce gestionezi distragerile zilnice într-o lume modernă.';
+
+  @override
+  String get settingsAboutFeature1 => 'Orele de rugăciune cu memento-uri';
+
+  @override
+  String get settingsAboutFeature2 => 'Direcția Qibla oricând';
+
+  @override
+  String get settingsAboutFeature3 => 'Coran și Tasbih pentru dhikr zilnic';
+
+  @override
+  String get settingsAboutFeature4 => 'Moschei din apropiere';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'Moduri de focalizare inteligente pentru Salah, somn și timp petrecut cu familia';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'Modurile de focalizare inteligente te ajută să blochezi distragerile în timpul Salah, somnului și momentelor importante, pentru a putea rămâne prezent și disciplinat.';
+
+  @override
+  String get settingsAboutFooter =>
+      'Rămâi constant. Rămâi conștient.\nRămâi conectat la Deen-ul tău.';
 
   @override
   String get settingsEnableSystemNotifications =>
