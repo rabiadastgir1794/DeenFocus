@@ -40,12 +40,16 @@ class PremiumGate {
   /// Pass [honorDevBypass] `false` for the settings premium card so the loader
   /// and paywall still run while [AppSuperwall.kTemporarilyBypassPremiumRestrictions]
   /// is enabled for in-app feature gates.
+  ///
+  /// Pass [placementOverride] for entry points that should always request a
+  /// specific Superwall placement instead of the intro/premium decision.
   static Future<void> presentIfNeeded({
     required BuildContext context,
     required VoidCallback onAccess,
     required String debugContext,
     bool gatedByFeatureFlag = false,
     bool honorDevBypass = true,
+    String? placementOverride,
   }) async {
     if (gatedByFeatureFlag && !kShowSettingsPremiumSection) {
       _log(
@@ -67,6 +71,7 @@ class PremiumGate {
       await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
         onAccess,
         debugContext: debugContext,
+        placementOverride: placementOverride,
       );
       return;
     }
@@ -120,9 +125,7 @@ class PremiumGate {
       final status = await TraceHelpers.traceAsync(
         'PAYWALL',
         'Superwall.getSubscriptionStatus context=$debugContext',
-        () => Superwall.shared
-            .getSubscriptionStatus()
-            .timeout(budgetForStatus),
+        () => Superwall.shared.getSubscriptionStatus().timeout(budgetForStatus),
       );
 
       if (status.isActive) {
@@ -133,9 +136,12 @@ class PremiumGate {
       }
 
       final hasUsedIntroOffer = await StorageService.hasUsedIntroOffer;
-      final placement = hasUsedIntroOffer
-          ? SuperwallPlacements.premiumFeature
-          : SuperwallPlacements.firstTimeOfferWall;
+      final placement =
+          placementOverride ??
+          (hasUsedIntroOffer
+              ? SuperwallPlacements.premiumFeature
+              : SuperwallPlacements.firstTimeOfferWall);
+      _log('registering paywall placement=$placement context=$debugContext');
 
       // Hold the loader until Superwall reports the paywall as presented so
       // the transition feels uninterrupted.
@@ -165,9 +171,7 @@ class PremiumGate {
             ..onError((error) {
               _log('paywall error context=$debugContext error=$error');
               if (!presented.isCompleted) {
-                presented.completeError(
-                  StateError('paywall error: $error'),
-                );
+                presented.completeError(StateError('paywall error: $error'));
               }
               removeOverlay();
             }),
@@ -236,10 +240,7 @@ class _VerifyingSubscriptionOverlay extends StatelessWidget {
         child: Center(
           child: Container(
             constraints: const BoxConstraints(minWidth: 220, maxWidth: 320),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 28,
-              vertical: 26,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 26),
             decoration: BoxDecoration(
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(20),

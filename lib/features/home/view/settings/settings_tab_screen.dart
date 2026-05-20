@@ -212,6 +212,9 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
       onAccess: () {},
       debugContext: 'settings:premium_card',
       honorDevBypass: false,
+      placementOverride: Platform.isIOS
+          ? SuperwallPlacements.premiumFeature
+          : null,
     );
   }
 

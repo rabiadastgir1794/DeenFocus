@@ -212,8 +212,10 @@ private struct DeenlyWidgetView: View {
       header(fontSize: 9 * fontScale, dateSize: 8 * fontScale)
       Divider().overlay(Color.white.opacity(0.16))
       smallPrayerGrid(prayers: visiblePrayers(limit: 5), now: now)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .padding(.vertical, 8)
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
   }
 
   private func mediumBody(now: Date) -> some View {
@@ -312,36 +314,17 @@ private struct DeenlyWidgetView: View {
     }
   }
 
-  /// Small widgets are ~155pt tall; a 2×column grid needs 3 rows and clips the last prayer.
-  /// Use 3 prayers on the first row and 2 on the second so everything fits.
+  /// Small widgets are ~155pt tall; keep five prayers in two rows and let the rows
+  /// share the remaining height so the widget does not look top-heavy.
   @ViewBuilder
   private func smallPrayerGrid(prayers: [WidgetPrayer], now: Date) -> some View {
     let currentPrayerId = findCurrentPrayerId(prayers: prayersForHighlightNoSunrise, now: now)
     if prayers.count >= 5 {
       VStack(spacing: 3) {
-        HStack(spacing: 2) {
-          ForEach(Array(prayers.prefix(3)), id: \.id) { prayer in
-            PrayerCell(
-              prayer: prayer,
-              isHighlighted: prayer.id == currentPrayerId,
-              palette: palette,
-              family: family,
-              fontScale: fontScale
-            )
-          }
-        }
-        HStack(spacing: 2) {
-          ForEach(Array(prayers.dropFirst(3).prefix(2)), id: \.id) { prayer in
-            PrayerCell(
-              prayer: prayer,
-              isHighlighted: prayer.id == currentPrayerId,
-              palette: palette,
-              family: family,
-              fontScale: fontScale
-            )
-          }
-        }
+        smallPrayerRow(Array(prayers.prefix(3)), currentPrayerId: currentPrayerId)
+        smallPrayerRow(Array(prayers.dropFirst(3).prefix(2)), currentPrayerId: currentPrayerId)
       }
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     } else {
       prayerRows(
         prayers: prayers,
@@ -351,6 +334,21 @@ private struct DeenlyWidgetView: View {
         highlightSource: prayersForHighlightNoSunrise
       )
     }
+  }
+
+  private func smallPrayerRow(_ prayers: [WidgetPrayer], currentPrayerId: String?) -> some View {
+    HStack(spacing: 2) {
+      ForEach(prayers, id: \.id) { prayer in
+        PrayerCell(
+          prayer: prayer,
+          isHighlighted: prayer.id == currentPrayerId,
+          palette: palette,
+          family: family,
+          fontScale: fontScale
+        )
+      }
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
 
   private func visiblePrayers(limit: Int) -> [WidgetPrayer] {
@@ -430,6 +428,7 @@ private struct PrayerCell: View {
     .frame(maxWidth: .infinity, minHeight: 0)
     .padding(.vertical, verticalPadding)
     .padding(.horizontal, isLarge ? 2 : 0.5)
+    .frame(maxWidth: .infinity, maxHeight: isSmall ? CGFloat.infinity : nil)
     .background(
       RoundedRectangle(cornerRadius: 12.8, style: .continuous)
         .fill(isHighlighted ? Color.white.opacity(0.14) : Color.clear)

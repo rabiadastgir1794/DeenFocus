@@ -27,10 +27,11 @@ class AppSuperwall {
 
   static bool get isEnabled => _enabled;
 
-  static final ValueNotifier<bool> subscriptionActiveNotifier =
-  ValueNotifier(false);
+  static final ValueNotifier<bool> subscriptionActiveNotifier = ValueNotifier(
+    false,
+  );
   static final ValueNotifier<bool> purchasedSubscriptionActiveNotifier =
-  ValueNotifier(false);
+      ValueNotifier(false);
 
   static void _log(String message) {
     debugPrint('[Superwall] $message');
@@ -79,8 +80,7 @@ class AppSuperwall {
     if (!_enabled) return;
 
     try {
-      final status =
-      await Superwall.shared.getSubscriptionStatus();
+      final status = await Superwall.shared.getSubscriptionStatus();
 
       final isSubscribed = status.isActive;
 
@@ -88,8 +88,7 @@ class AppSuperwall {
       subscriptionActiveNotifier.value =
           kTemporarilyBypassPremiumRestrictions || isSubscribed;
 
-      var hasUsedIntroOffer =
-      await StorageService.hasUsedIntroOffer;
+      var hasUsedIntroOffer = await StorageService.hasUsedIntroOffer;
 
       if (isSubscribed && !hasUsedIntroOffer) {
         hasUsedIntroOffer = true;
@@ -111,9 +110,10 @@ class AppSuperwall {
   }
 
   static Future<void> requireActiveSubscriptionOrPresentPaywall(
-      void Function() onAccess, {
-        String debugContext = '',
-      }) async {
+    void Function() onAccess, {
+    String debugContext = '',
+    String? placementOverride,
+  }) async {
     if (kTemporarilyBypassPremiumRestrictions) {
       onAccess();
       return;
@@ -126,24 +126,22 @@ class AppSuperwall {
         return;
       }
 
-      final status =
-      await Superwall.shared.getSubscriptionStatus();
+      final status = await Superwall.shared.getSubscriptionStatus();
 
       if (status.isActive) {
         onAccess();
         return;
       }
 
-      final hasUsedIntroOffer =
-      await StorageService.hasUsedIntroOffer;
+      final hasUsedIntroOffer = await StorageService.hasUsedIntroOffer;
 
-      final placement = hasUsedIntroOffer
-          ? SuperwallPlacements.premiumFeature
-          : SuperwallPlacements.firstTimeOfferWall;
+      final placement =
+          placementOverride ??
+          (hasUsedIntroOffer
+              ? SuperwallPlacements.premiumFeature
+              : SuperwallPlacements.firstTimeOfferWall);
 
-      _log(
-        'Showing paywall placement=$placement context=$debugContext',
-      );
+      _log('Showing paywall placement=$placement context=$debugContext');
 
       await Superwall.shared.registerPlacement(
         placement,
@@ -156,8 +154,7 @@ class AppSuperwall {
 
             await syncSubscriptionState();
 
-            final updatedStatus =
-            await Superwall.shared
+            final updatedStatus = await Superwall.shared
                 .getSubscriptionStatus();
 
             if (updatedStatus.isActive) {
@@ -168,9 +165,7 @@ class AppSuperwall {
             _log('Paywall error: $error');
           }),
         feature: () async {
-          final latestStatus =
-          await Superwall.shared
-              .getSubscriptionStatus();
+          final latestStatus = await Superwall.shared.getSubscriptionStatus();
 
           if (latestStatus.isActive) {
             onAccess();
