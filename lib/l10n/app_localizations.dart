@@ -1497,8 +1497,50 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAboutDescription.
   ///
   /// In en, this message translates to:
-  /// **'Deen Focus helps you stay grounded with prayer times, Quran, Qibla, Tasbih, nearby mosques, and distraction-free focus modes built around your routines.'**
+  /// **'Deen Focus helps you stay connected to your faith while managing daily distractions in a modern world.'**
   String get settingsAboutDescription;
+
+  /// No description provided for @settingsAboutFeature1.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times with reminders'**
+  String get settingsAboutFeature1;
+
+  /// No description provided for @settingsAboutFeature2.
+  ///
+  /// In en, this message translates to:
+  /// **'Qibla direction anytime'**
+  String get settingsAboutFeature2;
+
+  /// No description provided for @settingsAboutFeature3.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran and Tasbih for daily dhikr'**
+  String get settingsAboutFeature3;
+
+  /// No description provided for @settingsAboutFeature4.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby mosques'**
+  String get settingsAboutFeature4;
+
+  /// No description provided for @settingsAboutFeature5.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart focus modes for Salah, sleep, and family time'**
+  String get settingsAboutFeature5;
+
+  /// No description provided for @settingsAboutFocusDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart focus modes help you block distractions during Salah, sleep, and important moments, so you can stay present and disciplined.'**
+  String get settingsAboutFocusDescription;
+
+  /// No description provided for @settingsAboutFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay consistent. Stay mindful.\nStay connected to your Deen.'**
+  String get settingsAboutFooter;
 
   /// No description provided for @settingsEnableSystemNotifications.
   ///

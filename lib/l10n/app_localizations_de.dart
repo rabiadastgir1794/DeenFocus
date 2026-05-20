@@ -752,7 +752,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus hilft Ihnen, mit Gebetszeiten, Koran, Qibla, Tasbih, nahegelegenen Moscheen und ablenkungsfreien Fokusmodi, die auf Ihre Routinen abgestimmt sind, auf dem Boden zu bleiben.';
+      'Deen Focus hilft Ihnen, mit Ihrem Glauben verbunden zu bleiben und gleichzeitig tägliche Ablenkungen in einer modernen Welt zu bewältigen.';
+
+  @override
+  String get settingsAboutFeature1 => 'Gebetszeiten mit Erinnerungen';
+
+  @override
+  String get settingsAboutFeature2 => 'Qibla-Richtung jederzeit';
+
+  @override
+  String get settingsAboutFeature3 => 'Koran und Tasbih für tägliches Dhikr';
+
+  @override
+  String get settingsAboutFeature4 => 'Moscheen in der Nähe';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'Intelligente Fokusmodi für Salah, Schlaf und Familienzeit';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'Intelligente Fokusmodi helfen Ihnen, Ablenkungen während Salah, Schlaf und wichtigen Momenten zu blockieren, damit Sie präsent und diszipliniert bleiben können.';
+
+  @override
+  String get settingsAboutFooter =>
+      'Bleiben Sie konsequent. Bleiben Sie achtsam.\nBleiben Sie mit Ihrem Deen verbunden.';
 
   @override
   String get settingsEnableSystemNotifications =>

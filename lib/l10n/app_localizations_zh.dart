@@ -709,7 +709,29 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus 可以帮助您在祈祷时间、《古兰经》、朝拜、塔斯比哈、附近的清真寺以及围绕您的日常生活建立的无干扰的专注模式中保持脚踏实地。';
+      'Deen Focus 帮助您在现代世界中管理日常干扰的同时保持与信仰的联系。';
+
+  @override
+  String get settingsAboutFeature1 => '祈祷时间提醒';
+
+  @override
+  String get settingsAboutFeature2 => '随时查看朝拜方向';
+
+  @override
+  String get settingsAboutFeature3 => '古兰经和塔斯比哈进行每日齐克尔';
+
+  @override
+  String get settingsAboutFeature4 => '附近的清真寺';
+
+  @override
+  String get settingsAboutFeature5 => '用于礼拜、睡眠和家庭时间的智能专注模式';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      '智能专注模式帮助您在礼拜、睡眠和重要时刻屏蔽干扰，让您保持专注和自律。';
+
+  @override
+  String get settingsAboutFooter => '保持一致。保持专注。\n保持与您的信仰的联系。';
 
   @override
   String get settingsEnableSystemNotifications => '启用系统通知以打开此功能。';

@@ -748,7 +748,31 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'Deen Focus sizə namaz vaxtları, Quran, qiblə, təsbih, yaxınlıqdakı məscidlər və gündəlik işlərinizin ətrafında qurulmuş diqqəti yayındırmayan fokus rejimləri ilə əsaslı qalmağa kömək edir.';
+      'Deen Focus müasir dünyada gündəlik diqqət yayındırıcıları idarə edərkən imanınıza bağlı qalmağınıza kömək edir.';
+
+  @override
+  String get settingsAboutFeature1 => 'Xatırlatmalarla namaz vaxtları';
+
+  @override
+  String get settingsAboutFeature2 => 'İstənilən vaxt qiblə istiqaməti';
+
+  @override
+  String get settingsAboutFeature3 => 'Gündəlik zikr üçün Quran və təsbih';
+
+  @override
+  String get settingsAboutFeature4 => 'Yaxınlıqdakı məscidlər';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'Namaz, yuxu və ailə vaxtı üçün ağıllı fokus rejimləri';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'Ağıllı fokus rejimləri namaz, yuxu və mühüm anlar zamanı diqqət yayındırıcıları bloklamağa kömək edir ki, siz hazır və intizamlı qala biləsiniz.';
+
+  @override
+  String get settingsAboutFooter =>
+      'Ardıcıl olun. Diqqətli olun.\nDininizə bağlı qalın.';
 
   @override
   String get settingsEnableSystemNotifications =>

@@ -735,7 +735,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsAboutDescription =>
-      'يساعدك Deen Focus على البقاء على اتصال بأوقات الصلاة والقرآن والقبلة والتسبيح والمساجد القريبة وأوضاع التركيز الخالية من التشتيت المبنية على روتينك.';
+      'يساعدك دين فوكس على البقاء على اتصال بإيمانك أثناء إدارة المشتتات اليومية في عالم حديث.';
+
+  @override
+  String get settingsAboutFeature1 => 'أوقات الصلاة مع التذكيرات';
+
+  @override
+  String get settingsAboutFeature2 => 'اتجاه القبلة في أي وقت';
+
+  @override
+  String get settingsAboutFeature3 => 'القرآن والتسبيح للذكر اليومي';
+
+  @override
+  String get settingsAboutFeature4 => 'المساجد القريبة';
+
+  @override
+  String get settingsAboutFeature5 =>
+      'أوضاع تركيز ذكية للصلاة والنوم ووقت العائلة';
+
+  @override
+  String get settingsAboutFocusDescription =>
+      'تساعدك أوضاع التركيز الذكية على حظر المشتتات أثناء الصلاة والنوم واللحظات المهمة، حتى تتمكن من البقاء حاضرًا ومنضبطًا.';
+
+  @override
+  String get settingsAboutFooter =>
+      'ابق متسقًا. ابق يقظًا.\nابق على اتصال بدينك.';
 
   @override
   String get settingsEnableSystemNotifications =>
