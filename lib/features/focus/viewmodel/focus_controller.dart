@@ -46,6 +46,7 @@ class FocusController extends ChangeNotifier {
   bool _isLoadingApps = false;
   Timer? _refreshTimer;
   String? _lastEnforcedScheduleSignature;
+  DateTime? _allowNativeNightTempUnlockUntilOnce;
 
   /// Ensures recomputes never run in parallel (multiple lifecycle observers call
   /// [refresh] on resume, which previously interleaved and flickered lock/unlock UI).
@@ -524,38 +525,14 @@ class FocusController extends ChangeNotifier {
         ? await _salahWindows(now)
         : const <SalahWindow>[];
     SalahWindow? activeSalahNow;
-    DateTime? until;
 
     if (_settings.salahModeEnabled) {
       activeSalahNow = windows.where((SalahWindow w) {
         return !now.isBefore(w.start) && now.isBefore(w.end);
       }).firstOrNull;
-      if (activeSalahNow != null) {
-        until =
-            _firstSalahStartStrictlyAfter(activeSalahNow.start, windows) ??
-            activeSalahNow.end;
-      }
     }
     final hadActiveSalahWindow = activeSalahNow != null;
-
-    if (_settings.nightDisciplineEnabled) {
-      final nightWindow = _nightWindowContainingOrNext(
-        _settings.nightRange,
-        now,
-      );
-      if (nightWindow != null) {
-        if (_settings.nightRange.contains(now) &&
-            !now.isBefore(nightWindow.start)) {
-          until = until == null
-              ? nightWindow.end
-              : _earlierOf(until, nightWindow.end);
-        } else if (until != null && nightWindow.start.isAfter(now)) {
-          // A Home unlock during Salah must not carry through a future Night
-          // Discipline start. Night is a new scheduled lock boundary.
-          until = _earlierOf(until, nightWindow.start);
-        }
-      }
-    }
+    final until = _homeTemporaryUnlockBoundary(_settings, now, windows);
 
     if (until != null && !until.isAfter(now)) {
       _settings = _settings.copyWith(clearIosSalahShieldLatch: true);
@@ -577,6 +554,7 @@ class FocusController extends ChangeNotifier {
       'focus.unlockFromHome',
       'until=${until.toIso8601String()} mode=${mode?.name}',
     );
+    _allowNativeNightTempUnlockUntilOnce = until;
     _settings = _settings.copyWith(
       temporarilyUnlockedUntil: until,
       clearIosSalahShieldLatch: true,
@@ -586,6 +564,44 @@ class FocusController extends ChangeNotifier {
     await _maybeRefillPrayerNotificationsAfterSalahHomeUnlock(
       hadActiveSalahWindow,
     );
+  }
+
+  DateTime? _homeTemporaryUnlockBoundary(
+    FocusSettings settings,
+    DateTime now,
+    List<SalahWindow> windows,
+  ) {
+    DateTime? until;
+    if (settings.salahModeEnabled) {
+      final nextPrayerStart = _nextSalahStart(windows, now);
+      until = nextPrayerStart;
+
+      if (until == null) {
+        final activeSalah = _activeSalahReminderAt(now, windows);
+        until = activeSalah?.end;
+      }
+    }
+
+    if (settings.nightDisciplineEnabled) {
+      final nightWindow = _nightWindowContainingOrNext(
+        settings.nightRange,
+        now,
+      );
+      if (nightWindow != null) {
+        final DateTime nightBoundary;
+        if (settings.nightRange.contains(now) &&
+            !now.isBefore(nightWindow.start)) {
+          nightBoundary = nightWindow.end;
+        } else {
+          nightBoundary = nightWindow.start;
+        }
+        if (nightBoundary.isAfter(now)) {
+          until = _earlierOf(until, nightBoundary);
+        }
+      }
+    }
+
+    return until;
   }
 
   /// Home action while temporarily unlocked: clear temporary unlock and enforce
@@ -827,6 +843,11 @@ class FocusController extends ChangeNotifier {
       recomputeNow,
       await salahWindowsOnce(),
     );
+    work = _normalizeTemporaryUnlockBoundary(
+      work,
+      recomputeNow,
+      await salahWindowsOnce(),
+    );
     FocusLockState updatedLockState;
     var latchIter = 0;
     while (true) {
@@ -990,6 +1011,31 @@ class FocusController extends ChangeNotifier {
     }
 
     return _stripIosSalahLatchIfSalahDisabled(s);
+  }
+
+  FocusSettings _normalizeTemporaryUnlockBoundary(
+    FocusSettings settings,
+    DateTime now,
+    List<SalahWindow> windows,
+  ) {
+    final current = settings.temporarilyUnlockedUntil;
+    if (settings.childModeEnabled || current == null || !current.isAfter(now)) {
+      return settings;
+    }
+    final boundary = _homeTemporaryUnlockBoundary(settings, now, windows);
+    if (boundary == null) return settings;
+    if (!boundary.isAfter(now)) {
+      return settings.copyWith(clearTemporaryUnlock: true);
+    }
+    if (boundary.isAtSameMomentAs(current)) return settings;
+
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.tempUnlock.adjust',
+        'from=${current.toIso8601String()} to=${boundary.toIso8601String()}',
+      ),
+    );
+    return settings.copyWith(temporarilyUnlockedUntil: boundary);
   }
 
   FocusSettings _stripIosSalahLatchIfSalahDisabled(FocusSettings s) {
@@ -1350,14 +1396,26 @@ class FocusController extends ChangeNotifier {
         work.nightRange.contains(now) &&
         work.temporarilyUnlockedUntil != null &&
         work.temporarilyUnlockedUntil!.isAfter(now)) {
-      unawaited(
-        FocusEnforcementService.appendDebugLog(
-          'focus.tempUnlock.clearForNight',
-          'nativeLocked=true mode=${bridge.shieldActiveMode} '
-              'tempUnlock=${work.temporarilyUnlockedUntil!.toIso8601String()}',
-        ),
-      );
-      work = work.copyWith(clearTemporaryUnlock: true);
+      final allowedUntil = _allowNativeNightTempUnlockUntilOnce;
+      if (allowedUntil == work.temporarilyUnlockedUntil) {
+        _allowNativeNightTempUnlockUntilOnce = null;
+        unawaited(
+          FocusEnforcementService.appendDebugLog(
+            'focus.tempUnlock.allowForNight',
+            'nativeLocked=true mode=${bridge.shieldActiveMode} '
+                'tempUnlock=${work.temporarilyUnlockedUntil!.toIso8601String()}',
+          ),
+        );
+      } else {
+        unawaited(
+          FocusEnforcementService.appendDebugLog(
+            'focus.tempUnlock.clearForNight',
+            'nativeLocked=true mode=${bridge.shieldActiveMode} '
+                'tempUnlock=${work.temporarilyUnlockedUntil!.toIso8601String()}',
+          ),
+        );
+        work = work.copyWith(clearTemporaryUnlock: true);
+      }
     }
 
     if (!work.salahModeEnabled) {
