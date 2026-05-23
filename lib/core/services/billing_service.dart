@@ -5,7 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
-/// Reads Google Play billing metadata and decides which Superwall paywall to show.
+/// Reads store billing metadata and decides which Superwall paywall to show.
 ///
 /// This service intentionally uses:
 /// - `in_app_purchase` only for querying products and purchase history
@@ -14,7 +14,15 @@ class BillingService {
   BillingService({InAppPurchase? inAppPurchase})
     : _inAppPurchase = inAppPurchase ?? InAppPurchase.instance;
 
-  static const String productId = 'premium.yearly';
+  static const String monthlyProductId = 'com.rnr.deenfocus.premium.monthly';
+  static const String yearlyProductId = 'com.rnr.deenfocus.premium.yearly';
+
+  /// Backwards-compatible alias for the primary subscription SKU used by
+  /// Android subscription management deep links and intro-offer decisions.
+  static const String productId = yearlyProductId;
+
+  /// All subscription products that should be available to Superwall paywalls.
+  static const Set<String> productIds = {monthlyProductId, yearlyProductId};
   static const String basePlanId = 'yearly';
 
   static const String firstTimeOfferWall = 'first_time_offer_wall';
@@ -22,42 +30,67 @@ class BillingService {
 
   final InAppPurchase _inAppPurchase;
 
-  /// Queries Google Play for the configured subscription product.
+  /// Queries the platform store for the configured subscription product.
   Future<List<ProductDetails>> fetchProducts() async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
       debugPrint(
-        '[BillingService] Non-Android platform detected. Returning empty products.',
+        '[BillingService] Unsupported platform detected. Returning empty products.',
       );
       return const <ProductDetails>[];
     }
 
-    final isAvailable = await _inAppPurchase.isAvailable();
-    if (!isAvailable) {
-      debugPrint('[BillingService] Billing is unavailable on this device.');
+    final platform = Platform.isIOS ? 'iOS' : 'Android';
+
+    try {
+      final isAvailable = await _inAppPurchase.isAvailable();
+      if (!isAvailable) {
+        debugPrint('[BillingService] $platform billing is unavailable.');
+        return const <ProductDetails>[];
+      }
+
+      debugPrint(
+        '[BillingService] Querying $platform products: ${productIds.join(', ')}',
+      );
+
+      final response = await _inAppPurchase.queryProductDetails(productIds);
+
+      if (response.error != null) {
+        debugPrint(
+          '[BillingService] $platform queryProductDetails error: '
+          '${response.error!.code} ${response.error!.message}',
+        );
+      }
+
+      if (response.notFoundIDs.isNotEmpty) {
+        debugPrint(
+          '[BillingService] $platform product IDs not found: '
+          '${response.notFoundIDs.join(', ')}',
+        );
+      }
+
+      if (response.productDetails.isEmpty) {
+        debugPrint(
+          '[BillingService] No $platform products returned for '
+          '`${productIds.join(', ')}`.',
+        );
+        return const <ProductDetails>[];
+      }
+
+      for (final product in response.productDetails) {
+        debugPrint(
+          '[BillingService] Loaded $platform product '
+          'id=${product.id} title="${product.title}" price=${product.price}',
+        );
+      }
+
+      return response.productDetails;
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[BillingService] $platform fetchProducts error: '
+        '$error\n$stackTrace',
+      );
       return const <ProductDetails>[];
     }
-
-    final response = await _inAppPurchase.queryProductDetails({productId});
-
-    if (response.error != null) {
-      debugPrint(
-        '[BillingService] queryProductDetails error: '
-        '${response.error!.code} ${response.error!.message}',
-      );
-    }
-
-    if (response.productDetails.isEmpty) {
-      debugPrint(
-        '[BillingService] No products returned for `$productId`. '
-        'notFoundIDs=${response.notFoundIDs}',
-      );
-      return const <ProductDetails>[];
-    }
-
-    debugPrint(
-      '[BillingService] Loaded ${response.productDetails.length} product(s).',
-    );
-    return response.productDetails;
   }
 
   /// Returns true when Google Play product metadata includes an intro discount
@@ -156,19 +189,20 @@ class BillingService {
         final List<dynamic> products =
             (purchase.products ?? const <dynamic>[]) as List<dynamic>;
         if (products.isEmpty) return false;
-        return products.contains(productId);
+        return products.any(productIds.contains);
       });
 
       if (matchedSubscription) {
         debugPrint(
-          '[BillingService] hasUserPurchasedBefore: found purchase for $productId.',
+          '[BillingService] hasUserPurchasedBefore: found purchase for '
+          '${productIds.join(', ')}.',
         );
         return true;
       }
 
       debugPrint(
         '[BillingService] hasUserPurchasedBefore: purchases exist but none '
-        'matched $productId.',
+        'matched ${productIds.join(', ')}.',
       );
       return false;
     } catch (error, stackTrace) {
@@ -201,12 +235,12 @@ class BillingService {
     }
 
     final ProductDetails? targetProduct = products
-        .where((product) => product.id == productId)
+        .where((product) => product.id == yearlyProductId)
         .firstOrNull;
 
     if (targetProduct == null) {
       debugPrint(
-        '[BillingService] decideAndShowPaywall: $productId missing, '
+        '[BillingService] decideAndShowPaywall: $yearlyProductId missing, '
         'falling back to premium paywall.',
       );
       await _registerPaywall(premiumFeaturesWall);

@@ -141,6 +141,9 @@ class PremiumGate {
           (hasUsedIntroOffer
               ? SuperwallPlacements.premiumFeature
               : SuperwallPlacements.firstTimeOfferWall);
+
+      await AppSuperwall.preflightStoreProducts(debugContext: debugContext);
+
       _log('registering paywall placement=$placement context=$debugContext');
 
       // Hold the loader until Superwall reports the paywall as presented so

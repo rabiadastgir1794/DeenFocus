@@ -7,11 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../config/app_config.dart';
+import '../services/billing_service.dart';
 import '../services/storage_service.dart';
 
 abstract final class SuperwallPlacements {
   static const String premiumFeature = 'premium_feature';
-  static const String firstTimeOfferWall = 'first_time_offer_wall';
+  static const String firstTimeOfferWall = 'first_time_ offer_wall';
 }
 
 class AppSuperwall {
@@ -24,6 +25,7 @@ class AppSuperwall {
   static bool _enabled = false;
 
   static Future<void>? _configureFuture;
+  static Future<void>? _storeProductsPreflightFuture;
 
   static bool get isEnabled => _enabled;
 
@@ -109,6 +111,41 @@ class AppSuperwall {
     }
   }
 
+  static Future<void> preflightStoreProducts({String debugContext = ''}) {
+    final inFlight = _storeProductsPreflightFuture;
+    if (inFlight != null) return inFlight;
+
+    final future = _preflightStoreProductsInternal(debugContext: debugContext)
+        .whenComplete(() {
+          _storeProductsPreflightFuture = null;
+        });
+    _storeProductsPreflightFuture = future;
+    return future;
+  }
+
+  static Future<void> _preflightStoreProductsInternal({
+    required String debugContext,
+  }) async {
+    try {
+      final products = await BillingService().fetchProducts();
+      if (products.isEmpty) {
+        _log(
+          'Store product preflight returned no products context=$debugContext '
+          'productIds=${BillingService.productIds.join(', ')}',
+        );
+        return;
+      }
+
+      _log(
+        'Store product preflight loaded '
+        '${products.map((product) => product.id).join(', ')} '
+        'context=$debugContext',
+      );
+    } catch (e) {
+      _log('Store product preflight failed context=$debugContext error=$e');
+    }
+  }
+
   static Future<void> requireActiveSubscriptionOrPresentPaywall(
     void Function() onAccess, {
     String debugContext = '',
@@ -140,6 +177,8 @@ class AppSuperwall {
           (hasUsedIntroOffer
               ? SuperwallPlacements.premiumFeature
               : SuperwallPlacements.firstTimeOfferWall);
+
+      await preflightStoreProducts(debugContext: debugContext);
 
       _log('Showing paywall placement=$placement context=$debugContext');
 
