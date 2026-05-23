@@ -14,15 +14,29 @@ class BillingService {
   BillingService({InAppPurchase? inAppPurchase})
     : _inAppPurchase = inAppPurchase ?? InAppPurchase.instance;
 
-  static const String monthlyProductId = 'com.rnr.deenfocus.premium.monthly';
-  static const String yearlyProductId = 'com.rnr.deenfocus.premium.yearly';
+  static const String androidYearlyProductId = 'premium.yearly';
+  static const String iosMonthlyProductId = 'com.rnr.deenfocus.premium.monthly';
+  static const String iosYearlyProductId = 'com.rnr.deenfocus.premium.yearly';
 
   /// Backwards-compatible alias for the primary subscription SKU used by
   /// Android subscription management deep links and intro-offer decisions.
-  static const String productId = yearlyProductId;
+  static const String productId = androidYearlyProductId;
 
-  /// All subscription products that should be available to Superwall paywalls.
-  static const Set<String> productIds = {monthlyProductId, yearlyProductId};
+  /// All subscription products that should be available to Superwall paywalls
+  /// for the current platform.
+  static Set<String> get productIds {
+    if (Platform.isIOS) {
+      return {iosMonthlyProductId, iosYearlyProductId};
+    }
+
+    return {androidYearlyProductId};
+  }
+
+  static String get yearlyProductId {
+    if (Platform.isIOS) return iosYearlyProductId;
+    return androidYearlyProductId;
+  }
+
   static const String basePlanId = 'yearly';
 
   static const String firstTimeOfferWall = 'first_time_offer_wall';
