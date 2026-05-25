@@ -9,11 +9,6 @@ import '../logger/trace_helpers.dart';
 import '../services/storage_service.dart';
 import 'app_superwall.dart';
 
-/// When `false`, chat, prayer streak, and focus mode skip the paywall and grant
-/// access immediately. The settings Deen Focus Premium card still presents the
-/// paywall on tap when the user is not subscribed.
-const bool kShowSettingsPremiumSection = false;
-
 /// Centralised entry point for premium-gated features.
 ///
 /// Shows a fullscreen "Verifying subscription" loader for at least 1 second
@@ -34,36 +29,14 @@ class PremiumGate {
   /// Verifies the user's subscription, then either invokes [onAccess]
   /// directly or presents the appropriate Superwall paywall placement.
   ///
-  /// Pass [gatedByFeatureFlag] for chat, prayer streak, and focus flows so they
-  /// respect [kShowSettingsPremiumSection]. Settings premium card taps omit it.
-  ///
-  /// Pass [honorDevBypass] `false` for the settings premium card so the loader
-  /// and paywall still run while [AppSuperwall.kTemporarilyBypassPremiumRestrictions]
-  /// is enabled for in-app feature gates.
-  ///
   /// Pass [placementOverride] for entry points that should always request a
   /// specific Superwall placement instead of the intro/premium decision.
   static Future<void> presentIfNeeded({
     required BuildContext context,
     required VoidCallback onAccess,
     required String debugContext,
-    bool gatedByFeatureFlag = false,
-    bool honorDevBypass = true,
     String? placementOverride,
   }) async {
-    if (gatedByFeatureFlag && !kShowSettingsPremiumSection) {
-      _log(
-        'in-feature paywalls disabled context=$debugContext — granting access',
-      );
-      onAccess();
-      return;
-    }
-
-    if (honorDevBypass && AppSuperwall.kTemporarilyBypassPremiumRestrictions) {
-      _log('bypass active context=$debugContext — granting access');
-      onAccess();
-      return;
-    }
     final overlayState = Overlay.maybeOf(context, rootOverlay: true);
     if (overlayState == null) {
       // No overlay available — fall back to the direct flow so the user is

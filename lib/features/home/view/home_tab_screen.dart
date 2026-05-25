@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/theme_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../../../core/superwall/premium_gate.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -158,7 +159,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                           );
                         },
                         debugContext: 'home:islamic_chat',
-                        gatedByFeatureFlag: true,
+                        placementOverride: SuperwallPlacements.premiumFeature,
                       ),
                     );
                   },
@@ -389,7 +390,7 @@ class _HomeTabViewState extends State<_HomeTabView>
         );
       },
       debugContext: 'home:prayer_streak',
-      gatedByFeatureFlag: true,
+      placementOverride: SuperwallPlacements.premiumFeature,
     );
   }
 }

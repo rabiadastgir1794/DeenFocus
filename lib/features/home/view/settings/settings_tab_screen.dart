@@ -211,7 +211,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
       context: context,
       onAccess: () {},
       debugContext: 'settings:premium_card',
-      honorDevBypass: false,
       placementOverride: Platform.isIOS
           ? SuperwallPlacements.premiumFeature
           : null,
@@ -225,8 +224,16 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
 
   Future<void> _onAboutTapped(BuildContext context) async {
     if (!context.mounted) return;
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(builder: (_) => const SettingsAboutScreen()),
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        if (!context.mounted) return;
+        Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(builder: (_) => const SettingsAboutScreen()),
+        );
+      },
+      debugContext: 'settings:about_deen_focus',
+      placementOverride: SuperwallPlacements.premiumFeature,
     );
   }
 
