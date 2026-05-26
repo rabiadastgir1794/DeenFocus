@@ -10,12 +10,10 @@ class OnboardingScreenTimePage extends StatelessWidget {
   const OnboardingScreenTimePage({
     super.key,
     required this.onAllowTap,
-    required this.onSkipTap,
     required this.isLoading,
   });
 
   final VoidCallback onAllowTap;
-  final VoidCallback onSkipTap;
   final bool isLoading;
 
   @override
@@ -104,17 +102,10 @@ class OnboardingScreenTimePage extends StatelessWidget {
             ),
             SizedBox(height: Spacing.xl.h),
             AppButton(
-              label: AppLocalizations.of(context)!.screenTimeButton,
+              label: AppLocalizations.of(context)!.continueButton,
               onPressed: onAllowTap,
               showTrailingIcon: false,
               loading: isLoading,
-            ),
-            SizedBox(height: Spacing.sm.h),
-            Center(
-              child: AppTextButton(
-                label: AppLocalizations.of(context)!.skip,
-                onPressed: isLoading ? null : onSkipTap,
-              ),
             ),
           ],
         ),

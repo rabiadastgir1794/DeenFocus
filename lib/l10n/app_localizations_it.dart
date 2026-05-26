@@ -131,10 +131,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get screenTimeSubtitle =>
-      'Per bloccare le app che distraggono durante Salah e Disciplina notturna, abbiamo bisogno dell\'autorizzazione per il tempo di utilizzo.';
+      'Per bloccare le app che distraggono durante Salah e Disciplina notturna, questa app richiede l\'autorizzazione Tempo di utilizzo.';
 
   @override
-  String get screenTimeButton => 'Consenti accesso';
+  String get screenTimeButton => 'Continuare';
 
   @override
   String get focusModesTitle => 'Potenti modalità di messa a fuoco';

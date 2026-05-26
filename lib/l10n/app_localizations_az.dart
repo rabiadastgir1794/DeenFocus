@@ -129,10 +129,10 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get screenTimeSubtitle =>
-      'Namaz və Gecə İntizamı zamanı diqqəti yayındıran tətbiqləri bloklamaq üçün bizə ekran vaxtı icazəsi lazımdır.';
+      'Namaz və Gecə İntizamı zamanı diqqəti yayındıran tətbiqləri bloklamaq üçün bu tətbiqə Ekran Vaxtı icazəsi lazımdır.';
 
   @override
-  String get screenTimeButton => 'Girişə icazə verin';
+  String get screenTimeButton => 'Davam et';
 
   @override
   String get focusModesTitle => 'Güclü Fokus rejimləri';

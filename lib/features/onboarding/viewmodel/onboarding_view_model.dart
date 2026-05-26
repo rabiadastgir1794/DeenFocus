@@ -18,6 +18,7 @@ class OnboardingViewModel extends ChangeNotifier {
 
   /// PageView index for [OnboardingLocationPage] (compulsory).
   static const int locationStepIndex = 6;
+  static const int screenTimeStepIndex = 8;
 
   late int _totalSteps;
 

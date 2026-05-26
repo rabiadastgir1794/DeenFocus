@@ -129,10 +129,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get screenTimeSubtitle =>
-      'لحظر التطبيقات التي تشتت الانتباه أثناء الصلاة والانضباط الليلي، نحتاج إلى إذن وقت الشاشة.';
+      'لحظر التطبيقات التي تشتت الانتباه أثناء الصلاة والانضباط الليلي، يتطلب هذا التطبيق إذن وقت الشاشة.';
 
   @override
-  String get screenTimeButton => 'السماح بالوصول';
+  String get screenTimeButton => 'يكمل';
 
   @override
   String get focusModesTitle => 'أوضاع التركيز القوية';

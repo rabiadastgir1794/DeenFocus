@@ -130,10 +130,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get screenTimeSubtitle =>
-      'सलाह और रात्रि अनुशासन के दौरान ध्यान भटकाने वाले ऐप्स को ब्लॉक करने के लिए, हमें स्क्रीन टाइम अनुमति की आवश्यकता होती है।';
+      'सलाह और रात्रि अनुशासन के दौरान ध्यान भटकाने वाले ऐप्स को ब्लॉक करने के लिए, इस ऐप को स्क्रीन टाइम अनुमति की आवश्यकता होती है।';
 
   @override
-  String get screenTimeButton => 'उपयोग की अनुमति दें';
+  String get screenTimeButton => 'जारी रखना';
 
   @override
   String get focusModesTitle => 'शक्तिशाली फोकस मोड';

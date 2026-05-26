@@ -260,22 +260,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     BuildContext context,
     OnboardingViewModel vm,
   ) async {
-    final authResult = await vm.requestScreenTime();
+    await vm.requestScreenTime();
     if (!context.mounted) return;
-    if (authResult.granted) {
-      await _goToNextPage(context, vm);
-      return;
-    }
-
-    final l10n = AppLocalizations.of(context)!;
-    await AppPermissionDialog.show(
-      context,
-      title: l10n.screenTimeTitle,
-      message: authResult.userFacingMessage() ?? l10n.screenTimeSubtitle,
-      primaryButtonText: l10n.ok,
-      onPrimaryTap: () {},
-    );
-    await vm.recheckPermissions();
+    await _goToNextPage(context, vm);
   }
 
   Future<void> _goToNextPage(
@@ -362,7 +349,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
       });
     }
 
-    final isBusyScreenTimeStep = vm.currentIndex == 8 && vm.screenTimeRequesting;
+    final isScreenTimeStep =
+        vm.currentIndex == OnboardingViewModel.screenTimeStepIndex;
+    final isBusyScreenTimeStep = isScreenTimeStep && vm.screenTimeRequesting;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -416,7 +405,6 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                     ),
                     OnboardingScreenTimePage(
                       onAllowTap: () => _onScreenTimeAllowTap(context, vm),
-                      onSkipTap: () => _goToNextPage(context, vm),
                       isLoading: vm.screenTimeRequesting,
                     ),
                     OnboardingSubscriptionPage(
@@ -430,46 +418,48 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            Spacing.lg.w,
-            16,
-            Spacing.lg.w,
-            Spacing.md.h,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppButton(
-                label: vm.currentIndex == vm.totalSteps - 1
-                    ? AppLocalizations.of(context)!.getStarted
-                    : AppLocalizations.of(context)!.continueButton,
-                enabled: !vm.isContinueDisabled && !isBusyScreenTimeStep,
-                showTrailingIcon: vm.currentIndex != vm.totalSteps - 1,
-                onPressed: () async {
-                  if (vm.currentIndex < vm.totalSteps - 1) {
-                    final nextIndex = vm.currentIndex + 1;
-                    await pageController.animateToPage(
-                      nextIndex,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  } else {
-                    vm.goNext();
-                  }
-                },
+      bottomNavigationBar: isScreenTimeStep
+          ? null
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Spacing.lg.w,
+                  16,
+                  Spacing.lg.w,
+                  Spacing.md.h,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppButton(
+                      label: vm.currentIndex == vm.totalSteps - 1
+                          ? AppLocalizations.of(context)!.getStarted
+                          : AppLocalizations.of(context)!.continueButton,
+                      enabled: !vm.isContinueDisabled && !isBusyScreenTimeStep,
+                      showTrailingIcon: vm.currentIndex != vm.totalSteps - 1,
+                      onPressed: () async {
+                        if (vm.currentIndex < vm.totalSteps - 1) {
+                          final nextIndex = vm.currentIndex + 1;
+                          await pageController.animateToPage(
+                            nextIndex,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        } else {
+                          vm.goNext();
+                        }
+                      },
+                    ),
+                    SizedBox(height: Spacing.xl.h),
+                    AppProgressIndicator(
+                      totalSteps: vm.totalSteps,
+                      currentIndex: vm.currentIndex,
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: Spacing.xl.h),
-              AppProgressIndicator(
-                totalSteps: vm.totalSteps,
-                currentIndex: vm.currentIndex,
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

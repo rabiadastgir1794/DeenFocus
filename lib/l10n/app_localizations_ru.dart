@@ -129,10 +129,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get screenTimeSubtitle =>
-      'Чтобы заблокировать отвлекающие приложения во время намаза и ночной дисциплины, нам нужно разрешение на использование экранного времени.';
+      'Чтобы блокировать отвлекающие приложения во время намаза и ночной дисциплины, этому приложению требуется разрешение Экранного времени.';
 
   @override
-  String get screenTimeButton => 'Разрешить доступ';
+  String get screenTimeButton => 'Продолжать';
 
   @override
   String get focusModesTitle => 'Мощные режимы фокусировки';

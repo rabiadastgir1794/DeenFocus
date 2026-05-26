@@ -345,13 +345,13 @@ abstract class AppLocalizations {
   /// No description provided for @screenTimeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'To block distracting apps during Salah and Night Discipline, we need screen time permission.'**
+  /// **'To block distracting apps during Salah and Night Discipline, this app requires Screen Time permission.'**
   String get screenTimeSubtitle;
 
   /// No description provided for @screenTimeButton.
   ///
   /// In en, this message translates to:
-  /// **'Allow Access'**
+  /// **'Continue'**
   String get screenTimeButton;
 
   /// No description provided for @focusModesTitle.

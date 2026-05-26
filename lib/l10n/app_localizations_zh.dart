@@ -122,10 +122,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get screenTimeTitle => '屏幕时间访问';
 
   @override
-  String get screenTimeSubtitle => '为了在礼拜和夜间纪律期间阻止分散注意力的应用程序，我们需要屏幕时间许可。';
+  String get screenTimeSubtitle => '为了在礼拜和夜间纪律期间阻止分散注意力的应用程序，此应用需要屏幕时间许可。';
 
   @override
-  String get screenTimeButton => '允许访问';
+  String get screenTimeButton => '继续';
 
   @override
   String get focusModesTitle => '强大的对焦模式';
