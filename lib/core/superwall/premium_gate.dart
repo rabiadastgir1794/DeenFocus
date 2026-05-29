@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../logger/trace_helpers.dart';
-import '../services/storage_service.dart';
 import 'app_superwall.dart';
 
 /// Centralised entry point for premium-gated features.
@@ -108,12 +107,11 @@ class PremiumGate {
         return;
       }
 
-      final hasUsedIntroOffer = await StorageService.hasUsedIntroOffer;
       final placement =
           placementOverride ??
-          (hasUsedIntroOffer
-              ? SuperwallPlacements.premiumFeature
-              : SuperwallPlacements.firstTimeOfferWall);
+          await AppSuperwall.paywallPlacementForCurrentUser(
+            debugContext: debugContext,
+          );
 
       await AppSuperwall.preflightStoreProducts(debugContext: debugContext);
 

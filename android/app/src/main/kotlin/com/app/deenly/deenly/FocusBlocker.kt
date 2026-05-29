@@ -715,6 +715,14 @@ object FocusBlockerStore {
                             "setsSalahShieldLatch",
                             transition["setsSalahShieldLatch"] == true,
                         )
+                        put(
+                            "skipNativeSchedule",
+                            transition["skipNativeSchedule"] == true,
+                        )
+                        put(
+                            "forceNativeNightLock",
+                            transition["forceNativeNightLock"] == true,
+                        )
                     },
                 )
             }
@@ -749,6 +757,21 @@ object FocusBlockerStore {
                         if (endMs > 0L) {
                             map["nextChangeAtMillis"] = endMs
                         }
+                    }
+                    if (item.has("notificationHint") && !item.isNull("notificationHint")) {
+                        map["notificationHint"] = item.stringOrNull("notificationHint")
+                    }
+                    if (item.optBoolean("clearIosSalahShieldLatch", false)) {
+                        map["clearIosSalahShieldLatch"] = true
+                    }
+                    if (item.optBoolean("setsSalahShieldLatch", false)) {
+                        map["setsSalahShieldLatch"] = true
+                    }
+                    if (item.optBoolean("skipNativeSchedule", false)) {
+                        map["skipNativeSchedule"] = true
+                    }
+                    if (item.optBoolean("forceNativeNightLock", false)) {
+                        map["forceNativeNightLock"] = true
                     }
                     add(map)
                 }
@@ -1068,7 +1091,11 @@ object FocusScheduleManager {
                     if (transition["forceNativeNightLock"] == true) 1 else 0
                 val clearLatch =
                     if (transition["clearIosSalahShieldLatch"] == true) 1 else 0
-                "$atMillis:${if (isLocked) 1 else 0}:$mode:$hint:$force:$clearLatch"
+                val setsSalahLatch =
+                    if (transition["setsSalahShieldLatch"] == true) 1 else 0
+                val skipNative =
+                    if (transition["skipNativeSchedule"] == true) 1 else 0
+                "$atMillis:${if (isLocked) 1 else 0}:$mode:$hint:$force:$clearLatch:$setsSalahLatch:$skipNative"
             }
     }
 

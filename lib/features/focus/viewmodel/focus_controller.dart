@@ -1714,6 +1714,11 @@ class FocusController extends ChangeNotifier {
         final aLocked = a['isLocked'] == true ? 0 : 1;
         final bLocked = b['isLocked'] == true ? 0 : 1;
         if (aLocked != bLocked) return aLocked.compareTo(bLocked);
+        final aSetsSalahLatch = a['setsSalahShieldLatch'] == true ? 0 : 1;
+        final bSetsSalahLatch = b['setsSalahShieldLatch'] == true ? 0 : 1;
+        if (aSetsSalahLatch != bSetsSalahLatch) {
+          return aSetsSalahLatch.compareTo(bSetsSalahLatch);
+        }
         final aMode = a['activeMode'] as String?;
         final bMode = b['activeMode'] as String?;
         final aPriority = aMode == FocusModeType.nightDiscipline.name ? 0 : 1;
@@ -1799,64 +1804,38 @@ class FocusController extends ChangeNotifier {
         range.contains(now) &&
         settings.temporarilyUnlockedUntil != null &&
         settings.temporarilyUnlockedUntil!.isAfter(now) &&
-        !now.isBefore(currentWindow.start)) {
-      final hasNightStartEvent = events.any(
-        (e) =>
-            e['isLocked'] == true &&
-            e['notificationHint'] == 'nightLock' &&
-            (e['atMillis'] as int?) ==
-                currentWindow.start.millisecondsSinceEpoch,
-      );
-      if (!hasNightStartEvent && _wouldNightLockAt(settings, now)) {
-        final lockAt = now.add(const Duration(seconds: 1));
+        settings.temporarilyUnlockedUntil!.isBefore(currentWindow.end)) {
+      final relockAt = settings.temporarilyUnlockedUntil!;
+      final snap = _lockStateAtInstant(settings, relockAt, windows);
+      if (_wouldNightLockAt(settings, relockAt) &&
+          snap.isLocked &&
+          snap.activeMode == FocusModeType.nightDiscipline) {
         events.add(
           _scheduledTransition(
-            at: lockAt,
+            at: relockAt,
             isLocked: true,
             activeMode: FocusModeType.nightDiscipline,
             reason: 'Night Discipline is blocking selected apps.',
-            nextChangeAt: currentWindow.end,
-            notificationHint: 'nightLock',
-            forceNativeNightLock: true,
-          ),
-        );
-        unawaited(
-          FocusEnforcementService.appendDebugLog(
-            'focus.schedule.nightInWindowRelock',
-            'now=${now.toIso8601String()} nightStart=${currentWindow.start.toIso8601String()} '
-                'tempUntil=${settings.temporarilyUnlockedUntil!.toIso8601String()}',
-          ),
-        );
-      }
-    }
-    if (currentWindow != null &&
-        range.contains(now) &&
-        settings.temporarilyUnlockedUntil != null &&
-        settings.temporarilyUnlockedUntil!.isAfter(now) &&
-        settings.temporarilyUnlockedUntil!.isBefore(currentWindow.end)) {
-      if (_wouldNightLockAt(settings, settings.temporarilyUnlockedUntil!)) {
-        final snap = _lockStateAtInstant(
-          settings,
-          settings.temporarilyUnlockedUntil!,
-          windows,
-        );
-        const mode = FocusModeType.nightDiscipline;
-        events.add(
-          _scheduledTransition(
-            at: settings.temporarilyUnlockedUntil!,
-            isLocked: true,
-            activeMode: mode,
-            reason: 'Night Discipline is blocking selected apps.',
             nextChangeAt: snap.nextChangeAt ?? currentWindow.end,
-            notificationHint: 'nightLock',
+            notificationHint: 'nightResumeSilent',
             forceNativeNightLock: true,
           ),
         );
         unawaited(
           FocusEnforcementService.appendDebugLog(
             'focus.schedule.nightTempRelock',
-            'at=${settings.temporarilyUnlockedUntil!.toIso8601String()} '
-                'activeMode=${mode.name} forceNativeNightLock=true '
+            'at=${relockAt.toIso8601String()} '
+                'activeMode=${FocusModeType.nightDiscipline.name} '
+                'notificationHint=nightResumeSilent forceNativeNightLock=true '
+                'nightWinEnd=${currentWindow.end.toIso8601String()}',
+          ),
+        );
+      } else {
+        unawaited(
+          FocusEnforcementService.appendDebugLog(
+            'focus.schedule.nightTempRelock.skip',
+            'at=${relockAt.toIso8601String()} '
+                'snapLocked=${snap.isLocked} snapMode=${snap.activeMode?.name} '
                 'nightWinEnd=${currentWindow.end.toIso8601String()}',
           ),
         );

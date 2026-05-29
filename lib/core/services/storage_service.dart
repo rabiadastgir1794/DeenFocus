@@ -44,7 +44,8 @@ abstract class StorageService {
       'app_review_prompt_completed';
   static const String _keyFocusAccessibilityDisclosureAccepted =
       'focus_accessibility_disclosure_accepted';
-  static const String _keyHasUsedIntroOffer = 'has_used_intro_offer';
+  static const String _keyHasEverSubscribed = 'has_ever_subscribed';
+  static const String _legacyKeyHasUsedIntroOffer = 'has_used_intro_offer';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -407,13 +408,21 @@ abstract class StorageService {
     await prefs.setBool(_keyFocusAccessibilityDisclosureAccepted, value);
   }
 
-  static Future<bool> get hasUsedIntroOffer async {
+  static Future<bool> get hasEverSubscribed async {
     final prefs = await _prefs;
-    return prefs.getBool(_keyHasUsedIntroOffer) ?? false;
+    return (prefs.getBool(_keyHasEverSubscribed) ?? false) ||
+        (prefs.getBool(_legacyKeyHasUsedIntroOffer) ?? false);
   }
 
-  static Future<void> setHasUsedIntroOffer(bool value) async {
+  static Future<void> setHasEverSubscribed(bool value) async {
     final prefs = await _prefs;
-    await prefs.setBool(_keyHasUsedIntroOffer, value);
+    await prefs.setBool(_keyHasEverSubscribed, value);
+    await prefs.setBool(_legacyKeyHasUsedIntroOffer, value);
+  }
+
+  static Future<bool> get hasUsedIntroOffer => hasEverSubscribed;
+
+  static Future<void> setHasUsedIntroOffer(bool value) {
+    return setHasEverSubscribed(value);
   }
 }

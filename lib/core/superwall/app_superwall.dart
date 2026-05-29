@@ -12,7 +12,7 @@ import '../services/storage_service.dart';
 
 abstract final class SuperwallPlacements {
   static const String premiumFeature = 'premium_feature';
-  static const String firstTimeOfferWall = 'first_time_ offer_wall';
+  static const String firstTimeOfferWall = 'first_time_offer_wall';
 }
 
 class AppSuperwall {
@@ -85,21 +85,22 @@ class AppSuperwall {
       purchasedSubscriptionActiveNotifier.value = isSubscribed;
       subscriptionActiveNotifier.value = isSubscribed;
 
-      var hasUsedIntroOffer = await StorageService.hasUsedIntroOffer;
+      var hasEverSubscribed = await StorageService.hasEverSubscribed;
 
-      if (isSubscribed && !hasUsedIntroOffer) {
-        hasUsedIntroOffer = true;
+      if (isSubscribed && !hasEverSubscribed) {
+        hasEverSubscribed = true;
 
-        await StorageService.setHasUsedIntroOffer(true);
+        await StorageService.setHasEverSubscribed(true);
       }
 
       await Superwall.shared.setUserAttributes({
         'isSubscribed': isSubscribed,
-        'hasUsedIntroOffer': hasUsedIntroOffer,
+        'hasEverSubscribed': hasEverSubscribed,
+        'hasUsedIntroOffer': hasEverSubscribed,
       });
 
       _log(
-        'Subscription synced isSubscribed=$isSubscribed hasUsedIntroOffer=$hasUsedIntroOffer',
+        'Subscription synced isSubscribed=$isSubscribed hasEverSubscribed=$hasEverSubscribed',
       );
     } catch (e) {
       _log('Failed syncing subscription state: $e');
@@ -141,6 +142,45 @@ class AppSuperwall {
     }
   }
 
+  static Future<String> paywallPlacementForCurrentUser({
+    String debugContext = '',
+  }) async {
+    final hasEverSubscribed = await hasEverSubscribedToAnySubscription(
+      debugContext: debugContext,
+    );
+    final placement = hasEverSubscribed
+        ? SuperwallPlacements.premiumFeature
+        : SuperwallPlacements.firstTimeOfferWall;
+
+    _log(
+      'Resolved paywall placement=$placement '
+      'hasEverSubscribed=$hasEverSubscribed context=$debugContext',
+    );
+
+    return placement;
+  }
+
+  static Future<bool> hasEverSubscribedToAnySubscription({
+    String debugContext = '',
+  }) async {
+    final stored = await StorageService.hasEverSubscribed;
+    if (stored) return true;
+
+    final hasStorePurchase = await BillingService().hasUserPurchasedBefore();
+    if (!hasStorePurchase) return false;
+
+    await StorageService.setHasEverSubscribed(true);
+    if (_enabled) {
+      await Superwall.shared.setUserAttributes({
+        'hasEverSubscribed': true,
+        'hasUsedIntroOffer': true,
+      });
+    }
+
+    _log('Detected previous subscription purchase context=$debugContext');
+    return true;
+  }
+
   static Future<void> requireActiveSubscriptionOrPresentPaywall(
     void Function() onAccess, {
     String debugContext = '',
@@ -151,6 +191,7 @@ class AppSuperwall {
 
       if (!_enabled) {
         _log('Superwall not enabled');
+        onAccess();
         return;
       }
 
@@ -161,13 +202,9 @@ class AppSuperwall {
         return;
       }
 
-      final hasUsedIntroOffer = await StorageService.hasUsedIntroOffer;
-
       final placement =
           placementOverride ??
-          (hasUsedIntroOffer
-              ? SuperwallPlacements.premiumFeature
-              : SuperwallPlacements.firstTimeOfferWall);
+          await paywallPlacementForCurrentUser(debugContext: debugContext);
 
       await preflightStoreProducts(debugContext: debugContext);
 
@@ -208,11 +245,13 @@ class AppSuperwall {
     }
   }
 
-  static Future<void> markHasUsedIntroOffer() async {
-    await StorageService.setHasUsedIntroOffer(true);
+  static Future<void> markHasEverSubscribed() async {
+    await StorageService.setHasEverSubscribed(true);
 
     await syncSubscriptionState();
   }
+
+  static Future<void> markHasUsedIntroOffer() => markHasEverSubscribed();
 
   static String? _apiKeyForPlatform() {
     if (Platform.isAndroid) {

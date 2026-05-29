@@ -516,7 +516,7 @@ enum FocusDeviceActivityScheduler {
       selectionSignature = "len=\(selection.count)|\(prefixPart)|\(suffixPart)"
     }
 
-    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String, Bool, Bool) in
+    let normalizedTransitions = transitions.map { transition -> (Int64, Bool, String, String, String, Bool, Bool, Bool, Bool) in
       let atMillis: Int64 = {
         if let n = transition["atMillis"] as? NSNumber { return n.int64Value }
         if let i = transition["atMillis"] as? Int64 { return i }
@@ -526,22 +526,30 @@ enum FocusDeviceActivityScheduler {
       let isLocked = transition["isLocked"] as? Bool ?? false
       let mode = transition["activeMode"] as? String ?? ""
       let reason = transition["lockReason"] as? String ?? ""
+      let hint = transition["notificationHint"] as? String ?? ""
       let forceNative = (transition["forceNativeNightLock"] as? NSNumber)?.boolValue == true
         || (transition["forceNativeNightLock"] as? Bool) == true
       let skipNative = (transition["skipNativeSchedule"] as? NSNumber)?.boolValue == true
         || (transition["skipNativeSchedule"] as? Bool) == true
-      return (atMillis, isLocked, mode, reason, forceNative, skipNative)
+      let setsSalahLatch = (transition["setsSalahShieldLatch"] as? NSNumber)?.boolValue == true
+        || (transition["setsSalahShieldLatch"] as? Bool) == true
+      let clearsSalahLatch = (transition["clearIosSalahShieldLatch"] as? NSNumber)?.boolValue == true
+        || (transition["clearIosSalahShieldLatch"] as? Bool) == true
+      return (atMillis, isLocked, mode, reason, hint, forceNative, skipNative, setsSalahLatch, clearsSalahLatch)
     }
     .sorted {
       if $0.0 != $1.0 { return $0.0 < $1.0 }
       if $0.1 != $1.1 { return !$0.1 && $1.1 }
       if $0.2 != $1.2 { return $0.2 < $1.2 }
       if $0.3 != $1.3 { return $0.3 < $1.3 }
-      if $0.4 != $1.4 { return !$0.4 && $1.4 }
-      return !$0.5 && $1.5
+      if $0.4 != $1.4 { return $0.4 < $1.4 }
+      if $0.5 != $1.5 { return !$0.5 && $1.5 }
+      if $0.6 != $1.6 { return !$0.6 && $1.6 }
+      if $0.7 != $1.7 { return !$0.7 && $1.7 }
+      return !$0.8 && $1.8
     }
-    .map { atMillis, isLocked, mode, reason, forceNative, skipNative in
-      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason):\(forceNative ? 1 : 0):\(skipNative ? 1 : 0)"
+    .map { atMillis, isLocked, mode, reason, hint, forceNative, skipNative, setsSalahLatch, clearsSalahLatch in
+      "\(atMillis):\(isLocked ? 1 : 0):\(mode):\(reason):\(hint):\(forceNative ? 1 : 0):\(skipNative ? 1 : 0):\(setsSalahLatch ? 1 : 0):\(clearsSalahLatch ? 1 : 0)"
     }
     .joined(separator: ",")
 

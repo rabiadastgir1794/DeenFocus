@@ -211,9 +211,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
       context: context,
       onAccess: () {},
       debugContext: 'settings:premium_card',
-      placementOverride: Platform.isIOS
-          ? SuperwallPlacements.premiumFeature
-          : null,
     );
   }
 
@@ -233,7 +230,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
         );
       },
       debugContext: 'settings:about_deen_focus',
-      placementOverride: SuperwallPlacements.premiumFeature,
     );
   }
 

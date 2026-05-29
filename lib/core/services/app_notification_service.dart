@@ -67,6 +67,7 @@ class AppNotificationService {
   void invalidateFocusScheduleCache() {
     _lastFocusScheduleSignature = null;
   }
+
   bool _hadIosFocusNotificationPendingCapSkip = false;
   bool _iosFocusNotificationsRetryPending = false;
 
@@ -318,7 +319,7 @@ class AppNotificationService {
                   FocusEnforcementService.appendDebugLog(
                     'notifications.focus.skip',
                     'nightResumeSilent atMillis=$atMillis '
-                    '(duplicate night notification suppressed)',
+                        '(duplicate night notification suppressed)',
                   ),
                 );
                 return false;
@@ -784,11 +785,14 @@ class AppNotificationService {
       final mode = transition['activeMode'] as String? ?? '';
       final hint = transition['notificationHint'] as String? ?? '';
       final prayerId = transition['prayerId'] as String? ?? '';
-      final forceNative =
-          transition['forceNativeNightLock'] == true ? 1 : 0;
+      final forceNative = transition['forceNativeNightLock'] == true ? 1 : 0;
       final skipNative = transition['skipNativeSchedule'] == true ? 1 : 0;
+      final setsSalahLatch = transition['setsSalahShieldLatch'] == true ? 1 : 0;
+      final clearsSalahLatch = transition['clearIosSalahShieldLatch'] == true
+          ? 1
+          : 0;
       parts.add(
-        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId:$forceNative:$skipNative',
+        'transition=$atMillis:${isLocked ? 1 : 0}:$mode:$hint:$prayerId:$forceNative:$skipNative:$setsSalahLatch:$clearsSalahLatch',
       );
     }
 
