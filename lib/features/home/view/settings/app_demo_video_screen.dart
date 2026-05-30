@@ -39,7 +39,7 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
     try {
       await _manager!.enterFullscreen();
     } catch (_) {
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) setState(() {});
     }
   }
 
@@ -57,9 +57,7 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.appDemoTitle),
-      ),
+      appBar: AppBar(title: Text(l10n.appDemoTitle)),
       body: Consumer<AppDemoVideoManager>(
         builder: (context, demo, _) {
           final c = demo.controller;
@@ -70,9 +68,9 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
                 child: Text(
                   l10n.appDemoLoadFailed,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.error,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: colorScheme.error),
                 ),
               ),
             );

@@ -44,8 +44,8 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
       if (!mounted || !widget.isTabActive) return;
       unawaited(
         context.read<AppDemoVideoManager>().ensurePreviewReady().catchError(
-              (Object _) {},
-            ),
+          (Object _) {},
+        ),
       );
     });
   }
@@ -56,23 +56,20 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
     final l10n = AppLocalizations.of(context)!;
     return Consumer<AppDemoVideoManager>(
       builder: (context, demo, _) {
-        final c = demo.controller;
         final err = demo.lastError;
-        final channelBroken = err is PlatformException &&
-            err.code == 'channel-error';
+        final channelBroken =
+            err is PlatformException && err.code == 'channel-error';
 
         return Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: demo.hasError && c == null
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const AppDemoVideoScreen(),
-                      ),
-                    );
-                  },
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const AppDemoVideoScreen(),
+                ),
+              );
+            },
             borderRadius: BorderRadius.circular(24),
             child: Ink(
               padding: const EdgeInsets.all(20),
@@ -89,8 +86,8 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                   Text(
                     l10n.appDemoTitle,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 14),
                   ClipRRect(
@@ -122,42 +119,6 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
     AppLocalizations l10n,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    if (demo.hasError && demo.controller == null) {
-      return ColoredBox(
-        color: colorScheme.surfaceContainerHighest,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline_rounded,
-                  color: colorScheme.error,
-                  size: 36,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  channelBroken
-                      ? l10n.appDemoRestartHint
-                      : l10n.appDemoPreviewLoadFailed,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                TextButton(
-                  onPressed: () => unawaited(demo.retry()),
-                  child: Text(l10n.appDemoTryAgain),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
 
     return Stack(
       fit: StackFit.expand,
@@ -197,19 +158,60 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
               Text(
                 l10n.appDemoWatchLabel,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      shadows: const [
-                        Shadow(
-                          blurRadius: 8,
-                          color: Colors.black54,
-                        ),
-                      ],
-                    ),
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  shadows: const [Shadow(blurRadius: 8, color: Colors.black54)],
+                ),
               ),
             ],
           ),
         ),
+        if (demo.hasError && demo.controller == null)
+          Positioned(
+            left: 12,
+            right: 12,
+            bottom: 12,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.62),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 18,
+                      color: colorScheme.onPrimary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        channelBroken
+                            ? l10n.appDemoRestartHint
+                            : l10n.appDemoPreviewLoadFailed,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          unawaited(demo.retry().catchError((Object _) {})),
+                      child: Text(l10n.appDemoTryAgain),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

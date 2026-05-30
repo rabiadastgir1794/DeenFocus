@@ -803,24 +803,15 @@ object FocusBlockerStore {
         val applied = transitions.lastOrNull { it.atMillis <= now } ?: return storedState
         val tempUnlockUntil = prefs.getLong(tempUnlockUntilMillisKey, 0L)
         if (tempUnlockUntil > now) {
-            val nightOverridesTempUnlock =
-                applied.isLocked && applied.activeMode == "nightDiscipline"
-            if (nightOverridesTempUnlock) {
-                FocusDebugLogger.append(
-                    context,
-                    "store.resolve",
-                    "night lock atMillis=${applied.atMillis} overrides temp unlock untilMillis=$tempUnlockUntil",
-                )
-                prefs.edit().remove(tempUnlockUntilMillisKey).apply()
-            } else {
-                // Flutter reports temporary unlock; do not replay an older scheduled *lock* edge over it.
-                FocusDebugLogger.append(
-                    context,
-                    "store.resolve",
-                    "honoring temp unlock untilMillis=$tempUnlockUntil (skip transition replay)",
-                )
-                return storedState
-            }
+            // Flutter reports temporary unlock; do not replay an older scheduled
+            // lock edge over it. Fresh night-lock alarms clear this key in
+            // FocusScheduleReceiver before they persist their new lock state.
+            FocusDebugLogger.append(
+                context,
+                "store.resolve",
+                "honoring temp unlock untilMillis=$tempUnlockUntil (skip transition replay)",
+            )
+            return storedState
         }
         val next = transitions.firstOrNull { it.atMillis > now }
         val resolved = storedState.copy(
@@ -1058,19 +1049,17 @@ class FocusAccessibilityService : AccessibilityService() {
             }
         }
 
-        // One transition: send the blocked app to the background, then show the
-        // overlay a single time after the home animation settles. The old flow
-        // (startActivity + HOME + delayed second startActivity) reliably produced
-        // a visible open → close → open flash.
+        // Start the restricted screen immediately while the accessibility event is
+        // fresh. Several OEMs (MIUI/XOS) drop delayed background starts after HOME.
         pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
-        val afterHome =
+        launchBlockingActivity("accessibility_event")
+        val refreshOverlay =
             Runnable {
                 pendingOverlayAfterHome = null
-                launchBlockingActivity("after_home")
+                launchBlockingActivity("accessibility_event_refresh")
             }
-        pendingOverlayAfterHome = afterHome
-        performGlobalAction(GLOBAL_ACTION_HOME)
-        mainHandler.postDelayed(afterHome, 320L)
+        pendingOverlayAfterHome = refreshOverlay
+        mainHandler.postDelayed(refreshOverlay, 650L)
     }
 
     override fun onInterrupt() {

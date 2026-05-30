@@ -10,7 +10,6 @@ import '../../../core/services/device_apps_service.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/superwall/app_superwall.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
 import '../../home/model/home_models.dart';
@@ -30,12 +29,6 @@ class FocusController extends ChangeNotifier {
   static const int _rollingScheduleDays = 2;
 
   static int get _scheduleHorizonDays => _rollingScheduleDays;
-
-  FocusController() {
-    AppSuperwall.subscriptionActiveNotifier.addListener(
-      _handleSubscriptionStatusChange,
-    );
-  }
 
   FocusSettings _settings = FocusSettings.defaults();
   FocusLockState _lockState = const FocusLockState.unlocked();
@@ -123,7 +116,6 @@ class FocusController extends ChangeNotifier {
       'manual refresh start',
     );
     await _reloadLocation();
-    await _enforceSubscriptionOrDisableModes();
     await _recomputeAndPersist();
   }
 
@@ -142,15 +134,6 @@ class FocusController extends ChangeNotifier {
       forceReschedule: true,
       daysAheadOverride: _rollingScheduleDays,
     );
-  }
-
-  /// Reacts to live subscription updates (e.g. paywall dismiss, lifecycle
-  /// resume sync) so any active focus modes are torn down the instant the
-  /// user loses their entitlement.
-  void _handleSubscriptionStatusChange() {
-    if (!_isInitialized) return;
-    if (AppSuperwall.subscriptionActiveNotifier.value) return;
-    unawaited(disableAllModesDueToSubscription());
   }
 
   Future<void> requestInstalledApps() async {
@@ -475,39 +458,6 @@ class FocusController extends ChangeNotifier {
     await disableMode(mode);
   }
 
-  /// Turns off every focus mode and temporary unlock when subscription lapses.
-  Future<void> disableAllModesDueToSubscription() async {
-    if (!isAnyModeEnabled && _settings.temporarilyUnlockedUntil == null) {
-      return;
-    }
-    await FocusEnforcementService.appendDebugLog(
-      'focus.subscription.lapse',
-      'disabling all modes',
-    );
-    _settings = _settings.copyWith(
-      childModeEnabled: false,
-      clearChildLockedUntil: true,
-      nightDisciplineEnabled: false,
-      salahModeEnabled: false,
-      clearTemporaryUnlock: true,
-      clearSalahTestAnchorAt: true,
-      clearNightDisciplineBeforeChild: true,
-      clearSalahModeBeforeChild: true,
-      clearIosSalahShieldLatch: true,
-    );
-    await _recomputeAndPersist();
-  }
-
-  Future<void> _enforceSubscriptionOrDisableModes() async {
-    if (!AppSuperwall.isEnabled) return;
-
-    await AppSuperwall.syncSubscriptionState();
-
-    if (!AppSuperwall.subscriptionActiveNotifier.value) {
-      await disableAllModesDueToSubscription();
-    }
-  }
-
   /// Home "unlock" action: does **not** turn off Salah or Night Discipline — it
   /// only sets [FocusSettings.temporarilyUnlockedUntil] until the end of the
   /// current prayer window and/or current night window so blocking resumes on
@@ -784,7 +734,6 @@ class FocusController extends ChangeNotifier {
     }
     notifyListeners();
     await _recomputeAndPersist();
-    await _enforceSubscriptionOrDisableModes();
   }
 
   bool get _isStaleChildLockReason {
@@ -2185,9 +2134,6 @@ class FocusController extends ChangeNotifier {
 
   @override
   void dispose() {
-    AppSuperwall.subscriptionActiveNotifier.removeListener(
-      _handleSubscriptionStatusChange,
-    );
     _refreshTimer?.cancel();
     super.dispose();
   }
