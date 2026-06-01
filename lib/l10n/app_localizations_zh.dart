@@ -197,7 +197,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get monthlyPlanSubtitle => '按月计费 • 随时取消';
 
   @override
-  String get yearlyPriceValue => '29.99 美元';
+  String get yearlyPriceValue => '49.99 美元';
 
   @override
   String get yearlyPriceSuffix => '/年';
@@ -251,7 +251,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get yearlyLabel => '每年';
 
   @override
-  String get yearlyPrice => '29.99 美元/年 · 节省 50% · 按年计费';
+  String get yearlyPrice => '49.99 美元/年 · 节省 50% · 按年计费';
 
   @override
   String get lifetimeLabel => '寿命';

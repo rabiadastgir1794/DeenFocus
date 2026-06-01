@@ -212,7 +212,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'मासिक बिल भेजा गया • किसी भी समय रद्द करें';
 
   @override
-  String get yearlyPriceValue => '\$29.99';
+  String get yearlyPriceValue => '\$49.99';
 
   @override
   String get yearlyPriceSuffix => '/वर्ष';
@@ -270,7 +270,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get yearlyLabel => 'सालाना';
 
   @override
-  String get yearlyPrice => '\$29.99/वर्ष · 50% बचाएं · वार्षिक बिल';
+  String get yearlyPrice => '\$49.99/वर्ष · 50% बचाएं · वार्षिक बिल';
 
   @override
   String get lifetimeLabel => 'जीवनभर';

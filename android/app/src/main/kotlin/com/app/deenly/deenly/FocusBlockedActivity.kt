@@ -225,7 +225,7 @@ class FocusBlockedActivity : Activity() {
             root,
             ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
             ),
         )
 
@@ -342,7 +342,7 @@ class FocusBlockedActivity : Activity() {
 
     private fun homeButtonLabel(activeMode: String?): String {
         return when (activeMode) {
-            "child" -> "Continue in Safe Mode"
+            "child" -> "Stay Protected"
             "nightDiscipline" -> "Good Night"
             "salah" -> "Start My Salah"
             else -> "Start My Salah"

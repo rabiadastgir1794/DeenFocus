@@ -115,7 +115,7 @@ private enum FocusShieldMode: String {
     case .salah:
       return "Start\(nb)Salah"
     case .child:
-      return "Continue\(nb)in\(nb)Safe\(nb)Mode"
+      return "Stay\(nb)Protected"
     case .nightDiscipline:
       return "Good\(nb)Night"
     }

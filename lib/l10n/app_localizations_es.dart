@@ -212,7 +212,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Facturado mensualmente • Cancelar en cualquier momento';
 
   @override
-  String get yearlyPriceValue => '\$29.99';
+  String get yearlyPriceValue => '\$49.99';
 
   @override
   String get yearlyPriceSuffix => '/año';
@@ -270,7 +270,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yearlyLabel => 'Anual';
 
   @override
-  String get yearlyPrice => '\$29.99/año · ahorra 50% · facturado anualmente';
+  String get yearlyPrice => '\$49.99/año · ahorra 50% · facturado anualmente';
 
   @override
   String get lifetimeLabel => 'Vida';

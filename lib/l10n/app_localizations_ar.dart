@@ -209,7 +209,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'يتم إصدار الفاتورة شهريًا • الإلغاء في أي وقت';
 
   @override
-  String get yearlyPriceValue => '29.99 دولارًا';
+  String get yearlyPriceValue => '49.99 دولارًا';
 
   @override
   String get yearlyPriceSuffix => '/سنة';
@@ -267,7 +267,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get yearlyPrice =>
-      '29.99 دولارًا سنويًا · وفر 50٪ · يتم إصدار الفاتورة سنويًا';
+      '49.99 دولارًا سنويًا · وفر 50٪ · يتم إصدار الفاتورة سنويًا';
 
   @override
   String get lifetimeLabel => 'حياة';

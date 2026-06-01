@@ -267,7 +267,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearlyLabel => 'Yearly';
 
   @override
-  String get yearlyPrice => '\$29.99/year · save 50% · billed annually';
+  String get yearlyPrice => '\$49.99/year · save 50% · billed annually';
 
   @override
   String get lifetimeLabel => 'Lifetime';

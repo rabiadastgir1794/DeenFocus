@@ -269,7 +269,7 @@ class AppLocalizationsAz extends AppLocalizations {
   String get yearlyLabel => 'İllik';
 
   @override
-  String get yearlyPrice => '\$29.99/il · 50% qənaət · illik hesablanır';
+  String get yearlyPrice => '\$49.99/il · 50% qənaət · illik hesablanır';
 
   @override
   String get lifetimeLabel => 'Ömür boyu';

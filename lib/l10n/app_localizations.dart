@@ -603,7 +603,7 @@ abstract class AppLocalizations {
   /// No description provided for @yearlyPrice.
   ///
   /// In en, this message translates to:
-  /// **'\$29.99/year · save 50% · billed annually'**
+  /// **'\$49.99/year · save 50% · billed annually'**
   String get yearlyPrice;
 
   /// No description provided for @lifetimeLabel.
