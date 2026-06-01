@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -56,10 +55,6 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
     final l10n = AppLocalizations.of(context)!;
     return Consumer<AppDemoVideoManager>(
       builder: (context, demo, _) {
-        final err = demo.lastError;
-        final channelBroken =
-            err is PlatformException && err.code == 'channel-error';
-
         return Material(
           color: Colors.transparent,
           child: InkWell(
@@ -95,12 +90,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                     child: SizedBox(
                       width: double.infinity,
                       height: 180,
-                      child: _buildPreviewBody(
-                        context,
-                        demo,
-                        channelBroken,
-                        l10n,
-                      ),
+                      child: _buildPreviewBody(context, demo, l10n),
                     ),
                   ),
                 ],
@@ -115,7 +105,6 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
   Widget _buildPreviewBody(
     BuildContext context,
     AppDemoVideoManager demo,
-    bool channelBroken,
     AppLocalizations l10n,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -191,9 +180,7 @@ class _AppDemoVideoSettingsCardState extends State<AppDemoVideoSettingsCard> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        channelBroken
-                            ? l10n.appDemoRestartHint
-                            : l10n.appDemoPreviewLoadFailed,
+                        l10n.appDemoPreviewLoadFailed,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(

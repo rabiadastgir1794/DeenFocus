@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_manager.dart';
@@ -84,8 +84,12 @@ class _AppDemoVideoScreenState extends State<AppDemoVideoScreen> {
             offset: const Offset(0, -kToolbarHeight / 2),
             child: Center(
               child: AspectRatio(
-                aspectRatio: c.value.aspectRatio,
-                child: VideoPlayer(c),
+                aspectRatio: demo.aspectRatio,
+                child: Video(
+                  controller: c,
+                  aspectRatio: demo.aspectRatio,
+                  controls: NoVideoControls,
+                ),
               ),
             ),
           );
