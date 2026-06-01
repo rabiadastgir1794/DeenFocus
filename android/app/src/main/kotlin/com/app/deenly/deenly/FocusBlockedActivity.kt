@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -19,6 +20,12 @@ import android.widget.ScrollView
 import android.widget.TextView
 
 class FocusBlockedActivity : Activity() {
+    companion object {
+        @Volatile
+        var lastShownAtElapsedMillis: Long = 0L
+            private set
+    }
+
     private data class ThemePalette(
         val background: Int,
         val cardBackground: Int,
@@ -43,12 +50,14 @@ class FocusBlockedActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lastShownAtElapsedMillis = SystemClock.elapsedRealtime()
         FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate")
         renderContent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        lastShownAtElapsedMillis = SystemClock.elapsedRealtime()
         setIntent(intent)
         FocusDebugLogger.append(applicationContext, "blocked.activity", "onNewIntent")
         renderContent(intent)

@@ -3,6 +3,7 @@ package com.rnr.deenfocus
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.AlarmManager
+import android.app.ActivityOptions
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -1034,13 +1035,44 @@ class FocusAccessibilityService : AccessibilityService() {
             putExtra("nextChangeAt", state.nextChangeAt)
         }
 
-        fun launchBlockingActivity(reason: String) {
+        fun launchBlockingActivity(reason: String, viaPendingIntent: Boolean = false) {
             FocusDebugLogger.append(
                 applicationContext,
                 "service.block.show",
-                "$reason starting FocusBlockedActivity package=$packageName label=$blockedLabel",
+                "$reason starting FocusBlockedActivity viaPendingIntent=$viaPendingIntent package=$packageName label=$blockedLabel",
             )
-            runCatching { startActivity(intent) }.onFailure { error ->
+            runCatching {
+                if (viaPendingIntent) {
+                    val pendingIntent =
+                        PendingIntent.getActivity(
+                            applicationContext,
+                            6200,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                        )
+                    val options =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            ActivityOptions.makeBasic().apply {
+                                setPendingIntentBackgroundActivityStartMode(
+                                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED,
+                                )
+                            }.toBundle()
+                        } else {
+                            null
+                        }
+                    pendingIntent.send(
+                        applicationContext,
+                        0,
+                        null,
+                        null,
+                        null,
+                        null,
+                        options,
+                    )
+                } else {
+                    startActivity(intent)
+                }
+            }.onFailure { error ->
                 FocusDebugLogger.append(
                     applicationContext,
                     "service.block.error",
@@ -1052,14 +1084,55 @@ class FocusAccessibilityService : AccessibilityService() {
         // Start the restricted screen immediately while the accessibility event is
         // fresh. Several OEMs (MIUI/XOS) drop delayed background starts after HOME.
         pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
+        val launchAttemptAt = SystemClock.elapsedRealtime()
+        fun blockedActivityShown(): Boolean {
+            return FocusBlockedActivity.lastShownAtElapsedMillis >= launchAttemptAt
+        }
+        fun stillBlocked(): Boolean {
+            return FocusBlockerStore.isPackageBlocked(applicationContext, packageName)
+        }
+        fun retryBlockingActivity(reason: String, viaPendingIntent: Boolean = false) {
+            if (blockedActivityShown() || !stillBlocked()) return
+            launchBlockingActivity(reason, viaPendingIntent)
+        }
         launchBlockingActivity("accessibility_event")
         val refreshOverlay =
             Runnable {
                 pendingOverlayAfterHome = null
-                launchBlockingActivity("accessibility_event_refresh")
+                retryBlockingActivity("accessibility_event_direct_retry")
             }
         pendingOverlayAfterHome = refreshOverlay
-        mainHandler.postDelayed(refreshOverlay, 650L)
+        mainHandler.postDelayed(refreshOverlay, 220L)
+        mainHandler.postDelayed(
+            { retryBlockingActivity("accessibility_event_pending_intent", viaPendingIntent = true) },
+            520L,
+        )
+        mainHandler.postDelayed(
+            {
+                if (blockedActivityShown() || !stillBlocked()) {
+                    return@postDelayed
+                }
+                FocusDebugLogger.append(
+                    applicationContext,
+                    "service.block.retry",
+                    "FocusBlockedActivity launch not observed; sending HOME then retrying activity package=$packageName label=$blockedLabel",
+                )
+                performGlobalAction(GLOBAL_ACTION_HOME)
+                mainHandler.postDelayed(
+                    { retryBlockingActivity("after_home_pending_intent", viaPendingIntent = true) },
+                    260L,
+                )
+                mainHandler.postDelayed(
+                    { retryBlockingActivity("after_home_direct_retry") },
+                    700L,
+                )
+                mainHandler.postDelayed(
+                    { retryBlockingActivity("after_home_pending_intent_retry", viaPendingIntent = true) },
+                    1300L,
+                )
+            },
+            1000L,
+        )
     }
 
     override fun onInterrupt() {

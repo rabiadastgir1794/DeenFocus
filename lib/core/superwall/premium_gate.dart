@@ -148,6 +148,12 @@ class PremiumGate {
                 presented.completeError(StateError('paywall error: $error'));
               }
               removeOverlay();
+            })
+            ..onCustomCallback((callback) {
+              return AppSuperwall.handleCustomPaywallCallback(
+                callback,
+                debugContext: debugContext,
+              );
             }),
           feature: () async {
             try {
