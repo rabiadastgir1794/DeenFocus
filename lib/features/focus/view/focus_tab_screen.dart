@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/superwall/premium_gate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
@@ -290,9 +291,17 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     await _runSelectAppsFlow(vm, l10n);
   }
 
-  Future<void> _requestInstalledApps(FocusController vm) async {
-    if (!mounted) return;
-    await vm.requestInstalledApps();
+  /// Premium is required only when fetching/opening the installed-app list, not
+  /// when toggling individual apps or showing an already-loaded grid.
+  Future<void> _requestInstalledAppsAfterPremium(FocusController vm) async {
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        if (!mounted) return;
+        unawaited(vm.requestInstalledApps());
+      },
+      debugContext: 'focus:load_apps',
+    );
   }
 
   Future<void> _runSelectAppsFlow(
@@ -320,7 +329,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         );
         return;
       }
-      await _requestInstalledApps(vm);
+      await _requestInstalledAppsAfterPremium(vm);
       return;
     }
     final acceptedDisclosure =
@@ -336,11 +345,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       _showGlobalSelector = shouldShow;
     });
     if (shouldShow && vm.installedApps.isEmpty) {
-      await _requestInstalledApps(vm);
+      await _requestInstalledAppsAfterPremium(vm);
     }
   }
 
-  Future<void> _enableMode(
+  Future<void> _enableModeAfterPremium(
     FocusController vm,
     FocusModeType mode,
     ScaffoldMessengerState? messenger,
@@ -406,7 +415,12 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       }
 
       if (enabled) {
-        await _enableMode(vm, mode, messenger, l10n);
+        await _runEnableModeFlow(
+          vm: vm,
+          mode: mode,
+          messenger: messenger,
+          l10n: l10n,
+        );
       } else {
         await vm.disableMode(mode);
       }
@@ -427,6 +441,36 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         _modesInFlight.remove(mode);
       }
     }
+  }
+
+  Future<void> _runEnableModeFlow({
+    required FocusController vm,
+    required FocusModeType mode,
+    required ScaffoldMessengerState? messenger,
+    required AppLocalizations l10n,
+  }) async {
+    final completeEnable = Completer<void>();
+    var paywallGrantedCallback = false;
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        paywallGrantedCallback = true;
+        unawaited(
+          Future<void>(() async {
+            try {
+              await _enableModeAfterPremium(vm, mode, messenger, l10n);
+            } finally {
+              if (!completeEnable.isCompleted) completeEnable.complete();
+            }
+          }),
+        );
+      },
+      debugContext: 'focus:enable_mode:${mode.name}',
+    );
+    if (!paywallGrantedCallback && !completeEnable.isCompleted) {
+      completeEnable.complete();
+    }
+    await completeEnable.future;
   }
 
   Future<void> _removeSelectedApp(

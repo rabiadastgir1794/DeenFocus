@@ -458,6 +458,39 @@ class FocusController extends ChangeNotifier {
     await disableMode(mode);
   }
 
+  Future<void> disableModesForInactiveSubscription() async {
+    await initialize();
+    if (!isAnyModeEnabled &&
+        _settings.childLockedUntil == null &&
+        _settings.temporarilyUnlockedUntil == null &&
+        _settings.iosSalahShieldLatchEpochMillis == null &&
+        _settings.nightDisciplineBeforeChild != true &&
+        _settings.salahModeBeforeChild != true) {
+      return;
+    }
+
+    _invalidateEnforcedScheduleCaches();
+    unawaited(
+      FocusEnforcementService.appendDebugLog(
+        'focus.subscription.disableModes',
+        'subscription inactive active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
+      ),
+    );
+    _settings = _settings.copyWith(
+      childModeEnabled: false,
+      nightDisciplineEnabled: false,
+      salahModeEnabled: false,
+      clearChildLockedUntil: true,
+      clearTemporaryUnlock: true,
+      clearIosSalahShieldLatch: true,
+      clearSalahTestAnchorAt: true,
+      clearNightDisciplineLastEndedAt: true,
+      clearNightDisciplineBeforeChild: true,
+      clearSalahModeBeforeChild: true,
+    );
+    await _recomputeAndPersist();
+  }
+
   /// Home "unlock" action: does **not** turn off Salah or Night Discipline — it
   /// only sets [FocusSettings.temporarilyUnlockedUntil] until the end of the
   /// current prayer window and/or current night window so blocking resumes on

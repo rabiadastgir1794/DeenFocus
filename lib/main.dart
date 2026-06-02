@@ -125,6 +125,9 @@ class _AppLifecycleObserverState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    AppSuperwall.subscriptionActiveNotifier.addListener(
+      _handleSubscriptionChanged,
+    );
     // [DashboardScreen] lazy-builds non-selected tabs as [SizedBox.shrink], so
     // [FocusTabScreen] (and its post-frame [FocusController.initialize]) never
     // runs until the user opens Focus. Home reads the same controller for the
@@ -133,13 +136,26 @@ class _AppLifecycleObserverState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       unawaited(context.read<FocusController>().initialize());
+      unawaited(_syncSubscriptionAndDisableFocusModesIfNeeded());
     });
   }
 
   @override
   void dispose() {
+    AppSuperwall.subscriptionActiveNotifier.removeListener(
+      _handleSubscriptionChanged,
+    );
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _handleSubscriptionChanged() {
+    if (!mounted) return;
+    if (!AppSuperwall.isEnabled) return;
+    if (AppSuperwall.subscriptionActiveNotifier.value) return;
+    unawaited(
+      context.read<FocusController>().disableModesForInactiveSubscription(),
+    );
   }
 
   @override
@@ -163,12 +179,32 @@ class _AppLifecycleObserverState
   Future<void> _handleResume() async {
     /// Refresh only subscription state
     /// DO NOT configure again
-    await AppSuperwall.syncSubscriptionState();
+    final subscriptionSynced = await AppSuperwall.syncSubscriptionState();
 
+    if (!mounted) return;
+
+    if (subscriptionSynced) {
+      await _disableFocusModesIfSubscriptionInactive();
+    }
     if (!mounted) return;
 
     unawaited(context.read<FocusController>().refresh());
     unawaited(WidgetSyncService.instance.syncTimeline());
+  }
+
+  Future<void> _syncSubscriptionAndDisableFocusModesIfNeeded() async {
+    await AppSuperwall.configure();
+    final subscriptionSynced = await AppSuperwall.syncSubscriptionState();
+    if (!mounted) return;
+    if (subscriptionSynced) {
+      await _disableFocusModesIfSubscriptionInactive();
+    }
+  }
+
+  Future<void> _disableFocusModesIfSubscriptionInactive() async {
+    if (!AppSuperwall.isEnabled) return;
+    if (AppSuperwall.subscriptionActiveNotifier.value) return;
+    await context.read<FocusController>().disableModesForInactiveSubscription();
   }
 
   @override

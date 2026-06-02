@@ -32,7 +32,6 @@ class AppSuperwall {
   static bool _openingNormalPaywallFromCustomAction = false;
 
   static Future<void>? _configureFuture;
-  static Future<void>? _storeProductsPreflightFuture;
   static final SuperwallDelegate _delegate = _AppSuperwallDelegate();
 
   static bool get isEnabled => _enabled;
@@ -89,8 +88,8 @@ class AppSuperwall {
     }
   }
 
-  static Future<void> syncSubscriptionState() async {
-    if (!_enabled) return;
+  static Future<bool> syncSubscriptionState() async {
+    if (!_enabled) return false;
 
     try {
       final status = await Superwall.shared.getSubscriptionStatus();
@@ -117,43 +116,10 @@ class AppSuperwall {
       _log(
         'Subscription synced isSubscribed=$isSubscribed hasEverSubscribed=$hasEverSubscribed',
       );
+      return true;
     } catch (e) {
       _log('Failed syncing subscription state: $e');
-    }
-  }
-
-  static Future<void> preflightStoreProducts({String debugContext = ''}) {
-    final inFlight = _storeProductsPreflightFuture;
-    if (inFlight != null) return inFlight;
-
-    final future = _preflightStoreProductsInternal(debugContext: debugContext)
-        .whenComplete(() {
-          _storeProductsPreflightFuture = null;
-        });
-    _storeProductsPreflightFuture = future;
-    return future;
-  }
-
-  static Future<void> _preflightStoreProductsInternal({
-    required String debugContext,
-  }) async {
-    try {
-      final products = await BillingService().fetchProducts();
-      if (products.isEmpty) {
-        _log(
-          'Store product preflight returned no products context=$debugContext '
-          'productIds=${BillingService.productIds.join(', ')}',
-        );
-        return;
-      }
-
-      _log(
-        'Store product preflight loaded '
-        '${products.map((product) => product.id).join(', ')} '
-        'context=$debugContext',
-      );
-    } catch (e) {
-      _log('Store product preflight failed context=$debugContext error=$e');
+      return false;
     }
   }
 
@@ -220,8 +186,6 @@ class AppSuperwall {
       final placement =
           placementOverride ??
           await paywallPlacementForCurrentUser(debugContext: debugContext);
-
-      await preflightStoreProducts(debugContext: debugContext);
 
       _log('Showing paywall placement=$placement context=$debugContext');
 
@@ -358,11 +322,6 @@ class AppSuperwall {
       _log(
         'Before opening Superwall placement=${SuperwallPlacements.premiumFeature} '
         'from action=${SuperwallCustomActions.openNormalPaywall}',
-      );
-
-      await preflightStoreProducts(
-        debugContext:
-            'custom_action:${SuperwallCustomActions.openNormalPaywall}',
       );
 
       await Superwall.shared.registerPlacement(
