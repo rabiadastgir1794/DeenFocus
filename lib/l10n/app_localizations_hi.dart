@@ -735,6 +735,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsAboutTitle => 'दीन फोकस के बारे में';
 
   @override
+  String get settingsContactUsTitle => 'हमसे संपर्क करें';
+
+  @override
   String get settingsSavingLocation => 'सहेजा जा रहा है...';
 
   @override

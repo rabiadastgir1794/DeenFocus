@@ -728,6 +728,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAboutTitle => 'About Deen Focus';
 
   @override
+  String get settingsContactUsTitle => 'Contact Us';
+
+  @override
   String get settingsSavingLocation => 'Saving...';
 
   @override

@@ -743,6 +743,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsAboutTitle => 'О Дин Фокус';
 
   @override
+  String get settingsContactUsTitle => 'Свяжитесь с нами';
+
+  @override
   String get settingsSavingLocation => 'Сохранение...';
 
   @override

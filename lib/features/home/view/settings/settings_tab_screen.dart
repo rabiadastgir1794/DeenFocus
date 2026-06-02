@@ -233,6 +233,41 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
     );
   }
 
+  Future<void> _onContactUsTapped(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final uri = Uri(
+      scheme: 'mailto',
+      path: 'rnr1710678@gmail.com',
+    );
+    try {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched && context.mounted) {
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(
+            content: Text(
+              'Could not open email client.',
+              style: TextStyle(color: Theme.of(context).colorScheme.onInverseSurface),
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(
+            content: Text(
+              'Could not open email client.',
+              style: TextStyle(color: Theme.of(context).colorScheme.onInverseSurface),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _presentEditUsernameSheet(BuildContext context) async {
     final profile = context.read<UserProfileService>();
     final l10n = AppLocalizations.of(context)!;
@@ -458,6 +493,11 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   icon: Icons.info_outline_rounded,
                   label: l10n.settingsAboutTitle,
                   onTap: () => unawaited(_onAboutTapped(context)),
+                ),
+                _SettingsRow(
+                  icon: Icons.email_outlined,
+                  label: l10n.settingsContactUsTitle,
+                  onTap: () => unawaited(_onContactUsTapped(context)),
                 ),
               ],
             ),

@@ -725,6 +725,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsAboutTitle => 'نبذة عن دين فوكس';
 
   @override
+  String get settingsContactUsTitle => 'اتصل بنا';
+
+  @override
   String get settingsSavingLocation => 'توفير...';
 
   @override
