@@ -744,6 +744,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsAboutTitle => 'Despre Deen Focus';
 
   @override
+  String get settingsContactUsTitle => 'Contactați-ne';
+
+  @override
   String get settingsSavingLocation => 'Economisire...';
 
   @override

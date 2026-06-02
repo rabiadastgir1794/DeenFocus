@@ -699,6 +699,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAboutTitle => '关于德恩焦点';
 
   @override
+  String get settingsContactUsTitle => '联系我们';
+
+  @override
   String get settingsSavingLocation => '保存...';
 
   @override

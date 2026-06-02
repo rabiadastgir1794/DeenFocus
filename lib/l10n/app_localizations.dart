@@ -1476,6 +1476,12 @@ abstract class AppLocalizations {
   /// **'About Deen Focus'**
   String get settingsAboutTitle;
 
+  /// No description provided for @settingsContactUsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get settingsContactUsTitle;
+
   /// No description provided for @settingsSavingLocation.
   ///
   /// In en, this message translates to:

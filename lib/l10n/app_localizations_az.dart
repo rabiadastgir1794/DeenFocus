@@ -738,6 +738,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get settingsAboutTitle => 'Deen Focus haqqında';
 
   @override
+  String get settingsContactUsTitle => 'Bizimlə Əlaqə';
+
+  @override
   String get settingsSavingLocation => 'Yadda saxlanılır...';
 
   @override

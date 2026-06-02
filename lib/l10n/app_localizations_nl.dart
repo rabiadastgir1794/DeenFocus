@@ -741,6 +741,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsAboutTitle => 'Over Deen Focus';
 
   @override
+  String get settingsContactUsTitle => 'Neem contact met ons op';
+
+  @override
   String get settingsSavingLocation => 'Besparing...';
 
   @override

@@ -742,6 +742,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsAboutTitle => 'Über Deen Focus';
 
   @override
+  String get settingsContactUsTitle => 'Kontaktieren Sie uns';
+
+  @override
   String get settingsSavingLocation => 'Sparen...';
 
   @override
