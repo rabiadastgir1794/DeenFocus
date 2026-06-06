@@ -90,17 +90,27 @@ class PremiumGate {
         return;
       }
 
-      final budgetForStatus = remainingBudget();
-      if (budgetForStatus == Duration.zero) {
-        throw TimeoutException('subscription verification timed out');
+      // On Play Store, Superwall.getSubscriptionStatus() can take 1-2 minutes
+      // while Google Play Billing initialises. Use a short timeout and fall
+      // through to registerPlacement on timeout — Superwall rechecks internally,
+      // and the feature: / onPresent handlers below handle both outcomes.
+      SubscriptionStatus? status;
+      try {
+        status = await TraceHelpers.traceAsync(
+          'PAYWALL',
+          'Superwall.getSubscriptionStatus context=$debugContext',
+          () => Superwall.shared.getSubscriptionStatus().timeout(
+            const Duration(seconds: 5),
+          ),
+        );
+      } on TimeoutException {
+        _log(
+          'getSubscriptionStatus timed out, proceeding to paywall '
+          'context=$debugContext',
+        );
       }
-      final status = await TraceHelpers.traceAsync(
-        'PAYWALL',
-        'Superwall.getSubscriptionStatus context=$debugContext',
-        () => Superwall.shared.getSubscriptionStatus().timeout(budgetForStatus),
-      );
 
-      if (status.isActive) {
+      if (status != null && status.isActive) {
         await waitForMinimum();
         removeOverlay();
         onAccess();
@@ -131,10 +141,21 @@ class PremiumGate {
               removeOverlay();
             })
             ..onDismiss((info, result) async {
-              _log('paywall dismissed context=$debugContext');
-              await AppSuperwall.syncSubscriptionState();
+              _log('paywall dismissed context=$debugContext result=$result');
+              unawaited(AppSuperwall.syncSubscriptionState());
+              // Grant access immediately when Superwall confirms a purchase or
+              // restore — billing verification already happened inside Superwall.
+              // Waiting for getSubscriptionStatus() here can take 1-2 minutes
+              // on Play Store, leaving the user blocked after a real purchase.
+              if (result is PurchasedPaywallResult ||
+                  result is RestoredPaywallResult) {
+                onAccess();
+                return;
+              }
               try {
-                final updated = await Superwall.shared.getSubscriptionStatus();
+                final updated = await Superwall.shared
+                    .getSubscriptionStatus()
+                    .timeout(const Duration(seconds: 10));
                 if (updated.isActive) onAccess();
               } catch (e) {
                 _log('post-dismiss status check failed: $e');
@@ -154,11 +175,19 @@ class PremiumGate {
               );
             }),
           feature: () async {
+            // Superwall calls feature() when it decides not to show a paywall
+            // (subscription_status_timeout, no matching campaign, etc.).
+            // Always complete `presented` here — otherwise the overlay hangs
+            // for the full ~30 s timeout before surfacing an error.
             try {
               final latest = await Superwall.shared.getSubscriptionStatus();
+              if (!presented.isCompleted) presented.complete();
+              removeOverlay();
               if (latest.isActive) onAccess();
             } catch (e) {
               _log('feature status check failed: $e');
+              if (!presented.isCompleted) presented.complete();
+              removeOverlay();
             }
           },
         ),

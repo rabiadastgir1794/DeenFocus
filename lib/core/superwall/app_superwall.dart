@@ -81,7 +81,11 @@ class AppSuperwall {
       Superwall.shared.setDelegate(_delegate);
       _log('Superwall delegate registered for custom paywall actions');
 
-      await syncSubscriptionState();
+      // Sync subscription state in the background so configure() completes
+      // immediately after SDK init. On Play Store, getSubscriptionStatus() can
+      // take 1-2 minutes waiting for Google Play Billing — awaiting it here
+      // blocks every premium gate (via configure().timeout(30s)).
+      unawaited(syncSubscriptionState());
     } catch (e, st) {
       _log('Configure failed: $e');
       debugPrintStack(stackTrace: st);
@@ -196,15 +200,20 @@ class AppSuperwall {
             _log('Paywall presented');
           })
           ..onDismiss((info, result) async {
-            _log('Paywall dismissed');
-
-            await syncSubscriptionState();
-
-            final updatedStatus = await Superwall.shared
-                .getSubscriptionStatus();
-
-            if (updatedStatus.isActive) {
+            _log('Paywall dismissed result=$result');
+            unawaited(syncSubscriptionState());
+            if (result is PurchasedPaywallResult ||
+                result is RestoredPaywallResult) {
               onAccess();
+              return;
+            }
+            try {
+              final updatedStatus = await Superwall.shared
+                  .getSubscriptionStatus()
+                  .timeout(const Duration(seconds: 10));
+              if (updatedStatus.isActive) onAccess();
+            } catch (e) {
+              _log('post-dismiss status check failed: $e');
             }
           })
           ..onError((error) {
