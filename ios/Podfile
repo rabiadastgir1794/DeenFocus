@@ -45,6 +45,9 @@ post_install do |installer|
         'PERMISSION_LOCATION=1',
         'PERMISSION_NOTIFICATIONS=1',
       ]
+      # media_kit: Mpv framework has no arm64 simulator slice.
+      # Exclude arm64 for simulator so the linker uses x86_64 (via Rosetta).
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
     end
   end
 end

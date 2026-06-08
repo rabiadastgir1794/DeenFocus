@@ -61,10 +61,22 @@ class _HomeTabViewState extends State<_HomeTabView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final sect = context.read<UserProfileService>().sect.name;
-    if (_lastSyncedSect == sect) return;
-    _lastSyncedSect = sect;
-    unawaited(context.read<HomeTabViewModel>().syncSectIfChanged(sect));
+    final profile = context.read<UserProfileService>();
+
+    final sect = profile.sect.name;
+    if (_lastSyncedSect != sect) {
+      _lastSyncedSect = sect;
+      unawaited(context.read<HomeTabViewModel>().syncSectIfChanged(sect));
+    }
+
+    unawaited(
+      context.read<HomeTabViewModel>().syncLocationIfChanged(
+        profile.latitude,
+        profile.longitude,
+        profile.locationName,
+        profile.locationSubtitle,
+      ),
+    );
   }
 
   @override

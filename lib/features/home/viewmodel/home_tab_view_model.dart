@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:intl/intl.dart';
 
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -43,6 +43,7 @@ class HomeTabViewModel extends ChangeNotifier {
     DateTime.now().month,
     1,
   );
+
   /// First day (Sunday) of the row shown in weekly calendar mode; advances by ±7 days.
   DateTime weeklyVisibleWeekStart = HomeTabViewModel._startOfWeekFor(
     DateTime.now(),
@@ -75,12 +76,12 @@ class HomeTabViewModel extends ChangeNotifier {
   String? get qiblaInfo {
     if (latitude == null || longitude == null) return null;
     final coordinates = Coordinates(latitude!, longitude!);
-    final qibla = Qibla(coordinates).direction;
+    final qibla = Qibla.qibla(coordinates);
     final distanceMeters = Geolocator.distanceBetween(
       latitude!,
       longitude!,
-      Qibla.MAKKAH.latitude,
-      Qibla.MAKKAH.longitude,
+      Qibla.makkah.latitude,
+      Qibla.makkah.longitude,
     );
     final distanceKm = distanceMeters / 1000;
     return '${qibla.toStringAsFixed(0)}° • ${distanceKm.toStringAsFixed(0)} km';
@@ -148,8 +149,7 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> _loadSubscriptionStatus() async {
     await AppSuperwall.syncSubscriptionState();
 
-    _subscriptionActive =
-        AppSuperwall.subscriptionActiveNotifier.value;
+    _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
   }
 
   Future<void> _loadPrayerStreak() async {
@@ -240,6 +240,22 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> syncLocationIfChanged(
+    double? newLatitude,
+    double? newLongitude,
+    String? newLocationName,
+    String? newLocationSubtitle,
+  ) async {
+    if (newLatitude == null || newLongitude == null) return;
+    if (newLatitude == latitude && newLongitude == longitude) return;
+    latitude = newLatitude;
+    longitude = newLongitude;
+    locationName = newLocationName;
+    locationSubtitle = newLocationSubtitle;
+    await _loadPrayerTimes();
+    notifyListeners();
+  }
+
   Future<void> _loadEvents() async {
     isEventsLoading = true;
     notifyListeners();
@@ -288,8 +304,9 @@ class HomeTabViewModel extends ChangeNotifier {
 
   void goToNextMonth() {
     if (weeklyCalendar) {
-      weeklyVisibleWeekStart =
-          weeklyVisibleWeekStart.add(const Duration(days: 7));
+      weeklyVisibleWeekStart = weeklyVisibleWeekStart.add(
+        const Duration(days: 7),
+      );
       visibleMonth = DateTime(
         weeklyVisibleWeekStart.year,
         weeklyVisibleWeekStart.month,
@@ -306,8 +323,9 @@ class HomeTabViewModel extends ChangeNotifier {
 
   void goToPreviousMonth() {
     if (weeklyCalendar) {
-      weeklyVisibleWeekStart =
-          weeklyVisibleWeekStart.subtract(const Duration(days: 7));
+      weeklyVisibleWeekStart = weeklyVisibleWeekStart.subtract(
+        const Duration(days: 7),
+      );
       visibleMonth = DateTime(
         weeklyVisibleWeekStart.year,
         weeklyVisibleWeekStart.month,

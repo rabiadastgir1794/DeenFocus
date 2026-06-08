@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/storage_service.dart';
@@ -91,10 +91,10 @@ abstract class HomePrayerTimesHelper {
 
   static CalculationParameters _parametersForSect(SectOption sect) {
     if (sect == SectOption.shia) {
-      return CalculationMethod.tehran.getParameters();
+      return CalculationMethodParameters.tehran();
     }
 
-    return CalculationMethod.karachi.getParameters()..madhab = Madhab.shafi;
+    return CalculationMethodParameters.karachi()..madhab = Madhab.shafi;
   }
 
   static List<HomePrayerSlot> _buildSlots({
@@ -106,9 +106,9 @@ abstract class HomePrayerTimesHelper {
     final coordinates = Coordinates(latitude, longitude);
     final params = _parametersForSect(sect);
     final prayerTimes = PrayerTimes(
-      coordinates,
-      DateComponents.from(currentTime),
-      params,
+      date: currentTime,
+      coordinates: coordinates,
+      calculationParameters: params,
     );
 
     DateTime normalizeToMinute(DateTime value) =>
