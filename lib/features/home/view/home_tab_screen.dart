@@ -51,11 +51,32 @@ class _HomeTabView extends StatefulWidget {
 class _HomeTabViewState extends State<_HomeTabView>
     with WidgetsBindingObserver {
   String? _lastSyncedSect;
+  late UserProfileService _profileService;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _profileService = context.read<UserProfileService>();
+    _profileService.addListener(_onProfileChanged);
+  }
+
+  void _onProfileChanged() {
+    if (!mounted) return;
+    final vm = context.read<HomeTabViewModel>();
+    unawaited(
+      vm.syncLocationIfChanged(
+        _profileService.latitude,
+        _profileService.longitude,
+        _profileService.locationName,
+        _profileService.locationSubtitle,
+      ),
+    );
+    final sect = _profileService.sect.name;
+    if (_lastSyncedSect != sect) {
+      _lastSyncedSect = sect;
+      unawaited(vm.syncSectIfChanged(sect));
+    }
   }
 
   @override
@@ -81,6 +102,7 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   @override
   void dispose() {
+    _profileService.removeListener(_onProfileChanged);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

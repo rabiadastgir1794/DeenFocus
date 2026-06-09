@@ -111,8 +111,10 @@ abstract class HomePrayerTimesHelper {
       calculationParameters: params,
     );
 
-    DateTime normalizeToMinute(DateTime value) =>
-        DateTime(value.year, value.month, value.day, value.hour, value.minute);
+    DateTime normalizeToMinute(DateTime value) {
+      final local = value.toLocal();
+      return DateTime(local.year, local.month, local.day, local.hour, local.minute);
+    }
 
     return <HomePrayerSlot>[
       HomePrayerSlot(
