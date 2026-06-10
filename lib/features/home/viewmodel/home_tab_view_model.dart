@@ -5,8 +5,6 @@ import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:superwallkit_flutter/superwallkit_flutter.dart';
-
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/app_review_service.dart';
 import '../../../core/services/location/location_service.dart';
@@ -236,6 +234,20 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> syncSectIfChanged(String sect) async {
     if (_lastAppliedSect == sect) return;
     _lastAppliedSect = sect;
+    await _loadPrayerTimes();
+    notifyListeners();
+  }
+
+  String? _lastAppliedMethod;
+  String? _lastAppliedAsr;
+
+  Future<void> syncCalculationSettingsIfChanged(
+    String method,
+    String asr,
+  ) async {
+    if (_lastAppliedMethod == method && _lastAppliedAsr == asr) return;
+    _lastAppliedMethod = method;
+    _lastAppliedAsr = asr;
     await _loadPrayerTimes();
     notifyListeners();
   }

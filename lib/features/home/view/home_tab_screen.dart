@@ -77,6 +77,12 @@ class _HomeTabViewState extends State<_HomeTabView>
       _lastSyncedSect = sect;
       unawaited(vm.syncSectIfChanged(sect));
     }
+    unawaited(
+      vm.syncCalculationSettingsIfChanged(
+        _profileService.calculationMethod.name,
+        _profileService.asrMethod.name,
+      ),
+    );
   }
 
   @override

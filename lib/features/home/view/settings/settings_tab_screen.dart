@@ -18,10 +18,10 @@ import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
-import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
+import 'settings_calculation_method_screen.dart';
 
 class SettingsTabScreen extends StatefulWidget {
   const SettingsTabScreen({super.key, this.isTabActive = false});
@@ -329,61 +329,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
     );
   }
 
-  Future<void> _showSectPicker(BuildContext context) async {
-    final profile = context.read<UserProfileService>();
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.sectTitle,
-                  style: Theme.of(
-                    ctx,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 12),
-                for (final option in const <SectOption>[
-                  SectOption.sunni,
-                  SectOption.shia,
-                ])
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(_sectLabel(option, l10n)),
-                    trailing: option == profile.sect
-                        ? Icon(Icons.check_rounded, color: colorScheme.primary)
-                        : null,
-                    onTap: () {
-                      Navigator.of(ctx).pop();
-                      unawaited(profile.setSect(option));
-                    },
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  String _sectLabel(SectOption option, AppLocalizations l10n) {
-    switch (option) {
-      case SectOption.sunni:
-        return l10n.sectSunni;
-      case SectOption.shia:
-        return l10n.sectShia;
-      case SectOption.preferNotToSay:
-        return l10n.sectSunni;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -451,6 +396,43 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   value: '${currentLang.flag} ${currentLang.label}',
                   onTap: () => _showLanguagePicker(context),
                 ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _SettingsSectionHeader(
+              icon: Icons.public_rounded,
+              label: 'Prayer Calculation',
+            ),
+            const SizedBox(height: 8),
+            _SettingsGroup(
+              children: [
+                _SettingsRow(
+                  icon: Icons.calculate_outlined,
+                  label: 'Calculation Method',
+                  value: profile.calculationMethod.label,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            const SettingsCalculationMethodScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _SettingsRow(
+                  icon: Icons.wb_sunny_outlined,
+                  label: 'Asr Calculation',
+                  value: profile.asrMethod.subtitle.isNotEmpty
+                      ? '${profile.asrMethod.label} (${profile.asrMethod.subtitle})'
+                      : profile.asrMethod.label,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SettingsAsrCalculationScreen(),
+                      ),
+                    );
+                  },
+                ),
                 _SettingsRow(
                   icon: Icons.location_on_outlined,
                   label: l10n.settingsLocationLabel,
@@ -464,12 +446,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                       ),
                     );
                   },
-                ),
-                _SettingsRow(
-                  icon: Icons.access_time_rounded,
-                  label: l10n.sectTitle,
-                  value: _sectLabel(profile.sect, l10n),
-                  onTap: () => _showSectPicker(context),
                 ),
               ],
             ),
@@ -939,6 +915,31 @@ class _SettingsRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SettingsSectionHeader extends StatelessWidget {
+  const _SettingsSectionHeader({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: colorScheme.primary),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: colorScheme.primary,
+          ),
+        ),
+      ],
     );
   }
 }

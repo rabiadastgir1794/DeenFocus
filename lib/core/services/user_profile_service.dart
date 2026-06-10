@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../features/onboarding/model/asr_calculation_option.dart';
+import '../../features/onboarding/model/calculation_method_option.dart';
 import '../../features/onboarding/model/location_suggestion.dart';
 import '../../features/onboarding/model/sect_option.dart';
 import 'daily_refresh_service.dart';
@@ -18,6 +20,8 @@ class UserProfileService extends ChangeNotifier {
   double? _latitude;
   double? _longitude;
   SectOption _sect = SectOption.sunni;
+  CalculationMethodOption _calculationMethod = CalculationMethodOption.karachi;
+  AsrCalculationOption _asrMethod = AsrCalculationOption.standard;
 
   String get userName => _userName;
   String? get locationName => _locationName;
@@ -25,6 +29,8 @@ class UserProfileService extends ChangeNotifier {
   double? get latitude => _latitude;
   double? get longitude => _longitude;
   SectOption get sect => _sect;
+  CalculationMethodOption get calculationMethod => _calculationMethod;
+  AsrCalculationOption get asrMethod => _asrMethod;
 
   String get locationLabel {
     final name = _locationName?.trim() ?? '';
@@ -58,6 +64,11 @@ class UserProfileService extends ChangeNotifier {
     _latitude = await StorageService.locationLatitude;
     _longitude = await StorageService.locationLongitude;
     _sect = _resolveSect(await StorageService.sect);
+    _calculationMethod = CalculationMethodOption.fromRaw(
+      await StorageService.calculationMethod,
+      sectRaw: await StorageService.sect,
+    );
+    _asrMethod = AsrCalculationOption.fromRaw(await StorageService.asrMethod);
     notifyListeners();
   }
 
@@ -102,6 +113,25 @@ class UserProfileService extends ChangeNotifier {
     _sect = value;
     notifyListeners();
     await StorageService.setSect(value.name);
+    unawaited(DailyRefreshService.instance.refreshNow());
+  }
+
+  Future<void> setCalculationMethod(CalculationMethodOption value) async {
+    if (_calculationMethod == value) return;
+    _calculationMethod = value;
+    // Keep sect in sync for backward-compat code paths.
+    _sect = value.isShia ? SectOption.shia : SectOption.sunni;
+    await StorageService.setCalculationMethod(value.name);
+    await StorageService.setSect(_sect.name);
+    notifyListeners();
+    unawaited(DailyRefreshService.instance.refreshNow());
+  }
+
+  Future<void> setAsrMethod(AsrCalculationOption value) async {
+    if (_asrMethod == value) return;
+    _asrMethod = value;
+    await StorageService.setAsrMethod(value.name);
+    notifyListeners();
     unawaited(DailyRefreshService.instance.refreshNow());
   }
 
