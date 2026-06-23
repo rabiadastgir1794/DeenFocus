@@ -201,9 +201,25 @@ class AppSuperwall {
           })
           ..onDismiss((info, result) async {
             _log('Paywall dismissed result=$result');
-            unawaited(syncSubscriptionState());
             if (result is PurchasedPaywallResult ||
                 result is RestoredPaywallResult) {
+              const maxAttempts = 5;
+              for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+                await syncSubscriptionState();
+                if (subscriptionActiveNotifier.value) {
+                  _log('Subscription confirmed active (attempt $attempt)');
+                  onAccess();
+                  return;
+                }
+                _log('Subscription not yet active ($attempt/$maxAttempts)');
+                if (attempt < maxAttempts) {
+                  await Future<void>.delayed(const Duration(seconds: 2));
+                }
+              }
+              _log(
+                'Status still lagging after $maxAttempts attempts — '
+                'trusting PurchasedPaywallResult',
+              );
               onAccess();
               return;
             }

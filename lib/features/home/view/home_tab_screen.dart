@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/theme_service.dart';
 import '../../../core/superwall/premium_gate.dart';
@@ -52,6 +53,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     with WidgetsBindingObserver {
   String? _lastSyncedSect;
   late UserProfileService _profileService;
+  bool _locationCheckDoneThisSession = false;
 
   @override
   void initState() {
@@ -59,6 +61,10 @@ class _HomeTabViewState extends State<_HomeTabView>
     WidgetsBinding.instance.addObserver(this);
     _profileService = context.read<UserProfileService>();
     _profileService.addListener(_onProfileChanged);
+    // Check on launch — delay 2s so profile finishes loading from storage.
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) unawaited(_checkLocationChange());
+    });
   }
 
   void _onProfileChanged() {
@@ -118,7 +124,120 @@ class _HomeTabViewState extends State<_HomeTabView>
     if (state == AppLifecycleState.resumed) {
       // Focus refresh is handled once by [_AppLifecycleFocusRefresher] in main.dart.
       context.read<HomeTabViewModel>().onAppResumed();
+      unawaited(_checkLocationChange());
     }
+  }
+
+  Future<void> _checkLocationChange() async {
+    if (_locationCheckDoneThisSession) return;
+    _locationCheckDoneThisSession = true;
+
+    final profile = context.read<UserProfileService>();
+    final savedLat = profile.latitude;
+    final savedLng = profile.longitude;
+    if (savedLat == null || savedLng == null) return;
+
+    // Uses the same high-accuracy fetch as Nearby Mosques — picks up mock GPS
+    // on emulator and works reliably on real devices.
+    final newLocation = await LocationService.fetchCurrentCoordinates();
+    if (newLocation == null ||
+        newLocation.latitude == null ||
+        newLocation.longitude == null ||
+        !mounted) {
+      return;
+    }
+
+    final double distanceKm = LocationService.distanceBetweenKm(
+      savedLat, savedLng, newLocation.latitude!, newLocation.longitude!,
+    );
+    if (distanceKm < 50) { return; }
+
+    final cityLabel = newLocation.title.isNotEmpty
+        ? newLocation.title
+        : 'your new location';
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) {
+        final colorScheme = Theme.of(ctx).colorScheme;
+        final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        return AlertDialog(
+          backgroundColor: isDark
+              ? colorScheme.surfaceContainerHigh
+              : colorScheme.surface,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+          contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(
+                    alpha: isDark ? 0.18 : 0.12,
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  Icons.location_on_rounded,
+                  color: colorScheme.primary,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  'Location Changed',
+                  style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            'You appear to be in $cityLabel. Update your prayer location for accurate times?',
+            style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(
+              height: 1.55,
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).maybePop(),
+              child: const Text('Not Now'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(ctx).maybePop();
+                unawaited(
+                  context.read<UserProfileService>().setLocation(newLocation),
+                );
+              },
+              style: FilledButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
+              ),
+              child: const Text('Update'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _showLocationRequiredDialog(BuildContext context) async {

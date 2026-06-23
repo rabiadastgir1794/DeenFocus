@@ -90,59 +90,6 @@ class SettingsCalculationMethodScreen extends StatelessWidget {
           section('Special Methods', const [
             CalculationMethodOption.moonsightingCommittee,
           ]),
-          const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.nightlight_round,
-                    size: 20,
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Shia Prayer Times',
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                          'Use prayer times calculated according to Shia method',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: colorScheme.onSurfaceVariant),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Switch.adaptive(
-                    value: current.isShia,
-                    onChanged: (on) {
-                      unawaited(
-                        profile.setCalculationMethod(
-                          on
-                              ? CalculationMethodOption.tehran
-                              : CalculationMethodOption.karachi,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );

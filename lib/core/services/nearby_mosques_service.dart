@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
@@ -38,6 +39,8 @@ class NearbyMosquesService {
     'https://overpass.private.coffee/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
     'https://overpass-api.de/api/interpreter',
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+    'https://overpass.openstreetmap.ru/api/interpreter',
   ];
 
   static const _overpassUserAgent =
@@ -64,30 +67,50 @@ class NearbyMosquesService {
 out center;
 ''';
 
-    http.Response? response;
+    // Fire all endpoints in parallel — complete on the first 2xx response.
+    final completer = Completer<http.Response>();
+    int remaining = _overpassInterpreters.length;
+
     for (final endpoint in _overpassInterpreters) {
-      try {
-        response = await _client
-            .post(
-              Uri.parse(endpoint),
-              headers: const <String, String>{
-                'Content-Type': 'text/plain; charset=utf-8',
-                'Accept': 'application/json',
-                'User-Agent': _overpassUserAgent,
-              },
-              body: query,
-            )
-            .timeout(const Duration(seconds: 35));
-        if (response.statusCode >= 200 && response.statusCode < 300) {
-          break;
-        }
-      } catch (_) {}
+      _client
+          .post(
+            Uri.parse(endpoint),
+            headers: const <String, String>{
+              'Content-Type': 'text/plain; charset=utf-8',
+              'Accept': 'application/json',
+              'User-Agent': _overpassUserAgent,
+            },
+            body: query,
+          )
+          .timeout(const Duration(seconds: 25))
+          .then((r) {
+            if (kDebugMode) {
+              debugPrint('[NearbyMosques] $endpoint → HTTP ${r.statusCode}');
+            }
+            if (r.statusCode >= 200 && r.statusCode < 300) {
+              if (!completer.isCompleted) completer.complete(r);
+            }
+          })
+          .catchError((Object e) {
+            if (kDebugMode) debugPrint('[NearbyMosques] $endpoint → error: $e');
+          })
+          .whenComplete(() {
+            remaining--;
+            if (remaining == 0 && !completer.isCompleted) {
+              completer.completeError(
+                const NearbyMosquesException(
+                  'No internet connection or the map service is unreachable. Check your connection and try again.',
+                ),
+              );
+            }
+          });
     }
 
-    if (response == null) {
-      throw const NearbyMosquesException(
-        'No internet connection or the map service is unreachable. Check your connection and try again.',
-      );
+    final http.Response response;
+    try {
+      response = await completer.future;
+    } on NearbyMosquesException {
+      rethrow;
     }
 
     if (response.statusCode == 429) {
@@ -95,6 +118,11 @@ out center;
         'The public mosque data service is rate-limiting requests from your '
         'network (this can happen on the first try on shared Wi-Fi or '
         'cellular). Try again in a minute or switch network.',
+      );
+    }
+    if (response.statusCode >= 500) {
+      throw const NearbyMosquesException(
+        'The mosque data service is temporarily unavailable. Please try again in a moment.',
       );
     }
     if (response.statusCode < 200 || response.statusCode >= 300) {

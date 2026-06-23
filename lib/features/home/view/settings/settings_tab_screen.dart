@@ -18,6 +18,7 @@ import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
+import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
@@ -41,6 +42,65 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
   void initState() {
     super.initState();
     _packageInfoFuture = PackageInfo.fromPlatform();
+  }
+
+  Future<void> _showSectPicker(BuildContext context) async {
+    final profile = context.read<UserProfileService>();
+    final l10n = AppLocalizations.of(context)!;
+    final currentSect = profile.sect;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        final colorScheme = Theme.of(ctx).colorScheme;
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.sectTitle,
+                style: Theme.of(
+                  ctx,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              for (final option in SectOption.values)
+                InkWell(
+                  onTap: () async {
+                    Navigator.of(ctx).pop();
+                    await profile.setSect(option);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            option.label,
+                            style: Theme.of(ctx).textTheme.bodyLarge,
+                          ),
+                        ),
+                        if (option == currentSect)
+                          Icon(
+                            Icons.check_rounded,
+                            color: colorScheme.primary,
+                            size: 22,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _showLanguagePicker(BuildContext context) async {
@@ -234,11 +294,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
   }
 
   Future<void> _onContactUsTapped(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    final uri = Uri(
-      scheme: 'mailto',
-      path: 'rnr1710678@gmail.com',
-    );
+    // final l10n = AppLocalizations.of(context)!;
+    final uri = Uri(scheme: 'mailto', path: 'rnr1710678@gmail.com');
     try {
       final launched = await launchUrl(
         uri,
@@ -249,7 +306,9 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
           SnackBar(
             content: Text(
               'Could not open email client.',
-              style: TextStyle(color: Theme.of(context).colorScheme.onInverseSurface),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onInverseSurface,
+              ),
             ),
           ),
         );
@@ -260,7 +319,9 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
           SnackBar(
             content: Text(
               'Could not open email client.',
-              style: TextStyle(color: Theme.of(context).colorScheme.onInverseSurface),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onInverseSurface,
+              ),
             ),
           ),
         );
@@ -328,7 +389,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -407,14 +467,19 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             _SettingsGroup(
               children: [
                 _SettingsRow(
+                  icon: Icons.people_outline_rounded,
+                  label: l10n.sectTitle,
+                  value: profile.sect.label,
+                  onTap: () => unawaited(_showSectPicker(context)),
+                ),
+                _SettingsRow(
                   icon: Icons.calculate_outlined,
                   label: 'Calculation Method',
                   value: profile.calculationMethod.label,
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) =>
-                            const SettingsCalculationMethodScreen(),
+                        builder: (_) => const SettingsCalculationMethodScreen(),
                       ),
                     );
                   },
@@ -425,13 +490,17 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   value: profile.asrMethod.subtitle.isNotEmpty
                       ? '${profile.asrMethod.label} (${profile.asrMethod.subtitle})'
                       : profile.asrMethod.label,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const SettingsAsrCalculationScreen(),
-                      ),
-                    );
-                  },
+                  disabled: profile.calculationMethod.isShia,
+                  onTap: profile.calculationMethod.isShia
+                      ? null
+                      : () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) =>
+                                  const SettingsAsrCalculationScreen(),
+                            ),
+                          );
+                        },
                 ),
                 _SettingsRow(
                   icon: Icons.location_on_outlined,
@@ -550,6 +619,7 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
           Expanded(
             child: OnboardingLocationPage(
               initialSelection: widget.initialSelection,
+              autoFetchLocation: false,
               onLocationSelected: (value) {
                 setState(() {
                   _selectedLocation = value;
@@ -698,10 +768,7 @@ class SettingsAboutScreen extends StatelessWidget {
 }
 
 class _AboutFeatureItem extends StatelessWidget {
-  const _AboutFeatureItem({
-    required this.text,
-    required this.colorScheme,
-  });
+  const _AboutFeatureItem({required this.text, required this.colorScheme});
 
   final String text;
   final ColorScheme colorScheme;
@@ -727,10 +794,7 @@ class _AboutFeatureItem extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
     );
@@ -850,68 +914,82 @@ class _SettingsRow extends StatelessWidget {
     required this.label,
     this.value,
     this.onTap,
+    this.disabled = false,
   });
 
   final IconData icon;
   final String label;
   final String? value;
   final VoidCallback? onTap;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        label,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+    final disabledColor = colorScheme.onSurface.withValues(alpha: 0.38);
+    return Opacity(
+      opacity: disabled ? 0.45 : 1.0,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: disabled ? null : onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(
+                        icon,
+                        size: 20,
+                        color: disabled
+                            ? disabledColor
+                            : colorScheme.onSurfaceVariant,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 170),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (value != null)
-                      Flexible(
+                      const SizedBox(width: 12),
+                      Expanded(
                         child: Text(
-                          value!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.end,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          label,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: disabled ? disabledColor : null,
+                              ),
                         ),
                       ),
-                    if (value != null) const SizedBox(width: 6),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 170),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (value != null)
+                        Flexible(
+                          child: Text(
+                            value!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.end,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          ),
+                        ),
+                      if (value != null) const SizedBox(width: 6),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

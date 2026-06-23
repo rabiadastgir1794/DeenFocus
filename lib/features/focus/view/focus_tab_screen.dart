@@ -341,12 +341,35 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       return;
     }
     final shouldShow = !_showGlobalSelector;
-    setState(() {
-      _showGlobalSelector = shouldShow;
-    });
-    if (shouldShow && vm.installedApps.isEmpty) {
-      await _requestInstalledAppsAfterPremium(vm);
+
+    // Hiding the selector — no gate needed.
+    if (!shouldShow) {
+      setState(() => _showGlobalSelector = false);
+      return;
     }
+
+    // Apps already loaded means user is subscribed — open selector directly.
+    if (vm.installedApps.isNotEmpty) {
+      setState(() => _showGlobalSelector = true);
+      return;
+    }
+
+    // Apps not yet loaded: check premium first, then open selector inside
+    // onAccess so the popup only appears once subscription is confirmed.
+    await _openSelectorAfterPremium(vm);
+  }
+
+  Future<void> _openSelectorAfterPremium(FocusController vm) async {
+    if (!mounted) return;
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        if (!mounted) return;
+        setState(() => _showGlobalSelector = true);
+        unawaited(vm.requestInstalledApps());
+      },
+      debugContext: 'focus:load_apps',
+    );
   }
 
   Future<void> _enableModeAfterPremium(

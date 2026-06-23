@@ -111,6 +111,14 @@ class UserProfileService extends ChangeNotifier {
   Future<void> setSect(SectOption value) async {
     if (_sect == value) return;
     _sect = value;
+    // Keep calculation method in sync with sect selection.
+    if (value == SectOption.shia) {
+      _calculationMethod = CalculationMethodOption.tehran;
+      await StorageService.setCalculationMethod(CalculationMethodOption.tehran.name);
+    } else if (_calculationMethod.isShia) {
+      _calculationMethod = CalculationMethodOption.karachi;
+      await StorageService.setCalculationMethod(CalculationMethodOption.karachi.name);
+    }
     notifyListeners();
     await StorageService.setSect(value.name);
     unawaited(DailyRefreshService.instance.refreshNow());

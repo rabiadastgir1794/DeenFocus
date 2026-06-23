@@ -88,6 +88,15 @@ abstract class LocationService {
     );
   }
 
+/// Distance in kilometres between two coordinates.
+  static double distanceBetweenKm(
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
+  ) =>
+      Geolocator.distanceBetween(lat1, lng1, lat2, lng2) / 1000.0;
+
   static String? _firstNonEmpty(List<String?> values) {
     for (final value in values) {
       final trimmed = value?.trim() ?? '';
