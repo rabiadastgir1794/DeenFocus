@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Namaz Hesabı",
+  "settingsCalculationMethodTitle": "Hesab Metodu",
+  "settingsAsrCalculationTitle": "Əsr Hesabı",
+  "calculationMethodSectionMajorOrgs": "Əsas İslam Təşkilatları",
+  "calculationMethodSectionMiddleEast": "Yaxın Şərq",
+  "calculationMethodSectionAsiaPacific": "Asiya-Sakit Okean",
+  "calculationMethodSectionSpecial": "Xüsusi Metodlar",
+  "asrMethodStandard": "Standart",
+  "asrMethodStandardSubtitle": "Şafi, Maliki, Hənbəli",
+  "asrMethodHanafi": "Hənəfi"
 }

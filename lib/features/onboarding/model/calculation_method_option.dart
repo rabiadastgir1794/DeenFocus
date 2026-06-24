@@ -81,6 +81,6 @@ enum CalculationMethodOption {
       }
     }
     if (sectRaw == 'shia') return tehran;
-    return karachi;
+    return muslimWorldLeague;
   }
 }

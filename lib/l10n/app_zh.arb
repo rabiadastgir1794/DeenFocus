@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "礼拜计算",
+  "settingsCalculationMethodTitle": "计算方法",
+  "settingsAsrCalculationTitle": "晡礼计算",
+  "calculationMethodSectionMajorOrgs": "主要伊斯兰组织",
+  "calculationMethodSectionMiddleEast": "中东",
+  "calculationMethodSectionAsiaPacific": "亚太地区",
+  "calculationMethodSectionSpecial": "特殊方法",
+  "asrMethodStandard": "标准",
+  "asrMethodStandardSubtitle": "沙菲仪、马立克、罕百里",
+  "asrMethodHanafi": "哈乃斐"
 }

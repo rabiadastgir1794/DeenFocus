@@ -337,5 +337,15 @@
     }
   },
   "homeAiErrorEmptyResponse": "No response returned from the assistant.",
-  "homeAiErrorEmptyContent": "Empty response content."
+  "homeAiErrorEmptyContent": "Empty response content.",
+  "settingsPrayerCalculationSection": "Prayer Calculation",
+  "settingsCalculationMethodTitle": "Calculation Method",
+  "settingsAsrCalculationTitle": "Asr Calculation",
+  "calculationMethodSectionMajorOrgs": "Major Islamic Organizations",
+  "calculationMethodSectionMiddleEast": "Middle East",
+  "calculationMethodSectionAsiaPacific": "Asia Pacific",
+  "calculationMethodSectionSpecial": "Special Methods",
+  "asrMethodStandard": "Standard",
+  "asrMethodStandardSubtitle": "Shafi, Maliki, Hanbali",
+  "asrMethodHanafi": "Hanafi"
 }

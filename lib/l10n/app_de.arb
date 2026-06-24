@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Gebetsberechnung",
+  "settingsCalculationMethodTitle": "Berechnungsmethode",
+  "settingsAsrCalculationTitle": "Asr-Berechnung",
+  "calculationMethodSectionMajorOrgs": "Große islamische Organisationen",
+  "calculationMethodSectionMiddleEast": "Naher Osten",
+  "calculationMethodSectionAsiaPacific": "Asien-Pazifik",
+  "calculationMethodSectionSpecial": "Spezielle Methoden",
+  "asrMethodStandard": "Standard",
+  "asrMethodStandardSubtitle": "Schafi, Maliki, Hanbali",
+  "asrMethodHanafi": "Hanafi"
 }

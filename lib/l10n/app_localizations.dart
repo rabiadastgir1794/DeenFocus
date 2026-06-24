@@ -1949,6 +1949,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Empty response content.'**
   String get homeAiErrorEmptyContent;
+
+  /// No description provided for @settingsPrayerCalculationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Calculation'**
+  String get settingsPrayerCalculationSection;
+
+  /// No description provided for @settingsCalculationMethodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculation Method'**
+  String get settingsCalculationMethodTitle;
+
+  /// No description provided for @settingsAsrCalculationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Asr Calculation'**
+  String get settingsAsrCalculationTitle;
+
+  /// No description provided for @calculationMethodSectionMajorOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Major Islamic Organizations'**
+  String get calculationMethodSectionMajorOrgs;
+
+  /// No description provided for @calculationMethodSectionMiddleEast.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle East'**
+  String get calculationMethodSectionMiddleEast;
+
+  /// No description provided for @calculationMethodSectionAsiaPacific.
+  ///
+  /// In en, this message translates to:
+  /// **'Asia Pacific'**
+  String get calculationMethodSectionAsiaPacific;
+
+  /// No description provided for @calculationMethodSectionSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Methods'**
+  String get calculationMethodSectionSpecial;
+
+  /// No description provided for @asrMethodStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get asrMethodStandard;
+
+  /// No description provided for @asrMethodStandardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shafi, Maliki, Hanbali'**
+  String get asrMethodStandardSubtitle;
+
+  /// No description provided for @asrMethodHanafi.
+  ///
+  /// In en, this message translates to:
+  /// **'Hanafi'**
+  String get asrMethodHanafi;
 }
 
 class _AppLocalizationsDelegate

@@ -1017,4 +1017,34 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Conținut gol al răspunsului.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Calcul Rugăciune';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Metodă de Calcul';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Calcul Asr';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'Organizații Islamice Majore';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Orientul Mijlociu';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Asia-Pacific';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Metode Speciale';
+
+  @override
+  String get asrMethodStandard => 'Standard';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Shafi, Maliki, Hanbali';
+
+  @override
+  String get asrMethodHanafi => 'Hanafi';
 }

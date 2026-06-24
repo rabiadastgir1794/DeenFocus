@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../onboarding/model/asr_calculation_option.dart';
 import '../../../onboarding/model/calculation_method_option.dart';
 
@@ -13,6 +14,7 @@ class SettingsCalculationMethodScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final profile = context.watch<UserProfileService>();
     final colorScheme = Theme.of(context).colorScheme;
     final current = profile.calculationMethod;
@@ -66,11 +68,11 @@ class SettingsCalculationMethodScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Calculation Method'),
+      appBar: CustomAppBar(title: l10n.settingsCalculationMethodTitle),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
         children: [
-          section('Major Islamic Organizations', const [
+          section(l10n.calculationMethodSectionMajorOrgs, const [
             CalculationMethodOption.muslimWorldLeague,
             CalculationMethodOption.northAmerica,
             CalculationMethodOption.egyptian,
@@ -78,16 +80,16 @@ class SettingsCalculationMethodScreen extends StatelessWidget {
             CalculationMethodOption.karachi,
             CalculationMethodOption.tehran,
           ]),
-          section('Middle East', const [
+          section(l10n.calculationMethodSectionMiddleEast, const [
             CalculationMethodOption.kuwait,
             CalculationMethodOption.qatar,
             CalculationMethodOption.dubai,
             CalculationMethodOption.turkey,
           ]),
-          section('Asia Pacific', const [
+          section(l10n.calculationMethodSectionAsiaPacific, const [
             CalculationMethodOption.singapore,
           ]),
-          section('Special Methods', const [
+          section(l10n.calculationMethodSectionSpecial, const [
             CalculationMethodOption.moonsightingCommittee,
           ]),
         ],
@@ -145,12 +147,13 @@ class SettingsAsrCalculationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final profile = context.watch<UserProfileService>();
     final colorScheme = Theme.of(context).colorScheme;
     final current = profile.asrMethod;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Asr Calculation'),
+      appBar: CustomAppBar(title: l10n.settingsAsrCalculationTitle),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
         children: [
@@ -188,7 +191,9 @@ class SettingsAsrCalculationScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  option.label,
+                                  option == AsrCalculationOption.standard
+                                      ? l10n.asrMethodStandard
+                                      : l10n.asrMethodHanafi,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyMedium?.copyWith(
@@ -200,9 +205,9 @@ class SettingsAsrCalculationScreen extends StatelessWidget {
                                         : FontWeight.w400,
                                   ),
                                 ),
-                                if (option.subtitle.isNotEmpty)
+                                if (option == AsrCalculationOption.standard)
                                   Text(
-                                    option.subtitle,
+                                    l10n.asrMethodStandardSubtitle,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall?.copyWith(

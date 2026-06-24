@@ -1012,4 +1012,35 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Lege antwoordinhoud.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Gebedberekening';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Berekeningsmethode';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Asr-berekening';
+
+  @override
+  String get calculationMethodSectionMajorOrgs =>
+      'Grote islamitische organisaties';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Midden-Oosten';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Azië-Pacific';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Speciale methoden';
+
+  @override
+  String get asrMethodStandard => 'Standaard';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Shafi, Maliki, Hanbali';
+
+  @override
+  String get asrMethodHanafi => 'Hanafi';
 }

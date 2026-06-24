@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Расчёт намаза",
+  "settingsCalculationMethodTitle": "Метод расчёта",
+  "settingsAsrCalculationTitle": "Расчёт Асра",
+  "calculationMethodSectionMajorOrgs": "Крупные исламские организации",
+  "calculationMethodSectionMiddleEast": "Ближний Восток",
+  "calculationMethodSectionAsiaPacific": "Азиатско-Тихоокеанский регион",
+  "calculationMethodSectionSpecial": "Специальные методы",
+  "asrMethodStandard": "Стандарт",
+  "asrMethodStandardSubtitle": "Шафии, Малики, Ханбали",
+  "asrMethodHanafi": "Ханафи"
 }

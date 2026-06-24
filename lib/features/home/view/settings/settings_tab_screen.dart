@@ -17,6 +17,7 @@ import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../features/onboarding/model/asr_calculation_option.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
@@ -461,7 +462,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             const SizedBox(height: 16),
             _SettingsSectionHeader(
               icon: Icons.public_rounded,
-              label: 'Prayer Calculation',
+              label: l10n.settingsPrayerCalculationSection,
             ),
             const SizedBox(height: 8),
             _SettingsGroup(
@@ -474,7 +475,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 ),
                 _SettingsRow(
                   icon: Icons.calculate_outlined,
-                  label: 'Calculation Method',
+                  label: l10n.settingsCalculationMethodTitle,
                   value: profile.calculationMethod.label,
                   onTap: () {
                     Navigator.of(context).push(
@@ -486,10 +487,10 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 ),
                 _SettingsRow(
                   icon: Icons.wb_sunny_outlined,
-                  label: 'Asr Calculation',
-                  value: profile.asrMethod.subtitle.isNotEmpty
-                      ? '${profile.asrMethod.label} (${profile.asrMethod.subtitle})'
-                      : profile.asrMethod.label,
+                  label: l10n.settingsAsrCalculationTitle,
+                  value: profile.asrMethod == AsrCalculationOption.standard
+                      ? '${l10n.asrMethodStandard} (${l10n.asrMethodStandardSubtitle})'
+                      : l10n.asrMethodHanafi,
                   disabled: profile.calculationMethod.isShia,
                   onTap: profile.calculationMethod.isShia
                       ? null

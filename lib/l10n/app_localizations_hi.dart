@@ -1005,4 +1005,34 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'खाली प्रतिक्रिया सामग्री।';
+
+  @override
+  String get settingsPrayerCalculationSection => 'नमाज़ गणना';
+
+  @override
+  String get settingsCalculationMethodTitle => 'गणना विधि';
+
+  @override
+  String get settingsAsrCalculationTitle => 'असर गणना';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'प्रमुख इस्लामी संगठन';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'मध्य पूर्व';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'एशिया प्रशांत';
+
+  @override
+  String get calculationMethodSectionSpecial => 'विशेष विधियाँ';
+
+  @override
+  String get asrMethodStandard => 'मानक';
+
+  @override
+  String get asrMethodStandardSubtitle => 'शाफी, मालिकी, हनबली';
+
+  @override
+  String get asrMethodHanafi => 'हनफी';
 }

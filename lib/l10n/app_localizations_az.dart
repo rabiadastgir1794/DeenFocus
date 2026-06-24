@@ -1008,4 +1008,34 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Boş cavab məzmunu.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Namaz Hesabı';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Hesab Metodu';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Əsr Hesabı';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'Əsas İslam Təşkilatları';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Yaxın Şərq';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Asiya-Sakit Okean';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Xüsusi Metodlar';
+
+  @override
+  String get asrMethodStandard => 'Standart';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Şafi, Maliki, Hənbəli';
+
+  @override
+  String get asrMethodHanafi => 'Hənəfi';
 }

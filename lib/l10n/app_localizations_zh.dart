@@ -944,4 +944,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => '回复内容为空。';
+
+  @override
+  String get settingsPrayerCalculationSection => '礼拜计算';
+
+  @override
+  String get settingsCalculationMethodTitle => '计算方法';
+
+  @override
+  String get settingsAsrCalculationTitle => '晡礼计算';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => '主要伊斯兰组织';
+
+  @override
+  String get calculationMethodSectionMiddleEast => '中东';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => '亚太地区';
+
+  @override
+  String get calculationMethodSectionSpecial => '特殊方法';
+
+  @override
+  String get asrMethodStandard => '标准';
+
+  @override
+  String get asrMethodStandardSubtitle => '沙菲仪、马立克、罕百里';
+
+  @override
+  String get asrMethodHanafi => '哈乃斐';
 }

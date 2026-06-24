@@ -1016,4 +1016,36 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Пустое содержимое ответа.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Расчёт намаза';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Метод расчёта';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Расчёт Асра';
+
+  @override
+  String get calculationMethodSectionMajorOrgs =>
+      'Крупные исламские организации';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Ближний Восток';
+
+  @override
+  String get calculationMethodSectionAsiaPacific =>
+      'Азиатско-Тихоокеанский регион';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Специальные методы';
+
+  @override
+  String get asrMethodStandard => 'Стандарт';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Шафии, Малики, Ханбали';
+
+  @override
+  String get asrMethodHanafi => 'Ханафи';
 }

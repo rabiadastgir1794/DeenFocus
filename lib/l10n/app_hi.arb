@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "नमाज़ गणना",
+  "settingsCalculationMethodTitle": "गणना विधि",
+  "settingsAsrCalculationTitle": "असर गणना",
+  "calculationMethodSectionMajorOrgs": "प्रमुख इस्लामी संगठन",
+  "calculationMethodSectionMiddleEast": "मध्य पूर्व",
+  "calculationMethodSectionAsiaPacific": "एशिया प्रशांत",
+  "calculationMethodSectionSpecial": "विशेष विधियाँ",
+  "asrMethodStandard": "मानक",
+  "asrMethodStandardSubtitle": "शाफी, मालिकी, हनबली",
+  "asrMethodHanafi": "हनफी"
 }

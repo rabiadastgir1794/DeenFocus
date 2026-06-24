@@ -994,4 +994,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'محتوى الرد فارغ.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'حساب الصلاة';
+
+  @override
+  String get settingsCalculationMethodTitle => 'طريقة الحساب';
+
+  @override
+  String get settingsAsrCalculationTitle => 'حساب العصر';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'المنظمات الإسلامية الكبرى';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'الشرق الأوسط';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'آسيا والمحيط الهادئ';
+
+  @override
+  String get calculationMethodSectionSpecial => 'طرق خاصة';
+
+  @override
+  String get asrMethodStandard => 'القياسية';
+
+  @override
+  String get asrMethodStandardSubtitle => 'شافعي، مالكي، حنبلي';
+
+  @override
+  String get asrMethodHanafi => 'حنفي';
 }

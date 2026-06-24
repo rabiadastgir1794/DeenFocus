@@ -254,11 +254,17 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                           decoration: BoxDecoration(
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: borderColor, width: 1.1),
+                            border: Border.all(
+                              color: borderColor,
+                              width: 1.1,
+                            ),
                           ),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(
-                            isThreeLine: true,
+                            contentPadding: EdgeInsets.only(
+                              left: 16.w,
+                              right: 0,
+                            ),
                             onTap: () => _openDetail(item),
                             title: Row(
                               children: [
@@ -274,7 +280,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                 Expanded(
                                   child: Text(
                                     item.label,
-                                    maxLines: 3,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -290,21 +296,9 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                     item.transliteration.isEmpty
                                         ? l10n.tasbihNoTransliteration
                                         : item.transliteration,
-                                    maxLines: 3,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  if (item.meaning.isNotEmpty) ...[
-                                    SizedBox(height: 4.h),
-                                    Text(
-                                      item.meaning,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
                                   if (item.totalCount > 0)
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -330,34 +324,93 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.push_pin_rounded,
-                                    color: item.isPinned
-                                        ? colorScheme.primary
-                                        : colorScheme.onSurfaceVariant,
-                                  ),
-                                  onPressed: () => _togglePin(item),
-                                ),
-                                if (item.isCustom)
-                                  IconButton(
-                                    icon: const Icon(Icons.edit_outlined),
-                                    onPressed: () => _openEditor(item: item),
-                                  ),
-                                if (item.isCustom)
-                                  IconButton(
-                                    icon: const Icon(Icons.delete_outline),
-                                    onPressed: () => _deleteCustom(item),
-                                  ),
                                 if (!item.isPinned)
                                   ReorderableDragStartListener(
                                     index: index,
-                                    child: Icon(
-                                      Icons.drag_indicator_rounded,
-                                      color: colorScheme.onSurfaceVariant,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6.w,
+                                        vertical: 12.h,
+                                      ),
+                                      child: Icon(
+                                        Icons.drag_handle_rounded,
+                                        size: 20,
+                                        color: colorScheme.onSurfaceVariant
+                                            .withValues(alpha: 0.5),
+                                      ),
                                     ),
                                   ),
-                                const Icon(Icons.chevron_right_rounded),
+                                PopupMenuButton<_ItemAction>(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Icons.more_vert_rounded,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  onSelected: (action) async {
+                                    switch (action) {
+                                      case _ItemAction.pin:
+                                        await _togglePin(item);
+                                      case _ItemAction.edit:
+                                        await _openEditor(item: item);
+                                      case _ItemAction.delete:
+                                        await _deleteCustom(item);
+                                    }
+                                  },
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem<_ItemAction>(
+                                      value: _ItemAction.pin,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            item.isPinned
+                                                ? Icons.push_pin_rounded
+                                                : Icons.push_pin_outlined,
+                                            size: 18,
+                                            color: colorScheme.primary,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            item.isPinned ? 'Unpin' : 'Pin',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (item.isCustom) ...[
+                                      PopupMenuItem<_ItemAction>(
+                                        value: _ItemAction.edit,
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.edit_outlined,
+                                              size: 18,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text('Edit'),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem<_ItemAction>(
+                                        value: _ItemAction.delete,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete_outline,
+                                              size: 18,
+                                              color: colorScheme.error,
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: colorScheme.error,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -507,6 +560,8 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
 }
 
 // Moves the dialog above the keyboard by animating bottom padding.
+enum _ItemAction { pin, edit, delete }
+
 // Isolated so only this widget rebuilds on viewInsets changes —
 // the TextFields inside the dialog are never touched.
 class _KeyboardAwareDialogPadding extends StatelessWidget {

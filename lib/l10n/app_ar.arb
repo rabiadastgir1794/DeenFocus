@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "حساب الصلاة",
+  "settingsCalculationMethodTitle": "طريقة الحساب",
+  "settingsAsrCalculationTitle": "حساب العصر",
+  "calculationMethodSectionMajorOrgs": "المنظمات الإسلامية الكبرى",
+  "calculationMethodSectionMiddleEast": "الشرق الأوسط",
+  "calculationMethodSectionAsiaPacific": "آسيا والمحيط الهادئ",
+  "calculationMethodSectionSpecial": "طرق خاصة",
+  "asrMethodStandard": "القياسية",
+  "asrMethodStandardSubtitle": "شافعي، مالكي، حنبلي",
+  "asrMethodHanafi": "حنفي"
 }

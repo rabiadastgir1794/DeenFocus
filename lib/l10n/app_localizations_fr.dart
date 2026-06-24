@@ -1020,4 +1020,35 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Contenu de réponse vide.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Calcul de Prière';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Méthode de Calcul';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Calcul de l\'Asr';
+
+  @override
+  String get calculationMethodSectionMajorOrgs =>
+      'Grandes Organisations Islamiques';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Moyen-Orient';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Asie-Pacifique';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Méthodes Spéciales';
+
+  @override
+  String get asrMethodStandard => 'Standard';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Shafi, Maliki, Hanbali';
+
+  @override
+  String get asrMethodHanafi => 'Hanafi';
 }

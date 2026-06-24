@@ -337,5 +337,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Calcul Rugăciune",
+  "settingsCalculationMethodTitle": "Metodă de Calcul",
+  "settingsAsrCalculationTitle": "Calcul Asr",
+  "calculationMethodSectionMajorOrgs": "Organizații Islamice Majore",
+  "calculationMethodSectionMiddleEast": "Orientul Mijlociu",
+  "calculationMethodSectionAsiaPacific": "Asia-Pacific",
+  "calculationMethodSectionSpecial": "Metode Speciale",
+  "asrMethodStandard": "Standard",
+  "asrMethodStandardSubtitle": "Shafi, Maliki, Hanbali",
+  "asrMethodHanafi": "Hanafi"
 }
