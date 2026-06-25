@@ -146,6 +146,17 @@ class PremiumGate {
       // the transition feels uninterrupted.
       final presented = Completer<void>();
 
+      // One-shot guard: Superwall fires both onDismiss(PurchasedPaywallResult)
+      // AND feature() after a purchase, which would call onAccess twice and
+      // open the downstream screen (e.g. iOS FamilyActivityPicker) twice.
+      var accessGranted = false;
+      void grantAccess() {
+        if (accessGranted) return;
+        accessGranted = true;
+        _accessGrantedThisSession = true;
+        onAccess();
+      }
+
       await waitForMinimum();
 
       unawaited(
@@ -191,9 +202,8 @@ class PremiumGate {
                       'subscription confirmed active (attempt $attempt) '
                       'context=$debugContext',
                     );
-                    _accessGrantedThisSession = true;
                     removeSyncEntry();
-                    onAccess();
+                    grantAccess();
                     return;
                   }
                   _log(
@@ -210,9 +220,8 @@ class PremiumGate {
                   'status still lagging after $maxAttempts attempts — '
                   'trusting PurchasedPaywallResult context=$debugContext',
                 );
-                _accessGrantedThisSession = true;
                 removeSyncEntry();
-                onAccess();
+                grantAccess();
                 return;
               }
               try {
@@ -220,8 +229,7 @@ class PremiumGate {
                     .getSubscriptionStatus()
                     .timeout(const Duration(seconds: 10));
                 if (updated.isActive) {
-                  _accessGrantedThisSession = true;
-                  onAccess();
+                  grantAccess();
                 }
               } catch (e) {
                 _log('post-dismiss status check failed: $e');
@@ -250,8 +258,7 @@ class PremiumGate {
               if (!presented.isCompleted) presented.complete();
               removeOverlay();
               if (latest.isActive) {
-                _accessGrantedThisSession = true;
-                onAccess();
+                grantAccess();
               }
             } catch (e) {
               _log('feature status check failed: $e');

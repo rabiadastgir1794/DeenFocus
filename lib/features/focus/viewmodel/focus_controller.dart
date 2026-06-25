@@ -140,9 +140,11 @@ class FocusController extends ChangeNotifier {
     if (_isLoadingApps) return;
 
     if (Platform.isIOS) {
+      _isLoadingApps = true;
       final result = await DeviceAppsService.presentIosFamilyPicker(
         existingSelectionData: _settings.iosSelectionData,
       );
+      _isLoadingApps = false;
       if (result == null) return;
       _settings = _settings.copyWith(
         iosSelectionData: result.selectionData,

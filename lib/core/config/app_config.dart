@@ -6,10 +6,12 @@ abstract class AppConfig {
     'SUPERWALL_API_KEY_IOS',
   );
 
-  static const String mapTilesUrlTemplate = String.fromEnvironment(
-    'MAP_TILES_URL',
-    defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  );
+  static String get mapTilesUrlTemplate {
+    const raw = String.fromEnvironment('MAP_TILES_URL');
+    return raw.isEmpty
+        ? 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png'
+        : raw;
+  }
 
   static const String googleMapsApiKey = String.fromEnvironment(
     'GOOGLE_MAPS_API_KEY',

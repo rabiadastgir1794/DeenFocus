@@ -546,17 +546,13 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
     final lat = widget.latitude;
     final lng = widget.longitude;
     if (lat == null || lng == null) return;
+    if (widget.mosques.isEmpty) return;
 
     final user = LatLng(lat, lng);
     final points = <LatLng>[
       user,
       ...widget.mosques.map((m) => LatLng(m.latitude, m.longitude)),
     ];
-
-    if (widget.mosques.isEmpty) {
-      _mapController.move(user, 14);
-      return;
-    }
 
     _mapController.fitCamera(
       CameraFit.bounds(
@@ -612,6 +608,9 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
                       TileLayer(
                         urlTemplate: AppConfig.mapTilesUrlTemplate,
                         userAgentPackageName: 'com.rnr.deenfocus',
+                        tileProvider: NetworkTileProvider(
+                          cachingProvider: const DisabledMapCachingProvider(),
+                        ),
                       ),
                       MarkerLayer(
                         markers: [

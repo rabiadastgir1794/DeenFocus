@@ -280,17 +280,10 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
     await _presentEditUsernameSheet(context);
   }
 
-  Future<void> _onAboutTapped(BuildContext context) async {
+  void _onAboutTapped(BuildContext context) {
     if (!context.mounted) return;
-    await PremiumGate.presentIfNeeded(
-      context: context,
-      onAccess: () {
-        if (!context.mounted) return;
-        Navigator.of(context).push<void>(
-          MaterialPageRoute<void>(builder: (_) => const SettingsAboutScreen()),
-        );
-      },
-      debugContext: 'settings:about_deen_focus',
+    Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const SettingsAboutScreen()),
     );
   }
 
@@ -538,7 +531,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 _SettingsRow(
                   icon: Icons.info_outline_rounded,
                   label: l10n.settingsAboutTitle,
-                  onTap: () => unawaited(_onAboutTapped(context)),
+                  onTap: () => _onAboutTapped(context),
                 ),
                 _SettingsRow(
                   icon: Icons.email_outlined,
