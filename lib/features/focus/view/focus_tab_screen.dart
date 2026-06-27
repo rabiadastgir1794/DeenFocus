@@ -347,22 +347,15 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       );
       return;
     }
-    final shouldShow = !_showGlobalSelector;
-
     // Hiding the selector — no gate needed.
-    if (!shouldShow) {
+    if (_showGlobalSelector) {
       setState(() => _showGlobalSelector = false);
       return;
     }
 
-    // Apps already loaded means user is subscribed — open selector directly.
-    if (vm.installedApps.isNotEmpty) {
-      setState(() => _showGlobalSelector = true);
-      return;
-    }
-
-    // Apps not yet loaded: check premium first, then open selector inside
-    // onAccess so the popup only appears once subscription is confirmed.
+    // Always verify subscription before opening the selector. The warm
+    // cache may have pre-loaded apps without icons, so requestInstalledApps()
+    // inside onAccess ensures icons are loaded and subscription is confirmed.
     await _openSelectorAfterPremium(vm);
   }
 

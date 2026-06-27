@@ -16,14 +16,18 @@ abstract class LocationService {
       return null;
     }
 
+    // Medium accuracy (network/WiFi) is sufficient for city lookup and
+    // resolves in seconds on Android — high accuracy (GPS) can hang indoors.
     final position = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-    );
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+      ),
+    ).timeout(const Duration(seconds: 15));
 
     final placemarks = await placemarkFromCoordinates(
       position.latitude,
       position.longitude,
-    );
+    ).timeout(const Duration(seconds: 10));
 
     final placemark = placemarks.isNotEmpty ? placemarks.first : null;
     final city = _firstNonEmpty(<String?>[

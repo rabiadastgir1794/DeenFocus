@@ -101,6 +101,8 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
       if (!mounted || location == null) return;
 
       _applySelectedLocation(location, updateResults: true);
+    } catch (_) {
+      // Timeout or location error — dismiss spinner so user can search manually.
     } finally {
       if (mounted) {
         setState(() {
