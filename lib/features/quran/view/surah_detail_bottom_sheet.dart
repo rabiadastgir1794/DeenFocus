@@ -90,7 +90,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     _playbackEventSub = _player.playbackEventStream.listen((_) async {
       if (!mounted) return;
       final processingState = _player.processingState;
-      print('[Quran][playbackEvent] state=$processingState playing=${_player.playing} ayahIndex=$_playingAyahIndex');
 
       final isLoading = processingState == ProcessingState.loading ||
           processingState == ProcessingState.buffering;
@@ -102,7 +101,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       if (processingState == ProcessingState.completed && !_isAdvancingToNext) {
         _isAdvancingToNext = true;
         final next = _playingAyahIndex + 1;
-        print('[Quran][playbackEvent] COMPLETED ayah $_playingAyahIndex → next=$next total=${_ayahs.length}');
         try {
           if (_showAudioBar && next < _ayahs.length) {
             await _loadAndPlayAyah(next);
@@ -116,7 +114,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     });
 
     _playerStateSub = _player.playerStateStream.listen((state) {
-      print('[Quran][playerState] playing=${state.playing} state=${state.processingState}');
       if (!mounted) return;
       if (state.playing && !_showAudioBar) {
         setState(() => _showAudioBar = true);
@@ -135,7 +132,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     });
 
     _durationSub = _player.durationStream.listen((duration) {
-      print('[Quran][durationStream] duration=$duration ayahIndex=$_playingAyahIndex');
       if (!mounted) return;
       setState(() => _currentDuration = duration ?? Duration.zero);
     });
@@ -144,7 +140,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   // Dispose the current player and create a fresh one with new subscriptions.
   // Called before every ayah load to avoid ExoPlayer's completed-state bug on Android.
   Future<void> _reinitPlayer() async {
-    print('[Quran][reinitPlayer] disposing old player, creating fresh');
     _playbackEventSub?.cancel();
     _playerStateSub?.cancel();
     _positionSub?.cancel();
@@ -163,7 +158,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   Future<void> _loadAndPlayAyah(int index, {bool suppressScroll = false}) async {
     if (index < 0 || index >= _ayahs.length) return;
     final ayah = _ayahs[index];
-    print('[Quran][loadAndPlay] ayah index=$index surah=${ayah.surahNumber} ayah=${ayah.ayahNumber}');
 
     // Always reinit the player so setAudioSource starts from a clean idle state.
     // On Android, calling setAudioSource on a completed ExoPlayer releases it
@@ -184,13 +178,11 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         AudioSource.uri(Uri.parse(_getAudioUrl(ayah.surahNumber, ayah.ayahNumber))),
       );
       if (!mounted) return;
-      print('[Quran][loadAndPlay] source set, calling play()');
       // Do NOT await play() — just_audio's play() Future completes only when
       // the track ends. Awaiting it would keep _isAdvancingToNext=true for the
       // entire track, causing the completed event to be silently skipped.
       unawaited(_player.play());
-    } catch (e, st) {
-      print('[Quran][loadAndPlay] ERROR index=$index: $e\n$st');
+    } catch (e) {
       if (mounted) setState(() => _isAudioLoading = false);
     }
   }
@@ -299,7 +291,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   void _scrollToAyah(int index) {
     if (index < 0 || index >= _ayahKeys.length) return;
     final ctx = _ayahKeys[index].currentContext;
-    print('[Quran][scrollToAyah] index=$index ctx=${ctx != null ? "found" : "null"} hasClients=${_listController.hasClients}');
     if (ctx != null) {
       Scrollable.ensureVisible(
         ctx,
@@ -307,18 +298,14 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeOut,
       );
-      print('[Quran][scrollToAyah] ensureVisible called for index=$index');
     } else if (_listController.hasClients) {
       final estimated = (index * 220.0)
           .clamp(0.0, _listController.position.maxScrollExtent);
-      print('[Quran][scrollToAyah] fallback animateTo=$estimated for index=$index');
       _listController.animateTo(
         estimated,
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeOut,
       );
-    } else {
-      print('[Quran][scrollToAyah] no ctx and no clients — cannot scroll');
     }
   }
 
