@@ -28,7 +28,10 @@ class AppLocalizationsAz extends AppLocalizations {
   String get continueButton => 'Davam et';
 
   @override
-  String get getStarted => 'Başlayın';
+  String get continueForFree => 'Pulsuz plan ilə davam et';
+
+  @override
+  String get getStarted => 'Premiumu aç';
 
   @override
   String get language => 'Dil';
@@ -170,7 +173,7 @@ class AppLocalizationsAz extends AppLocalizations {
       'Qəhvə və ya qəlyanaltılara xərcləmək barədə iki dəfə düşünmürsən...';
 
   @override
-  String get investComparisonTitle => 'Bir düşünün...';
+  String get investComparisonTitle => 'Premium al və ya pulsuz davam et';
 
   @override
   String get investDailyCoffee => 'Gündəlik qəhvə';
@@ -211,7 +214,7 @@ class AppLocalizationsAz extends AppLocalizations {
       'Hər ay ödənilir • İstənilən vaxt ləğv edin';
 
   @override
-  String get yearlyPriceValue => '29,99 dollar';
+  String get yearlyPriceValue => '24,99 dollar';
 
   @override
   String get yearlyPriceSuffix => '/il';
@@ -269,7 +272,7 @@ class AppLocalizationsAz extends AppLocalizations {
   String get yearlyLabel => 'İllik';
 
   @override
-  String get yearlyPrice => '\$49.99/il · 50% qənaət · illik hesablanır';
+  String get yearlyPrice => '\$24.99/il · 50% qənaət · illik hesablanır';
 
   @override
   String get lifetimeLabel => 'Ömür boyu';
@@ -474,6 +477,14 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'Surə çalın';
+
+  @override
+  String get quranAudioNoInternet =>
+      'İnternet bağlantısı yoxdur. Səs üçün internet lazımdır.';
+
+  @override
+  String get quranAudioTimeout =>
+      'Səs yükləmə vaxtı bitdi. Bağlantınızı yoxlayın.';
 
   @override
   String get quranSurahLabel => 'surə';

@@ -92,6 +92,18 @@ class AppSuperwall {
     }
   }
 
+  /// Loads the persisted subscription status into [subscriptionActiveNotifier]
+  /// without hitting the network. Call this early in app startup so premium
+  /// gates can skip the loader on cold start when the user is already subscribed.
+  static Future<void> loadCachedState() async {
+    final cached = await StorageService.cachedSubscriptionActive;
+    if (cached) {
+      subscriptionActiveNotifier.value = true;
+      purchasedSubscriptionActiveNotifier.value = true;
+      _log('Loaded cached subscription active=true');
+    }
+  }
+
   static Future<bool> syncSubscriptionState() async {
     if (!_enabled) return false;
 
@@ -103,11 +115,13 @@ class AppSuperwall {
       purchasedSubscriptionActiveNotifier.value = isSubscribed;
       subscriptionActiveNotifier.value = isSubscribed;
 
+      // Persist so the next cold start can skip the loader.
+      await StorageService.setCachedSubscriptionActive(isSubscribed);
+
       var hasEverSubscribed = await StorageService.hasEverSubscribed;
 
       if (isSubscribed && !hasEverSubscribed) {
         hasEverSubscribed = true;
-
         await StorageService.setHasEverSubscribed(true);
       }
 

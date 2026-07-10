@@ -24,6 +24,9 @@ abstract class HomePrayerTimesHelper {
       sectRaw: sectRaw ?? await StorageService.sect,
     );
     final asr = AsrCalculationOption.fromRaw(await StorageService.asrMethod);
+    // Yield to the event loop before synchronous astronomical computation so
+    // frames can render between prayer-time calculations for each day.
+    await Future<void>.delayed(Duration.zero);
     final slots = _buildSlots(
       latitude: latitude,
       longitude: longitude,

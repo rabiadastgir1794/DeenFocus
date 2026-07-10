@@ -84,9 +84,24 @@ class PremiumGate {
     }
 
     try {
-      // Fast path: a purchase/restore completed earlier this session.
-      // Superwall's status can lag by minutes (iOS Sandbox, Play Billing init),
-      // so we trust the PaywallResult from the earlier presentation instead.
+      // Fast path 1: cached subscription active (in-memory, set from local
+      // storage on cold start or from a previous gate this session).
+      // Open immediately — no loader — and sync in the background after a
+      // short delay so the feature's own platform-channel work (e.g. focus
+      // enforcement sync on Android) completes before Google Play Billing
+      // competes for the same binder thread.
+      if (AppSuperwall.subscriptionActiveNotifier.value) {
+        _log('cached subscription active, opening immediately context=$debugContext');
+        removeOverlay();
+        onAccess();
+        unawaited(
+          Future<void>.delayed(const Duration(seconds: 5))
+              .then((_) => AppSuperwall.syncSubscriptionState()),
+        );
+        return;
+      }
+
+      // Fast path 2: a purchase/restore completed earlier this session.
       if (_accessGrantedThisSession) {
         _log('access already granted this session, skipping gate context=$debugContext');
         await waitForMinimum();

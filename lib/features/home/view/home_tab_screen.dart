@@ -303,7 +303,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   ),
                 ),
                 HomeCircleIconButton(
-                  icon: Icons.chat_bubble_outline,
+                  imagePath: 'assets/ai_chat_icon.png',
                   onTap: () {
                     unawaited(
                       PremiumGate.presentIfNeeded(

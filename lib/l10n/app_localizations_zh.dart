@@ -28,7 +28,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get continueButton => '继续';
 
   @override
-  String get getStarted => '开始使用';
+  String get continueForFree => '继续使用免费计划';
+
+  @override
+  String get getStarted => '解锁高级版';
 
   @override
   String get language => '语言';
@@ -158,7 +161,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get investSubtitle => '你不会三思而后行地花在咖啡或零食上......';
 
   @override
-  String get investComparisonTitle => '想想看...';
+  String get investComparisonTitle => '升级高级版或继续免费使用';
 
   @override
   String get investDailyCoffee => '每日咖啡';
@@ -197,7 +200,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get monthlyPlanSubtitle => '按月计费 • 随时取消';
 
   @override
-  String get yearlyPriceValue => '49.99 美元';
+  String get yearlyPriceValue => '24.99 美元';
 
   @override
   String get yearlyPriceSuffix => '/年';
@@ -251,7 +254,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get yearlyLabel => '每年';
 
   @override
-  String get yearlyPrice => '49.99 美元/年 · 节省 50% · 按年计费';
+  String get yearlyPrice => '24.99 美元/年 · 节省 50% · 按年计费';
 
   @override
   String get lifetimeLabel => '寿命';
@@ -447,6 +450,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get quranPlaySurah => '播放古兰经';
+
+  @override
+  String get quranAudioNoInternet => '无网络连接。播放音频需要网络。';
+
+  @override
+  String get quranAudioTimeout => '音频加载超时。请检查您的网络连接。';
 
   @override
   String get quranSurahLabel => '古兰经';

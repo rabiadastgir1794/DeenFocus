@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class HomeCircleIconButton extends StatelessWidget {
   const HomeCircleIconButton({
     super.key,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.onTap,
-  });
+  }) : assert(icon != null || imagePath != null);
 
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final VoidCallback onTap;
 
   @override
@@ -23,7 +25,16 @@ class HomeCircleIconButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: colorScheme.primaryContainer,
         ),
-        child: Icon(icon, size: 18, color: colorScheme.primary),
+        child: imagePath != null
+            ? Padding(
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(
+                  imagePath!,
+                  fit: BoxFit.contain,
+                  color: colorScheme.primary,
+                ),
+              )
+            : Icon(icon, size: 18, color: colorScheme.primary),
       ),
     );
   }

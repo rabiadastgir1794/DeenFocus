@@ -46,6 +46,8 @@ abstract class StorageService {
       'focus_accessibility_disclosure_accepted';
   static const String _keyHasEverSubscribed = 'has_ever_subscribed';
   static const String _legacyKeyHasUsedIntroOffer = 'has_used_intro_offer';
+  static const String _keySubscriptionActive = 'subscription_active';
+  static const String _keySubscriptionCachedAtMs = 'subscription_cached_at_ms';
   static const String _keyCalculationMethod = 'calculation_method';
   static const String _keyAsrMethod = 'asr_method';
 
@@ -420,6 +422,21 @@ abstract class StorageService {
     final prefs = await _prefs;
     await prefs.setBool(_keyHasEverSubscribed, value);
     await prefs.setBool(_legacyKeyHasUsedIntroOffer, value);
+  }
+
+  // Cached subscription active state — read on cold start to skip the loader.
+  static Future<bool> get cachedSubscriptionActive async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keySubscriptionActive) ?? false;
+  }
+
+  static Future<void> setCachedSubscriptionActive(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keySubscriptionActive, value);
+    await prefs.setInt(
+      _keySubscriptionCachedAtMs,
+      DateTime.now().millisecondsSinceEpoch,
+    );
   }
 
   static Future<bool> get hasUsedIntroOffer => hasEverSubscribed;

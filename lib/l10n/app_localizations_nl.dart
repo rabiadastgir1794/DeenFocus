@@ -28,7 +28,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get continueButton => 'Doorgaan';
 
   @override
-  String get getStarted => 'Aan de slag';
+  String get continueForFree => 'Doorgaan met gratis plan';
+
+  @override
+  String get getStarted => 'Premium ontgrendelen';
 
   @override
   String get language => 'Taal';
@@ -170,7 +173,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Je hoeft niet na te denken over het uitgeven van koffie of snacks...';
 
   @override
-  String get investComparisonTitle => 'Denk er eens over na...';
+  String get investComparisonTitle => 'Ga Premium of ga door met gratis plan';
 
   @override
   String get investDailyCoffee => 'Dagelijkse koffie';
@@ -211,7 +214,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Maandelijks gefactureerd • Op elk gewenst moment opzeggen';
 
   @override
-  String get yearlyPriceValue => '\$ 29,99';
+  String get yearlyPriceValue => '\$ 24,99';
 
   @override
   String get yearlyPriceSuffix => '/jaar';
@@ -270,7 +273,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get yearlyPrice =>
-      '\$29,99/jaar · bespaar 50% · jaarlijks gefactureerd';
+      '\$24,99/jaar · bespaar 50% · jaarlijks gefactureerd';
 
   @override
   String get lifetimeLabel => 'Levensduur';
@@ -474,6 +477,14 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'Speel soera';
+
+  @override
+  String get quranAudioNoInternet =>
+      'Geen internetverbinding. Audio vereist internet.';
+
+  @override
+  String get quranAudioTimeout =>
+      'Audio laden verlopen. Controleer uw verbinding.';
 
   @override
   String get quranSurahLabel => 'Soera';

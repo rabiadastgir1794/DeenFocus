@@ -154,6 +154,16 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     _bindPlayerState();
   }
 
+  Future<bool> _hasInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com')
+          .timeout(const Duration(seconds: 3));
+      return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
   // Loads a single ayah MP3 and plays it. Updates highlight + scroll.
   Future<void> _loadAndPlayAyah(int index, {bool suppressScroll = false}) async {
     if (index < 0 || index >= _ayahs.length) return;
@@ -164,6 +174,15 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     // without reinitialising, causing silent failure.
     await _reinitPlayer();
     if (!mounted) return;
+
+    final hasInternet = await _hasInternetConnection();
+    if (!mounted) return;
+    if (!hasInternet) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.quranAudioNoInternet)),
+      );
+      return;
+    }
 
     setState(() {
       _playingAyahIndex = index;
@@ -176,12 +195,19 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     try {
       await _player.setAudioSource(
         AudioSource.uri(Uri.parse(_getAudioUrl(ayah.surahNumber, ayah.ayahNumber))),
-      );
+      ).timeout(const Duration(seconds: 10));
       if (!mounted) return;
       // Do NOT await play() — just_audio's play() Future completes only when
       // the track ends. Awaiting it would keep _isAdvancingToNext=true for the
       // entire track, causing the completed event to be silently skipped.
       unawaited(_player.play());
+    } on TimeoutException {
+      if (mounted) {
+        setState(() => _isAudioLoading = false);
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.quranAudioTimeout)),
+        );
+      }
     } catch (e) {
       if (mounted) setState(() => _isAudioLoading = false);
     }

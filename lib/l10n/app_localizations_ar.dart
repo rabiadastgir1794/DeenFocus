@@ -28,7 +28,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueButton => 'يكمل';
 
   @override
-  String get getStarted => 'ابدأ';
+  String get continueForFree => 'المتابعة بالخطة المجانية';
+
+  @override
+  String get getStarted => 'فتح النسخة المميزة';
 
   @override
   String get language => 'لغة';
@@ -168,7 +171,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا تفكر مرتين في الإنفاق على القهوة أو الوجبات الخفيفة...';
 
   @override
-  String get investComparisonTitle => 'فكر في الأمر...';
+  String get investComparisonTitle => 'اشترك في النسخة المميزة أو تابع مجاناً';
 
   @override
   String get investDailyCoffee => 'القهوة اليومية';
@@ -209,7 +212,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'يتم إصدار الفاتورة شهريًا • الإلغاء في أي وقت';
 
   @override
-  String get yearlyPriceValue => '49.99 دولارًا';
+  String get yearlyPriceValue => '24.99 دولارًا';
 
   @override
   String get yearlyPriceSuffix => '/سنة';
@@ -267,7 +270,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get yearlyPrice =>
-      '49.99 دولارًا سنويًا · وفر 50٪ · يتم إصدار الفاتورة سنويًا';
+      '24.99 دولارًا سنويًا · وفر 50٪ · يتم إصدار الفاتورة سنويًا';
 
   @override
   String get lifetimeLabel => 'حياة';
@@ -466,6 +469,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'لعب سورة';
+
+  @override
+  String get quranAudioNoInternet =>
+      'لا يوجد اتصال بالإنترنت. الصوت يتطلب الإنترنت.';
+
+  @override
+  String get quranAudioTimeout => 'انتهت مهلة تحميل الصوت. تحقق من اتصالك.';
 
   @override
   String get quranSurahLabel => 'سورة';
