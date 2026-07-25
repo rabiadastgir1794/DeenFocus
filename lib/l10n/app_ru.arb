@@ -6,7 +6,8 @@
   "welcomeDescription": "Отслеживайте свои молитвы, читайте Коран, считайте Тасбих и создавайте значимые полосы — и все это в одном месте.",
   "skip": "Пропускать",
   "continueButton": "Продолжать",
-  "getStarted": "Начать",
+  "continueForFree": "Продолжить с бесплатным планом",
+  "getStarted": "Разблокировать Premium",
   "language": "Язык",
   "cancel": "Отмена",
   "ok": "ХОРОШО",
@@ -49,7 +50,7 @@
   "focusChildModeDescription": "Мгновенно блокируйте приложения при передаче устройства детям",
   "investTitle": "Инвестируйте в свою религию",
   "investSubtitle": "Вы не раздумываете дважды, прежде чем потратить деньги на кофе или закуски...",
-  "investComparisonTitle": "Подумайте об этом...",
+  "investComparisonTitle": "Перейти на Premium или продолжить бесплатно",
   "investDailyCoffee": "Ежедневный кофе",
   "investDailyCoffeePrice": "5 долларов США/день",
   "investFastFood": "Быстрое питание",
@@ -62,7 +63,7 @@
   "monthlyPriceValue": "4,99 доллара США",
   "monthlyPriceSuffix": "/месяц",
   "monthlyPlanSubtitle": "Оплата ежемесячно. • Отменить в любое время.",
-  "yearlyPriceValue": "$29,99",
+  "yearlyPriceValue": "$24,99",
   "yearlyPriceSuffix": "/год",
   "yearlyPlanSubtitle": "Сэкономьте 50 % • Оплата производится ежегодно.",
   "lifetimePriceValue": "$79,99",
@@ -80,7 +81,7 @@
   "monthlyLabel": "Ежемесячно",
   "monthlyPrice": "4,99 долл. США в месяц · оплата ежемесячно · отмена в любое время",
   "yearlyLabel": "Ежегодно",
-  "yearlyPrice": "29,99 долларов США в год · экономия 50 % · оплата производится ежегодно",
+  "yearlyPrice": "24,99 долларов США в год · экономия 50 % · оплата производится ежегодно",
   "lifetimeLabel": "Продолжительность жизни",
   "lifetimePrice": "$79,99 на всю жизнь · единоразовая покупка · доступ навсегда",
   "featurePrayerAnalytics": "Расширенная аналитика молитв",
@@ -145,6 +146,8 @@
   "quranIncreaseFont": "Увеличить шрифт",
   "quranDecreaseFont": "Уменьшить шрифт",
   "quranPause": "Пауза",
+  "quranAudioNoInternet": "Нет подключения к интернету. Для аудио требуется интернет.",
+  "quranAudioTimeout": "Время загрузки аудио истекло. Проверьте подключение.",
   "quranPlaySurah": "Воспроизвести суру",
   "quranSurahLabel": "Сура",
   "save": "Сохранять",
@@ -337,5 +340,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Расчёт намаза",
+  "settingsCalculationMethodTitle": "Метод расчёта",
+  "settingsAsrCalculationTitle": "Расчёт Асра",
+  "calculationMethodSectionMajorOrgs": "Крупные исламские организации",
+  "calculationMethodSectionMiddleEast": "Ближний Восток",
+  "calculationMethodSectionAsiaPacific": "Азиатско-Тихоокеанский регион",
+  "calculationMethodSectionSpecial": "Специальные методы",
+  "asrMethodStandard": "Стандарт",
+  "asrMethodStandardSubtitle": "Шафии, Малики, Ханбали",
+  "asrMethodHanafi": "Ханафи"
 }

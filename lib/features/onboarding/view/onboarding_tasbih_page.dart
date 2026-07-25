@@ -8,7 +8,7 @@ import '../../../l10n/app_localizations.dart';
 
 class OnboardingTasbihPage extends StatelessWidget {
   const OnboardingTasbihPage({super.key});
-  static const double _descriptionSlotHeight = 96;
+  // static const double _descriptionSlotHeight = 96;
 
   @override
   Widget build(BuildContext context) {

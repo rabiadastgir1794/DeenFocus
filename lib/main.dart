@@ -51,6 +51,10 @@ Future<void> main() async {
         'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
       );
 
+      // Pre-warm subscription notifier from local cache so premium gates can
+      // open immediately on cold start without showing the loader.
+      unawaited(AppSuperwall.loadCachedState());
+
       /// Configure Superwall ONCE in the background. Splash must not block on it —
       /// premium gates will wait for [AppSuperwall.configure] when first invoked.
       unawaited(

@@ -6,7 +6,8 @@
   "welcomeDescription": "Houd uw gebeden bij, lees de Koran, tel Tasbih en bouw betekenisvolle streaks op - allemaal op één plek.",
   "skip": "Overslaan",
   "continueButton": "Doorgaan",
-  "getStarted": "Aan de slag",
+  "continueForFree": "Doorgaan met gratis plan",
+  "getStarted": "Premium ontgrendelen",
   "language": "Taal",
   "cancel": "Annuleren",
   "ok": "OK",
@@ -49,7 +50,7 @@
   "focusChildModeDescription": "Blokkeer apps onmiddellijk wanneer u het apparaat aan kinderen overhandigt",
   "investTitle": "Investeer in je Deen",
   "investSubtitle": "Je hoeft niet na te denken over het uitgeven van koffie of snacks...",
-  "investComparisonTitle": "Denk er eens over na...",
+  "investComparisonTitle": "Ga Premium of ga door met gratis plan",
   "investDailyCoffee": "Dagelijkse koffie",
   "investDailyCoffeePrice": "$ 5/dag",
   "investFastFood": "Fastfood",
@@ -62,7 +63,7 @@
   "monthlyPriceValue": "$ 4,99",
   "monthlyPriceSuffix": "/maand",
   "monthlyPlanSubtitle": "Maandelijks gefactureerd • Op elk gewenst moment opzeggen",
-  "yearlyPriceValue": "$ 29,99",
+  "yearlyPriceValue": "$ 24,99",
   "yearlyPriceSuffix": "/jaar",
   "yearlyPlanSubtitle": "Bespaar 50% • Jaarlijks gefactureerd",
   "lifetimePriceValue": "$ 79,99",
@@ -80,7 +81,7 @@
   "monthlyLabel": "Maandelijks",
   "monthlyPrice": "$ 4,99/maand · maandelijks gefactureerd · op elk moment opzegbaar",
   "yearlyLabel": "Jaarlijks",
-  "yearlyPrice": "$29,99/jaar · bespaar 50% · jaarlijks gefactureerd",
+  "yearlyPrice": "$24,99/jaar · bespaar 50% · jaarlijks gefactureerd",
   "lifetimeLabel": "Levensduur",
   "lifetimePrice": "$ 79,99 levenslang · eenmalige aankoop · eeuwige toegang",
   "featurePrayerAnalytics": "Geavanceerde gebedsanalyses",
@@ -145,6 +146,8 @@
   "quranIncreaseFont": "Lettertype vergroten",
   "quranDecreaseFont": "Lettertype verkleinen",
   "quranPause": "Pauze",
+  "quranAudioNoInternet": "Geen internetverbinding. Audio vereist internet.",
+  "quranAudioTimeout": "Audio laden verlopen. Controleer uw verbinding.",
   "quranPlaySurah": "Speel soera",
   "quranSurahLabel": "Soera",
   "save": "Redden",
@@ -337,5 +340,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Gebedberekening",
+  "settingsCalculationMethodTitle": "Berekeningsmethode",
+  "settingsAsrCalculationTitle": "Asr-berekening",
+  "calculationMethodSectionMajorOrgs": "Grote islamitische organisaties",
+  "calculationMethodSectionMiddleEast": "Midden-Oosten",
+  "calculationMethodSectionAsiaPacific": "Azië-Pacific",
+  "calculationMethodSectionSpecial": "Speciale methoden",
+  "asrMethodStandard": "Standaard",
+  "asrMethodStandardSubtitle": "Shafi, Maliki, Hanbali",
+  "asrMethodHanafi": "Hanafi"
 }

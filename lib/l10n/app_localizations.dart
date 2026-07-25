@@ -156,10 +156,16 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueButton;
 
+  /// No description provided for @continueForFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Free Plan'**
+  String get continueForFree;
+
   /// No description provided for @getStarted.
   ///
   /// In en, this message translates to:
-  /// **'Get Started'**
+  /// **'Unlock Premium'**
   String get getStarted;
 
   /// No description provided for @language.
@@ -417,7 +423,7 @@ abstract class AppLocalizations {
   /// No description provided for @investComparisonTitle.
   ///
   /// In en, this message translates to:
-  /// **'Think about it...'**
+  /// **'Go Premium or Continue with Free Plan'**
   String get investComparisonTitle;
 
   /// No description provided for @investDailyCoffee.
@@ -453,7 +459,7 @@ abstract class AppLocalizations {
   /// No description provided for @investYourDeenPrice.
   ///
   /// In en, this message translates to:
-  /// **'\$9.99/mo'**
+  /// **'\$4.99/mo'**
   String get investYourDeenPrice;
 
   /// No description provided for @investComparisonQuote.
@@ -477,7 +483,7 @@ abstract class AppLocalizations {
   /// No description provided for @monthlyPriceValue.
   ///
   /// In en, this message translates to:
-  /// **'\$9.99'**
+  /// **'\$4.99'**
   String get monthlyPriceValue;
 
   /// No description provided for @monthlyPriceSuffix.
@@ -495,7 +501,7 @@ abstract class AppLocalizations {
   /// No description provided for @yearlyPriceValue.
   ///
   /// In en, this message translates to:
-  /// **'\$49.99'**
+  /// **'\$24.99'**
   String get yearlyPriceValue;
 
   /// No description provided for @yearlyPriceSuffix.
@@ -603,7 +609,7 @@ abstract class AppLocalizations {
   /// No description provided for @yearlyPrice.
   ///
   /// In en, this message translates to:
-  /// **'\$49.99/year · save 50% · billed annually'**
+  /// **'\$24.99/year · save 50% · billed annually'**
   String get yearlyPrice;
 
   /// No description provided for @lifetimeLabel.
@@ -995,6 +1001,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Play surah'**
   String get quranPlaySurah;
+
+  /// No description provided for @quranAudioNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Audio requires internet.'**
+  String get quranAudioNoInternet;
+
+  /// No description provided for @quranAudioTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio load timed out. Check your connection.'**
+  String get quranAudioTimeout;
 
   /// No description provided for @quranSurahLabel.
   ///
@@ -1949,6 +1967,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Empty response content.'**
   String get homeAiErrorEmptyContent;
+
+  /// No description provided for @settingsPrayerCalculationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Calculation'**
+  String get settingsPrayerCalculationSection;
+
+  /// No description provided for @settingsCalculationMethodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculation Method'**
+  String get settingsCalculationMethodTitle;
+
+  /// No description provided for @settingsAsrCalculationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Asr Calculation'**
+  String get settingsAsrCalculationTitle;
+
+  /// No description provided for @calculationMethodSectionMajorOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Major Islamic Organizations'**
+  String get calculationMethodSectionMajorOrgs;
+
+  /// No description provided for @calculationMethodSectionMiddleEast.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle East'**
+  String get calculationMethodSectionMiddleEast;
+
+  /// No description provided for @calculationMethodSectionAsiaPacific.
+  ///
+  /// In en, this message translates to:
+  /// **'Asia Pacific'**
+  String get calculationMethodSectionAsiaPacific;
+
+  /// No description provided for @calculationMethodSectionSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Methods'**
+  String get calculationMethodSectionSpecial;
+
+  /// No description provided for @asrMethodStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get asrMethodStandard;
+
+  /// No description provided for @asrMethodStandardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shafi, Maliki, Hanbali'**
+  String get asrMethodStandardSubtitle;
+
+  /// No description provided for @asrMethodHanafi.
+  ///
+  /// In en, this message translates to:
+  /// **'Hanafi'**
+  String get asrMethodHanafi;
 }
 
 class _AppLocalizationsDelegate

@@ -28,7 +28,10 @@ class AppLocalizationsRo extends AppLocalizations {
   String get continueButton => 'Continua';
 
   @override
-  String get getStarted => 'Începeți';
+  String get continueForFree => 'Continuați cu planul gratuit';
+
+  @override
+  String get getStarted => 'Deblocați Premium';
 
   @override
   String get language => 'Limbă';
@@ -171,7 +174,8 @@ class AppLocalizationsRo extends AppLocalizations {
       'Nu te gândi de două ori să cheltuiești pe cafea sau gustări...';
 
   @override
-  String get investComparisonTitle => 'Gândește-te la asta...';
+  String get investComparisonTitle =>
+      'Treceți la Premium sau continuați gratuit';
 
   @override
   String get investDailyCoffee => 'Cafea zilnică';
@@ -211,7 +215,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get monthlyPlanSubtitle => 'Facturat lunar • Anulați oricând';
 
   @override
-  String get yearlyPriceValue => '29,99 USD';
+  String get yearlyPriceValue => '24,99 USD';
 
   @override
   String get yearlyPriceSuffix => '/an';
@@ -268,7 +272,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get yearlyLabel => 'Anual';
 
   @override
-  String get yearlyPrice => '29,99 USD/an · economisiți 50% · facturat anual';
+  String get yearlyPrice => '24,99 USD/an · economisiți 50% · facturat anual';
 
   @override
   String get lifetimeLabel => 'Durata de viață';
@@ -474,6 +478,14 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'Joacă sura';
+
+  @override
+  String get quranAudioNoInternet =>
+      'Fără conexiune la internet. Audio necesită internet.';
+
+  @override
+  String get quranAudioTimeout =>
+      'Timp de încărcare audio depășit. Verificați conexiunea.';
 
   @override
   String get quranSurahLabel => 'Sura';
@@ -1017,4 +1029,34 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Conținut gol al răspunsului.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Calcul Rugăciune';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Metodă de Calcul';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Calcul Asr';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'Organizații Islamice Majore';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Orientul Mijlociu';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Asia-Pacific';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Metode Speciale';
+
+  @override
+  String get asrMethodStandard => 'Standard';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Shafi, Maliki, Hanbali';
+
+  @override
+  String get asrMethodHanafi => 'Hanafi';
 }

@@ -1,14 +1,16 @@
 import 'dart:convert';
 
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/storage_service.dart';
-import '../../onboarding/model/sect_option.dart';
+import '../../onboarding/model/asr_calculation_option.dart';
+import '../../onboarding/model/calculation_method_option.dart';
 import '../model/home_models.dart';
 
 abstract class HomePrayerTimesHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
+  static const String _cacheVersion = 'v3';
 
   static Future<HomePrayerTimesData> generatePrayerTimesForDate({
     required double latitude,
@@ -17,12 +19,20 @@ abstract class HomePrayerTimesHelper {
     String? sectRaw,
   }) async {
     final normalizedDate = DateTime(date.year, date.month, date.day, 12);
-    final sect = _resolveSect(sectRaw ?? await StorageService.sect);
+    final method = CalculationMethodOption.fromRaw(
+      await StorageService.calculationMethod,
+      sectRaw: sectRaw ?? await StorageService.sect,
+    );
+    final asr = AsrCalculationOption.fromRaw(await StorageService.asrMethod);
+    // Yield to the event loop before synchronous astronomical computation so
+    // frames can render between prayer-time calculations for each day.
+    await Future<void>.delayed(Duration.zero);
     final slots = _buildSlots(
       latitude: latitude,
       longitude: longitude,
       currentTime: normalizedDate,
-      sect: sect,
+      method: method,
+      asr: asr,
     );
     return _buildData(slots, normalizedDate);
   }
@@ -33,21 +43,25 @@ abstract class HomePrayerTimesHelper {
     DateTime? now,
   }) async {
     final currentTime = now ?? DateTime.now();
-    final dayKey = _dayKeyFormat.format(currentTime);
+    final dayKey = '${_cacheVersion}_${_dayKeyFormat.format(currentTime)}';
 
     final cachedDate = await StorageService.homePrayerCacheDate;
     final cachedLat = await StorageService.homePrayerCacheLatitude;
     final cachedLng = await StorageService.homePrayerCacheLongitude;
     final cachedSect = await StorageService.homePrayerCacheSect;
     final cachedJson = await StorageService.homePrayerCacheJson;
-    final storedSect = await StorageService.sect;
-    final sect = _resolveSect(storedSect);
+    final method = CalculationMethodOption.fromRaw(
+      await StorageService.calculationMethod,
+      sectRaw: await StorageService.sect,
+    );
+    final asr = AsrCalculationOption.fromRaw(await StorageService.asrMethod);
+    final cacheKey = '${method.name}_${asr.name}';
 
     final hasMatchingCache =
         cachedDate == dayKey &&
         cachedLat != null &&
         cachedLng != null &&
-        cachedSect == sect.name &&
+        cachedSect == cacheKey &&
         cachedJson != null &&
         (cachedLat - latitude).abs() < 0.0001 &&
         (cachedLng - longitude).abs() < 0.0001;
@@ -63,7 +77,8 @@ abstract class HomePrayerTimesHelper {
       latitude: latitude,
       longitude: longitude,
       currentTime: currentTime,
-      sect: sect,
+      method: method,
+      asr: asr,
     );
 
     final data = _buildData(slots, currentTime);
@@ -71,74 +86,55 @@ abstract class HomePrayerTimesHelper {
       dateKey: dayKey,
       latitude: latitude,
       longitude: longitude,
-      sect: sect.name,
+      sect: cacheKey,
       serializedTimes: _serialize(slots),
     );
     return data;
   }
 
-  static SectOption _resolveSect(String? raw) {
-    switch (raw) {
-      case 'shia':
-        return SectOption.shia;
-      case 'sunni':
-        return SectOption.sunni;
-      case 'preferNotToSay':
-      default:
-        return SectOption.sunni;
+  static CalculationParameters _buildParameters(
+    CalculationMethodOption method,
+    AsrCalculationOption asr,
+    double latitude,
+    double longitude,
+  ) {
+    final params = method.toParams();
+    if (!method.isShia) {
+      params.madhab = asr.madhab;
     }
-  }
-
-  static CalculationParameters _parametersForSect(SectOption sect) {
-    if (sect == SectOption.shia) {
-      return CalculationMethod.tehran.getParameters();
-    }
-
-    return CalculationMethod.karachi.getParameters()..madhab = Madhab.shafi;
+    params.highLatitudeRule = HighLatitudeRule.recommended(
+      Coordinates(latitude, longitude),
+    );
+    return params;
   }
 
   static List<HomePrayerSlot> _buildSlots({
     required double latitude,
     required double longitude,
     required DateTime currentTime,
-    required SectOption sect,
+    required CalculationMethodOption method,
+    required AsrCalculationOption asr,
   }) {
     final coordinates = Coordinates(latitude, longitude);
-    final params = _parametersForSect(sect);
+    final params = _buildParameters(method, asr, latitude, longitude);
     final prayerTimes = PrayerTimes(
-      coordinates,
-      DateComponents.from(currentTime),
-      params,
+      date: currentTime,
+      coordinates: coordinates,
+      calculationParameters: params,
     );
 
-    DateTime normalizeToMinute(DateTime value) =>
-        DateTime(value.year, value.month, value.day, value.hour, value.minute);
+    DateTime normalizeToMinute(DateTime value) {
+      final local = value.toLocal();
+      return DateTime(local.year, local.month, local.day, local.hour, local.minute);
+    }
 
     return <HomePrayerSlot>[
-      HomePrayerSlot(
-        id: HomePrayerId.fajr,
-        time: normalizeToMinute(prayerTimes.fajr),
-      ),
-      HomePrayerSlot(
-        id: HomePrayerId.sunrise,
-        time: normalizeToMinute(prayerTimes.sunrise),
-      ),
-      HomePrayerSlot(
-        id: HomePrayerId.dhuhr,
-        time: normalizeToMinute(prayerTimes.dhuhr),
-      ),
-      HomePrayerSlot(
-        id: HomePrayerId.asr,
-        time: normalizeToMinute(prayerTimes.asr),
-      ),
-      HomePrayerSlot(
-        id: HomePrayerId.maghrib,
-        time: normalizeToMinute(prayerTimes.maghrib),
-      ),
-      HomePrayerSlot(
-        id: HomePrayerId.isha,
-        time: normalizeToMinute(prayerTimes.isha),
-      ),
+      HomePrayerSlot(id: HomePrayerId.fajr, time: normalizeToMinute(prayerTimes.fajr)),
+      HomePrayerSlot(id: HomePrayerId.sunrise, time: normalizeToMinute(prayerTimes.sunrise)),
+      HomePrayerSlot(id: HomePrayerId.dhuhr, time: normalizeToMinute(prayerTimes.dhuhr)),
+      HomePrayerSlot(id: HomePrayerId.asr, time: normalizeToMinute(prayerTimes.asr)),
+      HomePrayerSlot(id: HomePrayerId.maghrib, time: normalizeToMinute(prayerTimes.maghrib)),
+      HomePrayerSlot(id: HomePrayerId.isha, time: normalizeToMinute(prayerTimes.isha)),
     ];
   }
 

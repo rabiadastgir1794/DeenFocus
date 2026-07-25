@@ -48,6 +48,13 @@ class FocusController extends ChangeNotifier {
   double? _cachedLatitude;
   double? _cachedLongitude;
 
+  // Salah windows are stable for a full day at a fixed location. Cache them to
+  // avoid rerunning prayer-time computation on every _recomputeAndPersist call.
+  List<SalahWindow>? _cachedSalahWindows;
+  DateTime? _cachedSalahWindowsDate;
+  double? _cachedSalahWindowsLat;
+  double? _cachedSalahWindowsLng;
+
   FocusSettings get settings => _settings;
   FocusLockState get lockState => _lockState;
   List<FocusInstalledApp> get installedApps => _installedApps;
@@ -140,9 +147,11 @@ class FocusController extends ChangeNotifier {
     if (_isLoadingApps) return;
 
     if (Platform.isIOS) {
+      _isLoadingApps = true;
       final result = await DeviceAppsService.presentIosFamilyPicker(
         existingSelectionData: _settings.iosSelectionData,
       );
+      _isLoadingApps = false;
       if (result == null) return;
       _settings = _settings.copyWith(
         iosSelectionData: result.selectionData,
@@ -783,6 +792,12 @@ class FocusController extends ChangeNotifier {
   }
 
   Future<void> _reloadLocation() async {
+    // Invalidate salah window cache whenever location is refreshed — new
+    // coordinates produce different prayer times.
+    _cachedSalahWindows = null;
+    _cachedSalahWindowsDate = null;
+    _cachedSalahWindowsLat = null;
+    _cachedSalahWindowsLng = null;
     _cachedLatitude = await StorageService.locationLatitude;
     _cachedLongitude = await StorageService.locationLongitude;
     await FocusEnforcementService.appendDebugLog(
@@ -1574,8 +1589,18 @@ class FocusController extends ChangeNotifier {
       return const <SalahWindow>[];
     }
 
+    // Return cached result when the date and location match — prayer times are
+    // stable for the full day and the same coordinates.
+    final today = DateTime(now.year, now.month, now.day);
+    if (_cachedSalahWindows != null &&
+        _cachedSalahWindowsDate == today &&
+        _cachedSalahWindowsLat == _cachedLatitude &&
+        _cachedSalahWindowsLng == _cachedLongitude) {
+      return _cachedSalahWindows!;
+    }
+
     final prayers = <HomePrayerSlot>[];
-    final startDate = DateTime(now.year, now.month, now.day);
+    final startDate = today;
     final sect = await StorageService.sect;
     for (var offset = 0; offset < _scheduleHorizonDays; offset++) {
       final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
@@ -1590,13 +1615,19 @@ class FocusController extends ChangeNotifier {
     }
 
     prayers.sort((a, b) => a.time.compareTo(b.time));
-    return List<SalahWindow>.generate(prayers.length, (index) {
+    final windows = List<SalahWindow>.generate(prayers.length, (index) {
       final slot = prayers[index];
       final nextStart = index + 1 < prayers.length
           ? prayers[index + 1].time
           : slot.time.add(const Duration(hours: 24));
       return SalahWindow(prayer: slot, start: slot.time, end: nextStart);
     }, growable: false);
+
+    _cachedSalahWindows = windows;
+    _cachedSalahWindowsDate = today;
+    _cachedSalahWindowsLat = _cachedLatitude;
+    _cachedSalahWindowsLng = _cachedLongitude;
+    return windows;
   }
 
   HomePrayerId _testPrayerIdForIndex(int index) {

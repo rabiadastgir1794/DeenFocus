@@ -21,6 +21,11 @@ class PremiumGate {
   static const Duration _minLoaderDuration = Duration(seconds: 1);
   static const Duration _verificationTimeout = Duration(seconds: 30);
 
+  // Set to true after a purchase/restore completes so subsequent gated-feature
+  // taps don't re-verify against a lagging Superwall/StoreKit status.
+  // Reset to false if Superwall later confirms the subscription is not active.
+  static bool _accessGrantedThisSession = false;
+
   static void _log(String message) {
     debugPrint('[PremiumGate] $message');
   }
@@ -79,6 +84,32 @@ class PremiumGate {
     }
 
     try {
+      // Fast path 1: cached subscription active (in-memory, set from local
+      // storage on cold start or from a previous gate this session).
+      // Open immediately — no loader — and sync in the background after a
+      // short delay so the feature's own platform-channel work (e.g. focus
+      // enforcement sync on Android) completes before Google Play Billing
+      // competes for the same binder thread.
+      if (AppSuperwall.subscriptionActiveNotifier.value) {
+        _log('cached subscription active, opening immediately context=$debugContext');
+        removeOverlay();
+        onAccess();
+        unawaited(
+          Future<void>.delayed(const Duration(seconds: 5))
+              .then((_) => AppSuperwall.syncSubscriptionState()),
+        );
+        return;
+      }
+
+      // Fast path 2: a purchase/restore completed earlier this session.
+      if (_accessGrantedThisSession) {
+        _log('access already granted this session, skipping gate context=$debugContext');
+        await waitForMinimum();
+        removeOverlay();
+        onAccess();
+        return;
+      }
+
       await AppSuperwall.configure().timeout(_verificationTimeout);
 
       if (!AppSuperwall.isEnabled) {
@@ -90,17 +121,28 @@ class PremiumGate {
         return;
       }
 
-      final budgetForStatus = remainingBudget();
-      if (budgetForStatus == Duration.zero) {
-        throw TimeoutException('subscription verification timed out');
+      // On Play Store, Superwall.getSubscriptionStatus() can take 1-2 minutes
+      // while Google Play Billing initialises. Use a short timeout and fall
+      // through to registerPlacement on timeout — Superwall rechecks internally,
+      // and the feature: / onPresent handlers below handle both outcomes.
+      SubscriptionStatus? status;
+      try {
+        status = await TraceHelpers.traceAsync(
+          'PAYWALL',
+          'Superwall.getSubscriptionStatus context=$debugContext',
+          () => Superwall.shared.getSubscriptionStatus().timeout(
+            const Duration(seconds: 5),
+          ),
+        );
+      } on TimeoutException {
+        _log(
+          'getSubscriptionStatus timed out, proceeding to paywall '
+          'context=$debugContext',
+        );
       }
-      final status = await TraceHelpers.traceAsync(
-        'PAYWALL',
-        'Superwall.getSubscriptionStatus context=$debugContext',
-        () => Superwall.shared.getSubscriptionStatus().timeout(budgetForStatus),
-      );
 
-      if (status.isActive) {
+      if (status != null && status.isActive) {
+        _accessGrantedThisSession = true;
         await waitForMinimum();
         removeOverlay();
         onAccess();
@@ -119,6 +161,17 @@ class PremiumGate {
       // the transition feels uninterrupted.
       final presented = Completer<void>();
 
+      // One-shot guard: Superwall fires both onDismiss(PurchasedPaywallResult)
+      // AND feature() after a purchase, which would call onAccess twice and
+      // open the downstream screen (e.g. iOS FamilyActivityPicker) twice.
+      var accessGranted = false;
+      void grantAccess() {
+        if (accessGranted) return;
+        accessGranted = true;
+        _accessGrantedThisSession = true;
+        onAccess();
+      }
+
       await waitForMinimum();
 
       unawaited(
@@ -131,11 +184,68 @@ class PremiumGate {
               removeOverlay();
             })
             ..onDismiss((info, result) async {
-              _log('paywall dismissed context=$debugContext');
-              await AppSuperwall.syncSubscriptionState();
+              _log('paywall dismissed context=$debugContext result=$result');
+              if (result is PurchasedPaywallResult ||
+                  result is RestoredPaywallResult) {
+                // Re-show the verifying overlay while we confirm the status —
+                // the paywall is gone so the user would otherwise see a blank
+                // screen during the sync retries.
+                OverlayEntry? syncEntry;
+                var syncEntryRemoved = false;
+                void removeSyncEntry() {
+                  if (syncEntryRemoved) return;
+                  syncEntryRemoved = true;
+                  try {
+                    syncEntry?.remove();
+                  } catch (_) {}
+                }
+
+                syncEntry = OverlayEntry(
+                  builder: (_) => const _VerifyingSubscriptionOverlay(),
+                );
+                try {
+                  overlayState.insert(syncEntry);
+                } catch (_) {}
+
+                // Retry up to 5 times (2 s apart) to handle iOS Sandbox /
+                // Play Billing propagation lag.
+                const maxAttempts = 5;
+                for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+                  await AppSuperwall.syncSubscriptionState();
+                  if (AppSuperwall.subscriptionActiveNotifier.value) {
+                    _log(
+                      'subscription confirmed active (attempt $attempt) '
+                      'context=$debugContext',
+                    );
+                    removeSyncEntry();
+                    grantAccess();
+                    return;
+                  }
+                  _log(
+                    'subscription not yet active '
+                    '($attempt/$maxAttempts) context=$debugContext',
+                  );
+                  if (attempt < maxAttempts) {
+                    await Future<void>.delayed(const Duration(seconds: 2));
+                  }
+                }
+                // Status still lagging after all retries — trust the
+                // PurchasedPaywallResult since Superwall confirmed the payment.
+                _log(
+                  'status still lagging after $maxAttempts attempts — '
+                  'trusting PurchasedPaywallResult context=$debugContext',
+                );
+                removeSyncEntry();
+                grantAccess();
+                return;
+              }
               try {
-                final updated = await Superwall.shared.getSubscriptionStatus();
-                if (updated.isActive) onAccess();
+                final updated = await Superwall.shared
+                    .getSubscriptionStatus()
+                    .timeout(const Duration(seconds: 10));
+                if (updated.isActive) {
+                  grantAccess();
+                }
               } catch (e) {
                 _log('post-dismiss status check failed: $e');
               }
@@ -154,11 +264,21 @@ class PremiumGate {
               );
             }),
           feature: () async {
+            // Superwall calls feature() when it decides not to show a paywall
+            // (subscription_status_timeout, no matching campaign, etc.).
+            // Always complete `presented` here — otherwise the overlay hangs
+            // for the full ~30 s timeout before surfacing an error.
             try {
               final latest = await Superwall.shared.getSubscriptionStatus();
-              if (latest.isActive) onAccess();
+              if (!presented.isCompleted) presented.complete();
+              removeOverlay();
+              if (latest.isActive) {
+                grantAccess();
+              }
             } catch (e) {
               _log('feature status check failed: $e');
+              if (!presented.isCompleted) presented.complete();
+              removeOverlay();
             }
           },
         ),

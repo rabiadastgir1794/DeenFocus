@@ -132,7 +132,11 @@ class _FocusTabScreenState extends State<FocusTabScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _FocusHeader(textTheme: textTheme, colorScheme: colorScheme, l10n: l10n),
+              _FocusHeader(
+                textTheme: textTheme,
+                colorScheme: colorScheme,
+                l10n: l10n,
+              ),
               Selector<FocusController, _TopBannerData?>(
                 selector: (_, vm) => _computeTopBannerData(vm, l10n),
                 builder: (context, banner, _) {
@@ -165,7 +169,10 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     );
   }
 
-  _TopBannerData? _computeTopBannerData(FocusController vm, AppLocalizations l10n) {
+  _TopBannerData? _computeTopBannerData(
+    FocusController vm,
+    AppLocalizations l10n,
+  ) {
     final childMode = vm.settings.childModeEnabled;
     final childActive = childMode && vm.hasSelectedApps;
     final salahMode = vm.settings.salahModeEnabled && !childMode;
@@ -340,13 +347,29 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       );
       return;
     }
-    final shouldShow = !_showGlobalSelector;
-    setState(() {
-      _showGlobalSelector = shouldShow;
-    });
-    if (shouldShow && vm.installedApps.isEmpty) {
-      await _requestInstalledAppsAfterPremium(vm);
+    // Hiding the selector — no gate needed.
+    if (_showGlobalSelector) {
+      setState(() => _showGlobalSelector = false);
+      return;
     }
+
+    // Always verify subscription before opening the selector. The warm
+    // cache may have pre-loaded apps without icons, so requestInstalledApps()
+    // inside onAccess ensures icons are loaded and subscription is confirmed.
+    await _openSelectorAfterPremium(vm);
+  }
+
+  Future<void> _openSelectorAfterPremium(FocusController vm) async {
+    if (!mounted) return;
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      onAccess: () {
+        if (!mounted) return;
+        setState(() => _showGlobalSelector = true);
+        unawaited(vm.requestInstalledApps());
+      },
+      debugContext: 'focus:load_apps',
+    );
   }
 
   Future<void> _enableModeAfterPremium(
@@ -677,7 +700,9 @@ class _FocusHeader extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           l10n.focusTabSubtitle,
-          style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+          style: textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 24),
       ],
@@ -710,7 +735,11 @@ class _SelectedAppsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SelectedAppsHeader(textTheme: textTheme, colorScheme: colorScheme, l10n: l10n),
+          _SelectedAppsHeader(
+            textTheme: textTheme,
+            colorScheme: colorScheme,
+            l10n: l10n,
+          ),
           Selector<FocusController, _SelectedAppsData>(
             selector: (_, vm) => _SelectedAppsData.fromVm(vm),
             builder: (context, data, _) {
@@ -779,7 +808,9 @@ class _SelectedAppsHeader extends StatelessWidget {
             children: [
               Text(
                 l10n.focusAppsToBlockTitle,
-                style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                style: textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 2),
               Text(
@@ -841,7 +872,9 @@ class _IosSelectedAppsBanner extends StatelessWidget {
               summary,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
+              style: textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
@@ -908,7 +941,12 @@ class _SelectedAppChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FocusAppIcon(label: app.label, iconBytes: iconBytes, size: 18, radius: 6),
+          FocusAppIcon(
+            label: app.label,
+            iconBytes: iconBytes,
+            size: 18,
+            radius: 6,
+          ),
           const SizedBox(width: 8),
           Text(
             app.label,
@@ -917,7 +955,11 @@ class _SelectedAppChip extends StatelessWidget {
           const SizedBox(width: 8),
           InkWell(
             onTap: () => onRemove(app),
-            child: Icon(Icons.close, size: 14, color: colorScheme.onSurfaceVariant),
+            child: Icon(
+              Icons.close,
+              size: 14,
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -957,12 +999,15 @@ class _SelectAppsRow extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.focusSelectAppsToBlock,
-                style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+                style: textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             if (data.isLoadingApps)
               DefaultTextStyle(
-                style: textTheme.labelSmall?.copyWith(
+                style:
+                    textTheme.labelSmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ) ??
                     const TextStyle(),
@@ -1016,11 +1061,14 @@ class _ModeCardsSection extends StatelessWidget {
       selector: (_, vm) => _ModesSectionData.fromVm(vm),
       builder: (context, data, _) {
         final salahLoading =
-            modesInFlight.contains(FocusModeType.salah) || isAuthorizingScreenTime;
-        final nightLoading = modesInFlight.contains(FocusModeType.nightDiscipline) ||
+            modesInFlight.contains(FocusModeType.salah) ||
+            isAuthorizingScreenTime;
+        final nightLoading =
+            modesInFlight.contains(FocusModeType.nightDiscipline) ||
             isAuthorizingScreenTime;
         final childLoading =
-            modesInFlight.contains(FocusModeType.child) || isAuthorizingScreenTime;
+            modesInFlight.contains(FocusModeType.child) ||
+            isAuthorizingScreenTime;
         return Column(
           children: [
             _ModeCard(
@@ -1049,7 +1097,8 @@ class _ModeCardsSection extends StatelessWidget {
               subtitle: l10n.focusNightDisciplineCardSubtitle,
               value: data.nightMode,
               isLoading: nightLoading,
-              onChanged: (value) => onToggleMode(FocusModeType.nightDiscipline, value),
+              onChanged: (value) =>
+                  onToggleMode(FocusModeType.nightDiscipline, value),
               child: data.nightMode
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1332,8 +1381,10 @@ class _AppsGrid extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Selector<FocusController, _AppsGridData>(
-      selector: (_, vm) =>
-          _AppsGridData(isLoadingApps: vm.isLoadingApps, apps: vm.installedApps),
+      selector: (_, vm) => _AppsGridData(
+        isLoadingApps: vm.isLoadingApps,
+        apps: vm.installedApps,
+      ),
       builder: (context, data, _) {
         if (data.isLoadingApps) {
           return Padding(
@@ -1358,10 +1409,9 @@ class _AppsGrid extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               l10n.focusNoInstalledAppsToShow,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           );
         }
@@ -1417,12 +1467,13 @@ class _GridAppTile extends StatelessWidget {
     final selected = context.select<FocusController, bool>(
       (vm) => vm.settings.selectedApps.containsKey(app.packageName),
     );
-    final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-      fontSize: 10,
-      fontWeight: FontWeight.w500,
-    );
+    final textStyle = Theme.of(
+      context,
+    ).textTheme.bodySmall?.copyWith(fontSize: 10, fontWeight: FontWeight.w500);
     final selectedColor = colorScheme.primary.withValues(alpha: 0.15);
-    final unselectedColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
+    final unselectedColor = colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.5,
+    );
     final selectedBorderColor = colorScheme.primary.withValues(alpha: 0.3);
     return InkWell(
       onTap: () => unawaited(onTap(app)),
@@ -1492,10 +1543,8 @@ class _SelectedAppsData {
     };
     final globalApps = vm.settings.selectedApps.entries
         .map(
-          (entry) => _SelectedAppChipData(
-            packageName: entry.key,
-            label: entry.value,
-          ),
+          (entry) =>
+              _SelectedAppChipData(packageName: entry.key, label: entry.value),
         )
         .toList(growable: false);
     final iconBytesByPackage = <String, Uint8List?>{
@@ -1531,8 +1580,12 @@ class _SelectedAppsData {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(Object.hashAll(globalApps), Object.hashAll(iconBytesByPackage.entries), isIosSelection, iosSummary);
+  int get hashCode => Object.hash(
+    Object.hashAll(globalApps),
+    Object.hashAll(iconBytesByPackage.entries),
+    isIosSelection,
+    iosSummary,
+  );
 }
 
 class _SelectAppsRowData {

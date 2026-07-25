@@ -20,24 +20,10 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
   bool _loading = true;
   bool _saving = false;
 
-  bool _showEditor = false;
-  TasbihItem? _editingItem;
-  final TextEditingController _arabicController = TextEditingController();
-  final TextEditingController _translitController = TextEditingController();
-  final TextEditingController _meaningController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     _loadItems();
-  }
-
-  @override
-  void dispose() {
-    _arabicController.dispose();
-    _translitController.dispose();
-    _meaningController.dispose();
-    super.dispose();
   }
 
   Future<void> _loadItems() async {
@@ -53,65 +39,58 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
     Future<void> Function() action, {
     bool showLoader = true,
   }) async {
-    if (showLoader) {
-      setState(() => _saving = true);
-    }
+    if (showLoader) setState(() => _saving = true);
     try {
       await action();
     } finally {
-      if (mounted && showLoader) {
-        setState(() => _saving = false);
-      }
+      if (mounted && showLoader) setState(() => _saving = false);
     }
   }
 
-  void _openEditor({TasbihItem? item}) {
-    setState(() {
-      _showEditor = true;
-      _editingItem = item;
-      _arabicController.text = item?.label ?? '';
-      _translitController.text = item?.transliteration ?? '';
-      _meaningController.text = item?.meaning ?? '';
-    });
-  }
-
-  void _closeEditor() {
-    setState(() {
-      _showEditor = false;
-      _editingItem = null;
-      _arabicController.clear();
-      _translitController.clear();
-      _meaningController.clear();
-    });
-  }
-
-  Future<void> _saveEditor() async {
-    final label = _arabicController.text.trim();
-    final transliteration = _translitController.text.trim();
-    final meaning = _meaningController.text.trim();
-    if (label.isEmpty && transliteration.isEmpty) return;
-
-    await _withSaving(() async {
-      final effectiveLabel = label.isNotEmpty ? label : transliteration;
-      if (_editingItem == null) {
-        await TasbihLocalRepository.instance.addCustomItem(
-          label: effectiveLabel,
-          transliteration: transliteration,
-          meaning: meaning,
-        );
-      } else {
-        await TasbihLocalRepository.instance.updateCustomItem(
-          id: _editingItem!.id,
-          label: effectiveLabel,
-          transliteration: transliteration,
-          meaning: meaning,
-        );
-      }
-      await _loadItems();
-    });
-
-    if (!mounted) return;
-    _closeEditor();
+  Future<void> _openEditor({TasbihItem? item}) async {
+    await showGeneralDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 220),
+      transitionBuilder: (_, animation, _, child) => ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      ),
+      pageBuilder: (_, _, _) => _KeyboardAwareDialogPadding(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Material(
+            borderRadius: BorderRadius.circular(20),
+            clipBehavior: Clip.antiAlias,
+            child: _DhikrEditorSheet(
+              item: item,
+              onSave: (label, translit, meaning) async {
+                await _withSaving(() async {
+                  final effectiveLabel = label.isNotEmpty ? label : translit;
+                  if (item == null) {
+                    await TasbihLocalRepository.instance.addCustomItem(
+                      label: effectiveLabel,
+                      transliteration: translit,
+                      meaning: meaning,
+                    );
+                  } else {
+                    await TasbihLocalRepository.instance.updateCustomItem(
+                      id: item.id,
+                      label: effectiveLabel,
+                      transliteration: translit,
+                      meaning: meaning,
+                    );
+                  }
+                  await _loadItems();
+                });
+              },
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _togglePin(TasbihItem item) async {
@@ -138,7 +117,8 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
 
   Future<void> _openDetail(TasbihItem item) async {
     await Navigator.of(context).push<void>(
-      CupertinoPageRoute<void>(builder: (_) => TasbihDetailScreen(item: item)),
+      CupertinoPageRoute<void>(
+          builder: (_) => TasbihDetailScreen(item: item)),
     );
     if (!mounted) return;
     await _loadItems();
@@ -148,22 +128,20 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.tasbihDeleteDhikrTitle),
-          content: Text(item.label),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.tasbihDelete),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AlertDialog(
+        title: Text(l10n.tasbihDeleteDhikrTitle),
+        content: Text(item.label),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.tasbihDelete),
+          ),
+        ],
+      ),
     );
     if (confirmed != true) return;
     await _withSaving(() async {
@@ -215,9 +193,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                               l10n.tasbihChooseOrAddSubtitle,
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -265,77 +241,6 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                       ),
                     ),
                   ),
-                  if (_showEditor) ...[
-                    SizedBox(height: 8.h),
-                    Card(
-                      margin: EdgeInsets.zero,
-                      child: Padding(
-                        padding: EdgeInsets.all(12.w),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _editingItem == null
-                                        ? l10n.tasbihAddCustomTitle
-                                        : l10n.tasbihEditCustomTitle,
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: _closeEditor,
-                                  icon: const Icon(Icons.close_rounded),
-                                ),
-                              ],
-                            ),
-                            TextField(
-                              controller: _arabicController,
-                              decoration: InputDecoration(
-                                hintText: l10n.tasbihArabicOrDhikrHint,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            TextField(
-                              controller: _translitController,
-                              decoration: InputDecoration(
-                                hintText:
-                                    l10n.tasbihTransliterationOptionalHint,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            TextField(
-                              controller: _meaningController,
-                              decoration: InputDecoration(
-                                hintText: l10n.tasbihMeaningOptionalHint,
-                              ),
-                            ),
-                            SizedBox(height: 10.h),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: FilledButton.tonal(
-                                    onPressed: _closeEditor,
-                                    child: Text(l10n.cancel),
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: FilledButton(
-                                    onPressed: _saveEditor,
-                                    child: Text(l10n.save),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
                   SizedBox(height: 8.h),
                   Expanded(
                     child: ReorderableListView.builder(
@@ -345,15 +250,21 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                       itemBuilder: (context, index) {
                         final item = _items[index];
                         return Container(
+                          key: ValueKey(item.id),
                           decoration: BoxDecoration(
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: borderColor, width: 1.1),
+                            border: Border.all(
+                              color: borderColor,
+                              width: 1.1,
+                            ),
                           ),
-                          key: ValueKey(item.id),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(
-                            isThreeLine: true,
+                            contentPadding: EdgeInsets.only(
+                              left: 16.w,
+                              right: 0,
+                            ),
                             onTap: () => _openDetail(item),
                             title: Row(
                               children: [
@@ -363,15 +274,13 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                     child: Icon(
                                       Icons.push_pin_rounded,
                                       size: 14.sp,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
+                                      color: colorScheme.primary,
                                     ),
                                   ),
                                 Expanded(
                                   child: Text(
                                     item.label,
-                                    maxLines: 3,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -387,85 +296,121 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                     item.transliteration.isEmpty
                                         ? l10n.tasbihNoTransliteration
                                         : item.transliteration,
-                                    maxLines: 3,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  if (item.meaning.isNotEmpty) ...[
-                                    SizedBox(height: 4.h),
-                                    Text(
-                                      item.meaning,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
-                                  if (item.totalCount > 0) ...[
+                                  if (item.totalCount > 0)
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
                                           Icons.bar_chart_rounded,
                                           size: 14.sp,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
+                                          color: colorScheme.primary,
                                         ),
                                         SizedBox(width: 4.w),
                                         Text(
                                           '${l10n.tasbihTotalCount}: ${item.totalCount}',
                                           style: TextStyle(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                            color: colorScheme.primary,
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ],
                                 ],
                               ),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.push_pin_rounded,
-                                    color: item.isPinned
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(
-                                            context,
-                                          ).colorScheme.onSurfaceVariant,
-                                  ),
-                                  onPressed: () => _togglePin(item),
-                                ),
-                                if (item.isCustom)
-                                  IconButton(
-                                    icon: const Icon(Icons.edit_outlined),
-                                    onPressed: () => _openEditor(item: item),
-                                  ),
-                                if (item.isCustom)
-                                  IconButton(
-                                    icon: const Icon(Icons.delete_outline),
-                                    onPressed: () => _deleteCustom(item),
-                                  ),
                                 if (!item.isPinned)
                                   ReorderableDragStartListener(
                                     index: index,
-                                    child: Icon(
-                                      Icons.drag_indicator_rounded,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6.w,
+                                        vertical: 12.h,
+                                      ),
+                                      child: Icon(
+                                        Icons.drag_handle_rounded,
+                                        size: 20,
+                                        color: colorScheme.onSurfaceVariant
+                                            .withValues(alpha: 0.5),
+                                      ),
                                     ),
                                   ),
-                                const Icon(Icons.chevron_right_rounded),
+                                PopupMenuButton<_ItemAction>(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Icons.more_vert_rounded,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  onSelected: (action) async {
+                                    switch (action) {
+                                      case _ItemAction.pin:
+                                        await _togglePin(item);
+                                      case _ItemAction.edit:
+                                        await _openEditor(item: item);
+                                      case _ItemAction.delete:
+                                        await _deleteCustom(item);
+                                    }
+                                  },
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem<_ItemAction>(
+                                      value: _ItemAction.pin,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            item.isPinned
+                                                ? Icons.push_pin_rounded
+                                                : Icons.push_pin_outlined,
+                                            size: 18,
+                                            color: colorScheme.primary,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            item.isPinned ? 'Unpin' : 'Pin',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (item.isCustom) ...[
+                                      PopupMenuItem<_ItemAction>(
+                                        value: _ItemAction.edit,
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.edit_outlined,
+                                              size: 18,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text('Edit'),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem<_ItemAction>(
+                                        value: _ItemAction.delete,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete_outline,
+                                              size: 18,
+                                              color: colorScheme.error,
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: colorScheme.error,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -484,6 +429,153 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
             child: const Center(child: CircularProgressIndicator()),
           ),
       ],
+    );
+  }
+}
+
+class _DhikrEditorSheet extends StatefulWidget {
+  const _DhikrEditorSheet({this.item, required this.onSave});
+
+  final TasbihItem? item;
+  final void Function(String label, String translit, String meaning) onSave;
+
+  @override
+  State<_DhikrEditorSheet> createState() => _DhikrEditorSheetState();
+}
+
+class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
+  late final TextEditingController _arabicCtrl;
+  late final TextEditingController _translitCtrl;
+  late final TextEditingController _meaningCtrl;
+  late final FocusNode _arabicFocus;
+  late final FocusNode _translitFocus;
+  late final FocusNode _meaningFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _arabicCtrl = TextEditingController(text: widget.item?.label ?? '');
+    _translitCtrl =
+        TextEditingController(text: widget.item?.transliteration ?? '');
+    _meaningCtrl = TextEditingController(text: widget.item?.meaning ?? '');
+    _arabicFocus = FocusNode();
+    _translitFocus = FocusNode();
+    _meaningFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _arabicCtrl.dispose();
+    _translitCtrl.dispose();
+    _meaningCtrl.dispose();
+    _arabicFocus.dispose();
+    _translitFocus.dispose();
+    _meaningFocus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    // NOTE: viewInsetsOf is intentionally NOT called here. Calling it would
+    // cause this widget (and its TextFields) to rebuild every time the keyboard
+    // height changes, which breaks focus and makes the keyboard flicker when
+    // switching fields. Instead, only the isolated _KeyboardSpacer leaf widget
+    // below subscribes to viewInsets so TextFields are never touched.
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 20.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.item == null
+                ? l10n.tasbihAddCustomTitle
+                : l10n.tasbihEditCustomTitle,
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: 16.h),
+          TextField(
+            controller: _arabicCtrl,
+            focusNode: _arabicFocus,
+            autofocus: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            textInputAction: TextInputAction.next,
+            onSubmitted: (_) => _translitFocus.requestFocus(),
+            decoration:
+                InputDecoration(hintText: l10n.tasbihArabicOrDhikrHint),
+          ),
+          SizedBox(height: 10.h),
+          TextField(
+            controller: _translitCtrl,
+            focusNode: _translitFocus,
+            autocorrect: false,
+            enableSuggestions: false,
+            textInputAction: TextInputAction.next,
+            onSubmitted: (_) => _meaningFocus.requestFocus(),
+            decoration: InputDecoration(
+              hintText: l10n.tasbihTransliterationOptionalHint,
+            ),
+          ),
+          SizedBox(height: 10.h),
+          TextField(
+            controller: _meaningCtrl,
+            focusNode: _meaningFocus,
+            autocorrect: false,
+            enableSuggestions: false,
+            textInputAction: TextInputAction.done,
+            decoration:
+                InputDecoration(hintText: l10n.tasbihMeaningOptionalHint),
+          ),
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.tonal(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    final label = _arabicCtrl.text.trim();
+                    final translit = _translitCtrl.text.trim();
+                    final meaning = _meaningCtrl.text.trim();
+                    if (label.isEmpty && translit.isEmpty) return;
+                    Navigator.of(context).pop();
+                    widget.onSave(label, translit, meaning);
+                  },
+                  child: Text(l10n.save),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Moves the dialog above the keyboard by animating bottom padding.
+enum _ItemAction { pin, edit, delete }
+
+// Isolated so only this widget rebuilds on viewInsets changes —
+// the TextFields inside the dialog are never touched.
+class _KeyboardAwareDialogPadding extends StatelessWidget {
+  const _KeyboardAwareDialogPadding({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final bottom = MediaQuery.viewInsetsOf(context).bottom;
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: bottom),
+      child: Center(child: child),
     );
   }
 }

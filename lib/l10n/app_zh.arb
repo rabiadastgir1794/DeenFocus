@@ -6,7 +6,8 @@
   "welcomeDescription": "跟踪您的祈祷、阅读《古兰经》、数数 Tasbih 并建立有意义的连续记录 — 所有这些都在一处完成。",
   "skip": "跳过",
   "continueButton": "继续",
-  "getStarted": "开始使用",
+  "continueForFree": "继续使用免费计划",
+  "getStarted": "解锁高级版",
   "language": "语言",
   "cancel": "取消",
   "ok": "好的",
@@ -49,7 +50,7 @@
   "focusChildModeDescription": "将设备交给儿童时立即阻止应用程序",
   "investTitle": "投资你的迪恩",
   "investSubtitle": "你不会三思而后行地花在咖啡或零食上......",
-  "investComparisonTitle": "想想看...",
+  "investComparisonTitle": "升级高级版或继续免费使用",
   "investDailyCoffee": "每日咖啡",
   "investDailyCoffeePrice": "5 美元/天",
   "investFastFood": "快餐",
@@ -62,7 +63,7 @@
   "monthlyPriceValue": "4.99 美元",
   "monthlyPriceSuffix": "/月",
   "monthlyPlanSubtitle": "按月计费 • 随时取消",
-  "yearlyPriceValue": "49.99 美元",
+  "yearlyPriceValue": "24.99 美元",
   "yearlyPriceSuffix": "/年",
   "yearlyPlanSubtitle": "节省 50% • 按年计费",
   "lifetimePriceValue": "79.99 美元",
@@ -80,7 +81,7 @@
   "monthlyLabel": "每月",
   "monthlyPrice": "4.99 美元/月 · 每月计费 · 随时取消",
   "yearlyLabel": "每年",
-  "yearlyPrice": "49.99 美元/年 · 节省 50% · 按年计费",
+  "yearlyPrice": "24.99 美元/年 · 节省 50% · 按年计费",
   "lifetimeLabel": "寿命",
   "lifetimePrice": "终身使用 79.99 美元 · 一次性购买 · 永久使用",
   "featurePrayerAnalytics": "高级祈祷分析",
@@ -145,6 +146,8 @@
   "quranIncreaseFont": "增加字体",
   "quranDecreaseFont": "减小字体",
   "quranPause": "暂停",
+  "quranAudioNoInternet": "无网络连接。播放音频需要网络。",
+  "quranAudioTimeout": "音频加载超时。请检查您的网络连接。",
   "quranPlaySurah": "播放古兰经",
   "quranSurahLabel": "古兰经",
   "save": "节省",
@@ -337,5 +340,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "礼拜计算",
+  "settingsCalculationMethodTitle": "计算方法",
+  "settingsAsrCalculationTitle": "晡礼计算",
+  "calculationMethodSectionMajorOrgs": "主要伊斯兰组织",
+  "calculationMethodSectionMiddleEast": "中东",
+  "calculationMethodSectionAsiaPacific": "亚太地区",
+  "calculationMethodSectionSpecial": "特殊方法",
+  "asrMethodStandard": "标准",
+  "asrMethodStandardSubtitle": "沙菲仪、马立克、罕百里",
+  "asrMethodHanafi": "哈乃斐"
 }

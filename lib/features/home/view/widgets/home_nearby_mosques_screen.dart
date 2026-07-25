@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' show ClientException;
 import 'package:latlong2/latlong.dart';
@@ -12,7 +13,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/config/app_config.dart';
-import '../../../../core/services/location/location_service.dart';
 import '../../../../core/services/nearby_mosques_cache.dart';
 import '../../../../core/services/nearby_mosques_service.dart';
 import '../../../../core/services/permission_service.dart';
@@ -186,13 +186,42 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
       throw NearbyMosquesException(_kNearbyMosquesErrLocationDisabled);
     }
 
-    final location = await LocationService.fetchCurrentCoordinates();
-    if (location == null ||
-        location.latitude == null ||
-        location.longitude == null) {
-      throw const NearbyMosquesException(
-        'location_unavailable',
-      );
+    // Medium accuracy is sufficient for a 5 km mosque radius and is
+    // significantly faster than high accuracy (GPS lock not required).
+    Position position;
+    try {
+      position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+        ),
+      ).timeout(const Duration(seconds: 15));
+    } catch (_) {
+      throw const NearbyMosquesException('location_unavailable');
+    }
+
+    String title = '';
+    String subtitle = '';
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      ).timeout(const Duration(seconds: 8));
+      final p = placemarks.isNotEmpty ? placemarks.first : null;
+      title = ([p?.locality, p?.subAdministrativeArea, p?.administrativeArea]
+              .where((s) => s != null && s.trim().isNotEmpty)
+              .firstOrNull ?? '').toString();
+      subtitle = p?.country?.trim() ?? '';
+    } catch (_) {}
+
+    final location = LocationSuggestion(
+      title: title,
+      subtitle: subtitle,
+      latitude: position.latitude,
+      longitude: position.longitude,
+    );
+
+    if (location.latitude == null || location.longitude == null) {
+      throw const NearbyMosquesException('location_unavailable');
     }
 
     _latitude = location.latitude;
@@ -517,17 +546,13 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
     final lat = widget.latitude;
     final lng = widget.longitude;
     if (lat == null || lng == null) return;
+    if (widget.mosques.isEmpty) return;
 
     final user = LatLng(lat, lng);
     final points = <LatLng>[
       user,
       ...widget.mosques.map((m) => LatLng(m.latitude, m.longitude)),
     ];
-
-    if (widget.mosques.isEmpty) {
-      _mapController.move(user, 14);
-      return;
-    }
 
     _mapController.fitCamera(
       CameraFit.bounds(
@@ -583,6 +608,9 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
                       TileLayer(
                         urlTemplate: AppConfig.mapTilesUrlTemplate,
                         userAgentPackageName: 'com.rnr.deenfocus',
+                        tileProvider: NetworkTileProvider(
+                          cachingProvider: const DisabledMapCachingProvider(),
+                        ),
                       ),
                       MarkerLayer(
                         markers: [

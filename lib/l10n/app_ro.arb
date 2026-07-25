@@ -6,7 +6,8 @@
   "welcomeDescription": "Urmăriți-vă rugăciunile, citiți Coranul, numărați Tasbih și construiți linii semnificative - totul într-un singur loc.",
   "skip": "Sari peste",
   "continueButton": "Continua",
-  "getStarted": "Începeți",
+  "continueForFree": "Continuați cu planul gratuit",
+  "getStarted": "Deblocați Premium",
   "language": "Limbă",
   "cancel": "Anula",
   "ok": "Bine",
@@ -49,7 +50,7 @@
   "focusChildModeDescription": "Blocați instantaneu aplicațiile atunci când predați dispozitivul copiilor",
   "investTitle": "Investește în Deenul tău",
   "investSubtitle": "Nu te gândi de două ori să cheltuiești pe cafea sau gustări...",
-  "investComparisonTitle": "Gândește-te la asta...",
+  "investComparisonTitle": "Treceți la Premium sau continuați gratuit",
   "investDailyCoffee": "Cafea zilnică",
   "investDailyCoffeePrice": "5 USD/zi",
   "investFastFood": "Fast food",
@@ -62,7 +63,7 @@
   "monthlyPriceValue": "4,99 USD",
   "monthlyPriceSuffix": "/lună",
   "monthlyPlanSubtitle": "Facturat lunar • Anulați oricând",
-  "yearlyPriceValue": "29,99 USD",
+  "yearlyPriceValue": "24,99 USD",
   "yearlyPriceSuffix": "/an",
   "yearlyPlanSubtitle": "Economisiți 50% • Facturat anual",
   "lifetimePriceValue": "79,99 USD",
@@ -80,7 +81,7 @@
   "monthlyLabel": "Lunar",
   "monthlyPrice": "4,99 USD/lună · facturat lunar · anulați oricând",
   "yearlyLabel": "Anual",
-  "yearlyPrice": "29,99 USD/an · economisiți 50% · facturat anual",
+  "yearlyPrice": "24,99 USD/an · economisiți 50% · facturat anual",
   "lifetimeLabel": "Durata de viață",
   "lifetimePrice": "79,99 USD pe viață · achiziție unică · acces pentru totdeauna",
   "featurePrayerAnalytics": "Analize avansate ale rugăciunii",
@@ -145,6 +146,8 @@
   "quranIncreaseFont": "Măriți fontul",
   "quranDecreaseFont": "Reduceți fontul",
   "quranPause": "Pauză",
+  "quranAudioNoInternet": "Fără conexiune la internet. Audio necesită internet.",
+  "quranAudioTimeout": "Timp de încărcare audio depășit. Verificați conexiunea.",
   "quranPlaySurah": "Joacă sura",
   "quranSurahLabel": "Sura",
   "save": "Salva",
@@ -337,5 +340,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Calcul Rugăciune",
+  "settingsCalculationMethodTitle": "Metodă de Calcul",
+  "settingsAsrCalculationTitle": "Calcul Asr",
+  "calculationMethodSectionMajorOrgs": "Organizații Islamice Majore",
+  "calculationMethodSectionMiddleEast": "Orientul Mijlociu",
+  "calculationMethodSectionAsiaPacific": "Asia-Pacific",
+  "calculationMethodSectionSpecial": "Metode Speciale",
+  "asrMethodStandard": "Standard",
+  "asrMethodStandardSubtitle": "Shafi, Maliki, Hanbali",
+  "asrMethodHanafi": "Hanafi"
 }

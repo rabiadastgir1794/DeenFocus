@@ -9,6 +9,7 @@ import '../../../app/routes/route_names.dart';
 import '../../../core/constants/app_languages.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/services/locale_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/onboarding_view_model.dart';
@@ -432,26 +433,121 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AppButton(
-                      label: vm.currentIndex == vm.totalSteps - 1
-                          ? AppLocalizations.of(context)!.getStarted
-                          : AppLocalizations.of(context)!.continueButton,
-                      enabled: !vm.isContinueDisabled && !isBusyScreenTimeStep,
-                      showTrailingIcon: vm.currentIndex != vm.totalSteps - 1,
-                      onPressed: () async {
-                        if (vm.currentIndex < vm.totalSteps - 1) {
+                    if (vm.currentIndex == vm.totalSteps - 1) ...[
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56.h,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
+                              vm.goNext,
+                              debugContext: 'onboarding_get_started',
+                              placementOverride:
+                                  SuperwallPlacements.firstTimeOfferWall,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
+                            elevation: 2,
+                            shadowColor: Colors.black.withValues(alpha: 0.1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 16.w),
+                                  child: Icon(
+                                    Icons.workspace_premium_rounded,
+                                    size: 20.sp,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.getStarted,
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56.h,
+                        child: OutlinedButton(
+                          onPressed: vm.goNext,
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 16.w),
+                                  child: Icon(
+                                    Icons.card_giftcard_rounded,
+                                    size: 20.sp,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.continueForFree,
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ] else ...[
+                      AppButton(
+                        label: AppLocalizations.of(context)!.continueButton,
+                        enabled:
+                            !vm.isContinueDisabled && !isBusyScreenTimeStep,
+                        showTrailingIcon: true,
+                        onPressed: () async {
                           final nextIndex = vm.currentIndex + 1;
                           await pageController.animateToPage(
                             nextIndex,
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
-                        } else {
-                          vm.goNext();
-                        }
-                      },
-                    ),
-                    SizedBox(height: Spacing.xl.h),
+                        },
+                      ),
+                      SizedBox(height: Spacing.xl.h),
+                    ],
+                    SizedBox(height: 12.h),
                     AppProgressIndicator(
                       totalSteps: vm.totalSteps,
                       currentIndex: vm.currentIndex,

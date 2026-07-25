@@ -28,7 +28,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get continueButton => 'जारी रखना';
 
   @override
-  String get getStarted => 'शुरू हो जाओ';
+  String get continueForFree => 'मुफ्त प्लान के साथ जारी रखें';
+
+  @override
+  String get getStarted => 'प्रीमियम अनलॉक करें';
 
   @override
   String get language => 'भाषा';
@@ -171,7 +174,8 @@ class AppLocalizationsHi extends AppLocalizations {
       'आप कॉफी या स्नैक्स पर खर्च करने के बारे में दोबारा नहीं सोचते...';
 
   @override
-  String get investComparisonTitle => 'इसके बारे में सोचो...';
+  String get investComparisonTitle =>
+      'प्रीमियम लें या मुफ्त प्लान के साथ जारी रखें';
 
   @override
   String get investDailyCoffee => 'दैनिक कॉफ़ी';
@@ -212,7 +216,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'मासिक बिल भेजा गया • किसी भी समय रद्द करें';
 
   @override
-  String get yearlyPriceValue => '\$49.99';
+  String get yearlyPriceValue => '\$24.99';
 
   @override
   String get yearlyPriceSuffix => '/वर्ष';
@@ -270,7 +274,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get yearlyLabel => 'सालाना';
 
   @override
-  String get yearlyPrice => '\$49.99/वर्ष · 50% बचाएं · वार्षिक बिल';
+  String get yearlyPrice => '\$24.99/वर्ष · 50% बचाएं · वार्षिक बिल';
 
   @override
   String get lifetimeLabel => 'जीवनभर';
@@ -473,6 +477,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'सुरा खेलें';
+
+  @override
+  String get quranAudioNoInternet =>
+      'इंटरनेट कनेक्शन नहीं है। ऑडियो के लिए इंटरनेट आवश्यक है।';
+
+  @override
+  String get quranAudioTimeout =>
+      'ऑडियो लोड टाइमआउट हो गया। अपना कनेक्शन जांचें।';
 
   @override
   String get quranSurahLabel => 'सूरा';
@@ -1005,4 +1017,34 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'खाली प्रतिक्रिया सामग्री।';
+
+  @override
+  String get settingsPrayerCalculationSection => 'नमाज़ गणना';
+
+  @override
+  String get settingsCalculationMethodTitle => 'गणना विधि';
+
+  @override
+  String get settingsAsrCalculationTitle => 'असर गणना';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'प्रमुख इस्लामी संगठन';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'मध्य पूर्व';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'एशिया प्रशांत';
+
+  @override
+  String get calculationMethodSectionSpecial => 'विशेष विधियाँ';
+
+  @override
+  String get asrMethodStandard => 'मानक';
+
+  @override
+  String get asrMethodStandardSubtitle => 'शाफी, मालिकी, हनबली';
+
+  @override
+  String get asrMethodHanafi => 'हनफी';
 }

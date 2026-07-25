@@ -24,8 +24,9 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   static const String _audioBaseUrl =
       'https://the-quran-project.github.io/Quran-Audio/Data';
 
-  final AudioPlayer _player = AudioPlayer();
+  AudioPlayer _player = AudioPlayer();
   List<AyahRecord> _ayahs = const <AyahRecord>[];
+  List<GlobalKey> _ayahKeys = const <GlobalKey>[];
   bool _loadingAyahs = true;
   bool _showEnglish = true;
   double _arabicFontSp = 20;
@@ -36,10 +37,13 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   bool _isUserSeeking = false;
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
+  StreamSubscription<dynamic>? _playbackEventSub;
+  StreamSubscription<PlayerState>? _playerStateSub;
   StreamSubscription<Duration>? _positionSub;
   StreamSubscription<Duration?>? _durationSub;
   bool _showCompactHeader = false;
-  bool _suppressNextAutoScroll = false;
+  // Guard against the completed event firing more than once before we advance.
+  bool _isAdvancingToNext = false;
 
   @override
   void initState() {
@@ -52,6 +56,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   @override
   void dispose() {
     _listController.removeListener(_handleListScroll);
+    _playbackEventSub?.cancel();
+    _playerStateSub?.cancel();
     _positionSub?.cancel();
     _durationSub?.cancel();
     _listController.dispose();
@@ -68,77 +74,143 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     ]);
     if (!mounted) return;
 
+    final ayahs = results[0] as List<AyahRecord>;
     setState(() {
-      _ayahs = results[0] as List<AyahRecord>;
+      _ayahs = ayahs;
+      _ayahKeys = List.generate(ayahs.length, (_) => GlobalKey());
       _showEnglish = results[1] as bool;
       _arabicFontSp = results[2] as double;
       _englishFontSp = results[3] as double;
       _loadingAyahs = false;
     });
-
-    if (_ayahs.isNotEmpty) {
-      await _preparePlayer();
-    }
+    // Player is loaded on demand — no upfront source preparation needed.
   }
 
   void _bindPlayerState() {
-    _player.playbackEventStream.listen((_) {
+    _playbackEventSub = _player.playbackEventStream.listen((_) async {
       if (!mounted) return;
       final processingState = _player.processingState;
-      final isLoading =
-          processingState == ProcessingState.loading ||
+
+      final isLoading = processingState == ProcessingState.loading ||
           processingState == ProcessingState.buffering;
       if (_isAudioLoading != isLoading) {
         setState(() => _isAudioLoading = isLoading);
       }
 
-      if (processingState == ProcessingState.completed) {
-        _hideAudioBarOnComplete();
+      // Single-file playback: when current ayah finishes, advance manually.
+      if (processingState == ProcessingState.completed && !_isAdvancingToNext) {
+        _isAdvancingToNext = true;
+        final next = _playingAyahIndex + 1;
+        try {
+          if (_showAudioBar && next < _ayahs.length) {
+            await _loadAndPlayAyah(next);
+          } else {
+            _hideAudioBarOnComplete();
+          }
+        } finally {
+          _isAdvancingToNext = false;
+        }
       }
     });
 
-    _player.currentIndexStream.listen((index) {
-      if (!mounted || index == null) return;
-      if (index < 0 || index >= _ayahs.length) return;
-      setState(() {
-        _playingAyahIndex = index;
-      });
-      if (_suppressNextAutoScroll) {
-        _suppressNextAutoScroll = false;
-        return;
-      }
-      _scrollToAyah(index);
-    });
-
-    _player.playerStateStream.listen((state) {
+    _playerStateSub = _player.playerStateStream.listen((state) {
       if (!mounted) return;
       if (state.playing && !_showAudioBar) {
         setState(() => _showAudioBar = true);
+      } else {
+        setState(() {});
       }
-      setState(() {});
     });
 
     _positionSub = _player.positionStream.listen((position) {
       if (!mounted || _isUserSeeking) return;
-      setState(() => _currentPosition = position);
+      setState(() {
+        _currentPosition = position;
+        final dur = _player.duration;
+        if (dur != null) _currentDuration = dur;
+      });
     });
+
     _durationSub = _player.durationStream.listen((duration) {
       if (!mounted) return;
       setState(() => _currentDuration = duration ?? Duration.zero);
     });
   }
 
-  Future<void> _preparePlayer() async {
-    final source = ConcatenatingAudioSource(
-      children: _ayahs
-          .map((ayah) {
-            return AudioSource.uri(
-              Uri.parse(_getAudioUrl(ayah.surahNumber, ayah.ayahNumber)),
-            );
-          })
-          .toList(growable: false),
-    );
-    await _player.setAudioSource(source, preload: true);
+  // Dispose the current player and create a fresh one with new subscriptions.
+  // Called before every ayah load to avoid ExoPlayer's completed-state bug on Android.
+  Future<void> _reinitPlayer() async {
+    _playbackEventSub?.cancel();
+    _playerStateSub?.cancel();
+    _positionSub?.cancel();
+    _durationSub?.cancel();
+    _playbackEventSub = null;
+    _playerStateSub = null;
+    _positionSub = null;
+    _durationSub = null;
+    try { await _player.stop(); } catch (_) {}
+    await _player.dispose();
+    _player = AudioPlayer();
+    _bindPlayerState();
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com')
+          .timeout(const Duration(seconds: 3));
+      return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Loads a single ayah MP3 and plays it. Updates highlight + scroll.
+  Future<void> _loadAndPlayAyah(int index, {bool suppressScroll = false}) async {
+    if (index < 0 || index >= _ayahs.length) return;
+    final ayah = _ayahs[index];
+
+    // Always reinit the player so setAudioSource starts from a clean idle state.
+    // On Android, calling setAudioSource on a completed ExoPlayer releases it
+    // without reinitialising, causing silent failure.
+    await _reinitPlayer();
+    if (!mounted) return;
+
+    final hasInternet = await _hasInternetConnection();
+    if (!mounted) return;
+    if (!hasInternet) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.quranAudioNoInternet)),
+      );
+      return;
+    }
+
+    setState(() {
+      _playingAyahIndex = index;
+      _isAudioLoading = true;
+      _showAudioBar = true;
+      _currentPosition = Duration.zero;
+      _currentDuration = Duration.zero;
+    });
+    if (!suppressScroll) _scrollToAyah(index);
+    try {
+      await _player.setAudioSource(
+        AudioSource.uri(Uri.parse(_getAudioUrl(ayah.surahNumber, ayah.ayahNumber))),
+      ).timeout(const Duration(seconds: 10));
+      if (!mounted) return;
+      // Do NOT await play() — just_audio's play() Future completes only when
+      // the track ends. Awaiting it would keep _isAdvancingToNext=true for the
+      // entire track, causing the completed event to be silently skipped.
+      unawaited(_player.play());
+    } on TimeoutException {
+      if (mounted) {
+        setState(() => _isAudioLoading = false);
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.quranAudioTimeout)),
+        );
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isAudioLoading = false);
+    }
   }
 
   String _getAudioUrl(int surahNumber, int ayahNumber) {
@@ -154,13 +226,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
 
   Future<void> _onAyahTap(int position) async {
     if (_ayahs.isEmpty) return;
-    _suppressNextAutoScroll = true;
-    setState(() {
-      _playingAyahIndex = position;
-      _isAudioLoading = true;
-    });
-    await _player.seek(Duration.zero, index: position);
-    await _player.play();
+    // Load and play the tapped ayah without auto-scrolling (user already sees it).
+    await _loadAndPlayAyah(position, suppressScroll: true);
   }
 
   Future<void> _onPlayFullSurahTap() async {
@@ -169,21 +236,15 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       await _player.pause();
       return;
     }
-
-    if (_playingAyahIndex >= 0 && _playingAyahIndex < _ayahs.length) {
+    // Resume if already loaded at a valid ayah.
+    if (_playingAyahIndex >= 0 && _playingAyahIndex < _ayahs.length &&
+        _player.processingState != ProcessingState.idle) {
       await _player.play();
       setState(() => _showAudioBar = true);
       return;
     }
-
-    setState(() {
-      _playingAyahIndex = 0;
-      _showAudioBar = true;
-      _isAudioLoading = true;
-    });
-    await _player.seek(Duration.zero, index: 0);
-    await _player.play();
-    _scrollToAyah(0);
+    // Start from the beginning.
+    await _loadAndPlayAyah(0);
   }
 
   Future<void> _togglePlayPause() async {
@@ -254,13 +315,24 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   }
 
   void _scrollToAyah(int index) {
-    // Trigger list auto-follow similar to native implementation.
-    if (!_listController.hasClients) return;
-    _listController.animateTo(
-      (index * 120).toDouble(),
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeOut,
-    );
+    if (index < 0 || index >= _ayahKeys.length) return;
+    final ctx = _ayahKeys[index].currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(
+        ctx,
+        alignment: 0.25,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOut,
+      );
+    } else if (_listController.hasClients) {
+      final estimated = (index * 220.0)
+          .clamp(0.0, _listController.position.maxScrollExtent);
+      _listController.animateTo(
+        estimated,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   final ScrollController _listController = ScrollController();
@@ -530,6 +602,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                             ? const Center(child: CircularProgressIndicator())
                             : ListView.separated(
                                 controller: _listController,
+                                cacheExtent: 800,
                                 padding: EdgeInsets.fromLTRB(
                                   16.w,
                                   16.w,
@@ -543,6 +616,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                   final ayah = _ayahs[index];
                                   final isCurrent = index == _playingAyahIndex;
                                   return InkWell(
+                                    key: _ayahKeys[index],
                                     borderRadius: BorderRadius.circular(16.r),
                                     onTap: () => _onAyahTap(index),
                                     child: Ink(

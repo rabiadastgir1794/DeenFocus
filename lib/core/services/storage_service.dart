@@ -46,6 +46,10 @@ abstract class StorageService {
       'focus_accessibility_disclosure_accepted';
   static const String _keyHasEverSubscribed = 'has_ever_subscribed';
   static const String _legacyKeyHasUsedIntroOffer = 'has_used_intro_offer';
+  static const String _keySubscriptionActive = 'subscription_active';
+  static const String _keySubscriptionCachedAtMs = 'subscription_cached_at_ms';
+  static const String _keyCalculationMethod = 'calculation_method';
+  static const String _keyAsrMethod = 'asr_method';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -420,9 +424,44 @@ abstract class StorageService {
     await prefs.setBool(_legacyKeyHasUsedIntroOffer, value);
   }
 
+  // Cached subscription active state — read on cold start to skip the loader.
+  static Future<bool> get cachedSubscriptionActive async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keySubscriptionActive) ?? false;
+  }
+
+  static Future<void> setCachedSubscriptionActive(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keySubscriptionActive, value);
+    await prefs.setInt(
+      _keySubscriptionCachedAtMs,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
   static Future<bool> get hasUsedIntroOffer => hasEverSubscribed;
 
   static Future<void> setHasUsedIntroOffer(bool value) {
     return setHasEverSubscribed(value);
+  }
+
+  static Future<String?> get calculationMethod async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyCalculationMethod);
+  }
+
+  static Future<void> setCalculationMethod(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyCalculationMethod, value);
+  }
+
+  static Future<String?> get asrMethod async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyAsrMethod);
+  }
+
+  static Future<void> setAsrMethod(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyAsrMethod, value);
   }
 }

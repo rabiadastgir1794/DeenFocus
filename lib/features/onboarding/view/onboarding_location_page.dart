@@ -18,10 +18,12 @@ class OnboardingLocationPage extends StatefulWidget {
     super.key,
     required this.onLocationSelected,
     this.initialSelection,
+    this.autoFetchLocation = true,
   });
 
   final ValueChanged<LocationSuggestion?> onLocationSelected;
   final LocationSuggestion? initialSelection;
+  final bool autoFetchLocation;
 
   @override
   State<OnboardingLocationPage> createState() => _OnboardingLocationPageState();
@@ -48,7 +50,9 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
     if (_selectedLocation != null) {
       _cityController.text = _selectedLocation!.title;
     }
-    _requestPermissionWithDelay();
+    if (widget.autoFetchLocation) {
+      _requestPermissionWithDelay();
+    }
   }
 
   @override
@@ -97,6 +101,8 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
       if (!mounted || location == null) return;
 
       _applySelectedLocation(location, updateResults: true);
+    } catch (_) {
+      // Timeout or location error — dismiss spinner so user can search manually.
     } finally {
       if (mounted) {
         setState(() {

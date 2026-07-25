@@ -28,7 +28,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get continueButton => 'Продолжать';
 
   @override
-  String get getStarted => 'Начать';
+  String get continueForFree => 'Продолжить с бесплатным планом';
+
+  @override
+  String get getStarted => 'Разблокировать Premium';
 
   @override
   String get language => 'Язык';
@@ -170,7 +173,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы не раздумываете дважды, прежде чем потратить деньги на кофе или закуски...';
 
   @override
-  String get investComparisonTitle => 'Подумайте об этом...';
+  String get investComparisonTitle =>
+      'Перейти на Premium или продолжить бесплатно';
 
   @override
   String get investDailyCoffee => 'Ежедневный кофе';
@@ -211,7 +215,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Оплата ежемесячно. • Отменить в любое время.';
 
   @override
-  String get yearlyPriceValue => '\$29,99';
+  String get yearlyPriceValue => '\$24,99';
 
   @override
   String get yearlyPriceSuffix => '/год';
@@ -271,7 +275,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get yearlyPrice =>
-      '29,99 долларов США в год · экономия 50 % · оплата производится ежегодно';
+      '24,99 долларов США в год · экономия 50 % · оплата производится ежегодно';
 
   @override
   String get lifetimeLabel => 'Продолжительность жизни';
@@ -475,6 +479,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'Воспроизвести суру';
+
+  @override
+  String get quranAudioNoInternet =>
+      'Нет подключения к интернету. Для аудио требуется интернет.';
+
+  @override
+  String get quranAudioTimeout =>
+      'Время загрузки аудио истекло. Проверьте подключение.';
 
   @override
   String get quranSurahLabel => 'Сура';
@@ -1016,4 +1028,36 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Пустое содержимое ответа.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Расчёт намаза';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Метод расчёта';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Расчёт Асра';
+
+  @override
+  String get calculationMethodSectionMajorOrgs =>
+      'Крупные исламские организации';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Ближний Восток';
+
+  @override
+  String get calculationMethodSectionAsiaPacific =>
+      'Азиатско-Тихоокеанский регион';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Специальные методы';
+
+  @override
+  String get asrMethodStandard => 'Стандарт';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Шафии, Малики, Ханбали';
+
+  @override
+  String get asrMethodHanafi => 'Ханафи';
 }

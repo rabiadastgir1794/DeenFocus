@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -223,13 +223,13 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
     final stream = _headingStream!;
 
     final coordinates = Coordinates(latitude, longitude);
-    final qiblaDirection = Qibla(coordinates).direction;
+    final qiblaDirection = Qibla.qibla(coordinates);
     final distanceKm =
         Geolocator.distanceBetween(
           latitude,
           longitude,
-          Qibla.MAKKAH.latitude,
-          Qibla.MAKKAH.longitude,
+          Qibla.makkah.latitude,
+          Qibla.makkah.longitude,
         ) /
         1000;
     final cityLabel = (_locationName?.trim().isNotEmpty ?? false)

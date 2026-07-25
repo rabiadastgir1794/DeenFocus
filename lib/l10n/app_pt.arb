@@ -6,7 +6,8 @@
   "welcomeDescription": "Acompanhe suas orações, leia o Alcorão, conte Tasbih e crie sequências significativas - tudo em um só lugar.",
   "skip": "Pular",
   "continueButton": "Continuar",
-  "getStarted": "Comece",
+  "continueForFree": "Continuar com o plano gratuito",
+  "getStarted": "Desbloquear Premium",
   "language": "Linguagem",
   "cancel": "Cancelar",
   "ok": "OK",
@@ -49,7 +50,7 @@
   "focusChildModeDescription": "Bloqueie aplicativos instantaneamente ao entregar o dispositivo a crianças",
   "investTitle": "Invista no seu Deen",
   "investSubtitle": "Você não pensa duas vezes antes de gastar com café ou lanches...",
-  "investComparisonTitle": "Pense nisso...",
+  "investComparisonTitle": "Assine o Premium ou continue gratuitamente",
   "investDailyCoffee": "Café diário",
   "investDailyCoffeePrice": "US$ 5/dia",
   "investFastFood": "Comida rápida",
@@ -62,7 +63,7 @@
   "monthlyPriceValue": "US$ 4,99",
   "monthlyPriceSuffix": "/mês",
   "monthlyPlanSubtitle": "Faturado mensalmente • Cancele a qualquer momento",
-  "yearlyPriceValue": "US$ 29,99",
+  "yearlyPriceValue": "US$ 24,99",
   "yearlyPriceSuffix": "/ano",
   "yearlyPlanSubtitle": "Economize 50% • Faturado anualmente",
   "lifetimePriceValue": "US$ 79,99",
@@ -80,7 +81,7 @@
   "monthlyLabel": "Mensal",
   "monthlyPrice": "US$ 4,99/mês · cobrança mensal · cancelamento a qualquer momento",
   "yearlyLabel": "Anual",
-  "yearlyPrice": "US$ 29,99/ano · economize 50% · faturado anualmente",
+  "yearlyPrice": "US$ 24,99/ano · economize 50% · faturado anualmente",
   "lifetimeLabel": "Vida",
   "lifetimePrice": "US$ 79,99 vitalícios · compra única · acesso eterno",
   "featurePrayerAnalytics": "Análise avançada de oração",
@@ -145,6 +146,8 @@
   "quranIncreaseFont": "Aumentar fonte",
   "quranDecreaseFont": "Diminuir fonte",
   "quranPause": "Pausa",
+  "quranAudioNoInternet": "Sem conexão com a internet. O áudio requer internet.",
+  "quranAudioTimeout": "Tempo limite de carregamento de áudio. Verifique sua conexão.",
   "quranPlaySurah": "Jogue surata",
   "quranSurahLabel": "Surata",
   "save": "Salvar",
@@ -337,5 +340,15 @@
         "example": "Fajr"
       }
     }
-  }
+  },
+  "settingsPrayerCalculationSection": "Cálculo de Oração",
+  "settingsCalculationMethodTitle": "Método de Cálculo",
+  "settingsAsrCalculationTitle": "Cálculo do Asr",
+  "calculationMethodSectionMajorOrgs": "Principais Organizações Islâmicas",
+  "calculationMethodSectionMiddleEast": "Oriente Médio",
+  "calculationMethodSectionAsiaPacific": "Ásia-Pacífico",
+  "calculationMethodSectionSpecial": "Métodos Especiais",
+  "asrMethodStandard": "Padrão",
+  "asrMethodStandardSubtitle": "Shafi, Maliki, Hanbali",
+  "asrMethodHanafi": "Hanafi"
 }

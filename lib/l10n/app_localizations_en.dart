@@ -28,7 +28,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
-  String get getStarted => 'Get Started';
+  String get continueForFree => 'Continue with Free Plan';
+
+  @override
+  String get getStarted => 'Unlock Premium';
 
   @override
   String get language => 'Language';
@@ -170,7 +173,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'You don\'t think twice about spending on coffee or snacks...';
 
   @override
-  String get investComparisonTitle => 'Think about it...';
+  String get investComparisonTitle => 'Go Premium or Continue with Free Plan';
 
   @override
   String get investDailyCoffee => 'Daily coffee';
@@ -188,7 +191,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get investYourDeen => 'Your Deen';
 
   @override
-  String get investYourDeenPrice => '\$9.99/mo';
+  String get investYourDeenPrice => '\$4.99/mo';
 
   @override
   String get investComparisonQuote =>
@@ -201,7 +204,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mostPopularChoice => 'Most popular choice';
 
   @override
-  String get monthlyPriceValue => '\$9.99';
+  String get monthlyPriceValue => '\$4.99';
 
   @override
   String get monthlyPriceSuffix => '/month';
@@ -210,7 +213,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthlyPlanSubtitle => 'Billed monthly • Cancel anytime';
 
   @override
-  String get yearlyPriceValue => '\$49.99';
+  String get yearlyPriceValue => '\$24.99';
 
   @override
   String get yearlyPriceSuffix => '/year';
@@ -267,7 +270,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearlyLabel => 'Yearly';
 
   @override
-  String get yearlyPrice => '\$49.99/year · save 50% · billed annually';
+  String get yearlyPrice => '\$24.99/year · save 50% · billed annually';
 
   @override
   String get lifetimeLabel => 'Lifetime';
@@ -467,6 +470,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'Play surah';
+
+  @override
+  String get quranAudioNoInternet =>
+      'No internet connection. Audio requires internet.';
+
+  @override
+  String get quranAudioTimeout =>
+      'Audio load timed out. Check your connection.';
 
   @override
   String get quranSurahLabel => 'Surah';
@@ -997,4 +1008,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Empty response content.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Prayer Calculation';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Calculation Method';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Asr Calculation';
+
+  @override
+  String get calculationMethodSectionMajorOrgs => 'Major Islamic Organizations';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Middle East';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Asia Pacific';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Special Methods';
+
+  @override
+  String get asrMethodStandard => 'Standard';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Shafi, Maliki, Hanbali';
+
+  @override
+  String get asrMethodHanafi => 'Hanafi';
 }

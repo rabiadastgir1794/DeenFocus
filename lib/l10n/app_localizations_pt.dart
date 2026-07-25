@@ -29,7 +29,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get continueButton => 'Continuar';
 
   @override
-  String get getStarted => 'Comece';
+  String get continueForFree => 'Continuar com o plano gratuito';
+
+  @override
+  String get getStarted => 'Desbloquear Premium';
 
   @override
   String get language => 'Linguagem';
@@ -171,7 +174,8 @@ class AppLocalizationsPt extends AppLocalizations {
       'Você não pensa duas vezes antes de gastar com café ou lanches...';
 
   @override
-  String get investComparisonTitle => 'Pense nisso...';
+  String get investComparisonTitle =>
+      'Assine o Premium ou continue gratuitamente';
 
   @override
   String get investDailyCoffee => 'Café diário';
@@ -212,7 +216,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Faturado mensalmente • Cancele a qualquer momento';
 
   @override
-  String get yearlyPriceValue => 'US\$ 29,99';
+  String get yearlyPriceValue => 'US\$ 24,99';
 
   @override
   String get yearlyPriceSuffix => '/ano';
@@ -272,7 +276,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get yearlyPrice =>
-      'US\$ 29,99/ano · economize 50% · faturado anualmente';
+      'US\$ 24,99/ano · economize 50% · faturado anualmente';
 
   @override
   String get lifetimeLabel => 'Vida';
@@ -478,6 +482,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get quranPlaySurah => 'Jogue surata';
+
+  @override
+  String get quranAudioNoInternet =>
+      'Sem conexão com a internet. O áudio requer internet.';
+
+  @override
+  String get quranAudioTimeout =>
+      'Tempo limite de carregamento de áudio. Verifique sua conexão.';
 
   @override
   String get quranSurahLabel => 'Surata';
@@ -1018,4 +1030,35 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'Conteúdo da resposta vazio.';
+
+  @override
+  String get settingsPrayerCalculationSection => 'Cálculo de Oração';
+
+  @override
+  String get settingsCalculationMethodTitle => 'Método de Cálculo';
+
+  @override
+  String get settingsAsrCalculationTitle => 'Cálculo do Asr';
+
+  @override
+  String get calculationMethodSectionMajorOrgs =>
+      'Principais Organizações Islâmicas';
+
+  @override
+  String get calculationMethodSectionMiddleEast => 'Oriente Médio';
+
+  @override
+  String get calculationMethodSectionAsiaPacific => 'Ásia-Pacífico';
+
+  @override
+  String get calculationMethodSectionSpecial => 'Métodos Especiais';
+
+  @override
+  String get asrMethodStandard => 'Padrão';
+
+  @override
+  String get asrMethodStandardSubtitle => 'Shafi, Maliki, Hanbali';
+
+  @override
+  String get asrMethodHanafi => 'Hanafi';
 }

@@ -81,10 +81,26 @@ class AppSuperwall {
       Superwall.shared.setDelegate(_delegate);
       _log('Superwall delegate registered for custom paywall actions');
 
-      await syncSubscriptionState();
+      // Sync subscription state in the background so configure() completes
+      // immediately after SDK init. On Play Store, getSubscriptionStatus() can
+      // take 1-2 minutes waiting for Google Play Billing — awaiting it here
+      // blocks every premium gate (via configure().timeout(30s)).
+      unawaited(syncSubscriptionState());
     } catch (e, st) {
       _log('Configure failed: $e');
       debugPrintStack(stackTrace: st);
+    }
+  }
+
+  /// Loads the persisted subscription status into [subscriptionActiveNotifier]
+  /// without hitting the network. Call this early in app startup so premium
+  /// gates can skip the loader on cold start when the user is already subscribed.
+  static Future<void> loadCachedState() async {
+    final cached = await StorageService.cachedSubscriptionActive;
+    if (cached) {
+      subscriptionActiveNotifier.value = true;
+      purchasedSubscriptionActiveNotifier.value = true;
+      _log('Loaded cached subscription active=true');
     }
   }
 
@@ -99,11 +115,13 @@ class AppSuperwall {
       purchasedSubscriptionActiveNotifier.value = isSubscribed;
       subscriptionActiveNotifier.value = isSubscribed;
 
+      // Persist so the next cold start can skip the loader.
+      await StorageService.setCachedSubscriptionActive(isSubscribed);
+
       var hasEverSubscribed = await StorageService.hasEverSubscribed;
 
       if (isSubscribed && !hasEverSubscribed) {
         hasEverSubscribed = true;
-
         await StorageService.setHasEverSubscribed(true);
       }
 
@@ -196,15 +214,36 @@ class AppSuperwall {
             _log('Paywall presented');
           })
           ..onDismiss((info, result) async {
-            _log('Paywall dismissed');
-
-            await syncSubscriptionState();
-
-            final updatedStatus = await Superwall.shared
-                .getSubscriptionStatus();
-
-            if (updatedStatus.isActive) {
+            _log('Paywall dismissed result=$result');
+            if (result is PurchasedPaywallResult ||
+                result is RestoredPaywallResult) {
+              const maxAttempts = 5;
+              for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+                await syncSubscriptionState();
+                if (subscriptionActiveNotifier.value) {
+                  _log('Subscription confirmed active (attempt $attempt)');
+                  onAccess();
+                  return;
+                }
+                _log('Subscription not yet active ($attempt/$maxAttempts)');
+                if (attempt < maxAttempts) {
+                  await Future<void>.delayed(const Duration(seconds: 2));
+                }
+              }
+              _log(
+                'Status still lagging after $maxAttempts attempts — '
+                'trusting PurchasedPaywallResult',
+              );
               onAccess();
+              return;
+            }
+            try {
+              final updatedStatus = await Superwall.shared
+                  .getSubscriptionStatus()
+                  .timeout(const Duration(seconds: 10));
+              if (updatedStatus.isActive) onAccess();
+            } catch (e) {
+              _log('post-dismiss status check failed: $e');
             }
           })
           ..onError((error) {
