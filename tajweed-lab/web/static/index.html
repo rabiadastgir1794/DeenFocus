@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeenFocus · Tajweed Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Literata:opsz,wght@7..72,500;7..72,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #0f1a14;
+      --bg1: #1a2e24;
+      --ink: #e8f0ea;
+      --muted: #9bb0a3;
+      --accent: #c4a35a;
+      --accent-2: #3d7a5c;
+      --danger: #c45c5c;
+      --warn: #c4a35a;
+      --ok: #6fbf8c;
+      --panel: rgba(255,255,255,0.06);
+      --line: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #2a4a38 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #3a3220 0%, transparent 50%),
+        linear-gradient(165deg, var(--bg0), var(--bg1));
+    }
+    main {
+      width: min(760px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2.25rem 0 4rem;
+    }
+    .brand {
+      font-family: Literata, Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(1.7rem, 4vw, 2.3rem);
+      letter-spacing: -0.02em;
+      margin: 0 0 0.35rem;
+    }
+    .brand span { color: var(--accent); }
+    .lede {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+      line-height: 1.5;
+      max-width: 40rem;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.25rem;
+      backdrop-filter: blur(8px);
+      margin-bottom: 1rem;
+    }
+    .pickers {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 560px) {
+      .pickers { grid-template-columns: 1fr; }
+    }
+    label { display: block; color: var(--muted); font-size: 0.85rem; margin-bottom: 0.35rem; }
+    select, input[type="file"] {
+      width: 100%;
+      color: var(--ink);
+      background: rgba(0,0,0,0.28);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      font: inherit;
+    }
+    .ref-card {
+      margin-top: 1rem;
+      padding: 1.15rem 1.1rem 1.05rem;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--line);
+    }
+    .ref-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 0.75rem;
+    }
+    .ayah {
+      direction: rtl;
+      font-family: Amiri, Literata, serif;
+      font-size: clamp(1.55rem, 3.6vw, 2.05rem);
+      line-height: 2.05;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .english {
+      margin: 0.85rem 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+    .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; }
+    button.primary {
+      background: var(--accent);
+      color: #1a1408;
+      border: 0;
+      border-radius: 10px;
+      padding: 0.75rem 1.15rem;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.75rem 1.15rem;
+      font: inherit;
+      cursor: pointer;
+    }
+    button.recording {
+      background: var(--danger);
+      color: #fff;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    audio { width: 100%; margin-top: 0.85rem; }
+    .status {
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      min-height: 1.2em;
+    }
+    .status.error { color: var(--danger); }
+    .result h2 {
+      font-family: Literata, Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin: 0 0 0.65rem;
+    }
+    .score {
+      display: inline-flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.85rem;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .pill.good { border-color: var(--ok); color: #b7e0c8; }
+    .pill.mid { border-color: var(--warn); color: #e6d2a0; }
+    .pill.bad { border-color: var(--danger); color: #f0b0b0; }
+    .tok {
+      display: inline;
+      padding: 0 0.12em;
+      border-radius: 0.2em;
+    }
+    .tok.ok { color: var(--ok); }
+    .tok.miss, .tok.wrong { color: var(--danger); background: rgba(196,92,92,0.12); }
+    .tok.extra { color: var(--warn); background: rgba(196,163,90,0.12); text-decoration: line-through; }
+    .badge {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-size: 0.75rem;
+    }
+    .badge.ok { border-color: var(--accent-2); color: #b7e0c8; }
+    .badge.bad { border-color: var(--danger); color: #f0b0b0; }
+    details.advanced {
+      margin-top: 0.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    details.advanced summary { cursor: pointer; margin-bottom: 0.6rem; }
+    .split { display: grid; gap: 1rem; }
+    @media (min-width: 640px) {
+      .split { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 class="brand">DeenFocus <span>Tajweed Lab</span></h1>
+    <p class="lede">
+      Pick a surah and ayah, read it aloud, then see what the offline model heard.
+      <span id="healthBadge" class="badge">checking…</span>
+    </p>
+
+    <section class="panel">
+      <div class="pickers">
+        <div>
+          <label for="surahSelect">Surah</label>
+          <select id="surahSelect"></select>
+        </div>
+        <div>
+          <label for="ayahSelect">Ayah</label>
+          <select id="ayahSelect"></select>
+        </div>
+      </div>
+
+      <div class="ref-card" id="refCard">
+        <div class="ref-meta">
+          <span id="refLabel">Loading…</span>
+          <span id="refCount"></span>
+        </div>
+        <p class="ayah" id="expectedAyah">…</p>
+        <p class="english" id="expectedEnglish"></p>
+      </div>
+
+      <div class="row">
+        <button class="primary" id="micStart">Record ayah</button>
+        <button class="ghost" id="micStop" disabled>Stop &amp; check</button>
+      </div>
+      <audio id="micAudio" controls></audio>
+      <p class="status" id="status"></p>
+    </section>
+
+    <section class="panel result" id="result" hidden>
+      <div class="score" id="scoreRow"></div>
+      <div class="split">
+        <div>
+          <h2>Expected</h2>
+          <p class="ayah" id="expectedTokens"></p>
+        </div>
+        <div>
+          <h2>You recited</h2>
+          <p class="ayah" id="heardTokens"></p>
+        </div>
+      </div>
+      <p class="english" id="meta"></p>
+    </section>
+
+    <details class="advanced panel">
+      <summary>Advanced · upload file or run a demo clip</summary>
+      <div class="pickers" style="margin-bottom:0.85rem">
+        <div>
+          <label for="fileInput">Upload audio</label>
+          <input id="fileInput" type="file" accept="audio/*,.wav,.mp3,.flac,.ogg,.webm" />
+        </div>
+        <div>
+          <label for="sampleSelect">Demo clip</label>
+          <select id="sampleSelect"></select>
+        </div>
+      </div>
+      <div class="row">
+        <button class="ghost" id="runUpload">Check upload</button>
+        <button class="ghost" id="runDemo">Check demo</button>
+      </div>
+      <audio id="uploadAudio" controls style="display:none"></audio>
+    </details>
+  </main>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const healthBadge = document.getElementById("healthBadge");
+    const surahSelect = document.getElementById("surahSelect");
+    const ayahSelect = document.getElementById("ayahSelect");
+    const expectedAyah = document.getElementById("expectedAyah");
+    const expectedEnglish = document.getElementById("expectedEnglish");
+    const refLabel = document.getElementById("refLabel");
+    const refCount = document.getElementById("refCount");
+    const scoreRow = document.getElementById("scoreRow");
+    const expectedTokensEl = document.getElementById("expectedTokens");
+    const heardTokensEl = document.getElementById("heardTokens");
+    const metaEl = document.getElementById("meta");
+    const sampleSelect = document.getElementById("sampleSelect");
+
+    let currentAyah = null;
+    let mediaRecorder = null;
+    let chunks = [];
+
+    function setStatus(msg, isError = false) {
+      statusEl.textContent = msg;
+      statusEl.classList.toggle("error", isError);
+    }
+
+    function renderTokens(el, tokens) {
+      el.innerHTML = "";
+      if (!tokens || !tokens.length) {
+        el.textContent = "(empty)";
+        return;
+      }
+      tokens.forEach((t, idx) => {
+        const span = document.createElement("span");
+        span.className = `tok ${t.status || "ok"}`;
+        span.textContent = t.text;
+        el.appendChild(span);
+        if (idx < tokens.length - 1) el.appendChild(document.createTextNode(" "));
+      });
+    }
+
+    function showPracticeResult(data) {
+      resultEl.hidden = false;
+      const cmp = data.comparison || {};
+      const acc = Math.round((cmp.word_accuracy || 0) * 100);
+      const exact = !!cmp.exact_match;
+      const pillClass = exact || acc >= 85 ? "good" : acc >= 50 ? "mid" : "bad";
+      scoreRow.innerHTML = `
+        <span class="pill ${pillClass}">${exact ? "Exact match" : acc + "% word match"}</span>
+        <span class="pill">${cmp.matched_words || 0}/${cmp.expected_words || 0} words</span>
+        <span class="pill">${(data.duration_sec ?? 0).toFixed?.(2) ?? data.duration_sec}s</span>
+      `;
+      renderTokens(expectedTokensEl, cmp.expected_tokens || [{ text: data.expected?.arabic || "", status: "ok" }]);
+      renderTokens(heardTokensEl, cmp.heard_tokens || [{ text: data.text || "", status: "wrong" }]);
+      const ref = data.expected ? `${data.expected.surah_name} ${data.expected.ref}` : "";
+      metaEl.textContent = `${ref} · offline ONNX · ${data.filename || "audio"}`;
+    }
+
+    async function refreshHealth() {
+      try {
+        const res = await fetch("/api/health");
+        const data = await res.json();
+        healthBadge.textContent = data.model_ready ? "model ready" : "model missing";
+        healthBadge.className = `badge ${data.model_ready ? "ok" : "bad"}`;
+      } catch {
+        healthBadge.textContent = "server offline";
+        healthBadge.className = "badge bad";
+      }
+    }
+
+    async function loadSurahs() {
+      const res = await fetch("/api/surahs");
+      const data = await res.json();
+      surahSelect.innerHTML = "";
+      for (const s of data.surahs) {
+        const opt = document.createElement("option");
+        opt.value = s.number;
+        opt.textContent = `${s.number}. ${s.name} — ${s.arabic_name}`;
+        surahSelect.appendChild(opt);
+      }
+      surahSelect.value = "1";
+      await loadAyahs();
+    }
+
+    async function loadAyahs() {
+      const surah = Number(surahSelect.value);
+      const res = await fetch(`/api/surahs/${surah}/ayahs`);
+      const data = await res.json();
+      ayahSelect.innerHTML = "";
+      for (const a of data.ayahs) {
+        const opt = document.createElement("option");
+        opt.value = a.ayah;
+        opt.textContent = `Ayah ${a.ayah}`;
+        ayahSelect.appendChild(opt);
+      }
+      // Default to a short practice ayah in Al-Fatihah
+      if (surah === 1 && data.ayahs.some((a) => a.ayah === 4)) {
+        ayahSelect.value = "4";
+      } else if (data.ayahs[0]) {
+        ayahSelect.value = String(data.ayahs[0].ayah);
+      }
+      await loadCurrentAyah();
+    }
+
+    async function loadCurrentAyah() {
+      const surah = Number(surahSelect.value);
+      const ayah = Number(ayahSelect.value);
+      const res = await fetch(`/api/ayah/${surah}/${ayah}`);
+      if (!res.ok) throw new Error("Could not load ayah");
+      currentAyah = await res.json();
+      refLabel.textContent = `${currentAyah.surah_name} (${currentAyah.surah_arabic_name}) · ${currentAyah.ref}`;
+      const surahMeta = surahSelect.selectedOptions[0]?.textContent || "";
+      refCount.textContent = surahMeta.includes("—") ? "" : "";
+      expectedAyah.textContent = currentAyah.arabic;
+      expectedEnglish.textContent = currentAyah.english || "";
+      resultEl.hidden = true;
+      setStatus("Read the ayah aloud, then press Record.");
+    }
+
+    surahSelect.addEventListener("change", () => loadAyahs().catch((e) => setStatus(String(e.message || e), true)));
+    ayahSelect.addEventListener("change", () => loadCurrentAyah().catch((e) => setStatus(String(e.message || e), true)));
+
+    async function practiceBlob(blob, filename) {
+      if (!currentAyah) return setStatus("Pick an ayah first", true);
+      const body = new FormData();
+      body.append("file", blob, filename);
+      body.append("surah", String(currentAyah.surah));
+      body.append("ayah", String(currentAyah.ayah));
+      setStatus("Checking your recitation…");
+      const res = await fetch("/api/practice", { method: "POST", body });
+      const data = await res.json();
+      if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail));
+      showPracticeResult(data);
+      setStatus(data.comparison?.exact_match ? "Excellent — exact match." : "Done — review highlighted words.");
+    }
+
+    const micAudio = document.getElementById("micAudio");
+    const micStart = document.getElementById("micStart");
+    const micStop = document.getElementById("micStop");
+
+    micStart.addEventListener("click", async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunks = [];
+        const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+          ? "audio/webm;codecs=opus"
+          : undefined;
+        mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+        mediaRecorder.start();
+        micStart.disabled = true;
+        micStart.classList.add("recording");
+        micStop.disabled = false;
+        setStatus("Recording… recite the ayah now.");
+      } catch (e) {
+        setStatus("Mic permission failed: " + e.message, true);
+      }
+    });
+
+    micStop.addEventListener("click", async () => {
+      if (!mediaRecorder) return;
+      await new Promise((resolve) => {
+        mediaRecorder.onstop = resolve;
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach((t) => t.stop());
+      });
+      micStart.disabled = false;
+      micStart.classList.remove("recording");
+      micStop.disabled = true;
+      const blob = new Blob(chunks, { type: mediaRecorder.mimeType || "audio/webm" });
+      micAudio.src = URL.createObjectURL(blob);
+      try {
+        await practiceBlob(blob, "mic.webm");
+      } catch (e) {
+        setStatus(String(e.message || e), true);
+      }
+    });
+
+    const fileInput = document.getElementById("fileInput");
+    const uploadAudio = document.getElementById("uploadAudio");
+    fileInput.addEventListener("change", () => {
+      const f = fileInput.files?.[0];
+      if (f) {
+        uploadAudio.style.display = "block";
+        uploadAudio.src = URL.createObjectURL(f);
+      }
+    });
+
+    document.getElementById("runUpload").addEventListener("click", async () => {
+      const f = fileInput.files?.[0];
+      if (!f) return setStatus("Choose a file first", true);
+      try {
+        await practiceBlob(f, f.name);
+      } catch (e) {
+        setStatus(String(e.message || e), true);
+      }
+    });
+
+    async function loadSamples() {
+      const res = await fetch("/api/samples");
+      const data = await res.json();
+      sampleSelect.innerHTML = "";
+      for (const s of data.samples) {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.id;
+        sampleSelect.appendChild(opt);
+      }
+    }
+
+    document.getElementById("runDemo").addEventListener("click", async () => {
+      const name = sampleSelect.value;
+      if (!name) return setStatus("No demo samples available", true);
+      if (!currentAyah) return setStatus("Pick an ayah first", true);
+      setStatus("Checking demo clip…");
+      try {
+        const url = `/api/transcribe/sample/${encodeURIComponent(name)}?surah=${currentAyah.surah}&ayah=${currentAyah.ayah}`;
+        const res = await fetch(url, { method: "POST" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : res.statusText);
+        showPracticeResult(data);
+        setStatus("Demo checked against the selected ayah.");
+      } catch (e) {
+        setStatus(String(e.message || e), true);
+      }
+    });
+
+    refreshHealth();
+    loadSurahs().catch((e) => setStatus(String(e.message || e), true));
+    loadSamples().catch(() => {});
+  </script>
+</body>
+</html>

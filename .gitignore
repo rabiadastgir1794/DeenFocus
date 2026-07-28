@@ -44,3 +44,18 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 ios/build/
+
+# Accidental dumps / local scratch
+files.txt
+
+# Tajweed lab — secrets, envs, caches, downloaded artifacts
+tajweed-lab/.env
+tajweed-lab/.venv/
+tajweed-lab/models/
+tajweed-lab/samples/
+tajweed-lab/xet/
+tajweed-lab/**/__pycache__/
+tajweed-lab/**/*.pyc
+tajweed-lab/.pytest_cache/
+tajweed-lab/.mypy_cache/
+tajweed-lab/.ruff_cache/
