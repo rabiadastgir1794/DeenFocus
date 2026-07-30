@@ -1002,6 +1002,174 @@ abstract class AppLocalizations {
   /// **'Surah'**
   String get quranSurahLabel;
 
+  /// No description provided for @quranModeSurah.
+  ///
+  /// In en, this message translates to:
+  /// **'Surah'**
+  String get quranModeSurah;
+
+  /// No description provided for @quranModeJuz.
+  ///
+  /// In en, this message translates to:
+  /// **'Juz'**
+  String get quranModeJuz;
+
+  /// No description provided for @quranModePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get quranModePage;
+
+  /// No description provided for @quranJuzLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Juz'**
+  String get quranJuzLabel;
+
+  /// No description provided for @quranPageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get quranPageLabel;
+
+  /// No description provided for @quranContinueReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Reading'**
+  String get quranContinueReading;
+
+  /// No description provided for @quranPreviousAyah.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous ayah'**
+  String get quranPreviousAyah;
+
+  /// No description provided for @quranNextAyah.
+  ///
+  /// In en, this message translates to:
+  /// **'Next ayah'**
+  String get quranNextAyah;
+
+  /// No description provided for @quranPreviousJuz.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Juz'**
+  String get quranPreviousJuz;
+
+  /// No description provided for @quranNextJuz.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Juz'**
+  String get quranNextJuz;
+
+  /// No description provided for @quranPreviousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get quranPreviousPage;
+
+  /// No description provided for @quranNextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get quranNextPage;
+
+  /// No description provided for @quranAudioSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio settings'**
+  String get quranAudioSettingsTitle;
+
+  /// No description provided for @quranPlaybackSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback speed'**
+  String get quranPlaybackSpeed;
+
+  /// No description provided for @quranVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get quranVolume;
+
+  /// No description provided for @quranRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get quranRepeat;
+
+  /// No description provided for @quranRepeatOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get quranRepeatOff;
+
+  /// No description provided for @quranRepeatAyah.
+  ///
+  /// In en, this message translates to:
+  /// **'Ayah'**
+  String get quranRepeatAyah;
+
+  /// No description provided for @quranRepeatSurah.
+  ///
+  /// In en, this message translates to:
+  /// **'Surah'**
+  String get quranRepeatSurah;
+
+  /// No description provided for @readingSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Settings'**
+  String get readingSettingsTitle;
+
+  /// No description provided for @readingSettingsArabicFontSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic font size'**
+  String get readingSettingsArabicFontSize;
+
+  /// No description provided for @readingSettingsTranslationFontSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation font size'**
+  String get readingSettingsTranslationFontSize;
+
+  /// No description provided for @readingSettingsLineSpacing.
+  ///
+  /// In en, this message translates to:
+  /// **'Line spacing'**
+  String get readingSettingsLineSpacing;
+
+  /// No description provided for @readingSettingsDefaultMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Default reading mode'**
+  String get readingSettingsDefaultMode;
+
+  /// No description provided for @readingSettingsRememberPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember last position'**
+  String get readingSettingsRememberPosition;
+
+  /// No description provided for @readingSettingsScript.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic script'**
+  String get readingSettingsScript;
+
+  /// No description provided for @readingSettingsScriptUthmani.
+  ///
+  /// In en, this message translates to:
+  /// **'Uthmani (Hafs)'**
+  String get readingSettingsScriptUthmani;
+
+  /// No description provided for @readingSettingsScriptIndopak.
+  ///
+  /// In en, this message translates to:
+  /// **'IndoPak (Hafs)'**
+  String get readingSettingsScriptIndopak;
+
   /// No description provided for @save.
   ///
   /// In en, this message translates to:

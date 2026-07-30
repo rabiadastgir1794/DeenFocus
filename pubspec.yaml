@@ -101,8 +101,19 @@ flutter:
   assets:
     - assets/raw/quran_paak.json
     - assets/raw/english_translation.json
+    - assets/quran/uthmani.json
+    - assets/quran/text/uthmani.json
+    - assets/quran/text/indopak.json
     - assets/video/about_deen_focus.mp4
     - assets/video/video_thumbnail.png
+
+  fonts:
+    - family: UthmanicHafs
+      fonts:
+        - asset: assets/fonts/UthmanicHafs.otf
+    - family: NooreHuda
+      fonts:
+        - asset: assets/fonts/NooreHuda.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,21 +7,32 @@ import 'package:just_audio/just_audio.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../tajweed/tajweed_entry_point.dart';
 import '../data/quran_local_repository.dart';
+import '../reading_engine/quran_recitation.dart';
+import '../reading_engine/quran_repeat_mode.dart';
+import '../reading_engine/quran_script.dart';
+import '../reading_engine/reading_engine.dart';
+import '../reading_engine/reading_mode.dart';
+import 'widgets/quran_audio_bar.dart';
 
 class SurahDetailBottomSheet extends StatefulWidget {
-  const SurahDetailBottomSheet({super.key, required this.surah});
+  const SurahDetailBottomSheet({super.key, required this.surah, this.initialAyah});
 
   final SurahSummary surah;
+
+  /// Optional ayah to scroll to on open (Continue Reading deep link).
+  final int? initialAyah;
 
   @override
   State<SurahDetailBottomSheet> createState() => _SurahDetailBottomSheetState();
 }
 
 class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
-  static const int _reciterId = 1;
-  static const String _audioBaseUrl =
-      'https://the-quran-project.github.io/Quran-Audio/Data';
+  /// Tracks Continue Reading position + Reading Progress for Surah Mode.
+  /// Rendering/audio below are untouched from the original implementation;
+  /// this only adds the Phase 1 persistence side effects.
+  late final ReadingEngine _engine = ReadingEngine(mode: ReadingMode.surah);
 
   final AudioPlayer _player = AudioPlayer();
   List<AyahRecord> _ayahs = const <AyahRecord>[];
@@ -30,6 +40,11 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   bool _showEnglish = true;
   double _arabicFontSp = 20;
   double _englishFontSp = 15;
+  double _lineSpacing = 1.8;
+  String _arabicFontFamily = QuranScript.uthmani.fontFamily;
+  double _playbackSpeed = 1.0;
+  double _playbackVolume = 1.0;
+  QuranRepeatMode _repeatMode = QuranRepeatMode.off;
   int _playingAyahIndex = -1;
   bool _showAudioBar = false;
   bool _isAudioLoading = false;
@@ -40,6 +55,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   StreamSubscription<Duration?>? _durationSub;
   bool _showCompactHeader = false;
   bool _suppressNextAutoScroll = false;
+  bool _tajweedEnabled = false;
 
   @override
   void initState() {
@@ -56,6 +72,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     _durationSub?.cancel();
     _listController.dispose();
     _player.dispose();
+    _engine.dispose();
     super.dispose();
   }
 
@@ -65,6 +82,12 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       StorageService.quranShowEnglish,
       StorageService.quranArabicFontSp,
       StorageService.quranEnglishFontSp,
+      StorageService.quranPlaybackSpeed,
+      StorageService.quranPlaybackVolume,
+      StorageService.quranRepeatMode,
+      StorageService.quranLineSpacing,
+      StorageService.quranScript,
+      TajweedEntryPoint.isEnabled(),
     ]);
     if (!mounted) return;
 
@@ -73,12 +96,61 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       _showEnglish = results[1] as bool;
       _arabicFontSp = results[2] as double;
       _englishFontSp = results[3] as double;
+      _playbackSpeed = results[4] as double;
+      _playbackVolume = results[5] as double;
+      _repeatMode = QuranRepeatMode.fromName(results[6] as String);
+      _lineSpacing = results[7] as double;
+      _arabicFontFamily =
+          QuranScriptX.fromName(results[8] as String).fontFamily;
+      _tajweedEnabled = results[9] as bool;
       _loadingAyahs = false;
     });
 
     if (_ayahs.isNotEmpty) {
       await _preparePlayer();
+      await _player.setSpeed(_playbackSpeed);
+      await _player.setVolume(_playbackVolume);
+      await _applyRepeatMode(_repeatMode);
+      _maybeScrollToInitialAyah();
     }
+  }
+
+  void _maybeScrollToInitialAyah() {
+    final targetAyah = widget.initialAyah;
+    if (targetAyah == null) return;
+    final index = _ayahs.indexWhere((a) => a.ayahNumber == targetAyah);
+    if (index < 0) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToAyah(index));
+    _engine.reportAyahVisited(widget.surah.number, targetAyah);
+  }
+
+  Future<void> _applyRepeatMode(QuranRepeatMode mode) async {
+    switch (mode) {
+      case QuranRepeatMode.off:
+        await _player.setLoopMode(LoopMode.off);
+      case QuranRepeatMode.ayah:
+        await _player.setLoopMode(LoopMode.one);
+      case QuranRepeatMode.surah:
+        await _player.setLoopMode(LoopMode.all);
+    }
+  }
+
+  Future<void> _setPlaybackSpeed(double value) async {
+    setState(() => _playbackSpeed = value);
+    await _player.setSpeed(value);
+    await StorageService.setQuranPlaybackSpeed(value);
+  }
+
+  Future<void> _setPlaybackVolume(double value) async {
+    setState(() => _playbackVolume = value);
+    await _player.setVolume(value);
+    await StorageService.setQuranPlaybackVolume(value);
+  }
+
+  Future<void> _setRepeatMode(QuranRepeatMode mode) async {
+    setState(() => _repeatMode = mode);
+    await _applyRepeatMode(mode);
+    await StorageService.setQuranRepeatMode(mode.name);
   }
 
   void _bindPlayerState() {
@@ -103,6 +175,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       setState(() {
         _playingAyahIndex = index;
       });
+      final ayah = _ayahs[index];
+      _engine.reportAyahVisited(ayah.surahNumber, ayah.ayahNumber);
       if (_suppressNextAutoScroll) {
         _suppressNextAutoScroll = false;
         return;
@@ -133,23 +207,14 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       children: _ayahs
           .map((ayah) {
             return AudioSource.uri(
-              Uri.parse(_getAudioUrl(ayah.surahNumber, ayah.ayahNumber)),
+              Uri.parse(
+                QuranRecitation.audioUrl(ayah.surahNumber, ayah.ayahNumber),
+              ),
             );
           })
           .toList(growable: false),
     );
     await _player.setAudioSource(source, preload: true);
-  }
-
-  String _getAudioUrl(int surahNumber, int ayahNumber) {
-    return '$_audioBaseUrl/$_reciterId/${surahNumber}_$ayahNumber.mp3';
-  }
-
-  String _formatTime(Duration value) {
-    final totalSeconds = value.inSeconds.clamp(0, 999999);
-    final minutes = totalSeconds ~/ 60;
-    final seconds = totalSeconds % 60;
-    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 
   Future<void> _onAyahTap(int position) async {
@@ -161,6 +226,26 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     });
     await _player.seek(Duration.zero, index: position);
     await _player.play();
+    final ayah = _ayahs[position];
+    _engine.reportAyahVisited(ayah.surahNumber, ayah.ayahNumber);
+  }
+
+  /// Better Navigation (Phase 1, item 6): move to the previous/next ayah
+  /// within this surah without leaving the screen.
+  Future<void> _onPreviousAyahTap() async {
+    if (_playingAyahIndex > 0) {
+      await _onAyahTap(_playingAyahIndex - 1);
+    } else if (_ayahs.isNotEmpty) {
+      await _onAyahTap(0);
+    }
+  }
+
+  Future<void> _onNextAyahTap() async {
+    if (_playingAyahIndex >= 0 && _playingAyahIndex + 1 < _ayahs.length) {
+      await _onAyahTap(_playingAyahIndex + 1);
+    } else if (_ayahs.isNotEmpty) {
+      await _onAyahTap(0);
+    }
   }
 
   Future<void> _onPlayFullSurahTap() async {
@@ -248,11 +333,6 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     return max <= 0 ? 0 : max;
   }
 
-  double get _sliderProgress {
-    if (_sliderDurationMs <= 0) return 0;
-    return (_currentPosition.inMilliseconds / _sliderDurationMs).clamp(0, 1);
-  }
-
   void _scrollToAyah(int index) {
     // Trigger list auto-follow similar to native implementation.
     if (!_listController.hasClients) return;
@@ -288,6 +368,16 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         title: widget.surah.name,
         onBack: () => Navigator.of(context).pop(),
         actions: [
+          IconButton(
+            tooltip: l10n.quranPreviousAyah,
+            icon: const Icon(Icons.skip_previous_rounded),
+            onPressed: _ayahs.isEmpty ? null : _onPreviousAyahTap,
+          ),
+          IconButton(
+            tooltip: l10n.quranNextAyah,
+            icon: const Icon(Icons.skip_next_rounded),
+            onPressed: _ayahs.isEmpty ? null : _onNextAyahTap,
+          ),
           PopupMenuButton<_TextOption>(
             tooltip: l10n.quranTextOptions,
             onSelected: (option) {
@@ -600,6 +690,41 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                                   ),
                                                 ),
                                                 const Spacer(),
+                                                if (_tajweedEnabled)
+                                                  InkWell(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14.r,
+                                                        ),
+                                                    onTap: () =>
+                                                        TajweedEntryPoint.open(
+                                                          context,
+                                                          surah: ayah
+                                                              .surahNumber,
+                                                          ayah:
+                                                              ayah.ayahNumber,
+                                                          arabicText:
+                                                              ayah.arabicText,
+                                                          surahName:
+                                                              widget.surah.name,
+                                                          translation:
+                                                              _showEnglish
+                                                              ? ayah
+                                                                    .englishText
+                                                              : null,
+                                                        ),
+                                                    child: Padding(
+                                                      padding: EdgeInsets.all(
+                                                        4.w,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.mic_none_rounded,
+                                                        color: colorScheme
+                                                            .onSurfaceVariant,
+                                                        size: 18.sp,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 if (isCurrent)
                                                   Icon(
                                                     _player.playing
@@ -618,8 +743,9 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                               textAlign: TextAlign.right,
                                               textDirection: TextDirection.rtl,
                                               style: TextStyle(
+                                                fontFamily: _arabicFontFamily,
                                                 fontSize: _arabicFontSp.sp,
-                                                height: 1.8,
+                                                height: _lineSpacing,
                                                 color: isCurrent
                                                     ? colorScheme.primary
                                                     : colorScheme.onSurface,
@@ -649,132 +775,40 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                     ],
                   ),
                   if (showAudioBar)
-                    Positioned(
-                      left: 0.w,
-                      right: 0.w,
-                      bottom: Platform.isIOS ? -30 : 0,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surface,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(60.r),
-                            bottomRight: Radius.circular(60.r),
-                          ),
-                          border: Border.all(
-                            color: colorScheme.outlineVariant.withValues(
-                              alpha: 0.55,
-                            ),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: colorScheme.onSurface,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: _closeAudioBar,
-                                  child: Container(
-                                    width: 22.w,
-                                    height: 22.w,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color:
-                                          colorScheme.surfaceContainerHighest,
-                                    ),
-                                    child: Icon(
-                                      Icons.close_rounded,
-                                      size: 14.sp,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 6.h),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _formatTime(_currentPosition),
-                                    style: TextStyle(
-                                      fontSize: 13.sp,
-                                      color: colorScheme.onSurface,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  _formatTime(_currentDuration),
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Slider(
-                              value: _sliderProgress,
-                              min: 0,
-                              max: 1,
-                              onChangeStart: (_) => _isUserSeeking = true,
-                              onChanged: (value) {
-                                if (_sliderDurationMs <= 0) return;
-                                final ms = (_sliderDurationMs * value).toInt();
-                                setState(
-                                  () => _currentPosition = Duration(
-                                    milliseconds: ms,
-                                  ),
-                                );
-                              },
-                              onChangeEnd: (value) async {
-                                _isUserSeeking = false;
-                                if (_sliderDurationMs <= 0) return;
-                                final ms = (_sliderDurationMs * value).toInt();
-                                await _player.seek(Duration(milliseconds: ms));
-                              },
-                            ),
-                            SizedBox(height: 2.h),
-                            SizedBox(
-                              width: 56.w,
-                              height: 56.w,
-                              child: _isAudioLoading
-                                  ? const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    )
-                                  : FilledButton(
-                                      onPressed: _togglePlayPause,
-                                      style: FilledButton.styleFrom(
-                                        shape: const CircleBorder(),
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      child: Icon(
-                                        _player.playing
-                                            ? Icons.pause
-                                            : Icons.play_arrow_rounded,
-                                        size: 28.sp,
-                                      ),
-                                    ),
-                            ),
-                          ],
-                        ),
+                    QuranAudioBar(
+                      label:
+                          '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
+                      position: _currentPosition,
+                      duration: _currentDuration,
+                      isPlaying: _player.playing,
+                      isLoading: _isAudioLoading,
+                      speed: _playbackSpeed,
+                      volume: _playbackVolume,
+                      repeatMode: _repeatMode,
+                      onTogglePlayPause: _togglePlayPause,
+                      onClose: () => unawaited(_closeAudioBar()),
+                      onSeekStart: () => _isUserSeeking = true,
+                      onSeekChanged: (value) {
+                        if (_sliderDurationMs <= 0) return;
+                        final ms = (_sliderDurationMs * value).toInt();
+                        setState(
+                          () => _currentPosition = Duration(milliseconds: ms),
+                        );
+                      },
+                      onSeekEnd: (value) async {
+                        _isUserSeeking = false;
+                        if (_sliderDurationMs <= 0) return;
+                        final ms = (_sliderDurationMs * value).toInt();
+                        await _player.seek(Duration(milliseconds: ms));
+                      },
+                      onSpeedChanged: (value) => unawaited(
+                        _setPlaybackSpeed(value),
+                      ),
+                      onVolumeChanged: (value) => unawaited(
+                        _setPlaybackVolume(value),
+                      ),
+                      onRepeatModeChanged: (value) => unawaited(
+                        _setRepeatMode(value),
                       ),
                     ),
                 ],

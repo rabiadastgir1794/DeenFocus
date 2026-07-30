@@ -4,6 +4,8 @@ import '../../core/logger/logging_navigation_observer.dart';
 import '../../features/home/view/dashboard_screen.dart';
 import '../../features/splash/view/splash_screen.dart';
 import '../../features/onboarding/view/onboarding_flow_screen.dart';
+import '../../features/tajweed/model/tajweed_practice_args.dart';
+import '../../features/tajweed/view/tajweed_practice_screen.dart';
 import 'route_names.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -31,6 +33,12 @@ GoRouter createAppRouter() {
         path: RouteNames.home,
         name: 'home',
         builder: (context, state) => const DashboardScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.tajweedPractice,
+        name: 'tajweedPractice',
+        builder: (context, state) =>
+            TajweedPracticeScreen(args: state.extra as TajweedPracticeArgs),
       ),
     ],
   );

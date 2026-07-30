@@ -11,6 +11,36 @@
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		F4A1B00100000000000000001 /* TajweedErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00100000000000000001 /* TajweedErrors.swift */; };
+		F4A1B00200000000000000001 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00200000000000000001 /* AudioRecorder.swift */; };
+		F4A1B00300000000000000001 /* MelFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00300000000000000001 /* MelFrontend.swift */; };
+		F4A1B00400000000000000001 /* SentencePieceTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00400000000000000001 /* SentencePieceTokenizer.swift */; };
+		F4A1B00500000000000000001 /* CtcDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00500000000000000001 /* CtcDecoder.swift */; };
+		F4A1B00600000000000000001 /* CtcAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00600000000000000001 /* CtcAligner.swift */; };
+		F4A1B00700000000000000001 /* OfflineAsrModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00700000000000000001 /* OfflineAsrModel.swift */; };
+		F4A1B00800000000000000001 /* PronunciationHeadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00800000000000000001 /* PronunciationHeadModel.swift */; };
+		F4A1B00900000000000000001 /* ModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00900000000000000001 /* ModelStore.swift */; };
+		F4A1B01000000000000000001 /* TajweedEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01000000000000000001 /* TajweedEngine.swift */; };
+		F4A1B01100000000000000001 /* TajweedChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01100000000000000001 /* TajweedChannelHandler.swift */; };
+		F4A1B01200000000000000001 /* TajweedDebugRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01200000000000000001 /* TajweedDebugRunner.swift */; };
+		F4A1B01300000000000000001 /* TajweedAssetDistributionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */; };
+		F4A1B01400000000000000001 /* TajweedAssetSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01400000000000000001 /* TajweedAssetSync.swift */; };
+		F4A1B01500000000000000001 /* TajweedLexicalScoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */; };
+		F4A2B00100000000000000001 /* AssetDownloadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00100000000000000001 /* AssetDownloadError.swift */; };
+		F4A2B00200000000000000001 /* AssetCatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00200000000000000001 /* AssetCatalogModels.swift */; };
+		F4A2B00300000000000000001 /* AssetTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00300000000000000001 /* AssetTransport.swift */; };
+		F4A2B00400000000000000001 /* AssetManifestFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00400000000000000001 /* AssetManifestFetcher.swift */; };
+		F4A2B00500000000000000001 /* AssetDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00500000000000000001 /* AssetDownloadManager.swift */; };
+		F4A2B00600000000000000001 /* AssetIntegrityVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00600000000000000001 /* AssetIntegrityVerifier.swift */; };
+		F4A2B00700000000000000001 /* AssetRollbackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00700000000000000001 /* AssetRollbackManager.swift */; };
+		F4A2B00800000000000000001 /* AssetAtomicInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00800000000000000001 /* AssetAtomicInstaller.swift */; };
+		F4A2B00900000000000000001 /* AssetProgressNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00900000000000000001 /* AssetProgressNotifier.swift */; };
+		F4A2B01000000000000000001 /* AIAssetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F01000000000000000001 /* AIAssetPlugin.swift */; };
+		F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F01100000000000000001 /* AIAssetManager.swift */; };
+		F4A3B00100000000000000001 /* FakeAssetTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00100000000000000001 /* FakeAssetTransport.swift */; };
+		F4A3B00200000000000000001 /* AssetDownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00200000000000000001 /* AssetDownloadManagerTests.swift */; };
+		F4A3B00300000000000000001 /* TajweedAssetSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00300000000000000001 /* TajweedAssetSyncTests.swift */; };
+		F4A3B00400000000000000001 /* AIAssetManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00400000000000000001 /* AIAssetManagerTests.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -76,6 +106,36 @@
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F4A1F00100000000000000001 /* TajweedErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedErrors.swift; sourceTree = "<group>"; };
+		F4A1F00200000000000000001 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		F4A1F00300000000000000001 /* MelFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MelFrontend.swift; sourceTree = "<group>"; };
+		F4A1F00400000000000000001 /* SentencePieceTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentencePieceTokenizer.swift; sourceTree = "<group>"; };
+		F4A1F00500000000000000001 /* CtcDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtcDecoder.swift; sourceTree = "<group>"; };
+		F4A1F00600000000000000001 /* CtcAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtcAligner.swift; sourceTree = "<group>"; };
+		F4A1F00700000000000000001 /* OfflineAsrModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsrModel.swift; sourceTree = "<group>"; };
+		F4A1F00800000000000000001 /* PronunciationHeadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationHeadModel.swift; sourceTree = "<group>"; };
+		F4A1F00900000000000000001 /* ModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStore.swift; sourceTree = "<group>"; };
+		F4A1F01000000000000000001 /* TajweedEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedEngine.swift; sourceTree = "<group>"; };
+		F4A1F01100000000000000001 /* TajweedChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedChannelHandler.swift; sourceTree = "<group>"; };
+		F4A1F01200000000000000001 /* TajweedDebugRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedDebugRunner.swift; sourceTree = "<group>"; };
+		F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetDistributionConfig.swift; sourceTree = "<group>"; };
+		F4A1F01400000000000000001 /* TajweedAssetSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetSync.swift; sourceTree = "<group>"; };
+		F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedLexicalScoring.swift; sourceTree = "<group>"; };
+		F4A2F00100000000000000001 /* AssetDownloadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadError.swift; sourceTree = "<group>"; };
+		F4A2F00200000000000000001 /* AssetCatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetCatalogModels.swift; sourceTree = "<group>"; };
+		F4A2F00300000000000000001 /* AssetTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetTransport.swift; sourceTree = "<group>"; };
+		F4A2F00400000000000000001 /* AssetManifestFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetManifestFetcher.swift; sourceTree = "<group>"; };
+		F4A2F00500000000000000001 /* AssetDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadManager.swift; sourceTree = "<group>"; };
+		F4A2F00600000000000000001 /* AssetIntegrityVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetIntegrityVerifier.swift; sourceTree = "<group>"; };
+		F4A2F00700000000000000001 /* AssetRollbackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetRollbackManager.swift; sourceTree = "<group>"; };
+		F4A2F00800000000000000001 /* AssetAtomicInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetAtomicInstaller.swift; sourceTree = "<group>"; };
+		F4A2F00900000000000000001 /* AssetProgressNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetProgressNotifier.swift; sourceTree = "<group>"; };
+		F4A2F01000000000000000001 /* AIAssetPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssetPlugin.swift; sourceTree = "<group>"; };
+		F4A2F01100000000000000001 /* AIAssetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssetManager.swift; sourceTree = "<group>"; };
+		F4A3F00100000000000000001 /* FakeAssetTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeAssetTransport.swift; sourceTree = "<group>"; };
+		F4A3F00200000000000000001 /* AssetDownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadManagerTests.swift; sourceTree = "<group>"; };
+		F4A3F00300000000000000001 /* TajweedAssetSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetSyncTests.swift; sourceTree = "<group>"; };
+		F4A3F00400000000000000001 /* AIAssetManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssetManagerTests.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		88DBFFD8138635B65160449E /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -155,6 +215,10 @@
 			isa = PBXGroup;
 			children = (
 				331C807B294A618700263BE5 /* RunnerTests.swift */,
+				F4A3F00100000000000000001 /* FakeAssetTransport.swift */,
+				F4A3F00200000000000000001 /* AssetDownloadManagerTests.swift */,
+				F4A3F00300000000000000001 /* TajweedAssetSyncTests.swift */,
+				F4A3F00400000000000000001 /* AIAssetManagerTests.swift */,
 			);
 			path = RunnerTests;
 			sourceTree = "<group>";
@@ -197,6 +261,55 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+
+		F4A1GDBG0000000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				F4A1F01200000000000000001 /* TajweedDebugRunner.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
+		F4A1GTJW0000000000000001 /* Tajweed */ = {
+			isa = PBXGroup;
+			children = (
+				F4A1F00100000000000000001 /* TajweedErrors.swift */,
+				F4A1F00200000000000000001 /* AudioRecorder.swift */,
+				F4A1F00300000000000000001 /* MelFrontend.swift */,
+				F4A1F00400000000000000001 /* SentencePieceTokenizer.swift */,
+				F4A1F00500000000000000001 /* CtcDecoder.swift */,
+				F4A1F00600000000000000001 /* CtcAligner.swift */,
+				F4A1F00700000000000000001 /* OfflineAsrModel.swift */,
+				F4A1F00800000000000000001 /* PronunciationHeadModel.swift */,
+				F4A1F00900000000000000001 /* ModelStore.swift */,
+				F4A1F01000000000000000001 /* TajweedEngine.swift */,
+				F4A1F01100000000000000001 /* TajweedChannelHandler.swift */,
+				F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */,
+				F4A1F01400000000000000001 /* TajweedAssetSync.swift */,
+				F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */,
+				F4A1GDBG0000000000000001 /* Debug */,
+			);
+			path = Tajweed;
+			sourceTree = "<group>";
+		};
+		F4A2GRP00000000000000001 /* AssetDownload */ = {
+			isa = PBXGroup;
+			children = (
+				F4A2F00100000000000000001 /* AssetDownloadError.swift */,
+				F4A2F00200000000000000001 /* AssetCatalogModels.swift */,
+				F4A2F00300000000000000001 /* AssetTransport.swift */,
+				F4A2F00400000000000000001 /* AssetManifestFetcher.swift */,
+				F4A2F00500000000000000001 /* AssetDownloadManager.swift */,
+				F4A2F00600000000000000001 /* AssetIntegrityVerifier.swift */,
+				F4A2F00700000000000000001 /* AssetRollbackManager.swift */,
+				F4A2F00800000000000000001 /* AssetAtomicInstaller.swift */,
+				F4A2F00900000000000000001 /* AssetProgressNotifier.swift */,
+				F4A2F01000000000000000001 /* AIAssetPlugin.swift */,
+				F4A2F01100000000000000001 /* AIAssetManager.swift */,
+			);
+			path = AssetDownload;
+			sourceTree = "<group>";
+		};
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +320,8 @@
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				F4A1GTJW0000000000000001 /* Tajweed */,
+				F4A2GRP00000000000000001 /* AssetDownload */,
 				F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
@@ -583,6 +698,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */,
+				F4A3B00100000000000000001 /* FakeAssetTransport.swift in Sources */,
+				F4A3B00200000000000000001 /* AssetDownloadManagerTests.swift in Sources */,
+				F4A3B00300000000000000001 /* TajweedAssetSyncTests.swift in Sources */,
+				F4A3B00400000000000000001 /* AIAssetManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,6 +710,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				F4A1B00100000000000000001 /* TajweedErrors.swift in Sources */,
+				F4A1B00200000000000000001 /* AudioRecorder.swift in Sources */,
+				F4A1B00300000000000000001 /* MelFrontend.swift in Sources */,
+				F4A1B00400000000000000001 /* SentencePieceTokenizer.swift in Sources */,
+				F4A1B00500000000000000001 /* CtcDecoder.swift in Sources */,
+				F4A1B00600000000000000001 /* CtcAligner.swift in Sources */,
+				F4A1B00700000000000000001 /* OfflineAsrModel.swift in Sources */,
+				F4A1B00800000000000000001 /* PronunciationHeadModel.swift in Sources */,
+				F4A1B00900000000000000001 /* ModelStore.swift in Sources */,
+				F4A1B01000000000000000001 /* TajweedEngine.swift in Sources */,
+				F4A1B01100000000000000001 /* TajweedChannelHandler.swift in Sources */,
+				F4A1B01200000000000000001 /* TajweedDebugRunner.swift in Sources */,
+				F4A1B01300000000000000001 /* TajweedAssetDistributionConfig.swift in Sources */,
+				F4A1B01400000000000000001 /* TajweedAssetSync.swift in Sources */,
+				F4A1B01500000000000000001 /* TajweedLexicalScoring.swift in Sources */,
+				F4A2B00100000000000000001 /* AssetDownloadError.swift in Sources */,
+				F4A2B00200000000000000001 /* AssetCatalogModels.swift in Sources */,
+				F4A2B00300000000000000001 /* AssetTransport.swift in Sources */,
+				F4A2B00400000000000000001 /* AssetManifestFetcher.swift in Sources */,
+				F4A2B00500000000000000001 /* AssetDownloadManager.swift in Sources */,
+				F4A2B00600000000000000001 /* AssetIntegrityVerifier.swift in Sources */,
+				F4A2B00700000000000000001 /* AssetRollbackManager.swift in Sources */,
+				F4A2B00800000000000000001 /* AssetAtomicInstaller.swift in Sources */,
+				F4A2B00900000000000000001 /* AssetProgressNotifier.swift in Sources */,
+				F4A2B01000000000000000001 /* AIAssetPlugin.swift in Sources */,
+				F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);

@@ -1,8 +1,11 @@
 # ADR-004: Prefer upstream CoreML over custom conversion
 
 ## Status
-
-Accepted — 2026-07-24
+Accepted — 2026-07-24; **reaffirmed 2026-07-29** after DIY ONNX→CoreML POC and
+production-feasibility review
+(`memory/features/tajweed/onnx-to-coreml-production-feasibility.md`).
+Investigation closed: do not attempt to replace official ANE packages from the
+local ONNX encoder.
 
 ## Context
 

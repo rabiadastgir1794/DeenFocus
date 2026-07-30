@@ -1,0 +1,215 @@
+{
+  "tolerance": {
+    "max_abs_diff": 0.15,
+    "min_correlation": 0.98
+  },
+  "samples": [
+    {
+      "sample": "01_alafasy_fatihah",
+      "missing": [],
+      "comparisons": [
+        {
+          "sample": "01_alafasy_fatihah",
+          "pair": "python_vs_ios",
+          "shape_a": [
+            80,
+            468
+          ],
+          "shape_b": [
+            80,
+            468
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.977776288986206,
+          "mean_abs_diff": 0.012242581592783188,
+          "correlation": 0.9940577241698642,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        },
+        {
+          "sample": "01_alafasy_fatihah",
+          "pair": "python_vs_android",
+          "shape_a": [
+            80,
+            468
+          ],
+          "shape_b": [
+            80,
+            468
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.8175938129425049,
+          "mean_abs_diff": 0.010238038004358054,
+          "correlation": 0.9958476146445147,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        },
+        {
+          "sample": "01_alafasy_fatihah",
+          "pair": "ios_vs_android",
+          "shape_a": [
+            80,
+            468
+          ],
+          "shape_b": [
+            80,
+            468
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.16018247604370117,
+          "mean_abs_diff": 0.0020119742271847043,
+          "correlation": 0.9998396503670848,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        }
+      ]
+    },
+    {
+      "sample": "02_basfar_ikhlas",
+      "missing": [],
+      "comparisons": [
+        {
+          "sample": "02_basfar_ikhlas",
+          "pair": "python_vs_ios",
+          "shape_a": [
+            80,
+            366
+          ],
+          "shape_b": [
+            80,
+            366
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.400325745344162,
+          "mean_abs_diff": 0.005025053254790379,
+          "correlation": 0.998999752299435,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        },
+        {
+          "sample": "02_basfar_ikhlas",
+          "pair": "python_vs_android",
+          "shape_a": [
+            80,
+            366
+          ],
+          "shape_b": [
+            80,
+            366
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.400325745344162,
+          "mean_abs_diff": 0.005017991145953109,
+          "correlation": 0.9989997552113742,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        },
+        {
+          "sample": "02_basfar_ikhlas",
+          "pair": "ios_vs_android",
+          "shape_a": [
+            80,
+            366
+          ],
+          "shape_b": [
+            80,
+            366
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.0031158924102783203,
+          "mean_abs_diff": 1.8424303864458374e-05,
+          "correlation": 0.9999999939003572,
+          "pass": true,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        }
+      ]
+    },
+    {
+      "sample": "03_alafasy_naba",
+      "missing": [],
+      "comparisons": [
+        {
+          "sample": "03_alafasy_naba",
+          "pair": "python_vs_ios",
+          "shape_a": [
+            80,
+            476
+          ],
+          "shape_b": [
+            80,
+            476
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.989642858505249,
+          "mean_abs_diff": 0.012397106409975966,
+          "correlation": 0.9939136981189858,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        },
+        {
+          "sample": "03_alafasy_naba",
+          "pair": "python_vs_android",
+          "shape_a": [
+            80,
+            476
+          ],
+          "shape_b": [
+            80,
+            476
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.8294603824615479,
+          "mean_abs_diff": 0.010392233575390767,
+          "correlation": 0.9957270283369061,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        },
+        {
+          "sample": "03_alafasy_naba",
+          "pair": "ios_vs_android",
+          "shape_a": [
+            80,
+            476
+          ],
+          "shape_b": [
+            80,
+            476
+          ],
+          "shape_match": true,
+          "max_abs_diff": 0.16018247604370117,
+          "mean_abs_diff": 0.0020168552260526797,
+          "correlation": 0.9998396479376046,
+          "pass": false,
+          "tolerance": {
+            "max_abs_diff": 0.15,
+            "min_correlation": 0.98
+          }
+        }
+      ]
+    }
+  ]
+}

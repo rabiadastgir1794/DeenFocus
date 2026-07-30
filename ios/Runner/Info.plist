@@ -58,6 +58,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
     <key>NSMicrophoneUsageDescription</key>
-    <string>This app does not use the microphone directly, but some features or third-party libraries may require access for functionality.</string>
+    <string>DeenFocus needs microphone access so you can practice Quran recitation and receive on-device tajweed feedback. Audio stays on your device.</string>
 </dict>
 </plist>

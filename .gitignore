@@ -48,14 +48,27 @@ ios/build/
 # Accidental dumps / local scratch
 files.txt
 
+# Cursor per-user overrides (Layer 5 — machine-specific, never shared)
+.cursor/settings.local.json
+
 # Tajweed lab — secrets, envs, caches, downloaded artifacts
 tajweed-lab/.env
 tajweed-lab/.venv/
 tajweed-lab/models/
 tajweed-lab/samples/
 tajweed-lab/xet/
+tajweed-lab/parity/
+tajweed-lab/experiments/**/artifacts/
+tajweed-lab/experiments/**/device_pack/
+tajweed-lab/experiments/**/reports/*.json
+tajweed-lab/experiments/**/reports/*.log
 tajweed-lab/**/__pycache__/
 tajweed-lab/**/*.pyc
 tajweed-lab/.pytest_cache/
 tajweed-lab/.mypy_cache/
 tajweed-lab/.ruff_cache/
+
+# Cloudflare Wrangler local state / R2 miniflare (never commit)
+.wrangler/
+
+tajweed-lab/experiments/nemo_coreml_investigation/

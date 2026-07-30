@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,12 +14,14 @@ import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/locale_service.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
+import '../../../../features/tajweed/view/tajweed_asset_debug_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
 
@@ -36,11 +38,24 @@ class SettingsTabScreen extends StatefulWidget {
 
 class _SettingsTabScreenState extends State<SettingsTabScreen> {
   late final Future<PackageInfo> _packageInfoFuture;
+  bool _tajweedEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _packageInfoFuture = PackageInfo.fromPlatform();
+    unawaited(_loadTajweedEnabled());
+  }
+
+  Future<void> _loadTajweedEnabled() async {
+    final enabled = await StorageService.tajweedEnabled;
+    if (!mounted) return;
+    setState(() => _tajweedEnabled = enabled);
+  }
+
+  Future<void> _setTajweedEnabled(bool value) async {
+    setState(() => _tajweedEnabled = value);
+    await StorageService.setTajweedEnabled(value);
   }
 
   Future<void> _showLanguagePicker(BuildContext context) async {
@@ -502,7 +517,38 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ],
             ),
             const SizedBox(height: 16),
+            _SettingsGroup(
+              children: [
+                _SettingsSwitchRow(
+                  icon: Icons.mic_outlined,
+                  label: 'AI Tajweed Practice (Beta)',
+                  value: _tajweedEnabled,
+                  onChanged: (value) => unawaited(_setTajweedEnabled(value)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
+            // Temporary Android debug harness for production asset download QA.
+            // Hidden outside debug Android builds; remove with TajweedAssetDebugScreen.
+            if (kDebugMode && !kIsWeb && Platform.isAndroid) ...[
+              const SizedBox(height: 16),
+              _SettingsGroup(
+                children: [
+                  _SettingsRow(
+                    icon: Icons.bug_report_outlined,
+                    label: 'Tajweed Asset Debug',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const TajweedAssetDebugScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             _AppVersionText(packageInfoFuture: _packageInfoFuture),
           ],

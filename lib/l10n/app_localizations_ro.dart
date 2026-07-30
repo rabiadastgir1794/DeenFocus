@@ -479,6 +479,90 @@ class AppLocalizationsRo extends AppLocalizations {
   String get quranSurahLabel => 'Sura';
 
   @override
+  String get quranModeSurah => 'Surah';
+
+  @override
+  String get quranModeJuz => 'Juz';
+
+  @override
+  String get quranModePage => 'Page';
+
+  @override
+  String get quranJuzLabel => 'Juz';
+
+  @override
+  String get quranPageLabel => 'Page';
+
+  @override
+  String get quranContinueReading => 'Continue Reading';
+
+  @override
+  String get quranPreviousAyah => 'Previous ayah';
+
+  @override
+  String get quranNextAyah => 'Next ayah';
+
+  @override
+  String get quranPreviousJuz => 'Previous Juz';
+
+  @override
+  String get quranNextJuz => 'Next Juz';
+
+  @override
+  String get quranPreviousPage => 'Previous page';
+
+  @override
+  String get quranNextPage => 'Next page';
+
+  @override
+  String get quranAudioSettingsTitle => 'Audio settings';
+
+  @override
+  String get quranPlaybackSpeed => 'Playback speed';
+
+  @override
+  String get quranVolume => 'Volume';
+
+  @override
+  String get quranRepeat => 'Repeat';
+
+  @override
+  String get quranRepeatOff => 'Off';
+
+  @override
+  String get quranRepeatAyah => 'Ayah';
+
+  @override
+  String get quranRepeatSurah => 'Surah';
+
+  @override
+  String get readingSettingsTitle => 'Reading Settings';
+
+  @override
+  String get readingSettingsArabicFontSize => 'Arabic font size';
+
+  @override
+  String get readingSettingsTranslationFontSize => 'Translation font size';
+
+  @override
+  String get readingSettingsLineSpacing => 'Line spacing';
+
+  @override
+  String get readingSettingsDefaultMode => 'Default reading mode';
+
+  @override
+  String get readingSettingsRememberPosition => 'Remember last position';
+
+  @override
+  String get readingSettingsScript => 'Arabic script';
+
+  @override
+  String get readingSettingsScriptUthmani => 'Uthmani (Hafs)';
+
+  @override
+  String get readingSettingsScriptIndopak => 'IndoPak (Hafs)';
+
+  @override
   String get save => 'Salva';
 
   @override

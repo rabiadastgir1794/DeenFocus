@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../core/services/storage_service.dart';
+import '../reading_engine/quran_script.dart';
+import '../reading_engine/quran_script_texts.dart';
 
 class SurahSummary {
   const SurahSummary({
@@ -60,6 +62,15 @@ class AyahRecord {
       ayahNumber: (map['ayahNumber'] as num).toInt(),
       arabicText: map['arabicText'] as String,
       englishText: map['englishText'] as String,
+    );
+  }
+
+  AyahRecord copyWith({String? arabicText, String? englishText}) {
+    return AyahRecord(
+      surahNumber: surahNumber,
+      ayahNumber: ayahNumber,
+      arabicText: arabicText ?? this.arabicText,
+      englishText: englishText ?? this.englishText,
     );
   }
 
@@ -135,7 +146,56 @@ class QuranLocalRepository {
             .map(AyahRecord.fromMap)
             .toList(growable: false)
           ..sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
-    return records;
+    return _applySelectedScript(records);
+  }
+
+  /// All 6236 ayahs, ordered by surah then ayah number — same order as the
+  /// bundled Mushaf page/juz mapping (`reading_engine/mushaf_metadata.dart`).
+  /// Used by Page Mode to preload the whole book once for smooth swiping.
+  Future<List<AyahRecord>> getAllAyahs() async {
+    await ensureInitialized();
+    final records =
+        _ayahBox.values.map(AyahRecord.fromMap).toList(growable: false)
+          ..sort((a, b) {
+            final surahCompare = a.surahNumber.compareTo(b.surahNumber);
+            return surahCompare != 0
+                ? surahCompare
+                : a.ayahNumber.compareTo(b.ayahNumber);
+          });
+    return _applySelectedScript(records);
+  }
+
+  /// Looks up ayahs by exact (surah, ayah) pairs, preserving the order of
+  /// [keys]. Used by Juz Mode and Page Mode, whose ayah ranges come from the
+  /// Mushaf page/juz mapping (see `reading_engine/mushaf_metadata.dart`)
+  /// rather than a single contiguous surah.
+  Future<List<AyahRecord>> getAyahsByKeys(
+    List<(int surah, int ayah)> keys,
+  ) async {
+    await ensureInitialized();
+    final records = <AyahRecord>[];
+    for (final (surah, ayah) in keys) {
+      final map = _ayahBox.get('$surah:$ayah');
+      if (map != null) records.add(AyahRecord.fromMap(map));
+    }
+    return _applySelectedScript(records);
+  }
+
+  /// Overlays the user's selected script orthography onto Hive-backed ayahs
+  /// (English + structure stay in Hive; Arabic glyphs come from
+  /// `assets/quran/text/<script>.json`).
+  Future<List<AyahRecord>> _applySelectedScript(
+    List<AyahRecord> records,
+  ) async {
+    if (records.isEmpty) return records;
+    final script = QuranScriptX.fromName(await StorageService.quranScript);
+    final texts = await QuranScriptTexts.load(script);
+    return records
+        .map((a) {
+          final text = texts.textFor(a.surahNumber, a.ayahNumber);
+          return text == null ? a : a.copyWith(arabicText: text);
+        })
+        .toList(growable: false);
   }
 
   Future<void> _seedFromAssets() async {

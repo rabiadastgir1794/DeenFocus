@@ -32,6 +32,7 @@ private enum ManagedSettingsStoreHolder {
   private let locationSearchChannelName = "com.app.deenly.deenly/location_search"
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
   private let widgetAppGroup = "group.com.rnr.deenfocus"
+  private let tajweedChannelHandler = TajweedChannelHandler()
 
   override func application(
     _ application: UIApplication,
@@ -142,6 +143,7 @@ private enum ManagedSettingsStoreHolder {
       }
 
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
+      tajweedChannelHandler.register(messenger: messenger)
     }
 
     UNUserNotificationCenter.current().delegate = self
