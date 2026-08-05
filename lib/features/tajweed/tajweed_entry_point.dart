@@ -32,6 +32,13 @@ abstract final class TajweedEntryPoint {
       final script = QuranScriptX.fromName(await StorageService.quranScript);
       final corpus = await QuranScriptTexts.load(script);
       final resolvedText = corpus.textFor(surah, ayah) ?? arabicText;
+      // Uthmani is the canonical word-boundary reference for lexical alignment
+      // across mushaf presentation orthographies (IndoPak presentation spaces).
+      final uthmaniCorpus = script == QuranScript.uthmani
+          ? corpus
+          : await QuranScriptTexts.load(QuranScript.uthmani);
+      final lexicalReference =
+          uthmaniCorpus.textFor(surah, ayah) ?? resolvedText;
       if (!context.mounted) return;
       context.push(
         RouteNames.tajweedPractice,
@@ -40,6 +47,7 @@ abstract final class TajweedEntryPoint {
           ayah: ayah,
           arabicText: resolvedText,
           arabicFontFamily: script.fontFamily,
+          lexicalReferenceArabic: lexicalReference,
           surahName: surahName,
           translation: translation,
         ),

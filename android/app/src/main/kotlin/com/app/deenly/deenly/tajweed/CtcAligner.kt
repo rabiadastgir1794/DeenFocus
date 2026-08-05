@@ -11,6 +11,8 @@ data class TokenInterval(val tokenId: Int, val tokenIndex: Int, val startFrame: 
 /**
  * CTC forced alignment. Port of ios/Runner/Tajweed/CtcAligner.swift (itself a port of
  * vendor/tajweed/aligner.py::ctc_forced_align) — keep the DP identical across platforms.
+ *
+ * alpha/back use flat buffers (same recurrence as nested arrays) for fewer allocations.
  */
 object CtcAligner {
     const val BLANK_ID = 1024
@@ -24,7 +26,7 @@ object CtcAligner {
         }
         if (tokenIds.isEmpty()) return emptyList()
 
-        val seq = ArrayList<Int>()
+        val seq = ArrayList<Int>(tokenIds.size * 2 + 1)
         seq.add(BLANK_ID)
         for (tok in tokenIds) {
             seq.add(tok)
@@ -38,8 +40,8 @@ object CtcAligner {
             )
         }
 
-        val alpha = Array(t) { DoubleArray(s) { NEG_INF } }
-        val back = Array(t) { ByteArray(s) }
+        val alpha = DoubleArray(t * s) { NEG_INF }
+        val back = ByteArray(t * s)
 
         val skipOk = BooleanArray(s)
         if (s >= 3) {
@@ -50,39 +52,48 @@ object CtcAligner {
 
         fun emit(tIdx: Int, sIdx: Int): Double = logprobs[tIdx][seq[sIdx]].toDouble()
 
-        alpha[0][0] = emit(0, 0)
-        if (s > 1) alpha[0][1] = emit(0, 1)
+        alpha[0] = emit(0, 0)
+        if (s > 1) alpha[1] = emit(0, 1)
 
         for (tIdx in 1 until t) {
+            val prevBase = (tIdx - 1) * s
+            val curBase = tIdx * s
             for (sIdx in 0 until s) {
-                var best = alpha[tIdx - 1][sIdx]
+                var best = alpha[prevBase + sIdx]
                 var bestIdx: Byte = 0
-                if (sIdx >= 1 && alpha[tIdx - 1][sIdx - 1] > best) {
-                    best = alpha[tIdx - 1][sIdx - 1]
-                    bestIdx = 1
+                if (sIdx >= 1) {
+                    val cand = alpha[prevBase + sIdx - 1]
+                    if (cand > best) {
+                        best = cand
+                        bestIdx = 1
+                    }
                 }
-                if (sIdx >= 2 && skipOk[sIdx] && alpha[tIdx - 1][sIdx - 2] > best) {
-                    best = alpha[tIdx - 1][sIdx - 2]
-                    bestIdx = 2
+                if (sIdx >= 2 && skipOk[sIdx]) {
+                    val cand = alpha[prevBase + sIdx - 2]
+                    if (cand > best) {
+                        best = cand
+                        bestIdx = 2
+                    }
                 }
-                alpha[tIdx][sIdx] = best + emit(tIdx, sIdx)
-                back[tIdx][sIdx] = (-bestIdx).toByte()
+                alpha[curBase + sIdx] = best + emit(tIdx, sIdx)
+                back[curBase + sIdx] = (-bestIdx).toByte()
             }
         }
 
         var sIdx = s - 1
-        if (s >= 2 && alpha[t - 1][s - 2] > alpha[t - 1][s - 1]) {
+        val lastBase = (t - 1) * s
+        if (s >= 2 && alpha[lastBase + s - 2] > alpha[lastBase + s - 1]) {
             sIdx = s - 2
         }
 
         val path = IntArray(t)
         path[t - 1] = sIdx
         for (tIdx in t - 1 downTo 1) {
-            sIdx += back[tIdx][sIdx].toInt()
+            sIdx += back[tIdx * s + sIdx].toInt()
             path[tIdx - 1] = sIdx
         }
 
-        val intervals = ArrayList<TokenInterval>()
+        val intervals = ArrayList<TokenInterval>(tokenIds.size)
         var tokenIndex = 0
         var start: Int? = null
         for (tIdx in 0 until t) {

@@ -12,18 +12,28 @@ import io.flutter.plugin.common.MethodChannel
  * Port of ios/Runner/Tajweed/TajweedChannelHandler.swift — same channel names,
  * same method names, same JSON/error shape; only the native engine underneath differs.
  */
-class TajweedChannelHandler(context: Context) : EventChannel.StreamHandler {
-    private val engine = TajweedEngine.getInstance(context)
+class TajweedChannelHandler(private val context: Context) : EventChannel.StreamHandler {
+    /** Lazy — constructing [TajweedEngine] at FlutterEngine configure hung launch when
+     * the engine eagerly parsed the 12MB canonical lexicon. */
+    private val engine by lazy { TajweedEngine.getInstance(context) }
     private val mainHandler = Handler(Looper.getMainLooper())
     private var eventSink: EventChannel.EventSink? = null
+    private var didBindEngineEvents = false
 
     fun attach(methodChannel: MethodChannel, eventChannel: EventChannel) {
         eventChannel.setStreamHandler(this)
-        engine.onEvent = { payload -> eventSink?.success(payload) }
         methodChannel.setMethodCallHandler { call, result -> handle(call, result) }
     }
 
+    private fun bindEngineEventsIfNeeded() {
+        if (didBindEngineEvents) return
+        didBindEngineEvents = true
+        engine.onEvent = { payload -> eventSink?.success(payload) }
+    }
+
     override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+        // Do not construct TajweedEngine here — listen alone must stay cheap
+        // at launch / Settings; engine is created on the first method that needs it.
         eventSink = events
     }
 
@@ -31,32 +41,110 @@ class TajweedChannelHandler(context: Context) : EventChannel.StreamHandler {
         eventSink = null
     }
 
-    fun onMemoryTrim() = engine.onMemoryWarning()
-    fun onAppBackground() = engine.onAppBackground()
+    fun onMemoryTrim() {
+        if (didBindEngineEvents) engine.onMemoryWarning()
+    }
+
+    fun onAppBackground() {
+        if (didBindEngineEvents) engine.onAppBackground()
+    }
 
     private fun handle(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "isAvailable" -> result.success(engine.isAvailable())
-            "getRecordingState" -> result.success(engine.getRecordingState())
-            "ensureModel" -> engine.ensureModel { outcome -> deliver(outcome, result) }
-            "prepareModel" -> engine.prepareModel { outcome -> deliver(outcome, result) }
+            // Flag get/set must NOT construct TajweedEngine (Settings loads this at launch).
+            "getCanonicalLexicalProductionEnabled" -> {
+                CanonicalLexicalAuthority.init(context)
+                mainHandler.post {
+                    result.success(
+                        mapOf(
+                            "enabled" to CanonicalLexicalAuthority.productionEnabled,
+                            "defaultsKey" to CanonicalLexicalAuthority.KEY,
+                        ),
+                    )
+                }
+            }
+            "setCanonicalLexicalProductionEnabled" -> {
+                CanonicalLexicalAuthority.init(context)
+                val enabled = CanonicalLexicalAuthority.parseEnabledArgument(call.argument("enabled"))
+                    ?: CanonicalLexicalAuthority.parseEnabledArgument(
+                        (call.arguments as? Map<*, *>)?.get("enabled"),
+                    )
+                if (enabled == null) {
+                    mainHandler.post {
+                        result.error(
+                            TajweedErrorCode.INVALID_ARGS,
+                            "enabled: Bool required (got ${call.argument<Any>("enabled")})",
+                            null,
+                        )
+                    }
+                    return
+                }
+                CanonicalLexicalAuthority.productionEnabled = enabled
+                mainHandler.post {
+                    result.success(
+                        mapOf(
+                            "enabled" to CanonicalLexicalAuthority.productionEnabled,
+                            "defaultsKey" to CanonicalLexicalAuthority.KEY,
+                        ),
+                    )
+                }
+            }
+            "isAvailable" -> {
+                bindEngineEventsIfNeeded()
+                result.success(engine.isAvailable())
+            }
+            "getRecordingState" -> {
+                bindEngineEventsIfNeeded()
+                result.success(engine.getRecordingState())
+            }
+            "ensureModel" -> {
+                bindEngineEventsIfNeeded()
+                engine.ensureModel { outcome -> deliver(outcome, result) }
+            }
+            "prepareModel" -> {
+                bindEngineEventsIfNeeded()
+                engine.prepareModel { outcome -> deliver(outcome, result) }
+            }
             "startRecording" -> {
+                bindEngineEventsIfNeeded()
                 val surah = call.argument<Int>("surah")
                 val ayah = call.argument<Int>("ayah")
                 val expected = call.argument<String>("expectedArabic")
+                val lexicalRef = call.argument<String>("lexicalReferenceArabic")
                 if (surah == null || ayah == null || expected == null) {
                     mainHandler.post {
                         result.error(TajweedErrorCode.INVALID_ARGS, "surah, ayah, expectedArabic required", null)
                     }
                     return
                 }
-                engine.startRecording(surah, ayah, expected) { outcome -> deliver(outcome, result) }
+                engine.startRecording(
+                    surah,
+                    ayah,
+                    expected,
+                    lexicalReferenceArabic = lexicalRef,
+                ) { outcome -> deliver(outcome, result) }
             }
-            "stopRecordingAndScore" -> engine.stopRecordingAndScore { outcome -> deliverJson(outcome, result) }
-            "cancelRecording" -> engine.cancelRecording { outcome -> deliver(outcome, result) }
+            "stopRecordingAndScore" -> {
+                bindEngineEventsIfNeeded()
+                engine.stopRecordingAndScore { outcome -> deliverJson(outcome, result) }
+            }
+            "cancelRecording" -> {
+                bindEngineEventsIfNeeded()
+                engine.cancelRecording { outcome -> deliver(outcome, result) }
+            }
             "dispose" -> {
-                engine.dispose()
+                if (didBindEngineEvents) engine.dispose()
                 mainHandler.post { result.success(null) }
+            }
+            "getActiveCoreMlInfo" -> {
+                val store = ModelStore(context.applicationContext)
+                val info = mutableMapOf<String, Any?>(
+                    "available" to store.isAvailable(),
+                    "version" to store.activeManifestVersion(),
+                    "manifestVersion" to store.activeManifestVersion(),
+                    "encoderSha256" to store.activeEncoderSha256(),
+                )
+                mainHandler.post { result.success(info) }
             }
             else -> mainHandler.post { result.notImplemented() }
         }

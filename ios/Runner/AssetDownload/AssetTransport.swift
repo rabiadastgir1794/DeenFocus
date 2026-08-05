@@ -35,6 +35,17 @@ final class URLSessionAssetTransport: AssetTransport {
   }
 
   func fetchJSON(url: URL, timeout: TimeInterval) throws -> Data {
+    // Local file catalogs (DEBUG CoreML Official/DIY override) are not HTTP —
+    // read them directly. Remote HTTPS catalogs keep the status-code check.
+    if url.isFileURL {
+      do {
+        return try Data(contentsOf: url)
+      } catch {
+        throw AssetDownloadError.network(
+          "Failed to read local catalog at \(url.path): \(error.localizedDescription)"
+        )
+      }
+    }
     var request = URLRequest(url: url)
     request.timeoutInterval = timeout
     request.cachePolicy = .reloadIgnoringLocalCacheData

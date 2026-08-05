@@ -4,8 +4,11 @@ import Foundation
 /// Offline pronunciation head: pooled encoder + token id → prob_correct.
 final class PronunciationHeadModel {
   private var model: MLModel?
+  private var packagePath: String?
 
   var isLoaded: Bool { model != nil }
+
+  var loadedPackagePath: String? { packagePath }
 
   func load(packageURL: URL) throws {
     let compiled: URL
@@ -21,10 +24,12 @@ final class PronunciationHeadModel {
       config.computeUnits = .cpuAndGPU
     }
     model = try MLModel(contentsOf: compiled, configuration: config)
+    packagePath = packageURL.path
   }
 
   func unload() {
     model = nil
+    packagePath = nil
   }
 
   /// Mean-pool encoder frames [start, end) and score token.
@@ -54,9 +59,7 @@ final class PronunciationHeadModel {
 
     // Feature provider: try common input names from upstream packages.
     let encArr = try MLMultiArray(shape: [1, NSNumber(value: dim)], dataType: .float32)
-    for d in 0..<dim {
-      encArr[d] = NSNumber(value: pooled[d])
-    }
+    MLMultiArrayFloatCopy.copy(pooled, into: encArr)
     let tokArr = try MLMultiArray(shape: [1], dataType: .int32)
     tokArr[0] = NSNumber(value: tokenId)
 

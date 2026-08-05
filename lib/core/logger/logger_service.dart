@@ -24,6 +24,9 @@ import 'log_level.dart';
 /// itself throws. All I/O runs in `async`/`await` chains so the UI isolate is
 /// not blocked by `dart:io` buffering (flush still schedules work; we never
 /// call heavy synchronous disk APIs on the UI thread beyond short `open`).
+///
+/// **Startup:** [initialize] is fire-and-forget. Launch must never await file
+/// create / trim / flush — first [log] also opens the sink lazily.
 class LoggerService {
   LoggerService._();
 
@@ -47,6 +50,7 @@ class LoggerService {
   IOSink? _sink;
   File? _logFile;
   bool _initialized = false;
+  bool _initScheduled = false;
   bool _writeFailureLogged = false;
   bool _recursiveLogGuard = false;
   int _writesSinceTrim = 0;
@@ -54,31 +58,38 @@ class LoggerService {
   /// Best-effort route or screen label for every line (navigation observer updates this).
   String? currentScreen;
 
+  /// Kick off background file open. Safe to call multiple times; never blocks
+  /// the caller — do not `await` this from `main` / first-frame paths.
   Future<void> initialize() async {
-    if (_initialized) return;
-    await _fileLock.synchronized(() async {
-      if (_initialized) return;
-      try {
-        await _ensureOpenUnlocked();
-        _initialized = true;
-        _recursiveLogGuard = true;
+    if (_initialized || _initScheduled) return;
+    _initScheduled = true;
+    try {
+      await _fileLock.synchronized(() async {
+        if (_initialized) return;
         try {
-          _sink!.writeln(
-            _formatLine(
-              LogLevel.info,
-              'LOGGER',
-              'LoggerService initialized path=${_logFile?.path ?? '(none)'}',
-            ),
-          );
-          await _sink!.flush();
-        } finally {
-          _recursiveLogGuard = false;
+          await _ensureOpenUnlocked();
+          _initialized = true;
+          _recursiveLogGuard = true;
+          try {
+            _sink!.writeln(
+              _formatLine(
+                LogLevel.info,
+                'LOGGER',
+                'LoggerService initialized path=${_logFile?.path ?? '(none)'}',
+              ),
+            );
+            // Do not flush/trim here — both are deferred to later writes so
+            // cold start never pays disk sync cost on the launch path.
+          } finally {
+            _recursiveLogGuard = false;
+          }
+        } catch (e) {
+          _noteWriteFailure(e);
         }
-        await _maybeTrimFileUnlocked();
-      } catch (e) {
-        _noteWriteFailure(e);
-      }
-    });
+      });
+    } catch (e) {
+      _noteWriteFailure(e);
+    }
   }
 
   Future<void> dispose() async {
@@ -89,6 +100,7 @@ class LoggerService {
       } catch (_) {}
       _sink = null;
       _initialized = false;
+      _initScheduled = false;
     });
   }
 
@@ -170,6 +182,7 @@ class LoggerService {
         if (_sink == null) {
           await _ensureOpenUnlocked();
           _initialized = true;
+          _initScheduled = true;
         }
         if (_sink == null) return;
         _recursiveLogGuard = true;
@@ -241,7 +254,8 @@ class LoggerService {
 
   Future<void> _maybeTrimFileUnlocked() async {
     final file = _logFile;
-    if (file == null || !await file.exists()) return;
+    if (file == null) return;
+    if (!await file.exists()) return;
     try {
       final len = await file.length();
       if (len <= _maxLogBytes) return;

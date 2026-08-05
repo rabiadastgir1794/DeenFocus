@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -16,6 +17,7 @@ import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
 import 'widgets/mushaf_page_text.dart';
 import 'widgets/quran_audio_bar.dart';
+import 'quran_reading_settings_launcher.dart';
 
 /// Surah-scoped Mushaf Page View. Opens one [surah] and swipes only the
 /// Madani Mushaf pages that contain that surah (not the full 604-page Quran).
@@ -81,18 +83,50 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
   @override
   void initState() {
     super.initState();
+    QuranTranslationService.installationRevision.addListener(
+      _onTranslationInstalled,
+    );
     _bootstrap();
     _bindPlayerState();
   }
 
   @override
   void dispose() {
+    QuranTranslationService.installationRevision.removeListener(
+      _onTranslationInstalled,
+    );
     _positionSub?.cancel();
     _durationSub?.cancel();
     if (!_loading) _pageController.dispose();
     unawaited(_audio.dispose());
     _engine.dispose();
     super.dispose();
+  }
+
+  void _onTranslationInstalled() {
+    unawaited(_reloadTranslationTexts());
+  }
+
+  Future<void> _reloadTranslationTexts() async {
+    if (_loading || !mounted) return;
+    final surahNumber = widget.surah.number;
+    final metadata = await MushafMetadata.load();
+    final ayahs = await QuranLocalRepository.instance.getAyahsBySurah(
+      surahNumber,
+    );
+    final byKey = <String, AyahRecord>{
+      for (final a in ayahs) '${a.surahNumber}:${a.ayahNumber}': a,
+    };
+    final pageAyahs = <int, List<AyahRecord>>{};
+    for (final page in _surahPages) {
+      pageAyahs[page] = metadata
+          .ayahsOfSurahOnPage(surahNumber, page)
+          .map((loc) => byKey['${loc.surah}:${loc.ayah}'])
+          .whereType<AyahRecord>()
+          .toList(growable: false);
+    }
+    if (!mounted) return;
+    setState(() => _pageAyahs = pageAyahs);
   }
 
   Future<void> _bootstrap() async {
@@ -332,13 +366,37 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
     });
   }
 
+  Future<void> _reloadDisplayPrefs() async {
+    final results = await Future.wait<Object>([
+      StorageService.quranShowEnglish,
+      StorageService.quranArabicFontSp,
+      StorageService.quranEnglishFontSp,
+      StorageService.quranLineSpacing,
+      StorageService.quranScript,
+    ]);
+    if (!mounted) return;
+    setState(() {
+      _showEnglish = results[0] as bool;
+      _arabicFontSp = results[1] as double;
+      _englishFontSp = results[2] as double;
+      _lineSpacing = results[3] as double;
+      _arabicFontFamily =
+          QuranScriptX.fromName(results[4] as String).fontFamily;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     if (_loading) {
       return Scaffold(
-        appBar: CustomAppBar(title: widget.surah.name),
+        appBar: CustomAppBar(
+          title: widget.surah.name,
+          actions: [
+            QuranReadingSettingsLauncher.appBarAction(context),
+          ],
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -347,9 +405,14 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
     final hasSelection =
         _selectedIndex >= 0 && _selectedIndex < ayahs.length;
     final showAudioBar = _showAudioBar && hasSelection;
+    final selectedAyah = hasSelection ? ayahs[_selectedIndex] : null;
     // Translation and audio never show together — avoids the overlap.
+    // Hide strip while default English is still downloading (empty text).
     final showTranslation =
-        hasSelection && _showEnglish && !showAudioBar;
+        hasSelection &&
+        _showEnglish &&
+        !showAudioBar &&
+        (selectedAyah?.englishText.trim().isNotEmpty ?? false);
     final showPlayOnlyChip =
         hasSelection && !_showEnglish && !showAudioBar;
     final mushafPage = _currentMushafPage;
@@ -374,6 +437,10 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
             onPressed: _pageIndex < _surahPages.length - 1
                 ? () => _goToPageIndex(_pageIndex + 1)
                 : null,
+          ),
+          QuranReadingSettingsLauncher.appBarAction(
+            context,
+            onReturn: () => unawaited(_reloadDisplayPrefs()),
           ),
         ],
       ),

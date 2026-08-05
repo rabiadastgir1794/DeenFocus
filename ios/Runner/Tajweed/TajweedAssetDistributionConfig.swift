@@ -3,14 +3,18 @@ import Foundation
 /// Production model-distribution config (ADR-008/ADR-009). Points at the real
 /// Cloudflare R2 public bucket's `catalog.json` — mirrors Android's
 /// `TajweedAssetDistributionConfig.kt`, which is the "only switch that turns
-/// the previously-inert network path on" (same wording applies here). The
-/// `ios` manifest currently served from this catalog is the DIY
-/// self-generated CoreML pack (see
-/// `memory/features/tajweed/diy-coreml-nemo-production-attempt-2026-07-30.md`
-/// and `memory/features/tajweed/ios-asset-distribution-migration-2026-07-30.md`),
-/// not the official ANE-optimized package. Set back to `nil` to fully disable
-/// network downloads again (falls back to Xcode-copied `TajweedImport` or
-/// `MODEL_MISSING`, exactly as before this was configured).
+/// the previously-inert network path on" (same wording applies here).
+///
+/// iOS supports a **dual CoreML architecture**: DIY (`single_function_fixed`)
+/// and official HF multifunction packs are both first-class. The active pack
+/// is chosen by the remote catalog/manifest in Release builds. **Production
+/// default (2026-08-03):** Official HF CoreML `ios/tajweed/v1.2.0/` via
+/// `catalog.json`. **DEBUG** builds can override Official / DIY / catalog via
+/// Settings → iOS CoreML override without changing the live catalog. DIY
+/// `ios/tajweed/v1.1.0/` remains on R2 for rollback. See
+/// `memory/features/tajweed/ios-dual-coreml-architecture-2026-07-30.md`.
+/// Set `catalogURL` back to `nil` to fully disable network downloads again
+/// (falls back to Xcode-copied `TajweedImport` or `MODEL_MISSING`).
 ///
 /// `var` (not `let`) solely so XCTest can null this out for the duration of a
 /// test (see `RunnerTests`/`TajweedAssetSyncTests` `setUp`/`tearDown`) —

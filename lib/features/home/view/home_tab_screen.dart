@@ -269,7 +269,11 @@ class _HomeTabViewState extends State<_HomeTabView>
   String _verseText(AppLocalizations l10n, HomeDailyVerse? verse) {
     if (verse == null) return l10n.homeDailyVerseFallback;
     final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
-    final quote = useArabic ? verse.arabicText : verse.englishText;
+    final quote = useArabic
+        ? verse.arabicText
+        : (verse.englishText.trim().isNotEmpty
+              ? verse.englishText
+              : verse.arabicText);
     return '"$quote" — ${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}';
   }
 

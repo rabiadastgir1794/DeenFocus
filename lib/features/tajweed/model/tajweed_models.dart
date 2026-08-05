@@ -144,6 +144,8 @@ class TajweedScoreResult {
     required this.wordAccuracy,
     required this.exactMatch,
     required this.tokens,
+    this.timingsMs = const <String, double>{},
+    this.modelInfo = const <String, dynamic>{},
   });
 
   final String ref;
@@ -153,6 +155,9 @@ class TajweedScoreResult {
   final double wordAccuracy;
   final bool exactMatch;
   final List<TajweedToken> tokens;
+  /// Native + Flutter end-to-end stage timings (ms). Instrumentation only.
+  final Map<String, double> timingsMs;
+  final Map<String, dynamic> modelInfo;
 
   factory TajweedScoreResult.fromJson(Map<String, dynamic> json) {
     final rawTokens = json['tokens'];
@@ -174,7 +179,21 @@ class TajweedScoreResult {
       wordAccuracy: (json['wordAccuracy'] as num?)?.toDouble() ?? 0,
       exactMatch: json['exactMatch'] as bool? ?? false,
       tokens: tokens,
+      timingsMs: _doubleMap(json['timingsMs']),
+      modelInfo: json['modelInfo'] is Map
+          ? Map<String, dynamic>.from(json['modelInfo'] as Map)
+          : const <String, dynamic>{},
     );
+  }
+
+  static Map<String, double> _doubleMap(Object? raw) {
+    if (raw is! Map) return const <String, double>{};
+    final out = <String, double>{};
+    for (final e in raw.entries) {
+      final v = e.value;
+      if (v is num) out['${e.key}'] = v.toDouble();
+    }
+    return out;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -185,6 +204,8 @@ class TajweedScoreResult {
     'wordAccuracy': wordAccuracy,
     'exactMatch': exactMatch,
     'tokens': tokens.map((t) => t.toJson()).toList(),
+    if (timingsMs.isNotEmpty) 'timingsMs': timingsMs,
+    if (modelInfo.isNotEmpty) 'modelInfo': modelInfo,
   };
 
   TajweedTokenSummary get tokenSummary => TajweedTokenSummary.fromTokens(tokens);
@@ -339,4 +360,5 @@ abstract final class TajweedEventType {
   static const recordingState = 'recordingState';
   static const interrupted = 'interrupted';
   static const modelUnloaded = 'modelUnloaded';
+  static const pipelineTimings = 'pipelineTimings';
 }

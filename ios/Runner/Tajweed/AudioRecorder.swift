@@ -3,7 +3,16 @@ import Foundation
 
 /// Native PCM capture at 16 kHz mono via AVAudioEngine.
 final class TajweedAudioRecorder {
-  private let engine = AVAudioEngine()
+  /// Lazy — constructing `AVAudioEngine` during AppDelegate launch has caused
+  /// launch-screen hangs on device when TajweedEngine was eagerly created.
+  private var _engine: AVAudioEngine?
+  private var engine: AVAudioEngine {
+    if let existing = _engine { return existing }
+    let created = AVAudioEngine()
+    _engine = created
+    return created
+  }
+
   private var buffers: [Float] = []
   private let lock = NSLock()
   private(set) var isRecording = false
@@ -41,7 +50,8 @@ final class TajweedAudioRecorder {
     )
 
     buffers.removeAll(keepingCapacity: true)
-    let input = engine.inputNode
+    let audioEngine = engine
+    let input = audioEngine.inputNode
     let format = input.outputFormat(forBus: 0)
     guard format.sampleRate > 0, format.channelCount > 0 else {
       throw TajweedNativeError(TajweedErrorCode.micBusy, "Input format unavailable.")
@@ -59,9 +69,9 @@ final class TajweedAudioRecorder {
       self?.append(buffer: buffer, sourceFormat: format, targetFormat: converterFormat)
     }
 
-    engine.prepare()
+    audioEngine.prepare()
     do {
-      try engine.start()
+      try audioEngine.start()
     } catch {
       input.removeTap(onBus: 0)
       throw TajweedNativeError(TajweedErrorCode.micBusy, error.localizedDescription)
@@ -72,9 +82,9 @@ final class TajweedAudioRecorder {
   func stop() -> [Float] {
     lock.lock()
     defer { lock.unlock() }
-    if isRecording {
-      engine.inputNode.removeTap(onBus: 0)
-      engine.stop()
+    if isRecording, let audioEngine = _engine {
+      audioEngine.inputNode.removeTap(onBus: 0)
+      audioEngine.stop()
       isRecording = false
     }
     NotificationCenter.default.removeObserver(

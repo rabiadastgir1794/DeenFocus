@@ -1,0 +1,17 @@
+{
+  "packId": "quran-translation-en",
+  "kind": "translation_pack",
+  "displayName": "English (Saheeh International)",
+  "language": "en",
+  "translator": "Saheeh International",
+  "latestVersion": "1.0.0",
+  "minimumAppVersion": "1.0.0",
+  "manifestUrl": {
+    "ios": "https://pub-470cb85af0ad4c5f92edb5094b8a7dbb.r2.dev/translations/en-saheeh/1.0.0/manifest.json",
+    "android": "https://pub-470cb85af0ad4c5f92edb5094b8a7dbb.r2.dev/translations/en-saheeh/1.0.0/manifest.json"
+  },
+  "approxSizeBytes": {
+    "ios": 1246473,
+    "android": 1246473
+  }
+}

@@ -116,6 +116,29 @@ class ReadingEngine extends ChangeNotifier {
     };
   }
 
+  /// Re-fetch ayah text for the current unit (e.g. after a translation pack
+  /// finishes downloading) without changing the open unit/position.
+  Future<void> reloadAyahTexts() async {
+    if (_isLoading) return;
+    switch (mode) {
+      case ReadingMode.surah:
+        _ayahs = await _repository.getAyahsBySurah(_unitNumber);
+      case ReadingMode.juz:
+        final metadata = await _ensureMushaf();
+        final locations = metadata.ayahsInJuz(_unitNumber);
+        _ayahs = await _repository.getAyahsByKeys(
+          locations.map((l) => (l.surah, l.ayah)).toList(growable: false),
+        );
+      case ReadingMode.page:
+        final metadata = await _ensureMushaf();
+        final locations = metadata.ayahsOnPage(_unitNumber);
+        _ayahs = await _repository.getAyahsByKeys(
+          locations.map((l) => (l.surah, l.ayah)).toList(growable: false),
+        );
+    }
+    notifyListeners();
+  }
+
   bool get hasNextUnit => _unitNumber < totalUnits;
   bool get hasPreviousUnit => _unitNumber > 1;
 

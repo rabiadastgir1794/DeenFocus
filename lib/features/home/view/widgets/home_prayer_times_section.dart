@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/theme/light_theme.dart' show kAppFontFamily;
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -72,7 +72,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
             children: [
               Text(
                 l10n.homeTodaysPrayers,
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(fontFamily: kAppFontFamily, 
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   height: 1.2,
@@ -82,7 +82,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               const Spacer(),
               Text(
                 DateFormat.yMMMEd(l10n.localeName).format(DateTime.now()),
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(fontFamily: kAppFontFamily, 
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   height: 1.2,
@@ -95,7 +95,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
           if (prayerTimes == null)
             Text(
               l10n.homePrayerTimesUnavailable,
-              style: GoogleFonts.plusJakartaSans(
+              style: TextStyle(fontFamily: kAppFontFamily, 
                 fontSize: 14,
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -134,7 +134,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               children: [
                 Text(
                   l10n.homeNextPrayerIn,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: TextStyle(fontFamily: kAppFontFamily, 
                     fontSize: 14,
                     height: 1.2,
                     color: colorScheme.onSurfaceVariant,
@@ -143,7 +143,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 const SizedBox(width: 8),
                 Text(
                   _formatRemaining(remaining),
-                  style: GoogleFonts.plusJakartaSans(
+                  style: TextStyle(fontFamily: kAppFontFamily, 
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     height: 1.2,
@@ -261,7 +261,7 @@ class HomePrayerTile extends StatelessWidget {
             Text(
               _labelForPrayer(l10n, slot.id),
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
+              style: TextStyle(fontFamily: kAppFontFamily, 
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
                 height: 1.2,
@@ -272,7 +272,7 @@ class HomePrayerTile extends StatelessWidget {
             Text(
               DateFormat.jm(l10n.localeName).format(slot.time),
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
+              style: TextStyle(fontFamily: kAppFontFamily, 
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 height: 1.2,

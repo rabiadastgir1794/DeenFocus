@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tajweed/tajweed_entry_point.dart';
 import '../reading_engine/quran_audio_controller.dart';
+import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_repeat_mode.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
 import 'widgets/ayah_card.dart';
 import 'widgets/quran_audio_bar.dart';
+import 'quran_reading_settings_launcher.dart';
 
 /// Juz Mode reading screen (Phase 1). Same reading + audio experience as the
 /// Surah screen, but scoped to a Juz's ayah range via [ReadingEngine], with
@@ -45,6 +48,8 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   final ScrollController _listController = ScrollController();
 
   bool _showEnglish = true;
+  bool _showTransliteration = true;
+  QuranLayoutTheme _layoutTheme = QuranLayoutTheme.classic;
   double _arabicFontSp = 20;
   double _englishFontSp = 15;
   double _lineSpacing = 1.8;
@@ -67,12 +72,18 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   void initState() {
     super.initState();
     _engine.addListener(_onEngineChanged);
+    QuranTranslationService.installationRevision.addListener(
+      _onTranslationInstalled,
+    );
     _bootstrap();
     _bindPlayerState();
   }
 
   @override
   void dispose() {
+    QuranTranslationService.installationRevision.removeListener(
+      _onTranslationInstalled,
+    );
     _engine.removeListener(_onEngineChanged);
     _positionSub?.cancel();
     _durationSub?.cancel();
@@ -86,9 +97,15 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     if (mounted) setState(() {});
   }
 
+  void _onTranslationInstalled() {
+    unawaited(_engine.reloadAyahTexts());
+  }
+
   Future<void> _bootstrap() async {
     final results = await Future.wait<Object>([
       StorageService.quranShowEnglish,
+      StorageService.quranShowTransliteration,
+      StorageService.quranLayoutTheme,
       StorageService.quranArabicFontSp,
       StorageService.quranEnglishFontSp,
       StorageService.quranLineSpacing,
@@ -101,15 +118,17 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     if (!mounted) return;
     setState(() {
       _showEnglish = results[0] as bool;
-      _arabicFontSp = results[1] as double;
-      _englishFontSp = results[2] as double;
-      _lineSpacing = results[3] as double;
-      _speed = results[4] as double;
-      _volume = results[5] as double;
-      _repeatMode = QuranRepeatMode.fromName(results[6] as String);
+      _showTransliteration = results[1] as bool;
+      _layoutTheme = QuranLayoutTheme.fromName(results[2] as String);
+      _arabicFontSp = results[3] as double;
+      _englishFontSp = results[4] as double;
+      _lineSpacing = results[5] as double;
+      _speed = results[6] as double;
+      _volume = results[7] as double;
+      _repeatMode = QuranRepeatMode.fromName(results[8] as String);
       _arabicFontFamily =
-          QuranScriptX.fromName(results[7] as String).fontFamily;
-      _tajweedEnabled = results[8] as bool;
+          QuranScriptX.fromName(results[9] as String).fontFamily;
+      _tajweedEnabled = results[10] as bool;
     });
 
     await _audio.loadPreferences();
@@ -229,6 +248,29 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     _closeAudioBar();
   }
 
+  Future<void> _reloadDisplayPrefs() async {
+    final results = await Future.wait<Object>([
+      StorageService.quranShowEnglish,
+      StorageService.quranShowTransliteration,
+      StorageService.quranLayoutTheme,
+      StorageService.quranArabicFontSp,
+      StorageService.quranEnglishFontSp,
+      StorageService.quranLineSpacing,
+      StorageService.quranScript,
+    ]);
+    if (!mounted) return;
+    setState(() {
+      _showEnglish = results[0] as bool;
+      _showTransliteration = results[1] as bool;
+      _layoutTheme = QuranLayoutTheme.fromName(results[2] as String);
+      _arabicFontSp = results[3] as double;
+      _englishFontSp = results[4] as double;
+      _lineSpacing = results[5] as double;
+      _arabicFontFamily =
+          QuranScriptX.fromName(results[6] as String).fontFamily;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -248,6 +290,10 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
             tooltip: l10n.quranNextJuz,
             icon: const Icon(Icons.chevron_right_rounded),
             onPressed: _engine.hasNextUnit ? _goToNextJuz : null,
+          ),
+          QuranReadingSettingsLauncher.appBarAction(
+            context,
+            onReturn: () => unawaited(_reloadDisplayPrefs()),
           ),
         ],
       ),
@@ -282,6 +328,8 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
                         isCurrent: index == _playingIndex,
                         isPlaying: _audio.player.playing,
                         showEnglish: _showEnglish,
+                        showTransliteration: _showTransliteration,
+                        layoutTheme: _layoutTheme,
                         arabicFontSp: _arabicFontSp,
                         englishFontSp: _englishFontSp,
                         lineSpacing: _lineSpacing,
@@ -295,7 +343,10 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
                                 ayah: ayah.ayahNumber,
                                 arabicText: ayah.arabicText,
                                 translation:
-                                    _showEnglish ? ayah.englishText : null,
+                                    _showEnglish &&
+                                        ayah.englishText.trim().isNotEmpty
+                                    ? ayah.englishText
+                                    : null,
                               )
                             : null,
                       );

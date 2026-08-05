@@ -24,33 +24,53 @@ python3 tool/ai_assets/generate_manifest.py \
   --spec tool/ai_assets/specs/hafs-en-v1-1.0.0-android.example.json \
   --out /tmp/release/tajweed/packs/hafs-en-v1/1.0.0/android/model_manifest.json
 
-# 3. Upload artifacts + the manifest to Cloudflare R2 (see ADR-009 §2 for the
-#    exact `aws s3 cp` commands and Cache-Control headers).
+# 3. Upload artifacts + the manifest to Cloudflare R2 (bucket
+#    `deenfocus-ai-assets`, public host pub-…r2.dev):
+./tool/ai_assets/upload_to_r2.sh \
+  translations/en-saheeh/1.0.0 \
+  tool/ai_assets/staging/quran-translation-en/1.0.0
 
-# 4. Generate the shared catalog.json, pointing at the just-uploaded manifest
-#    URLs (approxSizeBytes can be computed automatically from the local
-#    staging dirs via "approxSizeBytesFromDir" — see the example spec).
-python3 tool/ai_assets/generate_catalog.py \
-  --spec tool/ai_assets/specs/catalog.example.json \
-  --out /tmp/release/catalog.json
+# 4. Merge the new pack into the live catalog.json and upload LAST
+#    (ADR-009 atomic go-live). Tajweed / other packs are preserved.
+python3 tool/ai_assets/merge_catalog.py \
+  --add tool/ai_assets/specs/catalog-pack-quran-translation-en.json \
+  --out /tmp/release/catalog.json \
+  --upload
+```
 
-# 5. Upload catalog.json LAST (see ADR-009 §2 — this is the single atomic
-#    "go live" step; clients only ever discover new versions by polling it).
+### Adding another translation language (no app code change)
+
+1. Stage JSON under `tool/ai_assets/staging/quran-translation-<lang>/<version>/translation.json`
+2. Copy/adapt `specs/quran-translation-en-1.0.0.json` → generate manifest
+3. Copy/adapt `specs/catalog-pack-quran-translation-en.json` (set `language`, `packId`, URLs, size)
+4. Upload staging dir + merge catalog:
+
+```bash
+./tool/ai_assets/upload_to_r2.sh translations/<slug>/<version> tool/ai_assets/staging/...
+python3 tool/ai_assets/merge_catalog.py --add tool/ai_assets/specs/catalog-pack-….json \
+  --out /tmp/release/catalog.json --upload
 ```
 
 ## Files
 
-- `generate_manifest.py` — one asset's `model_manifest.json`. Spec = friendly
-  name → local filename map + pass-through metadata (`version`, `packId`,
-  `kind`, `artifactBaseUrl`, `minimumAppVersion`, plus any `extra` fields).
-  Computes SHA-256 for every named file.
-- `generate_catalog.py` — the shared `catalog.json` listing every asset.
+- `generate_manifest.py` — one asset's `model_manifest.json` / `manifest.json`.
+  Spec = friendly name → local filename map + pass-through metadata
+  (`version`, `packId`, `kind`, `artifactBaseUrl`, `minimumAppVersion`, plus
+  any `extra` fields). Computes SHA-256 for every named file.
+- `generate_catalog.py` — rebuild the shared `catalog.json` from a full spec.
   Validates required fields (`packId`, `latestVersion`, `manifestUrl`), rejects
   duplicate `packId`s, stamps `updatedAt`, and can auto-compute
   `approxSizeBytes` from a local directory instead of a hand-typed number.
+- `merge_catalog.py` — fetch live catalog, upsert pack entries by `packId`,
+  optionally upload `catalog.json` (preferred for additive releases).
+- `upload_to_r2.sh` — wrangler upload of a file or directory to
+  `deenfocus-ai-assets` with ADR-009 Cache-Control conventions.
 - `specs/*.example.json` — copy one of these per real release; don't edit the
   `.example.json` files in place (keep them as living documentation of the
   expected shape).
+- `specs/catalog-pack-*.json` — single-pack snippets for `merge_catalog.py`.
+- `staging/` — local release staging (not required in git; regenerate via
+  `generate_manifest.py` before upload).
 
 ## iOS `.mlpackage` bundles are directories, not single files (resolved 2026-07-30)
 

@@ -13,6 +13,9 @@ abstract class StorageService {
   static const String _keyLocationLongitude = 'user_location_longitude';
   static const String _keyQuranSeedVersion = 'quran_seed_version';
   static const String _keyQuranShowEnglish = 'quran_show_english';
+  static const String _keyQuranTranslationLanguage = 'quran_translation_language';
+  static const String _keyQuranShowTransliteration = 'quran_show_transliteration';
+  static const String _keyQuranLayoutTheme = 'quran_layout_theme';
   static const String _keyQuranArabicFontSp = 'quran_arabic_font_sp';
   static const String _keyQuranEnglishFontSp = 'quran_english_font_sp';
   static const String _keyTasbihSeedVersion = 'tasbih_seed_version';
@@ -184,6 +187,36 @@ abstract class StorageService {
   static Future<void> setQuranShowEnglish(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyQuranShowEnglish, value);
+  }
+
+  static Future<String> get quranTranslationLanguage async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranTranslationLanguage) ?? 'en';
+  }
+
+  static Future<void> setQuranTranslationLanguage(String languageCode) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranTranslationLanguage, languageCode);
+  }
+
+  static Future<bool> get quranShowTransliteration async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyQuranShowTransliteration) ?? true;
+  }
+
+  static Future<void> setQuranShowTransliteration(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyQuranShowTransliteration, value);
+  }
+
+  static Future<String> get quranLayoutTheme async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranLayoutTheme) ?? 'classic';
+  }
+
+  static Future<void> setQuranLayoutTheme(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranLayoutTheme, value);
   }
 
   static Future<double> get quranArabicFontSp async {

@@ -29,7 +29,10 @@ class MainActivity : FlutterActivity() {
     private val locationSearchChannelName = "com.app.deenly.deenly/location_search"
     private val tajweedMethodChannelName = "com.app.deenly.deenly/tajweed"
     private val tajweedEventChannelName = "com.app.deenly.deenly/tajweed_events"
+    private val quranTranslationMethodChannelName = "com.app.deenly.deenly/quran_translations"
+    private val quranTranslationEventChannelName = "com.app.deenly.deenly/quran_translation_events"
     private var tajweedChannelHandler: TajweedChannelHandler? = null
+    private var quranTranslationChannelHandler: com.rnr.deenfocus.qurantranslation.QuranTranslationChannelHandler? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -84,6 +87,15 @@ class MainActivity : FlutterActivity() {
         tajweedHandler.attach(
             MethodChannel(flutterEngine.dartExecutor.binaryMessenger, tajweedMethodChannelName),
             EventChannel(flutterEngine.dartExecutor.binaryMessenger, tajweedEventChannelName),
+        )
+
+        val translationHandler = quranTranslationChannelHandler
+            ?: com.rnr.deenfocus.qurantranslation.QuranTranslationChannelHandler(applicationContext).also {
+                quranTranslationChannelHandler = it
+            }
+        translationHandler.attach(
+            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, quranTranslationMethodChannelName),
+            EventChannel(flutterEngine.dartExecutor.binaryMessenger, quranTranslationEventChannelName),
         )
     }
 

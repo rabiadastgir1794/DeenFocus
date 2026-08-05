@@ -361,6 +361,80 @@ final class TajweedAssetSyncTests: XCTestCase {
     }
   }
 
+  /// Official HF multifunction pack: manifest declares `encoderBuckets` +
+  /// optional `encoderFunctionPrefix`. Switching catalog to this pack must
+  /// yield `.multifunction` without any Swift rebuild.
+  func testPerformFirstInstallReadsOfficialMultifunctionEncoderApi() throws {
+    let transport = FakeAssetTransport()
+    transport.jsonResponses[catalogURL] = catalogJSON(version: "1.0.0")
+    let weightBin = Data((0..<2000).map { UInt8(($0 * 3) % 256) })
+    let headWeight = Data([1, 2, 3, 4])
+    let tokenizer = Data([9, 9])
+    let tokens = Data([8, 8])
+    let bundleFiles = [
+      "Manifest.json", "Data/com.apple.CoreML/model.mlmodel",
+      "Data/com.apple.CoreML/weights/weight.bin",
+    ]
+    transport.fileBytes[artifactBaseV1.appendingPathComponent("fastconformer-quran-offline-ane.mlpackage/Manifest.json")] =
+      Data("{}".utf8)
+    transport.fileBytes[
+      artifactBaseV1.appendingPathComponent(
+        "fastconformer-quran-offline-ane.mlpackage/Data/com.apple.CoreML/model.mlmodel"
+      )
+    ] = Data([1])
+    transport.fileBytes[
+      artifactBaseV1.appendingPathComponent(
+        "fastconformer-quran-offline-ane.mlpackage/Data/com.apple.CoreML/weights/weight.bin"
+      )
+    ] = weightBin
+    transport.fileBytes[artifactBaseV1.appendingPathComponent("pronunciation-head.mlpackage/Manifest.json")] =
+      Data("{}".utf8)
+    transport.fileBytes[
+      artifactBaseV1.appendingPathComponent(
+        "pronunciation-head.mlpackage/Data/com.apple.CoreML/model.mlmodel"
+      )
+    ] = Data([2])
+    transport.fileBytes[
+      artifactBaseV1.appendingPathComponent(
+        "pronunciation-head.mlpackage/Data/com.apple.CoreML/weights/weight.bin"
+      )
+    ] = headWeight
+    transport.fileBytes[artifactBaseV1.appendingPathComponent("tokenizer.model")] = tokenizer
+    transport.fileBytes[artifactBaseV1.appendingPathComponent("tokens.txt")] = tokens
+
+    let manifest: [String: Any] = [
+      "version": "1.2.0",
+      "encoder": "fastconformer-quran-offline-ane.mlpackage",
+      "encoderFiles": bundleFiles,
+      "pronunciationHead": "pronunciation-head.mlpackage",
+      "pronunciationHeadFiles": bundleFiles,
+      "tokenizer": "tokenizer.model",
+      "tokens": "tokens.txt",
+      "artifactBaseUrl": artifactBaseV1.absoluteString,
+      "encoderApi": "multifunction",
+      "encoderBuckets": [80, 200, 400, 800, 1600, 2400, 4800],
+      "encoderFunctionPrefix": "predict_T",
+      "minimumAppVersion": "1.0.0",
+      "sha256": [
+        "encoder": sha256Hex(weightBin),
+        "pronunciationHead": sha256Hex(headWeight),
+        "tokenizer": sha256Hex(tokenizer),
+      ],
+    ]
+    transport.jsonResponses[manifestURLV1] = try! JSONSerialization.data(withJSONObject: manifest)
+    let manager = makeManager(transport)
+
+    try manager.performFirstInstall(assetId: assetId, catalogURL: catalogURL)
+
+    XCTAssertTrue(ModelStore.shared.isAvailable())
+    if case .multifunction(let buckets) = ModelStore.shared.encoderApi() {
+      XCTAssertEqual(buckets, [80, 200, 400, 800, 1600, 2400, 4800])
+    } else {
+      XCTFail("Expected multifunction encoder API from official-style manifest")
+    }
+    XCTAssertEqual(ModelStore.shared.encoderFunctionPrefix(), "predict_T")
+  }
+
   func testCatalogWithUnrelatedAssetEntryIsIgnored() {
     // A shared multi-asset catalog (ADR-009) may list other assets (e.g. a
     // future Qari pack) alongside Tajweed. Tajweed's own lookup must match

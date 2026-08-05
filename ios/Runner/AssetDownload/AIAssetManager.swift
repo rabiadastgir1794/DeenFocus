@@ -69,6 +69,14 @@ final class AIAssetManager {
     try? data.write(to: stateURL(plugin), options: .atomic)
   }
 
+  /// Clears the per-asset update freshness / installed-version bookmark so the
+  /// next `ensure`/`checkForUpdate` re-reads the catalog. Used by DEBUG CoreML
+  /// pack switching (Official ↔ DIY) so downgrades are not skipped.
+  func clearUpdateState(assetId: String) {
+    guard let plugin = plugin(for: assetId) else { return }
+    try? fm.removeItem(at: stateURL(plugin))
+  }
+
   /// True when the last successful catalog check for `assetId` happened
   /// within `intervalHours` — gates "don't hit the network every launch, only
   /// check a tiny manifest at most once a day."

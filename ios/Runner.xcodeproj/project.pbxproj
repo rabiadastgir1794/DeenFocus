@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		F4A1B01F00000000000000001 /* TimedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -18,6 +19,7 @@
 		F4A1B00500000000000000001 /* CtcDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00500000000000000001 /* CtcDecoder.swift */; };
 		F4A1B00600000000000000001 /* CtcAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00600000000000000001 /* CtcAligner.swift */; };
 		F4A1B00700000000000000001 /* OfflineAsrModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00700000000000000001 /* OfflineAsrModel.swift */; };
+		F4A1B02100000000000000001 /* MLMultiArrayFloatCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F02100000000000000001 /* MLMultiArrayFloatCopy.swift */; };
 		F4A1B00800000000000000001 /* PronunciationHeadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00800000000000000001 /* PronunciationHeadModel.swift */; };
 		F4A1B00900000000000000001 /* ModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00900000000000000001 /* ModelStore.swift */; };
 		F4A1B01000000000000000001 /* TajweedEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01000000000000000001 /* TajweedEngine.swift */; };
@@ -26,6 +28,20 @@
 		F4A1B01300000000000000001 /* TajweedAssetDistributionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */; };
 		F4A1B01400000000000000001 /* TajweedAssetSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01400000000000000001 /* TajweedAssetSync.swift */; };
 		F4A1B01500000000000000001 /* TajweedLexicalScoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */; };
+		F4A1B01600000000000000001 /* TajweedLiveCaptureDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01600000000000000001 /* TajweedLiveCaptureDump.swift */; };
+		F4A1B01700000000000000001 /* TajweedDevModelOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01700000000000000001 /* TajweedDevModelOverride.swift */; };
+		F4A1B02200000000000000001 /* TajweedEngineFailover.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F02200000000000000001 /* TajweedEngineFailover.swift */; };
+		F4A1B01800000000000000001 /* CanonicalStage2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01800000000000000001 /* CanonicalStage2.swift */; };
+		F4A1B01900000000000000001 /* CanonicalLexiconStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01900000000000000001 /* CanonicalLexiconStore.swift */; };
+		F4A1B01A00000000000000001 /* CanonicalLexicalShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01A00000000000000001 /* CanonicalLexicalShadow.swift */; };
+		F4A1B01D00000000000000001 /* CanonicalLexicalAuthority.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01D00000000000000001 /* CanonicalLexicalAuthority.swift */; };
+		F4A1B01E00000000000000001 /* CanonicalLexicalEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01E00000000000000001 /* CanonicalLexicalEvaluator.swift */; };
+		F4A1B01B00000000000000001 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = F4A1F01B00000000000000001 /* manifest.json */; };
+		F4A1B01C00000000000000001 /* ayahs.ndjson in Resources */ = {isa = PBXBuildFile; fileRef = F4A1F01C00000000000000001 /* ayahs.ndjson */; };
+		F4B1B00100000000000000001 /* TranslationCatalogCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00100000000000000001 /* TranslationCatalogCache.swift */; };
+		F4B1B00200000000000000001 /* TranslationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00200000000000000001 /* TranslationStore.swift */; };
+		F4B1B00300000000000000001 /* TranslationAssetSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00300000000000000001 /* TranslationAssetSync.swift */; };
+		F4B1B00400000000000000001 /* QuranTranslationChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00400000000000000001 /* QuranTranslationChannelHandler.swift */; };
 		F4A2B00100000000000000001 /* AssetDownloadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00100000000000000001 /* AssetDownloadError.swift */; };
 		F4A2B00200000000000000001 /* AssetCatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00200000000000000001 /* AssetCatalogModels.swift */; };
 		F4A2B00300000000000000001 /* AssetTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00300000000000000001 /* AssetTransport.swift */; };
@@ -100,6 +116,8 @@
 		03A07CC8A63E9CEF5D10D669 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimedPluginRegistrant.m; sourceTree = "<group>"; };
+		F4A1F02000000000000000001 /* TimedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimedPluginRegistrant.h; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3910659B790A7DA1B5B33992 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -113,6 +131,7 @@
 		F4A1F00500000000000000001 /* CtcDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtcDecoder.swift; sourceTree = "<group>"; };
 		F4A1F00600000000000000001 /* CtcAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtcAligner.swift; sourceTree = "<group>"; };
 		F4A1F00700000000000000001 /* OfflineAsrModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsrModel.swift; sourceTree = "<group>"; };
+		F4A1F02100000000000000001 /* MLMultiArrayFloatCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLMultiArrayFloatCopy.swift; sourceTree = "<group>"; };
 		F4A1F00800000000000000001 /* PronunciationHeadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationHeadModel.swift; sourceTree = "<group>"; };
 		F4A1F00900000000000000001 /* ModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStore.swift; sourceTree = "<group>"; };
 		F4A1F01000000000000000001 /* TajweedEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedEngine.swift; sourceTree = "<group>"; };
@@ -121,6 +140,20 @@
 		F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetDistributionConfig.swift; sourceTree = "<group>"; };
 		F4A1F01400000000000000001 /* TajweedAssetSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetSync.swift; sourceTree = "<group>"; };
 		F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedLexicalScoring.swift; sourceTree = "<group>"; };
+		F4A1F01600000000000000001 /* TajweedLiveCaptureDump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedLiveCaptureDump.swift; sourceTree = "<group>"; };
+		F4A1F01700000000000000001 /* TajweedDevModelOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedDevModelOverride.swift; sourceTree = "<group>"; };
+		F4A1F02200000000000000001 /* TajweedEngineFailover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedEngineFailover.swift; sourceTree = "<group>"; };
+		F4A1F01800000000000000001 /* CanonicalStage2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalStage2.swift; sourceTree = "<group>"; };
+		F4A1F01900000000000000001 /* CanonicalLexiconStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexiconStore.swift; sourceTree = "<group>"; };
+		F4A1F01A00000000000000001 /* CanonicalLexicalShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexicalShadow.swift; sourceTree = "<group>"; };
+		F4A1F01D00000000000000001 /* CanonicalLexicalAuthority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexicalAuthority.swift; sourceTree = "<group>"; };
+		F4A1F01E00000000000000001 /* CanonicalLexicalEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexicalEvaluator.swift; sourceTree = "<group>"; };
+		F4A1F01B00000000000000001 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
+		F4A1F01C00000000000000001 /* ayahs.ndjson */ = {isa = PBXFileReference; lastKnownFileType = text; path = ayahs.ndjson; sourceTree = "<group>"; };
+		F4B1F00100000000000000001 /* TranslationCatalogCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationCatalogCache.swift; sourceTree = "<group>"; };
+		F4B1F00200000000000000001 /* TranslationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationStore.swift; sourceTree = "<group>"; };
+		F4B1F00300000000000000001 /* TranslationAssetSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationAssetSync.swift; sourceTree = "<group>"; };
+		F4B1F00400000000000000001 /* QuranTranslationChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTranslationChannelHandler.swift; sourceTree = "<group>"; };
 		F4A2F00100000000000000001 /* AssetDownloadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadError.swift; sourceTree = "<group>"; };
 		F4A2F00200000000000000001 /* AssetCatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetCatalogModels.swift; sourceTree = "<group>"; };
 		F4A2F00300000000000000001 /* AssetTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetTransport.swift; sourceTree = "<group>"; };
@@ -270,6 +303,15 @@
 			path = Debug;
 			sourceTree = "<group>";
 		};
+		F4A1GCLX0000000000000001 /* canonical_lexicon */ = {
+			isa = PBXGroup;
+			children = (
+				F4A1F01B00000000000000001 /* manifest.json */,
+				F4A1F01C00000000000000001 /* ayahs.ndjson */,
+			);
+			path = canonical_lexicon;
+			sourceTree = "<group>";
+		};
 		F4A1GTJW0000000000000001 /* Tajweed */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +322,7 @@
 				F4A1F00500000000000000001 /* CtcDecoder.swift */,
 				F4A1F00600000000000000001 /* CtcAligner.swift */,
 				F4A1F00700000000000000001 /* OfflineAsrModel.swift */,
+				F4A1F02100000000000000001 /* MLMultiArrayFloatCopy.swift */,
 				F4A1F00800000000000000001 /* PronunciationHeadModel.swift */,
 				F4A1F00900000000000000001 /* ModelStore.swift */,
 				F4A1F01000000000000000001 /* TajweedEngine.swift */,
@@ -287,9 +330,29 @@
 				F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */,
 				F4A1F01400000000000000001 /* TajweedAssetSync.swift */,
 				F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */,
+				F4A1F01600000000000000001 /* TajweedLiveCaptureDump.swift */,
+				F4A1F01700000000000000001 /* TajweedDevModelOverride.swift */,
+				F4A1F02200000000000000001 /* TajweedEngineFailover.swift */,
+				F4A1F01800000000000000001 /* CanonicalStage2.swift */,
+				F4A1F01900000000000000001 /* CanonicalLexiconStore.swift */,
+				F4A1F01A00000000000000001 /* CanonicalLexicalShadow.swift */,
+				F4A1F01D00000000000000001 /* CanonicalLexicalAuthority.swift */,
+				F4A1F01E00000000000000001 /* CanonicalLexicalEvaluator.swift */,
+				F4A1GCLX0000000000000001 /* canonical_lexicon */,
 				F4A1GDBG0000000000000001 /* Debug */,
 			);
 			path = Tajweed;
+			sourceTree = "<group>";
+		};
+		F4B1GRP0000000000000001 /* QuranTranslation */ = {
+			isa = PBXGroup;
+			children = (
+				F4B1F00100000000000000001 /* TranslationCatalogCache.swift */,
+				F4B1F00200000000000000001 /* TranslationStore.swift */,
+				F4B1F00300000000000000001 /* TranslationAssetSync.swift */,
+				F4B1F00400000000000000001 /* QuranTranslationChannelHandler.swift */,
+			);
+			path = QuranTranslation;
 			sourceTree = "<group>";
 		};
 		F4A2GRP00000000000000001 /* AssetDownload */ = {
@@ -319,8 +382,11 @@
 				97C147021CF9000F007C117D /* Info.plist */,
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
+				F4A1F02000000000000000001 /* TimedPluginRegistrant.h */,
+				F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				F4A1GTJW0000000000000001 /* Tajweed */,
+				F4B1GRP0000000000000001 /* QuranTranslation */,
 				F4A2GRP00000000000000001 /* AssetDownload */,
 				F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
@@ -549,6 +615,8 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				F4A1B01B00000000000000001 /* manifest.json in Resources */,
+				F4A1B01C00000000000000001 /* ayahs.ndjson in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -717,6 +785,7 @@
 				F4A1B00500000000000000001 /* CtcDecoder.swift in Sources */,
 				F4A1B00600000000000000001 /* CtcAligner.swift in Sources */,
 				F4A1B00700000000000000001 /* OfflineAsrModel.swift in Sources */,
+				F4A1B02100000000000000001 /* MLMultiArrayFloatCopy.swift in Sources */,
 				F4A1B00800000000000000001 /* PronunciationHeadModel.swift in Sources */,
 				F4A1B00900000000000000001 /* ModelStore.swift in Sources */,
 				F4A1B01000000000000000001 /* TajweedEngine.swift in Sources */,
@@ -725,6 +794,18 @@
 				F4A1B01300000000000000001 /* TajweedAssetDistributionConfig.swift in Sources */,
 				F4A1B01400000000000000001 /* TajweedAssetSync.swift in Sources */,
 				F4A1B01500000000000000001 /* TajweedLexicalScoring.swift in Sources */,
+				F4A1B01600000000000000001 /* TajweedLiveCaptureDump.swift in Sources */,
+				F4A1B01700000000000000001 /* TajweedDevModelOverride.swift in Sources */,
+				F4A1B02200000000000000001 /* TajweedEngineFailover.swift in Sources */,
+				F4A1B01800000000000000001 /* CanonicalStage2.swift in Sources */,
+				F4A1B01900000000000000001 /* CanonicalLexiconStore.swift in Sources */,
+				F4A1B01A00000000000000001 /* CanonicalLexicalShadow.swift in Sources */,
+				F4A1B01D00000000000000001 /* CanonicalLexicalAuthority.swift in Sources */,
+				F4A1B01E00000000000000001 /* CanonicalLexicalEvaluator.swift in Sources */,
+				F4B1B00100000000000000001 /* TranslationCatalogCache.swift in Sources */,
+				F4B1B00200000000000000001 /* TranslationStore.swift in Sources */,
+				F4B1B00300000000000000001 /* TranslationAssetSync.swift in Sources */,
+				F4B1B00400000000000000001 /* QuranTranslationChannelHandler.swift in Sources */,
 				F4A2B00100000000000000001 /* AssetDownloadError.swift in Sources */,
 				F4A2B00200000000000000001 /* AssetCatalogModels.swift in Sources */,
 				F4A2B00300000000000000001 /* AssetTransport.swift in Sources */,
@@ -738,6 +819,7 @@
 				F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				F4A1B01F00000000000000001 /* TimedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1057,6 +1139,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rnr.deenfocus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

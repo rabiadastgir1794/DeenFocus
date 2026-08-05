@@ -57,6 +57,14 @@ class ModelStore(private val context: Context) {
             File(activeDir, tokens).exists()
     }
 
+    fun activeManifestVersion(): String =
+        readManifest()?.optString("version", "") ?: ""
+
+    fun activeEncoderSha256(): String {
+        val sha = readManifest()?.optJSONObject("sha256") ?: return ""
+        return sha.optString("encoder", "")
+    }
+
     fun encoderFile(): File = File(activeDir, requireManifest().getString("encoder"))
     fun headFile(): File = File(activeDir, requireManifest().getString("pronunciationHead"))
     fun tokensFile(): File = File(activeDir, requireManifest().optString("tokens", "tokens.txt"))

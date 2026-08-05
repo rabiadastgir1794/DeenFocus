@@ -30,6 +30,8 @@ class TajweedEngine private constructor(context: Context) {
 
     private var state: TajweedRecordingState = TajweedRecordingState.IDLE
     private var expectedArabic: String = ""
+    /** Canonical boundary text (usually Uthmani) for [TajweedLexicalScoring.lexicalWords]. */
+    private var lexicalReferenceArabic: String = ""
     private var surah: Int = 0
     private var ayah: Int = 0
     @Volatile private var cancelled = false
@@ -38,6 +40,10 @@ class TajweedEngine private constructor(context: Context) {
 
     init {
         recorder.onInterrupted = { reason -> handleInterruption(reason) }
+        // Bind only — do NOT parse ayahs.ndjson here. That ~12MB load on the
+        // main thread during configureFlutterEngine hung device launch (ANR).
+        CanonicalLexicalAuthority.init(appContext)
+        CanonicalLexiconStore.bind(appContext)
     }
 
     fun getRecordingState(): String = stateLock.withLock { state.wireValue }
@@ -86,6 +92,7 @@ class TajweedEngine private constructor(context: Context) {
         surah: Int,
         ayah: Int,
         expectedArabic: String,
+        lexicalReferenceArabic: String? = null,
         completion: (Result<Unit>) -> Unit,
     ) {
         workExecutor.execute {
@@ -116,6 +123,8 @@ class TajweedEngine private constructor(context: Context) {
                 this.surah = surah
                 this.ayah = ayah
                 this.expectedArabic = expectedArabic
+                this.lexicalReferenceArabic =
+                    lexicalReferenceArabic?.takeIf { it.isNotEmpty() } ?: expectedArabic
                 recorder.start()
                 setState(TajweedRecordingState.RECORDING)
                 completion(Result.success(Unit))
@@ -242,13 +251,23 @@ class TajweedEngine private constructor(context: Context) {
     // region Scoring pipeline
 
     private fun score(pcm: FloatArray): Map<String, Any?> {
+        val pipelineT0 = System.nanoTime()
+        val timingsMs = LinkedHashMap<String, Double>()
+
         val duration = pcm.size.toDouble() / MelFrontend.SAMPLE_RATE
+
+        val tMel0 = System.nanoTime()
         val melResult = MelFrontend.logMel(pcm)
+        timingsMs["melFrontendMs"] = (System.nanoTime() - tMel0) / 1_000_000.0
+
         // ONNX encoder accepts dynamic T (unlike CoreML's fixed buckets). Passing the
         // unpadded mel avoids trailing silence frames that can leak into CTC decode
         // as spurious tokens (seen on 02_basfar_ikhlas during Phase 4B emulator QA).
+        val tInfer0 = System.nanoTime()
         val asrOut = asr.predict(melResult.features, melResult.time)
+        timingsMs["onnxInferenceMs"] = (System.nanoTime() - tInfer0) / 1_000_000.0
 
+        val tCtc0 = System.nanoTime()
         val argmax = asrOut.logprobs.map { row ->
             var best = 0
             var bestV = -Float.MAX_VALUE
@@ -269,18 +288,141 @@ class TajweedEngine private constructor(context: Context) {
             throw TajweedNativeException(TajweedErrorCode.MODEL_LOAD_FAILED, "Tokenizer missing.")
         }
         val hypothesis = tok.decode(collapsed)
-        val expectedWords = splitWords(expectedArabic)
-        val hypWords = splitWords(hypothesis)
+        timingsMs["ctcDecodingMs"] = (System.nanoTime() - tCtc0) / 1_000_000.0
+
+        val reference = lexicalReferenceArabic.ifEmpty { expectedArabic }
+        val hypWords = TajweedLexicalScoring.prepareHypothesisWords(hypothesis)
+
+        // Lazy lexicon load on the scoring worker (never main/launch thread).
+        val tLexLoad0 = System.nanoTime()
+        CanonicalLexiconStore.loadIfNeeded()
+        timingsMs["canonicalLexiconLoadMs"] = (System.nanoTime() - tLexLoad0) / 1_000_000.0
+
+        val tLex0 = System.nanoTime()
+        val ops: List<TajweedLexicalScoring.WordAlignOp>
+        val expectedWords: List<String>
+        val expectedNormForLog: List<String>
+        val hypNormForLog: List<String>
+        val lexicalAuthority: String
+
+        if (CanonicalLexicalAuthority.productionEnabled) {
+            Log.i("TajweedLexical", "authority branch=canonical flag=ON ref=$surah:$ayah")
+            val canonical = CanonicalLexicalEvaluator.evaluate(surah, ayah, hypWords)
+                ?: throw TajweedNativeException(
+                    TajweedErrorCode.INFERENCE_FAILED,
+                    "Canonical lexicon missing for $surah:$ayah (fail closed).",
+                )
+            ops = canonical.ops
+            expectedWords = canonical.expectedCanonical
+            expectedNormForLog = canonical.expectedCanonical
+            hypNormForLog = canonical.hypCanonical
+            lexicalAuthority = "canonical"
+        } else {
+            Log.i("TajweedLexical", "authority branch=legacy flag=OFF ref=$surah:$ayah")
+            expectedWords = TajweedLexicalScoring.prepareExpectedWords(expectedArabic, reference)
+            ops = TajweedLexicalScoring.alignWords(expectedWords, hypWords)
+            expectedNormForLog = expectedWords.map { normalizeArabic(it) }
+            hypNormForLog = hypWords.map { normalizeArabic(it) }
+            lexicalAuthority = "legacy"
+        }
+        timingsMs["lexicalAlignmentMs"] = (System.nanoTime() - tLex0) / 1_000_000.0
 
         // Lexical-first (ADR-006): word DP decides identity; pronunciation head runs
         // only on matched words using FA of the *hypothesis* (spoken) token path.
-        val ops = TajweedLexicalScoring.alignWords(expectedWords, hypWords)
-        val tokens = buildLexicalFirstTokens(ops, collapsed, asrOut, tok)
+        val (tokens, faMs, headMs) = buildLexicalFirstTokens(ops, collapsed, asrOut, tok)
+        timingsMs["ctcForcedAlignMs"] = faMs
+        timingsMs["pronunciationHeadInferMs"] = headMs
+        timingsMs["pronunciationHeadMs"] = faMs + headMs
+        timingsMs["scorePipelineMs"] = (System.nanoTime() - pipelineT0) / 1_000_000.0
+        timingsMs["totalPipelineMs"] = timingsMs["scorePipelineMs"]!!
 
         // Lexical correctness only — pronunciation severity does not reduce this %.
         val wordAccuracy = TajweedLexicalScoring.wordAccuracyFromTokens(tokens, expectedWords.size)
 
+        val legacyOpsForShadow = if (CanonicalLexiconStore.shadowEnabled()) {
+            val legacyExpected = TajweedLexicalScoring.prepareExpectedWords(expectedArabic, reference)
+            TajweedLexicalScoring.alignWords(legacyExpected, hypWords)
+        } else {
+            ops
+        }
+        val shadowResult = CanonicalLexicalShadow.compare(
+            surah = surah,
+            ayah = ayah,
+            hypWords = hypWords,
+            legacyOps = legacyOpsForShadow,
+            legacyWordAccuracy = wordAccuracy,
+        )
+
         val exact = normalizeArabic(hypothesis) == normalizeArabic(expectedArabic) && expectedArabic.isNotEmpty()
+
+        Log.i(
+            "TajweedLexical",
+            "ref=$surah:$ayah authority=$lexicalAuthority expectedRaw='$expectedArabic' " +
+                "expectedNorm=$expectedNormForLog " +
+                "hypRaw='$hypothesis' hypNorm=$hypNormForLog " +
+                "ops=${ops.map { TajweedLexicalScoring.formatOpForLog(it) }} acc=$wordAccuracy",
+        )
+        Log.i(
+            "TajweedPipeline",
+            "timingsMs mel=${"%.2f".format(timingsMs["melFrontendMs"])} " +
+                "onnx=${"%.2f".format(timingsMs["onnxInferenceMs"])} " +
+                "ctc=${"%.2f".format(timingsMs["ctcDecodingMs"])} " +
+                "lexLoad=${"%.2f".format(timingsMs["canonicalLexiconLoadMs"])} " +
+                "lexical=${"%.2f".format(timingsMs["lexicalAlignmentMs"])} " +
+                "fa=${"%.2f".format(timingsMs["ctcForcedAlignMs"])} " +
+                "head=${"%.2f".format(timingsMs["pronunciationHeadInferMs"])} " +
+                "scoreTotal=${"%.2f".format(timingsMs["scorePipelineMs"])}",
+        )
+
+        val trailingStart = maxOf(0, melResult.time / 8)
+        val trailingNonBlank = argmax.withIndex().count { (idx, id) ->
+            idx >= trailingStart && id != CtcDecoder.BLANK_ID
+        }
+        val tDump0 = System.nanoTime()
+        TajweedLiveCaptureDump.dump(
+            appContext,
+            pcm,
+            mapOf(
+                "platform" to "android",
+                "ref" to "$surah:$ayah",
+                "lexicalAuthority" to lexicalAuthority,
+                "originalExpectedAyah" to expectedArabic,
+                "normalizedExpectedWords" to expectedNormForLog,
+                "originalAsrHypothesis" to hypothesis,
+                "normalizedAsrWords" to hypNormForLog,
+                "lexicalOps" to ops.map { op ->
+                    buildMap {
+                        put("op", op.op.name.lowercase())
+                        put("text", op.text)
+                        op.reason?.let { put("reason", it) }
+                        put("expectedIndex", op.expectedIndex)
+                        put("hypIndex", op.hypIndex)
+                        put(
+                            "expectedNorm",
+                            op.expectedIndex?.let { ei ->
+                                expectedNormForLog.getOrNull(ei) ?: expectedWords.getOrNull(ei)?.let { normalizeArabic(it) }
+                            },
+                        )
+                        put("hypNorm", op.hypIndex?.let { normalizeArabic(hypWords[it]) })
+                    }
+                },
+                "expected" to expectedArabic,
+                "hypothesis" to hypothesis,
+                "durationSec" to duration,
+                "pcmSamples" to pcm.size,
+                "melTime" to melResult.time,
+                "logprobsFrames" to asrOut.logprobs.size,
+                "encoderFrames" to asrOut.encoderOutput.size,
+                "ctcTokenCount" to collapsed.size,
+                "trailingNonBlankArgmax" to trailingNonBlank,
+                "wordAccuracy" to wordAccuracy,
+                "exactMatch" to exact,
+                "tokens" to tokens,
+                "timingsMs" to timingsMs,
+                "canonicalShadow" to CanonicalLexicalShadow.toStagesPayload(shadowResult),
+            ),
+        )
+        timingsMs["audioFileWriteMs"] = (System.nanoTime() - tDump0) / 1_000_000.0
 
         return mapOf(
             "ref" to "$surah:$ayah",
@@ -290,6 +432,7 @@ class TajweedEngine private constructor(context: Context) {
             "wordAccuracy" to wordAccuracy,
             "exactMatch" to exact,
             "tokens" to tokens,
+            "timingsMs" to timingsMs,
         )
     }
 
@@ -298,22 +441,33 @@ class TajweedEngine private constructor(context: Context) {
      * pronunciation head run only for [TajweedLexicalScoring.LexicalOp.MATCH] ops,
      * using hypothesis CTC token ids (what was actually said) for frame spans.
      */
+    private data class LexicalTokensTimed(
+        val tokens: List<Map<String, Any?>>,
+        val forcedAlignMs: Double,
+        val headInferMs: Double,
+    )
+
     private fun buildLexicalFirstTokens(
         ops: List<TajweedLexicalScoring.WordAlignOp>,
         hypIds: List<Int>,
         asrOut: AsrInferenceResult,
         tok: SentencePieceTokenizer,
-    ): List<Map<String, Any?>> {
+    ): LexicalTokensTimed {
         val matchHypIndices = ops.mapNotNull { op ->
             if (op.op == TajweedLexicalScoring.LexicalOp.MATCH) op.hypIndex else null
         }.toSet()
 
         // Hyp word → (minProb, startSec, endSec) from head, only for matched hyp words.
         val matchPron = HashMap<Int, Triple<Float, Double?, Double?>>()
+        var forcedAlignMs = 0.0
+        var headInferMs = 0.0
         if (matchHypIndices.isNotEmpty() && hypIds.isNotEmpty() && asrOut.logprobs.isNotEmpty()) {
             try {
+                val tFa0 = System.nanoTime()
                 val intervals = CtcAligner.forcedAlign(asrOut.logprobs, hypIds)
+                forcedAlignMs = (System.nanoTime() - tFa0) / 1_000_000.0
                 val pieceWordIndex = TajweedLexicalScoring.pieceWordIndices(hypIds) { tok.startsNewWord(it) }
+                val tHead0 = System.nanoTime()
                 for (interval in intervals) {
                     val pieceIdx = interval.tokenIndex
                     if (pieceIdx !in pieceWordIndex.indices) continue
@@ -344,12 +498,13 @@ class TajweedEngine private constructor(context: Context) {
                         )
                     }
                 }
+                headInferMs = (System.nanoTime() - tHead0) / 1_000_000.0
             } catch (_: Exception) {
                 // Lexical statuses still stand; matched words keep default pronunciation ok.
             }
         }
 
-        return ops.map { op ->
+        val tokens = ops.map { op ->
             when (op.op) {
                 TajweedLexicalScoring.LexicalOp.MATCH -> {
                     val hypIdx = op.hypIndex
@@ -372,6 +527,7 @@ class TajweedEngine private constructor(context: Context) {
                     lexical = "sub",
                     pronunciation = null,
                     prob = 0.0f,
+                    reason = op.reason,
                 )
                 TajweedLexicalScoring.LexicalOp.MISS -> TajweedLexicalScoring.tokenMap(
                     text = op.text,
@@ -379,6 +535,7 @@ class TajweedEngine private constructor(context: Context) {
                     lexical = "miss",
                     pronunciation = null,
                     prob = 0.0f,
+                    reason = op.reason,
                 )
                 TajweedLexicalScoring.LexicalOp.EXTRA -> TajweedLexicalScoring.tokenMap(
                     text = op.text,
@@ -386,9 +543,11 @@ class TajweedEngine private constructor(context: Context) {
                     lexical = "extra",
                     pronunciation = null,
                     prob = 0.0f,
+                    reason = op.reason,
                 )
             }
         }
+        return LexicalTokensTimed(tokens, forcedAlignMs, headInferMs)
     }
 
     private fun validateAudioQuality(pcm: FloatArray) {
@@ -489,6 +648,7 @@ class TajweedEngine private constructor(context: Context) {
         this.surah = surah
         this.ayah = ayah
         this.expectedArabic = expectedArabic
+        this.lexicalReferenceArabic = expectedArabic
 
         val t1 = System.nanoTime()
         val report = score(pcm)

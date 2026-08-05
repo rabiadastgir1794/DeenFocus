@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/quran_script_texts.dart';
+import 'quran_translation_texts.dart';
 
 class SurahSummary {
   const SurahSummary({
@@ -91,7 +93,7 @@ class QuranLocalRepository {
 
   static const String _surahBoxName = 'quran_surahs';
   static const String _ayahBoxName = 'quran_ayahs';
-  static const int _seedVersion = 1;
+  static const int _seedVersion = 2;
 
   bool _initialized = false;
   Future<void>? _initializing;
@@ -146,7 +148,7 @@ class QuranLocalRepository {
             .map(AyahRecord.fromMap)
             .toList(growable: false)
           ..sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
-    return _applySelectedScript(records);
+    return _applyTranslation(await _applySelectedScript(records));
   }
 
   /// All 6236 ayahs, ordered by surah then ayah number — same order as the
@@ -162,7 +164,7 @@ class QuranLocalRepository {
                 ? surahCompare
                 : a.ayahNumber.compareTo(b.ayahNumber);
           });
-    return _applySelectedScript(records);
+    return _applyTranslation(await _applySelectedScript(records));
   }
 
   /// Looks up ayahs by exact (surah, ayah) pairs, preserving the order of
@@ -178,12 +180,12 @@ class QuranLocalRepository {
       final map = _ayahBox.get('$surah:$ayah');
       if (map != null) records.add(AyahRecord.fromMap(map));
     }
-    return _applySelectedScript(records);
+    return _applyTranslation(await _applySelectedScript(records));
   }
 
-  /// Overlays the user's selected script orthography onto Hive-backed ayahs
-  /// (English + structure stay in Hive; Arabic glyphs come from
-  /// `assets/quran/text/<script>.json`).
+  /// Overlays the user's selected script orthography onto Hive-backed ayahs.
+  /// Arabic glyphs come from bundled `assets/quran/text/<script>.json`;
+  /// translation text comes from downloaded packs at read time.
   Future<List<AyahRecord>> _applySelectedScript(
     List<AyahRecord> records,
   ) async {
@@ -198,22 +200,38 @@ class QuranLocalRepository {
         .toList(growable: false);
   }
 
-  Future<void> _seedFromAssets() async {
-    final arabicRaw = await rootBundle.loadString('assets/raw/quran_paak.json');
-    final englishRaw = await rootBundle.loadString(
-      'assets/raw/english_translation.json',
-    );
-    final arabicData = (jsonDecode(arabicRaw) as List<dynamic>).cast<Map>();
-    final englishData = (jsonDecode(englishRaw) as List<dynamic>).cast<Map>();
+  /// Overlays downloaded translation text when translation is enabled.
+  /// Prefer the selected pack; if missing, fall back to default English when
+  /// installed; otherwise leave Arabic-only (empty englishText).
+  Future<List<AyahRecord>> _applyTranslation(
+    List<AyahRecord> records,
+  ) async {
+    if (records.isEmpty) return records;
+    if (!await StorageService.quranShowEnglish) return records;
 
-    final Map<int, Map<String, dynamic>> englishBySurah =
-        <int, Map<String, dynamic>>{};
-    for (final surah in englishData) {
-      final index = int.tryParse('${surah['@index']}');
-      if (index != null) {
-        englishBySurah[index] = Map<String, dynamic>.from(surah);
+    var language = await StorageService.quranTranslationLanguage;
+    if (!await QuranTranslationService.isAvailable(language)) {
+      final fallback = QuranTranslationService.defaultLanguageCode;
+      if (language != fallback &&
+          await QuranTranslationService.isAvailable(fallback)) {
+        language = fallback;
+      } else {
+        return records;
       }
     }
+
+    final texts = await QuranTranslationTexts.load(language);
+    return records
+        .map((a) {
+          final text = texts.textFor(a.surahNumber, a.ayahNumber);
+          return text == null ? a : a.copyWith(englishText: text);
+        })
+        .toList(growable: false);
+  }
+
+  Future<void> _seedFromAssets() async {
+    final arabicRaw = await rootBundle.loadString('assets/raw/quran_paak.json');
+    final arabicData = (jsonDecode(arabicRaw) as List<dynamic>).cast<Map>();
 
     final Map<dynamic, Map> surahRows = <dynamic, Map>{};
     final Map<dynamic, Map> ayahRows = <dynamic, Map>{};
@@ -226,11 +244,6 @@ class QuranLocalRepository {
       final ayat = (surah['aya'] as List<dynamic>)
           .map((e) => Map<String, dynamic>.from(e as Map))
           .toList(growable: false);
-      final englishSurahAyat =
-          (englishBySurah[surahNumber]?['aya'] as List<dynamic>?)
-              ?.map((e) => Map<String, dynamic>.from(e as Map))
-              .toList(growable: false) ??
-          const <Map<String, dynamic>>[];
 
       surahRows[surahNumber] = SurahSummary(
         number: surahNumber,
@@ -245,16 +258,12 @@ class QuranLocalRepository {
       for (final ayah in ayat) {
         final ayahNumber = int.tryParse('${ayah['@index']}');
         if (ayahNumber == null) continue;
-        final englishAyah = englishSurahAyat.firstWhere(
-          (a) => int.tryParse('${a['@index']}') == ayahNumber,
-          orElse: () => const <String, dynamic>{},
-        );
 
         final record = AyahRecord(
           surahNumber: surahNumber,
           ayahNumber: ayahNumber,
           arabicText: '${ayah['@text'] ?? ''}',
-          englishText: '${englishAyah['@text'] ?? ''}',
+          englishText: '',
         );
         ayahRows['$surahNumber:$ayahNumber'] = record.toMap();
       }

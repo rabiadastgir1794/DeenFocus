@@ -1,11 +1,22 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../features/tajweed/model/tajweed_models.dart';
 import 'storage_service.dart';
 
 /// Flutter facade for on-device Tajweed (CoreML iOS / ONNX Android).
+///
+/// **Production (Release/TestFlight):** [ensureModel] / [prepareModel] /
+/// recording / scoring always use the platform production pack from
+/// `catalog.json` (iOS CoreML, Android ONNX). That path is **not** gated by
+/// `kDebugMode` / `#if DEBUG`.
+///
+/// **Debug-only:** [setDevCoreMlSource], [getDevCoreMlSource], and the
+/// Settings “CoreML override” / Asset Debug UIs — those are hidden in Release;
+/// native override is a no-op when `TajweedDevModelOverride.isAllowed == false`.
+/// Canonical lexical scoring is always on in every build (not a toggle).
 ///
 /// Platform detection stays here. UI and ViewModels must not branch on
 /// CoreML vs ONNX. See ADR-006 / ADR-007.
@@ -88,19 +99,41 @@ class TajweedService {
   }
 
   /// Triggers native download/verify/activate (ADR-007). Progress via [downloadProgress].
+  ///
+  /// Call only from Tajweed practice / DEBUG pack flows — never from app launch,
+  /// resume, or unrelated screens.
   static Future<void> ensureModel() => _invoke<void>('ensureModel');
 
-  static Future<void> prepareModel() => _invoke<void>('prepareModel');
+  /// Warm-loads native ASR + pronunciation head for inference.
+  ///
+  /// **Production call site:** only [TajweedModelSession._run] (via
+  /// `ensurePrepared`), which runs when the user opens Tajweed practice and the
+  /// session is not yet ready, or immediately after a fresh download / Official↔DIY
+  /// switch. Must **not** be called from `main()`, providers, app resume, Settings
+  /// init, or any screen outside the Tajweed feature.
+  static Future<void> prepareModel() {
+    assert(() {
+      debugPrint(
+        '[TajweedService] prepareModel() — expected only from TajweedModelSession '
+        'or explicit Tajweed DEBUG install',
+      );
+      return true;
+    }());
+    return _invoke<void>('prepareModel');
+  }
 
   static Future<void> startRecording({
     required int surah,
     required int ayah,
     required String expectedArabic,
+    String? lexicalReferenceArabic,
   }) {
     return _invoke<void>('startRecording', <String, dynamic>{
       'surah': surah,
       'ayah': ayah,
       'expectedArabic': expectedArabic,
+      if (lexicalReferenceArabic != null && lexicalReferenceArabic.isNotEmpty)
+        'lexicalReferenceArabic': lexicalReferenceArabic,
     });
   }
 
@@ -150,5 +183,78 @@ class TajweedService {
     } on MissingPluginException {
       // No-op when plugin absent.
     }
+  }
+
+  /// DEBUG iOS only: `catalog` | `official` | `diy`. Release always reports
+  /// `catalog`. Also returns whether the native DEBUG override is active.
+  static Future<String> getDevCoreMlSource() async {
+    try {
+      final raw = await _methodChannel.invokeMethod<dynamic>('getDevCoreMlSource');
+      if (raw is Map) {
+        final map = Map<String, dynamic>.from(raw);
+        return (map['source'] as String?) ?? 'catalog';
+      }
+      if (raw is String) return raw;
+      return 'catalog';
+    } on MissingPluginException {
+      return 'catalog';
+    } on PlatformException catch (e) {
+      _rethrowPlatform(e);
+    }
+  }
+
+  /// Whether native Debug override is compiled in (`overrideAllowed`).
+  static Future<bool> isDevCoreMlOverrideAllowed() async {
+    try {
+      final raw = await _methodChannel.invokeMethod<dynamic>('getDevCoreMlSource');
+      if (raw is Map) {
+        return Map<String, dynamic>.from(raw)['overrideAllowed'] == true;
+      }
+      return false;
+    } on MissingPluginException {
+      return false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  /// DEBUG iOS only: select which CoreML pack `ensureModel` downloads.
+  /// Release no-ops. After changing, call [ensureModel] to download/activate.
+  static Future<void> setDevCoreMlSource(String source) async {
+    try {
+      await _methodChannel.invokeMethod<void>('setDevCoreMlSource', <String, dynamic>{
+        'source': source,
+      });
+    } on MissingPluginException {
+      // No-op.
+    } on PlatformException catch (e) {
+      _rethrowPlatform(e);
+    }
+  }
+
+  /// Active pack diagnostics (version, encoderApi, DEBUG source).
+  static Future<Map<String, dynamic>> getActiveCoreMlInfo() async {
+    try {
+      final raw = await _methodChannel.invokeMethod<dynamic>('getActiveCoreMlInfo');
+      if (raw is Map) {
+        return Map<String, dynamic>.from(raw);
+      }
+      return <String, dynamic>{'available': false};
+    } on MissingPluginException {
+      return <String, dynamic>{'available': false};
+    } on PlatformException catch (e) {
+      _rethrowPlatform(e);
+    }
+  }
+
+  /// Canonical lexical (ADR-010) is always the production scorer.
+  /// Kept for channel compatibility; always returns `true`.
+  static Future<bool> getCanonicalLexicalProductionEnabled() async {
+    return true;
+  }
+
+  /// No-op — Canonical cannot be disabled. Always returns `true`.
+  static Future<bool> setCanonicalLexicalProductionEnabled(bool enabled) async {
+    return true;
   }
 }

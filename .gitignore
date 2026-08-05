@@ -72,3 +72,18 @@ tajweed-lab/.ruff_cache/
 .wrangler/
 
 tajweed-lab/experiments/nemo_coreml_investigation/
+
+# Cursor IDE local settings (machine-specific)
+.cursor/settings.json
+
+# AI asset staging dumps (published to R2; regenerate via tool/ai_assets)
+tool/ai_assets/staging/
+
+# Agent memory notes / research dumps (not needed to build or run the app)
+memory/features/
+memory/decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md
+
+# Tajweed lab experiment reports / shadow runs (local research only)
+tajweed-lab/experiments/**/reports/
+tajweed-lab/experiments/canonical_shadow/
+

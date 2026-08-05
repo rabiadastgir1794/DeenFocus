@@ -11,7 +11,7 @@ import '../reading_engine/reading_mode.dart';
 import 'juz_list_screen.dart';
 import 'juz_reading_screen.dart';
 import 'mushaf_page_screen.dart';
-import 'reading_settings_screen.dart';
+import 'quran_reading_settings_launcher.dart';
 import 'surah_detail_bottom_sheet.dart';
 import 'widgets/continue_reading_card.dart';
 
@@ -171,9 +171,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
   }
 
   Future<void> _openReadingSettings() async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const ReadingSettingsScreen()),
-    );
+    await QuranReadingSettingsLauncher.open(context);
     if (mounted) await _loadContinueReading();
   }
 

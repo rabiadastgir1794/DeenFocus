@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tajweed/tajweed_entry_point.dart';
 import '../data/quran_local_repository.dart';
+import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_recitation.dart';
 import '../reading_engine/quran_repeat_mode.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
+import 'widgets/ayah_card.dart';
 import 'widgets/quran_audio_bar.dart';
+import 'quran_reading_settings_launcher.dart';
 
 class SurahDetailBottomSheet extends StatefulWidget {
   const SurahDetailBottomSheet({super.key, required this.surah, this.initialAyah});
@@ -38,6 +42,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   List<AyahRecord> _ayahs = const <AyahRecord>[];
   bool _loadingAyahs = true;
   bool _showEnglish = true;
+  bool _showTransliteration = true;
+  QuranLayoutTheme _layoutTheme = QuranLayoutTheme.classic;
   double _arabicFontSp = 20;
   double _englishFontSp = 15;
   double _lineSpacing = 1.8;
@@ -61,12 +67,18 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   void initState() {
     super.initState();
     _listController.addListener(_handleListScroll);
+    QuranTranslationService.installationRevision.addListener(
+      _onTranslationInstalled,
+    );
     _bootstrap();
     _bindPlayerState();
   }
 
   @override
   void dispose() {
+    QuranTranslationService.installationRevision.removeListener(
+      _onTranslationInstalled,
+    );
     _listController.removeListener(_handleListScroll);
     _positionSub?.cancel();
     _durationSub?.cancel();
@@ -76,10 +88,25 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     super.dispose();
   }
 
+  void _onTranslationInstalled() {
+    unawaited(_reloadAyahTexts());
+  }
+
+  Future<void> _reloadAyahTexts() async {
+    if (_loadingAyahs || !mounted) return;
+    final ayahs = await QuranLocalRepository.instance.getAyahsBySurah(
+      widget.surah.number,
+    );
+    if (!mounted) return;
+    setState(() => _ayahs = ayahs);
+  }
+
   Future<void> _bootstrap() async {
     final results = await Future.wait<Object>([
       QuranLocalRepository.instance.getAyahsBySurah(widget.surah.number),
       StorageService.quranShowEnglish,
+      StorageService.quranShowTransliteration,
+      StorageService.quranLayoutTheme,
       StorageService.quranArabicFontSp,
       StorageService.quranEnglishFontSp,
       StorageService.quranPlaybackSpeed,
@@ -94,15 +121,17 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     setState(() {
       _ayahs = results[0] as List<AyahRecord>;
       _showEnglish = results[1] as bool;
-      _arabicFontSp = results[2] as double;
-      _englishFontSp = results[3] as double;
-      _playbackSpeed = results[4] as double;
-      _playbackVolume = results[5] as double;
-      _repeatMode = QuranRepeatMode.fromName(results[6] as String);
-      _lineSpacing = results[7] as double;
+      _showTransliteration = results[2] as bool;
+      _layoutTheme = QuranLayoutTheme.fromName(results[3] as String);
+      _arabicFontSp = results[4] as double;
+      _englishFontSp = results[5] as double;
+      _playbackSpeed = results[6] as double;
+      _playbackVolume = results[7] as double;
+      _repeatMode = QuranRepeatMode.fromName(results[8] as String);
+      _lineSpacing = results[9] as double;
       _arabicFontFamily =
-          QuranScriptX.fromName(results[8] as String).fontFamily;
-      _tajweedEnabled = results[9] as bool;
+          QuranScriptX.fromName(results[10] as String).fontFamily;
+      _tajweedEnabled = results[11] as bool;
       _loadingAyahs = false;
     });
 
@@ -289,33 +318,26 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     });
   }
 
-  Future<void> _toggleShowEnglish(bool value) async {
-    await StorageService.setQuranShowEnglish(value);
-    if (!mounted) return;
-    setState(() => _showEnglish = value);
-  }
-
-  Future<void> _increaseFont() async {
-    final arabic = (_arabicFontSp + 1).clamp(16, 32).toDouble();
-    final english = (_englishFontSp + 1).clamp(12, 24).toDouble();
-    await StorageService.setQuranArabicFontSp(arabic);
-    await StorageService.setQuranEnglishFontSp(english);
-    if (!mounted) return;
-    setState(() {
-      _arabicFontSp = arabic;
-      _englishFontSp = english;
-    });
-  }
-
-  Future<void> _decreaseFont() async {
-    final arabic = (_arabicFontSp - 1).clamp(16, 32).toDouble();
-    final english = (_englishFontSp - 1).clamp(12, 24).toDouble();
-    await StorageService.setQuranArabicFontSp(arabic);
-    await StorageService.setQuranEnglishFontSp(english);
+  Future<void> _reloadDisplayPrefs() async {
+    final results = await Future.wait<Object>([
+      StorageService.quranShowEnglish,
+      StorageService.quranShowTransliteration,
+      StorageService.quranLayoutTheme,
+      StorageService.quranArabicFontSp,
+      StorageService.quranEnglishFontSp,
+      StorageService.quranLineSpacing,
+      StorageService.quranScript,
+    ]);
     if (!mounted) return;
     setState(() {
-      _arabicFontSp = arabic;
-      _englishFontSp = english;
+      _showEnglish = results[0] as bool;
+      _showTransliteration = results[1] as bool;
+      _layoutTheme = QuranLayoutTheme.fromName(results[2] as String);
+      _arabicFontSp = results[3] as double;
+      _englishFontSp = results[4] as double;
+      _lineSpacing = results[5] as double;
+      _arabicFontFamily =
+          QuranScriptX.fromName(results[6] as String).fontFamily;
     });
   }
 
@@ -378,52 +400,9 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
             icon: const Icon(Icons.skip_next_rounded),
             onPressed: _ayahs.isEmpty ? null : _onNextAyahTap,
           ),
-          PopupMenuButton<_TextOption>(
-            tooltip: l10n.quranTextOptions,
-            onSelected: (option) {
-              switch (option) {
-                case _TextOption.englishArabic:
-                  _toggleShowEnglish(true);
-                case _TextOption.arabicOnly:
-                  _toggleShowEnglish(false);
-                case _TextOption.increaseFont:
-                  _increaseFont();
-                case _TextOption.decreaseFont:
-                  _decreaseFont();
-              }
-            },
-            itemBuilder: (_) => [
-              CheckedPopupMenuItem<_TextOption>(
-                value: _TextOption.englishArabic,
-                checked: _showEnglish,
-                child: Text(l10n.quranEnglishAndArabic),
-              ),
-              CheckedPopupMenuItem<_TextOption>(
-                value: _TextOption.arabicOnly,
-                checked: !_showEnglish,
-                child: Text(l10n.quranArabicOnly),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem<_TextOption>(
-                value: _TextOption.increaseFont,
-                child: Text(l10n.quranIncreaseFont),
-              ),
-              PopupMenuItem<_TextOption>(
-                value: _TextOption.decreaseFont,
-                child: Text(l10n.quranDecreaseFont),
-              ),
-            ],
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-              child: Text(
-                'A A',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w700,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-            ),
+          QuranReadingSettingsLauncher.appBarAction(
+            context,
+            onReturn: () => unawaited(_reloadDisplayPrefs()),
           ),
         ],
       ),
@@ -632,142 +611,34 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                 itemBuilder: (context, index) {
                                   final ayah = _ayahs[index];
                                   final isCurrent = index == _playingAyahIndex;
-                                  return InkWell(
-                                    borderRadius: BorderRadius.circular(16.r),
+                                  return AyahCard(
+                                    ayah: ayah,
+                                    isCurrent: isCurrent,
+                                    isPlaying: _player.playing,
+                                    showEnglish: _showEnglish,
+                                    showTransliteration: _showTransliteration,
+                                    layoutTheme: _layoutTheme,
+                                    arabicFontSp: _arabicFontSp,
+                                    englishFontSp: _englishFontSp,
+                                    lineSpacing: _lineSpacing,
+                                    arabicFontFamily: _arabicFontFamily,
                                     onTap: () => _onAyahTap(index),
-                                    child: Ink(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          16.r,
-                                        ),
-                                        border: Border.all(
-                                          color: isCurrent
-                                              ? colorScheme.primary.withValues(
-                                                  alpha: 0.5,
-                                                )
-                                              : colorScheme.outlineVariant
-                                                    .withValues(alpha: 0.4),
-                                        ),
-                                        color: isCurrent
-                                            ? colorScheme.primary.withValues(
-                                                alpha: 0.08,
-                                              )
-                                            : colorScheme.surface,
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                          14.w,
-                                          12.h,
-                                          14.w,
-                                          12.h,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  width: 24.w,
-                                                  height: 24.w,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: colorScheme.primary
-                                                        .withValues(
-                                                          alpha: 0.14,
-                                                        ),
-                                                  ),
-                                                  child: Text(
-                                                    ayah.ayahNumber.toString(),
-                                                    style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color:
-                                                          colorScheme.primary,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                if (_tajweedEnabled)
-                                                  InkWell(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14.r,
-                                                        ),
-                                                    onTap: () =>
-                                                        TajweedEntryPoint.open(
-                                                          context,
-                                                          surah: ayah
-                                                              .surahNumber,
-                                                          ayah:
-                                                              ayah.ayahNumber,
-                                                          arabicText:
-                                                              ayah.arabicText,
-                                                          surahName:
-                                                              widget.surah.name,
-                                                          translation:
-                                                              _showEnglish
-                                                              ? ayah
-                                                                    .englishText
-                                                              : null,
-                                                        ),
-                                                    child: Padding(
-                                                      padding: EdgeInsets.all(
-                                                        4.w,
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.mic_none_rounded,
-                                                        color: colorScheme
-                                                            .onSurfaceVariant,
-                                                        size: 18.sp,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                if (isCurrent)
-                                                  Icon(
-                                                    _player.playing
-                                                        ? Icons
-                                                              .graphic_eq_rounded
-                                                        : Icons
-                                                              .play_arrow_rounded,
-                                                    color: colorScheme.primary,
-                                                    size: 18.sp,
-                                                  ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 10.h),
-                                            Text(
-                                              ayah.arabicText,
-                                              textAlign: TextAlign.right,
-                                              textDirection: TextDirection.rtl,
-                                              style: TextStyle(
-                                                fontFamily: _arabicFontFamily,
-                                                fontSize: _arabicFontSp.sp,
-                                                height: _lineSpacing,
-                                                color: isCurrent
-                                                    ? colorScheme.primary
-                                                    : colorScheme.onSurface,
-                                              ),
-                                            ),
-                                            if (_showEnglish) ...[
-                                              SizedBox(height: 10.h),
-                                              Text(
-                                                ayah.englishText,
-                                                style: TextStyle(
-                                                  fontSize: _englishFontSp.sp,
-                                                  height: 1.45,
-                                                  color: isCurrent
-                                                      ? colorScheme.primary
-                                                      : colorScheme.onSurface,
-                                                ),
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                    onPracticeTap: _tajweedEnabled
+                                        ? () => TajweedEntryPoint.open(
+                                              context,
+                                              surah: ayah.surahNumber,
+                                              ayah: ayah.ayahNumber,
+                                              arabicText: ayah.arabicText,
+                                              surahName: widget.surah.name,
+                                              translation:
+                                                  _showEnglish &&
+                                                      ayah.englishText
+                                                          .trim()
+                                                          .isNotEmpty
+                                                  ? ayah.englishText
+                                                  : null,
+                                            )
+                                        : null,
                                   );
                                 },
                               ),
@@ -820,5 +691,3 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     );
   }
 }
-
-enum _TextOption { englishArabic, arabicOnly, increaseFont, decreaseFont }

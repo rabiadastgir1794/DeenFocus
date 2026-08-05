@@ -129,17 +129,37 @@ enum MelFrontend {
     return (mel, nFrames)
   }
 
-  /// Nearest supported CoreML bucket T80…T4800.
-  static func padToBucket(_ features: [Float], time: Int) throws -> (padded: [Float], bucketT: Int) {
-    let buckets = [80, 160, 320, 640, 1280, 2560, 4800]
-    guard let bucket = buckets.first(where: { $0 >= time }) else {
-      throw TajweedNativeError(TajweedErrorCode.audioTooLong, "Audio exceeds 48s CoreML limit.")
+  /// Default mel-time buckets for the official HF offline-ANE multifunction
+  /// pack (`predict_T80…T4800`). Prefer the active manifest's `encoderBuckets`
+  /// at runtime so alternate packs can ship different bucket lists without a
+  /// Swift change — see `ModelStore.encoderApi()`.
+  static let defaultOfficialBuckets = [80, 200, 400, 800, 1600, 2400, 4800]
+
+  /// Nearest supported CoreML bucket ≥ `time` from `buckets` (ascending).
+  static func padToBucket(
+    _ features: [Float],
+    time: Int,
+    buckets: [Int] = MelFrontend.defaultOfficialBuckets
+  ) throws -> (padded: [Float], bucketT: Int) {
+    let sorted = buckets.sorted()
+    guard !sorted.isEmpty else {
+      throw TajweedNativeError(TajweedErrorCode.modelLoadFailed, "encoderBuckets is empty.")
+    }
+    guard let bucket = sorted.first(where: { $0 >= time }) else {
+      throw TajweedNativeError(
+        TajweedErrorCode.audioTooLong,
+        "Audio exceeds \(sorted.last!)-frame CoreML limit."
+      )
     }
     if time == bucket { return (features, bucket) }
     var out = [Float](repeating: 0, count: nMels * bucket)
-    for m in 0..<nMels {
-      for t in 0..<time {
-        out[m * bucket + t] = features[m * time + t]
+    // Copy each mel-row prefix; trailing pad stays 0 (identical to nested loops).
+    features.withUnsafeBufferPointer { src in
+      out.withUnsafeMutableBufferPointer { dst in
+        guard let s = src.baseAddress, let d = dst.baseAddress else { return }
+        for m in 0..<nMels {
+          d.advanced(by: m * bucket).update(from: s.advanced(by: m * time), count: time)
+        }
       }
     }
     return (out, bucket)

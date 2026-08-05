@@ -1170,6 +1170,126 @@ abstract class AppLocalizations {
   /// **'IndoPak (Hafs)'**
   String get readingSettingsScriptIndopak;
 
+  /// No description provided for @readingSettingsShowTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show translation'**
+  String get readingSettingsShowTranslation;
+
+  /// No description provided for @readingSettingsShowTransliteration.
+  ///
+  /// In en, this message translates to:
+  /// **'Show transliteration'**
+  String get readingSettingsShowTransliteration;
+
+  /// No description provided for @readingSettingsTranslationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation'**
+  String get readingSettingsTranslationSection;
+
+  /// No description provided for @readingSettingsTranslationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation'**
+  String get readingSettingsTranslationLabel;
+
+  /// No description provided for @readingSettingsTranslationCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get readingSettingsTranslationCurrent;
+
+  /// No description provided for @readingSettingsInstalledTranslations.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get readingSettingsInstalledTranslations;
+
+  /// No description provided for @readingSettingsAvailableTranslations.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get readingSettingsAvailableTranslations;
+
+  /// No description provided for @readingSettingsTranslationInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get readingSettingsTranslationInstalled;
+
+  /// No description provided for @readingSettingsTranslationSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get readingSettingsTranslationSelected;
+
+  /// No description provided for @readingSettingsTranslationDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get readingSettingsTranslationDownload;
+
+  /// No description provided for @readingSettingsTranslationInstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing…'**
+  String get readingSettingsTranslationInstalling;
+
+  /// No description provided for @readingSettingsTranslationDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get readingSettingsTranslationDownloading;
+
+  /// No description provided for @readingSettingsLayoutTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran layout'**
+  String get readingSettingsLayoutTheme;
+
+  /// No description provided for @readingSettingsLayoutClassic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get readingSettingsLayoutClassic;
+
+  /// No description provided for @readingSettingsLayoutSimple.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple'**
+  String get readingSettingsLayoutSimple;
+
+  /// No description provided for @readingSettingsLayoutColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Quran'**
+  String get readingSettingsLayoutColor;
+
+  /// No description provided for @readingSettingsPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get readingSettingsPreview;
+
+  /// No description provided for @tajweedListenToAyah.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to ayah'**
+  String get tajweedListenToAyah;
+
+  /// No description provided for @tajweedStartReciting.
+  ///
+  /// In en, this message translates to:
+  /// **'Start reciting'**
+  String get tajweedStartReciting;
+
+  /// No description provided for @tajweedTapToStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to stop'**
+  String get tajweedTapToStop;
+
   /// No description provided for @save.
   ///
   /// In en, this message translates to:

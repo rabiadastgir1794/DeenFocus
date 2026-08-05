@@ -5,6 +5,7 @@ import java.util.UUID
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
@@ -127,6 +128,119 @@ class TajweedAlgorithmTest {
         assertEquals(listOf(0, 1), intervals.map { it.tokenIndex })
         assertTrue(intervals[0].endFrame <= intervals[1].startFrame + 1)
         assertTrue(intervals[1].endFrame > intervals[0].startFrame)
+    }
+
+    /** Nested-array DP reference (pre flat-buffer optimization). */
+    private fun forcedAlignNestedReference(
+        logprobs: Array<FloatArray>,
+        tokenIds: List<Int>,
+    ): List<TokenInterval> {
+        val blankId = CtcAligner.BLANK_ID
+        val negInf = -1e18
+        val t = logprobs.size
+        val sSeq = ArrayList<Int>()
+        sSeq.add(blankId)
+        for (tok in tokenIds) {
+            sSeq.add(tok)
+            sSeq.add(blankId)
+        }
+        val s = sSeq.size
+        val alpha = Array(t) { DoubleArray(s) { negInf } }
+        val back = Array(t) { ByteArray(s) }
+        val skipOk = BooleanArray(s)
+        if (s >= 3) {
+            for (sIdx in 2 until s) {
+                skipOk[sIdx] = sSeq[sIdx] != blankId && sSeq[sIdx] != sSeq[sIdx - 2]
+            }
+        }
+        fun emit(tIdx: Int, sIdx: Int) = logprobs[tIdx][sSeq[sIdx]].toDouble()
+        alpha[0][0] = emit(0, 0)
+        if (s > 1) alpha[0][1] = emit(0, 1)
+        for (tIdx in 1 until t) {
+            for (sIdx in 0 until s) {
+                var best = alpha[tIdx - 1][sIdx]
+                var bestIdx: Byte = 0
+                if (sIdx >= 1 && alpha[tIdx - 1][sIdx - 1] > best) {
+                    best = alpha[tIdx - 1][sIdx - 1]
+                    bestIdx = 1
+                }
+                if (sIdx >= 2 && skipOk[sIdx] && alpha[tIdx - 1][sIdx - 2] > best) {
+                    best = alpha[tIdx - 1][sIdx - 2]
+                    bestIdx = 2
+                }
+                alpha[tIdx][sIdx] = best + emit(tIdx, sIdx)
+                back[tIdx][sIdx] = (-bestIdx).toByte()
+            }
+        }
+        var sIdx = s - 1
+        if (s >= 2 && alpha[t - 1][s - 2] > alpha[t - 1][s - 1]) sIdx = s - 2
+        val path = IntArray(t)
+        path[t - 1] = sIdx
+        for (tIdx in t - 1 downTo 1) {
+            sIdx += back[tIdx][sIdx].toInt()
+            path[tIdx - 1] = sIdx
+        }
+        val intervals = ArrayList<TokenInterval>()
+        var tokenIndex = 0
+        var start: Int? = null
+        for (tIdx in 0 until t) {
+            val state = path[tIdx]
+            val isToken = state % 2 == 1
+            if (isToken) {
+                val thisToken = state / 2
+                if (start == null) {
+                    start = tIdx
+                    tokenIndex = thisToken
+                } else if (thisToken != tokenIndex) {
+                    intervals.add(TokenInterval(tokenIds[tokenIndex], tokenIndex, start, tIdx))
+                    start = tIdx
+                    tokenIndex = thisToken
+                }
+            } else if (start != null) {
+                intervals.add(TokenInterval(tokenIds[tokenIndex], tokenIndex, start, tIdx))
+                start = null
+            }
+        }
+        if (start != null && tokenIndex < tokenIds.size) {
+            intervals.add(TokenInterval(tokenIds[tokenIndex], tokenIndex, start, t))
+        }
+        return intervals
+    }
+
+    @Test
+    fun ctcAlignerFlatMatchesNestedAndReportsTiming() {
+        val blank = CtcAligner.BLANK_ID
+        val vocab = blank + 1
+        val t = 400
+        val tokenIds = List(40) { it % 5 }
+        val logprobs = Array(t) { FloatArray(vocab) { -8f } }
+        for (i in 0 until t) {
+            val id = tokenIds[minOf(i / maxOf(1, t / tokenIds.size), tokenIds.size - 1)]
+            logprobs[i][id] = 0f
+            logprobs[i][blank] = -1f
+        }
+        val nested = forcedAlignNestedReference(logprobs, tokenIds)
+        val flat = CtcAligner.forcedAlign(logprobs, tokenIds)
+        assertEquals(nested.map { it.tokenId }, flat.map { it.tokenId })
+        assertEquals(nested.map { it.tokenIndex }, flat.map { it.tokenIndex })
+        assertEquals(nested.map { it.startFrame }, flat.map { it.startFrame })
+        assertEquals(nested.map { it.endFrame }, flat.map { it.endFrame })
+
+        val rounds = 8
+        forcedAlignNestedReference(logprobs, tokenIds)
+        CtcAligner.forcedAlign(logprobs, tokenIds)
+        val nestStart = System.nanoTime()
+        repeat(rounds) { forcedAlignNestedReference(logprobs, tokenIds) }
+        val nestedMs = (System.nanoTime() - nestStart) / 1_000_000.0 / rounds
+        val flatStart = System.nanoTime()
+        repeat(rounds) { CtcAligner.forcedAlign(logprobs, tokenIds) }
+        val flatMs = (System.nanoTime() - flatStart) / 1_000_000.0 / rounds
+        println(
+            "[TajweedPerf] ctcForcedAlign T=$t tokens=${tokenIds.size} " +
+                "nested=${"%.2f".format(nestedMs)}ms flat=${"%.2f".format(flatMs)}ms " +
+                "speedup=${"%.2f".format(nestedMs / maxOf(flatMs, 0.001))}x",
+        )
+        assertTrue(flatMs <= nestedMs * 1.35)
     }
 
     @Test
@@ -333,6 +447,182 @@ class TajweedAlgorithmTest {
         assertEquals(1.0, TajweedLexicalScoring.wordAccuracyScore(expWords, hypWords), 0.0001)
     }
 
+    /**
+     * IndoPak Fatiha 1:4 (selected script corpus) ↔ Imlaei ASR — keheh/Farsi-yeh
+     * folding + drop standalone ayah-end mark U+0615.
+     */
+    @Test
+    fun normalizeArabicFatihah14IndoPakMatchesImlaeiAsr() {
+        val indoPakExpected = "مٰلِکِ یَوۡمِ الدِّیۡنِ ؕ"
+        val asrHypothesis = "مَالِكِ يَوْمِ الدِّينِ"
+        val expWords = TajweedLexicalScoring.splitWords(indoPakExpected)
+        val hypWords = TajweedLexicalScoring.splitWords(asrHypothesis)
+        assertEquals(listOf("مالك", "يوم", "الدين"), expWords.map { TajweedLexicalScoring.normalizeArabic(it) })
+        assertEquals(listOf("مالك", "يوم", "الدين"), hypWords.map { TajweedLexicalScoring.normalizeArabic(it) })
+        val ops = TajweedLexicalScoring.alignWords(expWords, hypWords)
+        assertEquals(3, ops.size)
+        assertTrue(ops.all { it.op == TajweedLexicalScoring.LexicalOp.MATCH })
+    }
+
+    @Test
+    fun normalizeArabicFoldsIndoPakKehehAndFarsiYeh() {
+        assertEquals("ك", TajweedLexicalScoring.normalizeArabic("ک"))
+        assertEquals("ي", TajweedLexicalScoring.normalizeArabic("ی"))
+    }
+
+    /** Heh-family mushaf variants must share one canonical letter. */
+    @Test
+    fun normalizeArabicFoldsHehFamilyAcrossMushafScripts() {
+        val canonical = "ه"
+        assertEquals(canonical, TajweedLexicalScoring.normalizeArabic("ه")) // Arabic heh
+        assertEquals(canonical, TajweedLexicalScoring.normalizeArabic("ہ")) // heh goal
+        assertEquals(canonical, TajweedLexicalScoring.normalizeArabic("ھ")) // do chashmi heh
+        assertEquals(canonical, TajweedLexicalScoring.normalizeArabic("ة")) // teh marbuta
+        assertEquals(canonical, TajweedLexicalScoring.normalizeArabic("ە")) // ae
+        assertEquals(canonical, TajweedLexicalScoring.normalizeArabic("ۃ")) // teh marbuta goal
+    }
+
+    /** Uthmani لله / Naskh-like لله / IndoPak لِلّٰہِ → same token. */
+    @Test
+    fun normalizeArabicLillahIdenticalAcrossScripts() {
+        val uthmani = "لله"
+        val uthmaniVocalized = "لِلَّهِ"
+        val indoPak = "لِلّٰہِ"
+        val naskhLike = "لِلّهِ"
+        val expected = "لله"
+        assertEquals(expected, TajweedLexicalScoring.normalizeArabic(uthmani))
+        assertEquals(expected, TajweedLexicalScoring.normalizeArabic(uthmaniVocalized))
+        assertEquals(expected, TajweedLexicalScoring.normalizeArabic(indoPak))
+        assertEquals(expected, TajweedLexicalScoring.normalizeArabic(naskhLike))
+        assertEquals(
+            TajweedLexicalScoring.normalizeArabic(uthmani),
+            TajweedLexicalScoring.normalizeArabic(indoPak),
+        )
+    }
+
+    @Test
+    fun normalizeArabicAllahIdenticalAcrossScripts() {
+        val uthmani = "ٱللَّهِ"
+        val indoPak = "اللّٰہُ"
+        val imlaei = "الله"
+        assertEquals("الله", TajweedLexicalScoring.normalizeArabic(uthmani))
+        assertEquals("الله", TajweedLexicalScoring.normalizeArabic(indoPak))
+        assertEquals("الله", TajweedLexicalScoring.normalizeArabic(imlaei))
+    }
+
+    /**
+     * IndoPak Fatiha 1:6 presentation space: lexicalWords(indo, uthmani) matches
+     * Uthmani/ASR single token اهدنا (no special-case).
+     */
+    @Test
+    fun lexicalWordsMergesIndoPakIhdinaPresentationSpace() {
+        val indoPak = "اِہۡدِ نَا الصِّرَاطَ الۡمُسۡتَقِیۡمَ ۙ"
+        val uthmani = "ٱهۡدِنَا ٱلصِّرَٰطَ ٱلۡمُسۡتَقِيمَ"
+        val asr = "اهدنا الصراط المستقيم"
+
+        assertTrue(indoPak.contains('\u0020'))
+        assertEquals(
+            listOf("اهدنا", "الصراط", "المستقيم"),
+            TajweedLexicalScoring.lexicalWords(indoPak, uthmani),
+        )
+        assertEquals(
+            TajweedLexicalScoring.lexicalWords(uthmani, uthmani),
+            TajweedLexicalScoring.lexicalWords(indoPak, uthmani),
+        )
+        assertEquals(
+            TajweedLexicalScoring.lexicalWords(asr, asr),
+            TajweedLexicalScoring.lexicalWords(indoPak, uthmani),
+        )
+        // Letterstream ignores presentation spaces.
+        assertEquals("اهدنا", TajweedLexicalScoring.normalizeArabic("اِہۡدِ نَا"))
+        assertEquals("اهدنا", TajweedLexicalScoring.normalizeArabic("ٱهۡدِنَا"))
+    }
+
+    /** Every known IndoPak↔Uthmani presentation-boundary case (computed from corpora). */
+    @Test
+    fun lexicalWordsAllPresentationSpaceCasesMatchUthmani() {
+        val uthmaniAyahs = loadQuranScriptAyahs("uthmani.json")
+        val indoPakAyahs = loadQuranScriptAyahs("indopak.json")
+        assertTrue("uthmani corpus", uthmaniAyahs.size > 6000)
+        assertTrue("indopak corpus", indoPakAyahs.size > 6000)
+
+        var checked = 0
+        for ((key, uthmani) in uthmaniAyahs) {
+            val indopak = indoPakAyahs[key] ?: continue
+            val uthStream = TajweedLexicalScoring.normalizeArabic(uthmani)
+            val indoStream = TajweedLexicalScoring.normalizeArabic(indopak)
+            if (uthStream != indoStream) continue
+
+            val fromUth = TajweedLexicalScoring.lexicalWords(uthmani, uthmani)
+            val whitespaceSplitIndo = TajweedLexicalScoring.splitWords(indopak)
+                .map { TajweedLexicalScoring.normalizeArabic(it) }
+            // Only presentation/glue boundary differences.
+            if (whitespaceSplitIndo == fromUth) continue
+
+            val fromIndo = TajweedLexicalScoring.lexicalWords(indopak, uthmani)
+            assertEquals("parity $key", fromUth, fromIndo)
+            checked++
+        }
+        assertTrue("expected hundreds of presentation cases, got $checked", checked > 100)
+        assertTrue("presentation parity should not regress (was 763)", checked >= 763)
+    }
+
+    private fun loadQuranScriptAyahs(fileName: String): Map<Pair<Int, Int>, String> {
+        val candidates = listOf(
+            File("../../assets/quran/text/$fileName"),
+            File("../assets/quran/text/$fileName"),
+            File("assets/quran/text/$fileName"),
+            File("/Users/rabiadastgir/DeenFocus/assets/quran/text/$fileName"),
+        )
+        val file = candidates.firstOrNull { it.isFile }
+            ?: error("missing $fileName (cwd=${File(".").absolutePath})")
+        // Avoid Android org.json on multi‑MB corpora (getJSONArray can yield null).
+        val regex = Regex(
+            """"surah"\s*:\s*(\d+)\s*,\s*"ayah"\s*:\s*(\d+)\s*,\s*"text"\s*:\s*"((?:\\.|[^"\\])*)""",
+        )
+        val out = HashMap<Pair<Int, Int>, String>()
+        for (m in regex.findAll(file.readText(Charsets.UTF_8))) {
+            val surah = m.groupValues[1].toInt()
+            val ayah = m.groupValues[2].toInt()
+            out[surah to ayah] = unescapeJsonString(m.groupValues[3])
+        }
+        assertTrue("parsed ayahs from $fileName", out.size > 6000)
+        return out
+    }
+
+    private fun unescapeJsonString(raw: String): String {
+        val sb = StringBuilder(raw.length)
+        var i = 0
+        while (i < raw.length) {
+            val ch = raw[i]
+            if (ch == '\\' && i + 1 < raw.length) {
+                when (val n = raw[i + 1]) {
+                    '"', '\\', '/' -> {
+                        sb.append(n); i += 2
+                    }
+                    'n' -> {
+                        sb.append('\n'); i += 2
+                    }
+                    't' -> {
+                        sb.append('\t'); i += 2
+                    }
+                    'u' if i + 5 < raw.length -> {
+                        val hex = raw.substring(i + 2, i + 6)
+                        sb.append(hex.toInt(16).toChar())
+                        i += 6
+                    }
+                    else -> {
+                        sb.append(n); i += 2
+                    }
+                }
+            } else {
+                sb.append(ch)
+                i++
+            }
+        }
+        return sb.toString()
+    }
+
     /** Ikhlas 112:1 Uthmani ↔ Imlaei — dagger/wasla/sukun cases together. */
     @Test
     fun normalizeArabicIkhlasUthmaniMatchesImlaei() {
@@ -360,6 +650,146 @@ class TajweedAlgorithmTest {
             TajweedLexicalScoring.normalizeArabic("رَبِّ"),
             TajweedLexicalScoring.normalizeArabic("رَبِّكَ"),
         )
+    }
+
+    /** Phase 1: IndoPak/Uthmani/Imlaei preposition + demonstrative + dagger fixes. */
+    @Test
+    fun normalizeArabicPhase1OrthographyParity() {
+        assertEquals("علي", TajweedLexicalScoring.normalizeArabic("عَلٰی"))
+        assertEquals("علي", TajweedLexicalScoring.normalizeArabic("عَلَىٰ"))
+        assertEquals("علي", TajweedLexicalScoring.normalizeArabic("عَلَى"))
+
+        assertEquals("ذلك", TajweedLexicalScoring.normalizeArabic("ذٰلِکَ"))
+        assertEquals("ذلك", TajweedLexicalScoring.normalizeArabic("ذَٰلِكَ"))
+        assertEquals("ذلك", TajweedLexicalScoring.normalizeArabic("ذَلِكَ"))
+
+        assertEquals("اولئك", TajweedLexicalScoring.normalizeArabic("اُولٰٓئِکَ"))
+        assertEquals("اولئك", TajweedLexicalScoring.normalizeArabic("أُولَئِكَ"))
+    }
+
+    /** Phase 2: extended Quranic diacritics (U+0657 inverted damma on هُدٗى). */
+    @Test
+    fun normalizeArabicStripsExtendedQuranicDiacritics() {
+        assertEquals("هدي", TajweedLexicalScoring.normalizeArabic("هُدٗى"))
+        assertEquals("هدي", TajweedLexicalScoring.normalizeArabic("هُدًى"))
+        assertEquals("", TajweedLexicalScoring.normalizeArabic("٭"))
+    }
+
+    @Test
+    fun filterLexicalExpectedWordsDropsPauseStar() {
+        val filtered = TajweedLexicalScoring.filterLexicalExpectedWords(
+            listOf("اولئك", "٭", "و", "هدي"),
+        )
+        assertEquals(listOf("اولئك", "و", "هدي"), filtered)
+    }
+
+    @Test
+    fun splitAttachedWawHypothesisWordsPeelsClitic() {
+        assertEquals(
+            listOf("و", "علي", "اولئك"),
+            TajweedLexicalScoring.splitAttachedWawHypothesisWords(
+                listOf("وَعَلَى", "وَأُولَئِكَ"),
+            ).map { TajweedLexicalScoring.normalizeArabic(it) },
+        )
+    }
+
+    /** Regression: live 2:5 IndoPak expected vs Imlaei ASR — all lexical match after Phase 1. */
+    @Test
+    fun phase1Baqarah25IndoPakExpectedMatchesImlaeiHypothesis() {
+        val indoExpected =
+            "اُولٰٓئِکَ عَلٰی ہُدًی مِّنۡ رَّبِّہِمۡ ٭ وَ اُولٰٓئِکَ ہُمُ الۡمُفۡلِحُوۡنَ "
+        val imlaeiHyp =
+            "أُولَئِكَ عَلَى هُدًى مِّن رَّبِّهِمْ وَأُولَئِكَ هُمُ الْمُفْلِحُونَ"
+        val uthmaniRef =
+            "أُوْلَٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ"
+        val expected = TajweedLexicalScoring.prepareExpectedWords(indoExpected, uthmaniRef)
+        val hyp = TajweedLexicalScoring.prepareHypothesisWords(imlaeiHyp)
+        val ops = TajweedLexicalScoring.alignWords(expected, hyp)
+        assertTrue(ops.all { it.op == TajweedLexicalScoring.LexicalOp.MATCH })
+        assertEquals(1.0, TajweedLexicalScoring.wordAccuracyScore(expected, hyp), 0.0001)
+    }
+
+    @Test
+    fun mismatchReasonModelForGenuineAsrError() {
+        val ops = TajweedLexicalScoring.alignWords(
+            listOf("الضالين"),
+            listOf("الاين"),
+        )
+        assertEquals(TajweedLexicalScoring.LexicalOp.SUB, ops.single().op)
+        assertEquals(TajweedLexicalScoring.MismatchReason.MODEL, ops.single().reason)
+        assertEquals(
+            "sub(reason=model)",
+            TajweedLexicalScoring.formatOpForLog(ops.single()),
+        )
+    }
+
+    @Test
+    fun canonicalEvaluatorMatchesDhalikaWithoutDisplayNormalize() {
+        CanonicalLexiconStore.installForTesting(
+            mapOf(
+                "2:2" to CanonicalLexiconStore.AyahLexicon(
+                    ref = "2:2",
+                    words = listOf(
+                        CanonicalLexiconStore.CanonicalWord(
+                            id = "2:2:0",
+                            canonical = "ذلك",
+                            surfaceUthmani = "ذَٰلِكَ",
+                            surfaceIndopak = "ذٰلِکَ",
+                            surfaceImlaei = "ذَٰلِكَ",
+                        ),
+                    ),
+                ),
+            ),
+        )
+        try {
+            val hyp = TajweedLexicalScoring.prepareHypothesisWords("ذَٰلِكَ")
+            val eval = CanonicalLexicalEvaluator.evaluate(2, 2, hyp)
+            assertNotNull(eval)
+            assertEquals(1, eval!!.ops.size)
+            assertEquals(TajweedLexicalScoring.LexicalOp.MATCH, eval.ops.single().op)
+            assertEquals("ذَٰلِكَ", eval.ops.single().text)
+        } finally {
+            CanonicalLexiconStore.resetForTesting()
+        }
+    }
+
+    @Test
+    fun canonicalEvaluatorRematerializesAttachedWaw() {
+        CanonicalLexiconStore.installForTesting(
+            mapOf(
+                "1:7" to CanonicalLexiconStore.AyahLexicon(
+                    ref = "1:7",
+                    words = listOf(
+                        CanonicalLexiconStore.CanonicalWord("1:7:0", "غير", "غَيۡرِ"),
+                        CanonicalLexiconStore.CanonicalWord("1:7:1", "المغضوب", "ٱلۡمَغۡضُوبِ"),
+                        CanonicalLexiconStore.CanonicalWord("1:7:2", "عليهم", "عَلَيۡهِمۡ"),
+                        CanonicalLexiconStore.CanonicalWord("1:7:3", "ولا", "وَلَا"),
+                        CanonicalLexiconStore.CanonicalWord("1:7:4", "الضالين", "ٱلضَّآلِّينَ"),
+                    ),
+                ),
+            ),
+        )
+        try {
+            val hyp = TajweedLexicalScoring.prepareHypothesisWords(
+                "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+            )
+            val eval = CanonicalLexicalEvaluator.evaluate(1, 7, hyp)
+            assertNotNull(eval)
+            val result = eval!!
+            assertTrue(
+                "ops=${result.ops.map { TajweedLexicalScoring.formatOpForLog(it) }}",
+                result.ops.all { it.op == TajweedLexicalScoring.LexicalOp.MATCH },
+            )
+        } finally {
+            CanonicalLexiconStore.resetForTesting()
+        }
+    }
+
+    @Test
+    fun tokensFromAlignmentIncludeMismatchReason() {
+        val ops = TajweedLexicalScoring.alignWords(listOf("قُلْ"), listOf("مَالِكِ"))
+        val tokens = TajweedLexicalScoring.tokensFromAlignment(ops)
+        assertEquals("model", tokens.single()["reason"])
     }
 
     @Test

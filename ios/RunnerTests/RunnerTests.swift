@@ -1,4 +1,5 @@
 import AVFoundation
+import CoreML
 import Flutter
 import UIKit
 import XCTest
@@ -57,10 +58,23 @@ class RunnerTests: XCTestCase {
     XCTAssertEqual(features.count, MelFrontend.nMels * time)
     XCTAssertGreaterThan(time, 0)
 
-    let (padded, bucket) = try MelFrontend.padToBucket(features, time: time)
+    let (padded, bucket) = try MelFrontend.padToBucket(
+      features, time: time, buckets: MelFrontend.defaultOfficialBuckets
+    )
     XCTAssertGreaterThanOrEqual(bucket, time)
     XCTAssertEqual(padded.count, MelFrontend.nMels * bucket)
-    XCTAssertTrue([80, 160, 320, 640, 1280, 2560, 4800].contains(bucket))
+    XCTAssertTrue(MelFrontend.defaultOfficialBuckets.contains(bucket))
+  }
+
+  func testMelFrontendPadToBucketUsesManifestBucketList() throws {
+    // Alternate pack with a different bucket ladder must pad to *its* buckets,
+    // not the hard-coded official defaults — dual-model / future-proof contract.
+    let features = [Float](repeating: 0.1, count: MelFrontend.nMels * 250)
+    let (padded, bucket) = try MelFrontend.padToBucket(
+      features, time: 250, buckets: [80, 160, 320, 640, 1280, 2560, 4800]
+    )
+    XCTAssertEqual(bucket, 320)
+    XCTAssertEqual(padded.count, MelFrontend.nMels * 320)
   }
 
   func testMelFrontendRejectsTooShortAudio() {
@@ -77,12 +91,25 @@ class RunnerTests: XCTestCase {
     // 49 seconds of silence at 16kHz mel-frame time would exceed the T4800 bucket.
     let frames = 4900
     let features = [Float](repeating: 0, count: MelFrontend.nMels * frames)
-    XCTAssertThrowsError(try MelFrontend.padToBucket(features, time: frames)) { error in
+    XCTAssertThrowsError(
+      try MelFrontend.padToBucket(
+        features, time: frames, buckets: MelFrontend.defaultOfficialBuckets
+      )
+    ) { error in
       guard let e = error as? TajweedNativeError else {
         return XCTFail("Expected TajweedNativeError")
       }
       XCTAssertEqual(e.code, TajweedErrorCode.audioTooLong)
     }
+  }
+
+  func testMelFrontendPadToFixedForDiyEncoder() throws {
+    let time = 200
+    let features = [Float](repeating: 0.25, count: MelFrontend.nMels * time)
+    let padded = try MelFrontend.padToFixed(features, time: time, fixedT: 4800)
+    XCTAssertEqual(padded.count, MelFrontend.nMels * 4800)
+    XCTAssertEqual(padded[0], 0.25)
+    XCTAssertEqual(padded[MelFrontend.nMels * time], 0) // first pad cell
   }
 
   // MARK: - Phase 4A: cross-platform golden mel-spectrogram parity (real audio)
@@ -174,6 +201,195 @@ class RunnerTests: XCTestCase {
     XCTAssertEqual(intervals.map(\.tokenIndex), [0, 1])
     XCTAssertLessThanOrEqual(intervals[0].endFrame, intervals[1].startFrame + 1)
     XCTAssertGreaterThan(intervals[1].endFrame, intervals[0].startFrame)
+  }
+
+  /// Nested-array DP (pre-optimization reference). Must match production intervals.
+  private func forcedAlignNestedReference(logprobs: [[Float]], tokenIds: [Int]) throws -> [TokenInterval] {
+    let blankId = CtcAligner.blankId
+    let negInf = -1e18
+    let T = logprobs.count
+    guard T > 0, let V = logprobs.first?.count, V > blankId else {
+      throw TajweedNativeError(TajweedErrorCode.inferenceFailed, "Invalid logprobs.")
+    }
+    guard !tokenIds.isEmpty else { return [] }
+    var seq: [Int] = [blankId]
+    for t in tokenIds {
+      seq.append(t)
+      seq.append(blankId)
+    }
+    let S = seq.count
+    guard T >= S / 2 else {
+      throw TajweedNativeError(TajweedErrorCode.audioTooShort, "short")
+    }
+    var alpha = Array(repeating: Array(repeating: negInf, count: S), count: T)
+    var back = Array(repeating: Array(repeating: Int8(0), count: S), count: T)
+    var skipOk = Array(repeating: false, count: S)
+    if S >= 3 {
+      for s in 2..<S {
+        skipOk[s] = seq[s] != blankId && seq[s] != seq[s - 2]
+      }
+    }
+    func emit(_ t: Int, _ s: Int) -> Double { Double(logprobs[t][seq[s]]) }
+    alpha[0][0] = emit(0, 0)
+    if S > 1 { alpha[0][1] = emit(0, 1) }
+    for t in 1..<T {
+      for s in 0..<S {
+        var best = alpha[t - 1][s]
+        var bestIdx: Int8 = 0
+        if s >= 1, alpha[t - 1][s - 1] > best {
+          best = alpha[t - 1][s - 1]
+          bestIdx = 1
+        }
+        if s >= 2, skipOk[s], alpha[t - 1][s - 2] > best {
+          best = alpha[t - 1][s - 2]
+          bestIdx = 2
+        }
+        alpha[t][s] = best + emit(t, s)
+        back[t][s] = -bestIdx
+      }
+    }
+    var s = S - 1
+    if S >= 2, alpha[T - 1][S - 2] > alpha[T - 1][S - 1] { s = S - 2 }
+    var path = Array(repeating: 0, count: T)
+    path[T - 1] = s
+    for t in stride(from: T - 1, through: 1, by: -1) {
+      s = s + Int(back[t][s])
+      path[t - 1] = s
+    }
+    var intervals: [TokenInterval] = []
+    var tokenIndex = 0
+    var start: Int?
+    for t in 0..<T {
+      let state = path[t]
+      let isToken = state % 2 == 1
+      if isToken {
+        let thisToken = state / 2
+        if start == nil {
+          start = t
+          tokenIndex = thisToken
+        } else if thisToken != tokenIndex {
+          intervals.append(
+            TokenInterval(tokenId: tokenIds[tokenIndex], tokenIndex: tokenIndex, startFrame: start!, endFrame: t)
+          )
+          start = t
+          tokenIndex = thisToken
+        }
+      } else if let st = start {
+        intervals.append(
+          TokenInterval(tokenId: tokenIds[tokenIndex], tokenIndex: tokenIndex, startFrame: st, endFrame: t)
+        )
+        start = nil
+      }
+    }
+    if let st = start, tokenIndex < tokenIds.count {
+      intervals.append(
+        TokenInterval(tokenId: tokenIds[tokenIndex], tokenIndex: tokenIndex, startFrame: st, endFrame: T)
+      )
+    }
+    return intervals
+  }
+
+  func testCtcAlignerFlatMatchesNestedAndIsFaster() throws {
+    let blank = CtcAligner.blankId
+    let vocab = blank + 1
+    let T = 400
+    let tokenIds = Array(repeating: [0, 1, 2, 3, 4], count: 8).flatMap { $0 }
+    var logprobs = [[Float]](repeating: [Float](repeating: -8, count: vocab), count: T)
+    for t in 0..<T {
+      let id = tokenIds[min(t / max(1, T / tokenIds.count), tokenIds.count - 1)]
+      logprobs[t][id] = 0
+      logprobs[t][blank] = -1
+    }
+
+    let nested = try forcedAlignNestedReference(logprobs: logprobs, tokenIds: tokenIds)
+    let flat = try CtcAligner.forcedAlign(logprobs: logprobs, tokenIds: tokenIds)
+    XCTAssertEqual(nested.map(\.tokenId), flat.map(\.tokenId))
+    XCTAssertEqual(nested.map(\.tokenIndex), flat.map(\.tokenIndex))
+    XCTAssertEqual(nested.map(\.startFrame), flat.map(\.startFrame))
+    XCTAssertEqual(nested.map(\.endFrame), flat.map(\.endFrame))
+
+    let rounds = 8
+    // Warmup
+    _ = try forcedAlignNestedReference(logprobs: logprobs, tokenIds: tokenIds)
+    _ = try CtcAligner.forcedAlign(logprobs: logprobs, tokenIds: tokenIds)
+
+    let tNest0 = CFAbsoluteTimeGetCurrent()
+    for _ in 0..<rounds {
+      _ = try forcedAlignNestedReference(logprobs: logprobs, tokenIds: tokenIds)
+    }
+    let nestedMs = (CFAbsoluteTimeGetCurrent() - tNest0) * 1000 / Double(rounds)
+
+    let tFlat0 = CFAbsoluteTimeGetCurrent()
+    for _ in 0..<rounds {
+      _ = try CtcAligner.forcedAlign(logprobs: logprobs, tokenIds: tokenIds)
+    }
+    let flatMs = (CFAbsoluteTimeGetCurrent() - tFlat0) * 1000 / Double(rounds)
+
+    print(
+      String(
+        format: "[TajweedPerf] ctcForcedAlign T=%d tokens=%d nested=%.2fms flat=%.2fms speedup=%.2fx",
+        T, tokenIds.count, nestedMs, flatMs, nestedMs / max(flatMs, 0.001)
+      )
+    )
+    // Flat should not be meaningfully slower (allow noise); primary gate is identity.
+    XCTAssertLessThanOrEqual(flatMs, nestedMs * 1.35)
+  }
+
+  func testMLMultiArrayFloatCopyMatchesNSNumberPath() throws {
+    let rows = 120
+    let cols = 1025
+    var source = [Float](repeating: 0, count: rows * cols)
+    for i in 0..<source.count {
+      source[i] = Float(i % 997) * 0.001
+    }
+    let array = try MLMultiArray(shape: [1, NSNumber(value: rows), NSNumber(value: cols)], dataType: .float32)
+    for i in 0..<source.count {
+      array[i] = NSNumber(value: source[i])
+    }
+
+    // Baseline NSNumber parse
+    let tOld0 = CFAbsoluteTimeGetCurrent()
+    var oldRows = [[Float]](repeating: [Float](repeating: 0, count: cols), count: rows)
+    for t in 0..<rows {
+      for v in 0..<cols {
+        oldRows[t][v] = array[t * cols + v].floatValue
+      }
+    }
+    let oldParseMs = (CFAbsoluteTimeGetCurrent() - tOld0) * 1000
+
+    let tNew0 = CFAbsoluteTimeGetCurrent()
+    let newRows = MLMultiArrayFloatCopy.copyRows(from: array, rows: rows, cols: cols)
+    let newParseMs = (CFAbsoluteTimeGetCurrent() - tNew0) * 1000
+
+    XCTAssertEqual(oldRows.count, newRows.count)
+    for t in 0..<rows {
+      XCTAssertEqual(oldRows[t], newRows[t])
+    }
+
+    let shaped = try MLMultiArray(shape: [1, NSNumber(value: rows), NSNumber(value: cols)], dataType: .float32)
+    let tFillOld0 = CFAbsoluteTimeGetCurrent()
+    for i in 0..<source.count {
+      shaped[i] = NSNumber(value: source[i])
+    }
+    let oldFillMs = (CFAbsoluteTimeGetCurrent() - tFillOld0) * 1000
+
+    let shapedFast = try MLMultiArray(shape: [1, NSNumber(value: rows), NSNumber(value: cols)], dataType: .float32)
+    let tFillNew0 = CFAbsoluteTimeGetCurrent()
+    MLMultiArrayFloatCopy.copy(source, into: shapedFast)
+    let newFillMs = (CFAbsoluteTimeGetCurrent() - tFillNew0) * 1000
+
+    for i in 0..<source.count {
+      XCTAssertEqual(shaped[i].floatValue, shapedFast[i].floatValue, accuracy: 0)
+    }
+
+    print(
+      String(
+        format: "[TajweedPerf] mlmultiarray parse NSNumber=%.2fms ptr=%.2fms | fill NSNumber=%.2fms ptr=%.2fms",
+        oldParseMs, newParseMs, oldFillMs, newFillMs
+      )
+    )
+    XCTAssertLessThan(newParseMs, oldParseMs)
+    XCTAssertLessThan(newFillMs, oldFillMs)
   }
 
   func testSentencePieceTokenizerRoundTripsSimpleVocab() throws {
@@ -354,6 +570,132 @@ class RunnerTests: XCTestCase {
     )
   }
 
+  func testNormalizeArabicFatihah14IndoPakMatchesImlaeiAsr() {
+    let indoPakExpected = "مٰلِکِ یَوۡمِ الدِّیۡنِ ؕ"
+    let asrHypothesis = "مَالِكِ يَوْمِ الدِّينِ"
+    let expWords = TajweedLexicalScoring.splitWords(indoPakExpected)
+    let hypWords = TajweedLexicalScoring.splitWords(asrHypothesis)
+    XCTAssertEqual(
+      expWords.map { TajweedLexicalScoring.normalizeArabic($0) },
+      ["مالك", "يوم", "الدين"]
+    )
+    XCTAssertEqual(
+      hypWords.map { TajweedLexicalScoring.normalizeArabic($0) },
+      ["مالك", "يوم", "الدين"]
+    )
+    let ops = TajweedLexicalScoring.alignWords(expected: expWords, hypothesis: hypWords)
+    XCTAssertEqual(ops.count, 3)
+    XCTAssertTrue(ops.allSatisfy { $0.op == .match })
+  }
+
+  func testNormalizeArabicFoldsIndoPakKehehAndFarsiYeh() {
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ک"), "ك")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ی"), "ي")
+  }
+
+  func testNormalizeArabicFoldsHehFamilyAcrossMushafScripts() {
+    let canonical = "ه"
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ه"), canonical)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ہ"), canonical)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ھ"), canonical)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ة"), canonical)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ە"), canonical)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ۃ"), canonical)
+  }
+
+  func testNormalizeArabicLillahIdenticalAcrossScripts() {
+    let expected = "لله"
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("لله"), expected)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("لِلَّهِ"), expected)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("لِلّٰہِ"), expected)
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("لِلّهِ"), expected)
+    XCTAssertEqual(
+      TajweedLexicalScoring.normalizeArabic("لله"),
+      TajweedLexicalScoring.normalizeArabic("لِلّٰہِ")
+    )
+  }
+
+  func testNormalizeArabicAllahIdenticalAcrossScripts() {
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ٱللَّهِ"), "الله")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("اللّٰہُ"), "الله")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("الله"), "الله")
+  }
+
+  /// IndoPak 1:6 presentation space → lexicalWords merges to اهدنا (generic tokenizer).
+  func testLexicalWordsMergesIndoPakIhdinaPresentationSpace() {
+    let indoPak = "اِہۡدِ نَا الصِّرَاطَ الۡمُسۡتَقِیۡمَ ۙ"
+    let uthmani = "ٱهۡدِنَا ٱلصِّرَٰطَ ٱلۡمُسۡتَقِيمَ"
+    let asr = "اهدنا الصراط المستقيم"
+
+    XCTAssertTrue(indoPak.contains("\u{0020}"))
+    XCTAssertEqual(
+      TajweedLexicalScoring.lexicalWords(indoPak, referenceText: uthmani),
+      ["اهدنا", "الصراط", "المستقيم"]
+    )
+    XCTAssertEqual(
+      TajweedLexicalScoring.lexicalWords(uthmani, referenceText: uthmani),
+      TajweedLexicalScoring.lexicalWords(indoPak, referenceText: uthmani)
+    )
+    XCTAssertEqual(
+      TajweedLexicalScoring.lexicalWords(asr, referenceText: asr),
+      TajweedLexicalScoring.lexicalWords(indoPak, referenceText: uthmani)
+    )
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("اِہۡدِ نَا"), "اهدنا")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ٱهۡدِنَا"), "اهدنا")
+  }
+
+  /// Every known IndoPak↔Uthmani presentation-boundary case (from corpora on disk).
+  func testLexicalWordsAllPresentationSpaceCasesMatchUthmani() throws {
+    let uthmaniAyahs = try Self.loadQuranScriptAyahs(fileName: "uthmani.json")
+    let indoPakAyahs = try Self.loadQuranScriptAyahs(fileName: "indopak.json")
+    XCTAssertGreaterThan(uthmaniAyahs.count, 6000)
+    XCTAssertGreaterThan(indoPakAyahs.count, 6000)
+
+    var indoByRef: [String: String] = [:]
+    for a in indoPakAyahs {
+      indoByRef["\(a.surah):\(a.ayah)"] = a.text
+    }
+
+    var checked = 0
+    for a in uthmaniAyahs {
+      guard let indopak = indoByRef["\(a.surah):\(a.ayah)"] else { continue }
+      let uthmani = a.text
+      let uthStream = TajweedLexicalScoring.normalizeArabic(uthmani)
+      let indoStream = TajweedLexicalScoring.normalizeArabic(indopak)
+      guard uthStream == indoStream else { continue }
+
+      let fromUth = TajweedLexicalScoring.lexicalWords(uthmani, referenceText: uthmani)
+      let whitespaceSplitIndo = TajweedLexicalScoring.splitWords(indopak).map {
+        TajweedLexicalScoring.normalizeArabic($0)
+      }
+      guard whitespaceSplitIndo != fromUth else { continue }
+
+      let fromIndo = TajweedLexicalScoring.lexicalWords(indopak, referenceText: uthmani)
+      XCTAssertEqual(fromUth, fromIndo, "parity \(a.surah):\(a.ayah)")
+      checked += 1
+    }
+    XCTAssertGreaterThan(checked, 100, "expected hundreds of presentation cases, got \(checked)")
+    XCTAssertGreaterThanOrEqual(checked, 763)
+  }
+
+  private static func loadQuranScriptAyahs(fileName: String) throws -> [(surah: Int, ayah: Int, text: String)] {
+    let url = URL(fileURLWithPath: #file)
+      .deletingLastPathComponent() // RunnerTests
+      .deletingLastPathComponent() // ios
+      .deletingLastPathComponent() // repo
+      .appendingPathComponent("assets/quran/text/\(fileName)")
+    let data = try Data(contentsOf: url)
+    let root = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+    let ayahs = root["ayahs"] as! [[String: Any]]
+    return ayahs.map { a in
+      (
+        surah: a["surah"] as! Int,
+        ayah: a["ayah"] as! Int,
+        text: a["text"] as! String
+      )
+    }
+  }
+
   func testNormalizeArabicKeepsGenuinelyDifferentWordsDistinct() {
     XCTAssertNotEqual(
       TajweedLexicalScoring.normalizeArabic("ملك"),
@@ -367,6 +709,134 @@ class RunnerTests: XCTestCase {
       TajweedLexicalScoring.normalizeArabic("رَبِّ"),
       TajweedLexicalScoring.normalizeArabic("رَبِّكَ")
     )
+  }
+
+  func testNormalizeArabicPhase1OrthographyParity() {
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("عَلٰی"), "علي")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("عَلَىٰ"), "علي")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("عَلَى"), "علي")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ذٰلِکَ"), "ذلك")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ذَٰلِكَ"), "ذلك")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("اُولٰٓئِکَ"), "اولئك")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("أُولَئِكَ"), "اولئك")
+  }
+
+  func testNormalizeArabicStripsExtendedQuranicDiacritics() {
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("هُدٗى"), "هدي")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("٭"), "")
+  }
+
+  func testNormalizeArabicDaggerAlifAtEndDoesNotTrap() {
+    // Regression: UInt32(-1) when next/prev sentinel — must not fatal-error on device.
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("\u{0670}"), "ا")
+    XCTAssertEqual(TajweedLexicalScoring.normalizeArabic("ي\u{0670}"), "ي")
+  }
+
+  func testSplitAttachedWawHypothesisWordsPeelsClitic() {
+    let split = TajweedLexicalScoring.splitAttachedWawHypothesisWords(["وَعَلَى", "وَأُولَئِكَ"])
+    XCTAssertEqual(split.map { TajweedLexicalScoring.normalizeArabic($0) }, ["و", "علي", "اولئك"])
+  }
+
+  func testPhase1Baqarah25IndoPakExpectedMatchesImlaeiHypothesis() {
+    let indoExpected =
+      "اُولٰٓئِکَ عَلٰی ہُدًی مِّنۡ رَّبِّہِمۡ ٭ وَ اُولٰٓئِکَ ہُمُ الۡمُفۡلِحُوۡنَ "
+    let imlaeiHyp =
+      "أُولَئِكَ عَلَى هُدًى مِّن رَّبِّهِمْ وَأُولَئِكَ هُمُ الْمُفْلِحُونَ"
+    let uthmaniRef =
+      "أُوْلَٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ"
+    let expected = TajweedLexicalScoring.prepareExpectedWords(indoExpected, referenceText: uthmaniRef)
+    let hyp = TajweedLexicalScoring.prepareHypothesisWords(imlaeiHyp)
+    let ops = TajweedLexicalScoring.alignWords(expected: expected, hypothesis: hyp)
+    XCTAssertTrue(ops.allSatisfy { $0.op == .match })
+    XCTAssertEqual(TajweedLexicalScoring.wordAccuracyScore(expected: expected, hypothesis: hyp), 1.0, accuracy: 0.0001)
+  }
+
+  func testMismatchReasonModelForGenuineAsrError() {
+    let ops = TajweedLexicalScoring.alignWords(expected: ["الضالين"], hypothesis: ["الاين"])
+    XCTAssertEqual(ops.count, 1)
+    XCTAssertEqual(ops[0].op, .sub)
+    XCTAssertEqual(ops[0].reason, TajweedLexicalScoring.MismatchReason.model)
+    XCTAssertEqual(TajweedLexicalScoring.formatOpForLog(ops[0]), "sub(reason=model)")
+  }
+
+  // MARK: - ADR-010 M3 canonical lexical authority
+
+  func testCanonicalEvaluatorMatchesDhalikaWithoutDisplayNormalize() {
+    CanonicalLexiconStore.installForTesting(
+      ayahs: [
+        "2:2": CanonicalLexiconStore.AyahLexicon(
+          ref: "2:2",
+          words: [
+            CanonicalLexiconStore.CanonicalWord(
+              id: "2:2:0",
+              canonical: "ذلك",
+              surfaceUthmani: "ذَٰلِكَ",
+              surfaceIndopak: "ذٰلِکَ",
+              surfaceImlaei: "ذَٰلِكَ"
+            ),
+          ]
+        ),
+      ]
+    )
+    defer { CanonicalLexiconStore.resetForTesting() }
+
+    // IndoPak display would normalize to ذالك under legacy; ASR says ذلك.
+    let hyp = TajweedLexicalScoring.prepareHypothesisWords("ذَٰلِكَ")
+    let eval = CanonicalLexicalEvaluator.evaluate(surah: 2, ayah: 2, hypothesisWords: hyp)
+    XCTAssertNotNil(eval)
+    XCTAssertEqual(eval?.ops.count, 1)
+    XCTAssertEqual(eval?.ops.first?.op, .match)
+    XCTAssertEqual(eval?.ops.first?.text, "ذَٰلِكَ")
+  }
+
+  func testCanonicalEvaluatorRematerializesAttachedWaw() {
+    CanonicalLexiconStore.installForTesting(
+      ayahs: [
+        "1:7": CanonicalLexiconStore.AyahLexicon(
+          ref: "1:7",
+          words: [
+            CanonicalLexiconStore.CanonicalWord(
+              id: "1:7:0", canonical: "غير", surfaceUthmani: "غَيۡرِ",
+              surfaceIndopak: "", surfaceImlaei: ""
+            ),
+            CanonicalLexiconStore.CanonicalWord(
+              id: "1:7:1", canonical: "المغضوب", surfaceUthmani: "ٱلۡمَغۡضُوبِ",
+              surfaceIndopak: "", surfaceImlaei: ""
+            ),
+            CanonicalLexiconStore.CanonicalWord(
+              id: "1:7:2", canonical: "عليهم", surfaceUthmani: "عَلَيۡهِمۡ",
+              surfaceIndopak: "", surfaceImlaei: ""
+            ),
+            CanonicalLexiconStore.CanonicalWord(
+              id: "1:7:3", canonical: "ولا", surfaceUthmani: "وَلَا",
+              surfaceIndopak: "", surfaceImlaei: ""
+            ),
+            CanonicalLexiconStore.CanonicalWord(
+              id: "1:7:4", canonical: "الضالين", surfaceUthmani: "ٱلضَّآلِّينَ",
+              surfaceIndopak: "", surfaceImlaei: ""
+            ),
+          ]
+        ),
+      ]
+    )
+    defer { CanonicalLexiconStore.resetForTesting() }
+
+    let hyp = TajweedLexicalScoring.prepareHypothesisWords("غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ")
+    let eval = CanonicalLexicalEvaluator.evaluate(surah: 1, ayah: 7, hypothesisWords: hyp)
+    XCTAssertNotNil(eval)
+    XCTAssertTrue(eval!.ops.allSatisfy { $0.op == .match }, "ops=\(eval!.ops.map { TajweedLexicalScoring.formatOpForLog($0) })")
+  }
+
+  func testCanonicalAuthorityAlwaysOn() {
+    CanonicalLexicalAuthority.clearOverride()
+    XCTAssertTrue(CanonicalLexicalAuthority.productionEnabled)
+    CanonicalLexicalAuthority.productionEnabled = false
+    XCTAssertTrue(
+      CanonicalLexicalAuthority.productionEnabled,
+      "Canonical remains on even if a client attempts to disable it"
+    )
+    CanonicalLexicalAuthority.clearOverride()
+    XCTAssertTrue(CanonicalLexicalAuthority.productionEnabled)
   }
 
   // MARK: - Functional: engine methods without a model pack (MODEL_MISSING path)

@@ -52,6 +52,8 @@ class TajweedDownloadView extends StatelessWidget {
             Text(
               failed
                   ? (viewModel.errorMessage ?? 'Please try again.')
+                  : viewModel.downloadProgress >= 1.0
+                  ? 'Finishing setup…'
                   : 'One-time download so Tajweed practice works fully '
                         'offline afterwards. This only happens once.',
               style: theme.textTheme.bodyMedium?.copyWith(

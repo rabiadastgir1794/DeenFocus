@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/tajweed_service.dart';
 import '../model/tajweed_models.dart';
+import '../viewmodel/tajweed_practice_view_model.dart';
 
 /// Temporary Android-only harness to exercise production asset download
 /// (`TajweedService.ensureModel` + EventChannel progress) without the real
@@ -174,6 +175,7 @@ class _TajweedAssetDebugScreenState extends State<TajweedAssetDebugScreen> {
       if (root != null && await root.exists()) {
         await root.delete(recursive: true);
       }
+      TajweedModelSession.invalidateBecauseDeleted();
       if (!mounted) return;
       setState(() {
         _installed = false;

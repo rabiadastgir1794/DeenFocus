@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import '../logger/startup_probe.dart';
 import 'app_colors.dart';
 
+const String kAppFontFamily = 'PlusJakartaSans';
+
+TextTheme _plusJakartaTextTheme(TextTheme base) =>
+    base.apply(fontFamily: kAppFontFamily);
+
 ThemeData get lightTheme {
+  StartupProbe.detail('lightTheme getter enter');
+  return lightThemeWithText(
+    _plusJakartaTextTheme(Typography.material2021().black),
+  );
+}
+
+ThemeData lightThemeWithText(TextTheme textTheme) {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    textTheme: GoogleFonts.plusJakartaSansTextTheme(),
+    fontFamily: kAppFontFamily,
+    textTheme: textTheme,
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       onPrimary: AppColors.onPrimaryLight,

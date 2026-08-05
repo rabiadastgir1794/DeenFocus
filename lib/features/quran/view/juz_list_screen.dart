@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../data/quran_local_repository.dart';
 import '../reading_engine/mushaf_metadata.dart';
 import 'juz_reading_screen.dart';
+import 'quran_reading_settings_launcher.dart';
 
 /// Lists all 30 Juz (Phase 1 — Juz View). Tapping one opens
 /// [JuzReadingScreen] scoped to that Juz's ayah range.
@@ -61,7 +62,12 @@ class _JuzListScreenState extends State<JuzListScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: l10n.quranModeJuz),
+      appBar: CustomAppBar(
+        title: l10n.quranModeJuz,
+        actions: [
+          QuranReadingSettingsLauncher.appBarAction(context),
+        ],
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView.separated(

@@ -5,6 +5,7 @@ class TajweedPracticeArgs {
     required this.ayah,
     required this.arabicText,
     required this.arabicFontFamily,
+    this.lexicalReferenceArabic,
     this.surahName,
     this.translation,
   });
@@ -18,6 +19,10 @@ class TajweedPracticeArgs {
 
   /// Bundled display font for [arabicText] (`UthmanicHafs` / `NooreHuda`).
   final String arabicFontFamily;
+
+  /// Canonical word-boundary text for lexical alignment (Uthmani for the same
+  /// ayah). When null, native falls back to [arabicText].
+  final String? lexicalReferenceArabic;
 
   /// Display-only, e.g. "Al-Fatiha".
   final String? surahName;

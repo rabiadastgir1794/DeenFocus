@@ -52,13 +52,14 @@ REQUIRED_PACK_KEYS = ("packId", "latestVersion", "manifestUrl")
 
 
 def _dir_size_bytes(directory: Path) -> int:
-    # Excludes the manifest itself: `model_manifest.json` is fetched separately
-    # (via `manifestUrl`), never as one of the plugin's own `fileSpecs()`
-    # artifacts, so including it here would overstate the real download size.
+    # Excludes the manifest itself: manifests are fetched via `manifestUrl`,
+    # never as one of the plugin's own `fileSpecs()` artifacts, so including
+    # them here would overstate the real download size.
+    excluded = {"model_manifest.json", "manifest.json"}
     return sum(
         f.stat().st_size
         for f in directory.rglob("*")
-        if f.is_file() and f.name != "model_manifest.json"
+        if f.is_file() and f.name not in excluded
     )
 
 

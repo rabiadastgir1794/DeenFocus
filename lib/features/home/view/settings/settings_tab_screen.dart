@@ -21,7 +21,10 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
-import '../../../../features/tajweed/view/tajweed_asset_debug_screen.dart';
+import '../../../../features/tajweed/view/tajweed_asset_debug_screen.dart'
+    deferred as tajweed_asset_debug;
+import '../../../../features/tajweed/view/tajweed_ios_coreml_debug_screen.dart'
+    deferred as tajweed_ios_debug;
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
 
@@ -56,6 +59,26 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
   Future<void> _setTajweedEnabled(bool value) async {
     setState(() => _tajweedEnabled = value);
     await StorageService.setTajweedEnabled(value);
+  }
+
+  Future<void> _openTajweedAssetDebug(BuildContext context) async {
+    await tajweed_asset_debug.loadLibrary();
+    if (!context.mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => tajweed_asset_debug.TajweedAssetDebugScreen(),
+      ),
+    );
+  }
+
+  Future<void> _openTajweedIosCoreMlDebug(BuildContext context) async {
+    await tajweed_ios_debug.loadLibrary();
+    if (!context.mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => tajweed_ios_debug.TajweedIosCoreMlDebugScreen(),
+      ),
+    );
   }
 
   Future<void> _showLanguagePicker(BuildContext context) async {
@@ -516,6 +539,11 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 ),
               ],
             ),
+            // Production Tajweed (iOS CoreML / Android ONNX): download, install,
+            // load, and inference run whenever AI Tajweed is enabled — never
+            // gated by kDebugMode. Official→DIY CoreML failover and Canonical
+            // lexical scoring are production (all builds). Asset/CoreML
+            // override rows below remain Debug-only.
             const SizedBox(height: 16),
             _SettingsGroup(
               children: [
@@ -529,8 +557,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
             ),
             const SizedBox(height: 16),
             AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
-            // Temporary Android debug harness for production asset download QA.
-            // Hidden outside debug Android builds; remove with TajweedAssetDebugScreen.
+            // Developer harness only. Production ensureModel still runs on
+            // Android Release via the practice flow (ONNX pack from catalog).
             if (kDebugMode && !kIsWeb && Platform.isAndroid) ...[
               const SizedBox(height: 16),
               _SettingsGroup(
@@ -538,13 +566,22 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   _SettingsRow(
                     icon: Icons.bug_report_outlined,
                     label: 'Tajweed Asset Debug',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => const TajweedAssetDebugScreen(),
-                        ),
-                      );
-                    },
+                    onTap: () => unawaited(_openTajweedAssetDebug(context)),
+                  ),
+                ],
+              ),
+            ],
+            // Developer catalog override (Official↔DIY) only.
+            // Release/TestFlight always use production catalog.json CoreML —
+            // download/install/load/inference are not behind kDebugMode.
+            if (kDebugMode && !kIsWeb && Platform.isIOS) ...[
+              const SizedBox(height: 16),
+              _SettingsGroup(
+                children: [
+                  _SettingsRow(
+                    icon: Icons.model_training_outlined,
+                    label: 'iOS CoreML override (Debug)',
+                    onTap: () => unawaited(_openTajweedIosCoreMlDebug(context)),
                   ),
                 ],
               ),

@@ -59,5 +59,12 @@
 	</array>
     <key>NSMicrophoneUsageDescription</key>
     <string>DeenFocus needs microphone access so you can practice Quran recitation and receive on-device tajweed feedback. Audio stays on your device.</string>
+	<!-- Required for Flutter debug attach / hot reload on a physical device. -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Allow Flutter tools on your computer to connect and debug your application. This prompt will not appear for release builds.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartVmService._tcp</string>
+	</array>
 </dict>
 </plist>

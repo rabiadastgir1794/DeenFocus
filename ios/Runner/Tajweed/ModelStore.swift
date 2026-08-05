@@ -55,15 +55,77 @@ final class ModelStore {
     return activeURL.appendingPathComponent(name)
   }
 
-  /// Encoder API described by the active manifest. Official gated packs are
-  /// multifunction (default, `encoderApi` absent or `"multifunction"`). A
-  /// DIY self-generated pack (see `memory/features/tajweed/`) sets
-  /// `"encoderApi": "single_function_fixed"` and `"encoderFixedT": <int>`.
+  /// Encoder API described by the active `model_manifest.json`. Switching
+  /// DIY ↔ official (or any future CoreML variant) is done by publishing a
+  /// different pack + manifest via Cloudflare catalog — no Swift rebuild.
+  ///
+  /// Manifest keys:
+  /// - `"encoderApi": "single_function_fixed"` + `"encoderFixedT": Int` → DIY
+  /// - `"encoderApi": "multifunction"` (or absent) + optional `"encoderBuckets":
+  ///   [Int,…]` → official-style multifunction (default buckets =
+  ///   `MelFrontend.defaultOfficialBuckets` when the array is omitted)
+  /// - optional `"encoderFunctionPrefix": "predict_T"` (default) for
+  ///   multifunction entry-point names
   func encoderApi() -> EncoderApi {
-    guard let m = readManifest(), (m["encoderApi"] as? String) == "single_function_fixed",
-          let fixedT = m["encoderFixedT"] as? Int
-    else { return .multifunction }
-    return .singleFunctionFixedLength(t: fixedT)
+    guard let m = readManifest() else {
+      return .multifunction(buckets: MelFrontend.defaultOfficialBuckets)
+    }
+    if (m["encoderApi"] as? String) == "single_function_fixed" {
+      let fixedT = (m["encoderFixedT"] as? Int)
+        ?? (m["encoderFixedT"] as? NSNumber)?.intValue
+        ?? 4800
+      return .singleFunctionFixedLength(t: fixedT)
+    }
+    let buckets = Self.parseEncoderBuckets(m) ?? MelFrontend.defaultOfficialBuckets
+    return .multifunction(buckets: buckets)
+  }
+
+  /// Prefix for multifunction CoreML entry points (`predict_T` + bucket →
+  /// `predict_T800`). Overridable via manifest for future packs.
+  func encoderFunctionPrefix() -> String {
+    guard let m = readManifest(),
+          let prefix = m["encoderFunctionPrefix"] as? String,
+          !prefix.isEmpty
+    else { return "predict_T" }
+    return prefix
+  }
+
+  /// Active pack version string from `model_manifest.json` (e.g. `1.2.0`).
+  func activeManifestVersion() -> String {
+    (readManifest()?["version"] as? String) ?? "unknown"
+  }
+
+  /// SHA-256 of the active encoder `weight.bin` as recorded in the manifest
+  /// (not recomputed). Empty if missing.
+  func activeEncoderSha256() -> String {
+    guard let sha = readManifest()?["sha256"] as? [String: Any] else { return "" }
+    return (sha["encoder"] as? String) ?? ""
+  }
+
+  /// Human-readable encoder API for logs.
+  func activeEncoderApiLabel() -> String {
+    switch encoderApi() {
+    case .multifunction(let buckets):
+      return "multifunction buckets=\(buckets)"
+    case .singleFunctionFixedLength(let t):
+      return "single_function_fixed T=\(t)"
+    }
+  }
+
+  /// Sorted ascending mel-time buckets from manifest, or `nil` if absent.
+  private static func parseEncoderBuckets(_ m: [String: Any]) -> [Int]? {
+    if let ints = m["encoderBuckets"] as? [Int], !ints.isEmpty {
+      return ints.sorted()
+    }
+    if let nums = m["encoderBuckets"] as? [NSNumber], !nums.isEmpty {
+      return nums.map(\.intValue).sorted()
+    }
+    // JSONSerialization sometimes yields [Any] of Int/NSNumber.
+    if let any = m["encoderBuckets"] as? [Any], !any.isEmpty {
+      let ints = any.compactMap { ($0 as? Int) ?? ($0 as? NSNumber)?.intValue }
+      return ints.isEmpty ? nil : ints.sorted()
+    }
+    return nil
   }
 
   /// Copy a prepared directory (containing mlpackages + tokenizer + manifest) into active.
@@ -146,17 +208,22 @@ final class ModelStore {
     AIAssetManager.shared.checkIntervalHours = TajweedAssetDistributionConfig.checkIntervalHours
   }()
 
-  /// Phase 2 local dev path (unchanged): `Documents/TajweedImport` still takes
-  /// priority so `TajweedDebugRunner`/manual QA is unaffected. ADR-008/ADR-009
-  /// add a production network path on top via the generic `AIAssetManager`
-  /// (with Tajweed as its first registered asset) — this method's
-  /// *signature*, error codes, and the verify/activate logic it calls into
-  /// (`installFromDirectory` below) are unchanged. While
-  /// `TajweedAssetDistributionConfig.catalogURL` is unset (no bucket provisioned
-  /// yet), the new paths are fully inert and behavior is identical to before.
+  /// Installs / updates the active Tajweed pack via Cloudflare catalog (or a
+  /// DEBUG Official/DIY override). `Documents/TajweedImport` still takes
+  /// priority for manual QA. Release always uses production `catalog.json`.
   func ensureModel(progress: ((Double) -> Void)? = nil) throws {
     _ = ModelStore.registerTajweedAsset
     let assetId = TajweedAssetDistributionConfig.assetId
+
+    TajweedDevModelOverride.applyToAssetManager()
+    if TajweedDevModelOverride.isAllowed,
+       TajweedDevModelOverride.consumePendingForceResync()
+         || !TajweedDevModelOverride.activePackMatchesSelection(manifest: readManifest())
+    {
+      try forceReinstallFromCurrentCatalog(assetId: assetId, progress: progress)
+      return
+    }
+
     if isAvailable() {
       if AIAssetManager.shared.isCheckFresh(assetId: assetId) {
         progress?(1.0)
@@ -179,19 +246,79 @@ final class ModelStore {
       try AIAssetManager.shared.performFirstInstall(assetId: assetId, progress: progress)
       return
     } catch let e as TajweedNativeError {
-      // A genuine content/verification failure (e.g. checksum mismatch) from
-      // TajweedAssetSync.install() — surface it as-is, never mask it as
-      // MODEL_MISSING.
       throw e
     } catch {
-      // Distribution not configured, asset not registered, or the catalog/
-      // manifest is unreachable — fall through to the standard MODEL_MISSING
-      // message below (unchanged).
+      // Distribution not configured / unreachable — fall through.
     }
     throw TajweedNativeError(
       TajweedErrorCode.modelMissing,
       "Model pack not installed. Accept HF access to fastconformer-quran-coreml-offline, copy packages into Documents/TajweedImport (or use TajweedDebugRunner.install), then retry ensureModel."
     )
+  }
+
+  /// Wipe active pack + update state, then first-install from the current
+  /// (possibly DEBUG-overridden) catalog. Enables Official↔DIY including
+  /// version downgrade.
+  func forceReinstallFromCurrentCatalog(
+    assetId: String,
+    progress: ((Double) -> Void)?
+  ) throws {
+    AIAssetManager.shared.clearUpdateState(assetId: assetId)
+    let previous = rootURL.appendingPathComponent("previous", isDirectory: true)
+    try? fm.removeItem(at: previous)
+    if fm.fileExists(atPath: activeURL.path) {
+      try? fm.moveItem(at: activeURL, to: previous)
+    }
+    do {
+      try AIAssetManager.shared.performFirstInstall(assetId: assetId, progress: progress)
+      try? fm.removeItem(at: previous)
+    } catch {
+      if fm.fileExists(atPath: previous.path) {
+        try? fm.removeItem(at: activeURL)
+        try? fm.moveItem(at: previous, to: activeURL)
+      }
+      throw error
+    }
+  }
+
+  /// True when the on-disk active pack is DIY CoreML (`single_function_fixed`).
+  func isDiyPackActive() -> Bool {
+    (readManifest()?["encoderApi"] as? String) == "single_function_fixed"
+  }
+
+  /// Install / activate DIY CoreML v1.1.0 for session failover (Release-safe).
+  /// Skips download when DIY is already active. Restores the normal catalog URL
+  /// afterward so the next launch still polls production Official.
+  func ensureDiyFailoverPack(progress: ((Double) -> Void)? = nil) throws {
+    _ = ModelStore.registerTajweedAsset
+    let assetId = TajweedAssetDistributionConfig.assetId
+
+    if isAvailable(), isDiyPackActive() {
+      progress?(1.0)
+      return
+    }
+
+    guard let diyCatalog = TajweedEngineFailover.diyCatalogFileURL() else {
+      throw TajweedNativeError(
+        TajweedErrorCode.modelDownloadFailed,
+        "Could not materialize DIY failover catalog."
+      )
+    }
+
+    let previousCatalog = AIAssetManager.shared.catalogURL
+    AIAssetManager.shared.catalogURL = diyCatalog
+    defer {
+      // Prefer DEBUG override catalog when allowed; else production Official.
+      if TajweedDevModelOverride.isAllowed {
+        TajweedDevModelOverride.applyToAssetManager()
+      } else {
+        AIAssetManager.shared.catalogURL = previousCatalog
+          ?? TajweedAssetDistributionConfig.catalogURL
+      }
+    }
+
+    NSLog("[TajweedFailover] installing DIY CoreML pack from failover catalog")
+    try forceReinstallFromCurrentCatalog(assetId: assetId, progress: progress)
   }
 
   private func requireManifest() throws -> [String: Any] {

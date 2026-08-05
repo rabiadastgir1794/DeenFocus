@@ -14,7 +14,12 @@ and ADR-007. **CoreML package wins** over lab ONNX mel if they diverge.
 
 ## ASR multifunction entry points
 
-`predict_T80` … `predict_T4800` (padded mel length T = 80…4800 ≈ 0.8 s … 48 s).
+`predict_T80`, `predict_T200`, `predict_T400`, `predict_T800`, `predict_T1600`,
+`predict_T2400`, `predict_T4800` (padded mel length T ≈ 0.8 s … 48 s).
+
+These are the **actual** function names in
+`fastconformer-quran-offline-ane.mlpackage` (verified 2026-07-30). Do **not**
+assume the older speculative list `[80,160,320,640,1280,2560,4800]`.
 
 | | Shape / value |
 | --- | --- |
@@ -24,8 +29,21 @@ and ADR-007. **CoreML package wins** over lab ONNX mel if they diverge.
 | CTC blank id | **1024** |
 | Frame hop (post-subsample) | **80 ms** (T/8 frames) |
 
-Pad mel time `T` up to the nearest supported bucket. Reject audio that would
-need T > 4800 (`AUDIO_TOO_LONG` / `ayah_too_long`).
+Pad mel time `T` up to the nearest supported bucket from the **active
+manifest's `encoderBuckets`** (not a hard-coded Swift list). Reject audio that
+would need T > max bucket (`AUDIO_TOO_LONG` / `ayah_too_long`).
+
+### Manifest keys (iOS dual-model)
+
+| Key | DIY | Official |
+| --- | --- | --- |
+| `encoderApi` | `single_function_fixed` | `multifunction` (or omit) |
+| `encoderFixedT` | e.g. `4800` | — |
+| `encoderBuckets` | — | `[80,200,400,800,1600,2400,4800]` |
+| `encoderFunctionPrefix` | — | `predict_T` (default) |
+
+Switching between packs is a Cloudflare `catalog.json` / `model_manifest.json`
+change only — see `memory/features/tajweed/ios-dual-coreml-architecture-2026-07-30.md`.
 
 Compute units: prefer `.cpuAndNeuralEngine` for the ANE package.
 

@@ -81,9 +81,22 @@ def main() -> int:
     manifest = {
         "version": "1.0.0",
         "encoder": "fastconformer-quran-offline-ane.mlpackage",
+        "encoderFiles": [
+            "Manifest.json",
+            "Data/com.apple.CoreML/model.mlmodel",
+            "Data/com.apple.CoreML/weights/weight.bin",
+        ],
         "pronunciationHead": "pronunciation-head.mlpackage",
+        "pronunciationHeadFiles": [
+            "Manifest.json",
+            "Data/com.apple.CoreML/model.mlmodel",
+            "Data/com.apple.CoreML/weights/weight.bin",
+        ],
         "tokenizer": "tokenizer.model",
         "tokens": "tokens.txt",
+        "encoderApi": "multifunction",
+        "encoderBuckets": [80, 200, 400, 800, 1600, 2400, 4800],
+        "encoderFunctionPrefix": "predict_T",
         "sha256": {
             "encoder": sha256_file(encoder_w),
             "pronunciationHead": sha256_file(head_w),
