@@ -114,7 +114,7 @@ class _AppLifecycleObserver extends StatefulWidget {
   const _AppLifecycleObserver({
     required this.child,
   });
-
+  //
   final Widget child;
 
   @override

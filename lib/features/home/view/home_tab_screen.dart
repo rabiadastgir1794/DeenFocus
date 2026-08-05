@@ -4,27 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/view/support_us_screen.dart';
+import '../../support/viewmodel/support_view_model.dart';
+
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/storage_service.dart';
 import '../../../core/services/theme_service.dart';
 import '../../../core/superwall/premium_gate.dart';
 import '../../../core/services/user_profile_service.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/home_models.dart';
 import '../viewmodel/home_tab_view_model.dart';
-import 'widgets/home_action_container.dart';
-import 'widgets/home_calendar_section.dart';
+import 'widgets/home_calendar_screen.dart';
 import 'widgets/home_circle_icon_button.dart';
+import 'widgets/home_cycle_mode_banner.dart';
+import 'widgets/home_cycle_mode_settings_sheet.dart';
+import 'widgets/home_daily_checklist_section.dart';
+import 'widgets/home_focus_score_section.dart';
 import 'widgets/home_info_screens.dart';
+import 'widgets/home_islamic_date_header.dart';
 import 'widgets/home_nearby_mosques_screen.dart';
-import 'widgets/home_prayer_streak_detail_screen.dart';
+import 'widgets/home_prayer_reminder_popup.dart';
+import 'widgets/home_insights_screen.dart';
 import 'widgets/home_prayer_streak_section.dart';
 import 'widgets/home_prayer_times_section.dart';
 import 'widgets/home_qibla_screen.dart';
 import 'widgets/home_verse_marquee.dart';
+import 'widgets/home_mark_prayer_sheet.dart';
 
 class HomeTabScreen extends StatelessWidget {
   const HomeTabScreen({super.key, required this.onOpenFocusTab});
@@ -54,6 +63,9 @@ class _HomeTabViewState extends State<_HomeTabView>
   String? _lastSyncedSect;
   late UserProfileService _profileService;
   bool _locationCheckDoneThisSession = false;
+  /// Prevents overlapping reminder dialogs; cleared after each attempt.
+  bool _prayerReminderCheckInFlight = false;
+  HomeTabViewModel? _homeVm;
 
   @override
   void initState() {
@@ -61,10 +73,20 @@ class _HomeTabViewState extends State<_HomeTabView>
     WidgetsBinding.instance.addObserver(this);
     _profileService = context.read<UserProfileService>();
     _profileService.addListener(_onProfileChanged);
+    _homeVm = context.read<HomeTabViewModel>();
+    _homeVm!.addListener(_onHomeVmChanged);
     // Check on launch — delay 2s so profile finishes loading from storage.
     Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) unawaited(_checkLocationChange());
+      if (mounted) {
+        unawaited(_checkLocationChange());
+        unawaited(_checkAndShowPrayerReminder());
+      }
     });
+  }
+
+  void _onHomeVmChanged() {
+    // Minute ticker / prayer reload — pick up Maghrib etc. while app stays open.
+    unawaited(_checkAndShowPrayerReminder());
   }
 
   void _onProfileChanged() {
@@ -114,6 +136,7 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   @override
   void dispose() {
+    _homeVm?.removeListener(_onHomeVmChanged);
     _profileService.removeListener(_onProfileChanged);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -125,6 +148,7 @@ class _HomeTabViewState extends State<_HomeTabView>
       // Focus refresh is handled once by [_AppLifecycleFocusRefresher] in main.dart.
       context.read<HomeTabViewModel>().onAppResumed();
       unawaited(_checkLocationChange());
+      unawaited(_checkAndShowPrayerReminder());
     }
   }
 
@@ -154,12 +178,13 @@ class _HomeTabViewState extends State<_HomeTabView>
 
     final cityLabel = newLocation.title.isNotEmpty
         ? newLocation.title
-        : 'your new location';
+        : AppLocalizations.of(context)!.homeYourNewLocation;
 
     await showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
+        final dialogL10n = AppLocalizations.of(ctx)!;
         final colorScheme = Theme.of(ctx).colorScheme;
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
         return AlertDialog(
@@ -194,7 +219,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               const SizedBox(width: 14),
               Expanded(
                 child: Text(
-                  'Location Changed',
+                  dialogL10n.homeLocationChangedTitle,
                   style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                     height: 1.15,
@@ -204,7 +229,7 @@ class _HomeTabViewState extends State<_HomeTabView>
             ],
           ),
           content: Text(
-            'You appear to be in $cityLabel. Update your prayer location for accurate times?',
+            dialogL10n.homeLocationChangedMessage(cityLabel),
             style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(
               height: 1.55,
               color: colorScheme.onSurfaceVariant,
@@ -214,7 +239,7 @@ class _HomeTabViewState extends State<_HomeTabView>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).maybePop(),
-              child: const Text('Not Now'),
+              child: Text(dialogL10n.homeLocationChangedNotNow),
             ),
             FilledButton(
               onPressed: () {
@@ -232,7 +257,7 @@ class _HomeTabViewState extends State<_HomeTabView>
                   vertical: 12,
                 ),
               ),
-              child: const Text('Update'),
+              child: Text(dialogL10n.homeLocationChangedUpdate),
             ),
           ],
         );
@@ -253,6 +278,55 @@ class _HomeTabViewState extends State<_HomeTabView>
     );
   }
 
+  Future<void> _checkAndShowPrayerReminder() async {
+    if (_prayerReminderCheckInFlight) return;
+    _prayerReminderCheckInFlight = true;
+    try {
+      if (!mounted) return;
+
+      final vm = context.read<HomeTabViewModel>();
+      // Wait until schedule is ready — otherwise we miss Maghrib on cold start.
+      if (vm.isLoading || vm.prayerTimes == null) return;
+
+      // Latest prayer that has already started; ignore older + future.
+      final target = vm.getPrayerReminderTarget();
+      if (target == null) return;
+
+      final todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      // v2: earlier builds claimed the key before showing, which could suppress
+      // Maghrib for the rest of the day if the dialog never appeared.
+      final promptKey = 'v2:$todayKey:${target.name}';
+      final alreadyPrompted = await StorageService.prayerReminderPromptedKeys;
+      if (alreadyPrompted.contains(promptKey)) return;
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
+      if (vm.isLoading || vm.prayerTimes == null) return;
+
+      // Tip must still be the same most-recent started prayer.
+      final stillTarget = vm.getPrayerReminderTarget();
+      if (stillTarget != target) return;
+
+      // Persist only when we are about to present — inFlight blocks duplicates.
+      await StorageService.markPrayerReminderPrompted(promptKey);
+      await StorageService.setLastPrayerReminderPromptMs(
+        DateTime.now().millisecondsSinceEpoch,
+      );
+
+      if (!mounted) return;
+      await PrayerReminderPopup.show(
+        context: context,
+        prayer: target,
+        onMarkPrayer: () {
+          if (!context.mounted) return;
+          openPrayerAction(context, target);
+        },
+      );
+    } finally {
+      _prayerReminderCheckInFlight = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -270,73 +344,63 @@ class _HomeTabViewState extends State<_HomeTabView>
       return const Center(child: CircularProgressIndicator());
     }
 
-    final currentMonth = DateFormat.yMMMM(
-      l10n.localeName,
-    ).format(vm.visibleMonth);
     final showHomeFocusLockCard =
         focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked;
+    final weekCycleModeDays = vm.weekCycleHighlights;
 
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.homeSalam,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Text(
-                        profile.userName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
+            HomeIslamicDateHeader(
+              userName: profile.userName,
+              onTapCalendar: () => _openCalendarScreen(context, vm),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  HomeCircleIconButton(
+                    icon: isDarkModeEnabled
+                        ? Icons.light_mode_outlined
+                        : Icons.dark_mode_outlined,
+                    onTap: () {
+                      unawaited(
+                        context.read<ThemeService>().setDarkModeEnabled(
+                          !isDarkModeEnabled,
+                        ),
+                      );
+                    },
                   ),
-                ),
-                HomeCircleIconButton(
-                  imagePath: 'assets/ai_chat_icon.png',
-                  onTap: () {
-                    unawaited(
-                      PremiumGate.presentIfNeeded(
-                        context: context,
-                        onAccess: () {
-                          if (!context.mounted) return;
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const HomeAiChatScreen(),
-                            ),
-                          );
-                        },
-                        debugContext: 'home:islamic_chat',
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(width: 8),
-                HomeCircleIconButton(
-                  icon: isDarkModeEnabled
-                      ? Icons.light_mode_outlined
-                      : Icons.dark_mode_outlined,
-                  onTap: () {
-                    unawaited(
-                      context.read<ThemeService>().setDarkModeEnabled(
-                        !isDarkModeEnabled,
-                      ),
-                    );
-                  },
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  HomeCircleIconButton(
+                    imagePath: 'assets/ai_chat_icon.png',
+                    onTap: () {
+                      unawaited(
+                        PremiumGate.presentIfNeeded(
+                          context: context,
+                          onAccess: () {
+                            if (!context.mounted) return;
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => const HomeAiChatScreen(),
+                              ),
+                            );
+                          },
+                          debugContext: 'home:islamic_chat',
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  HomeCircleIconButton(
+                    icon: Icons.show_chart_rounded,
+                    onTap: () => unawaited(_openInsights(context, vm)),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
             HomeVerseMarquee(
               text: _verseText(l10n, vm.dailyVerse),
               color: colorScheme.primary,
@@ -345,54 +409,67 @@ class _HomeTabViewState extends State<_HomeTabView>
               const SizedBox(height: 14),
               _FocusLockCard(focusVm: focusVm),
             ],
+            // Banner = activeCycle only (same gate as highlight's activeCycle term).
+            if (vm.cycleModeEnabled) ...[
+              const SizedBox(height: 14),
+              HomeCycleModeActiveBanner(
+                daysRemaining: vm.cycleModeDaysRemaining,
+                onTap: () => unawaited(_openCycleModeSettings(context, vm)),
+              ),
+            ],
             const SizedBox(height: 14),
             HomePrayerTimesSection(
               prayerTimes: vm.prayerTimes,
               backgroundColor: softCardColor,
             ),
-            const SizedBox(height: 12),
-            _QuickActionsCard(
+            const SizedBox(height: 14),
+            _FocusModeCard(onTap: widget.onOpenFocusTab),
+            const SizedBox(height: 14),
+            HomePrayerStreakSection(
+              prayerStreak: vm.prayerStreak,
+              dayStreak: vm.streakDays,
+              weekPrayerCounts: vm.weekPrayerCounts,
+              weekCycleModeDays: weekCycleModeDays,
               backgroundColor: softCardColor,
-              focusTitle: focusVm.homeCardTitle(l10n),
-              focusSubtitle: focusVm.homeCardSubtitle(l10n),
+              canRestoreStreak: vm.canRestoreStreak,
+              onTap: () => unawaited(_openInsights(context, vm)),
+              onInsightsTap: () => unawaited(_openInsights(context, vm)),
+              onRestoreStreak: () => unawaited(vm.restoreStreakLast7Days()),
+            ),
+            const SizedBox(height: 14),
+            _CycleModeToggleCard(
+              isEnabled: vm.cycleModeEnabled,
+              onToggle: () => unawaited(_onCycleModeToggle(context, vm)),
+              onEdit: () => unawaited(_openCycleModeSettings(context, vm)),
+            ),
+            const SizedBox(height: 14),
+            _QuickActionsCard(
               qiblaTitle: l10n.homeQiblaDirection,
-              qiblaSubtitle: vm.qiblaInfo == null
-                  ? l10n.homeLocationMissingForQibla
-                  : vm.showQiblaBearingDetails
-                  ? '${vm.qiblaInfo} ${l10n.homeToMakkah}'
-                  : l10n.homeQiblaSubtitleGuiding,
-              masjidTitle: l10n.homeFindMasjid,
-              masjidSubtitle: l10n.homeSearchNearbyMosques,
-              isFocusLocked: focusVm.isAppsLocked,
-              onOpenFocus: widget.onOpenFocusTab,
+              masjidTitle: l10n.quickActionsMasjidFinder,
+              calendarTitle: l10n.quickActionsCalendar,
+              supportUsTitle: l10n.quickActionsSupportUs,
               onOpenQibla: () => _openQiblaScreen(context, vm),
               onOpenMasjid: () => _openMasjidScreen(context, vm),
+              onOpenCalendar: () => _openCalendarScreen(context, vm),
+              onOpenSupportUs: () => _openSupportUs(context),
             ),
-            const SizedBox(height: 12),
-            HomePrayerStreakSection(
-              streakDays: vm.streakDays,
-              weekPrayerCounts: vm.weekPrayerCounts,
+            const SizedBox(height: 14),
+            HomeDailyChecklistSection(
               backgroundColor: softCardColor,
-              onTap: () => unawaited(_openPrayerStreakDetail(context, vm)),
+              completedItems: vm.dailyChecklistCompletedItems,
+              onToggleItem: vm.toggleDailyChecklistItem,
             ),
-            const SizedBox(height: 12),
-            HomeCalendarSection(
+            const SizedBox(height: 14),
+            HomeFocusScoreSection(
               backgroundColor: softCardColor,
-              monthTitle: currentMonth,
-              visibleMonth: vm.visibleMonth,
-              weeklyWeekStart: vm.weeklyVisibleWeekStart,
-              isLoading: vm.isEventsLoading,
-              weekly: vm.weeklyCalendar,
-              monthEvents: vm.monthEvents,
-              weekEvents: vm.weekEvents,
-              selectedDate: vm.selectedDate,
-              onToggleMode: vm.setWeeklyCalendar,
-              onPreviousMonth: vm.goToPreviousMonth,
-              onNextMonth: vm.goToNextMonth,
-              onDateTap: (date) => _onCalendarTap(context, vm, date),
+              score: vm.todayFocusScore,
+              prayerPercent: vm.todayPrayerPercent,
+              quranPercent: vm.todayQuranPercent,
+              dhikrPercent: vm.todayDhikrPercent,
+              distractionPercent: vm.todayDistractionPercent,
             ),
             if (vm.isFriday) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -430,63 +507,6 @@ class _HomeTabViewState extends State<_HomeTabView>
     final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
     final quote = useArabic ? verse.arabicText : verse.englishText;
     return '"$quote" — ${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}';
-  }
-
-  Future<void> _onCalendarTap(
-    BuildContext context,
-    HomeTabViewModel vm,
-    DateTime date,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    final eventOnDate = vm.eventsForDate(date);
-
-    if (eventOnDate.isEmpty) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.homeNoEventsFoundForDay)));
-      return;
-    }
-
-    vm.selectDate(date);
-    try {
-      await showModalBottomSheet<void>(
-        context: context,
-        showDragHandle: true,
-        builder: (ctx) {
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    DateFormat.yMMMMd(l10n.localeName).format(date),
-                    style: Theme.of(ctx).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 10),
-                  for (final item in eventOnDate)
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.event_outlined),
-                      title: Text(
-                        item.title,
-                        style: TextStyle(
-                          color: Theme.of(ctx).colorScheme.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    } finally {
-      vm.selectDate(null);
-    }
   }
 
   Future<void> _openQiblaScreen(
@@ -529,7 +549,28 @@ class _HomeTabViewState extends State<_HomeTabView>
     );
   }
 
-  Future<void> _openPrayerStreakDetail(
+  Future<void> _onCycleModeToggle(
+    BuildContext context,
+    HomeTabViewModel vm,
+  ) async {
+    if (vm.cycleModeEnabled) {
+      await vm.setCycleModeEnabled(false);
+      return;
+    }
+    // Turning the switch on opens settings; Save enables the cycle.
+    await showCycleModeSettingsSheet(context, enabling: true);
+  }
+
+  /// Opens Cycle Mode settings whether the mode is on or off.
+  /// Prefills the last saved values. Save enables (if off) or updates (if on).
+  Future<void> _openCycleModeSettings(
+    BuildContext context,
+    HomeTabViewModel vm,
+  ) async {
+    await showCycleModeSettingsSheet(context, enabling: false);
+  }
+
+  Future<void> _openInsights(
     BuildContext context,
     HomeTabViewModel vm,
   ) async {
@@ -541,127 +582,169 @@ class _HomeTabViewState extends State<_HomeTabView>
           MaterialPageRoute<void>(
             builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
               value: vm,
-              child: const HomePrayerStreakDetailScreen(),
+              child: const HomeInsightsScreen(),
             ),
           ),
         );
       },
-      debugContext: 'home:prayer_streak',
+      debugContext: 'home:insights',
+    );
+  }
+
+  void _openCalendarScreen(BuildContext context, HomeTabViewModel vm) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
+          value: vm,
+          child: const HomeCalendarScreen(),
+        ),
+      ),
+    );
+  }
+
+  void _openSupportUs(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ChangeNotifierProvider(
+          create: (_) => SupportViewModel(),
+          child: const SupportUsScreen(),
+        ),
+      ),
     );
   }
 }
 
 class _QuickActionsCard extends StatelessWidget {
   const _QuickActionsCard({
-    required this.backgroundColor,
-    required this.focusTitle,
-    required this.focusSubtitle,
     required this.qiblaTitle,
-    required this.qiblaSubtitle,
     required this.masjidTitle,
-    required this.masjidSubtitle,
-    required this.isFocusLocked,
-    required this.onOpenFocus,
+    required this.calendarTitle,
+    required this.supportUsTitle,
     required this.onOpenQibla,
     required this.onOpenMasjid,
+    required this.onOpenCalendar,
+    required this.onOpenSupportUs,
   });
 
-  final Color backgroundColor;
-  final String focusTitle;
-  final String focusSubtitle;
   final String qiblaTitle;
-  final String qiblaSubtitle;
   final String masjidTitle;
-  final String masjidSubtitle;
-  final bool isFocusLocked;
-  final VoidCallback onOpenFocus;
+  final String calendarTitle;
+  final String supportUsTitle;
   final VoidCallback onOpenQibla;
   final VoidCallback onOpenMasjid;
+  final VoidCallback onOpenCalendar;
+  final VoidCallback onOpenSupportUs;
+
+  static const double _gap = 12;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final items = <({String title, IconData icon, VoidCallback onTap})>[
+      (title: qiblaTitle, icon: Icons.near_me_outlined, onTap: onOpenQibla),
+      (title: masjidTitle, icon: Icons.location_on_outlined, onTap: onOpenMasjid),
+      (
+        title: calendarTitle,
+        icon: Icons.calendar_month_outlined,
+        onTap: onOpenCalendar,
+      ),
+      (
+        title: supportUsTitle,
+        icon: Icons.volunteer_activism_outlined,
+        onTap: onOpenSupportUs,
+      ),
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: items.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: _gap,
+        crossAxisSpacing: _gap,
+        childAspectRatio: 1.15,
+      ),
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return _QuickActionItem(
+          title: item.title,
+          icon: item.icon,
+          iconColor: colorScheme.primary,
+          onTap: item.onTap,
+        );
+      },
+    );
+  }
+}
+
+/// Equal quick-action tile: icon + label only (matches reference).
+class _QuickActionItem extends StatelessWidget {
+  const _QuickActionItem({
+    required this.title,
+    required this.icon,
+    required this.iconColor,
+    required this.onTap,
+  });
+
+  final String title;
+  final IconData icon;
+  final Color iconColor;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark
-        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
-        : AppColors.outlineVariantLight.withValues(alpha: 0.35);
+    final backgroundColor =
+        colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor, width: 1.1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+    return Material(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(18),
+      elevation: 0,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          HomeActionContainer(
-            backgroundColor: backgroundColor,
-            title: focusTitle,
-            subtitle: focusSubtitle,
-            icon: Icons.shield_outlined,
-            iconBackground: colorScheme.primaryContainer.withValues(
-              alpha: isDark ? 0.25 : 1,
-            ),
-            onTap: onOpenFocus,
-            showOuterDecoration: false,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isFocusLocked) ...[
-                  Container(
-                    width: 22,
-                    height: 22,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: colorScheme.error.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.lock_rounded,
-                      size: 14,
-                      color: colorScheme.error,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                ],
-                Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
-              ],
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: isDark ? 0.22 : 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 22, color: iconColor),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
-          Divider(height: 1, thickness: 1, color: borderColor),
-          HomeActionContainer(
-            backgroundColor: backgroundColor,
-            title: qiblaTitle,
-            subtitle: qiblaSubtitle,
-            icon: Icons.explore_outlined,
-            iconBackground: colorScheme.primaryContainer.withValues(
-              alpha: isDark ? 0.25 : 1,
-            ),
-            onTap: onOpenQibla,
-            showOuterDecoration: false,
-          ),
-          Divider(height: 1, thickness: 1, color: borderColor),
-          HomeActionContainer(
-            backgroundColor: backgroundColor,
-            title: masjidTitle,
-            subtitle: masjidSubtitle,
-            icon: Icons.location_on_outlined,
-            iconBackground: colorScheme.tertiaryContainer.withValues(
-              alpha: isDark ? 0.25 : 1,
-            ),
-            onTap: onOpenMasjid,
-            showOuterDecoration: false,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -746,6 +829,193 @@ class _FocusLockCard extends StatelessWidget {
                   color: colorScheme.error,
                   fontWeight: FontWeight.w700,
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Green Focus Mode CTA card — always visible below Today's Prayers.
+class _FocusModeCard extends StatelessWidget {
+  const _FocusModeCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Ink(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              colorScheme.primary,
+              colorScheme.primary.withValues(alpha: 0.85),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.primary.withValues(alpha: 0.25),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.22),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(
+                Icons.shield_outlined,
+                color: Colors.white,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.homeFocusModeTitle,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n.homeFocusModeSubtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.white.withValues(alpha: 0.95),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Cycle Mode row: edit settings (left of switch) + enable/disable toggle.
+class _CycleModeToggleCard extends StatelessWidget {
+  const _CycleModeToggleCard({
+    required this.isEnabled,
+    required this.onToggle,
+    required this.onEdit,
+  });
+
+  final bool isEnabled;
+  final VoidCallback onToggle;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cycleModeColor =
+        isDark ? const Color(0xFFE59DB7) : const Color(0xFFFF9EC5);
+    final cycleModeBackground = isDark
+        ? cycleModeColor.withValues(alpha: 0.15)
+        : cycleModeColor.withValues(alpha: 0.12);
+
+    return Material(
+      color: cycleModeBackground,
+      borderRadius: BorderRadius.circular(14),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 8, 10),
+        child: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: cycleModeColor.withValues(alpha: 0.22),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.water_drop_outlined,
+                color: cycleModeColor,
+                size: 15,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.cycleModeTitle,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n.cycleModeSubtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontSize: 10.5,
+                      height: 1.25,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: onEdit,
+              style: TextButton.styleFrom(
+                foregroundColor: cycleModeColor,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+              child: Text(
+                l10n.cycleModeEditButton,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            Transform.scale(
+              scale: 0.82,
+              child: Switch.adaptive(
+                value: isEnabled,
+                onChanged: (_) => onToggle(),
+                activeTrackColor: cycleModeColor,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
           ],

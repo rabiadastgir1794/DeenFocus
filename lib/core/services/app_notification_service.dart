@@ -31,11 +31,33 @@ class AppNotificationService {
 
   static final AppNotificationService instance = AppNotificationService._();
 
-  static const _prayerChannel = AndroidNotificationChannel(
-    'prayer_times',
-    'General Reminder',
-    description: 'Prayer time reminders from Deenly.',
+  // Android ties channel sound to the channel id permanently — it cannot be
+  // changed after first creation on a device. A distinct channel per sound
+  // choice lets users switch "Full Adhan" / "Beep" / "Mute" per prayer and
+  // have it take effect immediately, instead of being stuck with whatever
+  // sound the old shared channel happened to be created with.
+  static const _prayerChannelFullAdhan = AndroidNotificationChannel(
+    'prayer_full_adhan',
+    'Prayer reminders (Adhan)',
+    description: 'Prayer time reminders from Deenly, with the Adhan sound.',
     importance: Importance.max,
+    sound: RawResourceAndroidNotificationSound('azan'),
+  );
+
+  static const _prayerChannelBeep = AndroidNotificationChannel(
+    'prayer_beep',
+    'Prayer reminders (Beep)',
+    description: 'Prayer time reminders from Deenly, with a short beep.',
+    importance: Importance.max,
+    sound: RawResourceAndroidNotificationSound('beep'),
+  );
+
+  static const _prayerChannelMute = AndroidNotificationChannel(
+    'prayer_mute',
+    'Prayer reminders (Silent)',
+    description: 'Prayer time reminders from Deenly, without sound.',
+    importance: Importance.max,
+    playSound: false,
   );
 
   static const _focusChannel = AndroidNotificationChannel(
@@ -43,13 +65,6 @@ class AppNotificationService {
     'Focus modes',
     description: 'Sleep time and other focus mode updates from Deenly.',
     importance: Importance.high,
-  );
-
-  static const _darwinPrayerDetails = DarwinNotificationDetails(
-    presentAlert: true,
-    presentBadge: true,
-    presentSound: true,
-    threadIdentifier: 'deenly.prayer_reminder',
   );
 
   final FlutterLocalNotificationsPlugin _plugin =
@@ -102,7 +117,9 @@ class AppNotificationService {
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
-    await androidPlugin?.createNotificationChannel(_prayerChannel);
+    await androidPlugin?.createNotificationChannel(_prayerChannelFullAdhan);
+    await androidPlugin?.createNotificationChannel(_prayerChannelBeep);
+    await androidPlugin?.createNotificationChannel(_prayerChannelMute);
     await androidPlugin?.createNotificationChannel(_focusChannel);
 
     _initialized = true;
@@ -148,6 +165,12 @@ class AppNotificationService {
       // Match device timezone after travel / DST changes.
       await _setLocalTimezone();
 
+      final prayerSettingsRaw = await StorageService.prayerSettingsJson;
+      final prayerSettings = prayerSettingsRaw == null
+          ? PrayerSettingsState.defaults()
+          : PrayerSettingsState.fromJson(prayerSettingsRaw);
+      final customTimeOverrides = prayerSettings.customTimeOverrides;
+
       final now = DateTime.now();
       final int daysAhead;
       if (daysAheadOverride != null) {
@@ -166,10 +189,14 @@ class AppNotificationService {
             // scheduling. The cached helper can briefly lag across resume/day
             // boundaries, which is enough to fire a reminder that does not line
             // up with the active lock window.
-            data: await HomePrayerTimesHelper.generatePrayerTimesForDate(
-              latitude: latitude,
-              longitude: longitude,
-              date: now.add(Duration(days: d)),
+            data: HomePrayerTimesHelper.applyCustomOverrides(
+              data: await HomePrayerTimesHelper.generatePrayerTimesForDate(
+                latitude: latitude,
+                longitude: longitude,
+                date: now.add(Duration(days: d)),
+              ),
+              overridesMinutesSinceMidnight: customTimeOverrides,
+              referenceTime: now.add(Duration(days: d)),
             ),
           ),
       ];
@@ -197,6 +224,12 @@ class AppNotificationService {
         for (final slot in dataset.data.slots.where(
           (slot) => slot.id != HomePrayerId.sunrise,
         )) {
+          final trackable = slot.id.trackablePrayer;
+          final entry = trackable == null
+              ? const PrayerSettingEntry()
+              : prayerSettings.forPrayer(trackable);
+          if (!entry.notificationsEnabled) continue;
+
           final id =
               _prayerNotificationIdStart +
               dataset.dayOffset * 20 +
@@ -206,7 +239,7 @@ class AppNotificationService {
             when: slot.time,
             title: _prayerTimeTitle(slot.id, isSpanish: isSpanish),
             body: _prayerTimeBody(slot.id, isSpanish: isSpanish),
-            details: _prayerNotificationDetails,
+            details: _prayerNotificationDetailsFor(entry.sound),
             // Avoid alarm-clock UI side effects ("approaching"/upcoming alarm).
             preferAlarmClock: false,
           );
@@ -479,18 +512,61 @@ class AppNotificationService {
         ),
       );
 
-  NotificationDetails get _prayerNotificationDetails =>
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'prayer_times',
-          'General Reminder',
-          channelDescription: 'Prayer time reminders from Deenly.',
-          importance: Importance.max,
-          priority: Priority.high,
-        ),
-        iOS: _darwinPrayerDetails,
-        macOS: _darwinPrayerDetails,
-      );
+  /// Per-prayer sound preference.
+  ///
+  /// Android: routed to a dedicated channel per sound (channel sound is
+  /// immutable after first creation, so each choice needs its own channel).
+  /// `azan.mp3` / `beep.mp3` live in `android/app/src/main/res/raw/`.
+  ///
+  /// iOS: `sound` names a file bundled at the root of the app bundle
+  /// (`ios/Runner/azan.caf` / `beep.caf`, added to the Runner target's Copy
+  /// Bundle Resources phase). Apple silently falls back to the default tone
+  /// for any custom sound longer than 30 seconds, so `azan.caf` is a 28s
+  /// CAF/IMA4 clip trimmed from the source Adhan (Android plays the full
+  /// `azan.mp3` — no such limit there).
+  NotificationDetails _prayerNotificationDetailsFor(
+    PrayerNotificationSound sound,
+  ) {
+    final playSound = sound != PrayerNotificationSound.mute;
+    final AndroidNotificationChannel channel;
+    String? iosSoundName;
+    switch (sound) {
+      case PrayerNotificationSound.fullAdhan:
+        channel = _prayerChannelFullAdhan;
+        iosSoundName = 'azan.caf';
+      case PrayerNotificationSound.beep:
+        channel = _prayerChannelBeep;
+        iosSoundName = 'beep.caf';
+      case PrayerNotificationSound.mute:
+        channel = _prayerChannelMute;
+        iosSoundName = null;
+    }
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel.id,
+        channel.name,
+        channelDescription: channel.description,
+        importance: Importance.max,
+        priority: Priority.high,
+        playSound: playSound,
+        sound: channel.sound,
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: playSound,
+        sound: iosSoundName,
+        threadIdentifier: 'deenly.prayer_reminder',
+      ),
+      macOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: playSound,
+        sound: iosSoundName,
+        threadIdentifier: 'deenly.prayer_reminder',
+      ),
+    );
+  }
 
   Future<bool> _scheduleIfFuture({
     required int id,

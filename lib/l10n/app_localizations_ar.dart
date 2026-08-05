@@ -15,6 +15,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTagline => 'إيمان. ركز. تناسق';
 
   @override
+  String get welcomeGreeting => 'ASSALAMU ALAIKUM';
+
+  @override
   String get welcomeTagline => 'وضع الصلاة. وضع الطفل. وضع السكون.';
 
   @override
@@ -23,6 +26,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get skip => 'يتخطى';
+
+  @override
+  String get notNow => 'ليس الآن';
 
   @override
   String get continueButton => 'يكمل';
@@ -60,27 +66,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'الإخطارات مطلوبة لتلقي التنبيهات والتذكيرات بوقت الصلاة.';
 
   @override
-  String get salahTitle => 'خطوط التسبيح والصلاة';
-
-  @override
-  String get salahSubtitle =>
-      'عداد تسبيح رقمي جميل مع إعدادات الذكر المسبقة والإدخالات المخصصة وتتبع الخط.';
-
-  @override
-  String get tasbihTitle => 'خطوط التسبيح والصلاة';
-
-  @override
-  String get tasbihSubtitle =>
-      'عداد تسبيح رقمي جميل مع إعدادات الذكر المسبقة، والإدخالات المخصصة، وتتبع الخط.';
-
-  @override
-  String get quranTitle => 'القرآن والقبلة والمسجد';
-
-  @override
-  String get quranSubtitle =>
-      'اقرأ القرآن الكريم، وابحث عن اتجاه القبلة، واكتشف المساجد القريبة منك، كل ذلك في مكان واحد.';
-
-  @override
   String get sectTitle => 'اختر طائفتك';
 
   @override
@@ -105,21 +90,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get namePlaceholder => 'اسمك';
 
   @override
-  String get locationTitle => 'تمكين الموقع';
+  String get locationTitle => 'اعثر على قبلتك';
 
   @override
   String get locationSubtitle =>
-      'نحتاج إلى موقعك للحصول على أوقات الصلاة الدقيقة واتجاه القبلة والعثور على المساجد القريبة.';
+      'فعّل الموقع للحصول على قبلة دقيقة وأوقات صلاة ومساجد قريبة.';
 
   @override
   String get locationButton => 'السماح بالوصول إلى الموقع';
 
   @override
-  String get notificationsTitle => 'البقاء مذكرا';
+  String get locationManualEntry => 'أو أدخل مدينتك';
+
+  @override
+  String get locationPrivacyNote => 'يبقى على جهازك';
+
+  @override
+  String get locationFeaturePrayerTimesTitle => 'أوقات الصلاة';
+
+  @override
+  String get locationFeatureQiblaTitle => 'القبلة';
+
+  @override
+  String get locationFeatureMasjidsTitle => 'مساجد';
+
+  @override
+  String get notificationsTitle => 'لا تفوّت صلاة أبداً';
 
   @override
   String get notificationsSubtitle =>
-      'احصل على إشعارات بأوقات الصلاة وتذكيرات وضع التركيز والمطالبات الروحية اليومية.';
+      'تنبيهات الأذان وتذكيرات التركيز والذكر اليومي — في الوقت المناسب تماماً.';
 
   @override
   String get notificationsButton => 'تمكين الإخطارات';
@@ -128,40 +128,293 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsEnabled => 'تم تمكين الإخطارات';
 
   @override
-  String get screenTimeTitle => 'الوصول إلى وقت الشاشة';
+  String get notificationsPreviewDate => 'الجمعة، 10 يوليو';
+
+  @override
+  String get notificationsPreviewTime => '6:42';
+
+  @override
+  String get notificationsPreviewNow => 'الآن';
+
+  @override
+  String get notificationsPreviewMinutesAgo => '٢ د';
+
+  @override
+  String get notificationsPreviewHourAgo => '١ س';
+
+  @override
+  String get notificationsPreviewAdhanTitle => 'أذان المغرب';
+
+  @override
+  String get notificationsPreviewAdhanBody =>
+      'حان وقت الصلاة. تم إيقاف التطبيقات.';
+
+  @override
+  String get notificationsPreviewDhikrTitle => 'الذكر اليومي';
+
+  @override
+  String get notificationsPreviewDhikrBody => 'سبحان الله — خذ دقيقة للذكر.';
+
+  @override
+  String get notificationsPreviewStreakTitle => 'السلسلة';
+
+  @override
+  String get notificationsPreviewStreakBody =>
+      '٧ أيام من الصلوات الكاملة. واصل!';
+
+  @override
+  String get screenTimeTitle => 'تفعيل وقت الشاشة';
 
   @override
   String get screenTimeSubtitle =>
-      'لحظر التطبيقات التي تشتت الانتباه أثناء الصلاة والانضباط الليلي، يتطلب هذا التطبيق إذن وقت الشاشة.';
+      'هذا ما يتيح لـ Deen Focus إيقاف التطبيقات المشتتة أثناء الصلاة ووقت النوم ووضع الطفل.';
 
   @override
-  String get screenTimeButton => 'يكمل';
+  String get screenTimeButton => 'السماح بالوصول إلى وقت الشاشة';
 
   @override
-  String get focusModesTitle => 'أوضاع التركيز القوية';
+  String get screenTimePrivacyNote =>
+      'Deen Focus never reads your data — it only pauses the apps you choose.';
 
   @override
-  String get focusModesSubtitle => 'ثلاثة أوضاع مصممة لحماية وقتك وانتباهك';
+  String screenTimeStepOf(int current, int total) {
+    return 'STEP $current OF $total';
+  }
+
+  @override
+  String get screenTimeStep1Title => 'Open the Screen Time prompt';
+
+  @override
+  String get screenTimeStep1Body =>
+      'Tap \'Allow Screen Time Access\' — your device will show its own permission sheet.';
+
+  @override
+  String get screenTimeStep2Title => 'Tap Continue, then Allow';
+
+  @override
+  String get screenTimeStep2Body =>
+      'Approve the request so Deen Focus can pause apps at the right moments.';
+
+  @override
+  String get screenTimeStep3Title => 'Choose apps to lock';
+
+  @override
+  String get screenTimeStep3Body =>
+      'Pick the apps that distract you most — social, games, video, anything.';
+
+  @override
+  String get screenTimeStep4Title => 'You\'re protected';
+
+  @override
+  String get screenTimeStep4Body =>
+      'Apps lock automatically during Salah, sleep time and child mode.';
+
+  @override
+  String get screenTimePromptTitle => 'Screen Time';
+
+  @override
+  String screenTimePromptMessage(String appName) {
+    return '\'$appName\' would like to access Screen Time';
+  }
+
+  @override
+  String get screenTimeDontAllow => 'Don\'t Allow';
+
+  @override
+  String get screenTimePromptContinue => 'Continue';
+
+  @override
+  String get screenTimeAppInstagram => 'Instagram';
+
+  @override
+  String get screenTimeAppTikTok => 'TikTok';
+
+  @override
+  String get screenTimeAppYouTube => 'YouTube';
+
+  @override
+  String get screenTimeAppGames => 'Games';
+
+  @override
+  String get screenTimeAndroidStep1Title => 'Open Usage Access settings';
+
+  @override
+  String get screenTimeAndroidStep1Body =>
+      'Tap \'Allow Screen Time Access\' — your device will open Usage Access for Deen Focus.';
+
+  @override
+  String get screenTimeAndroidStep2Title => 'Enable Accessibility';
+
+  @override
+  String get screenTimeAndroidStep2Body =>
+      'Turn on the Deen Focus service so apps can pause during Salah, sleep, and child mode.';
+
+  @override
+  String get screenTimeAndroidStep3Title => 'Choose apps to lock';
+
+  @override
+  String get screenTimeAndroidStep3Body =>
+      'Pick the apps that distract you most — social, games, video, anything.';
+
+  @override
+  String get screenTimeAndroidStep4Title => 'You\'re protected';
+
+  @override
+  String get screenTimeAndroidStep4Body =>
+      'Apps lock automatically during Salah, sleep time and child mode.';
+
+  @override
+  String get screenTimeAndroidUsageTitle => 'Usage access';
+
+  @override
+  String get screenTimeAndroidUsageMessage =>
+      'Allow Deen Focus to track which other apps are being used.';
+
+  @override
+  String get screenTimeAndroidAccessibilityTitle => 'Accessibility';
+
+  @override
+  String get screenTimeAndroidAccessibilityMessage =>
+      'Deen Focus needs Accessibility to pause distracting apps during focus sessions.';
+
+  @override
+  String get screenTimeAndroidPermit => 'Allow';
+
+  @override
+  String get screenTimeAndroidEnable => 'Enable';
+
+  @override
+  String get screenTimeAndroidNotNow => 'Not now';
+
+  @override
+  String get focusModesTitle => 'كل شيء في تطبيق واحد';
+
+  @override
+  String get focusModesSubtitle =>
+      'استكشف كل ما يقدمه دين فوكس. اضغط على وضع التركيز لمعرفة كيف يعمل.';
+
+  @override
+  String get focusModesSectionLabel => 'أوضاع التركيز · اضغط لمعرفة المزيد';
+
+  @override
+  String get focusPrayerTrackingSectionLabel => 'الصلاة والمتابعة';
+
+  @override
+  String get focusLearningHubSectionLabel => 'مركز التعلم';
+
+  @override
+  String get focusMoreSectionLabel => 'المزيد';
 
   @override
   String get focusPrayerModeTitle => 'وضع الصلاة';
 
   @override
   String get focusPrayerModeDescription =>
-      'قم بحظر التطبيقات التي تشتت انتباهك أثناء الصلاة للحصول على خشوع كامل';
+      'احظر التطبيقات المشتتة تلقائيًا أثناء الصلاة لتصلّي بخشوع تام.';
+
+  @override
+  String get focusPrayerModeBullet1 => 'قفل التطبيقات تلقائيًا عند وقت الصلاة';
+
+  @override
+  String get focusPrayerModeBullet2 => 'يُفتح القفل عند الانتهاء';
+
+  @override
+  String get focusPrayerModeBullet3 => 'يبني التركيز والاستمرارية';
 
   @override
   String get focusSleepModeTitle => 'وضع السكون';
 
   @override
-  String get focusSleepModeDescription => 'حافظ على جدول نومك واستيقظ للفجر';
+  String get focusSleepModeDescription =>
+      'خذ راحة بالطريقة الحلال. احظر التطبيقات عند النوم لتنال راحة جيدة وتستيقظ للفجر.';
+
+  @override
+  String get focusSleepModeBullet1 => 'حظر التطبيقات تلقائيًا عند وقت النوم';
+
+  @override
+  String get focusSleepModeBullet2 => 'تذكيرات لطيفة للاستيقاظ للفجر';
+
+  @override
+  String get focusSleepModeBullet3 => 'يحمي نومك وصلاة الفجر';
 
   @override
   String get focusChildModeTitle => 'وضع الطفل';
 
   @override
   String get focusChildModeDescription =>
-      'حظر التطبيقات على الفور عند تسليم الجهاز للأطفال';
+      'هل تسلّم هاتفك لطفلك؟ اقفل التطبيقات فورًا حتى يرى ما هو آمن فقط.';
+
+  @override
+  String get focusChildModeBullet1 => 'وضع آمن بنقرة واحدة';
+
+  @override
+  String get focusChildModeBullet2 => 'خروج محمي برمز مرور';
+
+  @override
+  String get focusChildModeBullet3 => 'راحة بال في كل مرة';
+
+  @override
+  String get focusModeGotIt => 'حسنًا';
+
+  @override
+  String get focusFeaturePrayerTimesTitle => 'أوقات صلاة دقيقة';
+
+  @override
+  String get focusFeaturePrayerTimesSubtitle => 'الأذان والتذكيرات';
+
+  @override
+  String get focusFeatureStreaksTitle => 'السلاسل';
+
+  @override
+  String get focusFeatureStreaksSubtitle => 'حافظ على الاستمرارية';
+
+  @override
+  String get focusFeatureChecklistTitle => 'القائمة اليومية';
+
+  @override
+  String get focusFeatureChecklistSubtitle => 'ابنِ عادات جيدة';
+
+  @override
+  String get focusFeatureQiblaTitle => 'القبلة والمسجد';
+
+  @override
+  String get focusFeatureQiblaSubtitle => 'الاتجاه والمساجد';
+
+  @override
+  String get focusFeatureQuranTitle => 'القرآن';
+
+  @override
+  String get focusFeatureQuranSubtitle => 'ترجمات وأجزاء وصفحات';
+
+  @override
+  String get focusFeatureHadithTitle => 'الحديث';
+
+  @override
+  String get focusFeatureHadithSubtitle => 'مجموعات موثوقة';
+
+  @override
+  String get focusFeatureDuasTitle => 'الأدعية';
+
+  @override
+  String get focusFeatureDuasSubtitle => 'أدعية يومية';
+
+  @override
+  String get focusFeatureTasbihTitle => 'التسبيح';
+
+  @override
+  String get focusFeatureTasbihSubtitle => 'عداد ذكر رقمي';
+
+  @override
+  String get focusFeatureAiTitle => 'المرافق الذكي';
+
+  @override
+  String get focusFeatureAiSubtitle => 'اسأل عن دينك';
+
+  @override
+  String get focusFeatureInsightsTitle => 'الإحصاءات';
+
+  @override
+  String get focusFeatureInsightsSubtitle => 'إحصاءات أسبوعية وشهرية';
 
   @override
   String get investTitle => 'استثمر في دينك';
@@ -350,10 +603,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeFindMasjid => 'البحث عن مسجد بالقرب مني';
 
   @override
+  String get quickActionsMasjidFinder => 'البحث عن مسجد';
+
+  @override
   String get homeSearchNearbyMosques => 'بحث المساجد القريبة.';
 
   @override
   String get homePrayerStreak => 'خطوط الصلاة';
+
+  @override
+  String homePrayersInARow(int count) {
+    return '$count صلوات متتالية';
+  }
+
+  @override
+  String homeDayStreakCount(int count) {
+    return '$count أيام';
+  }
+
+  @override
+  String get homeInsights => 'الرؤى';
 
   @override
   String get homeOpenStreakDetails => 'تفاصيل الخط المفتوح.';
@@ -401,6 +670,496 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeJummahReminder => 'لا تنسوا سورة الكهف .';
 
   @override
+  String get hijriYear => 'هـ';
+
+  @override
+  String get hijriMonthMuharram => 'محرم';
+
+  @override
+  String get hijriMonthSafar => 'صفر';
+
+  @override
+  String get hijriMonthRabiAlAwwal => 'ربيع الأول';
+
+  @override
+  String get hijriMonthRabiAlThani => 'ربيع الثاني';
+
+  @override
+  String get hijriMonthJumadaAlAwwal => 'جمادى الأولى';
+
+  @override
+  String get hijriMonthJumadaAlThani => 'جمادى الثانية';
+
+  @override
+  String get hijriMonthRajab => 'رجب';
+
+  @override
+  String get hijriMonthShaban => 'شعبان';
+
+  @override
+  String get hijriMonthRamadan => 'رمضان';
+
+  @override
+  String get hijriMonthShawwal => 'شوال';
+
+  @override
+  String get hijriMonthDhuAlQadah => 'ذو القعدة';
+
+  @override
+  String get hijriMonthDhuAlHijjah => 'ذو الحجة';
+
+  @override
+  String get calendarTitle => 'التقويم الإسلامي';
+
+  @override
+  String get calendarBack => 'رجوع';
+
+  @override
+  String get calendarToday => 'اليوم';
+
+  @override
+  String get calendarTomorrow => 'غداً';
+
+  @override
+  String calendarDaysAway(int days) {
+    return '$days أيام';
+  }
+
+  @override
+  String get calendarNoEventsThisWeek => 'لا توجد أحداث إسلامية هذا الأسبوع';
+
+  @override
+  String get calendarNoEventsBlessing => 'بارك الله أسبوعكم بالسلام والخير.';
+
+  @override
+  String get calendarNoUpcomingEvents => 'لا توجد مناسبات إسلامية قادمة.';
+
+  @override
+  String get calendarUpcomingEvents => 'الأحداث الإسلامية القادمة';
+
+  @override
+  String get calendarUpcomingThisYear => 'قادم هذا العام';
+
+  @override
+  String get calendarThisWeekObservances => 'هذا الأسبوع';
+
+  @override
+  String get calendarLegendCycleDays => 'أيام الدورة (السلسلة محمية)';
+
+  @override
+  String calendarMoonIlluminated(int percent) {
+    return '$percent% مضاء';
+  }
+
+  @override
+  String get calendarMoonNew => 'محاق';
+
+  @override
+  String get calendarMoonWaxingCrescent => 'هلال متزايد';
+
+  @override
+  String get calendarMoonFirstQuarter => 'تربيع أول';
+
+  @override
+  String get calendarMoonWaxingGibbous => 'أحدب متزايد';
+
+  @override
+  String get calendarMoonFull => 'بدر';
+
+  @override
+  String get calendarMoonWaningGibbous => 'أحدب متناقص';
+
+  @override
+  String get calendarMoonLastQuarter => 'تربيع أخير';
+
+  @override
+  String get calendarMoonWaningCrescent => 'هلال متناقص';
+
+  @override
+  String get calendarEventRamadanBegins => 'بداية رمضان';
+
+  @override
+  String get calendarEventRamadanBeginsDesc => 'شهر الصيام';
+
+  @override
+  String get calendarEventLaylatAlQadr => 'ليلة القدر';
+
+  @override
+  String get calendarEventLaylatAlQadrDesc => 'ليلة القدر المباركة';
+
+  @override
+  String get calendarEventEidAlFitr => 'عيد الفطر';
+
+  @override
+  String get calendarEventEidAlFitrDesc => 'عيد الفطر المبارك';
+
+  @override
+  String get calendarEventDayOfArafah => 'يوم عرفة';
+
+  @override
+  String get calendarEventDayOfArafahDesc => 'يوم الوقوف بعرفة';
+
+  @override
+  String get calendarEventEidAlAdha => 'عيد الأضحى';
+
+  @override
+  String get calendarEventEidAlAdhaDesc => 'عيد التضحية';
+
+  @override
+  String get calendarEventIslamicNewYear => 'رأس السنة الهجرية';
+
+  @override
+  String get calendarEventIslamicNewYearDesc => '١ محرم';
+
+  @override
+  String get calendarEventMawlid => 'المولد النبوي';
+
+  @override
+  String get calendarEventMawlidDesc => 'مولد النبي ﷺ';
+
+  @override
+  String get calendarEventAshura => 'عاشوراء';
+
+  @override
+  String get calendarEventAshuraDesc => '١٠ محرم';
+
+  @override
+  String get calendarEventJumuah => 'الجمعة';
+
+  @override
+  String get calendarEventJumuahDesc => 'صلاة الجمعة';
+
+  @override
+  String get calendarEventWhiteDays => 'الأيام البيض';
+
+  @override
+  String get calendarEventWhiteDaysDesc => 'أيام الصيام المستحبة';
+
+  @override
+  String get cycleModeActiveTitle =>
+      '«يريد الله بكم اليسر ولا يريد بكم العسر» — البقرة ١٨٥';
+
+  @override
+  String get cycleModeActiveSubtitle =>
+      'خلال هذه الفترة، سلسلتك محمية. أيام الدورة مميزة بالوردي، ويتوقف وضع الدورة تلقائياً عند انتهاء الدورة.';
+
+  @override
+  String cycleModeActiveSubtitleOld(num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Auto-ends in $days days',
+      one: 'Auto-ends tomorrow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModeStreakProtected => 'سلسلة الصلاة محمية خلال فترتك';
+
+  @override
+  String get cycleModeCalendarHighlighted => 'أيام التقويم مميزة باللون الوردي';
+
+  @override
+  String cycleModeAutoEndInfo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'ينتهي تلقائياً في $days أيام',
+      one: 'ينتهي تلقائياً غداً',
+      zero: 'ينتهي اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModeSettingsTitle => 'وضع الدورة';
+
+  @override
+  String get cycleModeStartDateLabel => 'تاريخ البدء';
+
+  @override
+  String get cycleModeLengthLabel => 'مدة الدورة';
+
+  @override
+  String cycleModeLengthValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أيام',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModePauseStreaksLabel => 'إيقاف السلاسل مؤقتاً';
+
+  @override
+  String get cycleModeExcludeFromStatisticsLabel => 'استبعاد من الإحصائيات';
+
+  @override
+  String get cycleModeSaveButton => 'حفظ';
+
+  @override
+  String get cycleModeEditButton => 'تعديل';
+
+  @override
+  String get cycleModeChangeStartDateTitle => 'تغيير تاريخ البدء؟';
+
+  @override
+  String get cycleModeChangeStartDateMessage =>
+      'سيؤدي تغيير تاريخ البدء إلى إعادة حساب نافذة وضع الدورة النشطة. قد لا تُعامل الأيام خارج النطاق الجديد كأيام دورة.';
+
+  @override
+  String get cycleModeChangeStartDateConfirm => 'تغيير تاريخ البدء';
+
+  @override
+  String prayerReminderTitle(String prayer) {
+    return 'هل صليت $prayer؟';
+  }
+
+  @override
+  String get prayerReminderSubtitle => 'حافظ على سلسلتك من خلال تسجيل صلاتك';
+
+  @override
+  String get prayerReminderYesButton => 'نعم، الحمد لله';
+
+  @override
+  String get prayerReminderLaterButton => 'سأسجلها لاحقاً';
+
+  @override
+  String get homeTrialBannerTitle => 'مجاناً لمدة ٧ أيام — كن مسلماً أفضل ✨';
+
+  @override
+  String get homeTrialBannerSubtitle => 'كل الميزات مفتوحة. ابدأ رحلتك اليوم.';
+
+  @override
+  String get homeFocusModeTitle => 'وضع التركيز';
+
+  @override
+  String get homeFocusModeSubtitle => 'احجب التطبيقات المشتتة أثناء الصلاة';
+
+  @override
+  String get cycleModeTitle => 'وضع الدورة';
+
+  @override
+  String get cycleModeSubtitle => 'للحيض — أوقفي الصلوات مع الحفاظ على سلسلتك';
+
+  @override
+  String get dailyChecklistTitle => 'قائمة المهام اليومية';
+
+  @override
+  String get dailyChecklistSectionPrayer => 'الصلاة';
+
+  @override
+  String get dailyChecklistSectionQuranDhikr => 'القرآن والذكر';
+
+  @override
+  String get dailyChecklistSectionGoodDeeds => 'أعمال صالحة';
+
+  @override
+  String get dailyChecklistSectionDistraction => 'التحكم في التشتيت';
+
+  @override
+  String get dailyChecklistFajr => 'الفجر';
+
+  @override
+  String get dailyChecklistTahajjud => 'التهجد';
+
+  @override
+  String get dailyChecklistQuran => 'القرآن';
+
+  @override
+  String get dailyChecklistMorningAdhkar => 'أذكار الصباح';
+
+  @override
+  String get dailyChecklistEveningAdhkar => 'أذكار المساء';
+
+  @override
+  String get dailyChecklistDhikr => 'الذكر';
+
+  @override
+  String get dailyChecklistCharity => 'صدقة';
+
+  @override
+  String get dailyChecklistSmileAtSomeone => 'ابتسم لأحد';
+
+  @override
+  String get dailyChecklistFamilyCall => 'اتصال بالعائلة';
+
+  @override
+  String get dailyChecklistNoMusicToday => 'بدون موسيقى اليوم';
+
+  @override
+  String get dailyChecklistNoSocialMediaBeforeIsha =>
+      'بدون وسائل تواصل قبل العشاء';
+
+  @override
+  String get focusScoreTitle => 'درجة التركيز اليوم';
+
+  @override
+  String get focusScorePrayer => 'الصلاة';
+
+  @override
+  String get focusScoreQuran => 'القرآن';
+
+  @override
+  String get focusScoreDhikr => 'الذكر';
+
+  @override
+  String get focusScoreDistraction => 'التحكم في التشتيت';
+
+  @override
+  String get insightsBack => 'رجوع';
+
+  @override
+  String get insightsTitle => 'رؤاي';
+
+  @override
+  String get insightsSubtitle => 'تتبع تقدّم دينك';
+
+  @override
+  String get insightsPrayerRate => 'معدل الصلاة';
+
+  @override
+  String get insightsDayStreak => 'سلسلة الأيام';
+
+  @override
+  String get insightsBestStreak => 'أفضل سلسلة';
+
+  @override
+  String get insightsWeekly => 'أسبوعي';
+
+  @override
+  String get insightsMonthly => 'شهري';
+
+  @override
+  String get insightsPrayersCompleted => 'الصلوات المكتملة';
+
+  @override
+  String get insightsRestoreStreak => 'استعادة سلسلتي — آخر ٢٤ ساعة';
+
+  @override
+  String focusScoreBreakdown(
+    int prayerPercent,
+    int quranPercent,
+    int dhikrPercent,
+    int distractionPercent,
+  ) {
+    return 'الصلاة $prayerPercent% · القرآن $quranPercent% · الذكر $dhikrPercent% · التشتت $distractionPercent%';
+  }
+
+  @override
+  String get quickActionsCalendar => 'التقويم';
+
+  @override
+  String get quickActionsCalendarSubtitle => 'عرض التواريخ الهجرية';
+
+  @override
+  String get quickActionsSupportUs => 'ادعمني';
+
+  @override
+  String get quickActionsSupportUsSubtitle => 'ساعدنا على النمو';
+
+  @override
+  String get quickActionsSupportUsMessage =>
+      'شكراً لتفكيرك في دعم DeenFocus! ميزات الدعم قادمة قريباً.';
+
+  @override
+  String get supportUsTitle => 'Support DeenFocus';
+
+  @override
+  String get supportUsHeroTitle => 'Help keep DeenFocus growing';
+
+  @override
+  String get supportUsHeroBody =>
+      'DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.';
+
+  @override
+  String get supportUsFundSection => 'YOUR CONTRIBUTIONS FUND';
+
+  @override
+  String get supportUsFundFeature1Title => 'New Islamic features';
+
+  @override
+  String get supportUsFundFeature1Subtitle =>
+      'Fresh tools to deepen your worship';
+
+  @override
+  String get supportUsFundFeature2Title => 'Server & infrastructure';
+
+  @override
+  String get supportUsFundFeature2Subtitle =>
+      'Keeping the app fast and reliable';
+
+  @override
+  String get supportUsFundFeature3Title => 'Bug fixes & updates';
+
+  @override
+  String get supportUsFundFeature3Subtitle =>
+      'A smoother, more stable experience';
+
+  @override
+  String get supportUsFundFeature4Title => 'Quran, Salah & productivity';
+
+  @override
+  String get supportUsFundFeature4Subtitle =>
+      'Continual improvements to core features';
+
+  @override
+  String get supportUsNeedHelp => 'NEED HELP?';
+
+  @override
+  String get supportUsWhatsApp => 'Chat on WhatsApp';
+
+  @override
+  String get supportUsEmailSupport => 'Email Support';
+
+  @override
+  String get supportUsChooseAmountTitle => 'Choose a one-time amount';
+
+  @override
+  String get supportUsChooseAmountSubtitle =>
+      'Every bit helps keep DeenFocus growing.';
+
+  @override
+  String get supportUsCustomAmountLabel => 'Or enter a custom amount';
+
+  @override
+  String get supportUsPurposeLabel => 'Purpose of your donation (optional)';
+
+  @override
+  String get supportUsPurposeHint => 'e.g. Sadaqah, Zakat, app development...';
+
+  @override
+  String get supportUsPurposeNote =>
+      'Tell us the purpose and we\'ll utilize your contribution accordingly.';
+
+  @override
+  String get supportUsOptionalFooter =>
+      'Support is entirely optional and helps us keep improving DeenFocus.';
+
+  @override
+  String supportUsCta(String amount) {
+    return 'Support with $amount';
+  }
+
+  @override
+  String get supportUsWhatsAppPrefill =>
+      'Assalamu alaikum, I need help with DeenFocus.';
+
+  @override
+  String get supportUsEmailSubject => 'DeenFocus support request';
+
+  @override
+  String get supportUsLaunchUnavailable =>
+      'Could not open that app on this device.';
+
+  @override
+  String get supportUsLaunchFailed => 'Something went wrong. Please try again.';
+
+  @override
   String get homeAiChatDescription =>
       'اسأل أي شيء عن أوقات الصلاة والقرآن والإرشادات الإسلامية.';
 
@@ -412,6 +1171,184 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeNoEventsFoundForDay => 'لم يتم العثور على أحداث لهذا اليوم.';
+
+  @override
+  String homeMarkPrayerAs(String prayerName) {
+    return '$prayerName — سجّل كـ';
+  }
+
+  @override
+  String get homeMarkPrayerPrayedOnTime => 'صُليت في وقتها';
+
+  @override
+  String get homeMarkPrayerQada => 'قضاء (تعويض)';
+
+  @override
+  String get homeMarkPrayerMissed => 'فائتة';
+
+  @override
+  String homePrayerSettingsTitle(String prayerName) {
+    return 'إعدادات $prayerName';
+  }
+
+  @override
+  String get homePrayerSettingsPrayerTime => 'وقت الصلاة';
+
+  @override
+  String get homePrayerSettingsNotification => 'الإشعار';
+
+  @override
+  String get homePrayerSettingsAboutSubtitle => 'فضائل وأحكام والمزيد';
+
+  @override
+  String homePrayerSettingsInfoBanner(String prayerName) {
+    return 'هذه الإعدادات خاصة بصلاة $prayerName فقط. يمكنك تعيين تفضيلات مختلفة لكل صلاة.';
+  }
+
+  @override
+  String homeEditPrayerTimeTitle(String prayerName) {
+    return 'تعديل وقت $prayerName';
+  }
+
+  @override
+  String get homeEditPrayerTimeCurrent => 'الوقت الحالي';
+
+  @override
+  String get homeEditPrayerTimeSelectNew => 'اختر وقتًا جديدًا';
+
+  @override
+  String homeEditPrayerTimeNote(String prayerName) {
+    return 'هذا الوقت المخصص ينطبق على $prayerName فقط. عدّله إذا كان مسجدك المحلي أو طريقة الحساب مختلفين.';
+  }
+
+  @override
+  String get homeEditPrayerTimeSave => 'حفظ الوقت';
+
+  @override
+  String get homeEditPrayerTimeReset => 'إعادة إلى الوقت المحسوب';
+
+  @override
+  String homeNotificationForPrayer(String prayerName) {
+    return 'إشعار $prayerName';
+  }
+
+  @override
+  String get homeNotificationSoundLabel => 'صوت الإشعار';
+
+  @override
+  String get homeNotificationSoundFullAdhan => 'الأذان الكامل';
+
+  @override
+  String get homeNotificationSoundFullAdhanSubtitle => 'تشغيل الأذان بالكامل';
+
+  @override
+  String get homeNotificationSoundBeep => 'صفير';
+
+  @override
+  String get homeNotificationSoundBeepSubtitle => 'نغمة إشعار قصيرة';
+
+  @override
+  String get homeNotificationSoundMute => 'صامت';
+
+  @override
+  String get homeNotificationSoundMuteSubtitle => 'بدون صوت';
+
+  @override
+  String get homeNotificationEnableLabel => 'تفعيل الإشعار';
+
+  @override
+  String homeNotificationEnableSubtitle(String prayerName) {
+    return 'احصل على إشعار عند وقت $prayerName';
+  }
+
+  @override
+  String homeAboutPrayerTitle(String prayerName) {
+    return 'عن صلاة $prayerName';
+  }
+
+  @override
+  String get homeAboutPrayerTimeLabel => 'الوقت';
+
+  @override
+  String get homeAboutPrayerRakatLabel => 'الركعات';
+
+  @override
+  String get homeAboutPrayerVirtuesLabel => 'الفضائل';
+
+  @override
+  String get homeAboutPrayerReferenceLabel => 'المرجع';
+
+  @override
+  String get homeAboutFajrTiming =>
+      'يبدأ من طلوع الفجر الصادق وينتهي بطلوع الشمس.';
+
+  @override
+  String get homeAboutFajrRakat => 'ركعتان سنة + ركعتان فرض';
+
+  @override
+  String get homeAboutFajrVirtue => 'من صلّى الفجر فهو في ذمة الله.';
+
+  @override
+  String get homeAboutFajrReference =>
+      '«ركعتا الفجر خير من الدنيا وما فيها» (صحيح مسلم)';
+
+  @override
+  String get homeAboutDhuhrTiming =>
+      'يبدأ بعد زوال الشمس ويستمر حتى يدخل وقت العصر.';
+
+  @override
+  String get homeAboutDhuhrRakat => '٤ سنة + ٤ فرض + ٢ سنة';
+
+  @override
+  String get homeAboutDhuhrVirtue =>
+      'من اثنتي عشرة ركعة تطوعًا في اليوم والليلة يبني الله بها بيتًا في الجنة.';
+
+  @override
+  String get homeAboutDhuhrReference =>
+      '«من صلّى اثنتي عشرة ركعة في يوم وليلة بُني له بهن بيت في الجنة» (صحيح مسلم)';
+
+  @override
+  String get homeAboutAsrTiming =>
+      'يبدأ عندما يصير ظل الشيء مثله ويستمر حتى غروب الشمس.';
+
+  @override
+  String get homeAboutAsrRakat => '٤ فرض';
+
+  @override
+  String get homeAboutAsrVirtue =>
+      'المحافظة على هذه الصلاة مخصوصة بثواب وتحذير عظيمين.';
+
+  @override
+  String get homeAboutAsrReference =>
+      '«من فاتته صلاة العصر فكأنما وُتر أهله وماله» (صحيح البخاري)';
+
+  @override
+  String get homeAboutMaghribTiming =>
+      'يبدأ بعد غروب الشمس مباشرة ويستمر حتى يغيب الشفق الأحمر.';
+
+  @override
+  String get homeAboutMaghribRakat => '٣ فرض + ٢ سنة';
+
+  @override
+  String get homeAboutMaghribVirtue => 'وقت يُستحب فيه الدعاء بشكل خاص.';
+
+  @override
+  String get homeAboutMaghribReference =>
+      '«للصائم فرحتان... فرحة عند فطره» (صحيح البخاري، في الإفطار عند المغرب)';
+
+  @override
+  String get homeAboutIshaTiming =>
+      'يبدأ بعد غياب الشفق تمامًا ويستمر حتى منتصف الليل (أو إلى الفجر عند بعض الآراء).';
+
+  @override
+  String get homeAboutIshaRakat => '٤ فرض + ٢ سنة + الوتر';
+
+  @override
+  String get homeAboutIshaVirtue => 'صلاة العشاء جماعة تعدل قيام نصف الليل.';
+
+  @override
+  String get homeAboutIshaReference =>
+      '«من صلّى العشاء في جماعة فكأنما قام نصف الليل» (صحيح مسلم)';
 
   @override
   String get backToOnboarding => 'العودة إلى الإعداد';
@@ -433,6 +1370,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tabQuran => 'القرآن';
+
+  @override
+  String get tabLearn => 'تعلّم';
 
   @override
   String get quranLoadFailed => 'فشل تحميل بيانات القرآن';
@@ -1034,4 +1974,180 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get asrMethodHanafi => 'حنفي';
+
+  @override
+  String get homeLocationChangedTitle => 'تغير الموقع';
+
+  @override
+  String homeLocationChangedMessage(String city) {
+    return 'يبدو أنك في $city. هل تريد تحديث موقع الصلاة لأوقات أدق؟';
+  }
+
+  @override
+  String get homeLocationChangedNotNow => 'ليس الآن';
+
+  @override
+  String get homeLocationChangedUpdate => 'تحديث';
+
+  @override
+  String get homeYourNewLocation => 'موقعك الجديد';
+
+  @override
+  String get insightsPrayerStreak => 'سلسلة الصلاة';
+
+  @override
+  String insightsPrayerStreakCount(int count) {
+    return '$count صلوات';
+  }
+
+  @override
+  String get insightsPrayersInARow => 'صلوات متتالية';
+
+  @override
+  String get insightsDaysInARow => 'أيام متتالية';
+
+  @override
+  String get insightsChipUpToday => '↑ +1';
+
+  @override
+  String get insightsChipDayUp => '↑ +1 today';
+
+  @override
+  String get insightsWeeklyCompletion => 'Weekly completion';
+
+  @override
+  String get insightsMonthlyCompletion => 'Monthly completion';
+
+  @override
+  String get insightsThisWeek => 'This week';
+
+  @override
+  String get insightsThisMonth => 'This month';
+
+  @override
+  String get insightsOverall => 'Overall';
+
+  @override
+  String get insightsRateExcellent => 'Excellent';
+
+  @override
+  String get insightsRateGood => 'Good';
+
+  @override
+  String get insightsRateFair => 'Fair';
+
+  @override
+  String get insightsRateStart => 'Keep going';
+
+  @override
+  String get insightsPrayersCompletedWeekly => 'Prayers completed (weekly)';
+
+  @override
+  String get insightsPrayersCompletedMonthly => 'Prayers completed (monthly)';
+
+  @override
+  String insightsCompletionSummary(int done, int possible) {
+    return 'You completed $done out of $possible prayers. Alhamdulillah — keep going!';
+  }
+
+  @override
+  String get insightsFocusExcellent => 'Excellent — keep it up!';
+
+  @override
+  String get insightsFocusKeepGoing => 'Keep building your focus';
+
+  @override
+  String get insightsTodaysPrayers => 'Today\'s prayers';
+
+  @override
+  String get insightsPrayersCompletedLabel =>
+      'Prayers completed — Alhamdulillah!';
+
+  @override
+  String get insightsCycleModeActiveLabel => 'Cycle mode active';
+
+  @override
+  String get insightsProtectedByCycleMode => 'Your streak is protected.';
+
+  @override
+  String get insightsCurrentPrayerStreak => 'Current prayer streak';
+
+  @override
+  String get insightsBestPrayerStreak => 'Best prayer streak';
+
+  @override
+  String get insightsCurrentDayStreak => 'Current day streak';
+
+  @override
+  String get insightsCycleProtectedDays => 'Cycle protected days';
+
+  @override
+  String get insightsAchievements => 'الإنجازات';
+
+  @override
+  String get insightsAchieved => 'Achieved';
+
+  @override
+  String insightsCycleModeFooter(int days) {
+    return 'Cycle Mode days are protected and not counted as streak breaks. You have $days protected day(s) available.';
+  }
+
+  @override
+  String get insightsCycleModeFooterOff =>
+      'Enable Cycle Mode to protect your streak during rest days.';
+
+  @override
+  String get achievementFirstPrayerStreak => 'أول سلسلة صلاة';
+
+  @override
+  String get achievementSevenPrayerStreak => 'سلسلة سبع صلوات';
+
+  @override
+  String get achievementThirtyPrayerStreak => 'سلسلة ثلاثين صلاة';
+
+  @override
+  String get achievementFajrWarrior => 'فارس الفجر';
+
+  @override
+  String get achievementQuranReader => 'قارئ القرآن';
+
+  @override
+  String get achievementDhikrMaster => 'سيد الذكر';
+
+  @override
+  String get achievementConsistencyChampion => 'بطل الاستمرارية';
+
+  @override
+  String get prayerCompletionAlhamdulillah => 'الحمد لله!';
+
+  @override
+  String prayerCompletionCompleted(String prayer) {
+    return '$prayer has been completed';
+  }
+
+  @override
+  String get prayerCompletionStreakIncreased =>
+      'Your prayer streak has increased';
+
+  @override
+  String get prayerCompletionKeepGoing =>
+      'Every prayer brings you closer to Allah. Keep going!';
+
+  @override
+  String get prayerCompletionContinue => 'متابعة';
+
+  @override
+  String prayerCompletionNextPrayer(String when) {
+    return 'Next prayer in $when';
+  }
+
+  @override
+  String prayerCompletionMinutes(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String prayerCompletionHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
 }

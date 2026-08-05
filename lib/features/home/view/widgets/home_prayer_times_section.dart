@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
+import '../../viewmodel/home_tab_view_model.dart';
+import 'home_mark_prayer_sheet.dart';
 
 class HomePrayerTimesSection extends StatefulWidget {
   const HomePrayerTimesSection({
@@ -106,8 +109,11 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 const minTileWidth = 104.0;
                 const spacing = 8.0;
                 final maxW = constraints.maxWidth;
-                final width = maxW.isFinite ? maxW : minTileWidth * 3 + 2 * spacing;
-                var cols = ((width + spacing) / (minTileWidth + spacing)).floor();
+                final width = maxW.isFinite
+                    ? maxW
+                    : minTileWidth * 3 + 2 * spacing;
+                var cols = ((width + spacing) / (minTileWidth + spacing))
+                    .floor();
                 cols = cols.clamp(1, 3);
                 final tileWidth = (width - (cols - 1) * spacing) / cols;
 
@@ -202,9 +208,15 @@ class HomePrayerTile extends StatelessWidget {
     final isPassed = !slot.time.isAfter(now);
     final isCurrent = prayerTimes.nextPrayer == slot.id;
     final isPast = isPassed && !isCurrent;
-
-    // Mirrors web: next → primary + shadow-primary/20; passed → muted/50;
-    // upcoming → warm fill + border-border/50.
+    final trackable = slot.id.trackablePrayer;
+    final status = trackable == null
+        ? PrayerMarkStatus.none
+        : context.watch<HomeTabViewModel>().statusForToday(trackable);
+    // Mirrors web: next → primary + shadow-primary/20; passed & unmarked →
+    // muted/50; upcoming → warm fill + border-border/50. Marked past prayers
+    // reuse the same primary/secondary/error roles as the Mark Prayer sheet
+    // (on time → success/primary, qada → warning/secondary, missed →
+    // error) so the two surfaces always agree on colour.
     final Color background;
     final Color titleColor;
     final Color timeColor;
@@ -223,6 +235,24 @@ class HomePrayerTile extends StatelessWidget {
           offset: const Offset(0, 6),
         ),
       ];
+    } else if (isPast && status == PrayerMarkStatus.missed) {
+      background = colorScheme.errorContainer.withValues(alpha: 0.55);
+      titleColor = colorScheme.error;
+      timeColor = colorScheme.error;
+      border = null;
+      boxShadow = null;
+    } else if (isPast && status == PrayerMarkStatus.qada) {
+      background = colorScheme.secondaryContainer.withValues(alpha: 0.55);
+      titleColor = colorScheme.secondary;
+      timeColor = colorScheme.secondary;
+      border = null;
+      boxShadow = null;
+    } else if (isPast && status == PrayerMarkStatus.onTime) {
+      background = colorScheme.primaryContainer.withValues(alpha: 0.55);
+      titleColor = colorScheme.primary;
+      timeColor = colorScheme.primary;
+      border = null;
+      boxShadow = null;
     } else if (isPast) {
       background = colorScheme.surfaceContainerHighest.withValues(
         alpha: isDark ? 0.42 : 0.5,
@@ -284,8 +314,12 @@ class HomePrayerTile extends StatelessWidget {
       ),
     );
 
-    if (!isCurrent) return tile;
-    return tile;
+    if (trackable == null) return tile;
+    return InkWell(
+      onTap: () => openPrayerAction(context, trackable),
+      borderRadius: BorderRadius.circular(12),
+      child: tile,
+    );
   }
 
   String _labelForPrayer(AppLocalizations l10n, HomePrayerId id) {

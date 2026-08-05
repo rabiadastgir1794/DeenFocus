@@ -1,0 +1,570 @@
+import 'package:intl/intl.dart';
+
+import '../model/home_models.dart';
+
+/// Immutable analytics snapshot — Home, Insights, popups, and achievements
+/// must all read these values (never mutate streaks in the UI).
+class PrayerAnalyticsSnapshot {
+  const PrayerAnalyticsSnapshot({
+    required this.prayerStreak,
+    required this.dayStreak,
+    required this.weeklyCompleted,
+    required this.weeklyPossible,
+    required this.monthlyCompleted,
+    required this.monthlyPossible,
+    required this.prayerRatePercent,
+    required this.weekDayCounts,
+    required this.monthWeekBuckets,
+    required this.homeWeekDayCounts,
+    this.restoreTarget,
+  });
+
+  final int prayerStreak;
+  final int dayStreak;
+  final int weeklyCompleted;
+  final int weeklyPossible;
+  final int monthlyCompleted;
+  final int monthlyPossible;
+  final int prayerRatePercent;
+  final List<int> weekDayCounts;
+  final List<int> homeWeekDayCounts;
+  final List<({String label, int completed, int possible})> monthWeekBuckets;
+
+  /// Most recent break that can be restored (within 24h), if any.
+  final RestoreTarget? restoreTarget;
+
+  bool get canRestoreStreak => restoreTarget != null;
+
+  int get weeklyRatePercent => weeklyPossible == 0
+      ? 0
+      : ((weeklyCompleted / weeklyPossible) * 100).round().clamp(0, 100);
+
+  int get monthlyRatePercent => monthlyPossible == 0
+      ? 0
+      : ((monthlyCompleted / monthlyPossible) * 100).round().clamp(0, 100);
+}
+
+/// A single prayer slot that broke the streak and may be restored.
+class RestoreTarget {
+  const RestoreTarget({
+    required this.date,
+    required this.dateKey,
+    required this.prayer,
+  });
+
+  final DateTime date;
+  final String dateKey;
+  final TrackablePrayer prayer;
+}
+
+/// Single source of truth for prayer analytics.
+///
+/// UI / ViewModels must only call [calculate] / [RestoreCalculator.apply] —
+/// never increment streak counters locally.
+abstract class PrayerAnalyticsService {
+  static final DateFormat dayKeyFormat = DateFormat('yyyy-MM-dd');
+  static const prayersPerDay = 5;
+  static const weeklyPossible = 35;
+  static const restoreWindow = Duration(hours: 24);
+
+  static String dayKey(DateTime date) => dayKeyFormat.format(date);
+
+  static bool countsForPrayerStreak(PrayerMarkStatus status) =>
+      status == PrayerMarkStatus.onTime || status == PrayerMarkStatus.qada;
+
+  static PrayerAnalyticsSnapshot calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    bool Function(DateTime date)? isCycleDay,
+    bool Function(DateTime date)? isPausedStreakDay,
+    bool Function(DateTime date)? isExcludedStatsDay,
+    bool pauseStreaks = true,
+    bool excludeFromStatistics = true,
+    DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+  }) {
+    // Prefer explicit policy callbacks (per-interval Cycle Mode history).
+    // Legacy tests may pass [isCycleDay] + bool flags instead.
+    bool isPausedDay(DateTime d) =>
+        isPausedStreakDay?.call(d) ??
+        (pauseStreaks && (isCycleDay?.call(d) ?? false));
+    bool isExcludedDay(DateTime d) =>
+        isExcludedStatsDay?.call(d) ??
+        (excludeFromStatistics && (isCycleDay?.call(d) ?? false));
+
+    final prayerStreak = PrayerStreakCalculator.calculate(
+      now: now,
+      statusHistory: statusHistory,
+      isCycleDay: isPausedDay,
+      prayerStartTime: prayerStartTime,
+    );
+    final dayStreak = DayStreakCalculator.calculate(
+      now: now,
+      statusHistory: statusHistory,
+      isCycleDay: isPausedDay,
+    );
+    final weekly = WeeklyCalculator.calculate(
+      now: now,
+      statusHistory: statusHistory,
+      isCycleDay: isExcludedDay,
+    );
+    final monthly = MonthlyCalculator.calculate(
+      now: now,
+      statusHistory: statusHistory,
+      isCycleDay: isExcludedDay,
+    );
+    final rate = PrayerRateCalculator.calculate(
+      now: now,
+      statusHistory: statusHistory,
+      isCycleDay: isExcludedDay,
+    );
+    final weekDates = WeeklyCalculator.insightsWeekDates(now);
+    final weekDayCounts = [
+      for (final d in weekDates)
+        WeeklyCalculator.completedCountOnDate(d, statusHistory, isExcludedDay),
+    ];
+    final homeWeekDates = WeeklyCalculator.mondayWeekDates(now);
+    final homeWeekDayCounts = [
+      for (final d in homeWeekDates)
+        WeeklyCalculator.completedCountOnDate(d, statusHistory, isExcludedDay),
+    ];
+
+    return PrayerAnalyticsSnapshot(
+      prayerStreak: prayerStreak,
+      dayStreak: dayStreak,
+      weeklyCompleted: weekly.completed,
+      weeklyPossible: weekly.possible,
+      monthlyCompleted: monthly.completed,
+      monthlyPossible: monthly.possible,
+      prayerRatePercent: rate,
+      weekDayCounts: weekDayCounts,
+      homeWeekDayCounts: homeWeekDayCounts,
+      monthWeekBuckets: MonthlyCalculator.weekBuckets(
+        now,
+        statusHistory,
+        isExcludedDay,
+      ),
+      restoreTarget: RestoreCalculator.findTarget(
+        now: now,
+        statusHistory: statusHistory,
+        isCycleDay: isPausedDay,
+        prayerStartTime: prayerStartTime,
+      ),
+    );
+  }
+
+  static TrackablePrayer? mostRecentStartedPrayer({
+    required DateTime now,
+    required DateTime? Function(TrackablePrayer prayer) prayerStartTime,
+  }) {
+    for (final prayer in TrackablePrayer.values.reversed) {
+      final start = prayerStartTime(prayer);
+      if (start != null && !now.isBefore(start)) return prayer;
+    }
+    return null;
+  }
+
+  static DateTime? slotDateTime({
+    required DateTime day,
+    required TrackablePrayer prayer,
+    required DateTime now,
+    DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+  }) {
+    final today = DateTime(now.year, now.month, now.day);
+    final normalized = DateTime(day.year, day.month, day.day);
+    if (normalized == today && prayerStartTime != null) {
+      return prayerStartTime(prayer);
+    }
+    final index = TrackablePrayer.values.indexOf(prayer);
+    const hours = [5, 12, 15, 18, 20];
+    final start = prayerStartTime?.call(prayer);
+    if (start != null) {
+      return DateTime(
+        day.year,
+        day.month,
+        day.day,
+        start.hour,
+        start.minute,
+      );
+    }
+    return DateTime(day.year, day.month, day.day, hours[index]);
+  }
+}
+
+/// Consecutive completed prayers (onTime or qada).
+abstract class PrayerStreakCalculator {
+  static int calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+    DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+  }) {
+    var streak = 0;
+    var foundTip = false;
+    final today = DateTime(now.year, now.month, now.day);
+    final order = TrackablePrayer.values;
+
+    for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
+      final date = today.subtract(Duration(days: dayOffset));
+      if (isCycleDay(date)) continue;
+
+      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+          const <TrackablePrayer, PrayerMarkStatus>{};
+
+      final slots = <PrayerMarkStatus>[];
+      if (dayOffset == 0) {
+        for (var i = 0; i < order.length; i++) {
+          final prayer = order[i];
+          final status = statuses[prayer] ?? PrayerMarkStatus.none;
+          final started = _hasStarted(
+            now: now,
+            prayer: prayer,
+            prayerStartTime: prayerStartTime,
+            slotIndex: i,
+          );
+          if (!started && status == PrayerMarkStatus.none) break;
+          slots.add(status);
+        }
+      } else {
+        for (final prayer in order) {
+          slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
+        }
+      }
+
+      for (var i = slots.length - 1; i >= 0; i--) {
+        final status = slots[i];
+        final counts = PrayerAnalyticsService.countsForPrayerStreak(status);
+        if (!foundTip) {
+          if (counts) {
+            foundTip = true;
+            streak = 1;
+          } else {
+            return 0;
+          }
+        } else if (counts) {
+          streak += 1;
+        } else {
+          return streak;
+        }
+      }
+    }
+    return streak;
+  }
+
+  static bool _hasStarted({
+    required DateTime now,
+    required TrackablePrayer prayer,
+    required DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+    required int slotIndex,
+  }) {
+    final start = prayerStartTime?.call(prayer);
+    if (start != null) return !now.isBefore(start);
+    const hours = [5, 12, 15, 18, 20];
+    return now.hour >= hours[slotIndex];
+  }
+}
+
+/// Consecutive days with all five prayers completed (onTime or qada).
+abstract class DayStreakCalculator {
+  static int calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+  }) {
+    var count = 0;
+    final today = DateTime(now.year, now.month, now.day);
+
+    for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
+      final date = today.subtract(Duration(days: dayOffset));
+      if (isCycleDay(date)) continue;
+
+      final complete = isDayFullyCompleted(date, statusHistory);
+      if (dayOffset == 0 && !complete) continue;
+      if (!complete) break;
+      count += 1;
+    }
+    return count;
+  }
+
+  static bool isDayFullyCompleted(
+    DateTime date,
+    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+  ) {
+    final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+        const <TrackablePrayer, PrayerMarkStatus>{};
+    for (final prayer in TrackablePrayer.values) {
+      final status = statuses[prayer] ?? PrayerMarkStatus.none;
+      if (!PrayerAnalyticsService.countsForPrayerStreak(status)) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+abstract class WeeklyCalculator {
+  static ({int completed, int possible}) calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+  }) {
+    var done = 0;
+    var possible = 0;
+    for (final d in insightsWeekDates(now)) {
+      // Cycle days are paused — excluded from both completed and possible.
+      if (isCycleDay(d)) continue;
+      possible += PrayerAnalyticsService.prayersPerDay;
+      done += completedCountOnDate(d, statusHistory, isCycleDay);
+    }
+    return (completed: done, possible: possible);
+  }
+
+  static int completedCountOnDate(
+    DateTime date,
+    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    bool Function(DateTime date) isCycleDay,
+  ) {
+    if (isCycleDay(date)) return 0;
+    final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+        const <TrackablePrayer, PrayerMarkStatus>{};
+    var count = 0;
+    for (final prayer in TrackablePrayer.values) {
+      if (PrayerAnalyticsService.countsForPrayerStreak(
+        statuses[prayer] ?? PrayerMarkStatus.none,
+      )) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  static List<DateTime> insightsWeekDates(DateTime now) {
+    final today = DateTime(now.year, now.month, now.day);
+    final daysFromFriday = (today.weekday - DateTime.friday + 7) % 7;
+    final friday = today.subtract(Duration(days: daysFromFriday));
+    return List<DateTime>.generate(
+      7,
+      (i) => friday.add(Duration(days: i)),
+      growable: false,
+    );
+  }
+
+  static List<DateTime> mondayWeekDates(DateTime now) {
+    final today = DateTime(now.year, now.month, now.day);
+    final monday = today.subtract(Duration(days: today.weekday - 1));
+    return List<DateTime>.generate(
+      7,
+      (i) => monday.add(Duration(days: i)),
+      growable: false,
+    );
+  }
+}
+
+abstract class MonthlyCalculator {
+  static ({int completed, int possible}) calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+  }) {
+    var done = 0;
+    var possible = 0;
+    for (final d in monthDatesFor(now)) {
+      if (isCycleDay(d)) continue;
+      possible += PrayerAnalyticsService.prayersPerDay;
+      done += WeeklyCalculator.completedCountOnDate(d, statusHistory, isCycleDay);
+    }
+    return (completed: done, possible: possible);
+  }
+
+  static List<DateTime> monthDatesFor(DateTime now) {
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    return List<DateTime>.generate(
+      daysInMonth,
+      (i) => DateTime(now.year, now.month, i + 1),
+      growable: false,
+    );
+  }
+
+  static List<({String label, int completed, int possible})> weekBuckets(
+    DateTime now,
+    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    bool Function(DateTime date) isCycleDay,
+  ) {
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final buckets = <({String label, int completed, int possible})>[];
+    for (var week = 0; week < 5; week++) {
+      final startDay = week * 7 + 1;
+      if (startDay > daysInMonth) break;
+      final endDay = (startDay + 6).clamp(1, daysInMonth);
+      var completed = 0;
+      var possible = 0;
+      for (var d = startDay; d <= endDay; d++) {
+        final date = DateTime(now.year, now.month, d);
+        if (isCycleDay(date)) continue;
+        possible += PrayerAnalyticsService.prayersPerDay;
+        completed += WeeklyCalculator.completedCountOnDate(
+          date,
+          statusHistory,
+          isCycleDay,
+        );
+      }
+      buckets.add((
+        label: 'W${week + 1}',
+        completed: completed,
+        possible: possible,
+      ));
+    }
+    return buckets;
+  }
+}
+
+abstract class PrayerRateCalculator {
+  static int calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+    int lookbackDays = 30,
+  }) {
+    var possible = 0;
+    var done = 0;
+    final today = DateTime(now.year, now.month, now.day);
+    for (var i = 0; i < lookbackDays; i++) {
+      final date = today.subtract(Duration(days: i));
+      if (isCycleDay(date)) continue;
+      possible += PrayerAnalyticsService.prayersPerDay;
+      done += WeeklyCalculator.completedCountOnDate(
+        date,
+        statusHistory,
+        isCycleDay,
+      );
+    }
+    if (possible == 0) return 0;
+    return ((done / possible) * 100).round().clamp(0, 100);
+  }
+}
+
+/// Snapchat-style restore: fix the most recent break within 24 hours.
+abstract class RestoreCalculator {
+  /// Finds the most recent streak-breaking slot (missed / unmarked) whose
+  /// scheduled start is within the last 24 hours.
+  static RestoreTarget? findTarget({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+    DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+  }) {
+    final windowStart = now.subtract(PrayerAnalyticsService.restoreWindow);
+    final today = DateTime(now.year, now.month, now.day);
+    final order = TrackablePrayer.values;
+
+    // Walk newest → oldest; first non-counting started slot in the window.
+    for (var dayOffset = 0; dayOffset <= 1; dayOffset++) {
+      final date = today.subtract(Duration(days: dayOffset));
+      if (isCycleDay(date)) continue;
+
+      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+          const <TrackablePrayer, PrayerMarkStatus>{};
+
+      for (var i = order.length - 1; i >= 0; i--) {
+        final prayer = order[i];
+        final slotTime = PrayerAnalyticsService.slotDateTime(
+          day: date,
+          prayer: prayer,
+          now: now,
+          prayerStartTime: prayerStartTime,
+        );
+        if (slotTime == null) continue;
+        if (slotTime.isAfter(now)) continue; // future
+        if (slotTime.isBefore(windowStart)) continue; // older than 24h
+
+        final status = statuses[prayer] ?? PrayerMarkStatus.none;
+        if (!PrayerAnalyticsService.countsForPrayerStreak(status)) {
+          return RestoreTarget(
+            date: date,
+            dateKey: PrayerAnalyticsService.dayKey(date),
+            prayer: prayer,
+          );
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Returns a new status history with [target] marked onTime.
+  /// Does not invent other prayers — only repairs that one break.
+  static Map<String, Map<TrackablePrayer, PrayerMarkStatus>> apply({
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required RestoreTarget target,
+  }) {
+    final next = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+      for (final e in statusHistory.entries)
+        e.key: Map<TrackablePrayer, PrayerMarkStatus>.from(e.value),
+    };
+    final day = Map<TrackablePrayer, PrayerMarkStatus>.from(
+      next[target.dateKey] ?? const <TrackablePrayer, PrayerMarkStatus>{},
+    );
+    day[target.prayer] = PrayerMarkStatus.onTime;
+    next[target.dateKey] = day;
+    return next;
+  }
+}
+
+abstract class AchievementCalculator {
+  static ({
+    int prayerStreak,
+    int dayStreak,
+    int fajrOnTimeStreak,
+  }) calculate({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    bool Function(DateTime date)? isCycleDay,
+    bool Function(DateTime date)? isPausedStreakDay,
+    bool pauseStreaks = true,
+    DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+  }) {
+    bool isPausedDay(DateTime d) =>
+        isPausedStreakDay?.call(d) ??
+        (pauseStreaks && (isCycleDay?.call(d) ?? false));
+    return (
+      prayerStreak: PrayerStreakCalculator.calculate(
+        now: now,
+        statusHistory: statusHistory,
+        isCycleDay: isPausedDay,
+        prayerStartTime: prayerStartTime,
+      ),
+      dayStreak: DayStreakCalculator.calculate(
+        now: now,
+        statusHistory: statusHistory,
+        isCycleDay: isPausedDay,
+      ),
+      fajrOnTimeStreak: fajrOnTimeStreakDays(
+        now: now,
+        statusHistory: statusHistory,
+        isCycleDay: isPausedDay,
+      ),
+    );
+  }
+
+  static int fajrOnTimeStreakDays({
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+  }) {
+    var count = 0;
+    final today = DateTime(now.year, now.month, now.day);
+    for (var i = 0; i < 400; i++) {
+      final date = today.subtract(Duration(days: i));
+      if (isCycleDay(date)) continue;
+      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+          const <TrackablePrayer, PrayerMarkStatus>{};
+      final fajr = statuses[TrackablePrayer.fajr] ?? PrayerMarkStatus.none;
+      if (fajr == PrayerMarkStatus.onTime || fajr == PrayerMarkStatus.qada) {
+        count += 1;
+      } else if (i == 0) {
+        continue;
+      } else {
+        break;
+      }
+    }
+    return count;
+  }
+}

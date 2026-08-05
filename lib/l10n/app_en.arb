@@ -2,9 +2,11 @@
   "@@locale": "en",
   "appTitle": "Deen Focus",
   "appTagline": "Faith. Focus. Consistency",
+  "welcomeGreeting": "ASSALAMU ALAIKUM",
   "welcomeTagline": "Prayer Mode. Child Mode. Sleep Mode.",
-  "welcomeDescription": "Track your prayers, read the Quran, count Tasbih, and build meaningful streaks — all in one place.",
+  "welcomeDescription": "Where faith meets focus. Protect your prayers, silence distractions, and grow closer to Allah — every day.",
   "skip": "Skip",
+  "notNow": "Not now",
   "continueButton": "Continue",
   "continueForFree": "Continue with Free Plan",
   "getStarted": "Unlock Premium",
@@ -16,12 +18,6 @@
   "locationRequiredMessage": "Location access is required to calculate accurate prayer times and Qibla direction. You must enable it to use the app.",
   "notificationsRequired": "Notifications Required",
   "notificationsRequiredMessage": "Notifications are required to receive prayer time alerts and reminders.",
-  "salahTitle": "Tasbih & Prayer Streaks",
-  "salahSubtitle": "A beautiful digital tasbih counter with dhikhr presets, custom entries and streak tracking.",
-  "tasbihTitle": "Tasbih & Prayer Streaks",
-  "tasbihSubtitle": "A beautiful digital tasbih counter with dhikr presets, custom entries, and streak tracking.",
-  "quranTitle": "Quran, Qibla & Masjid",
-  "quranSubtitle": "Read the Holy Quran, find the Qibla direction, and discover mosques near you—all in one place.",
   "sectTitle": "Choose Your Sect",
   "sectSubtitle": "This helps us personalize your experience",
   "sectSunni": "Sunni",
@@ -30,24 +26,118 @@
   "nameTitle": "What's Your Name?",
   "nameSubtitle": "Let's personalize your greeting",
   "namePlaceholder": "Your name",
-  "locationTitle": "Enable Location",
-  "locationSubtitle": "We need your location for accurate prayer times, Qibla direction, and finding nearby mosques.",
+  "locationTitle": "Find Your Qibla",
+  "locationSubtitle": "Enable location for accurate Qibla, prayer times and nearby masjids.",
   "locationButton": "Allow Location Access",
-  "notificationsTitle": "Stay Reminded",
-  "notificationsSubtitle": "Get notified for prayer times, focus mode reminders, and daily spiritual prompts.",
+  "locationManualEntry": "Or enter your city",
+  "locationPrivacyNote": "Stays on your device",
+  "locationFeaturePrayerTimesTitle": "Prayer times",
+  "locationFeatureQiblaTitle": "Qibla",
+  "locationFeatureMasjidsTitle": "Masjids",
+  "notificationsTitle": "Never Miss a Prayer",
+  "notificationsSubtitle": "Adhan alerts, focus reminders and daily dhikr — delivered right when you need them.",
   "notificationsButton": "Enable Notifications",
   "notificationsEnabled": "Notifications are enabled",
-  "screenTimeTitle": "Screen Time Access",
-  "screenTimeSubtitle": "To block distracting apps during Salah and Night Discipline, this app requires Screen Time permission.",
-  "screenTimeButton": "Continue",
-  "focusModesTitle": "Powerful Focus Modes",
-  "focusModesSubtitle": "Three modes designed to protect your time and attention",
+  "notificationsPreviewDate": "Friday, 10 July",
+  "notificationsPreviewTime": "6:42",
+  "notificationsPreviewNow": "now",
+  "notificationsPreviewMinutesAgo": "2m",
+  "notificationsPreviewHourAgo": "1h",
+  "notificationsPreviewAdhanTitle": "Maghrib Adhan",
+  "notificationsPreviewAdhanBody": "It's time to pray. Apps are paused.",
+  "notificationsPreviewDhikrTitle": "DAILY DHIKR",
+  "notificationsPreviewDhikrBody": "SubhanAllah — take a minute to remember.",
+  "notificationsPreviewStreakTitle": "STREAK",
+  "notificationsPreviewStreakBody": "7 days of complete prayers. Keep going!",
+  "screenTimeTitle": "Enable Screen Time",
+  "screenTimeSubtitle": "This is what lets Deen Focus pause distracting apps during Salah, sleep time and child mode.",
+  "screenTimeButton": "Allow Screen Time Access",
+  "screenTimePrivacyNote": "Deen Focus never reads your data — it only pauses the apps you choose.",
+  "screenTimeStepOf": "STEP {current} OF {total}",
+  "@screenTimeStepOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "screenTimeStep1Title": "Open the Screen Time prompt",
+  "screenTimeStep1Body": "Tap 'Allow Screen Time Access' — your device will show its own permission sheet.",
+  "screenTimeStep2Title": "Tap Continue, then Allow",
+  "screenTimeStep2Body": "Approve the request so Deen Focus can pause apps at the right moments.",
+  "screenTimeStep3Title": "Choose apps to lock",
+  "screenTimeStep3Body": "Pick the apps that distract you most — social, games, video, anything.",
+  "screenTimeStep4Title": "You're protected",
+  "screenTimeStep4Body": "Apps lock automatically during Salah, sleep time and child mode.",
+  "screenTimePromptTitle": "Screen Time",
+  "screenTimePromptMessage": "'{appName}' would like to access Screen Time",
+  "@screenTimePromptMessage": {
+    "placeholders": {
+      "appName": { "type": "String", "example": "Deen Focus" }
+    }
+  },
+  "screenTimeDontAllow": "Don't Allow",
+  "screenTimePromptContinue": "Continue",
+  "screenTimeAppInstagram": "Instagram",
+  "screenTimeAppTikTok": "TikTok",
+  "screenTimeAppYouTube": "YouTube",
+  "screenTimeAppGames": "Games",
+  "screenTimeAndroidStep1Title": "Open Usage Access settings",
+  "screenTimeAndroidStep1Body": "Tap 'Allow Screen Time Access' — your device will open Usage Access for Deen Focus.",
+  "screenTimeAndroidStep2Title": "Enable Accessibility",
+  "screenTimeAndroidStep2Body": "Turn on the Deen Focus service so apps can pause during Salah, sleep, and child mode.",
+  "screenTimeAndroidStep3Title": "Choose apps to lock",
+  "screenTimeAndroidStep3Body": "Pick the apps that distract you most — social, games, video, anything.",
+  "screenTimeAndroidStep4Title": "You're protected",
+  "screenTimeAndroidStep4Body": "Apps lock automatically during Salah, sleep time and child mode.",
+  "screenTimeAndroidUsageTitle": "Usage access",
+  "screenTimeAndroidUsageMessage": "Allow Deen Focus to track which other apps are being used.",
+  "screenTimeAndroidAccessibilityTitle": "Accessibility",
+  "screenTimeAndroidAccessibilityMessage": "Deen Focus needs Accessibility to pause distracting apps during focus sessions.",
+  "screenTimeAndroidPermit": "Allow",
+  "screenTimeAndroidEnable": "Enable",
+  "screenTimeAndroidNotNow": "Not now",
+  "focusModesTitle": "Everything in One App",
+  "focusModesSubtitle": "Explore all that Deen Focus offers. Tap a focus mode to see how it works.",
+  "focusModesSectionLabel": "FOCUS MODES · TAP TO LEARN MORE",
+  "focusPrayerTrackingSectionLabel": "PRAYER & TRACKING",
+  "focusLearningHubSectionLabel": "LEARNING HUB",
+  "focusMoreSectionLabel": "MORE",
   "focusPrayerModeTitle": "Prayer Mode",
-  "focusPrayerModeDescription": "Block distracting apps during Salah for complete khushu",
+  "focusPrayerModeDescription": "Block distracting apps automatically during Salah so you can pray with full khushu.",
+  "focusPrayerModeBullet1": "Auto-locks apps at prayer time",
+  "focusPrayerModeBullet2": "Unlocks when you're done",
+  "focusPrayerModeBullet3": "Builds focus & consistency",
   "focusSleepModeTitle": "Sleep Mode",
-  "focusSleepModeDescription": "Protect your sleep schedule and wake up for Fajr",
+  "focusSleepModeDescription": "Wind down the halal way. Block apps at bedtime so you rest well and wake for Fajr.",
+  "focusSleepModeBullet1": "Auto-blocks apps at bedtime",
+  "focusSleepModeBullet2": "Gentle Fajr wake reminders",
+  "focusSleepModeBullet3": "Protects your sleep & Fajr",
   "focusChildModeTitle": "Child Mode",
-  "focusChildModeDescription": "Instantly block apps when handing device to children",
+  "focusChildModeDescription": "Handing your phone to your child? Instantly lock apps so they only see what's safe.",
+  "focusChildModeBullet1": "One-tap safe mode",
+  "focusChildModeBullet2": "Passcode-protected exit",
+  "focusChildModeBullet3": "Peace of mind, every time",
+  "focusModeGotIt": "Got it",
+  "focusFeaturePrayerTimesTitle": "Accurate Prayer Times",
+  "focusFeaturePrayerTimesSubtitle": "Adhan & reminders",
+  "focusFeatureStreaksTitle": "Streaks",
+  "focusFeatureStreaksSubtitle": "Stay consistent",
+  "focusFeatureChecklistTitle": "Daily Checklist",
+  "focusFeatureChecklistSubtitle": "Build good habits",
+  "focusFeatureQiblaTitle": "Qibla & Masjid",
+  "focusFeatureQiblaSubtitle": "Direction & mosques",
+  "focusFeatureQuranTitle": "Quran",
+  "focusFeatureQuranSubtitle": "Translations, Juzz & pages",
+  "focusFeatureHadithTitle": "Hadith",
+  "focusFeatureHadithSubtitle": "Authentic collections",
+  "focusFeatureDuasTitle": "Duas",
+  "focusFeatureDuasSubtitle": "Daily supplications",
+  "focusFeatureTasbihTitle": "Tasbih",
+  "focusFeatureTasbihSubtitle": "Digital dhikr counter",
+  "focusFeatureAiTitle": "AI Companion",
+  "focusFeatureAiSubtitle": "Ask about your Deen",
+  "focusFeatureInsightsTitle": "Insights",
+  "focusFeatureInsightsSubtitle": "Weekly & monthly stats",
   "investTitle": "Invest in Your Deen",
   "investSubtitle": "You don't think twice about spending on coffee or snacks...",
   "investComparisonTitle": "Go Premium or Continue with Free Plan",
@@ -107,8 +197,22 @@
   "homeQiblaSubtitleGuiding": "Guiding you toward the Qibla",
   "homeToMakkah": "to Makkah",
   "homeFindMasjid": "Find Masjid Near Me",
+  "quickActionsMasjidFinder": "Masjid Finder",
   "homeSearchNearbyMosques": "Search nearby mosques.",
-  "homePrayerStreak": "Prayer Streaks",
+  "homePrayerStreak": "Prayer Streak",
+  "homePrayersInARow": "{count} prayers in a row",
+  "@homePrayersInARow": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeDayStreakCount": "{count} days",
+  "@homeDayStreakCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeInsights": "Insights",
   "homeOpenStreakDetails": "Open streak details.",
   "homeTodaysPrayers": "Today's Prayers",
   "homePrayerTimesUnavailable": "Prayer times are unavailable right now.",
@@ -124,10 +228,327 @@
   "homeThisWeek": "Deen Highlights This Week",
   "homeJummahMubarak": "Jummah Mubarak",
   "homeJummahReminder": "Don't forget Surah Al-Kahf.",
+  "hijriYear": "AH",
+  "hijriMonthMuharram": "Muharram",
+  "hijriMonthSafar": "Safar",
+  "hijriMonthRabiAlAwwal": "Rabi' al-Awwal",
+  "hijriMonthRabiAlThani": "Rabi' al-Thani",
+  "hijriMonthJumadaAlAwwal": "Jumada al-Awwal",
+  "hijriMonthJumadaAlThani": "Jumada al-Thani",
+  "hijriMonthRajab": "Rajab",
+  "hijriMonthShaban": "Sha'ban",
+  "hijriMonthRamadan": "Ramadan",
+  "hijriMonthShawwal": "Shawwal",
+  "hijriMonthDhuAlQadah": "Dhu al-Qi'dah",
+  "hijriMonthDhuAlHijjah": "Dhu al-Hijjah",
+  "calendarTitle": "Islamic Calendar",
+  "calendarBack": "Back",
+  "calendarToday": "Today",
+  "calendarTomorrow": "Tomorrow",
+  "calendarDaysAway": "{days} days",
+  "@calendarDaysAway": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarNoEventsThisWeek": "No Islamic events this week.",
+  "calendarNoEventsBlessing": "May Allah bless your week with peace and goodness.",
+  "calendarNoUpcomingEvents": "No upcoming Islamic events found.",
+  "calendarUpcomingEvents": "Upcoming Islamic Events",
+  "calendarUpcomingThisYear": "Upcoming This Year",
+  "calendarThisWeekObservances": "This Week",
+  "calendarLegendCycleDays": "Cycle days (streak protected)",
+  "calendarMoonIlluminated": "{percent}% illuminated",
+  "@calendarMoonIlluminated": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarMoonNew": "New Moon",
+  "calendarMoonWaxingCrescent": "Waxing Crescent",
+  "calendarMoonFirstQuarter": "First Quarter",
+  "calendarMoonWaxingGibbous": "Waxing Gibbous",
+  "calendarMoonFull": "Full Moon",
+  "calendarMoonWaningGibbous": "Waning Gibbous",
+  "calendarMoonLastQuarter": "Last Quarter",
+  "calendarMoonWaningCrescent": "Waning Crescent",
+  "calendarEventRamadanBegins": "Ramadan Begins",
+  "calendarEventRamadanBeginsDesc": "Month of fasting",
+  "calendarEventLaylatAlQadr": "Laylat al-Qadr",
+  "calendarEventLaylatAlQadrDesc": "Night of Power",
+  "calendarEventEidAlFitr": "Eid al-Fitr",
+  "calendarEventEidAlFitrDesc": "Festival of Breaking the Fast",
+  "calendarEventDayOfArafah": "Day of Arafah",
+  "calendarEventDayOfArafahDesc": "Day of standing at Arafah",
+  "calendarEventEidAlAdha": "Eid al-Adha",
+  "calendarEventEidAlAdhaDesc": "Festival of Sacrifice",
+  "calendarEventIslamicNewYear": "Islamic New Year",
+  "calendarEventIslamicNewYearDesc": "1st of Muharram",
+  "calendarEventMawlid": "Mawlid an-Nabi",
+  "calendarEventMawlidDesc": "Birth of the Prophet",
+  "calendarEventAshura": "Ashura",
+  "calendarEventAshuraDesc": "10th of Muharram",
+  "calendarEventJumuah": "Jumu'ah",
+  "calendarEventJumuahDesc": "Friday congregational prayer",
+  "calendarEventWhiteDays": "White Days",
+  "calendarEventWhiteDaysDesc": "Recommended fasting days",
+  "cycleModeActiveTitle": "\"Allah intends ease for you and does not intend hardship for you.\" — Quran 2:185",
+  "cycleModeActiveSubtitle": "During this period, your prayer streak is protected. Your cycle days are highlighted in pink, and Cycle Mode turns off automatically when the cycle ends.",
+  "cycleModeActiveSubtitleOld": "{days, plural, =1{Auto-ends tomorrow} other{Auto-ends in {days} days}}",
+  "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
+  "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
+  "cycleModeAutoEndInfo": "{days, plural, =0{Ends today} =1{Automatically ends tomorrow} other{Automatically ends in {days} days}}",
+  "@cycleModeAutoEndInfo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeSettingsTitle": "Cycle Mode",
+  "cycleModeStartDateLabel": "Start date",
+  "cycleModeLengthLabel": "Cycle length",
+  "cycleModeLengthValue": "{count, plural, =1{1 day} other{{count} days}}",
+  "@cycleModeLengthValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModePauseStreaksLabel": "Pause streaks",
+  "cycleModeExcludeFromStatisticsLabel": "Exclude from statistics",
+  "cycleModeSaveButton": "Save",
+  "cycleModeEditButton": "Edit",
+  "cycleModeChangeStartDateTitle": "Change start date?",
+  "cycleModeChangeStartDateMessage": "Changing the start date will recalculate your active Cycle Mode window. Days outside the new range may no longer be treated as cycle days.",
+  "cycleModeChangeStartDateConfirm": "Change start date",
+  "prayerReminderTitle": "Did you pray {prayer}?",
+  "@prayerReminderTitle": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerReminderSubtitle": "Keep your streak alive by logging your prayer.",
+  "prayerReminderYesButton": "Yes, Alhamdulillah",
+  "prayerReminderLaterButton": "I'll mark later",
+  "homeTrialBannerTitle": "Free for 7 days — become a better Muslim ✨",
+  "homeTrialBannerSubtitle": "Every feature unlocked. Start your journey today.",
+  "homeFocusModeTitle": "Focus Mode",
+  "homeFocusModeSubtitle": "Block distracting apps during Salah",
+  "cycleModeTitle": "Cycle Mode",
+  "cycleModeSubtitle": "For menstruation — pause prayers, keep your streak",
+  "dailyChecklistTitle": "Daily Checklist",
+  "dailyChecklistSectionPrayer": "Prayer",
+  "dailyChecklistSectionQuranDhikr": "Quran & Dhikr",
+  "dailyChecklistSectionGoodDeeds": "Good deeds",
+  "dailyChecklistSectionDistraction": "Distraction control",
+  "dailyChecklistFajr": "Fajr",
+  "dailyChecklistTahajjud": "Tahajjud",
+  "dailyChecklistQuran": "Quran",
+  "dailyChecklistMorningAdhkar": "Morning Adhkar",
+  "dailyChecklistEveningAdhkar": "Evening Adhkar",
+  "dailyChecklistDhikr": "Dhikr",
+  "dailyChecklistCharity": "Charity",
+  "dailyChecklistSmileAtSomeone": "Smile at someone",
+  "dailyChecklistFamilyCall": "Family call",
+  "dailyChecklistNoMusicToday": "No music today",
+  "dailyChecklistNoSocialMediaBeforeIsha": "No social media before Isha",
+  "focusScoreTitle": "Today's Focus Score",
+  "focusScorePrayer": "Prayer",
+  "focusScoreQuran": "Quran",
+  "focusScoreDhikr": "Dhikr",
+  "focusScoreDistraction": "Distraction control",
+  "insightsBack": "Back",
+  "insightsTitle": "My Insights",
+  "insightsSubtitle": "Track your Deen progress",
+  "insightsPrayerRate": "Prayer rate",
+  "insightsDayStreak": "Day streak",
+  "insightsBestStreak": "Best streak",
+  "insightsWeekly": "Weekly",
+  "insightsMonthly": "Monthly",
+  "insightsPrayersCompleted": "Prayers completed",
+  "insightsRestoreStreak": "Restore my streak — last 24 hours",
+  "focusScoreBreakdown": "Prayer {prayerPercent}% · Quran {quranPercent}% · Dhikr {dhikrPercent}% · Distraction control {distractionPercent}%",
+  "@focusScoreBreakdown": {
+    "placeholders": {
+      "prayerPercent": {
+        "type": "int"
+      },
+      "quranPercent": {
+        "type": "int"
+      },
+      "dhikrPercent": {
+        "type": "int"
+      },
+      "distractionPercent": {
+        "type": "int"
+      }
+    }
+  },
+  "quickActionsCalendar": "Calendar",
+  "quickActionsCalendarSubtitle": "View Islamic dates",
+  "quickActionsSupportUs": "Support Us",
+  "quickActionsSupportUsSubtitle": "Help us grow",
+  "quickActionsSupportUsMessage": "Thank you for considering to support DeenFocus! Support features coming soon.",
+  "supportUsTitle": "Support DeenFocus",
+  "supportUsHeroTitle": "Help keep DeenFocus growing",
+  "supportUsHeroBody": "DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.",
+  "supportUsFundSection": "YOUR CONTRIBUTIONS FUND",
+  "supportUsFundFeature1Title": "New Islamic features",
+  "supportUsFundFeature1Subtitle": "Fresh tools to deepen your worship",
+  "supportUsFundFeature2Title": "Server & infrastructure",
+  "supportUsFundFeature2Subtitle": "Keeping the app fast and reliable",
+  "supportUsFundFeature3Title": "Bug fixes & updates",
+  "supportUsFundFeature3Subtitle": "A smoother, more stable experience",
+  "supportUsFundFeature4Title": "Quran, Salah & productivity",
+  "supportUsFundFeature4Subtitle": "Continual improvements to core features",
+  "supportUsNeedHelp": "NEED HELP?",
+  "supportUsWhatsApp": "Chat on WhatsApp",
+  "supportUsEmailSupport": "Email Support",
+  "supportUsChooseAmountTitle": "Choose a one-time amount",
+  "supportUsChooseAmountSubtitle": "Every bit helps keep DeenFocus growing.",
+  "supportUsCustomAmountLabel": "Or enter a custom amount",
+  "supportUsPurposeLabel": "Purpose of your donation (optional)",
+  "supportUsPurposeHint": "e.g. Sadaqah, Zakat, app development...",
+  "supportUsPurposeNote": "Tell us the purpose and we'll utilize your contribution accordingly.",
+  "supportUsOptionalFooter": "Support is entirely optional and helps us keep improving DeenFocus.",
+  "supportUsCta": "Support with {amount}",
+  "@supportUsCta": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "supportUsWhatsAppPrefill": "Assalamu alaikum, I need help with DeenFocus.",
+  "supportUsEmailSubject": "DeenFocus support request",
+  "supportUsLaunchUnavailable": "Could not open that app on this device.",
+  "supportUsLaunchFailed": "Something went wrong. Please try again.",
   "homeAiChatDescription": "Ask anything about prayer times, Quran, and Islamic guidance.",
   "homeDay": "Day",
   "homeDays": "Days",
   "homeNoEventsFoundForDay": "No events found for this day.",
+  "homeMarkPrayerAs": "{prayerName} — mark as",
+  "@homeMarkPrayerAs": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeMarkPrayerPrayedOnTime": "Prayed on time",
+  "homeMarkPrayerQada": "Qada (made up)",
+  "homeMarkPrayerMissed": "Missed",
+  "homePrayerSettingsTitle": "{prayerName} Settings",
+  "@homePrayerSettingsTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homePrayerSettingsPrayerTime": "Prayer Time",
+  "homePrayerSettingsNotification": "Notification",
+  "homePrayerSettingsAboutSubtitle": "Virtues, rulings and more",
+  "homePrayerSettingsInfoBanner": "These settings are only for {prayerName}. You can set different preferences for each prayer.",
+  "@homePrayerSettingsInfoBanner": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeEditPrayerTimeTitle": "Edit {prayerName} Time",
+  "@homeEditPrayerTimeTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeEditPrayerTimeCurrent": "Current Time",
+  "homeEditPrayerTimeSelectNew": "Select new time",
+  "homeEditPrayerTimeNote": "This custom time applies only to {prayerName}. Adjust it if your local masjid or calculation differs.",
+  "@homeEditPrayerTimeNote": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeEditPrayerTimeSave": "Save Time",
+  "homeEditPrayerTimeReset": "Reset to calculated time",
+  "homeNotificationForPrayer": "Notification for {prayerName}",
+  "@homeNotificationForPrayer": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeNotificationSoundLabel": "Notification Sound",
+  "homeNotificationSoundFullAdhan": "Full Adhan",
+  "homeNotificationSoundFullAdhanSubtitle": "Play the complete Adhan",
+  "homeNotificationSoundBeep": "Beep",
+  "homeNotificationSoundBeepSubtitle": "A short notification tone",
+  "homeNotificationSoundMute": "Mute",
+  "homeNotificationSoundMuteSubtitle": "No sound",
+  "homeNotificationEnableLabel": "Enable Notification",
+  "homeNotificationEnableSubtitle": "Get notified at {prayerName} time",
+  "@homeNotificationEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeAboutPrayerTitle": "About {prayerName}",
+  "@homeAboutPrayerTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String",
+        "example": "Fajr"
+      }
+    }
+  },
+  "homeAboutPrayerTimeLabel": "Time",
+  "homeAboutPrayerRakatLabel": "Rakat",
+  "homeAboutPrayerVirtuesLabel": "Virtues",
+  "homeAboutPrayerReferenceLabel": "Reference",
+  "homeAboutFajrTiming": "Begins at true dawn (Fajr Sadiq) and ends at sunrise.",
+  "homeAboutFajrRakat": "2 Sunnah + 2 Fard",
+  "homeAboutFajrVirtue": "Whoever prays Fajr is under the protection of Allah.",
+  "homeAboutFajrReference": "\"The two rak'ahs of Fajr are better than the world and all it contains.\" (Sahih Muslim)",
+  "homeAboutDhuhrTiming": "Begins once the sun passes its zenith and lasts until Asr begins.",
+  "homeAboutDhuhrRakat": "4 Sunnah + 4 Fard + 2 Sunnah",
+  "homeAboutDhuhrVirtue": "Part of the 12 voluntary rak'ahs a day for which Allah builds a house in Paradise.",
+  "homeAboutDhuhrReference": "\"Whoever prays twelve rak'ahs during a day and a night will have a house built for him in Paradise.\" (Sahih Muslim)",
+  "homeAboutAsrTiming": "Begins when an object's shadow equals its length and lasts until sunset.",
+  "homeAboutAsrRakat": "4 Fard",
+  "homeAboutAsrVirtue": "Guarding this prayer is singled out for special reward and warning.",
+  "homeAboutAsrReference": "\"Whoever misses the Asr prayer, it is as if he lost his family and his wealth.\" (Sahih al-Bukhari)",
+  "homeAboutMaghribTiming": "Begins right after sunset and lasts until the red twilight disappears.",
+  "homeAboutMaghribRakat": "3 Fard + 2 Sunnah",
+  "homeAboutMaghribVirtue": "A time when supplications are especially encouraged.",
+  "homeAboutMaghribReference": "\"There are two occasions when a fasting person rejoices... when he breaks his fast.\" (Sahih al-Bukhari, on the Maghrib fast-breaking)",
+  "homeAboutIshaTiming": "Begins once the twilight fully disappears and lasts until midnight (or Fajr, per some views).",
+  "homeAboutIshaRakat": "4 Fard + 2 Sunnah + Witr",
+  "homeAboutIshaVirtue": "Praying Isha in congregation is equivalent to standing half the night in prayer.",
+  "homeAboutIshaReference": "\"Whoever prays Isha in congregation, it is as if he prayed half the night.\" (Sahih Muslim)",
   "backToOnboarding": "Back to Onboarding",
   "settings": "Settings",
   "appLanguage": "App Language",
@@ -135,6 +556,7 @@
   "tabFocus": "Focus",
   "tabTasbih": "Tasbih",
   "tabQuran": "Quran",
+  "tabLearn": "Learn",
   "quranLoadFailed": "Failed to load Quran data",
   "quranTabSubtitle": "Read and explore the Holy Quran",
   "quranSearchHint": "Search surah...",
@@ -350,5 +772,101 @@
   "calculationMethodSectionSpecial": "Special Methods",
   "asrMethodStandard": "Standard",
   "asrMethodStandardSubtitle": "Shafi, Maliki, Hanbali",
-  "asrMethodHanafi": "Hanafi"
+  "asrMethodHanafi": "Hanafi",
+  "homeLocationChangedTitle": "Location Changed",
+  "homeLocationChangedMessage": "You appear to be in {city}. Update your prayer location for accurate times?",
+  "homeLocationChangedNotNow": "Not Now",
+  "homeLocationChangedUpdate": "Update",
+  "homeYourNewLocation": "your new location",
+  "@homeLocationChangedMessage": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsPrayerStreak": "Prayer streak",
+  "insightsPrayerStreakCount": "{count} prayers",
+  "@insightsPrayerStreakCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insightsPrayersInARow": "Prayers in a row",
+  "insightsDaysInARow": "Days in a row",
+  "insightsChipUpToday": "↑ +1",
+  "insightsChipDayUp": "↑ +1 today",
+  "insightsWeeklyCompletion": "Weekly completion",
+  "insightsMonthlyCompletion": "Monthly completion",
+  "insightsThisWeek": "This week",
+  "insightsThisMonth": "This month",
+  "insightsOverall": "Overall",
+  "insightsRateExcellent": "Excellent",
+  "insightsRateGood": "Good",
+  "insightsRateFair": "Fair",
+  "insightsRateStart": "Keep going",
+  "insightsPrayersCompletedWeekly": "Prayers completed (weekly)",
+  "insightsPrayersCompletedMonthly": "Prayers completed (monthly)",
+  "insightsCompletionSummary": "You completed {done} out of {possible} prayers. Alhamdulillah — keep going!",
+  "@insightsCompletionSummary": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "possible": { "type": "int" }
+    }
+  },
+  "insightsFocusExcellent": "Excellent — keep it up!",
+  "insightsFocusKeepGoing": "Keep building your focus",
+  "insightsTodaysPrayers": "Today's prayers",
+  "insightsPrayersCompletedLabel": "Prayers completed — Alhamdulillah!",
+  "insightsCycleModeActiveLabel": "Cycle mode active",
+  "insightsProtectedByCycleMode": "Your streak is protected.",
+  "insightsCurrentPrayerStreak": "Current prayer streak",
+  "insightsBestPrayerStreak": "Best prayer streak",
+  "insightsCurrentDayStreak": "Current day streak",
+  "insightsCycleProtectedDays": "Cycle protected days",
+  "insightsAchievements": "Achievements",
+  "insightsAchieved": "Achieved",
+  "insightsCycleModeFooter": "Cycle Mode days are protected and not counted as streak breaks. You have {days} protected day(s) available.",
+  "@insightsCycleModeFooter": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "insightsCycleModeFooterOff": "Enable Cycle Mode to protect your streak during rest days.",
+  "achievementFirstPrayerStreak": "First Prayer Streak",
+  "achievementSevenPrayerStreak": "Seven Prayer Streak",
+  "achievementThirtyPrayerStreak": "Thirty Prayer Streak",
+  "achievementFajrWarrior": "Fajr Warrior",
+  "achievementQuranReader": "Quran Reader",
+  "achievementDhikrMaster": "Dhikr Master",
+  "achievementConsistencyChampion": "Consistency Champion",
+  "prayerCompletionAlhamdulillah": "Alhamdulillah!",
+  "prayerCompletionCompleted": "{prayer} has been completed",
+  "@prayerCompletionCompleted": {
+    "placeholders": {
+      "prayer": { "type": "String" }
+    }
+  },
+  "prayerCompletionStreakIncreased": "Your prayer streak has increased",
+  "prayerCompletionKeepGoing": "Every prayer brings you closer to Allah. Keep going!",
+  "prayerCompletionContinue": "Continue",
+  "prayerCompletionNextPrayer": "Next prayer in {when}",
+  "@prayerCompletionNextPrayer": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "prayerCompletionMinutes": "{minutes} minutes",
+  "@prayerCompletionMinutes": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "prayerCompletionHoursMinutes": "{hours}h {minutes}m",
+  "@prayerCompletionHoursMinutes": {
+    "placeholders": {
+      "hours": { "type": "int" },
+      "minutes": { "type": "int" }
+    }
+  }
 }

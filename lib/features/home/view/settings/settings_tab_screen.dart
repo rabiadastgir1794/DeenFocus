@@ -613,7 +613,6 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
           Expanded(
             child: OnboardingLocationPage(
               initialSelection: widget.initialSelection,
-              autoFetchLocation: false,
               onLocationSelected: (value) {
                 setState(() {
                   _selectedLocation = value;

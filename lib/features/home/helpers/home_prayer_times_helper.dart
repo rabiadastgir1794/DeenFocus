@@ -92,6 +92,32 @@ abstract class HomePrayerTimesHelper {
     return data;
   }
 
+  /// Replaces calculated slot times with any per-prayer custom time overrides
+  /// (e.g. user-adjusted Fajr time for their local masjid), then recomputes
+  /// which prayer is "next" so the home tiles and countdown stay accurate.
+  static HomePrayerTimesData applyCustomOverrides({
+    required HomePrayerTimesData data,
+    required Map<TrackablePrayer, int> overridesMinutesSinceMidnight,
+    required DateTime referenceTime,
+  }) {
+    if (overridesMinutesSinceMidnight.isEmpty) return data;
+
+    final updatedSlots = data.slots.map((slot) {
+      final trackable = slot.id.trackablePrayer;
+      final overrideMinutes = trackable == null
+          ? null
+          : overridesMinutesSinceMidnight[trackable];
+      if (overrideMinutes == null) return slot;
+      final day = DateTime(slot.time.year, slot.time.month, slot.time.day);
+      return HomePrayerSlot(
+        id: slot.id,
+        time: day.add(Duration(minutes: overrideMinutes)),
+      );
+    }).toList(growable: false);
+
+    return _buildData(updatedSlots, referenceTime);
+  }
+
   static CalculationParameters _buildParameters(
     CalculationMethodOption method,
     AsrCalculationOption asr,

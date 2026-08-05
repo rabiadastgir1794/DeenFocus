@@ -25,13 +25,21 @@ abstract class PermissionService {
   }
 
   static Future<bool> requestNotification() async {
-    final status = await Permission.notification.request();
+    final status = await requestNotificationStatus();
     return status.isGranted;
+  }
+
+  static Future<PermissionStatus> requestNotificationStatus() async {
+    return Permission.notification.request();
   }
 
   static Future<bool> checkNotification() async {
     final status = await Permission.notification.status;
     return status.isGranted;
+  }
+
+  static Future<PermissionStatus> notificationStatus() async {
+    return Permission.notification.status;
   }
 
   static Future<bool> openAppSettingsAsync() async {

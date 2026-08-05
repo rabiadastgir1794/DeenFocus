@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/permission_service.dart';
@@ -12,13 +13,16 @@ import '../model/subscription_plan.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel() {
-    _totalSteps = 10;
+    _totalSteps = 8;
     _selectedPlan = SubscriptionPlan.yearly;
   }
 
   /// PageView index for [OnboardingLocationPage] (compulsory).
-  static const int locationStepIndex = 6;
-  static const int screenTimeStepIndex = 8;
+  static const int locationStepIndex = 4;
+  static const int notificationStepIndex = 5;
+  static const int screenTimeStepIndex = 6;
+  static const int sectStepIndex = 2;
+  static const int nameStepIndex = 3;
 
   late int _totalSteps;
 
@@ -50,13 +54,26 @@ class OnboardingViewModel extends ChangeNotifier {
 
   /// Screens that show Skip on top right.
   bool get showLanguageChangeOption => _currentIndex == 0;
-  bool get showSkip => _currentIndex < 4;
+  bool get showSkip =>
+      _currentIndex < 2 ||
+      _currentIndex == locationStepIndex ||
+      _currentIndex == notificationStepIndex ||
+      _currentIndex == screenTimeStepIndex;
+  bool get isLocationStep => _currentIndex == locationStepIndex;
+  bool get isNotificationStep => _currentIndex == notificationStepIndex;
+  bool get isScreenTimeStep => _currentIndex == screenTimeStepIndex;
 
-  /// Continue disabled: sect (4), name (5), location (6). Notifications (7), screen time (8), and subscription (9) are optional.
+  /// Location was resolved via permission and the flow should auto-advance.
+  bool _pendingLocationAutoAdvance = false;
+  bool get shouldAutoAdvanceFromLocation => _pendingLocationAutoAdvance;
+
+  /// Continue disabled: sect, name, location. Later steps are optional.
   bool get isContinueDisabled {
-    if (_currentIndex == 4) return _selectedSect == null;
-    if (_currentIndex == 5) return _userName.trim().isEmpty;
-    if (_currentIndex == 6) return _selectedLocation == null;
+    if (_currentIndex == sectStepIndex) return _selectedSect == null;
+    if (_currentIndex == nameStepIndex) return _userName.trim().isEmpty;
+    if (_currentIndex == locationStepIndex) {
+      return _selectedLocation == null && !_locationGranted;
+    }
     return false;
   }
 
@@ -73,12 +90,20 @@ class OnboardingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> requestNotification() async {
+  Future<PermissionStatus> requestNotification() async {
     _notificationRequesting = true;
     notifyListeners();
     try {
+      final current = await PermissionService.notificationStatus();
+      if (current.isGranted) {
+        _notificationGranted = true;
+        return current;
+      }
+
       await AppNotificationService.instance.initialize();
-      _notificationGranted = await PermissionService.requestNotification();
+      final status = await PermissionService.requestNotificationStatus();
+      _notificationGranted = status.isGranted;
+      return status;
     } finally {
       _notificationRequesting = false;
       notifyListeners();
@@ -162,6 +187,25 @@ class OnboardingViewModel extends ChangeNotifier {
   void setSelectedLocation(LocationSuggestion? value) {
     _selectedLocation = value;
     notifyListeners();
+  }
+
+  void setLocationGranted(bool value) {
+    if (_locationGranted == value) return;
+    _locationGranted = value;
+    notifyListeners();
+  }
+
+  /// Saves a GPS-resolved location after permission grant and requests auto-advance.
+  void applyPermissionLocation(LocationSuggestion location) {
+    _locationGranted = true;
+    _selectedLocation = location;
+    _pendingLocationAutoAdvance = true;
+    notifyListeners();
+  }
+
+  void acknowledgeLocationAutoAdvance() {
+    if (!_pendingLocationAutoAdvance) return;
+    _pendingLocationAutoAdvance = false;
   }
 
   void setSelectedLanguageCode(String code) {

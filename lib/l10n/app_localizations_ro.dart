@@ -15,6 +15,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get appTagline => 'Credinţă. Concentrează-te. Consecvență';
 
   @override
+  String get welcomeGreeting => 'ASSALAMU ALAIKUM';
+
+  @override
   String get welcomeTagline => 'Modul de rugăciune. Modul copil. Modul Sleep.';
 
   @override
@@ -23,6 +26,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get skip => 'Sari peste';
+
+  @override
+  String get notNow => 'Nu acum';
 
   @override
   String get continueButton => 'Continua';
@@ -60,27 +66,6 @@ class AppLocalizationsRo extends AppLocalizations {
       'Notificările sunt necesare pentru a primi alerte de rugăciune și mementouri.';
 
   @override
-  String get salahTitle => 'Tasbih & Prayer Streaks';
-
-  @override
-  String get salahSubtitle =>
-      'Un contor tasbih digital frumos cu presetări dhikhr, intrări personalizate și urmărire a seriei.';
-
-  @override
-  String get tasbihTitle => 'Tasbih & Prayer Streaks';
-
-  @override
-  String get tasbihSubtitle =>
-      'Un contor tasbih digital frumos, cu presetări dhikr, intrări personalizate și urmărire streak.';
-
-  @override
-  String get quranTitle => 'Coran, Qibla și Masjid';
-
-  @override
-  String get quranSubtitle =>
-      'Citiți Sfântul Coran, găsiți direcția Qibla și descoperiți moscheile din apropiere - totul într-un singur loc.';
-
-  @override
   String get sectTitle => 'Alege-ți Secta';
 
   @override
@@ -106,21 +91,36 @@ class AppLocalizationsRo extends AppLocalizations {
   String get namePlaceholder => 'Numele dumneavoastră';
 
   @override
-  String get locationTitle => 'Activați locația';
+  String get locationTitle => 'Find Your Qibla';
 
   @override
   String get locationSubtitle =>
-      'Avem nevoie de locația dvs. pentru orele precise de rugăciune, direcția Qibla și găsirea moscheilor din apropiere.';
+      'Enable location for accurate Qibla, prayer times and nearby masjids.';
 
   @override
   String get locationButton => 'Permiteți accesul la locație';
 
   @override
-  String get notificationsTitle => 'Rămâi aminte';
+  String get locationManualEntry => 'Or enter your city';
+
+  @override
+  String get locationPrivacyNote => 'Stays on your device';
+
+  @override
+  String get locationFeaturePrayerTimesTitle => 'Prayer times';
+
+  @override
+  String get locationFeatureQiblaTitle => 'Qibla';
+
+  @override
+  String get locationFeatureMasjidsTitle => 'Masjids';
+
+  @override
+  String get notificationsTitle => 'Never Miss a Prayer';
 
   @override
   String get notificationsSubtitle =>
-      'Primiți notificări pentru orele de rugăciune, mementouri în modul de focalizare și îndemnuri spirituale zilnice.';
+      'Adhan alerts, focus reminders and daily dhikr — delivered right when you need them.';
 
   @override
   String get notificationsButton => 'Activați notificările';
@@ -129,42 +129,294 @@ class AppLocalizationsRo extends AppLocalizations {
   String get notificationsEnabled => 'Notificările sunt activate';
 
   @override
-  String get screenTimeTitle => 'Acces pe timp de ecran';
+  String get notificationsPreviewDate => 'Friday, 10 July';
+
+  @override
+  String get notificationsPreviewTime => '6:42';
+
+  @override
+  String get notificationsPreviewNow => 'now';
+
+  @override
+  String get notificationsPreviewMinutesAgo => '2m';
+
+  @override
+  String get notificationsPreviewHourAgo => '1h';
+
+  @override
+  String get notificationsPreviewAdhanTitle => 'Maghrib Adhan';
+
+  @override
+  String get notificationsPreviewAdhanBody =>
+      'It\'s time to pray. Apps are paused.';
+
+  @override
+  String get notificationsPreviewDhikrTitle => 'Daily Dhikr';
+
+  @override
+  String get notificationsPreviewDhikrBody =>
+      'SubhanAllah — take a minute to remember.';
+
+  @override
+  String get notificationsPreviewStreakTitle => 'Streak';
+
+  @override
+  String get notificationsPreviewStreakBody =>
+      '7 days of complete prayers. Keep going!';
+
+  @override
+  String get screenTimeTitle => 'Activează Timp ecran';
 
   @override
   String get screenTimeSubtitle =>
-      'Pentru a bloca aplicațiile care distrag atenția în timpul Salah și Night Discipline, această aplicație necesită permisiunea Screen Time.';
+      'Asta îi permite Deen Focus să oprească aplicațiile care distrag în timpul Salah, somnului și modului copil.';
 
   @override
-  String get screenTimeButton => 'Continua';
+  String get screenTimeButton => 'Permite accesul la Timp ecran';
 
   @override
-  String get focusModesTitle => 'Moduri puternice de focalizare';
+  String get screenTimePrivacyNote =>
+      'Deen Focus never reads your data — it only pauses the apps you choose.';
+
+  @override
+  String screenTimeStepOf(int current, int total) {
+    return 'STEP $current OF $total';
+  }
+
+  @override
+  String get screenTimeStep1Title => 'Open the Screen Time prompt';
+
+  @override
+  String get screenTimeStep1Body =>
+      'Tap \'Allow Screen Time Access\' — your device will show its own permission sheet.';
+
+  @override
+  String get screenTimeStep2Title => 'Tap Continue, then Allow';
+
+  @override
+  String get screenTimeStep2Body =>
+      'Approve the request so Deen Focus can pause apps at the right moments.';
+
+  @override
+  String get screenTimeStep3Title => 'Choose apps to lock';
+
+  @override
+  String get screenTimeStep3Body =>
+      'Pick the apps that distract you most — social, games, video, anything.';
+
+  @override
+  String get screenTimeStep4Title => 'You\'re protected';
+
+  @override
+  String get screenTimeStep4Body =>
+      'Apps lock automatically during Salah, sleep time and child mode.';
+
+  @override
+  String get screenTimePromptTitle => 'Screen Time';
+
+  @override
+  String screenTimePromptMessage(String appName) {
+    return '\'$appName\' would like to access Screen Time';
+  }
+
+  @override
+  String get screenTimeDontAllow => 'Don\'t Allow';
+
+  @override
+  String get screenTimePromptContinue => 'Continue';
+
+  @override
+  String get screenTimeAppInstagram => 'Instagram';
+
+  @override
+  String get screenTimeAppTikTok => 'TikTok';
+
+  @override
+  String get screenTimeAppYouTube => 'YouTube';
+
+  @override
+  String get screenTimeAppGames => 'Games';
+
+  @override
+  String get screenTimeAndroidStep1Title => 'Open Usage Access settings';
+
+  @override
+  String get screenTimeAndroidStep1Body =>
+      'Tap \'Allow Screen Time Access\' — your device will open Usage Access for Deen Focus.';
+
+  @override
+  String get screenTimeAndroidStep2Title => 'Enable Accessibility';
+
+  @override
+  String get screenTimeAndroidStep2Body =>
+      'Turn on the Deen Focus service so apps can pause during Salah, sleep, and child mode.';
+
+  @override
+  String get screenTimeAndroidStep3Title => 'Choose apps to lock';
+
+  @override
+  String get screenTimeAndroidStep3Body =>
+      'Pick the apps that distract you most — social, games, video, anything.';
+
+  @override
+  String get screenTimeAndroidStep4Title => 'You\'re protected';
+
+  @override
+  String get screenTimeAndroidStep4Body =>
+      'Apps lock automatically during Salah, sleep time and child mode.';
+
+  @override
+  String get screenTimeAndroidUsageTitle => 'Usage access';
+
+  @override
+  String get screenTimeAndroidUsageMessage =>
+      'Allow Deen Focus to track which other apps are being used.';
+
+  @override
+  String get screenTimeAndroidAccessibilityTitle => 'Accessibility';
+
+  @override
+  String get screenTimeAndroidAccessibilityMessage =>
+      'Deen Focus needs Accessibility to pause distracting apps during focus sessions.';
+
+  @override
+  String get screenTimeAndroidPermit => 'Allow';
+
+  @override
+  String get screenTimeAndroidEnable => 'Enable';
+
+  @override
+  String get screenTimeAndroidNotNow => 'Not now';
+
+  @override
+  String get focusModesTitle => 'Everything in One App';
 
   @override
   String get focusModesSubtitle =>
-      'Trei moduri concepute pentru a vă proteja timpul și atenția';
+      'Explore all that Deen Focus offers. Tap a focus mode to see how it works.';
+
+  @override
+  String get focusModesSectionLabel => 'FOCUS MODES · TAP TO LEARN MORE';
+
+  @override
+  String get focusPrayerTrackingSectionLabel => 'PRAYER & TRACKING';
+
+  @override
+  String get focusLearningHubSectionLabel => 'LEARNING HUB';
+
+  @override
+  String get focusMoreSectionLabel => 'MORE';
 
   @override
   String get focusPrayerModeTitle => 'Modul de rugăciune';
 
   @override
   String get focusPrayerModeDescription =>
-      'Blocați aplicațiile care distrag atenția în timpul Salah pentru un khushu complet';
+      'Block distracting apps automatically during Salah so you can pray with full khushu.';
+
+  @override
+  String get focusPrayerModeBullet1 => 'Auto-locks apps at prayer time';
+
+  @override
+  String get focusPrayerModeBullet2 => 'Unlocks when you\'re done';
+
+  @override
+  String get focusPrayerModeBullet3 => 'Builds focus & consistency';
 
   @override
   String get focusSleepModeTitle => 'Modul Sleep';
 
   @override
   String get focusSleepModeDescription =>
-      'Protejează-ți programul de somn și trezește-te pentru Fajr';
+      'Wind down the halal way. Block apps at bedtime so you rest well and wake for Fajr.';
+
+  @override
+  String get focusSleepModeBullet1 => 'Auto-blocks apps at bedtime';
+
+  @override
+  String get focusSleepModeBullet2 => 'Gentle Fajr wake reminders';
+
+  @override
+  String get focusSleepModeBullet3 => 'Protects your sleep & Fajr';
 
   @override
   String get focusChildModeTitle => 'Modul copil';
 
   @override
   String get focusChildModeDescription =>
-      'Blocați instantaneu aplicațiile atunci când predați dispozitivul copiilor';
+      'Handing your phone to your child? Instantly lock apps so they only see what\'s safe.';
+
+  @override
+  String get focusChildModeBullet1 => 'One-tap safe mode';
+
+  @override
+  String get focusChildModeBullet2 => 'Passcode-protected exit';
+
+  @override
+  String get focusChildModeBullet3 => 'Peace of mind, every time';
+
+  @override
+  String get focusModeGotIt => 'Got it';
+
+  @override
+  String get focusFeaturePrayerTimesTitle => 'Accurate Prayer Times';
+
+  @override
+  String get focusFeaturePrayerTimesSubtitle => 'Adhan & reminders';
+
+  @override
+  String get focusFeatureStreaksTitle => 'Streaks';
+
+  @override
+  String get focusFeatureStreaksSubtitle => 'Stay consistent';
+
+  @override
+  String get focusFeatureChecklistTitle => 'Daily Checklist';
+
+  @override
+  String get focusFeatureChecklistSubtitle => 'Build good habits';
+
+  @override
+  String get focusFeatureQiblaTitle => 'Qibla & Masjid';
+
+  @override
+  String get focusFeatureQiblaSubtitle => 'Direction & mosques';
+
+  @override
+  String get focusFeatureQuranTitle => 'Quran';
+
+  @override
+  String get focusFeatureQuranSubtitle => 'Translations, Juzz & pages';
+
+  @override
+  String get focusFeatureHadithTitle => 'Hadith';
+
+  @override
+  String get focusFeatureHadithSubtitle => 'Authentic collections';
+
+  @override
+  String get focusFeatureDuasTitle => 'Duas';
+
+  @override
+  String get focusFeatureDuasSubtitle => 'Daily supplications';
+
+  @override
+  String get focusFeatureTasbihTitle => 'Tasbih';
+
+  @override
+  String get focusFeatureTasbihSubtitle => 'Digital dhikr counter';
+
+  @override
+  String get focusFeatureAiTitle => 'AI Companion';
+
+  @override
+  String get focusFeatureAiSubtitle => 'Ask about your Deen';
+
+  @override
+  String get focusFeatureInsightsTitle => 'Insights';
+
+  @override
+  String get focusFeatureInsightsSubtitle => 'Weekly & monthly stats';
 
   @override
   String get investTitle => 'Investește în Deenul tău';
@@ -357,10 +609,26 @@ class AppLocalizationsRo extends AppLocalizations {
   String get homeFindMasjid => 'Găsiți Masjid lângă mine';
 
   @override
+  String get quickActionsMasjidFinder => 'Găsește moschee';
+
+  @override
   String get homeSearchNearbyMosques => 'Căutați moscheile din apropiere.';
 
   @override
   String get homePrayerStreak => 'Dâre de rugăciune';
+
+  @override
+  String homePrayersInARow(int count) {
+    return '$count prayers in a row';
+  }
+
+  @override
+  String homeDayStreakCount(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get homeInsights => 'Perspective';
 
   @override
   String get homeOpenStreakDetails => 'Deschideți detaliile seriei.';
@@ -409,6 +677,503 @@ class AppLocalizationsRo extends AppLocalizations {
   String get homeJummahReminder => 'Nu uitați de Sura Al-Kahf.';
 
   @override
+  String get hijriYear => 'AH';
+
+  @override
+  String get hijriMonthMuharram => 'Muharram';
+
+  @override
+  String get hijriMonthSafar => 'Safar';
+
+  @override
+  String get hijriMonthRabiAlAwwal => 'Rabi\' al-Awwal';
+
+  @override
+  String get hijriMonthRabiAlThani => 'Rabi\' al-Thani';
+
+  @override
+  String get hijriMonthJumadaAlAwwal => 'Jumada al-Awwal';
+
+  @override
+  String get hijriMonthJumadaAlThani => 'Jumada al-Thani';
+
+  @override
+  String get hijriMonthRajab => 'Rajab';
+
+  @override
+  String get hijriMonthShaban => 'Sha\'ban';
+
+  @override
+  String get hijriMonthRamadan => 'Ramadan';
+
+  @override
+  String get hijriMonthShawwal => 'Shawwal';
+
+  @override
+  String get hijriMonthDhuAlQadah => 'Dhu al-Qi\'dah';
+
+  @override
+  String get hijriMonthDhuAlHijjah => 'Dhu al-Hijjah';
+
+  @override
+  String get calendarTitle => 'Islamic Calendar';
+
+  @override
+  String get calendarBack => 'Back';
+
+  @override
+  String get calendarToday => 'Today';
+
+  @override
+  String get calendarTomorrow => 'Tomorrow';
+
+  @override
+  String calendarDaysAway(int days) {
+    return '$days days';
+  }
+
+  @override
+  String get calendarNoEventsThisWeek => 'No Islamic events this week.';
+
+  @override
+  String get calendarNoEventsBlessing =>
+      'May Allah bless your week with peace and goodness.';
+
+  @override
+  String get calendarNoUpcomingEvents => 'No upcoming Islamic events found.';
+
+  @override
+  String get calendarUpcomingEvents => 'Upcoming Islamic Events';
+
+  @override
+  String get calendarUpcomingThisYear => 'Upcoming This Year';
+
+  @override
+  String get calendarThisWeekObservances => 'This Week';
+
+  @override
+  String get calendarLegendCycleDays => 'Cycle days (streak protected)';
+
+  @override
+  String calendarMoonIlluminated(int percent) {
+    return '$percent% illuminated';
+  }
+
+  @override
+  String get calendarMoonNew => 'New Moon';
+
+  @override
+  String get calendarMoonWaxingCrescent => 'Waxing Crescent';
+
+  @override
+  String get calendarMoonFirstQuarter => 'First Quarter';
+
+  @override
+  String get calendarMoonWaxingGibbous => 'Waxing Gibbous';
+
+  @override
+  String get calendarMoonFull => 'Full Moon';
+
+  @override
+  String get calendarMoonWaningGibbous => 'Waning Gibbous';
+
+  @override
+  String get calendarMoonLastQuarter => 'Last Quarter';
+
+  @override
+  String get calendarMoonWaningCrescent => 'Waning Crescent';
+
+  @override
+  String get calendarEventRamadanBegins => 'Ramadan Begins';
+
+  @override
+  String get calendarEventRamadanBeginsDesc => 'Month of fasting';
+
+  @override
+  String get calendarEventLaylatAlQadr => 'Laylat al-Qadr';
+
+  @override
+  String get calendarEventLaylatAlQadrDesc => 'Night of Power';
+
+  @override
+  String get calendarEventEidAlFitr => 'Eid al-Fitr';
+
+  @override
+  String get calendarEventEidAlFitrDesc => 'Festival of Breaking the Fast';
+
+  @override
+  String get calendarEventDayOfArafah => 'Day of Arafah';
+
+  @override
+  String get calendarEventDayOfArafahDesc => 'Day of standing at Arafah';
+
+  @override
+  String get calendarEventEidAlAdha => 'Eid al-Adha';
+
+  @override
+  String get calendarEventEidAlAdhaDesc => 'Festival of Sacrifice';
+
+  @override
+  String get calendarEventIslamicNewYear => 'Islamic New Year';
+
+  @override
+  String get calendarEventIslamicNewYearDesc => '1st of Muharram';
+
+  @override
+  String get calendarEventMawlid => 'Mawlid an-Nabi';
+
+  @override
+  String get calendarEventMawlidDesc => 'Birth of the Prophet';
+
+  @override
+  String get calendarEventAshura => 'Ashura';
+
+  @override
+  String get calendarEventAshuraDesc => '10th of Muharram';
+
+  @override
+  String get calendarEventJumuah => 'Jumu\'ah';
+
+  @override
+  String get calendarEventJumuahDesc => 'Friday congregational prayer';
+
+  @override
+  String get calendarEventWhiteDays => 'White Days';
+
+  @override
+  String get calendarEventWhiteDaysDesc => 'Recommended fasting days';
+
+  @override
+  String get cycleModeActiveTitle =>
+      'Allah intends ease for you and does not intend hardship for you. — Quran 2:185';
+
+  @override
+  String get cycleModeActiveSubtitle =>
+      'În această perioadă, seria ta este protejată. Zilele ciclului sunt evidențiate în roz, iar Modul ciclu se oprește automat la finalul ciclului.';
+
+  @override
+  String cycleModeActiveSubtitleOld(num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Auto-ends in $days days',
+      one: 'Auto-ends tomorrow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModeStreakProtected =>
+      'Prayer streak is protected during your cycle';
+
+  @override
+  String get cycleModeCalendarHighlighted =>
+      'Calendar days are highlighted in pink';
+
+  @override
+  String cycleModeAutoEndInfo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Automatically ends in $days days',
+      one: 'Automatically ends tomorrow',
+      zero: 'Ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModeSettingsTitle => 'Mod ciclu';
+
+  @override
+  String get cycleModeStartDateLabel => 'Data de început';
+
+  @override
+  String get cycleModeLengthLabel => 'Durata ciclului';
+
+  @override
+  String cycleModeLengthValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zile',
+      one: '1 zi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModePauseStreaksLabel => 'Pauzează seriile';
+
+  @override
+  String get cycleModeExcludeFromStatisticsLabel => 'Exclude din statistici';
+
+  @override
+  String get cycleModeSaveButton => 'Salvează';
+
+  @override
+  String get cycleModeEditButton => 'Editează';
+
+  @override
+  String get cycleModeChangeStartDateTitle => 'Schimbi data de început?';
+
+  @override
+  String get cycleModeChangeStartDateMessage =>
+      'Schimbarea datei de început va recalcula fereastra activă a Modului ciclu. Zilele din afara noului interval ar putea să nu mai fie tratate ca zile de ciclu.';
+
+  @override
+  String get cycleModeChangeStartDateConfirm => 'Schimbă data de început';
+
+  @override
+  String prayerReminderTitle(String prayer) {
+    return 'Did you pray $prayer?';
+  }
+
+  @override
+  String get prayerReminderSubtitle =>
+      'Keep your streak alive by logging your prayer.';
+
+  @override
+  String get prayerReminderYesButton => 'Yes, Alhamdulillah';
+
+  @override
+  String get prayerReminderLaterButton => 'I\'ll mark later';
+
+  @override
+  String get homeTrialBannerTitle =>
+      'Free for 7 days — become a better Muslim ✨';
+
+  @override
+  String get homeTrialBannerSubtitle =>
+      'Every feature unlocked. Start your journey today.';
+
+  @override
+  String get homeFocusModeTitle => 'Focus Mode';
+
+  @override
+  String get homeFocusModeSubtitle => 'Block distracting apps during Salah';
+
+  @override
+  String get cycleModeTitle => 'Cycle Mode';
+
+  @override
+  String get cycleModeSubtitle =>
+      'For menstruation — pause prayers, keep your streak';
+
+  @override
+  String get dailyChecklistTitle => 'Daily Checklist';
+
+  @override
+  String get dailyChecklistSectionPrayer => 'Rugăciune';
+
+  @override
+  String get dailyChecklistSectionQuranDhikr => 'Coran și Dhikr';
+
+  @override
+  String get dailyChecklistSectionGoodDeeds => 'Fapte bune';
+
+  @override
+  String get dailyChecklistSectionDistraction => 'Controlul distragerii';
+
+  @override
+  String get dailyChecklistFajr => 'Fajr';
+
+  @override
+  String get dailyChecklistTahajjud => 'Tahajjud';
+
+  @override
+  String get dailyChecklistQuran => 'Quran';
+
+  @override
+  String get dailyChecklistMorningAdhkar => 'Morning Adhkar';
+
+  @override
+  String get dailyChecklistEveningAdhkar => 'Adhkar de seară';
+
+  @override
+  String get dailyChecklistDhikr => 'Dhikr';
+
+  @override
+  String get dailyChecklistCharity => 'Charity';
+
+  @override
+  String get dailyChecklistSmileAtSomeone => 'Smile at someone';
+
+  @override
+  String get dailyChecklistFamilyCall => 'Family call';
+
+  @override
+  String get dailyChecklistNoMusicToday => 'No music today';
+
+  @override
+  String get dailyChecklistNoSocialMediaBeforeIsha =>
+      'No social media before Isha';
+
+  @override
+  String get focusScoreTitle => 'Scorul de focus de azi';
+
+  @override
+  String get focusScorePrayer => 'Rugăciune';
+
+  @override
+  String get focusScoreQuran => 'Coran';
+
+  @override
+  String get focusScoreDhikr => 'Dhikr';
+
+  @override
+  String get focusScoreDistraction => 'Controlul distragerii';
+
+  @override
+  String get insightsBack => 'Înapoi';
+
+  @override
+  String get insightsTitle => 'Perspectivele mele';
+
+  @override
+  String get insightsSubtitle => 'Urmărește-ți progresul în Deen';
+
+  @override
+  String get insightsPrayerRate => 'Rata rugăciunilor';
+
+  @override
+  String get insightsDayStreak => 'Serie de zile';
+
+  @override
+  String get insightsBestStreak => 'Cea mai bună serie';
+
+  @override
+  String get insightsWeekly => 'Săptămânal';
+
+  @override
+  String get insightsMonthly => 'Lunar';
+
+  @override
+  String get insightsPrayersCompleted => 'Rugăciuni finalizate';
+
+  @override
+  String get insightsRestoreStreak => 'Restaurează seria — ultimele 24 de ore';
+
+  @override
+  String focusScoreBreakdown(
+    int prayerPercent,
+    int quranPercent,
+    int dhikrPercent,
+    int distractionPercent,
+  ) {
+    return 'Rugăciune $prayerPercent% · Coran $quranPercent% · Dhikr $dhikrPercent% · Distragere $distractionPercent%';
+  }
+
+  @override
+  String get quickActionsCalendar => 'Calendar';
+
+  @override
+  String get quickActionsCalendarSubtitle => 'View Islamic dates';
+
+  @override
+  String get quickActionsSupportUs => 'Support Us';
+
+  @override
+  String get quickActionsSupportUsSubtitle => 'Help us grow';
+
+  @override
+  String get quickActionsSupportUsMessage =>
+      'Thank you for considering to support DeenFocus! Support features coming soon.';
+
+  @override
+  String get supportUsTitle => 'Support DeenFocus';
+
+  @override
+  String get supportUsHeroTitle => 'Help keep DeenFocus growing';
+
+  @override
+  String get supportUsHeroBody =>
+      'DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.';
+
+  @override
+  String get supportUsFundSection => 'YOUR CONTRIBUTIONS FUND';
+
+  @override
+  String get supportUsFundFeature1Title => 'New Islamic features';
+
+  @override
+  String get supportUsFundFeature1Subtitle =>
+      'Fresh tools to deepen your worship';
+
+  @override
+  String get supportUsFundFeature2Title => 'Server & infrastructure';
+
+  @override
+  String get supportUsFundFeature2Subtitle =>
+      'Keeping the app fast and reliable';
+
+  @override
+  String get supportUsFundFeature3Title => 'Bug fixes & updates';
+
+  @override
+  String get supportUsFundFeature3Subtitle =>
+      'A smoother, more stable experience';
+
+  @override
+  String get supportUsFundFeature4Title => 'Quran, Salah & productivity';
+
+  @override
+  String get supportUsFundFeature4Subtitle =>
+      'Continual improvements to core features';
+
+  @override
+  String get supportUsNeedHelp => 'NEED HELP?';
+
+  @override
+  String get supportUsWhatsApp => 'Chat on WhatsApp';
+
+  @override
+  String get supportUsEmailSupport => 'Email Support';
+
+  @override
+  String get supportUsChooseAmountTitle => 'Choose a one-time amount';
+
+  @override
+  String get supportUsChooseAmountSubtitle =>
+      'Every bit helps keep DeenFocus growing.';
+
+  @override
+  String get supportUsCustomAmountLabel => 'Or enter a custom amount';
+
+  @override
+  String get supportUsPurposeLabel => 'Purpose of your donation (optional)';
+
+  @override
+  String get supportUsPurposeHint => 'e.g. Sadaqah, Zakat, app development...';
+
+  @override
+  String get supportUsPurposeNote =>
+      'Tell us the purpose and we\'ll utilize your contribution accordingly.';
+
+  @override
+  String get supportUsOptionalFooter =>
+      'Support is entirely optional and helps us keep improving DeenFocus.';
+
+  @override
+  String supportUsCta(String amount) {
+    return 'Support with $amount';
+  }
+
+  @override
+  String get supportUsWhatsAppPrefill =>
+      'Assalamu alaikum, I need help with DeenFocus.';
+
+  @override
+  String get supportUsEmailSubject => 'DeenFocus support request';
+
+  @override
+  String get supportUsLaunchUnavailable =>
+      'Could not open that app on this device.';
+
+  @override
+  String get supportUsLaunchFailed => 'Something went wrong. Please try again.';
+
+  @override
   String get homeAiChatDescription =>
       'Întrebați orice despre orele de rugăciune, Coran și îndrumări islamice.';
 
@@ -421,6 +1186,187 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get homeNoEventsFoundForDay =>
       'Nu s-au găsit evenimente pentru această zi.';
+
+  @override
+  String homeMarkPrayerAs(String prayerName) {
+    return '$prayerName — marchează ca';
+  }
+
+  @override
+  String get homeMarkPrayerPrayedOnTime => 'Rugată la timp';
+
+  @override
+  String get homeMarkPrayerQada => 'Qada (recuperată)';
+
+  @override
+  String get homeMarkPrayerMissed => 'Ratată';
+
+  @override
+  String homePrayerSettingsTitle(String prayerName) {
+    return 'Setări $prayerName';
+  }
+
+  @override
+  String get homePrayerSettingsPrayerTime => 'Ora rugăciunii';
+
+  @override
+  String get homePrayerSettingsNotification => 'Notificare';
+
+  @override
+  String get homePrayerSettingsAboutSubtitle => 'Virtuți, reguli și altele';
+
+  @override
+  String homePrayerSettingsInfoBanner(String prayerName) {
+    return 'Aceste setări sunt doar pentru $prayerName. Poți seta preferințe diferite pentru fiecare rugăciune.';
+  }
+
+  @override
+  String homeEditPrayerTimeTitle(String prayerName) {
+    return 'Editează ora $prayerName';
+  }
+
+  @override
+  String get homeEditPrayerTimeCurrent => 'Ora curentă';
+
+  @override
+  String get homeEditPrayerTimeSelectNew => 'Selectează o oră nouă';
+
+  @override
+  String homeEditPrayerTimeNote(String prayerName) {
+    return 'Această oră personalizată se aplică doar pentru $prayerName. Ajusteaz-o dacă moscheea locală sau calculul diferă.';
+  }
+
+  @override
+  String get homeEditPrayerTimeSave => 'Salvează ora';
+
+  @override
+  String get homeEditPrayerTimeReset => 'Resetează la ora calculată';
+
+  @override
+  String homeNotificationForPrayer(String prayerName) {
+    return 'Notificare pentru $prayerName';
+  }
+
+  @override
+  String get homeNotificationSoundLabel => 'Sunetul notificării';
+
+  @override
+  String get homeNotificationSoundFullAdhan => 'Adhan complet';
+
+  @override
+  String get homeNotificationSoundFullAdhanSubtitle => 'Redă Adhanul complet';
+
+  @override
+  String get homeNotificationSoundBeep => 'Bip';
+
+  @override
+  String get homeNotificationSoundBeepSubtitle => 'Un ton scurt de notificare';
+
+  @override
+  String get homeNotificationSoundMute => 'Mut';
+
+  @override
+  String get homeNotificationSoundMuteSubtitle => 'Fără sunet';
+
+  @override
+  String get homeNotificationEnableLabel => 'Activează notificarea';
+
+  @override
+  String homeNotificationEnableSubtitle(String prayerName) {
+    return 'Primește notificare la ora $prayerName';
+  }
+
+  @override
+  String homeAboutPrayerTitle(String prayerName) {
+    return 'Despre $prayerName';
+  }
+
+  @override
+  String get homeAboutPrayerTimeLabel => 'Ora';
+
+  @override
+  String get homeAboutPrayerRakatLabel => 'Rakat';
+
+  @override
+  String get homeAboutPrayerVirtuesLabel => 'Virtuți';
+
+  @override
+  String get homeAboutPrayerReferenceLabel => 'Referință';
+
+  @override
+  String get homeAboutFajrTiming =>
+      'Începe la adevărata zori (Fajr Sadiq) și se termină la răsărit.';
+
+  @override
+  String get homeAboutFajrRakat => '2 Sunnah + 2 Fard';
+
+  @override
+  String get homeAboutFajrVirtue =>
+      'Cine se roagă Fajr este sub protecția lui Allah.';
+
+  @override
+  String get homeAboutFajrReference =>
+      '«Cele două rakʿāt ale Fajrului sunt mai bune decât lumea și tot ce conține.» (Sahih Muslim)';
+
+  @override
+  String get homeAboutDhuhrTiming =>
+      'Începe odată ce soarele trece de zenit și durează până începe Asr.';
+
+  @override
+  String get homeAboutDhuhrRakat => '4 Sunnah + 4 Fard + 2 Sunnah';
+
+  @override
+  String get homeAboutDhuhrVirtue =>
+      'Parte din cele 12 rakʿāt voluntare zilnice pentru care Allah construiește o casă în Paradis.';
+
+  @override
+  String get homeAboutDhuhrReference =>
+      '«Cine se roagă douăsprezece rakʿāt într-o zi și o noapte va avea o casă construită pentru el în Paradis.» (Sahih Muslim)';
+
+  @override
+  String get homeAboutAsrTiming =>
+      'Începe când umbra unui obiect egală lungimea sa și durează până la apus.';
+
+  @override
+  String get homeAboutAsrRakat => '4 Fard';
+
+  @override
+  String get homeAboutAsrVirtue =>
+      'Păstrarea acestei rugăciuni este evidențiată cu răsplată și avertizare speciale.';
+
+  @override
+  String get homeAboutAsrReference =>
+      '«Cine pierde rugăciunea Asr este ca și cum și-ar fi pierdut familia și averea.» (Sahih al-Bukhari)';
+
+  @override
+  String get homeAboutMaghribTiming =>
+      'Începe imediat după apus și durează până dispare amurgul roșu.';
+
+  @override
+  String get homeAboutMaghribRakat => '3 Fard + 2 Sunnah';
+
+  @override
+  String get homeAboutMaghribVirtue =>
+      'Un moment în care rugăciunile de cerere sunt deosebit de încurajate.';
+
+  @override
+  String get homeAboutMaghribReference =>
+      '«Există două momente când cel care postește se bucură… când își întrerupe postul.» (Sahih al-Bukhari, despre iftarul Maghrib)';
+
+  @override
+  String get homeAboutIshaTiming =>
+      'Începe odată ce amurgul dispare complet și durează până la miezul nopții (sau până la Fajr, după unele păreri).';
+
+  @override
+  String get homeAboutIshaRakat => '4 Fard + 2 Sunnah + Witr';
+
+  @override
+  String get homeAboutIshaVirtue =>
+      'A te ruga Isha în congregație echivalează cu a sta în picioare jumătate din noapte în rugăciune.';
+
+  @override
+  String get homeAboutIshaReference =>
+      '«Cine se roagă Isha în congregație este ca și cum ar fi rugat jumătate din noapte.» (Sahih Muslim)';
 
   @override
   String get backToOnboarding => 'Înapoi la Onboarding';
@@ -442,6 +1388,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tabQuran => 'Coranul';
+
+  @override
+  String get tabLearn => 'Învață';
 
   @override
   String get quranLoadFailed => 'Nu s-au încărcat datele Coranului';
@@ -1059,4 +2008,180 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get asrMethodHanafi => 'Hanafi';
+
+  @override
+  String get homeLocationChangedTitle => 'Location Changed';
+
+  @override
+  String homeLocationChangedMessage(String city) {
+    return 'You appear to be in $city. Update your prayer location for accurate times?';
+  }
+
+  @override
+  String get homeLocationChangedNotNow => 'Not Now';
+
+  @override
+  String get homeLocationChangedUpdate => 'Update';
+
+  @override
+  String get homeYourNewLocation => 'your new location';
+
+  @override
+  String get insightsPrayerStreak => 'Prayer streak';
+
+  @override
+  String insightsPrayerStreakCount(int count) {
+    return '$count prayers';
+  }
+
+  @override
+  String get insightsPrayersInARow => 'Prayers in a row';
+
+  @override
+  String get insightsDaysInARow => 'Days in a row';
+
+  @override
+  String get insightsChipUpToday => '↑ +1';
+
+  @override
+  String get insightsChipDayUp => '↑ +1 today';
+
+  @override
+  String get insightsWeeklyCompletion => 'Weekly completion';
+
+  @override
+  String get insightsMonthlyCompletion => 'Monthly completion';
+
+  @override
+  String get insightsThisWeek => 'This week';
+
+  @override
+  String get insightsThisMonth => 'This month';
+
+  @override
+  String get insightsOverall => 'Overall';
+
+  @override
+  String get insightsRateExcellent => 'Excellent';
+
+  @override
+  String get insightsRateGood => 'Good';
+
+  @override
+  String get insightsRateFair => 'Fair';
+
+  @override
+  String get insightsRateStart => 'Keep going';
+
+  @override
+  String get insightsPrayersCompletedWeekly => 'Prayers completed (weekly)';
+
+  @override
+  String get insightsPrayersCompletedMonthly => 'Prayers completed (monthly)';
+
+  @override
+  String insightsCompletionSummary(int done, int possible) {
+    return 'You completed $done out of $possible prayers. Alhamdulillah — keep going!';
+  }
+
+  @override
+  String get insightsFocusExcellent => 'Excellent — keep it up!';
+
+  @override
+  String get insightsFocusKeepGoing => 'Keep building your focus';
+
+  @override
+  String get insightsTodaysPrayers => 'Today\'s prayers';
+
+  @override
+  String get insightsPrayersCompletedLabel =>
+      'Prayers completed — Alhamdulillah!';
+
+  @override
+  String get insightsCycleModeActiveLabel => 'Cycle mode active';
+
+  @override
+  String get insightsProtectedByCycleMode => 'Your streak is protected.';
+
+  @override
+  String get insightsCurrentPrayerStreak => 'Current prayer streak';
+
+  @override
+  String get insightsBestPrayerStreak => 'Best prayer streak';
+
+  @override
+  String get insightsCurrentDayStreak => 'Current day streak';
+
+  @override
+  String get insightsCycleProtectedDays => 'Cycle protected days';
+
+  @override
+  String get insightsAchievements => 'Achievements';
+
+  @override
+  String get insightsAchieved => 'Achieved';
+
+  @override
+  String insightsCycleModeFooter(int days) {
+    return 'Cycle Mode days are protected and not counted as streak breaks. You have $days protected day(s) available.';
+  }
+
+  @override
+  String get insightsCycleModeFooterOff =>
+      'Enable Cycle Mode to protect your streak during rest days.';
+
+  @override
+  String get achievementFirstPrayerStreak => 'First Prayer Streak';
+
+  @override
+  String get achievementSevenPrayerStreak => 'Seven Prayer Streak';
+
+  @override
+  String get achievementThirtyPrayerStreak => 'Thirty Prayer Streak';
+
+  @override
+  String get achievementFajrWarrior => 'Fajr Warrior';
+
+  @override
+  String get achievementQuranReader => 'Quran Reader';
+
+  @override
+  String get achievementDhikrMaster => 'Dhikr Master';
+
+  @override
+  String get achievementConsistencyChampion => 'Consistency Champion';
+
+  @override
+  String get prayerCompletionAlhamdulillah => 'Alhamdulillah!';
+
+  @override
+  String prayerCompletionCompleted(String prayer) {
+    return '$prayer has been completed';
+  }
+
+  @override
+  String get prayerCompletionStreakIncreased =>
+      'Your prayer streak has increased';
+
+  @override
+  String get prayerCompletionKeepGoing =>
+      'Every prayer brings you closer to Allah. Keep going!';
+
+  @override
+  String get prayerCompletionContinue => 'Continue';
+
+  @override
+  String prayerCompletionNextPrayer(String when) {
+    return 'Next prayer in $when';
+  }
+
+  @override
+  String prayerCompletionMinutes(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String prayerCompletionHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
 }

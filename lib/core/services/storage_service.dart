@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../features/home/model/home_models.dart';
 
 /// Centralized storage. Use for simple preferences (e.g. onboarding completed).
 /// For structured data use Hive via this layer.
@@ -30,6 +34,7 @@ abstract class StorageService {
   static const String _keyHomeIslamicEventsLastYear =
       'home_islamic_events_last_year';
   static const String _keyHomePrayerStreakJson = 'home_prayer_streak_json';
+  static const String _keyPrayerSettingsJson = 'prayer_settings_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
   static const String _keyFocusScheduleJson = 'focus_schedule_json';
   static const String _keyDarkModeEnabled = 'dark_mode_enabled';
@@ -50,6 +55,18 @@ abstract class StorageService {
   static const String _keySubscriptionCachedAtMs = 'subscription_cached_at_ms';
   static const String _keyCalculationMethod = 'calculation_method';
   static const String _keyAsrMethod = 'asr_method';
+  static const String _keyCycleModeEnabled = 'cycle_mode_enabled';
+  static const String _keyCycleModeStartDateMs = 'cycle_mode_start_date_ms';
+  static const String _keyCycleModeDataJson = 'cycle_mode_data_json';
+  static const String _keyCycleModeCleanupVersion =
+      'cycle_mode_cleanup_version';
+  /// Bump when adding new Cycle Mode data repairs (Edit-bug history purge, etc.).
+  static const int _cycleModeCleanupVersion = 1;
+  static const String _keyLastPrayerReminderPromptMs = 'last_prayer_reminder_prompt_ms';
+  static const String _keyPrayerReminderPromptedKeys =
+      'prayer_reminder_prompted_keys';
+  static const String _keyDailyChecklistJson = 'daily_checklist_json';
+  static const String _keyStreakRestoreUsed = 'streak_restore_used';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -301,6 +318,16 @@ abstract class StorageService {
     await prefs.setString(_keyHomePrayerStreakJson, value);
   }
 
+  static Future<String?> get prayerSettingsJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyPrayerSettingsJson);
+  }
+
+  static Future<void> setPrayerSettingsJson(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyPrayerSettingsJson, value);
+  }
+
   static Future<String?> get focusSettingsJson async {
     final prefs = await _prefs;
     return prefs.getString(_keyFocusSettingsJson);
@@ -463,5 +490,154 @@ abstract class StorageService {
   static Future<void> setAsrMethod(String value) async {
     final prefs = await _prefs;
     await prefs.setString(_keyAsrMethod, value);
+  }
+
+  // Cycle Mode
+  /// Full Cycle Mode settings (migrates legacy enabled/start keys once).
+  /// Also applies [CycleModeData.purgeLegacyEditBugHistory] so incorrect
+  /// history from the earlier Edit-auto-enable bug is cleared.
+  static Future<CycleModeData> get cycleModeData async {
+    final prefs = await _prefs;
+    CycleModeData data;
+    final raw = prefs.getString(_keyCycleModeDataJson);
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final map = jsonDecode(raw) as Map<String, dynamic>;
+        data = CycleModeData.fromJson(map);
+      } catch (_) {
+        data = await _migrateLegacyCycleModeKeys(prefs);
+      }
+    } else {
+      data = await _migrateLegacyCycleModeKeys(prefs);
+    }
+    return _applyCycleModeCleanups(data);
+  }
+
+  static Future<CycleModeData> _migrateLegacyCycleModeKeys(
+    SharedPreferences prefs,
+  ) async {
+    final enabled = prefs.getBool(_keyCycleModeEnabled) ?? false;
+    final startMs = prefs.getInt(_keyCycleModeStartDateMs);
+    final startDate = startMs != null
+        ? DateTime.fromMillisecondsSinceEpoch(startMs)
+        : DateTime.now();
+    final migrated = CycleModeData(
+      isEnabled: enabled,
+      startDate: startDate,
+    );
+    await setCycleModeData(migrated);
+    return migrated;
+  }
+
+  static Future<CycleModeData> _applyCycleModeCleanups(
+    CycleModeData data,
+  ) async {
+    final prefs = await _prefs;
+    final applied = prefs.getInt(_keyCycleModeCleanupVersion) ?? 0;
+    final purged = data.purgeLegacyEditBugHistory();
+    final changed = purged.toJson() != data.toJson();
+    if (changed || applied < _cycleModeCleanupVersion) {
+      await setCycleModeData(purged);
+      await prefs.setInt(
+        _keyCycleModeCleanupVersion,
+        _cycleModeCleanupVersion,
+      );
+    }
+    return purged;
+  }
+
+  static Future<void> setCycleModeData(CycleModeData data) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyCycleModeDataJson, data.toJson());
+    // Keep legacy keys in sync for older readers / debugging.
+    await prefs.setBool(_keyCycleModeEnabled, data.isEnabled);
+    if (data.isEnabled) {
+      await prefs.setInt(
+        _keyCycleModeStartDateMs,
+        DateTime(data.startDate.year, data.startDate.month, data.startDate.day)
+            .millisecondsSinceEpoch,
+      );
+    } else {
+      await prefs.remove(_keyCycleModeStartDateMs);
+    }
+  }
+
+  // Prayer Reminder
+  static Future<int?> get lastPrayerReminderPromptMs async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyLastPrayerReminderPromptMs);
+  }
+
+  static Future<void> setLastPrayerReminderPromptMs(int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyLastPrayerReminderPromptMs, value);
+  }
+
+  /// Keys like `yyyy-MM-dd:maghrib` — one reminder prompt per prayer per day.
+  static Future<Set<String>> get prayerReminderPromptedKeys async {
+    final prefs = await _prefs;
+    final raw = prefs.getStringList(_keyPrayerReminderPromptedKeys) ?? const [];
+    return raw.toSet();
+  }
+
+  static Future<void> markPrayerReminderPrompted(String key) async {
+    final prefs = await _prefs;
+    final keys = (prefs.getStringList(_keyPrayerReminderPromptedKeys) ??
+            <String>[])
+        .toSet()
+      ..add(key);
+    // Keep only recent keys to avoid unbounded growth.
+    final trimmed = keys.toList()..sort();
+    final keep = trimmed.length <= 40
+        ? trimmed
+        : trimmed.sublist(trimmed.length - 40);
+    await prefs.setStringList(_keyPrayerReminderPromptedKeys, keep);
+  }
+
+  static Future<bool> get streakRestoreUsed async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyStreakRestoreUsed) ?? false;
+  }
+
+  static Future<void> setStreakRestoreUsed(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyStreakRestoreUsed, value);
+  }
+  
+  // Daily Checklist
+  static Future<String?> get dailyChecklistJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyDailyChecklistJson);
+  }
+
+  static Future<void> setDailyChecklistJson(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyDailyChecklistJson, value);
+  }
+
+  // Generic string getter/setter for services
+  static Future<String?> getString(String key) async {
+    final prefs = await _prefs;
+    return prefs.getString(key);
+  }
+
+  static Future<void> setString(String key, String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(key, value);
+  }
+
+  static Future<int?> getInt(String key) async {
+    final prefs = await _prefs;
+    return prefs.getInt(key);
+  }
+
+  static Future<void> setInt(String key, int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(key, value);
+  }
+
+  static Future<void> remove(String key) async {
+    final prefs = await _prefs;
+    await prefs.remove(key);
   }
 }

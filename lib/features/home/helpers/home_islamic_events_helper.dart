@@ -1,17 +1,22 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../../../core/logger/trace_helpers.dart';
 import '../../../core/services/storage_service.dart';
 import '../model/home_models.dart';
+import '../services/hijri_date_service.dart';
+import 'islamic_event_catalog.dart';
 
 abstract class HomeIslamicEventsHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
+  /// Fast path — persisted events only (no network).
+  static Future<List<HomeIslamicEvent>> loadCachedEvents() async =>
+      _loadFromCache();
+
   static Future<List<HomeIslamicEvent>> loadIslamicEvents({
-    int yearsAhead = 5,
+    int yearsAhead = 2,
     DateTime? now,
   }) async {
     final today = now ?? DateTime.now();
@@ -20,7 +25,11 @@ abstract class HomeIslamicEventsHelper {
 
     final cachedEvents = await _loadFromCache();
     final cachedLastYear = await StorageService.homeIslamicEventsLastYear;
-    if (cachedEvents.isNotEmpty && cachedLastYear >= targetLastYear) {
+    final cacheHasWhiteDays =
+        cachedEvents.any((e) => e.title.toLowerCase() == 'white days');
+    if (cachedEvents.isNotEmpty &&
+        cachedLastYear >= targetLastYear &&
+        cacheHasWhiteDays) {
       return cachedEvents;
     }
 
@@ -29,7 +38,6 @@ abstract class HomeIslamicEventsHelper {
       for (var offset = 0; offset <= yearsAhead; offset++) {
         final yearEvents = await _fetchEventsForYear(currentYear + offset);
         all.addAll(yearEvents);
-        await Future<void>.delayed(const Duration(milliseconds: 100));
       }
       final sorted = _dedupeAndSort(all);
       await _saveToCache(sorted, targetLastYear);
@@ -45,49 +53,66 @@ abstract class HomeIslamicEventsHelper {
     }
   }
 
+  /// Next occurrence of each major Islamic event on or after [from].
+  static List<HomeIslamicEvent> majorUpcomingEvents(
+    List<HomeIslamicEvent> allEvents, {
+    DateTime? from,
+  }) {
+    final anchor = from ?? DateTime.now();
+    final start = DateTime(anchor.year, anchor.month, anchor.day);
+    final byKind = <IslamicEventKind, HomeIslamicEvent>{};
+
+    for (final event in allEvents) {
+      final day = DateTime(event.date.year, event.date.month, event.date.day);
+      if (day.isBefore(start)) continue;
+      final kind = IslamicEventCatalog.kindForTitle(event.title);
+      if (!IslamicEventCatalog.isMajor(kind)) continue;
+      final existing = byKind[kind];
+      if (existing == null || event.date.isBefore(existing.date)) {
+        byKind[kind] = event;
+      }
+    }
+
+    final ordered = <HomeIslamicEvent>[];
+    for (final kind in IslamicEventCatalog.majorKinds) {
+      final event = byKind[kind];
+      if (event != null) ordered.add(event);
+    }
+    ordered.sort((a, b) => a.date.compareTo(b.date));
+    return ordered;
+  }
+
+  /// Observances in the calendar week containing [dayInWeek].
+  static List<HomeIslamicEvent> thisWeekObservances(
+    DateTime dayInWeek,
+    List<HomeIslamicEvent> allEvents,
+  ) {
+    return eventsForWeek(dayInWeek, allEvents).where((event) {
+      final kind = IslamicEventCatalog.kindForTitle(event.title);
+      return IslamicEventCatalog.isThisWeekObservance(kind);
+    }).toList(growable: false);
+  }
+
   static Future<List<HomeIslamicEvent>> _fetchEventsForYear(int year) async {
     final events = <HomeIslamicEvent>[];
 
     for (var month = 1; month <= 12; month++) {
-      final uri = Uri.parse(
-        'https://api.aladhan.com/v1/gToHCalendar/$month/$year',
+      final days = await HijriDateService.getMonthCalendar(
+        year: year,
+        month: month,
       );
-      final response = await TraceHelpers.traceApi(
-        'GET aladhan.com/v1/gToHCalendar/$month/$year',
-        () => http.get(uri).timeout(const Duration(seconds: 30)),
-      );
-      if (response.statusCode != 200) continue;
 
-      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = (decoded['data'] as List<dynamic>?) ?? const <dynamic>[];
-
-      for (final rawDay in data) {
-        final dayData = Map<String, dynamic>.from(rawDay as Map);
-        final hijri = Map<String, dynamic>.from(
-          (dayData['hijri'] as Map?) ?? const <String, dynamic>{},
-        );
-        final gregorian = Map<String, dynamic>.from(
-          (dayData['gregorian'] as Map?) ?? const <String, dynamic>{},
-        );
-        final holidays =
-            (hijri['holidays'] as List<dynamic>?) ?? const <dynamic>[];
-
-        if (holidays.isEmpty) continue;
-
-        final day = int.tryParse('${gregorian['day'] ?? ''}');
-        final yearInt = int.tryParse('${gregorian['year'] ?? ''}');
-        final monthObj = Map<String, dynamic>.from(
-          (gregorian['month'] as Map?) ?? const <String, dynamic>{},
-        );
-        final monthNumber = (monthObj['number'] as num?)?.toInt();
-
-        if (day == null || yearInt == null || monthNumber == null) continue;
-
-        final date = DateTime(yearInt, monthNumber, day);
-        for (final holiday in holidays) {
-          final title = '$holiday'.trim();
+      for (final day in days) {
+        for (final holiday in day.holidays) {
+          final title = holiday.trim();
           if (title.isEmpty) continue;
-          events.add(HomeIslamicEvent(date: date, title: title));
+          events.add(HomeIslamicEvent(date: day.gregorian, title: title));
+        }
+
+        if (day.hijriDay >= 13 && day.hijriDay <= 15) {
+          events.add(
+            HomeIslamicEvent(date: day.gregorian, title: 'White Days'),
+          );
         }
       }
     }

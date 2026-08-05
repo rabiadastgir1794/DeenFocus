@@ -23,7 +23,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _AppTab(id: 'home', icon: Icons.home_outlined),
     _AppTab(id: 'focus', icon: Icons.shield_outlined),
     _AppTab(id: 'tasbih', icon: Icons.trip_origin),
-    _AppTab(id: 'quran', icon: Icons.menu_book_outlined),
+    _AppTab(id: 'learn', icon: Icons.school_outlined),
     _AppTab(id: 'settings', icon: Icons.settings_outlined),
   ];
 
@@ -44,48 +44,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
     const selectedNavColor = AppColors.primary;
-    final backgroundColor = isDark
-        ? colorScheme.outlineVariant.withValues(alpha: 0.25)
-        : AppColors.outlineVariantLight.withValues(alpha: 0.25);
+    // Solid nav background so scroll content never shows through.
+    final backgroundColor =
+        isDark ? AppColors.surfaceDark : AppColors.surfaceLight;
     final pages = List<Widget>.generate(_tabs.length, _buildTabPage);
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: pages),
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          backgroundColor: backgroundColor,
-          indicatorColor: selectedNavColor.withValues(alpha: 0.18),
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
-            final isSelected = states.contains(WidgetState.selected);
-            return IconThemeData(
-              color: isSelected
-                  ? selectedNavColor
-                  : colorScheme.onSurfaceVariant,
-            );
-          }),
-          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
-            final isSelected = states.contains(WidgetState.selected);
-            return TextStyle(
-              fontSize: 10,
-              height: 1,
-              color: isSelected
-                  ? selectedNavColor
-                  : colorScheme.onSurfaceVariant,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            );
-          }),
-        ),
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) => _onDestinationSelected(index),
-          destinations: _tabs
-              .map(
-                (tab) => NavigationDestination(
-                  icon: Icon(tab.icon),
-                  label: _labelForTab(l10n, tab.id),
-                ),
-              )
-              .toList(growable: false),
+      bottomNavigationBar: Material(
+        color: backgroundColor,
+        elevation: 8,
+        shadowColor: Colors.black.withValues(alpha: 0.08),
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            backgroundColor: backgroundColor,
+            surfaceTintColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            indicatorColor: selectedNavColor.withValues(alpha: 0.18),
+            iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
+              final isSelected = states.contains(WidgetState.selected);
+              return IconThemeData(
+                color: isSelected
+                    ? selectedNavColor
+                    : colorScheme.onSurfaceVariant,
+              );
+            }),
+            labelTextStyle:
+                WidgetStateProperty.resolveWith<TextStyle?>((states) {
+              final isSelected = states.contains(WidgetState.selected);
+              return TextStyle(
+                fontSize: 10,
+                height: 1,
+                color: isSelected
+                    ? selectedNavColor
+                    : colorScheme.onSurfaceVariant,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              );
+            }),
+          ),
+          child: NavigationBar(
+            backgroundColor: backgroundColor,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (index) => _onDestinationSelected(index),
+            destinations: _tabs
+                .map(
+                  (tab) => NavigationDestination(
+                    icon: Icon(tab.icon),
+                    label: _labelForTab(l10n, tab.id),
+                  ),
+                )
+                .toList(growable: false),
+          ),
         ),
       ),
     );
@@ -127,8 +139,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return l10n.tabFocus;
       case 'tasbih':
         return l10n.tabTasbih;
-      case 'quran':
-        return l10n.tabQuran;
+      case 'learn':
+        return l10n.tabLearn;
       case 'settings':
         return l10n.settings;
       default:

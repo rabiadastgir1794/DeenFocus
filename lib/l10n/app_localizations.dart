@@ -132,6 +132,12 @@ abstract class AppLocalizations {
   /// **'Faith. Focus. Consistency'**
   String get appTagline;
 
+  /// No description provided for @welcomeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'ASSALAMU ALAIKUM'**
+  String get welcomeGreeting;
+
   /// No description provided for @welcomeTagline.
   ///
   /// In en, this message translates to:
@@ -141,7 +147,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Track your prayers, read the Quran, count Tasbih, and build meaningful streaks — all in one place.'**
+  /// **'Where faith meets focus. Protect your prayers, silence distractions, and grow closer to Allah — every day.'**
   String get welcomeDescription;
 
   /// No description provided for @skip.
@@ -149,6 +155,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get skip;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
 
   /// No description provided for @continueButton.
   ///
@@ -216,42 +228,6 @@ abstract class AppLocalizations {
   /// **'Notifications are required to receive prayer time alerts and reminders.'**
   String get notificationsRequiredMessage;
 
-  /// No description provided for @salahTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasbih & Prayer Streaks'**
-  String get salahTitle;
-
-  /// No description provided for @salahSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'A beautiful digital tasbih counter with dhikhr presets, custom entries and streak tracking.'**
-  String get salahSubtitle;
-
-  /// No description provided for @tasbihTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasbih & Prayer Streaks'**
-  String get tasbihTitle;
-
-  /// No description provided for @tasbihSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'A beautiful digital tasbih counter with dhikr presets, custom entries, and streak tracking.'**
-  String get tasbihSubtitle;
-
-  /// No description provided for @quranTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Quran, Qibla & Masjid'**
-  String get quranTitle;
-
-  /// No description provided for @quranSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Read the Holy Quran, find the Qibla direction, and discover mosques near you—all in one place.'**
-  String get quranSubtitle;
-
   /// No description provided for @sectTitle.
   ///
   /// In en, this message translates to:
@@ -303,13 +279,13 @@ abstract class AppLocalizations {
   /// No description provided for @locationTitle.
   ///
   /// In en, this message translates to:
-  /// **'Enable Location'**
+  /// **'Find Your Qibla'**
   String get locationTitle;
 
   /// No description provided for @locationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'We need your location for accurate prayer times, Qibla direction, and finding nearby mosques.'**
+  /// **'Enable location for accurate Qibla, prayer times and nearby masjids.'**
   String get locationSubtitle;
 
   /// No description provided for @locationButton.
@@ -318,16 +294,46 @@ abstract class AppLocalizations {
   /// **'Allow Location Access'**
   String get locationButton;
 
+  /// No description provided for @locationManualEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Or enter your city'**
+  String get locationManualEntry;
+
+  /// No description provided for @locationPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays on your device'**
+  String get locationPrivacyNote;
+
+  /// No description provided for @locationFeaturePrayerTimesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times'**
+  String get locationFeaturePrayerTimesTitle;
+
+  /// No description provided for @locationFeatureQiblaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Qibla'**
+  String get locationFeatureQiblaTitle;
+
+  /// No description provided for @locationFeatureMasjidsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Masjids'**
+  String get locationFeatureMasjidsTitle;
+
   /// No description provided for @notificationsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Stay Reminded'**
+  /// **'Never Miss a Prayer'**
   String get notificationsTitle;
 
   /// No description provided for @notificationsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Get notified for prayer times, focus mode reminders, and daily spiritual prompts.'**
+  /// **'Adhan alerts, focus reminders and daily dhikr — delivered right when you need them.'**
   String get notificationsSubtitle;
 
   /// No description provided for @notificationsButton.
@@ -342,35 +348,323 @@ abstract class AppLocalizations {
   /// **'Notifications are enabled'**
   String get notificationsEnabled;
 
+  /// No description provided for @notificationsPreviewDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday, 10 July'**
+  String get notificationsPreviewDate;
+
+  /// No description provided for @notificationsPreviewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'6:42'**
+  String get notificationsPreviewTime;
+
+  /// No description provided for @notificationsPreviewNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get notificationsPreviewNow;
+
+  /// No description provided for @notificationsPreviewMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'2m'**
+  String get notificationsPreviewMinutesAgo;
+
+  /// No description provided for @notificationsPreviewHourAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1h'**
+  String get notificationsPreviewHourAgo;
+
+  /// No description provided for @notificationsPreviewAdhanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maghrib Adhan'**
+  String get notificationsPreviewAdhanTitle;
+
+  /// No description provided for @notificationsPreviewAdhanBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time to pray. Apps are paused.'**
+  String get notificationsPreviewAdhanBody;
+
+  /// No description provided for @notificationsPreviewDhikrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DAILY DHIKR'**
+  String get notificationsPreviewDhikrTitle;
+
+  /// No description provided for @notificationsPreviewDhikrBody.
+  ///
+  /// In en, this message translates to:
+  /// **'SubhanAllah — take a minute to remember.'**
+  String get notificationsPreviewDhikrBody;
+
+  /// No description provided for @notificationsPreviewStreakTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'STREAK'**
+  String get notificationsPreviewStreakTitle;
+
+  /// No description provided for @notificationsPreviewStreakBody.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days of complete prayers. Keep going!'**
+  String get notificationsPreviewStreakBody;
+
   /// No description provided for @screenTimeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Screen Time Access'**
+  /// **'Enable Screen Time'**
   String get screenTimeTitle;
 
   /// No description provided for @screenTimeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'To block distracting apps during Salah and Night Discipline, this app requires Screen Time permission.'**
+  /// **'This is what lets Deen Focus pause distracting apps during Salah, sleep time and child mode.'**
   String get screenTimeSubtitle;
 
   /// No description provided for @screenTimeButton.
   ///
   /// In en, this message translates to:
-  /// **'Continue'**
+  /// **'Allow Screen Time Access'**
   String get screenTimeButton;
+
+  /// No description provided for @screenTimePrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Deen Focus never reads your data — it only pauses the apps you choose.'**
+  String get screenTimePrivacyNote;
+
+  /// No description provided for @screenTimeStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'STEP {current} OF {total}'**
+  String screenTimeStepOf(int current, int total);
+
+  /// No description provided for @screenTimeStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the Screen Time prompt'**
+  String get screenTimeStep1Title;
+
+  /// No description provided for @screenTimeStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \'Allow Screen Time Access\' — your device will show its own permission sheet.'**
+  String get screenTimeStep1Body;
+
+  /// No description provided for @screenTimeStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Continue, then Allow'**
+  String get screenTimeStep2Title;
+
+  /// No description provided for @screenTimeStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve the request so Deen Focus can pause apps at the right moments.'**
+  String get screenTimeStep2Body;
+
+  /// No description provided for @screenTimeStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose apps to lock'**
+  String get screenTimeStep3Title;
+
+  /// No description provided for @screenTimeStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the apps that distract you most — social, games, video, anything.'**
+  String get screenTimeStep3Body;
+
+  /// No description provided for @screenTimeStep4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re protected'**
+  String get screenTimeStep4Title;
+
+  /// No description provided for @screenTimeStep4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps lock automatically during Salah, sleep time and child mode.'**
+  String get screenTimeStep4Body;
+
+  /// No description provided for @screenTimePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time'**
+  String get screenTimePromptTitle;
+
+  /// No description provided for @screenTimePromptMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'\'{appName}\' would like to access Screen Time'**
+  String screenTimePromptMessage(String appName);
+
+  /// No description provided for @screenTimeDontAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t Allow'**
+  String get screenTimeDontAllow;
+
+  /// No description provided for @screenTimePromptContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get screenTimePromptContinue;
+
+  /// No description provided for @screenTimeAppInstagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get screenTimeAppInstagram;
+
+  /// No description provided for @screenTimeAppTikTok.
+  ///
+  /// In en, this message translates to:
+  /// **'TikTok'**
+  String get screenTimeAppTikTok;
+
+  /// No description provided for @screenTimeAppYouTube.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube'**
+  String get screenTimeAppYouTube;
+
+  /// No description provided for @screenTimeAppGames.
+  ///
+  /// In en, this message translates to:
+  /// **'Games'**
+  String get screenTimeAppGames;
+
+  /// No description provided for @screenTimeAndroidStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Usage Access settings'**
+  String get screenTimeAndroidStep1Title;
+
+  /// No description provided for @screenTimeAndroidStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \'Allow Screen Time Access\' — your device will open Usage Access for Deen Focus.'**
+  String get screenTimeAndroidStep1Body;
+
+  /// No description provided for @screenTimeAndroidStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Accessibility'**
+  String get screenTimeAndroidStep2Title;
+
+  /// No description provided for @screenTimeAndroidStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on the Deen Focus service so apps can pause during Salah, sleep, and child mode.'**
+  String get screenTimeAndroidStep2Body;
+
+  /// No description provided for @screenTimeAndroidStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose apps to lock'**
+  String get screenTimeAndroidStep3Title;
+
+  /// No description provided for @screenTimeAndroidStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the apps that distract you most — social, games, video, anything.'**
+  String get screenTimeAndroidStep3Body;
+
+  /// No description provided for @screenTimeAndroidStep4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re protected'**
+  String get screenTimeAndroidStep4Title;
+
+  /// No description provided for @screenTimeAndroidStep4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps lock automatically during Salah, sleep time and child mode.'**
+  String get screenTimeAndroidStep4Body;
+
+  /// No description provided for @screenTimeAndroidUsageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage access'**
+  String get screenTimeAndroidUsageTitle;
+
+  /// No description provided for @screenTimeAndroidUsageMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Deen Focus to track which other apps are being used.'**
+  String get screenTimeAndroidUsageMessage;
+
+  /// No description provided for @screenTimeAndroidAccessibilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility'**
+  String get screenTimeAndroidAccessibilityTitle;
+
+  /// No description provided for @screenTimeAndroidAccessibilityMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Deen Focus needs Accessibility to pause distracting apps during focus sessions.'**
+  String get screenTimeAndroidAccessibilityMessage;
+
+  /// No description provided for @screenTimeAndroidPermit.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get screenTimeAndroidPermit;
+
+  /// No description provided for @screenTimeAndroidEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get screenTimeAndroidEnable;
+
+  /// No description provided for @screenTimeAndroidNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get screenTimeAndroidNotNow;
 
   /// No description provided for @focusModesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Powerful Focus Modes'**
+  /// **'Everything in One App'**
   String get focusModesTitle;
 
   /// No description provided for @focusModesSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Three modes designed to protect your time and attention'**
+  /// **'Explore all that Deen Focus offers. Tap a focus mode to see how it works.'**
   String get focusModesSubtitle;
+
+  /// No description provided for @focusModesSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'FOCUS MODES · TAP TO LEARN MORE'**
+  String get focusModesSectionLabel;
+
+  /// No description provided for @focusPrayerTrackingSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PRAYER & TRACKING'**
+  String get focusPrayerTrackingSectionLabel;
+
+  /// No description provided for @focusLearningHubSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'LEARNING HUB'**
+  String get focusLearningHubSectionLabel;
+
+  /// No description provided for @focusMoreSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MORE'**
+  String get focusMoreSectionLabel;
 
   /// No description provided for @focusPrayerModeTitle.
   ///
@@ -381,8 +675,26 @@ abstract class AppLocalizations {
   /// No description provided for @focusPrayerModeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Block distracting apps during Salah for complete khushu'**
+  /// **'Block distracting apps automatically during Salah so you can pray with full khushu.'**
   String get focusPrayerModeDescription;
+
+  /// No description provided for @focusPrayerModeBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-locks apps at prayer time'**
+  String get focusPrayerModeBullet1;
+
+  /// No description provided for @focusPrayerModeBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocks when you\'re done'**
+  String get focusPrayerModeBullet2;
+
+  /// No description provided for @focusPrayerModeBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Builds focus & consistency'**
+  String get focusPrayerModeBullet3;
 
   /// No description provided for @focusSleepModeTitle.
   ///
@@ -393,8 +705,26 @@ abstract class AppLocalizations {
   /// No description provided for @focusSleepModeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Protect your sleep schedule and wake up for Fajr'**
+  /// **'Wind down the halal way. Block apps at bedtime so you rest well and wake for Fajr.'**
   String get focusSleepModeDescription;
+
+  /// No description provided for @focusSleepModeBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-blocks apps at bedtime'**
+  String get focusSleepModeBullet1;
+
+  /// No description provided for @focusSleepModeBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle Fajr wake reminders'**
+  String get focusSleepModeBullet2;
+
+  /// No description provided for @focusSleepModeBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Protects your sleep & Fajr'**
+  String get focusSleepModeBullet3;
 
   /// No description provided for @focusChildModeTitle.
   ///
@@ -405,8 +735,152 @@ abstract class AppLocalizations {
   /// No description provided for @focusChildModeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Instantly block apps when handing device to children'**
+  /// **'Handing your phone to your child? Instantly lock apps so they only see what\'s safe.'**
   String get focusChildModeDescription;
+
+  /// No description provided for @focusChildModeBullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'One-tap safe mode'**
+  String get focusChildModeBullet1;
+
+  /// No description provided for @focusChildModeBullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Passcode-protected exit'**
+  String get focusChildModeBullet2;
+
+  /// No description provided for @focusChildModeBullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Peace of mind, every time'**
+  String get focusChildModeBullet3;
+
+  /// No description provided for @focusModeGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get focusModeGotIt;
+
+  /// No description provided for @focusFeaturePrayerTimesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accurate Prayer Times'**
+  String get focusFeaturePrayerTimesTitle;
+
+  /// No description provided for @focusFeaturePrayerTimesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adhan & reminders'**
+  String get focusFeaturePrayerTimesSubtitle;
+
+  /// No description provided for @focusFeatureStreaksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaks'**
+  String get focusFeatureStreaksTitle;
+
+  /// No description provided for @focusFeatureStreaksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay consistent'**
+  String get focusFeatureStreaksSubtitle;
+
+  /// No description provided for @focusFeatureChecklistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Checklist'**
+  String get focusFeatureChecklistTitle;
+
+  /// No description provided for @focusFeatureChecklistSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build good habits'**
+  String get focusFeatureChecklistSubtitle;
+
+  /// No description provided for @focusFeatureQiblaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Qibla & Masjid'**
+  String get focusFeatureQiblaTitle;
+
+  /// No description provided for @focusFeatureQiblaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction & mosques'**
+  String get focusFeatureQiblaSubtitle;
+
+  /// No description provided for @focusFeatureQuranTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran'**
+  String get focusFeatureQuranTitle;
+
+  /// No description provided for @focusFeatureQuranSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Translations, Juzz & pages'**
+  String get focusFeatureQuranSubtitle;
+
+  /// No description provided for @focusFeatureHadithTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith'**
+  String get focusFeatureHadithTitle;
+
+  /// No description provided for @focusFeatureHadithSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentic collections'**
+  String get focusFeatureHadithSubtitle;
+
+  /// No description provided for @focusFeatureDuasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duas'**
+  String get focusFeatureDuasTitle;
+
+  /// No description provided for @focusFeatureDuasSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily supplications'**
+  String get focusFeatureDuasSubtitle;
+
+  /// No description provided for @focusFeatureTasbihTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih'**
+  String get focusFeatureTasbihTitle;
+
+  /// No description provided for @focusFeatureTasbihSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital dhikr counter'**
+  String get focusFeatureTasbihSubtitle;
+
+  /// No description provided for @focusFeatureAiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Companion'**
+  String get focusFeatureAiTitle;
+
+  /// No description provided for @focusFeatureAiSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about your Deen'**
+  String get focusFeatureAiSubtitle;
+
+  /// No description provided for @focusFeatureInsightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get focusFeatureInsightsTitle;
+
+  /// No description provided for @focusFeatureInsightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly & monthly stats'**
+  String get focusFeatureInsightsSubtitle;
 
   /// No description provided for @investTitle.
   ///
@@ -762,6 +1236,12 @@ abstract class AppLocalizations {
   /// **'Find Masjid Near Me'**
   String get homeFindMasjid;
 
+  /// No description provided for @quickActionsMasjidFinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Masjid Finder'**
+  String get quickActionsMasjidFinder;
+
   /// No description provided for @homeSearchNearbyMosques.
   ///
   /// In en, this message translates to:
@@ -771,8 +1251,26 @@ abstract class AppLocalizations {
   /// No description provided for @homePrayerStreak.
   ///
   /// In en, this message translates to:
-  /// **'Prayer Streaks'**
+  /// **'Prayer Streak'**
   String get homePrayerStreak;
+
+  /// No description provided for @homePrayersInARow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} prayers in a row'**
+  String homePrayersInARow(int count);
+
+  /// No description provided for @homeDayStreakCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String homeDayStreakCount(int count);
+
+  /// No description provided for @homeInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get homeInsights;
 
   /// No description provided for @homeOpenStreakDetails.
   ///
@@ -864,6 +1362,881 @@ abstract class AppLocalizations {
   /// **'Don\'t forget Surah Al-Kahf.'**
   String get homeJummahReminder;
 
+  /// No description provided for @hijriYear.
+  ///
+  /// In en, this message translates to:
+  /// **'AH'**
+  String get hijriYear;
+
+  /// No description provided for @hijriMonthMuharram.
+  ///
+  /// In en, this message translates to:
+  /// **'Muharram'**
+  String get hijriMonthMuharram;
+
+  /// No description provided for @hijriMonthSafar.
+  ///
+  /// In en, this message translates to:
+  /// **'Safar'**
+  String get hijriMonthSafar;
+
+  /// No description provided for @hijriMonthRabiAlAwwal.
+  ///
+  /// In en, this message translates to:
+  /// **'Rabi\' al-Awwal'**
+  String get hijriMonthRabiAlAwwal;
+
+  /// No description provided for @hijriMonthRabiAlThani.
+  ///
+  /// In en, this message translates to:
+  /// **'Rabi\' al-Thani'**
+  String get hijriMonthRabiAlThani;
+
+  /// No description provided for @hijriMonthJumadaAlAwwal.
+  ///
+  /// In en, this message translates to:
+  /// **'Jumada al-Awwal'**
+  String get hijriMonthJumadaAlAwwal;
+
+  /// No description provided for @hijriMonthJumadaAlThani.
+  ///
+  /// In en, this message translates to:
+  /// **'Jumada al-Thani'**
+  String get hijriMonthJumadaAlThani;
+
+  /// No description provided for @hijriMonthRajab.
+  ///
+  /// In en, this message translates to:
+  /// **'Rajab'**
+  String get hijriMonthRajab;
+
+  /// No description provided for @hijriMonthShaban.
+  ///
+  /// In en, this message translates to:
+  /// **'Sha\'ban'**
+  String get hijriMonthShaban;
+
+  /// No description provided for @hijriMonthRamadan.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan'**
+  String get hijriMonthRamadan;
+
+  /// No description provided for @hijriMonthShawwal.
+  ///
+  /// In en, this message translates to:
+  /// **'Shawwal'**
+  String get hijriMonthShawwal;
+
+  /// No description provided for @hijriMonthDhuAlQadah.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhu al-Qi\'dah'**
+  String get hijriMonthDhuAlQadah;
+
+  /// No description provided for @hijriMonthDhuAlHijjah.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhu al-Hijjah'**
+  String get hijriMonthDhuAlHijjah;
+
+  /// No description provided for @calendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic Calendar'**
+  String get calendarTitle;
+
+  /// No description provided for @calendarBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get calendarBack;
+
+  /// No description provided for @calendarToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get calendarToday;
+
+  /// No description provided for @calendarTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get calendarTomorrow;
+
+  /// No description provided for @calendarDaysAway.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days'**
+  String calendarDaysAway(int days);
+
+  /// No description provided for @calendarNoEventsThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'No Islamic events this week.'**
+  String get calendarNoEventsThisWeek;
+
+  /// No description provided for @calendarNoEventsBlessing.
+  ///
+  /// In en, this message translates to:
+  /// **'May Allah bless your week with peace and goodness.'**
+  String get calendarNoEventsBlessing;
+
+  /// No description provided for @calendarNoUpcomingEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming Islamic events found.'**
+  String get calendarNoUpcomingEvents;
+
+  /// No description provided for @calendarUpcomingEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Islamic Events'**
+  String get calendarUpcomingEvents;
+
+  /// No description provided for @calendarUpcomingThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming This Year'**
+  String get calendarUpcomingThisYear;
+
+  /// No description provided for @calendarThisWeekObservances.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get calendarThisWeekObservances;
+
+  /// No description provided for @calendarLegendCycleDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle days (streak protected)'**
+  String get calendarLegendCycleDays;
+
+  /// No description provided for @calendarMoonIlluminated.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% illuminated'**
+  String calendarMoonIlluminated(int percent);
+
+  /// No description provided for @calendarMoonNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New Moon'**
+  String get calendarMoonNew;
+
+  /// No description provided for @calendarMoonWaxingCrescent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waxing Crescent'**
+  String get calendarMoonWaxingCrescent;
+
+  /// No description provided for @calendarMoonFirstQuarter.
+  ///
+  /// In en, this message translates to:
+  /// **'First Quarter'**
+  String get calendarMoonFirstQuarter;
+
+  /// No description provided for @calendarMoonWaxingGibbous.
+  ///
+  /// In en, this message translates to:
+  /// **'Waxing Gibbous'**
+  String get calendarMoonWaxingGibbous;
+
+  /// No description provided for @calendarMoonFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Moon'**
+  String get calendarMoonFull;
+
+  /// No description provided for @calendarMoonWaningGibbous.
+  ///
+  /// In en, this message translates to:
+  /// **'Waning Gibbous'**
+  String get calendarMoonWaningGibbous;
+
+  /// No description provided for @calendarMoonLastQuarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Quarter'**
+  String get calendarMoonLastQuarter;
+
+  /// No description provided for @calendarMoonWaningCrescent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waning Crescent'**
+  String get calendarMoonWaningCrescent;
+
+  /// No description provided for @calendarEventRamadanBegins.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan Begins'**
+  String get calendarEventRamadanBegins;
+
+  /// No description provided for @calendarEventRamadanBeginsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Month of fasting'**
+  String get calendarEventRamadanBeginsDesc;
+
+  /// No description provided for @calendarEventLaylatAlQadr.
+  ///
+  /// In en, this message translates to:
+  /// **'Laylat al-Qadr'**
+  String get calendarEventLaylatAlQadr;
+
+  /// No description provided for @calendarEventLaylatAlQadrDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Night of Power'**
+  String get calendarEventLaylatAlQadrDesc;
+
+  /// No description provided for @calendarEventEidAlFitr.
+  ///
+  /// In en, this message translates to:
+  /// **'Eid al-Fitr'**
+  String get calendarEventEidAlFitr;
+
+  /// No description provided for @calendarEventEidAlFitrDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Festival of Breaking the Fast'**
+  String get calendarEventEidAlFitrDesc;
+
+  /// No description provided for @calendarEventDayOfArafah.
+  ///
+  /// In en, this message translates to:
+  /// **'Day of Arafah'**
+  String get calendarEventDayOfArafah;
+
+  /// No description provided for @calendarEventDayOfArafahDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Day of standing at Arafah'**
+  String get calendarEventDayOfArafahDesc;
+
+  /// No description provided for @calendarEventEidAlAdha.
+  ///
+  /// In en, this message translates to:
+  /// **'Eid al-Adha'**
+  String get calendarEventEidAlAdha;
+
+  /// No description provided for @calendarEventEidAlAdhaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Festival of Sacrifice'**
+  String get calendarEventEidAlAdhaDesc;
+
+  /// No description provided for @calendarEventIslamicNewYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic New Year'**
+  String get calendarEventIslamicNewYear;
+
+  /// No description provided for @calendarEventIslamicNewYearDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'1st of Muharram'**
+  String get calendarEventIslamicNewYearDesc;
+
+  /// No description provided for @calendarEventMawlid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mawlid an-Nabi'**
+  String get calendarEventMawlid;
+
+  /// No description provided for @calendarEventMawlidDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth of the Prophet'**
+  String get calendarEventMawlidDesc;
+
+  /// No description provided for @calendarEventAshura.
+  ///
+  /// In en, this message translates to:
+  /// **'Ashura'**
+  String get calendarEventAshura;
+
+  /// No description provided for @calendarEventAshuraDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'10th of Muharram'**
+  String get calendarEventAshuraDesc;
+
+  /// No description provided for @calendarEventJumuah.
+  ///
+  /// In en, this message translates to:
+  /// **'Jumu\'ah'**
+  String get calendarEventJumuah;
+
+  /// No description provided for @calendarEventJumuahDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday congregational prayer'**
+  String get calendarEventJumuahDesc;
+
+  /// No description provided for @calendarEventWhiteDays.
+  ///
+  /// In en, this message translates to:
+  /// **'White Days'**
+  String get calendarEventWhiteDays;
+
+  /// No description provided for @calendarEventWhiteDaysDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended fasting days'**
+  String get calendarEventWhiteDaysDesc;
+
+  /// No description provided for @cycleModeActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Allah intends ease for you and does not intend hardship for you.\" — Quran 2:185'**
+  String get cycleModeActiveTitle;
+
+  /// No description provided for @cycleModeActiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'During this period, your prayer streak is protected. Your cycle days are highlighted in pink, and Cycle Mode turns off automatically when the cycle ends.'**
+  String get cycleModeActiveSubtitle;
+
+  /// No description provided for @cycleModeActiveSubtitleOld.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Auto-ends tomorrow} other{Auto-ends in {days} days}}'**
+  String cycleModeActiveSubtitleOld(num days);
+
+  /// No description provided for @cycleModeStreakProtected.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer streak is protected during your cycle'**
+  String get cycleModeStreakProtected;
+
+  /// No description provided for @cycleModeCalendarHighlighted.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar days are highlighted in pink'**
+  String get cycleModeCalendarHighlighted;
+
+  /// No description provided for @cycleModeAutoEndInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Ends today} =1{Automatically ends tomorrow} other{Automatically ends in {days} days}}'**
+  String cycleModeAutoEndInfo(int days);
+
+  /// No description provided for @cycleModeSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Mode'**
+  String get cycleModeSettingsTitle;
+
+  /// No description provided for @cycleModeStartDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get cycleModeStartDateLabel;
+
+  /// No description provided for @cycleModeLengthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle length'**
+  String get cycleModeLengthLabel;
+
+  /// No description provided for @cycleModeLengthValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String cycleModeLengthValue(int count);
+
+  /// No description provided for @cycleModePauseStreaksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause streaks'**
+  String get cycleModePauseStreaksLabel;
+
+  /// No description provided for @cycleModeExcludeFromStatisticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude from statistics'**
+  String get cycleModeExcludeFromStatisticsLabel;
+
+  /// No description provided for @cycleModeSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get cycleModeSaveButton;
+
+  /// No description provided for @cycleModeEditButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get cycleModeEditButton;
+
+  /// No description provided for @cycleModeChangeStartDateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change start date?'**
+  String get cycleModeChangeStartDateTitle;
+
+  /// No description provided for @cycleModeChangeStartDateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the start date will recalculate your active Cycle Mode window. Days outside the new range may no longer be treated as cycle days.'**
+  String get cycleModeChangeStartDateMessage;
+
+  /// No description provided for @cycleModeChangeStartDateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Change start date'**
+  String get cycleModeChangeStartDateConfirm;
+
+  /// No description provided for @prayerReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you pray {prayer}?'**
+  String prayerReminderTitle(String prayer);
+
+  /// No description provided for @prayerReminderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your streak alive by logging your prayer.'**
+  String get prayerReminderSubtitle;
+
+  /// No description provided for @prayerReminderYesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Alhamdulillah'**
+  String get prayerReminderYesButton;
+
+  /// No description provided for @prayerReminderLaterButton.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ll mark later'**
+  String get prayerReminderLaterButton;
+
+  /// No description provided for @homeTrialBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free for 7 days — become a better Muslim ✨'**
+  String get homeTrialBannerTitle;
+
+  /// No description provided for @homeTrialBannerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every feature unlocked. Start your journey today.'**
+  String get homeTrialBannerSubtitle;
+
+  /// No description provided for @homeFocusModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Mode'**
+  String get homeFocusModeTitle;
+
+  /// No description provided for @homeFocusModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block distracting apps during Salah'**
+  String get homeFocusModeSubtitle;
+
+  /// No description provided for @cycleModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Mode'**
+  String get cycleModeTitle;
+
+  /// No description provided for @cycleModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For menstruation — pause prayers, keep your streak'**
+  String get cycleModeSubtitle;
+
+  /// No description provided for @dailyChecklistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Checklist'**
+  String get dailyChecklistTitle;
+
+  /// No description provided for @dailyChecklistSectionPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer'**
+  String get dailyChecklistSectionPrayer;
+
+  /// No description provided for @dailyChecklistSectionQuranDhikr.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran & Dhikr'**
+  String get dailyChecklistSectionQuranDhikr;
+
+  /// No description provided for @dailyChecklistSectionGoodDeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Good deeds'**
+  String get dailyChecklistSectionGoodDeeds;
+
+  /// No description provided for @dailyChecklistSectionDistraction.
+  ///
+  /// In en, this message translates to:
+  /// **'Distraction control'**
+  String get dailyChecklistSectionDistraction;
+
+  /// No description provided for @dailyChecklistFajr.
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr'**
+  String get dailyChecklistFajr;
+
+  /// No description provided for @dailyChecklistTahajjud.
+  ///
+  /// In en, this message translates to:
+  /// **'Tahajjud'**
+  String get dailyChecklistTahajjud;
+
+  /// No description provided for @dailyChecklistQuran.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran'**
+  String get dailyChecklistQuran;
+
+  /// No description provided for @dailyChecklistMorningAdhkar.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning Adhkar'**
+  String get dailyChecklistMorningAdhkar;
+
+  /// No description provided for @dailyChecklistEveningAdhkar.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening Adhkar'**
+  String get dailyChecklistEveningAdhkar;
+
+  /// No description provided for @dailyChecklistDhikr.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhikr'**
+  String get dailyChecklistDhikr;
+
+  /// No description provided for @dailyChecklistCharity.
+  ///
+  /// In en, this message translates to:
+  /// **'Charity'**
+  String get dailyChecklistCharity;
+
+  /// No description provided for @dailyChecklistSmileAtSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Smile at someone'**
+  String get dailyChecklistSmileAtSomeone;
+
+  /// No description provided for @dailyChecklistFamilyCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Family call'**
+  String get dailyChecklistFamilyCall;
+
+  /// No description provided for @dailyChecklistNoMusicToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No music today'**
+  String get dailyChecklistNoMusicToday;
+
+  /// No description provided for @dailyChecklistNoSocialMediaBeforeIsha.
+  ///
+  /// In en, this message translates to:
+  /// **'No social media before Isha'**
+  String get dailyChecklistNoSocialMediaBeforeIsha;
+
+  /// No description provided for @focusScoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Focus Score'**
+  String get focusScoreTitle;
+
+  /// No description provided for @focusScorePrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer'**
+  String get focusScorePrayer;
+
+  /// No description provided for @focusScoreQuran.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran'**
+  String get focusScoreQuran;
+
+  /// No description provided for @focusScoreDhikr.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhikr'**
+  String get focusScoreDhikr;
+
+  /// No description provided for @focusScoreDistraction.
+  ///
+  /// In en, this message translates to:
+  /// **'Distraction control'**
+  String get focusScoreDistraction;
+
+  /// No description provided for @insightsBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get insightsBack;
+
+  /// No description provided for @insightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Insights'**
+  String get insightsTitle;
+
+  /// No description provided for @insightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your Deen progress'**
+  String get insightsSubtitle;
+
+  /// No description provided for @insightsPrayerRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer rate'**
+  String get insightsPrayerRate;
+
+  /// No description provided for @insightsDayStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Day streak'**
+  String get insightsDayStreak;
+
+  /// No description provided for @insightsBestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Best streak'**
+  String get insightsBestStreak;
+
+  /// No description provided for @insightsWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get insightsWeekly;
+
+  /// No description provided for @insightsMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get insightsMonthly;
+
+  /// No description provided for @insightsPrayersCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayers completed'**
+  String get insightsPrayersCompleted;
+
+  /// No description provided for @insightsRestoreStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore my streak — last 24 hours'**
+  String get insightsRestoreStreak;
+
+  /// No description provided for @focusScoreBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer {prayerPercent}% · Quran {quranPercent}% · Dhikr {dhikrPercent}% · Distraction control {distractionPercent}%'**
+  String focusScoreBreakdown(
+    int prayerPercent,
+    int quranPercent,
+    int dhikrPercent,
+    int distractionPercent,
+  );
+
+  /// No description provided for @quickActionsCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get quickActionsCalendar;
+
+  /// No description provided for @quickActionsCalendarSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View Islamic dates'**
+  String get quickActionsCalendarSubtitle;
+
+  /// No description provided for @quickActionsSupportUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Us'**
+  String get quickActionsSupportUs;
+
+  /// No description provided for @quickActionsSupportUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help us grow'**
+  String get quickActionsSupportUsSubtitle;
+
+  /// No description provided for @quickActionsSupportUsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for considering to support DeenFocus! Support features coming soon.'**
+  String get quickActionsSupportUsMessage;
+
+  /// No description provided for @supportUsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support DeenFocus'**
+  String get supportUsTitle;
+
+  /// No description provided for @supportUsHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help keep DeenFocus growing'**
+  String get supportUsHeroTitle;
+
+  /// No description provided for @supportUsHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.'**
+  String get supportUsHeroBody;
+
+  /// No description provided for @supportUsFundSection.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR CONTRIBUTIONS FUND'**
+  String get supportUsFundSection;
+
+  /// No description provided for @supportUsFundFeature1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'New Islamic features'**
+  String get supportUsFundFeature1Title;
+
+  /// No description provided for @supportUsFundFeature1Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh tools to deepen your worship'**
+  String get supportUsFundFeature1Subtitle;
+
+  /// No description provided for @supportUsFundFeature2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Server & infrastructure'**
+  String get supportUsFundFeature2Title;
+
+  /// No description provided for @supportUsFundFeature2Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeping the app fast and reliable'**
+  String get supportUsFundFeature2Subtitle;
+
+  /// No description provided for @supportUsFundFeature3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug fixes & updates'**
+  String get supportUsFundFeature3Title;
+
+  /// No description provided for @supportUsFundFeature3Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A smoother, more stable experience'**
+  String get supportUsFundFeature3Subtitle;
+
+  /// No description provided for @supportUsFundFeature4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran, Salah & productivity'**
+  String get supportUsFundFeature4Title;
+
+  /// No description provided for @supportUsFundFeature4Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continual improvements to core features'**
+  String get supportUsFundFeature4Subtitle;
+
+  /// No description provided for @supportUsNeedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'NEED HELP?'**
+  String get supportUsNeedHelp;
+
+  /// No description provided for @supportUsWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat on WhatsApp'**
+  String get supportUsWhatsApp;
+
+  /// No description provided for @supportUsEmailSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Support'**
+  String get supportUsEmailSupport;
+
+  /// No description provided for @supportUsChooseAmountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a one-time amount'**
+  String get supportUsChooseAmountTitle;
+
+  /// No description provided for @supportUsChooseAmountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every bit helps keep DeenFocus growing.'**
+  String get supportUsChooseAmountSubtitle;
+
+  /// No description provided for @supportUsCustomAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Or enter a custom amount'**
+  String get supportUsCustomAmountLabel;
+
+  /// No description provided for @supportUsPurposeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Purpose of your donation (optional)'**
+  String get supportUsPurposeLabel;
+
+  /// No description provided for @supportUsPurposeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Sadaqah, Zakat, app development...'**
+  String get supportUsPurposeHint;
+
+  /// No description provided for @supportUsPurposeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us the purpose and we\'ll utilize your contribution accordingly.'**
+  String get supportUsPurposeNote;
+
+  /// No description provided for @supportUsOptionalFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Support is entirely optional and helps us keep improving DeenFocus.'**
+  String get supportUsOptionalFooter;
+
+  /// No description provided for @supportUsCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Support with {amount}'**
+  String supportUsCta(String amount);
+
+  /// No description provided for @supportUsWhatsAppPrefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Assalamu alaikum, I need help with DeenFocus.'**
+  String get supportUsWhatsAppPrefill;
+
+  /// No description provided for @supportUsEmailSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus support request'**
+  String get supportUsEmailSubject;
+
+  /// No description provided for @supportUsLaunchUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open that app on this device.'**
+  String get supportUsLaunchUnavailable;
+
+  /// No description provided for @supportUsLaunchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get supportUsLaunchFailed;
+
   /// No description provided for @homeAiChatDescription.
   ///
   /// In en, this message translates to:
@@ -887,6 +2260,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No events found for this day.'**
   String get homeNoEventsFoundForDay;
+
+  /// No description provided for @homeMarkPrayerAs.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayerName} — mark as'**
+  String homeMarkPrayerAs(String prayerName);
+
+  /// No description provided for @homeMarkPrayerPrayedOnTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayed on time'**
+  String get homeMarkPrayerPrayedOnTime;
+
+  /// No description provided for @homeMarkPrayerQada.
+  ///
+  /// In en, this message translates to:
+  /// **'Qada (made up)'**
+  String get homeMarkPrayerQada;
+
+  /// No description provided for @homeMarkPrayerMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get homeMarkPrayerMissed;
+
+  /// No description provided for @homePrayerSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayerName} Settings'**
+  String homePrayerSettingsTitle(String prayerName);
+
+  /// No description provided for @homePrayerSettingsPrayerTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Time'**
+  String get homePrayerSettingsPrayerTime;
+
+  /// No description provided for @homePrayerSettingsNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get homePrayerSettingsNotification;
+
+  /// No description provided for @homePrayerSettingsAboutSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtues, rulings and more'**
+  String get homePrayerSettingsAboutSubtitle;
+
+  /// No description provided for @homePrayerSettingsInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'These settings are only for {prayerName}. You can set different preferences for each prayer.'**
+  String homePrayerSettingsInfoBanner(String prayerName);
+
+  /// No description provided for @homeEditPrayerTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {prayerName} Time'**
+  String homeEditPrayerTimeTitle(String prayerName);
+
+  /// No description provided for @homeEditPrayerTimeCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Time'**
+  String get homeEditPrayerTimeCurrent;
+
+  /// No description provided for @homeEditPrayerTimeSelectNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Select new time'**
+  String get homeEditPrayerTimeSelectNew;
+
+  /// No description provided for @homeEditPrayerTimeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This custom time applies only to {prayerName}. Adjust it if your local masjid or calculation differs.'**
+  String homeEditPrayerTimeNote(String prayerName);
+
+  /// No description provided for @homeEditPrayerTimeSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Time'**
+  String get homeEditPrayerTimeSave;
+
+  /// No description provided for @homeEditPrayerTimeReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to calculated time'**
+  String get homeEditPrayerTimeReset;
+
+  /// No description provided for @homeNotificationForPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification for {prayerName}'**
+  String homeNotificationForPrayer(String prayerName);
+
+  /// No description provided for @homeNotificationSoundLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Sound'**
+  String get homeNotificationSoundLabel;
+
+  /// No description provided for @homeNotificationSoundFullAdhan.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Adhan'**
+  String get homeNotificationSoundFullAdhan;
+
+  /// No description provided for @homeNotificationSoundFullAdhanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Play the complete Adhan'**
+  String get homeNotificationSoundFullAdhanSubtitle;
+
+  /// No description provided for @homeNotificationSoundBeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Beep'**
+  String get homeNotificationSoundBeep;
+
+  /// No description provided for @homeNotificationSoundBeepSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A short notification tone'**
+  String get homeNotificationSoundBeepSubtitle;
+
+  /// No description provided for @homeNotificationSoundMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get homeNotificationSoundMute;
+
+  /// No description provided for @homeNotificationSoundMuteSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No sound'**
+  String get homeNotificationSoundMuteSubtitle;
+
+  /// No description provided for @homeNotificationEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notification'**
+  String get homeNotificationEnableLabel;
+
+  /// No description provided for @homeNotificationEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified at {prayerName} time'**
+  String homeNotificationEnableSubtitle(String prayerName);
+
+  /// No description provided for @homeAboutPrayerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About {prayerName}'**
+  String homeAboutPrayerTitle(String prayerName);
+
+  /// No description provided for @homeAboutPrayerTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get homeAboutPrayerTimeLabel;
+
+  /// No description provided for @homeAboutPrayerRakatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rakat'**
+  String get homeAboutPrayerRakatLabel;
+
+  /// No description provided for @homeAboutPrayerVirtuesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtues'**
+  String get homeAboutPrayerVirtuesLabel;
+
+  /// No description provided for @homeAboutPrayerReferenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get homeAboutPrayerReferenceLabel;
+
+  /// No description provided for @homeAboutFajrTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Begins at true dawn (Fajr Sadiq) and ends at sunrise.'**
+  String get homeAboutFajrTiming;
+
+  /// No description provided for @homeAboutFajrRakat.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Sunnah + 2 Fard'**
+  String get homeAboutFajrRakat;
+
+  /// No description provided for @homeAboutFajrVirtue.
+  ///
+  /// In en, this message translates to:
+  /// **'Whoever prays Fajr is under the protection of Allah.'**
+  String get homeAboutFajrVirtue;
+
+  /// No description provided for @homeAboutFajrReference.
+  ///
+  /// In en, this message translates to:
+  /// **'\"The two rak\'ahs of Fajr are better than the world and all it contains.\" (Sahih Muslim)'**
+  String get homeAboutFajrReference;
+
+  /// No description provided for @homeAboutDhuhrTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Begins once the sun passes its zenith and lasts until Asr begins.'**
+  String get homeAboutDhuhrTiming;
+
+  /// No description provided for @homeAboutDhuhrRakat.
+  ///
+  /// In en, this message translates to:
+  /// **'4 Sunnah + 4 Fard + 2 Sunnah'**
+  String get homeAboutDhuhrRakat;
+
+  /// No description provided for @homeAboutDhuhrVirtue.
+  ///
+  /// In en, this message translates to:
+  /// **'Part of the 12 voluntary rak\'ahs a day for which Allah builds a house in Paradise.'**
+  String get homeAboutDhuhrVirtue;
+
+  /// No description provided for @homeAboutDhuhrReference.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Whoever prays twelve rak\'ahs during a day and a night will have a house built for him in Paradise.\" (Sahih Muslim)'**
+  String get homeAboutDhuhrReference;
+
+  /// No description provided for @homeAboutAsrTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Begins when an object\'s shadow equals its length and lasts until sunset.'**
+  String get homeAboutAsrTiming;
+
+  /// No description provided for @homeAboutAsrRakat.
+  ///
+  /// In en, this message translates to:
+  /// **'4 Fard'**
+  String get homeAboutAsrRakat;
+
+  /// No description provided for @homeAboutAsrVirtue.
+  ///
+  /// In en, this message translates to:
+  /// **'Guarding this prayer is singled out for special reward and warning.'**
+  String get homeAboutAsrVirtue;
+
+  /// No description provided for @homeAboutAsrReference.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Whoever misses the Asr prayer, it is as if he lost his family and his wealth.\" (Sahih al-Bukhari)'**
+  String get homeAboutAsrReference;
+
+  /// No description provided for @homeAboutMaghribTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Begins right after sunset and lasts until the red twilight disappears.'**
+  String get homeAboutMaghribTiming;
+
+  /// No description provided for @homeAboutMaghribRakat.
+  ///
+  /// In en, this message translates to:
+  /// **'3 Fard + 2 Sunnah'**
+  String get homeAboutMaghribRakat;
+
+  /// No description provided for @homeAboutMaghribVirtue.
+  ///
+  /// In en, this message translates to:
+  /// **'A time when supplications are especially encouraged.'**
+  String get homeAboutMaghribVirtue;
+
+  /// No description provided for @homeAboutMaghribReference.
+  ///
+  /// In en, this message translates to:
+  /// **'\"There are two occasions when a fasting person rejoices... when he breaks his fast.\" (Sahih al-Bukhari, on the Maghrib fast-breaking)'**
+  String get homeAboutMaghribReference;
+
+  /// No description provided for @homeAboutIshaTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Begins once the twilight fully disappears and lasts until midnight (or Fajr, per some views).'**
+  String get homeAboutIshaTiming;
+
+  /// No description provided for @homeAboutIshaRakat.
+  ///
+  /// In en, this message translates to:
+  /// **'4 Fard + 2 Sunnah + Witr'**
+  String get homeAboutIshaRakat;
+
+  /// No description provided for @homeAboutIshaVirtue.
+  ///
+  /// In en, this message translates to:
+  /// **'Praying Isha in congregation is equivalent to standing half the night in prayer.'**
+  String get homeAboutIshaVirtue;
+
+  /// No description provided for @homeAboutIshaReference.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Whoever prays Isha in congregation, it is as if he prayed half the night.\" (Sahih Muslim)'**
+  String get homeAboutIshaReference;
 
   /// No description provided for @backToOnboarding.
   ///
@@ -929,6 +2602,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quran'**
   String get tabQuran;
+
+  /// No description provided for @tabLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get tabLearn;
 
   /// No description provided for @quranLoadFailed.
   ///
@@ -2027,6 +3706,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hanafi'**
   String get asrMethodHanafi;
+
+  /// No description provided for @homeLocationChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Changed'**
+  String get homeLocationChangedTitle;
+
+  /// No description provided for @homeLocationChangedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You appear to be in {city}. Update your prayer location for accurate times?'**
+  String homeLocationChangedMessage(String city);
+
+  /// No description provided for @homeLocationChangedNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Now'**
+  String get homeLocationChangedNotNow;
+
+  /// No description provided for @homeLocationChangedUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get homeLocationChangedUpdate;
+
+  /// No description provided for @homeYourNewLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'your new location'**
+  String get homeYourNewLocation;
+
+  /// No description provided for @insightsPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer streak'**
+  String get insightsPrayerStreak;
+
+  /// No description provided for @insightsPrayerStreakCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} prayers'**
+  String insightsPrayerStreakCount(int count);
+
+  /// No description provided for @insightsPrayersInARow.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayers in a row'**
+  String get insightsPrayersInARow;
+
+  /// No description provided for @insightsDaysInARow.
+  ///
+  /// In en, this message translates to:
+  /// **'Days in a row'**
+  String get insightsDaysInARow;
+
+  /// No description provided for @insightsChipUpToday.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ +1'**
+  String get insightsChipUpToday;
+
+  /// No description provided for @insightsChipDayUp.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ +1 today'**
+  String get insightsChipDayUp;
+
+  /// No description provided for @insightsWeeklyCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly completion'**
+  String get insightsWeeklyCompletion;
+
+  /// No description provided for @insightsMonthlyCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly completion'**
+  String get insightsMonthlyCompletion;
+
+  /// No description provided for @insightsThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get insightsThisWeek;
+
+  /// No description provided for @insightsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get insightsThisMonth;
+
+  /// No description provided for @insightsOverall.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall'**
+  String get insightsOverall;
+
+  /// No description provided for @insightsRateExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get insightsRateExcellent;
+
+  /// No description provided for @insightsRateGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get insightsRateGood;
+
+  /// No description provided for @insightsRateFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get insightsRateFair;
+
+  /// No description provided for @insightsRateStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going'**
+  String get insightsRateStart;
+
+  /// No description provided for @insightsPrayersCompletedWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayers completed (weekly)'**
+  String get insightsPrayersCompletedWeekly;
+
+  /// No description provided for @insightsPrayersCompletedMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayers completed (monthly)'**
+  String get insightsPrayersCompletedMonthly;
+
+  /// No description provided for @insightsCompletionSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'You completed {done} out of {possible} prayers. Alhamdulillah — keep going!'**
+  String insightsCompletionSummary(int done, int possible);
+
+  /// No description provided for @insightsFocusExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent — keep it up!'**
+  String get insightsFocusExcellent;
+
+  /// No description provided for @insightsFocusKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep building your focus'**
+  String get insightsFocusKeepGoing;
+
+  /// No description provided for @insightsTodaysPrayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s prayers'**
+  String get insightsTodaysPrayers;
+
+  /// No description provided for @insightsPrayersCompletedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayers completed — Alhamdulillah!'**
+  String get insightsPrayersCompletedLabel;
+
+  /// No description provided for @insightsCycleModeActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle mode active'**
+  String get insightsCycleModeActiveLabel;
+
+  /// No description provided for @insightsProtectedByCycleMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Your streak is protected.'**
+  String get insightsProtectedByCycleMode;
+
+  /// No description provided for @insightsCurrentPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current prayer streak'**
+  String get insightsCurrentPrayerStreak;
+
+  /// No description provided for @insightsBestPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Best prayer streak'**
+  String get insightsBestPrayerStreak;
+
+  /// No description provided for @insightsCurrentDayStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current day streak'**
+  String get insightsCurrentDayStreak;
+
+  /// No description provided for @insightsCycleProtectedDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle protected days'**
+  String get insightsCycleProtectedDays;
+
+  /// No description provided for @insightsAchievements.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get insightsAchievements;
+
+  /// No description provided for @insightsAchieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieved'**
+  String get insightsAchieved;
+
+  /// No description provided for @insightsCycleModeFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Mode days are protected and not counted as streak breaks. You have {days} protected day(s) available.'**
+  String insightsCycleModeFooter(int days);
+
+  /// No description provided for @insightsCycleModeFooterOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Cycle Mode to protect your streak during rest days.'**
+  String get insightsCycleModeFooterOff;
+
+  /// No description provided for @achievementFirstPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'First Prayer Streak'**
+  String get achievementFirstPrayerStreak;
+
+  /// No description provided for @achievementSevenPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Seven Prayer Streak'**
+  String get achievementSevenPrayerStreak;
+
+  /// No description provided for @achievementThirtyPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Thirty Prayer Streak'**
+  String get achievementThirtyPrayerStreak;
+
+  /// No description provided for @achievementFajrWarrior.
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr Warrior'**
+  String get achievementFajrWarrior;
+
+  /// No description provided for @achievementQuranReader.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran Reader'**
+  String get achievementQuranReader;
+
+  /// No description provided for @achievementDhikrMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhikr Master'**
+  String get achievementDhikrMaster;
+
+  /// No description provided for @achievementConsistencyChampion.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistency Champion'**
+  String get achievementConsistencyChampion;
+
+  /// No description provided for @prayerCompletionAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah!'**
+  String get prayerCompletionAlhamdulillah;
+
+  /// No description provided for @prayerCompletionCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayer} has been completed'**
+  String prayerCompletionCompleted(String prayer);
+
+  /// No description provided for @prayerCompletionStreakIncreased.
+  ///
+  /// In en, this message translates to:
+  /// **'Your prayer streak has increased'**
+  String get prayerCompletionStreakIncreased;
+
+  /// No description provided for @prayerCompletionKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Every prayer brings you closer to Allah. Keep going!'**
+  String get prayerCompletionKeepGoing;
+
+  /// No description provided for @prayerCompletionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get prayerCompletionContinue;
+
+  /// No description provided for @prayerCompletionNextPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Next prayer in {when}'**
+  String prayerCompletionNextPrayer(String when);
+
+  /// No description provided for @prayerCompletionMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String prayerCompletionMinutes(int minutes);
+
+  /// No description provided for @prayerCompletionHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String prayerCompletionHoursMinutes(int hours, int minutes);
 }
 
 class _AppLocalizationsDelegate

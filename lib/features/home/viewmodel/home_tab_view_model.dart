@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 import 'package:adhan_dart/adhan_dart.dart';
@@ -16,6 +18,9 @@ import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
 import '../helpers/home_prayer_times_helper.dart';
 import '../model/home_models.dart';
+import '../services/achievements_service.dart';
+import '../services/cycle_mode_policy.dart';
+import '../services/prayer_analytics_service.dart';
 
 class HomeTabViewModel extends ChangeNotifier {
   String userName = 'User';
@@ -46,7 +51,6 @@ class HomeTabViewModel extends ChangeNotifier {
   DateTime weeklyVisibleWeekStart = HomeTabViewModel._startOfWeekFor(
     DateTime.now(),
   );
-  DateTime? selectedDate;
   bool weeklyCalendar = true;
   int streakDays = 0;
   HomePrayerStreakState _prayerStreakState = const HomePrayerStreakState(
@@ -54,6 +58,165 @@ class HomeTabViewModel extends ChangeNotifier {
     weekDays: <HomePrayerChecklistDay>[],
     completedDateKeys: <String>{},
   );
+  PrayerSettingsState _prayerSettings = PrayerSettingsState.defaults();
+
+  // Cycle Mode state
+  CycleModeData _cycleMode = CycleModeData.disabled();
+  
+  // Daily Checklist state
+  DailyChecklistState _dailyChecklist = const DailyChecklistState(
+    dateKey: '',
+    completedItems: <DailyChecklistItem>{},
+  );
+  
+  // Focus Score state (placeholder values - can be connected to actual tracking)
+  int _todayFocusScore = 0;
+  int _todayPrayerPercent = 0;
+  int _todayQuranPercent = 0;
+  int _todayDhikrPercent = 0;
+  int _todayDistractionPercent = 0;
+  int prayerStreak = 0;
+  PrayerAnalyticsSnapshot analytics = const PrayerAnalyticsSnapshot(
+    prayerStreak: 0,
+    dayStreak: 0,
+    weeklyCompleted: 0,
+    weeklyPossible: PrayerAnalyticsService.weeklyPossible,
+    monthlyCompleted: 0,
+    monthlyPossible: 0,
+    prayerRatePercent: 0,
+    weekDayCounts: <int>[0, 0, 0, 0, 0, 0, 0],
+    homeWeekDayCounts: <int>[0, 0, 0, 0, 0, 0, 0],
+    monthWeekBuckets: <({String label, int completed, int possible})>[],
+  );
+  List<AchievementProgress> achievements = AchievementsService.defaults();
+  Map<String, Set<DailyChecklistItem>> _checklistHistory =
+      <String, Set<DailyChecklistItem>>{};
+
+  /// All streak / completion numbers — always from [PrayerAnalyticsService].
+  int get prayerRatePercent => analytics.prayerRatePercent;
+  int get bestPrayerStreak =>
+      _prayerStreakState.bestPrayerStreak > prayerStreak
+          ? _prayerStreakState.bestPrayerStreak
+          : prayerStreak;
+  int get bestDayStreak =>
+      _prayerStreakState.bestDayStreak > streakDays
+          ? _prayerStreakState.bestDayStreak
+          : streakDays;
+  int get bestStreakDays => bestDayStreak;
+  int get cycleProtectedDaysAvailable => cycleModeDaysRemaining;
+  List<bool> get weekCycleHighlights {
+    final now = DateTime.now();
+    return currentWeekDates
+        .map((date) => cyclePolicy.isHighlightable(date, now: now))
+        .toList(growable: false);
+  }
+
+  bool isCycleHighlight(DateTime date, {DateTime? now}) =>
+      cyclePolicy.isHighlightable(date, now: now);
+
+  /// Bumps when cycle settings change so calendar grids rebuild highlights.
+  int get cycleHighlightRevision => Object.hash(
+        _cycleMode.isEnabled,
+        _cycleMode.startDate,
+        _cycleMode.cycleLength,
+        Object.hashAll(_cycleMode.history),
+      );
+  bool get isTodayCycleProtected => cyclePolicy.isTodayProtected();
+  List<DateTime> get insightsWeekDates =>
+      WeeklyCalculator.insightsWeekDates(DateTime.now());
+  List<DateTime> get currentMonthDates =>
+      MonthlyCalculator.monthDatesFor(DateTime.now());
+  List<({String label, int completed, int possible})> get insightsMonthWeeks =>
+      analytics.monthWeekBuckets;
+  int get weeklyCompletionDone => analytics.weeklyCompleted;
+  int get weeklyCompletionPossible => analytics.weeklyPossible;
+  int get monthlyCompletionDone => analytics.monthlyCompleted;
+  int get monthlyCompletionPossible => analytics.monthlyPossible;
+
+  List<int> prayerCountsForDates(List<DateTime> dates) {
+    final history = _mergedStatusHistory();
+    return [
+      for (final date in dates)
+        WeeklyCalculator.completedCountOnDate(
+          date,
+          history,
+          cyclePolicy.shouldExcludeFromStatistics,
+        ),
+    ];
+  }
+
+  /// True when a break within the last 24 hours can be restored.
+  bool get canRestoreStreak => analytics.canRestoreStreak;
+
+  /// Snapchat-style restore: repair the most recent break in real history
+  /// (within 24h), then recalculate everything. Multiple restores allowed.
+  Future<bool> restoreStreakLast7Days() async {
+    final now = DateTime.now();
+    final target = analytics.restoreTarget ??
+        RestoreCalculator.findTarget(
+          now: now,
+          statusHistory: _mergedStatusHistory(),
+          isCycleDay: (d) => !cyclePolicy.shouldAllowRestore(d),
+          prayerStartTime: prayerDateTimeFor,
+        );
+    if (target == null) return false;
+
+    final history = RestoreCalculator.apply(
+      statusHistory: _mergedStatusHistory(),
+      target: target,
+    );
+
+    final weekDays = _prayerStreakState.weekDays.map((day) {
+      if (day.dateKey != target.dateKey) return day;
+      final statuses = history[target.dateKey] ?? day.prayerStatuses;
+      final selected = <TrackablePrayer>{
+        for (final e in statuses.entries)
+          if (e.value == PrayerMarkStatus.onTime ||
+              e.value == PrayerMarkStatus.qada)
+            e.key,
+      };
+      return day.copyWith(selectedPrayers: selected, prayerStatuses: statuses);
+    }).toList(growable: false);
+
+    final completedDates = Set<String>.from(_prayerStreakState.completedDateKeys);
+    final dayStatuses = history[target.dateKey];
+    if (dayStatuses != null &&
+        TrackablePrayer.values.every(
+          (p) => PrayerAnalyticsService.countsForPrayerStreak(
+            dayStatuses[p] ?? PrayerMarkStatus.none,
+          ),
+        )) {
+      completedDates.add(target.dateKey);
+    }
+
+    _prayerStreakState = _prayerStreakState.copyWith(
+      statusHistory: history,
+      weekDays: weekDays,
+      completedDateKeys: completedDates,
+    );
+    _recomputeAnalytics(now);
+    await _persistPrayerStreak();
+    await _computeFocusScore();
+    await _refreshAchievements();
+    notifyListeners();
+    return true;
+  }
+
+  bool get cycleModeEnabled => _cycleMode.isEnabled;
+  CycleModeData get cycleModeData => _cycleMode;
+  CycleModePolicy get cyclePolicy => CycleModePolicy(_cycleMode);
+
+  // Daily Checklist getters
+  Set<DailyChecklistItem> get dailyChecklistCompletedItems => _dailyChecklist.completedItems;
+  
+  // Focus Score getters
+  int get todayFocusScore => _todayFocusScore;
+  int get todayPrayerPercent => _todayPrayerPercent;
+  int get todayQuranPercent => _todayQuranPercent;
+  int get todayDhikrPercent => _todayDhikrPercent;
+  int get todayDistractionPercent => _todayDistractionPercent;
+  int get cycleModeDaysRemaining => _cycleMode.daysRemainingOn(DateTime.now());
+  int get cycleModeLength => _cycleMode.cycleLength;
 
   Timer? _ticker;
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
@@ -70,6 +233,9 @@ class HomeTabViewModel extends ChangeNotifier {
   bool get isFriday => DateTime.now().weekday == DateTime.friday;
   HomePrayerStreakState get prayerStreakState => _prayerStreakState;
   List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
+
+  PrayerSettingEntry settingsFor(TrackablePrayer prayer) =>
+      _prayerSettings.forPrayer(prayer);
 
   String? get qiblaInfo {
     if (latitude == null || longitude == null) return null;
@@ -93,6 +259,7 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
+    await _syncCycleModeFromStorage();
     await _loadAll();
     _startTicker();
     unawaited(AppReviewService.onAppResumed());
@@ -108,8 +275,18 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> _onAppResumedBody() async {
     await _loadSubscriptionStatus();
+    await _loadPrayerSettings();
     await _loadPrayerTimes();
+    // Reload cycle state (restart / overnight) and auto-expire if needed.
+    await _syncCycleModeFromStorage();
+    final expired = await _ensureCycleModeNotExpired();
     await _loadPrayerStreak();
+    if (!expired) {
+      // Streak load recomputes analytics; still refresh focus/achievements
+      // so cycle restore after restart stays synchronized.
+      await _computeFocusScore();
+      await _refreshAchievements();
+    }
     if (latitude != null && longitude != null) {
       await AppNotificationService.instance.reschedulePrayerNotifications(
         latitude: latitude!,
@@ -133,8 +310,15 @@ class HomeTabViewModel extends ChangeNotifier {
       _lastAppliedSect = await StorageService.sect;
       await _loadVerse();
       await _loadSubscriptionStatus();
+      await _loadPrayerSettings();
       await _loadPrayerTimes();
+      await _syncCycleModeFromStorage();
       await _loadPrayerStreak();
+      await _loadDailyChecklist();
+      await _loadChecklistHistory();
+      achievements = await AchievementsService.load();
+      await _computeFocusScore();
+      await _refreshAchievements();
       _loadEvents();
     } catch (_) {
       // Keep last good state and always release loading to avoid stuck spinner.
@@ -167,7 +351,25 @@ class HomeTabViewModel extends ChangeNotifier {
     }
 
     _prayerStreakState = _ensureWeekDays(state, weekStart);
-    _recomputeStreakDays(now);
+    // Sync weekDays into persistent status history (single source of truth).
+    final history =
+        Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
+      _prayerStreakState.statusHistory.map(
+        (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
+      ),
+    );
+    for (final day in _prayerStreakState.weekDays) {
+      final confirmed = <TrackablePrayer, PrayerMarkStatus>{
+        for (final p in TrackablePrayer.values)
+          if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
+      };
+      if (confirmed.isNotEmpty) {
+        history[day.dateKey] = confirmed;
+      }
+    }
+
+    _prayerStreakState = _prayerStreakState.copyWith(statusHistory: history);
+    _recomputeAnalytics(now);
     await _persistPrayerStreak();
   }
 
@@ -225,10 +427,334 @@ class HomeTabViewModel extends ChangeNotifier {
       return;
     }
     _lastAppliedSect = await StorageService.sect;
-    prayerTimes = await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
+    final calculated = await HomePrayerTimesHelper.getOrGeneratePrayerTimes(
       latitude: latitude!,
       longitude: longitude!,
     );
+    prayerTimes = HomePrayerTimesHelper.applyCustomOverrides(
+      data: calculated,
+      overridesMinutesSinceMidnight: _prayerSettings.customTimeOverrides,
+      referenceTime: DateTime.now(),
+    );
+  }
+
+  Future<void> _loadPrayerSettings() async {
+    final raw = await StorageService.prayerSettingsJson;
+    _prayerSettings = raw == null
+        ? PrayerSettingsState.defaults()
+        : PrayerSettingsState.fromJson(raw);
+  }
+
+  Future<void> _persistPrayerSettings() async {
+    await StorageService.setPrayerSettingsJson(_prayerSettings.toJson());
+  }
+
+  Future<void> _rescheduleNotificationsIfPossible() async {
+    if (latitude == null || longitude == null) return;
+    await AppNotificationService.instance.reschedulePrayerNotifications(
+      latitude: latitude!,
+      longitude: longitude!,
+      forceReschedule: true,
+    );
+  }
+
+  /// Sets (or clears, when [minutesSinceMidnight] is null) a custom time for
+  /// this prayer only. Refreshes today's displayed times and reschedules
+  /// notifications so the change is reflected immediately.
+  Future<void> setPrayerCustomTime(
+    TrackablePrayer prayer,
+    int? minutesSinceMidnight,
+  ) async {
+    final entry = _prayerSettings.forPrayer(prayer).copyWith(
+      customTimeMinutes: minutesSinceMidnight,
+      clearCustomTime: minutesSinceMidnight == null,
+    );
+    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
+    await _persistPrayerSettings();
+    await _loadPrayerTimes();
+    notifyListeners();
+    unawaited(_rescheduleNotificationsIfPossible());
+  }
+
+  Future<void> setPrayerNotificationSound(
+    TrackablePrayer prayer,
+    PrayerNotificationSound sound,
+  ) async {
+    final entry = _prayerSettings.forPrayer(prayer).copyWith(sound: sound);
+    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
+    await _persistPrayerSettings();
+    notifyListeners();
+    unawaited(_rescheduleNotificationsIfPossible());
+  }
+
+  Future<void> setPrayerNotificationEnabled(
+    TrackablePrayer prayer,
+    bool enabled,
+  ) async {
+    final entry = _prayerSettings
+        .forPrayer(prayer)
+        .copyWith(notificationsEnabled: enabled);
+    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
+    await _persistPrayerSettings();
+    notifyListeners();
+    unawaited(_rescheduleNotificationsIfPossible());
+  }
+
+  // Cycle Mode methods
+  /// Loads prefs, applies one-time history purge, and auto-expires if needed.
+  Future<void> _syncCycleModeFromStorage() async {
+    final data = await StorageService.cycleModeData;
+    final now = DateTime.now();
+    if (data.isEnabled && data.hasExpiredOn(now)) {
+      _cycleMode = data.expireFully();
+      await StorageService.setCycleModeData(_cycleMode);
+    } else {
+      _cycleMode = data;
+    }
+  }
+
+  Future<void> _loadDailyChecklist() async {
+    final now = DateTime.now();
+    final dateKey = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final json = await StorageService.dailyChecklistJson;
+    if (json != null && json.isNotEmpty) {
+      _dailyChecklist = DailyChecklistState.fromJson(json);
+      // Reset if it's from a different day
+      if (_dailyChecklist.dateKey != dateKey) {
+        _dailyChecklist = DailyChecklistState(
+          dateKey: dateKey,
+          completedItems: const <DailyChecklistItem>{},
+        );
+        await _persistDailyChecklist();
+      }
+    } else {
+      _dailyChecklist = DailyChecklistState(
+        dateKey: dateKey,
+        completedItems: const <DailyChecklistItem>{},
+      );
+    }
+  }
+  
+  Future<void> _persistDailyChecklist() async {
+    await StorageService.setDailyChecklistJson(_dailyChecklist.toJson());
+  }
+  
+  Future<void> toggleDailyChecklistItem(DailyChecklistItem item) async {
+    final completed = Set<DailyChecklistItem>.from(_dailyChecklist.completedItems);
+    if (completed.contains(item)) {
+      completed.remove(item);
+    } else {
+      completed.add(item);
+    }
+    _dailyChecklist = _dailyChecklist.copyWith(completedItems: completed);
+    _checklistHistory[_dailyChecklist.dateKey] =
+        Set<DailyChecklistItem>.from(completed);
+    await _persistDailyChecklist();
+    await _persistChecklistHistory();
+    await _computeFocusScore();
+    await _refreshAchievements();
+    notifyListeners();
+  }
+  
+  Future<void> _computeFocusScore() async {
+    final completed = _dailyChecklist.completedItems;
+
+    // —— Prayer (Fajr + Tahajjud checklist, or marked prayers) ——
+    // Cycle Mode must not penalize the score when prayers are paused.
+    const prayerItems = <DailyChecklistItem>[
+      DailyChecklistItem.fajr,
+      DailyChecklistItem.tahajjud,
+    ];
+    final prayerChecklistPercent = _percentOf(prayerItems, completed);
+    final prayerMarksPercent = _getPrayerCompletionPercent();
+    // Protect focus score on any cycle day (active or sealed early-end day).
+    if (cyclePolicy.protectsFocusScore()) {
+      _todayPrayerPercent = 100;
+    } else {
+      _todayPrayerPercent = prayerMarksPercent >= prayerChecklistPercent
+          ? prayerMarksPercent
+          : prayerChecklistPercent;
+    }
+
+    // —— Quran ——
+    const quranItems = <DailyChecklistItem>[DailyChecklistItem.quran];
+    _todayQuranPercent = _percentOf(quranItems, completed);
+
+    // —— Dhikr (Morning Adhkar + Evening Adhkar + Dhikr) ——
+    const dhikrItems = <DailyChecklistItem>[
+      DailyChecklistItem.morningAdhkar,
+      DailyChecklistItem.eveningAdhkar,
+      DailyChecklistItem.dhikr,
+    ];
+    _todayDhikrPercent = _percentOf(dhikrItems, completed);
+
+    // —— Distraction control ——
+    // Display % = remaining distraction (0% = disciplined / good).
+    const distractionItems = <DailyChecklistItem>[
+      DailyChecklistItem.noMusicToday,
+      DailyChecklistItem.noSocialMediaBeforeIsha,
+    ];
+    final undistractedPercent = _percentOf(distractionItems, completed);
+    _todayDistractionPercent = 100 - undistractedPercent;
+
+    // —— Good deeds (bonus toward 100) ——
+    const bonusItems = <DailyChecklistItem>[
+      DailyChecklistItem.charity,
+      DailyChecklistItem.smileAtSomeone,
+      DailyChecklistItem.familyCall,
+    ];
+    final bonusDone = bonusItems.where(completed.contains).length;
+    final coreAverage = (
+          _todayPrayerPercent +
+          _todayQuranPercent +
+          _todayDhikrPercent +
+          undistractedPercent
+        ) /
+        4;
+    final allChecklistDone =
+        completed.length == DailyChecklistItem.values.length;
+
+    if (allChecklistDone) {
+      // Completing every checklist item yields a perfect Focus Score.
+      _todayPrayerPercent = 100;
+      _todayQuranPercent = 100;
+      _todayDhikrPercent = 100;
+      _todayDistractionPercent = 0;
+      _todayFocusScore = 100;
+    } else {
+      final bonusBoost =
+          (bonusDone / bonusItems.length) * 5; // up to +5 points
+      _todayFocusScore = (coreAverage + bonusBoost).round().clamp(0, 100);
+    }
+  }
+
+  int _percentOf(
+    List<DailyChecklistItem> items,
+    Set<DailyChecklistItem> completed,
+  ) {
+    if (items.isEmpty) return 0;
+    final done = items.where(completed.contains).length;
+    return ((done / items.length) * 100).round();
+  }
+  
+  int _getPrayerCompletionPercent() {
+    // Calculate prayer completion percentage for today
+    final now = DateTime.now();
+    final today = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final dayData = _prayerStreakState.weekDays.where((day) => day.dateKey == today).firstOrNull;
+    if (dayData == null) return 0;
+    
+    final total = TrackablePrayer.values.length;
+    int completed = 0;
+    for (final prayer in TrackablePrayer.values) {
+      final status = dayData.statusFor(prayer);
+      if (status == PrayerMarkStatus.onTime || status == PrayerMarkStatus.qada) {
+        completed++;
+      }
+    }
+    return total > 0 ? (completed * 100 / total).round() : 0;
+  }
+
+  /// Expires an active cycle when the configured length has elapsed.
+  /// Returns true when state changed.
+  Future<bool> _ensureCycleModeNotExpired({DateTime? now}) async {
+    final at = now ?? DateTime.now();
+    if (!_cycleMode.isEnabled || !_cycleMode.hasExpiredOn(at)) return false;
+    await saveCycleMode(_cycleMode.expireFully());
+    return true;
+  }
+
+  /// Persists full Cycle Mode settings and refreshes analytics / focus / achievements.
+  Future<void> saveCycleMode(CycleModeData data) async {
+    // Merge + normalize histories so disable→enable→disable never duplicates.
+    final history = CycleModeData.mergeHistories(
+      _cycleMode.history,
+      data.history,
+    );
+    _cycleMode = data.copyWith(
+      cycleLength: data.cycleLength.clamp(
+        CycleModeData.minCycleLength,
+        CycleModeData.maxCycleLength,
+      ),
+      history: history,
+    );
+    await StorageService.setCycleModeData(_cycleMode);
+    _recomputeAnalytics(DateTime.now());
+    await _computeFocusScore();
+    await _refreshAchievements();
+    notifyListeners();
+  }
+
+  /// Disables Cycle Mode on [onDate] (defaults to today). The disable day is
+  /// normal; prior active days seal into a separate historical cycle.
+  /// Enabling goes through [saveCycleMode] from the sheet.
+  Future<void> setCycleModeEnabled(bool value, {DateTime? onDate}) async {
+    if (value) {
+      // Enabling is completed by [saveCycleMode] from the settings sheet.
+      return;
+    }
+    final next = _cycleMode.disableOn(onDate ?? DateTime.now());
+    await saveCycleMode(next);
+  }
+
+  /// Scheduled start time for [prayer] today, or null if times are unavailable.
+  DateTime? prayerDateTimeFor(TrackablePrayer prayer) {
+    if (prayerTimes == null) return null;
+
+    final HomePrayerId prayerId;
+    switch (prayer) {
+      case TrackablePrayer.fajr:
+        prayerId = HomePrayerId.fajr;
+      case TrackablePrayer.dhuhr:
+        prayerId = HomePrayerId.dhuhr;
+      case TrackablePrayer.asr:
+        prayerId = HomePrayerId.asr;
+      case TrackablePrayer.maghrib:
+        prayerId = HomePrayerId.maghrib;
+      case TrackablePrayer.isha:
+        prayerId = HomePrayerId.isha;
+    }
+
+    for (final slot in prayerTimes!.slots) {
+      if (slot.id == prayerId) return slot.time;
+    }
+    return null;
+  }
+
+  /// True when [prayer] has started or already passed (`now >= prayerStart`).
+  /// Upcoming prayers must not be marked yet.
+  bool hasPrayerStarted(TrackablePrayer prayer, {DateTime? now}) {
+    final start = prayerDateTimeFor(prayer);
+    if (start == null) return false;
+    return !(now ?? DateTime.now()).isBefore(start);
+  }
+
+  /// Most recent prayer that has started today (by schedule). Never falls back
+  /// to older prayers for reminder purposes.
+  TrackablePrayer? getMostRecentStartedPrayer({DateTime? now}) {
+    if (prayerTimes == null) return null;
+    return PrayerAnalyticsService.mostRecentStartedPrayer(
+      now: now ?? DateTime.now(),
+      prayerStartTime: prayerDateTimeFor,
+    );
+  }
+
+  /// Reminder target: the most recent started prayer, only if it is unmarked.
+  /// If that prayer is already marked, returns null — older prayers are ignored.
+  /// Suppressed on Cycle Mode days (including historical sealed days).
+  TrackablePrayer? getPrayerReminderTarget({DateTime? now}) {
+    final at = now ?? DateTime.now();
+    if (cyclePolicy.isCycleMember(at)) return null;
+    final mostRecent = getMostRecentStartedPrayer(now: at);
+    if (mostRecent == null) return null;
+    if (statusForToday(mostRecent) != PrayerMarkStatus.none) return null;
+    return mostRecent;
+  }
+
+  TrackablePrayer? getMostRecentUnmarkedPrayer() => getPrayerReminderTarget();
+
+  bool shouldShowPrayerReminder(TrackablePrayer prayer) {
+    return getPrayerReminderTarget() == prayer;
   }
 
   Future<void> syncSectIfChanged(String sect) async {
@@ -269,10 +795,18 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadEvents() async {
+    final cached = await HomeIslamicEventsHelper.loadCachedEvents();
+    if (cached.isNotEmpty) {
+      allIslamicEvents = cached;
+      _refreshVisibleEvents();
+      notifyListeners();
+    }
+
     isEventsLoading = true;
     notifyListeners();
+
     allIslamicEvents = await HomeIslamicEventsHelper.loadIslamicEvents(
-      yearsAhead: 0,
+      yearsAhead: 2,
     );
     _refreshVisibleEvents();
     isEventsLoading = false;
@@ -328,7 +862,6 @@ class HomeTabViewModel extends ChangeNotifier {
       visibleMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 1);
       weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
     }
-    selectedDate = null;
     _refreshVisibleEvents();
     notifyListeners();
   }
@@ -347,7 +880,6 @@ class HomeTabViewModel extends ChangeNotifier {
       visibleMonth = DateTime(visibleMonth.year, visibleMonth.month - 1, 1);
       weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
     }
-    selectedDate = null;
     _refreshVisibleEvents();
     notifyListeners();
   }
@@ -355,20 +887,6 @@ class HomeTabViewModel extends ChangeNotifier {
   static DateTime _startOfWeekFor(DateTime date) {
     final d = DateTime(date.year, date.month, date.day);
     return d.subtract(Duration(days: d.weekday % 7));
-  }
-
-  void selectDate(DateTime? date) {
-    selectedDate = date;
-    notifyListeners();
-  }
-
-  HomeIslamicEvent? eventForSelectedDate() {
-    final current = selectedDate;
-    if (current == null) return null;
-    return HomeIslamicEventsHelper.eventsForDate(
-      current,
-      allIslamicEvents,
-    ).firstOrNull;
   }
 
   List<HomeIslamicEvent> eventsForDate(DateTime date) {
@@ -389,20 +907,8 @@ class HomeTabViewModel extends ChangeNotifier {
         .toList(growable: false);
   }
 
-  List<int> get weekPrayerCounts {
-    final dates = currentWeekDates;
-    return dates
-        .map((date) {
-          final dateKey = _dayKeyFormat.format(date);
-          return _prayerStreakState.weekDays
-                  .where((item) => item.dateKey == dateKey)
-                  .firstOrNull
-                  ?.selectedPrayers
-                  .length ??
-              0;
-        })
-        .toList(growable: false);
-  }
+  /// Home Mon–Sun bars — real marked prayers only (never restore / streak).
+  List<int> get weekPrayerCounts => analytics.homeWeekDayCounts;
 
   List<HomePrayerChecklistDay> get currentWeekChecklistDays =>
       currentWeekDates.map((date) => dayFor(date)).toList(growable: false);
@@ -427,19 +933,55 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> togglePrayerForDay(DateTime date, TrackablePrayer prayer) async {
     if (!isPrayerDayEditable(date)) return;
+    final current = dayFor(date);
+    final isSelected = current.selectedPrayers.contains(prayer);
+    await markPrayerStatus(
+      date,
+      prayer,
+      isSelected ? PrayerMarkStatus.none : PrayerMarkStatus.onTime,
+    );
+  }
 
+  /// Marks [prayer] on [date] as prayed on time, qada, missed, or unmarked.
+  /// Only today is editable. Streaks are always recalculated — never incremented.
+  Future<PrayerMarkResult?> markPrayerStatus(
+    DateTime date,
+    TrackablePrayer prayer,
+    PrayerMarkStatus status,
+  ) async {
+    if (!isPrayerDayEditable(date)) return null;
+
+    final previousPrayerStreak = prayerStreak;
     final dateKey = _dayKeyFormat.format(date);
     final current = dayFor(date);
-    final updatedPrayers = Set<TrackablePrayer>.from(current.selectedPrayers);
     final wasCompleted = current.isCompleted;
+    final previousStatus = current.statusFor(prayer);
 
-    if (updatedPrayers.contains(prayer)) {
-      updatedPrayers.remove(prayer);
+    // Seed from statusFor so legacy selectedPrayers-only rows keep siblings
+    // when one prayer is unmarked.
+    final updatedStatuses = <TrackablePrayer, PrayerMarkStatus>{
+      for (final p in TrackablePrayer.values)
+        if (current.statusFor(p) != PrayerMarkStatus.none)
+          p: current.statusFor(p),
+    };
+    if (status == PrayerMarkStatus.none) {
+      updatedStatuses.remove(prayer);
     } else {
-      updatedPrayers.add(prayer);
+      updatedStatuses[prayer] = status;
     }
 
-    final updatedDay = current.copyWith(selectedPrayers: updatedPrayers);
+    final updatedPrayers = <TrackablePrayer>{
+      for (final e in updatedStatuses.entries)
+        if (e.value == PrayerMarkStatus.onTime ||
+            e.value == PrayerMarkStatus.qada)
+          e.key,
+    };
+
+    final updatedDay = current.copyWith(
+      selectedPrayers: updatedPrayers,
+      prayerStatuses: updatedStatuses,
+    );
+
     final updatedWeekDays =
         _prayerStreakState.weekDays
             .where((item) => item.dateKey != dateKey)
@@ -456,37 +998,192 @@ class HomeTabViewModel extends ChangeNotifier {
       completedDates.remove(dateKey);
     }
 
+    final history =
+        Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
+      _prayerStreakState.statusHistory.map(
+        (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
+      ),
+    );
+    if (updatedStatuses.isEmpty) {
+      history.remove(dateKey);
+    } else {
+      history[dateKey] = Map<TrackablePrayer, PrayerMarkStatus>.from(
+        updatedStatuses,
+      );
+    }
+
     _prayerStreakState = _prayerStreakState.copyWith(
       weekDays: updatedWeekDays,
       completedDateKeys: completedDates,
+      statusHistory: history,
     );
-    _recomputeStreakDays(DateTime.now());
+    _recomputeAnalytics(DateTime.now());
     await _persistPrayerStreak();
+    await _computeFocusScore();
+    await _refreshAchievements();
     notifyListeners();
+
+    final celebrated = status == PrayerMarkStatus.onTime &&
+        previousStatus != PrayerMarkStatus.onTime &&
+        prayerStreak > previousPrayerStreak;
+    return PrayerMarkResult(
+      prayer: prayer,
+      status: status,
+      celebrated: celebrated,
+      prayerStreak: prayerStreak,
+      previousPrayerStreak: previousPrayerStreak,
+      dayStreak: streakDays,
+    );
   }
+
+  PrayerMarkStatus statusForToday(TrackablePrayer prayer) =>
+      dayFor(DateTime.now()).statusFor(prayer);
 
   String weekdayLabel(DateTime date, String localeName) {
     return DateFormat('EEEE', localeName).format(date);
   }
 
-  void _recomputeStreakDays(DateTime now) {
-    var count = 0;
-    final today = DateTime(now.year, now.month, now.day);
-    final todayKey = _dayKeyFormat.format(today);
-
-    // Keep the current streak visible throughout the day. A streak should only
-    // break after a full missed day, not immediately at midnight before the
-    // user has had a chance to complete today's prayers.
-    var cursor = _prayerStreakState.completedDateKeys.contains(todayKey)
-        ? today
-        : today.subtract(const Duration(days: 1));
-    while (_prayerStreakState.completedDateKeys.contains(
-      _dayKeyFormat.format(cursor),
-    )) {
-      count += 1;
-      cursor = cursor.subtract(const Duration(days: 1));
+  Map<String, Map<TrackablePrayer, PrayerMarkStatus>> _mergedStatusHistory() {
+    final merged = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+      for (final e in _prayerStreakState.statusHistory.entries)
+        e.key: Map<TrackablePrayer, PrayerMarkStatus>.from(e.value),
+    };
+    for (final day in _prayerStreakState.weekDays) {
+      final dayStatuses = <TrackablePrayer, PrayerMarkStatus>{
+        for (final p in TrackablePrayer.values)
+          if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
+      };
+      if (dayStatuses.isNotEmpty) {
+        merged[day.dateKey] = dayStatuses;
+      }
     }
-    streakDays = count;
+    return merged;
+  }
+
+  /// Always recalculate from [PrayerAnalyticsService] — never mutate streaks.
+  void _recomputeAnalytics(DateTime now) {
+    final policy = cyclePolicy;
+    analytics = PrayerAnalyticsService.calculate(
+      now: now,
+      statusHistory: _mergedStatusHistory(),
+      isPausedStreakDay: policy.shouldPauseStreaks,
+      isExcludedStatsDay: policy.shouldExcludeFromStatistics,
+      prayerStartTime: prayerDateTimeFor,
+    );
+    prayerStreak = analytics.prayerStreak;
+    streakDays = analytics.dayStreak;
+
+    final bestPrayer = prayerStreak > _prayerStreakState.bestPrayerStreak
+        ? prayerStreak
+        : _prayerStreakState.bestPrayerStreak;
+    final bestDay = streakDays > _prayerStreakState.bestDayStreak
+        ? streakDays
+        : _prayerStreakState.bestDayStreak;
+    if (bestPrayer != _prayerStreakState.bestPrayerStreak ||
+        bestDay != _prayerStreakState.bestDayStreak) {
+      _prayerStreakState = _prayerStreakState.copyWith(
+        bestPrayerStreak: bestPrayer,
+        bestDayStreak: bestDay,
+      );
+    }
+  }
+
+  Future<void> _refreshAchievements() async {
+    final now = DateTime.now();
+    final inputs = AchievementCalculator.calculate(
+      now: now,
+      statusHistory: _mergedStatusHistory(),
+      isPausedStreakDay: cyclePolicy.shouldPauseStreaks,
+      prayerStartTime: prayerDateTimeFor,
+    );
+    final quranDays = _habitConsecutiveDays(DailyChecklistItem.quran);
+    final dhikrDays = _habitConsecutiveDaysAny(const [
+      DailyChecklistItem.morningAdhkar,
+      DailyChecklistItem.eveningAdhkar,
+      DailyChecklistItem.dhikr,
+    ]);
+    achievements = AchievementsService.evaluate(
+      previous: achievements,
+      prayerStreak: inputs.prayerStreak,
+      dayStreak: inputs.dayStreak,
+      fajrOnTimeStreak: inputs.fajrOnTimeStreak,
+      quranConsecutiveDays: quranDays,
+      dhikrConsecutiveDays: dhikrDays,
+    );
+    await AchievementsService.save(achievements);
+  }
+
+  int _habitConsecutiveDays(DailyChecklistItem item) {
+    var count = 0;
+    final now = DateTime.now();
+    for (var i = 0; i < 120; i++) {
+      final date = DateTime(now.year, now.month, now.day - i);
+      final key = _dayKeyFormat.format(date);
+      final items = i == 0
+          ? _dailyChecklist.completedItems
+          : (_checklistHistory[key] ?? const <DailyChecklistItem>{});
+      if (items.contains(item)) {
+        count += 1;
+      } else if (i == 0) {
+        continue;
+      } else {
+        break;
+      }
+    }
+    return count;
+  }
+
+  int _habitConsecutiveDaysAny(List<DailyChecklistItem> anyOf) {
+    var count = 0;
+    final now = DateTime.now();
+    for (var i = 0; i < 120; i++) {
+      final date = DateTime(now.year, now.month, now.day - i);
+      final key = _dayKeyFormat.format(date);
+      final items = i == 0
+          ? _dailyChecklist.completedItems
+          : (_checklistHistory[key] ?? const <DailyChecklistItem>{});
+      if (anyOf.any(items.contains)) {
+        count += 1;
+      } else if (i == 0) {
+        continue;
+      } else {
+        break;
+      }
+    }
+    return count;
+  }
+
+  Future<void> _loadChecklistHistory() async {
+    final raw = await StorageService.getString('checklist_history_json');
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      _checklistHistory = map.map((key, value) {
+        final items = (value as List<dynamic>? ?? const <dynamic>[])
+            .whereType<String>()
+            .map(
+              (name) => DailyChecklistItem.values
+                  .where((e) => e.name == name)
+                  .firstOrNull,
+            )
+            .whereType<DailyChecklistItem>()
+            .toSet();
+        return MapEntry(key, items);
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _persistChecklistHistory() async {
+    final encoded = _checklistHistory.map(
+      (key, items) => MapEntry(
+        key,
+        items.map((e) => e.name).toList()..sort(),
+      ),
+    );
+    await StorageService.setString(
+      'checklist_history_json',
+      jsonEncode(encoded),
+    );
   }
 
   HomePrayerStreakState _ensureWeekDays(
@@ -534,6 +1231,7 @@ class HomeTabViewModel extends ChangeNotifier {
   void _startTicker() {
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(minutes: 1), (_) async {
+      await _ensureCycleModeNotExpired();
       await _loadPrayerTimes();
       await _loadPrayerStreak();
       notifyListeners();

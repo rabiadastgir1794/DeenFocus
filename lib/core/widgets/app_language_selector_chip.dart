@@ -11,19 +11,29 @@ class AppLanguageSelectorChip extends StatelessWidget {
     required this.label,
     this.flagEmoji,
     this.onTap,
+    this.backgroundColor,
+    this.borderColor,
   });
 
   final String label;
   final String? flagEmoji;
   final VoidCallback? onTap;
+  final Color? backgroundColor;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(12.r),
+      color: backgroundColor ?? colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        side: borderColor != null
+            ? BorderSide(color: borderColor!)
+            : BorderSide.none,
+      ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
