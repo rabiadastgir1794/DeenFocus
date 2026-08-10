@@ -180,14 +180,13 @@ Caveats:
 
 ## Recommendation (actionable)
 
-1. **Keep** the current FP32 package as the production R2 candidate for now.
-2. **Treat `palette_8bit` as the preferred optimization** to promote next (or
-   `linear_int8` if you prefer a simpler, non-kmeans pipeline).
-3. Before promoting: run the existing `TajweedDebugRunner` / practice flow on a
-   real iPhone with the palettized pack side-loaded via `TajweedImport`, measure
-   cold/warm/infer, and confirm Neural Engine vs CPU/GPU.
-4. If on-device checks pass: publish as a **new** immutable version under
-   `ios/tajweed/v1.1.0/` (do not overwrite `v1`), update `catalog.json` last.
+1. **`palette_8bit` is the production iOS encoder on R2** as of 2026-07-30
+   (`ios/tajweed/v1.1.0/`; FP32 `ios/tajweed/v1/` removed). See
+   [`ios-palette8-production-promotion-2026-07-30.md`](ios-palette8-production-promotion-2026-07-30.md).
+2. **`linear_int8` remains a measured runner-up** if a non-kmeans pipeline is
+   preferred later (new immutable version; do not overwrite v1.1.0).
+3. Optional follow-up: Instruments cold/warm/infer on a real iPhone (ANE vs
+   CPU/GPU). Not required for distribution correctness.
 
 ## Artifacts (gitignored under `artifacts/optimization/`)
 
@@ -195,10 +194,10 @@ Caveats:
 baseline_fp32/encoder.mlpackage     587 MB
 fp16_compute/encoder.mlpackage      294 MB   (NaN — do not use)
 prune_sparsity_50/encoder.mlpackage 240 MB   (broken transcripts)
-palette_8bit/encoder.mlpackage      146 MB   ← recommended
+palette_8bit/encoder.mlpackage      146 MB   ← production on R2 v1.1.0
 palette_4bit/encoder.mlpackage       74 MB   (broken transcripts)
 linear_int8/encoder.mlpackage       149 MB   ← runner-up
 ```
 
-Production `artifacts/encoder.mlpackage` and R2 `ios/tajweed/v1/` were **not**
-modified.
+R2 `ios/tajweed/v1.1.0/` holds the promoted palette-8 pack. Prior FP32
+`ios/tajweed/v1/` was deleted as part of the promotion.

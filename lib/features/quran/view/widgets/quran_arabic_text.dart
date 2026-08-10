@@ -12,23 +12,30 @@ class QuranArabicText extends StatelessWidget {
     required this.fontSize,
     required this.lineHeight,
     required this.color,
+    this.fontFamilyFallback,
   });
 
   final String text;
   final QuranLayoutTheme layoutTheme;
   final String? fontFamily;
+  final List<String>? fontFamilyFallback;
   final double fontSize;
   final double lineHeight;
   final Color color;
 
-  static const _colorBands = <Color>[
-    Color(0xFF1565C0),
-    Color(0xFF2E7D32),
-    Color(0xFF6A1B9A),
-    Color(0xFFEF6C00),
-    Color(0xFFC62828),
-    Color(0xFF00838F),
+  static const colorBands = <Color>[
+    Color(0xFF1C1C1C), // black
+    Color(0xFFC67A3A), // warm orange / brown
+    Color(0xFF7A3D9B), // purple
   ];
+
+  TextStyle get _baseStyle => TextStyle(
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+        fontSize: fontSize,
+        height: lineHeight,
+        color: color,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +44,7 @@ class QuranArabicText extends StatelessWidget {
         text,
         textAlign: TextAlign.right,
         textDirection: TextDirection.rtl,
-        style: TextStyle(
-          fontFamily: fontFamily,
-          fontSize: fontSize,
-          height: lineHeight,
-          color: color,
-        ),
+        style: _baseStyle,
       );
     }
 
@@ -56,11 +58,8 @@ class QuranArabicText extends StatelessWidget {
             if (i > 0) const TextSpan(text: ' '),
             TextSpan(
               text: words[i],
-              style: TextStyle(
-                fontFamily: fontFamily,
-                fontSize: fontSize,
-                height: lineHeight,
-                color: _colorBands[i % _colorBands.length],
+              style: _baseStyle.copyWith(
+                color: colorBands[i % colorBands.length],
                 fontWeight: FontWeight.w600,
               ),
             ),

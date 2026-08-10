@@ -152,6 +152,25 @@ class MushafMetadata {
     return pages.toList(growable: false)..sort();
   }
 
+  /// Distinct Madani page numbers that contain ayahs of [juz], ascending.
+  List<int> pagesInJuz(int juz) {
+    final pages = <int>{};
+    for (final loc in _ayahs) {
+      if (loc.juz == juz) pages.add(loc.page);
+    }
+    return pages.toList(growable: false)..sort();
+  }
+
+  int? firstPageOfJuz(int juz) {
+    final pages = pagesInJuz(juz);
+    return pages.isEmpty ? null : pages.first;
+  }
+
+  int? lastPageOfJuz(int juz) {
+    final pages = pagesInJuz(juz);
+    return pages.isEmpty ? null : pages.last;
+  }
+
   /// Ayahs of [surah] that fall on [page] (empty if the surah does not
   /// appear on that page). Shared pages with neighbouring surahs only
   /// return this surah's portion.

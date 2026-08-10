@@ -14,7 +14,6 @@ import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/locale_service.dart';
-import '../../../../core/services/storage_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -41,24 +40,11 @@ class SettingsTabScreen extends StatefulWidget {
 
 class _SettingsTabScreenState extends State<SettingsTabScreen> {
   late final Future<PackageInfo> _packageInfoFuture;
-  bool _tajweedEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _packageInfoFuture = PackageInfo.fromPlatform();
-    unawaited(_loadTajweedEnabled());
-  }
-
-  Future<void> _loadTajweedEnabled() async {
-    final enabled = await StorageService.tajweedEnabled;
-    if (!mounted) return;
-    setState(() => _tajweedEnabled = enabled);
-  }
-
-  Future<void> _setTajweedEnabled(bool value) async {
-    setState(() => _tajweedEnabled = value);
-    await StorageService.setTajweedEnabled(value);
   }
 
   Future<void> _openTajweedAssetDebug(BuildContext context) async {
@@ -272,7 +258,6 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
   }
 
   Future<void> _onContactUsTapped(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
     final uri = Uri(
       scheme: 'mailto',
       path: 'rnr1710678@gmail.com',
@@ -539,26 +524,10 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 ),
               ],
             ),
-            // Production Tajweed (iOS CoreML / Android ONNX): download, install,
-            // load, and inference run whenever AI Tajweed is enabled — never
-            // gated by kDebugMode. Official→DIY CoreML failover and Canonical
-            // lexical scoring are production (all builds). Asset/CoreML
-            // override rows below remain Debug-only.
-            const SizedBox(height: 16),
-            _SettingsGroup(
-              children: [
-                _SettingsSwitchRow(
-                  icon: Icons.mic_outlined,
-                  label: 'AI Tajweed Practice (Beta)',
-                  value: _tajweedEnabled,
-                  onChanged: (value) => unawaited(_setTajweedEnabled(value)),
-                ),
-              ],
-            ),
             const SizedBox(height: 16),
             AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
-            // Developer harness only. Production ensureModel still runs on
-            // Android Release via the practice flow (ONNX pack from catalog).
+            // Debug harness only — production Tajweed toggle lives in
+            // Reading Settings (on by default).
             if (kDebugMode && !kIsWeb && Platform.isAndroid) ...[
               const SizedBox(height: 16),
               _SettingsGroup(

@@ -1,16 +1,22 @@
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/services/permission_service.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../quran/view/widgets/quran_audio_bar.dart';
+import '../../../quran/reading_engine/quran_transliteration.dart';
 import '../../model/tajweed_practice_args.dart';
 import '../../viewmodel/tajweed_practice_view_model.dart';
+import 'tajweed_mic_button.dart';
+import 'tajweed_reading_tools_sheet.dart';
+import 'tajweed_waveform.dart';
 
-/// Record-then-score screen: shows the reference ayah, listen + recite controls.
-class TajweedRecordingView extends StatelessWidget {
+/// Record-then-score screen with mic + waveform UI.
+class TajweedRecordingView extends StatefulWidget {
   const TajweedRecordingView({
     super.key,
     required this.viewModel,
@@ -20,21 +26,51 @@ class TajweedRecordingView extends StatelessWidget {
   final TajweedPracticeViewModel viewModel;
   final TajweedPracticeArgs args;
 
-  String _statusLabel(AppLocalizations? l10n) {
-    switch (viewModel.stage) {
-      case TajweedFlowStage.recording:
-        return l10n?.tajweedTapToStop ?? 'Tap to stop';
-      case TajweedFlowStage.scoring:
-        return 'Scoring your recitation…';
-      default:
-        return l10n?.tajweedStartReciting ?? 'Start reciting the ayah';
-    }
+  @override
+  State<TajweedRecordingView> createState() => _TajweedRecordingViewState();
+}
+
+class _TajweedRecordingViewState extends State<TajweedRecordingView> {
+  bool _showTranslation = true;
+  bool _showTransliteration = true;
+  bool _prefsLoaded = false;
+
+  TajweedPracticeViewModel get viewModel => widget.viewModel;
+  TajweedPracticeArgs get args => widget.args;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_loadDisplayPrefs());
   }
 
-  String _formatElapsed(Duration d) {
-    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$m:$s';
+  Future<void> _loadDisplayPrefs() async {
+    final results = await Future.wait<bool>([
+      StorageService.quranShowEnglish,
+      StorageService.quranShowTransliteration,
+    ]);
+    if (!mounted) return;
+    setState(() {
+      _showTranslation = results[0];
+      _showTransliteration = results[1];
+      _prefsLoaded = true;
+    });
+  }
+
+  Future<void> _openReadingTools() async {
+    final changed = await showTajweedReadingToolsSheet(
+      context,
+      args: args,
+      speed: viewModel.referenceSpeed,
+      volume: viewModel.referenceVolume,
+      repeatMode: viewModel.referenceRepeatMode,
+      onSpeedChanged: viewModel.setReferenceSpeed,
+      onVolumeChanged: viewModel.setReferenceVolume,
+      onRepeatModeChanged: viewModel.setReferenceRepeatMode,
+    );
+    if (changed == true && mounted) {
+      await _loadDisplayPrefs();
+    }
   }
 
   @override
@@ -45,254 +81,323 @@ class TajweedRecordingView extends StatelessWidget {
     final isRecording = viewModel.stage == TajweedFlowStage.recording;
     final isScoring = viewModel.stage == TajweedFlowStage.scoring;
     final isBusy = isScoring || viewModel.actionInFlight;
-    final canListen = !isRecording && !isBusy;
+    final canInteract = !isBusy;
+    final transliteration = QuranTransliteration.of(args.arabicText);
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (kDebugMode && !kIsWeb && Platform.isIOS) ...[
-                      _CoreMlDebugToggle(viewModel: viewModel),
-                      const SizedBox(height: 12),
-                    ],
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainer,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: colorScheme.outlineVariant
-                              .withValues(alpha: 0.35),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  args.surahName != null
-                                      ? '${args.surahName} · ${args.ref}'
-                                      : 'Ayah ${args.ref}',
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.labelLarge?.copyWith(
-                                    color: colorScheme.primary,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                tooltip: l10n?.quranAudioSettingsTitle ??
-                                    'Audio settings',
-                                onPressed: canListen
-                                    ? () => showQuranAudioSettingsSheet(
-                                          context,
-                                          speed: viewModel.referenceSpeed,
-                                          volume: viewModel.referenceVolume,
-                                          repeatMode:
-                                              viewModel.referenceRepeatMode,
-                                          onSpeedChanged:
-                                              viewModel.setReferenceSpeed,
-                                          onVolumeChanged:
-                                              viewModel.setReferenceVolume,
-                                          onRepeatModeChanged:
-                                              viewModel.setReferenceRepeatMode,
-                                        )
-                                    : null,
-                                icon: const Icon(Icons.tune_rounded),
-                                visualDensity: VisualDensity.compact,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          FilledButton.tonalIcon(
-                            onPressed: canListen
-                                ? () => viewModel.toggleReferenceAudio()
-                                : null,
-                            icon: Icon(
-                              viewModel.referencePlaying
-                                  ? Icons.pause_circle_outline_rounded
-                                  : Icons.volume_up_rounded,
-                              size: 20,
-                            ),
-                            label: Text(
-                              l10n?.tajweedListenToAyah ?? 'Listen to ayah',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            style: FilledButton.styleFrom(
-                              visualDensity: VisualDensity.compact,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          Text(
-                            args.arabicText,
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                              fontFamily: args.arabicFontFamily,
-                              fontSize: 26,
-                              height: 1.9,
-                            ),
-                          ),
-                          if (args.translation != null) ...[
-                            const SizedBox(height: 12),
-                            Text(
-                              args.translation!,
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 12.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (kDebugMode && !kIsWeb && Platform.isIOS) ...[
+                    _CoreMlDebugToggle(viewModel: viewModel),
+                    SizedBox(height: 12.h),
+                  ],
+                  _AyahReferenceCard(
+                    args: args,
+                    showTranslation: _showTranslation && _prefsLoaded,
+                    showTransliteration: _showTransliteration && _prefsLoaded,
+                    transliteration: transliteration,
+                    canInteract: canInteract,
+                    isRecording: isRecording,
+                    referencePlaying: viewModel.referencePlaying,
+                    onOpenReadingTools: () => unawaited(_openReadingTools()),
+                    onToggleAudio: viewModel.toggleReferenceAudio,
+                  ),
+                  if (viewModel.recordingBanner != null) ...[
+                    SizedBox(height: 12.h),
+                    _RecordingBanner(
+                      message: viewModel.recordingBanner!,
+                      micPermissionDenied: viewModel.micPermissionDenied,
                     ),
                   ],
-                ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            if (viewModel.recordingBanner != null) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(14),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: colorScheme.errorContainer.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      viewModel.recordingBanner!,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onErrorContainer,
-                      ),
-                    ),
-                    if (viewModel.micPermissionDenied) ...[
-                      const SizedBox(height: 10),
-                      TextButton(
-                        onPressed: () =>
-                            PermissionService.openAppSettingsAsync(),
-                        child: const Text('Open app settings'),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-            Text(
-              _statusLabel(l10n),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            if (isRecording) ...[
-              const SizedBox(height: 6),
-              Text(
-                _formatElapsed(viewModel.recordingElapsed),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ],
-            const SizedBox(height: 20),
-            Center(
-              child: GestureDetector(
-                onTap: isBusy ? null : () => viewModel.toggleRecording(),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  constraints: const BoxConstraints(minWidth: 200),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 28,
-                    vertical: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
-                    color: isRecording ? colorScheme.error : colorScheme.primary,
-                    boxShadow: [
-                      BoxShadow(
-                        color: (isRecording
-                                ? colorScheme.error
-                                : colorScheme.primary)
-                            .withValues(alpha: 0.3),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
                   child: isBusy
-                      ? const SizedBox(
-                          width: 28,
-                          height: 28,
+                      ? SizedBox(
+                          width: 96.r,
+                          height: 96.r,
                           child: CircularProgressIndicator(
                             strokeWidth: 3,
-                            color: Colors.white,
+                            color: colorScheme.primary,
                           ),
                         )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              isRecording
-                                  ? Icons.stop_rounded
-                                  : Icons.record_voice_over_rounded,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              isRecording
-                                  ? (l10n?.tajweedTapToStop ?? 'Tap to stop')
-                                  : (l10n?.tajweedStartReciting ??
-                                      'Start reciting'),
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                      : TajweedMicButton(
+                          isRecording: isRecording,
+                          enabled: canInteract,
+                          size: 96.r,
+                          onTap: () => viewModel.toggleRecording(),
                         ),
                 ),
+                SizedBox(height: 16.h),
+                TajweedWaveform(
+                  active: isRecording,
+                  color: colorScheme.primary,
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  isRecording
+                      ? (l10n?.tajweedListeningHint ??
+                          'Listening... recite clearly')
+                      : isScoring
+                      ? 'Scoring your recitation…'
+                      : (l10n?.tajweedStartReciting ??
+                          'Start reciting the ayah'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                if (isRecording)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => viewModel.cancelRecording(),
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 14.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                            ),
+                          ),
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () => viewModel.toggleRecording(),
+                          icon: const Icon(Icons.stop_rounded, size: 18),
+                          label: Text(
+                            l10n?.tajweedStopAnalyse ?? 'Stop & analyse',
+                          ),
+                          style: FilledButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 14.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  SizedBox(height: 48.h),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AyahReferenceCard extends StatelessWidget {
+  const _AyahReferenceCard({
+    required this.args,
+    required this.showTranslation,
+    required this.showTransliteration,
+    required this.transliteration,
+    required this.canInteract,
+    required this.isRecording,
+    required this.referencePlaying,
+    required this.onOpenReadingTools,
+    required this.onToggleAudio,
+  });
+
+  final TajweedPracticeArgs args;
+  final bool showTranslation;
+  final bool showTransliteration;
+  final String transliteration;
+  final bool canInteract;
+  final bool isRecording;
+  final bool referencePlaying;
+  final VoidCallback onOpenReadingTools;
+  final VoidCallback onToggleAudio;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(18.w, 16.h, 14.w, 20.h),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.42),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.28),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Spacer(),
+              _CircleIconButton(
+                tooltip: l10n?.quranReadingToolsTitle ?? 'Reading tools',
+                icon: Icons.tune_rounded,
+                onTap: canInteract && !isRecording ? onOpenReadingTools : null,
+              ),
+              SizedBox(width: 6.w),
+              _CircleIconButton(
+                tooltip: l10n?.tajweedListenToAyah ?? 'Listen to ayah',
+                icon: referencePlaying
+                    ? Icons.pause_circle_filled_rounded
+                    : Icons.volume_up_rounded,
+                iconColor: colorScheme.primary,
+                onTap: canInteract && !isRecording ? onToggleAudio : null,
+              ),
+            ],
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            args.arabicText,
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+              fontFamily: args.arabicFontFamily,
+              fontSize: 28.sp,
+              height: 1.85,
+              color: colorScheme.onSurface,
+            ),
+          ),
+          if (showTransliteration && transliteration.isNotEmpty) ...[
+            SizedBox(height: 10.h),
+            Text(
+              transliteration,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontStyle: FontStyle.italic,
+                color: colorScheme.onSurfaceVariant,
+                height: 1.45,
               ),
             ),
-            const SizedBox(height: 16),
-            if (isRecording)
-              TextButton(
-                onPressed: () => viewModel.cancelRecording(),
-                child: const Text('Cancel'),
-              )
-            else
-              const SizedBox(height: 24),
           ],
+          if (showTranslation && args.translation != null) ...[
+            SizedBox(height: 12.h),
+            Text(
+              args.translation!,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.82),
+                height: 1.45,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _CircleIconButton extends StatelessWidget {
+  const _CircleIconButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onTap,
+    this.iconColor,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onTap;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final enabled = onTap != null;
+
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: colorScheme.surface.withValues(alpha: 0.85),
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: enabled ? onTap : null,
+          child: Padding(
+            padding: EdgeInsets.all(8.r),
+            child: Icon(
+              icon,
+              size: 20.sp,
+              color: enabled
+                  ? (iconColor ?? colorScheme.onSurfaceVariant)
+                  : colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-/// DEBUG iOS only: shows which CoreML pack will score, and toggles Official↔DIY.
+class _RecordingBanner extends StatelessWidget {
+  const _RecordingBanner({
+    required this.message,
+    required this.micPermissionDenied,
+  });
+
+  final String message;
+  final bool micPermissionDenied;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: colorScheme.errorContainer.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(
+          color: colorScheme.error.withValues(alpha: 0.18),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onErrorContainer,
+              height: 1.4,
+            ),
+          ),
+          if (micPermissionDenied) ...[
+            SizedBox(height: 8.h),
+            TextButton(
+              onPressed: () => PermissionService.openAppSettingsAsync(),
+              child: const Text('Open app settings'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _CoreMlDebugToggle extends StatelessWidget {
   const _CoreMlDebugToggle({required this.viewModel});
 
@@ -309,9 +414,9 @@ class _CoreMlDebugToggle extends StatelessWidget {
       color: official
           ? colorScheme.tertiaryContainer
           : colorScheme.secondaryContainer,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(14.r),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
+        padding: EdgeInsets.fromLTRB(14.w, 10.h, 8.w, 10.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -329,7 +434,7 @@ class _CoreMlDebugToggle extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Text(
                         viewModel.activeCoreMlLabel,
                         style: theme.textTheme.bodySmall,
@@ -360,7 +465,7 @@ class _CoreMlDebugToggle extends StatelessWidget {
               ),
             ),
             if (viewModel.coreMlSwitchBusy) ...[
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               LinearProgressIndicator(
                 value: viewModel.downloadProgress <= 0
                     ? null
@@ -368,7 +473,7 @@ class _CoreMlDebugToggle extends StatelessWidget {
               ),
             ],
             if (viewModel.coreMlSwitchStatus != null) ...[
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 viewModel.coreMlSwitchStatus!,
                 style: theme.textTheme.bodySmall?.copyWith(

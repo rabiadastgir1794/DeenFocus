@@ -40,7 +40,9 @@ python3 tool/ai_assets/merge_catalog.py \
 
 ### Adding another translation language (no app code change)
 
-1. Stage JSON under `tool/ai_assets/staging/quran-translation-<lang>/<version>/translation.json`
+1. Convert Tanzil plain TXT (one ayah/line) → JSON:
+   `python3 tool/ai_assets/convert_tanzil_translation_txt.py path/to/lang.translator.txt \
+      --out tool/ai_assets/staging/quran-translation-<lang>/1.0.0/translation.json`
 2. Copy/adapt `specs/quran-translation-en-1.0.0.json` → generate manifest
 3. Copy/adapt `specs/catalog-pack-quran-translation-en.json` (set `language`, `packId`, URLs, size)
 4. Upload staging dir + merge catalog:

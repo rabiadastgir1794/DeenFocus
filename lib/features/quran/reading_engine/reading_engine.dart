@@ -34,7 +34,6 @@ class ReadingEngine extends ChangeNotifier {
   bool _isLoading = true;
   DateTime? _sessionStart;
   final Set<String> _visitedThisSession = <String>{};
-  Timer? _persistDebounce;
   AyahRecord? _lastVisited;
 
   List<AyahRecord> get ayahs => _ayahs;
@@ -209,9 +208,10 @@ class ReadingEngine extends ChangeNotifier {
   }
 
   /// Records that the reader has reached (surah, ayah) — via tap, audio
-  /// playback, or page swipe. Debounced-persists Continue Reading state and
+  /// playback, or page swipe. Persists Continue Reading state immediately and
   /// accumulates this session's distinct-ayah count for Reading Progress.
   void reportAyahVisited(int surahNumber, int ayahNumber) {
+    _sessionStart ??= DateTime.now();
     _lastVisited = AyahRecord(
       surahNumber: surahNumber,
       ayahNumber: ayahNumber,
@@ -219,8 +219,12 @@ class ReadingEngine extends ChangeNotifier {
       englishText: '',
     );
     _visitedThisSession.add('$surahNumber:$ayahNumber');
-    _persistDebounce?.cancel();
-    _persistDebounce = Timer(const Duration(seconds: 2), _persistPosition);
+    unawaited(_persistPosition());
+  }
+
+  /// Persists continue reading immediately — safe to await before leaving a screen.
+  Future<void> flush() async {
+    await _persistPosition();
   }
 
   Future<void> _persistPosition() async {
@@ -241,7 +245,6 @@ class ReadingEngine extends ChangeNotifier {
   /// into the cumulative Reading Progress totals. Call from the owning
   /// screen's `dispose()` (best-effort; not awaited by [dispose]).
   Future<void> endSession() async {
-    _persistDebounce?.cancel();
     await _persistPosition();
 
     final start = _sessionStart;
@@ -260,7 +263,6 @@ class ReadingEngine extends ChangeNotifier {
 
   @override
   void dispose() {
-    _persistDebounce?.cancel();
     unawaited(endSession());
     super.dispose();
   }

@@ -88,6 +88,8 @@ abstract class NearbyMosquesCache {
             'latitude': m.latitude,
             'longitude': m.longitude,
             'distanceMeters': m.distanceMeters,
+            'confidence': m.confidence.name,
+            'openingHours': m.openingHours,
             'googleMapsUri': m.googleMapsUri,
           },
         )
@@ -108,6 +110,8 @@ abstract class NearbyMosquesCache {
               latitude: (map['latitude'] as num?)?.toDouble() ?? 0,
               longitude: (map['longitude'] as num?)?.toDouble() ?? 0,
               distanceMeters: (map['distanceMeters'] as num?)?.toDouble() ?? 0,
+              confidence: _decodeConfidence(map['confidence'] as String?),
+              openingHours: map['openingHours'] as String?,
               googleMapsUri: map['googleMapsUri'] as String?,
             );
           })
@@ -115,6 +119,13 @@ abstract class NearbyMosquesCache {
     } catch (_) {
       return const [];
     }
+  }
+
+  static NearbyMosqueConfidence _decodeConfidence(String? raw) {
+    return NearbyMosqueConfidence.values.firstWhere(
+      (value) => value.name == raw,
+      orElse: () => NearbyMosqueConfidence.high,
+    );
   }
 
   static double _distanceMeters({

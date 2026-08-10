@@ -99,6 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     switch (index) {
       case 0:
         return HomeTabScreen(
+          isTabActive: _currentIndex == 0,
           onOpenFocusTab: () {
             setState(() {
               _currentIndex = 1;

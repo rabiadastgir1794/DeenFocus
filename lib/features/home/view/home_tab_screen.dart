@@ -26,23 +26,38 @@ import 'widgets/home_qibla_screen.dart';
 import 'widgets/home_verse_marquee.dart';
 
 class HomeTabScreen extends StatelessWidget {
-  const HomeTabScreen({super.key, required this.onOpenFocusTab});
+  const HomeTabScreen({
+    super.key,
+    required this.onOpenFocusTab,
+    this.isTabActive = true,
+  });
 
   final VoidCallback onOpenFocusTab;
+
+  /// False when another bottom-nav tab is selected (Home stays mounted in
+  /// [IndexedStack]). Used to pause non-critical timers.
+  final bool isTabActive;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeTabViewModel>(
       create: (_) => HomeTabViewModel()..initialize(),
-      child: _HomeTabView(onOpenFocusTab: onOpenFocusTab),
+      child: _HomeTabView(
+        onOpenFocusTab: onOpenFocusTab,
+        isTabActive: isTabActive,
+      ),
     );
   }
 }
 
 class _HomeTabView extends StatefulWidget {
-  const _HomeTabView({required this.onOpenFocusTab});
+  const _HomeTabView({
+    required this.onOpenFocusTab,
+    required this.isTabActive,
+  });
 
   final VoidCallback onOpenFocusTab;
+  final bool isTabActive;
 
   @override
   State<_HomeTabView> createState() => _HomeTabViewState();
@@ -51,11 +66,26 @@ class _HomeTabView extends StatefulWidget {
 class _HomeTabViewState extends State<_HomeTabView>
     with WidgetsBindingObserver {
   String? _lastSyncedSect;
+  String? _cachedMonthTitle;
+  DateTime? _cachedMonthTitleSource;
+  String? _cachedMonthLocale;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<HomeTabViewModel>().setTabActive(widget.isTabActive);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeTabView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isTabActive != widget.isTabActive) {
+      context.read<HomeTabViewModel>().setTabActive(widget.isTabActive);
+    }
   }
 
   @override
@@ -94,28 +124,32 @@ class _HomeTabViewState extends State<_HomeTabView>
     );
   }
 
+  String _monthTitle(AppLocalizations l10n, DateTime visibleMonth) {
+    if (_cachedMonthTitle != null &&
+        _cachedMonthTitleSource == visibleMonth &&
+        _cachedMonthLocale == l10n.localeName) {
+      return _cachedMonthTitle!;
+    }
+    _cachedMonthTitleSource = visibleMonth;
+    _cachedMonthLocale = l10n.localeName;
+    _cachedMonthTitle = DateFormat.yMMMM(l10n.localeName).format(visibleMonth);
+    return _cachedMonthTitle!;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final vm = context.watch<HomeTabViewModel>();
-    final focusVm = context.watch<FocusController>();
-    final profile = context.watch<UserProfileService>();
-    final isDarkModeEnabled = context.select<ThemeService, bool>(
-      (service) => service.isDarkModeEnabled,
+    final isLoading = context.select<HomeTabViewModel, bool>(
+      (vm) => vm.isLoading,
     );
-    final softCardColor = colorScheme.surfaceContainerHighest.withValues(
-      alpha: 0.20,
-    );
-    if (vm.isLoading) {
+    if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final currentMonth = DateFormat.yMMMM(
-      l10n.localeName,
-    ).format(vm.visibleMonth);
-    final showHomeFocusLockCard =
-        focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked;
+    final softCardColor = colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.20,
+    );
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -123,143 +157,160 @@ class _HomeTabViewState extends State<_HomeTabView>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.homeSalam,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Text(
-                        profile.userName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ),
-                HomeCircleIconButton(
-                  icon: Icons.chat_bubble_outline,
-                  onTap: () {
-                    unawaited(
-                      PremiumGate.presentIfNeeded(
-                        context: context,
-                        onAccess: () {
-                          if (!context.mounted) return;
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const HomeAiChatScreen(),
-                            ),
-                          );
-                        },
-                        debugContext: 'home:islamic_chat',
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(width: 8),
-                HomeCircleIconButton(
-                  icon: isDarkModeEnabled
-                      ? Icons.light_mode_outlined
-                      : Icons.dark_mode_outlined,
-                  onTap: () {
-                    unawaited(
-                      context.read<ThemeService>().setDarkModeEnabled(
-                        !isDarkModeEnabled,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+            _HomeHeader(),
             const SizedBox(height: 10),
-            HomeVerseMarquee(
-              text: _verseText(l10n, vm.dailyVerse),
-              color: colorScheme.primary,
+            Selector<HomeTabViewModel, HomeDailyVerse?>(
+              selector: (_, vm) => vm.dailyVerse,
+              builder: (context, verse, _) {
+                return HomeVerseMarquee(
+                  text: _verseText(l10n, verse),
+                  color: colorScheme.primary,
+                );
+              },
             ),
-            if (showHomeFocusLockCard) ...[
-              const SizedBox(height: 14),
-              _FocusLockCard(focusVm: focusVm),
-            ],
-            const SizedBox(height: 14),
-            HomePrayerTimesSection(
-              prayerTimes: vm.prayerTimes,
-              backgroundColor: softCardColor,
-            ),
-            const SizedBox(height: 12),
-            _QuickActionsCard(
-              backgroundColor: softCardColor,
-              focusTitle: focusVm.homeCardTitle(l10n),
-              focusSubtitle: focusVm.homeCardSubtitle(l10n),
-              qiblaTitle: l10n.homeQiblaDirection,
-              qiblaSubtitle: vm.qiblaInfo == null
-                  ? l10n.homeLocationMissingForQibla
-                  : vm.showQiblaBearingDetails
-                  ? '${vm.qiblaInfo} ${l10n.homeToMakkah}'
-                  : l10n.homeQiblaSubtitleGuiding,
-              masjidTitle: l10n.homeFindMasjid,
-              masjidSubtitle: l10n.homeSearchNearbyMosques,
-              isFocusLocked: focusVm.isAppsLocked,
-              onOpenFocus: widget.onOpenFocusTab,
-              onOpenQibla: () => _openQiblaScreen(context, vm),
-              onOpenMasjid: () => _openMasjidScreen(context, vm),
-            ),
-            const SizedBox(height: 12),
-            HomePrayerStreakSection(
-              streakDays: vm.streakDays,
-              weekPrayerCounts: vm.weekPrayerCounts,
-              backgroundColor: softCardColor,
-              onTap: () => unawaited(_openPrayerStreakDetail(context, vm)),
-            ),
-            const SizedBox(height: 12),
-            HomeCalendarSection(
-              backgroundColor: softCardColor,
-              monthTitle: currentMonth,
-              visibleMonth: vm.visibleMonth,
-              weeklyWeekStart: vm.weeklyVisibleWeekStart,
-              isLoading: vm.isEventsLoading,
-              weekly: vm.weeklyCalendar,
-              monthEvents: vm.monthEvents,
-              weekEvents: vm.weekEvents,
-              selectedDate: vm.selectedDate,
-              onToggleMode: vm.setWeeklyCalendar,
-              onPreviousMonth: vm.goToPreviousMonth,
-              onNextMonth: vm.goToNextMonth,
-              onDateTap: (date) => _onCalendarTap(context, vm, date),
-            ),
-            if (vm.isFriday) ...[
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: colorScheme.primary.withValues(alpha: 0.20),
+            Selector<FocusController, ({bool locked, bool tempUnlocked})>(
+              selector: (_, focus) => (
+                locked: focus.isAppsLocked,
+                tempUnlocked: focus.isTemporarilyUnlocked,
+              ),
+              builder: (context, flags, _) {
+                if (!flags.locked && !flags.tempUnlocked) {
+                  return const SizedBox.shrink();
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(top: 14),
+                  child: _FocusLockCard(
+                    isTemporarilyUnlocked: flags.tempUnlocked,
                   ),
-                ),
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      l10n.homeJummahMubarak,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w700,
+                );
+              },
+            ),
+            const SizedBox(height: 14),
+            Selector<HomeTabViewModel, HomePrayerTimesData?>(
+              selector: (_, vm) => vm.prayerTimes,
+              builder: (context, prayerTimes, _) {
+                return HomePrayerTimesSection(
+                  prayerTimes: prayerTimes,
+                  backgroundColor: softCardColor,
+                  isActive: widget.isTabActive,
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            _HomeQuickActions(
+              backgroundColor: softCardColor,
+              onOpenFocus: widget.onOpenFocusTab,
+              onOpenQibla: () => _openQiblaScreen(
+                context,
+                context.read<HomeTabViewModel>(),
+              ),
+              onOpenMasjid: () => _openMasjidScreen(
+                context,
+                context.read<HomeTabViewModel>(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Selector<
+              HomeTabViewModel,
+              ({int streakDays, List<int> weekPrayerCounts})
+            >(
+              selector: (_, vm) => (
+                streakDays: vm.streakDays,
+                weekPrayerCounts: vm.weekPrayerCounts,
+              ),
+              builder: (context, data, _) {
+                return HomePrayerStreakSection(
+                  streakDays: data.streakDays,
+                  weekPrayerCounts: data.weekPrayerCounts,
+                  backgroundColor: softCardColor,
+                  onTap: () => unawaited(
+                    _openPrayerStreakDetail(
+                      context,
+                      context.read<HomeTabViewModel>(),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            Selector<
+              HomeTabViewModel,
+              ({
+                DateTime visibleMonth,
+                DateTime weeklyWeekStart,
+                bool isEventsLoading,
+                bool weeklyCalendar,
+                List<HomeIslamicEvent> monthEvents,
+                List<HomeIslamicEvent> weekEvents,
+                DateTime? selectedDate,
+              })
+            >(
+              selector: (_, vm) => (
+                visibleMonth: vm.visibleMonth,
+                weeklyWeekStart: vm.weeklyVisibleWeekStart,
+                isEventsLoading: vm.isEventsLoading,
+                weeklyCalendar: vm.weeklyCalendar,
+                monthEvents: vm.monthEvents,
+                weekEvents: vm.weekEvents,
+                selectedDate: vm.selectedDate,
+              ),
+              builder: (context, data, _) {
+                final vm = context.read<HomeTabViewModel>();
+                return HomeCalendarSection(
+                  backgroundColor: softCardColor,
+                  monthTitle: _monthTitle(l10n, data.visibleMonth),
+                  visibleMonth: data.visibleMonth,
+                  weeklyWeekStart: data.weeklyWeekStart,
+                  isLoading: data.isEventsLoading,
+                  weekly: data.weeklyCalendar,
+                  monthEvents: data.monthEvents,
+                  weekEvents: data.weekEvents,
+                  selectedDate: data.selectedDate,
+                  onToggleMode: vm.setWeeklyCalendar,
+                  onPreviousMonth: vm.goToPreviousMonth,
+                  onNextMonth: vm.goToNextMonth,
+                  onDateTap: (date) => _onCalendarTap(context, vm, date),
+                );
+              },
+            ),
+            Selector<HomeTabViewModel, bool>(
+              selector: (_, vm) => vm.isFriday,
+              builder: (context, isFriday, _) {
+                if (!isFriday) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.20),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(l10n.homeJummahReminder, textAlign: TextAlign.center),
-                  ],
-                ),
-              ),
-            ],
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.homeJummahMubarak,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                color: colorScheme.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.homeJummahReminder,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -396,6 +447,127 @@ class _HomeTabViewState extends State<_HomeTabView>
   }
 }
 
+class _HomeHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final userName = context.select<UserProfileService, String>(
+      (p) => p.userName,
+    );
+    final isDarkModeEnabled = context.select<ThemeService, bool>(
+      (service) => service.isDarkModeEnabled,
+    );
+
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.homeSalam,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                userName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+        HomeCircleIconButton(
+          icon: Icons.chat_bubble_outline,
+          onTap: () {
+            unawaited(
+              PremiumGate.presentIfNeeded(
+                context: context,
+                onAccess: () {
+                  if (!context.mounted) return;
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const HomeAiChatScreen(),
+                    ),
+                  );
+                },
+                debugContext: 'home:islamic_chat',
+              ),
+            );
+          },
+        ),
+        const SizedBox(width: 8),
+        HomeCircleIconButton(
+          icon: isDarkModeEnabled
+              ? Icons.light_mode_outlined
+              : Icons.dark_mode_outlined,
+          onTap: () {
+            unawaited(
+              context.read<ThemeService>().setDarkModeEnabled(
+                !isDarkModeEnabled,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _HomeQuickActions extends StatelessWidget {
+  const _HomeQuickActions({
+    required this.backgroundColor,
+    required this.onOpenFocus,
+    required this.onOpenQibla,
+    required this.onOpenMasjid,
+  });
+
+  final Color backgroundColor;
+  final VoidCallback onOpenFocus;
+  final VoidCallback onOpenQibla;
+  final VoidCallback onOpenMasjid;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final focusTitle = context.select<FocusController, String>(
+      (f) => f.homeCardTitle(l10n),
+    );
+    final focusSubtitle = context.select<FocusController, String>(
+      (f) => f.homeCardSubtitle(l10n),
+    );
+    final isFocusLocked = context.select<FocusController, bool>(
+      (f) => f.isAppsLocked,
+    );
+    final qibla = context.select<
+      HomeTabViewModel,
+      ({String? info, bool showDetails})
+    >(
+      (vm) => (info: vm.qiblaInfo, showDetails: vm.showQiblaBearingDetails),
+    );
+
+    return _QuickActionsCard(
+      backgroundColor: backgroundColor,
+      focusTitle: focusTitle,
+      focusSubtitle: focusSubtitle,
+      qiblaTitle: l10n.homeQiblaDirection,
+      qiblaSubtitle: qibla.info == null
+          ? l10n.homeLocationMissingForQibla
+          : qibla.showDetails
+          ? '${qibla.info} ${l10n.homeToMakkah}'
+          : l10n.homeQiblaSubtitleGuiding,
+      masjidTitle: l10n.homeFindMasjid,
+      masjidSubtitle: l10n.homeSearchNearbyMosques,
+      isFocusLocked: isFocusLocked,
+      onOpenFocus: onOpenFocus,
+      onOpenQibla: onOpenQibla,
+      onOpenMasjid: onOpenMasjid,
+    );
+  }
+}
+
 class _QuickActionsCard extends StatelessWidget {
   const _QuickActionsCard({
     required this.backgroundColor,
@@ -513,15 +685,15 @@ class _QuickActionsCard extends StatelessWidget {
 }
 
 class _FocusLockCard extends StatelessWidget {
-  const _FocusLockCard({required this.focusVm});
+  const _FocusLockCard({required this.isTemporarilyUnlocked});
 
-  final FocusController focusVm;
+  final bool isTemporarilyUnlocked;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final isTemporarilyUnlocked = focusVm.isTemporarilyUnlocked;
+    final focusVm = context.read<FocusController>();
 
     return InkWell(
       onTap: () => isTemporarilyUnlocked

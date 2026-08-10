@@ -40,6 +40,15 @@ abstract final class TajweedEntryPoint {
       final lexicalReference =
           uthmaniCorpus.textFor(surah, ayah) ?? resolvedText;
       if (!context.mounted) return;
+      if (surahName != null) {
+        unawaited(
+          StorageService.setLastTajweedPractice(
+            surah: surah,
+            ayah: ayah,
+            surahName: surahName,
+          ),
+        );
+      }
       context.push(
         RouteNames.tajweedPractice,
         extra: TajweedPracticeArgs(

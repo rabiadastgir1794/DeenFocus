@@ -67,19 +67,13 @@ abstract class HomeDailyVerseHelper {
 
   static Future<HomeDailyVerse?> loadDailyVerse(DailyVerseRef ref) async {
     await QuranLocalRepository.instance.ensureInitialized();
-    final surahs = await QuranLocalRepository.instance.getSurahs();
-    final ayahs = await QuranLocalRepository.instance.getAyahsBySurah(
-      ref.surahNumber,
-    );
+    final ayahs = await QuranLocalRepository.instance.getAyahsByKeys([
+      (ref.surahNumber, ref.ayahNumber),
+    ]);
+    if (ayahs.isEmpty) return null;
 
-    final ayah = ayahs
-        .where((item) => item.ayahNumber == ref.ayahNumber)
-        .firstOrNull;
-    if (ayah == null) return null;
-
-    final surah = surahs
-        .where((item) => item.number == ref.surahNumber)
-        .firstOrNull;
+    final ayah = ayahs.first;
+    final surah = await QuranLocalRepository.instance.getSurah(ref.surahNumber);
 
     return HomeDailyVerse(
       surahNumber: ref.surahNumber,

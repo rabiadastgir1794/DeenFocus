@@ -1,16 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../model/tajweed_models.dart';
 import '../../model/tajweed_practice_args.dart';
 import '../../viewmodel/tajweed_practice_view_model.dart';
 
-/// Post-scoring results: word accuracy, exact-match badge, and the ayah
-/// rendered as normal, continuous Arabic text with a single color-coded
-/// status per *word* (ok/minor/major/sub/miss/extra) from the native
-/// `TajweedScoreResult` — purely presentational, no scoring logic here.
-/// Lexical identity is decided natively; pronunciation quality overlays
-/// matched words only.
+/// Post-scoring results screen — layout only; scoring data unchanged.
 class TajweedResultView extends StatelessWidget {
   const TajweedResultView({
     super.key,
@@ -26,117 +22,222 @@ class TajweedResultView extends StatelessWidget {
   Color _statusColor(ColorScheme colorScheme, TajweedTokenStatus status) {
     switch (status) {
       case TajweedTokenStatus.ok:
-        return const Color(0xFF2E7D32); // green
+        return const Color(0xFF2E7D32);
       case TajweedTokenStatus.minor:
       case TajweedTokenStatus.major:
-        return const Color(0xFFF9A825); // orange — pronunciation issue
+        return const Color(0xFFF9A825);
       case TajweedTokenStatus.sub:
-        return colorScheme.error; // red — wrong word
+        return colorScheme.error;
       case TajweedTokenStatus.miss:
-        return colorScheme.onSurfaceVariant; // grey
+        return colorScheme.onSurfaceVariant;
       case TajweedTokenStatus.extra:
-        return const Color(0xFF6A1B9A); // purple
+        return const Color(0xFF6A1B9A);
     }
   }
 
-  String _statusLabel(TajweedTokenStatus status) {
+  Color _statusTileBg(TajweedTokenStatus status) {
     switch (status) {
       case TajweedTokenStatus.ok:
-        return 'Correct';
+        return const Color(0xFFE8F5E9);
       case TajweedTokenStatus.minor:
-        return 'Minor slip';
       case TajweedTokenStatus.major:
-        return 'Mispronounced';
+        return const Color(0xFFFFF8E1);
       case TajweedTokenStatus.sub:
-        return 'Wrong word';
+        return const Color(0xFFFFEBEE);
       case TajweedTokenStatus.miss:
-        return 'Missed';
+        return const Color(0xFFF5F5F5);
       case TajweedTokenStatus.extra:
-        return 'Extra';
+        return const Color(0xFFF3E5F5);
     }
+  }
+
+  String _feedbackText(AppLocalizations? l10n, TajweedScoreResult result) {
+    if (result.exactMatch) return 'Exact match — mā shā\' Allāh!';
+    final pct = result.wordAccuracy * 100;
+    if (pct >= 85) {
+      return l10n?.tajweedResultEncouragement ??
+          'Beautiful effort — keep practicing your tajweed.';
+    }
+    if (pct >= 65) {
+      return 'Good progress — focus on clear pronunciation on highlighted words.';
+    }
+    return 'Keep practicing — listen to the reference and try again.';
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
     final result = viewModel.result;
     if (result == null) return const SizedBox.shrink();
 
-    final accuracyPercent = (result.wordAccuracy * 100).clamp(0, 100).toStringAsFixed(0);
+    final accuracy = result.wordAccuracy.clamp(0.0, 1.0);
+    final accuracyPercent = (accuracy * 100).round();
     final summary = result.tokenSummary;
+    final ayahTokens = result.tokens
+        .where((t) => t.status != TajweedTokenStatus.extra)
+        .toList(growable: false);
 
     return SafeArea(
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
         children: [
           Center(
-            child: Column(
-              children: [
-                Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: (result.exactMatch
-                            ? const Color(0xFF2E7D32)
-                            : colorScheme.primary)
-                        .withValues(alpha: 0.12),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '$accuracyPercent%',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
+            child: SizedBox(
+              width: 148.r,
+              height: 148.r,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 148.r,
+                    height: 148.r,
+                    child: CircularProgressIndicator(
+                      value: accuracy,
+                      strokeWidth: 10.r,
+                      backgroundColor:
+                          colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
                       color: result.exactMatch
                           ? const Color(0xFF2E7D32)
                           : colorScheme.primary,
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '$accuracyPercent%',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        l10n?.tajweedWordAccuracyLabel ?? 'WORD ACCURACY',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          letterSpacing: 0.8,
+                          fontWeight: FontWeight.w700,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            _feedbackText(l10n, result),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              height: 1.45,
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 16.h),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+              borderRadius: BorderRadius.circular(18.r),
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  result.exactMatch ? 'Exact match!' : 'Word accuracy',
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  l10n?.tajweedWordReviewLabel ?? 'WORD REVIEW',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 0.8,
                     fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      for (final token in ayahTokens)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 10.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _statusTileBg(token.status),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Text(
+                            token.text,
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(
+                              fontFamily: args.arabicFontFamily,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: _statusColor(colorScheme, token.status),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 14.h),
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(16),
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(18.r),
               border: Border.all(
                 color: colorScheme.outlineVariant.withValues(alpha: 0.35),
               ),
             ),
-            child: _AyahText(
-              tokens: result.tokens,
-              arabicFontFamily: args.arabicFontFamily,
-              defaultColor: colorScheme.onSurface,
-              statusColor: (status) => _statusColor(colorScheme, status),
-              statusLabel: _statusLabel,
+            child: Column(
+              children: [
+                _StatRow(
+                  color: _statusColor(colorScheme, TajweedTokenStatus.ok),
+                  label: 'Correct',
+                  count: summary.ok,
+                ),
+                Divider(height: 1, color: colorScheme.outlineVariant.withValues(alpha: 0.25)),
+                _StatRow(
+                  color: _statusColor(colorScheme, TajweedTokenStatus.minor),
+                  label: 'Pronunciation',
+                  count: summary.minor + summary.major,
+                ),
+                Divider(height: 1, color: colorScheme.outlineVariant.withValues(alpha: 0.25)),
+                _StatRow(
+                  color: _statusColor(colorScheme, TajweedTokenStatus.sub),
+                  label: 'Wrong word',
+                  count: summary.sub,
+                ),
+                Divider(height: 1, color: colorScheme.outlineVariant.withValues(alpha: 0.25)),
+                _StatRow(
+                  color: _statusColor(colorScheme, TajweedTokenStatus.miss),
+                  label: 'Missed',
+                  count: summary.miss,
+                ),
+                Divider(height: 1, color: colorScheme.outlineVariant.withValues(alpha: 0.25)),
+                _StatRow(
+                  color: _statusColor(colorScheme, TajweedTokenStatus.extra),
+                  label: 'Extra',
+                  count: summary.extra,
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 14,
-            runSpacing: 8,
-            children: [
-              _LegendItem(color: _statusColor(colorScheme, TajweedTokenStatus.ok), label: 'Correct (${summary.ok})'),
-              _LegendItem(color: _statusColor(colorScheme, TajweedTokenStatus.minor), label: 'Pronunciation (${summary.minor + summary.major})'),
-              _LegendItem(color: _statusColor(colorScheme, TajweedTokenStatus.sub), label: 'Wrong word (${summary.sub})'),
-              _LegendItem(color: _statusColor(colorScheme, TajweedTokenStatus.miss), label: 'Missed (${summary.miss})'),
-              _LegendItem(color: _statusColor(colorScheme, TajweedTokenStatus.extra), label: 'Extra (${summary.extra})'),
-            ],
-          ),
-          const SizedBox(height: 28),
+          SizedBox(height: 24.h),
           Row(
             children: [
               Expanded(
@@ -144,14 +245,26 @@ class TajweedResultView extends StatelessWidget {
                   onPressed: () => viewModel.tryAgain(),
                   icon: const Icon(Icons.replay_rounded),
                   label: const Text('Try again'),
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: FilledButton.icon(
                   onPressed: onDone,
                   icon: const Icon(Icons.check_rounded),
                   label: const Text('Done'),
+                  style: FilledButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -162,128 +275,50 @@ class TajweedResultView extends StatelessWidget {
   }
 }
 
-/// Renders the ayah as one continuous, naturally-shaped Arabic paragraph
-/// (never boxed per-word — that breaks Arabic letter connections/ligatures)
-/// with a soft per-word background highlight for status. Tapping a word
-/// shows its status via a SnackBar in lieu of a hover tooltip (not
-/// meaningful on touch devices).
-class _AyahText extends StatelessWidget {
-  const _AyahText({
-    required this.tokens,
-    required this.arabicFontFamily,
-    required this.defaultColor,
-    required this.statusColor,
-    required this.statusLabel,
+class _StatRow extends StatelessWidget {
+  const _StatRow({
+    required this.color,
+    required this.label,
+    required this.count,
   });
-
-  final List<TajweedToken> tokens;
-  final String arabicFontFamily;
-  final Color defaultColor;
-  final Color Function(TajweedTokenStatus status) statusColor;
-  final String Function(TajweedTokenStatus status) statusLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    // "extra" tokens (spoken but not part of the ayah) only ever come from
-    // the lexical fallback path and would corrupt the reference text if
-    // interleaved — surface them separately instead of inline.
-    final ayahTokens = tokens
-        .where((t) => t.status != TajweedTokenStatus.extra)
-        .toList(growable: false);
-    final extraTokens = tokens
-        .where((t) => t.status == TajweedTokenStatus.extra)
-        .toList(growable: false);
-
-    final spans = <InlineSpan>[];
-    for (var i = 0; i < ayahTokens.length; i++) {
-      final t = ayahTokens[i];
-      final color = statusColor(t.status);
-      spans.add(
-        TextSpan(
-          text: t.text,
-          style: TextStyle(
-            color: t.status == TajweedTokenStatus.ok ? defaultColor : color,
-            decoration: t.status == TajweedTokenStatus.miss
-                ? TextDecoration.lineThrough
-                : null,
-            decorationColor: color,
-            backgroundColor: t.status == TajweedTokenStatus.ok
-                ? null
-                : color.withValues(alpha: 0.14),
-          ),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 2),
-                    content: Text('${t.text} — ${statusLabel(t.status)}'),
-                  ),
-                );
-            },
-        ),
-      );
-      if (i != ayahTokens.length - 1) {
-        spans.add(const TextSpan(text: ' '));
-      }
-    }
-
-    return Column(
-      children: [
-        Text.rich(
-          TextSpan(children: spans),
-          textAlign: TextAlign.center,
-          textDirection: TextDirection.rtl,
-          style: TextStyle(
-            fontFamily: arabicFontFamily,
-            fontSize: 26,
-            height: 2.0,
-          ),
-        ),
-        if (extraTokens.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          Text(
-            'Extra words heard: ${extraTokens.map((t) => t.text).join(' ')}',
-            textAlign: TextAlign.center,
-            textDirection: TextDirection.rtl,
-            style: TextStyle(
-              fontFamily: arabicFontFamily,
-              fontSize: 18,
-              color: statusColor(TajweedTokenStatus.extra),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _LegendItem extends StatelessWidget {
-  const _LegendItem({required this.color, required this.label});
 
   final Color color;
   final String label;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      child: Row(
+        children: [
+          Container(
+            width: 10.r,
+            height: 10.r,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
-        ),
-      ],
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+          Text(
+            '$count',
+            style: TextStyle(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

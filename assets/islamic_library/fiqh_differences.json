@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "index": 1,
+      "title": "What is Fiqh?",
+      "overview": "Fiqh is the human understanding and application of Islamic law derived from the Quran and Sunnah. It covers worship, transactions, family law, and daily conduct.",
+      "keyPoints": "Scholars use principles such as the Quran, authentic hadith, consensus (ijma), and analogical reasoning (qiyas) to derive rulings. Fiqh is practical guidance for living Islam day to day.",
+      "differences": "Different schools and communities may reach different conclusions on secondary matters while sharing the same core sources. This is normal in Islamic legal history.",
+      "commonGround": "All Muslims affirm the Quran as the word of Allah and the Prophethood of Muhammad ﷺ. Differences in fiqh are usually in details of practice, not in the foundations of faith."
+    },
+    {
+      "index": 2,
+      "title": "Why differences exist",
+      "overview": "Islamic scholars have always held diverse opinions on many legal questions. The Prophet ﷺ permitted difference among his companions on non-essential matters.",
+      "keyPoints": "Reasons include: different hadith reaching different regions, varying linguistic interpretations, new circumstances, and sincere ijtihad (scholarly effort) by qualified scholars.",
+      "differences": "Some communities follow a specific madhab strictly; others combine opinions or follow local scholars. Cultural context also shapes how rulings are applied.",
+      "commonGround": "The vast majority of Muslims agree on the pillars of Islam and iman, halal food principles, prayer as an obligation, and the moral teachings of the Quran."
+    },
+    {
+      "index": 3,
+      "title": "Sunni Islam — four madhabs",
+      "overview": "Sunni Muslims follow the Quran, Sunnah, and the consensus of the early community. Over time, four major schools of law (madhabs) emerged, each named after a great imam.",
+      "keyPoints": "Hanafi, Maliki, Shafi'i, and Hanbali madhabs are all valid paths within Sunni Islam. Most Sunni Muslims historically followed one madhab through their community or region.",
+      "differences": "Madhabs may differ on details of wudu, prayer posture, fasting rules, or business transactions. These are scholarly differences, not divisions in core belief.",
+      "commonGround": "All four madhabs accept the same six pillars of iman and five pillars of Islam. They differ mainly in the methodology and conclusions of legal reasoning."
+    },
+    {
+      "index": 4,
+      "title": "Hanafi madhab",
+      "overview": "Founded by Imam Abu Hanifa (d. 767 CE). It is the most widely followed madhab globally, especially in Turkey, Central/South Asia, and parts of the Balkans.",
+      "keyPoints": "Emphasizes reason (ra'y), public interest (istihsan), and custom (urf). Known for flexibility in new situations. Many Deobandi and Barelvi communities follow Hanafi fiqh.",
+      "differences": "Hanafis may combine Maghrib and Isha in certain travel or hardship cases where others do not. Hand placement in prayer and some wudu details differ from other madhabs.",
+      "commonGround": "Hanafis share the same Quran, hadith corpus, and core Sunni creed as Maliki, Shafi'i, and Hanbali scholars."
+    },
+    {
+      "index": 5,
+      "title": "Maliki madhab",
+      "overview": "Founded by Imam Malik ibn Anas (d. 795 CE) in Madinah. Dominant in North and West Africa, parts of the Gulf, and among many African Muslim communities worldwide.",
+      "keyPoints": "Strong emphasis on the practice of the people of Madinah (amal ahl al-Madinah) alongside hadith. Uses masalih mursalah (public benefit) in legal reasoning.",
+      "differences": "Malikis traditionally leave arms at the sides in prayer rather than folding them. Some rulings on food, contracts, and wiping over socks differ from Hanafi or Shafi'i views.",
+      "commonGround": "Maliki scholars affirm the same pillars of faith and use the same foundational sources as other Sunni madhabs."
+    },
+    {
+      "index": 6,
+      "title": "Shafi'i madhab",
+      "overview": "Founded by Imam al-Shafi'i (d. 820 CE). Widespread in Southeast Asia, East Africa, Yemen, and parts of the Levant and Caucasus.",
+      "keyPoints": "Systematized the usul al-fiqh (principles of jurisprudence) that influenced all later schools. Balances hadith, consensus, and qiyas with strict methodology.",
+      "differences": "Shafi'is recite Al-Fatiha behind the imam in congregational prayer (where Hanafis often remain silent). Some zakat and inheritance details differ from Hanafi rulings.",
+      "commonGround": "Shafi'i is fully Sunni orthodox. Many Southeast Asian Muslims follow this madhab while sharing mosques and communities with others."
+    },
+    {
+      "index": 7,
+      "title": "Hanbali madhab",
+      "overview": "Founded by Imam Ahmad ibn Hanbal (d. 855 CE). Most prominent today in Saudi Arabia and among many Salafi communities, though not all Salafis identify as Hanbali.",
+      "keyPoints": "Emphasizes literal adherence to textual evidence (Quran and hadith) and is cautious about speculative reasoning. Imam Ahmad was also a great hadith scholar.",
+      "differences": "Hanbali fiqh may be stricter on some issues (e.g. certain foods, music, or public acts) compared to Hanafi flexibility. Prayer and wudu details have distinct rulings.",
+      "commonGround": "Hanbali is one of the four Sunni madhabs. Its followers share aqeedah with other Sunnis on Tawhid, prophethood, and the hereafter."
+    },
+    {
+      "index": 8,
+      "title": "Shia (Twelver) Islam",
+      "overview": "Twelver Shia Muslims follow the Quran and the teachings of the Prophet ﷺ and the twelve Imams from the Ahl al-Bayt. They are the largest Shia community worldwide.",
+      "keyPoints": "Distinct emphasis on the Imamate—the spiritual and communal leadership of Ali (RA) and succeeding Imams. Jurisprudence is derived through the Imams and qualified scholars (marja).",
+      "differences": "Some prayer practices differ (e.g. combining prayers on regular days, use of a turbah or earth for prostration). Temporary marriage (mut'ah) is permitted in Twelver fiqh but rejected by Sunnis.",
+      "commonGround": "Twelver Shia affirm the Quran, the Prophethood of Muhammad ﷺ, prayer, fasting, zakat, and Hajj. Dialogue and coexistence with Sunni Muslims is common in many societies."
+    },
+    {
+      "index": 9,
+      "title": "Deobandi tradition",
+      "overview": "A revivalist Sunni movement originating from Darul Uloom Deoband, India (1867). It is not a separate madhab but a Hanafi scholarly and educational tradition.",
+      "keyPoints": "Emphasizes Quran, hadith, and classical Hanafi fiqh. Strong focus on madrasah education, tabligh (outreach), and avoiding practices seen as unverified innovations.",
+      "differences": "Deobandis are generally cautious about Mawlid celebrations, certain shrine practices, and some Sufi customs—though many Deobandi scholars respect tasawwuf with conditions.",
+      "commonGround": "Deobandis are Sunni Hanafi Muslims who share core beliefs with other Hanafis. They differ mainly with Barelvis and some Sufi groups on cultural and devotional practices."
+    },
+    {
+      "index": 10,
+      "title": "Barelvi tradition",
+      "overview": "A Sunni Hanafi movement associated with Ahmad Raza Khan Barelvi (d. 1921) in India. Emphasizes love for the Prophet ﷺ and veneration of awliya (saints).",
+      "keyPoints": "Supports Mawlid (celebrating the Prophet's birth), milad gatherings, and visiting shrines of righteous scholars. Follows Hanafi fiqh for worship and transactions.",
+      "differences": "Barelvis practice forms of devotional expression that Deobandis and Salafis may avoid, such as standing at mention of the Prophet ﷺ (qiyam) and elaborate Mawlid events.",
+      "commonGround": "Barelvis affirm the same Shahadah, Quran, and five daily prayers as other Sunni Hanafis. Differences with Deobandis are largely on devotional culture, not core creed."
+    },
+    {
+      "index": 11,
+      "title": "Salafi methodology",
+      "overview": "Salafis seek to follow the understanding of the earliest Muslim generations (Salaf). It is a methodological approach rather than a fifth madhab.",
+      "keyPoints": "Direct return to Quran and Sunnah; cautious toward taqlid (blind following) of one madhab; often influenced by Hanbali fiqh and Saudi scholarly institutions.",
+      "differences": "Salafis may reject practices they view as bid'ah (innovation)—including some Mawlid forms, certain Sufi practices, and madhab-only adherence without evidence.",
+      "commonGround": "Salafis are Sunni Muslims who affirm the same pillars of Islam. Many coexist in communities with madhab-followers while debating secondary legal and cultural issues."
+    },
+    {
+      "index": 12,
+      "title": "Ahl-e Hadith (Ahle Hadith)",
+      "overview": "Ahl-e Hadith is a Sunni movement prominent in Pakistan, India, and Bangladesh that takes its name from the People of Hadith—the early scholars who prioritized authentic narrations. It is a distinct South Asian tradition, not a separate madhab.",
+      "keyPoints": "Emphasizes direct adherence to the Quran and sahih hadith over blind taqlid of one madhab. Rulings are derived through independent scholarly review of textual evidence, often aligning with Hanbali views but not bound to any single imam.",
+      "differences": "Ahl-e Hadith scholars may differ from Deobandi Hanafis on Mawlid, shrine visitation, and some prayer details. They share much with Salafi methodology but maintain their own scholarly institutions, mosques, and historical identity in the subcontinent.",
+      "commonGround": "Ahl-e Hadith are Sunni Muslims who affirm the Shahadah, the five pillars, and the six pillars of iman. They differ mainly with madhab-bound Hanafis (Deobandi/Barelvi) on legal methodology and certain devotional practices—not on core creed."
+    },
+    {
+      "index": 13,
+      "title": "Prayer — comparing approaches",
+      "overview": "All Muslims perform five daily prayers facing the Qibla. Differences appear in details of wudu, raising hands, reciting behind the imam, and combining prayers.",
+      "keyPoints": "Hanafis: often silent behind imam, specific wudu order. Shafi'is/Malikis/Hanbalis: recite Fatiha behind imam. Shia: may combine Dhuhr-Asr and Maghrib-Isha regularly.",
+      "differences": "Where hands are placed, saying amin aloud, and wiping over socks vs washing feet are common points of variation between madhabs.",
+      "commonGround": "Prayer is a shared obligation. Muslims of all groups worship in mosques worldwide and respect the sanctity of salah even when details differ."
+    },
+    {
+      "index": 14,
+      "title": "Fasting & moon sighting",
+      "overview": "Ramadan fasting is obligatory for all Muslims who are able. Differences often arise over how the month begins and ends—local sighting vs global calculation.",
+      "keyPoints": "Some communities follow local moon sighting; others use Saudi announcements or astronomical calculation. Hanafi fiqh allows some flexibility on what breaks a fast.",
+      "differences": "Start/end of Ramadan and Eid may fall on different days in the same city when communities follow different scholars or national moon committees.",
+      "commonGround": "The obligation to fast Ramadan is universal. Muslims share the same spiritual goals of taqwa, Quran recitation, and charity during the blessed month."
+    },
+    {
+      "index": 15,
+      "title": "Shared foundations",
+      "overview": "Despite differences in fiqh and tradition, Muslims worldwide share an unbreakable core: belief in one Allah, the finality of Prophet Muhammad ﷺ, and accountability on the Day of Judgment.",
+      "keyPoints": "The Quran and authentic Sunnah unite the ummah. Differences in secondary rulings should be approached with knowledge, humility, and respect—not division or hostility.",
+      "differences": "Communities may follow different scholars or madhabs. Learning about these differences helps Muslims understand one another and avoid unnecessary conflict.",
+      "commonGround": "Allah says: 'The believers are but brothers.' Seeking knowledge, making sincere dua, and showing good character transcend every fiqhi or cultural boundary."
+    }
+  ]
+}

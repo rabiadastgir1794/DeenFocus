@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../data/quran_local_repository.dart';
+import '../../reading_engine/quran_layout_theme.dart';
+import 'quran_arabic_text.dart';
+import 'quran_reader_theme.dart';
 
 const String _bismillah = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
 const List<String> _arabicDigitGlyphs = <String>[
@@ -27,17 +30,12 @@ String _toArabicDigits(int number) {
       .join();
 }
 
-/// Renders one Mushaf page as continuous, justified Arabic text — the same
-/// "real printed page" look used by apps like Athan Pro / Muslim Pro —
-/// instead of a list of chat-style ayah cards.
+/// Renders one Mushaf page as continuous, justified Arabic text.
 ///
-/// Every word of an ayah (plus its ornate number marker) is one tap target
-/// that calls [onAyahTap]: the whole ayah highlights inline. Playback is
-/// started separately by the parent screen so selection and audio stay
-/// independent.
-/// Surah boundaries insert a decorative header banner (+ Bismillah, except
-/// for Al-Fatihah — where it's ayah 1 itself — and At-Tawbah, which has
-/// none).
+/// Respects [layoutTheme]:
+/// - Mushaf / Color: ornate continuous page
+/// - Simple: plain continuous text, no decorative chrome
+/// - Color: per-word color bands (same palette as Surah Color Quran)
 class MushafPageText extends StatefulWidget {
   const MushafPageText({
     super.key,
@@ -47,7 +45,9 @@ class MushafPageText extends StatefulWidget {
     required this.lineSpacing,
     required this.surahByNumber,
     required this.onAyahTap,
+    this.layoutTheme = QuranLayoutTheme.classic,
     this.arabicFontFamily,
+    this.arabicFontFamilyFallback,
   });
 
   final List<AyahRecord> ayahs;
@@ -56,7 +56,9 @@ class MushafPageText extends StatefulWidget {
   final double lineSpacing;
   final Map<int, SurahSummary> surahByNumber;
   final ValueChanged<int> onAyahTap;
+  final QuranLayoutTheme layoutTheme;
   final String? arabicFontFamily;
+  final List<String>? arabicFontFamilyFallback;
 
   @override
   State<MushafPageText> createState() => _MushafPageTextState();
@@ -110,11 +112,63 @@ class _MushafPageTextState extends State<MushafPageText> {
     }
   }
 
+  List<InlineSpan> _ayahTextSpans({
+    required String arabicText,
+    required TapGestureRecognizer recognizer,
+    required bool isCurrent,
+    required Color? highlightColor,
+    required Color? highlightBg,
+  }) {
+    final baseStyle = TextStyle(
+      backgroundColor: highlightBg,
+      color: isCurrent ? highlightColor : null,
+    );
+
+    if (widget.layoutTheme != QuranLayoutTheme.color) {
+      return [
+        TextSpan(
+          text: '$arabicText ',
+          recognizer: recognizer,
+          style: baseStyle,
+        ),
+      ];
+    }
+
+    final words = arabicText.split(RegExp(r'\s+'));
+    final spans = <InlineSpan>[];
+    for (var i = 0; i < words.length; i++) {
+      if (i > 0) {
+        spans.add(TextSpan(text: ' ', recognizer: recognizer, style: baseStyle));
+      }
+      final wordColor = isCurrent
+          ? highlightColor
+          : QuranArabicText.colorBands[i % QuranArabicText.colorBands.length];
+      spans.add(
+        TextSpan(
+          text: words[i],
+          recognizer: recognizer,
+          style: TextStyle(
+            backgroundColor: highlightBg,
+            color: wordColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
+    spans.add(TextSpan(text: ' ', recognizer: recognizer, style: baseStyle));
+    return spans;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.quranReader;
     final colorScheme = Theme.of(context).colorScheme;
     final ayahs = widget.ayahs;
+    final simple = widget.layoutTheme == QuranLayoutTheme.simple;
+    final defaultTextColor = simple
+        ? colorScheme.onSurface
+        : palette.textPrimary;
 
     final blocks = <Widget>[];
     var groupSpans = <InlineSpan>[];
@@ -123,16 +177,17 @@ class _MushafPageTextState extends State<MushafPageText> {
       if (groupSpans.isEmpty) return;
       blocks.add(
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 6.h),
+          padding: EdgeInsets.symmetric(vertical: simple ? 4.h : 6.h),
           child: Text.rich(
             TextSpan(children: List<InlineSpan>.of(groupSpans)),
             textAlign: TextAlign.justify,
             textDirection: TextDirection.rtl,
             style: TextStyle(
               fontFamily: widget.arabicFontFamily,
+              fontFamilyFallback: widget.arabicFontFamilyFallback,
               fontSize: widget.arabicFontSp.sp,
               height: widget.lineSpacing,
-              color: colorScheme.onSurface,
+              color: defaultTextColor,
             ),
           ),
         ),
@@ -154,24 +209,31 @@ class _MushafPageTextState extends State<MushafPageText> {
             verseCount: surah?.verses ?? 0,
             versesLabel: l10n.quranVersesLabel,
             arabicFontFamily: widget.arabicFontFamily,
+            arabicFontFamilyFallback: widget.arabicFontFamilyFallback,
+            simple: simple,
           ),
         );
         if (ayah.surahNumber != 9) {
-          blocks.add(_BismillahLine(arabicFontFamily: widget.arabicFontFamily));
+          blocks.add(
+            _BismillahLine(
+              arabicFontFamily: widget.arabicFontFamily,
+              arabicFontFamilyFallback: widget.arabicFontFamilyFallback,
+              simple: simple,
+            ),
+          );
         }
       }
 
       final isCurrent = i == widget.playingIndex;
-      groupSpans.add(
-        TextSpan(
-          text: '${ayah.arabicText} ',
+      groupSpans.addAll(
+        _ayahTextSpans(
+          arabicText: ayah.arabicText,
           recognizer: _recognizers[i],
-          style: TextStyle(
-            backgroundColor: isCurrent
-                ? colorScheme.primary.withValues(alpha: 0.16)
-                : null,
-            color: isCurrent ? colorScheme.primary : null,
-          ),
+          isCurrent: isCurrent,
+          highlightColor: palette.primary,
+          highlightBg: isCurrent
+              ? palette.primary.withValues(alpha: 0.14)
+              : null,
         ),
       );
       groupSpans.add(
@@ -180,7 +242,11 @@ class _MushafPageTextState extends State<MushafPageText> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => widget.onAyahTap(i),
-            child: _AyahMarker(number: ayah.ayahNumber, isCurrent: isCurrent),
+            child: _AyahMarker(
+              number: ayah.ayahNumber,
+              isCurrent: isCurrent,
+              simple: simple,
+            ),
           ),
         ),
       );
@@ -196,17 +262,40 @@ class _MushafPageTextState extends State<MushafPageText> {
 }
 
 class _AyahMarker extends StatelessWidget {
-  const _AyahMarker({required this.number, required this.isCurrent});
+  const _AyahMarker({
+    required this.number,
+    required this.isCurrent,
+    required this.simple,
+  });
 
   final int number;
   final bool isCurrent;
+  final bool simple;
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.quranReader;
     final colorScheme = Theme.of(context).colorScheme;
     final color = isCurrent
-        ? colorScheme.primary
-        : colorScheme.primary.withValues(alpha: 0.6);
+        ? palette.primary
+        : (simple
+            ? colorScheme.onSurfaceVariant
+            : palette.primary.withValues(alpha: 0.55));
+
+    if (simple) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2.w),
+        child: Text(
+          '﴿${_toArabicDigits(number)}﴾',
+          textDirection: TextDirection.rtl,
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+      );
+    }
 
     return Container(
       width: 23.sp,
@@ -237,7 +326,9 @@ class _SurahHeaderBanner extends StatelessWidget {
     required this.arabicName,
     required this.verseCount,
     required this.versesLabel,
+    required this.simple,
     this.arabicFontFamily,
+    this.arabicFontFamilyFallback,
   });
 
   final String surahLabel;
@@ -245,11 +336,44 @@ class _SurahHeaderBanner extends StatelessWidget {
   final String arabicName;
   final int verseCount;
   final String versesLabel;
+  final bool simple;
   final String? arabicFontFamily;
+  final List<String>? arabicFontFamilyFallback;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final palette = context.quranReader;
+
+    if (simple) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        child: Column(
+          children: [
+            Text(
+              arabicName,
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                fontFamily: arabicFontFamily,
+                fontFamilyFallback: arabicFontFamilyFallback,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+              ),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              '$surahLabel $surahNumber • $verseCount $versesLabel',
+              style: TextStyle(
+                fontSize: 11.sp,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 12.h),
@@ -257,10 +381,10 @@ class _SurahHeaderBanner extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.35),
+          color: palette.accent.withValues(alpha: 0.45),
           width: 1.2,
         ),
-        color: colorScheme.primary.withValues(alpha: 0.06),
+        color: palette.primary.withValues(alpha: 0.06),
       ),
       child: Column(
         children: [
@@ -269,9 +393,10 @@ class _SurahHeaderBanner extends StatelessWidget {
             textDirection: TextDirection.rtl,
             style: TextStyle(
               fontFamily: arabicFontFamily,
+              fontFamilyFallback: arabicFontFamilyFallback,
               fontSize: 21.sp,
               fontWeight: FontWeight.w700,
-              color: colorScheme.primary,
+              color: palette.primary,
             ),
           ),
           SizedBox(height: 3.h),
@@ -279,7 +404,7 @@ class _SurahHeaderBanner extends StatelessWidget {
             '$surahLabel $surahNumber • $verseCount $versesLabel',
             style: TextStyle(
               fontSize: 11.sp,
-              color: colorScheme.onSurfaceVariant,
+              color: palette.textSecondary,
             ),
           ),
         ],
@@ -289,24 +414,32 @@ class _SurahHeaderBanner extends StatelessWidget {
 }
 
 class _BismillahLine extends StatelessWidget {
-  const _BismillahLine({this.arabicFontFamily});
+  const _BismillahLine({
+    required this.simple,
+    this.arabicFontFamily,
+    this.arabicFontFamilyFallback,
+  });
 
+  final bool simple;
   final String? arabicFontFamily;
+  final List<String>? arabicFontFamilyFallback;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final palette = context.quranReader;
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
+      padding: EdgeInsets.symmetric(vertical: simple ? 8.h : 10.h),
       child: Text(
         _bismillah,
         textAlign: TextAlign.center,
         textDirection: TextDirection.rtl,
         style: TextStyle(
           fontFamily: arabicFontFamily,
+          fontFamilyFallback: arabicFontFamilyFallback,
           fontSize: 19.sp,
           fontWeight: FontWeight.w600,
-          color: colorScheme.onSurface,
+          color: simple ? colorScheme.onSurface : palette.textPrimary,
         ),
       ),
     );

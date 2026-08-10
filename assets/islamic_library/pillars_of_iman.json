@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "title": "Belief in Allah",
+      "subtitle": "Tawhid",
+      "arabic": "الإِيمَانُ بِاللَّهِ",
+      "body": "To believe in Allah as the One true God—His existence, names, attributes, and right to be worshipped alone without partners.",
+      "reference": "Quran 2:163",
+      "index": 1
+    },
+    {
+      "title": "Belief in Angels",
+      "subtitle": "Mala'ikah",
+      "arabic": "الإِيمَانُ بِالْمَلَائِكَةِ",
+      "body": "Angels are noble creations of light who worship Allah and carry out His commands, including recording deeds and delivering revelation.",
+      "reference": "Quran 2:98",
+      "index": 2
+    },
+    {
+      "title": "Belief in Books",
+      "subtitle": "Kutub",
+      "arabic": "الإِيمَانُ بِالْكُتُبِ",
+      "body": "Allah revealed scriptures to guide humanity. Muslims believe in all books sent by Allah, with the Quran as the final preserved revelation.",
+      "reference": "Quran 4:136",
+      "index": 3
+    },
+    {
+      "title": "Belief in Messengers",
+      "subtitle": "Rusul",
+      "arabic": "الإِيمَانُ بِالرُّسُلِ",
+      "body": "Allah sent prophets and messengers to every nation to call people to worship Him alone. Muhammad ﷺ is the seal of the prophets.",
+      "reference": "Quran 33:40",
+      "index": 4
+    },
+    {
+      "title": "Belief in the Last Day",
+      "subtitle": "Yawm al-Akhirah",
+      "arabic": "الإِيمَانُ بِالْيَوْمِ الْآخِرِ",
+      "body": "Life after death includes resurrection, accountability, Paradise, and Hell. This belief shapes how Muslims live with purpose and responsibility.",
+      "reference": "Quran 99:6-8",
+      "index": 5
+    },
+    {
+      "title": "Belief in Divine Decree",
+      "subtitle": "Al-Qadar",
+      "arabic": "الإِيمَانُ بِالْقَدَرِ",
+      "body": "Allah's knowledge and decree encompass all things—good and difficult. Believers strive, trust Allah, and accept outcomes with patience and gratitude.",
+      "reference": "Quran 57:22",
+      "index": 6
+    }
+  ]
+}

@@ -9,14 +9,18 @@ import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tajweed/tajweed_entry_point.dart';
+import '../data/quran_local_repository.dart';
 import '../reading_engine/quran_audio_controller.dart';
+import '../reading_engine/quran_arabic_font.dart';
 import '../reading_engine/quran_layout_theme.dart';
+import '../reading_engine/quran_reading_color_theme.dart';
 import '../reading_engine/quran_repeat_mode.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
 import 'widgets/ayah_card.dart';
 import 'widgets/quran_audio_bar.dart';
+import 'widgets/quran_reader_theme.dart';
 import 'quran_reading_settings_launcher.dart';
 
 /// Juz Mode reading screen (Phase 1). Same reading + audio experience as the
@@ -50,10 +54,12 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   bool _showEnglish = true;
   bool _showTransliteration = true;
   QuranLayoutTheme _layoutTheme = QuranLayoutTheme.classic;
+  QuranReadingColorTheme _colorTheme = QuranReadingColorTheme.emerald;
   double _arabicFontSp = 20;
   double _englishFontSp = 15;
   double _lineSpacing = 1.8;
-  String _arabicFontFamily = QuranScript.uthmani.fontFamily;
+  String? _arabicFontFamily = QuranScript.uthmani.fontFamily;
+  List<String>? _arabicFontFamilyFallback;
   double _speed = 1.0;
   double _volume = 1.0;
   QuranRepeatMode _repeatMode = QuranRepeatMode.off;
@@ -113,9 +119,16 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       StorageService.quranPlaybackVolume,
       StorageService.quranRepeatMode,
       StorageService.quranScript,
+      StorageService.quranArabicFont.then((v) => v ?? ''),
       TajweedEntryPoint.isEnabled(),
+      StorageService.quranReadingColorTheme,
     ]);
     if (!mounted) return;
+    final script = QuranScriptX.fromName(results[9] as String);
+    final arabicFont = QuranArabicFont.resolve(
+      savedName: results[10] as String,
+      script: script,
+    );
     setState(() {
       _showEnglish = results[0] as bool;
       _showTransliteration = results[1] as bool;
@@ -126,9 +139,10 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       _speed = results[6] as double;
       _volume = results[7] as double;
       _repeatMode = QuranRepeatMode.fromName(results[8] as String);
-      _arabicFontFamily =
-          QuranScriptX.fromName(results[9] as String).fontFamily;
-      _tajweedEnabled = results[10] as bool;
+      _arabicFontFamily = arabicFont.fontFamily;
+      _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
+      _tajweedEnabled = results[11] as bool;
+      _colorTheme = QuranReadingColorTheme.fromName(results[12] as String);
     });
 
     await _audio.loadPreferences();
@@ -248,6 +262,48 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     _closeAudioBar();
   }
 
+  Widget _buildJuzAyahCard(
+    BuildContext context,
+    AppLocalizations l10n,
+    List<AyahRecord> ayahs,
+    int index,
+  ) {
+    final ayah = ayahs[index];
+    final isNewSurah =
+        index == 0 || ayahs[index - 1].surahNumber != ayah.surahNumber;
+    final surahLabel = isNewSurah
+        ? '${l10n.quranSurahLabel} ${ayah.surahNumber}'
+        : null;
+    return AyahCard(
+      ayah: ayah,
+      isCurrent: index == _playingIndex,
+      isPlaying: _audio.player.playing,
+      showEnglish: _showEnglish,
+      showTransliteration: _showTransliteration,
+      layoutTheme: _layoutTheme,
+      arabicFontSp: _arabicFontSp,
+      englishFontSp: _englishFontSp,
+      lineSpacing: _lineSpacing,
+      arabicFontFamily: _arabicFontFamily,
+      arabicFontFamilyFallback: _arabicFontFamilyFallback,
+      surahLabel: surahLabel,
+      style: AyahCardStyle.surahDetail,
+      onTap: () => _onAyahTap(index),
+      onPracticeTap: _tajweedEnabled
+          ? () => TajweedEntryPoint.open(
+                context,
+                surah: ayah.surahNumber,
+                ayah: ayah.ayahNumber,
+                arabicText: ayah.arabicText,
+                translation:
+                    _showEnglish && ayah.englishText.trim().isNotEmpty
+                    ? ayah.englishText
+                    : null,
+              )
+          : null,
+    );
+  }
+
   Future<void> _reloadDisplayPrefs() async {
     final results = await Future.wait<Object>([
       StorageService.quranShowEnglish,
@@ -257,8 +313,15 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       StorageService.quranEnglishFontSp,
       StorageService.quranLineSpacing,
       StorageService.quranScript,
+      StorageService.quranArabicFont.then((v) => v ?? ''),
+      StorageService.quranReadingColorTheme,
     ]);
     if (!mounted) return;
+    final script = QuranScriptX.fromName(results[6] as String);
+    final arabicFont = QuranArabicFont.resolve(
+      savedName: results[7] as String,
+      script: script,
+    );
     setState(() {
       _showEnglish = results[0] as bool;
       _showTransliteration = results[1] as bool;
@@ -266,9 +329,12 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       _arabicFontSp = results[3] as double;
       _englishFontSp = results[4] as double;
       _lineSpacing = results[5] as double;
-      _arabicFontFamily =
-          QuranScriptX.fromName(results[6] as String).fontFamily;
+      _arabicFontFamily = arabicFont.fontFamily;
+      _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
+      _colorTheme = QuranReadingColorTheme.fromName(results[8] as String);
     });
+    await _engine.reloadAyahTexts();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -276,8 +342,15 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     final l10n = AppLocalizations.of(context)!;
     final ayahs = _engine.ayahs;
     final showAudioBar = _showAudioBar && _playingIndex >= 0 && _playingIndex < ayahs.length;
+    final palette = QuranReaderPalette.resolve(
+      _colorTheme,
+      Theme.of(context).brightness,
+    );
 
-    return Scaffold(
+    return QuranReaderThemeScope(
+      palette: palette,
+      child: Scaffold(
+      backgroundColor: palette.background,
       appBar: CustomAppBar(
         title: '${l10n.quranJuzLabel} ${_engine.unitNumber}',
         actions: [
@@ -314,42 +387,13 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
                       16.h + (showAudioBar ? 200.h : 0),
                     ),
                     itemCount: ayahs.length,
-                    separatorBuilder: (_, _) => SizedBox(height: 10.h),
+                    separatorBuilder: (_, _) => SizedBox(
+                      height: _layoutTheme == QuranLayoutTheme.simple
+                          ? 0
+                          : 10.h,
+                    ),
                     itemBuilder: (context, index) {
-                      final ayah = ayahs[index];
-                      final isNewSurah =
-                          index == 0 ||
-                          ayahs[index - 1].surahNumber != ayah.surahNumber;
-                      final surahLabel = isNewSurah
-                          ? '${l10n.quranSurahLabel} ${ayah.surahNumber}'
-                          : null;
-                      return AyahCard(
-                        ayah: ayah,
-                        isCurrent: index == _playingIndex,
-                        isPlaying: _audio.player.playing,
-                        showEnglish: _showEnglish,
-                        showTransliteration: _showTransliteration,
-                        layoutTheme: _layoutTheme,
-                        arabicFontSp: _arabicFontSp,
-                        englishFontSp: _englishFontSp,
-                        lineSpacing: _lineSpacing,
-                        arabicFontFamily: _arabicFontFamily,
-                        surahLabel: surahLabel,
-                        onTap: () => _onAyahTap(index),
-                        onPracticeTap: _tajweedEnabled
-                            ? () => TajweedEntryPoint.open(
-                                context,
-                                surah: ayah.surahNumber,
-                                ayah: ayah.ayahNumber,
-                                arabicText: ayah.arabicText,
-                                translation:
-                                    _showEnglish &&
-                                        ayah.englishText.trim().isNotEmpty
-                                    ? ayah.englishText
-                                    : null,
-                              )
-                            : null,
-                      );
+                      return _buildJuzAyahCard(context, l10n, ayahs, index);
                     },
                   ),
             if (showAudioBar)
@@ -393,6 +437,7 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
           ],
         ),
       ),
+    ),
     );
   }
 }

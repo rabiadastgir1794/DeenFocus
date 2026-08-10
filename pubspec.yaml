@@ -104,6 +104,16 @@ flutter:
     - assets/quran/text/indopak.json
     - assets/video/about_deen_focus.mp4
     - assets/video/video_thumbnail.png
+    - assets/islamic_library/names_of_allah.json
+    - assets/islamic_library/duas_adhkar.json
+    - assets/islamic_library/pillars_of_islam.json
+    - assets/islamic_library/pillars_of_iman.json
+    - assets/islamic_library/hadith.json
+    - assets/islamic_library/prophet_muhammad.json
+    - assets/islamic_library/prayer_methods.json
+    - assets/islamic_library/islamic_occasions.json
+    - assets/islamic_library/fiqh_differences.json
+    - assets/islamic_library/covers/
 
   fonts:
     - family: UthmanicHafs

@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/app_review_service.dart';
@@ -43,6 +43,7 @@ class HomeTabViewModel extends ChangeNotifier {
     DateTime.now().month,
     1,
   );
+
   /// First day (Sunday) of the row shown in weekly calendar mode; advances by ±7 days.
   DateTime weeklyVisibleWeekStart = HomeTabViewModel._startOfWeekFor(
     DateTime.now(),
@@ -57,6 +58,7 @@ class HomeTabViewModel extends ChangeNotifier {
   );
 
   Timer? _ticker;
+  bool _tabActive = true;
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
   /// When Superwall is enabled, bearing/distance subtitle is shown only for active subscribers.
@@ -68,12 +70,41 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void>? _resumeInFlight;
 
-  bool get isFriday => DateTime.now().weekday == DateTime.friday;
+  String? _cachedQiblaInfo;
+  double? _qiblaCacheLat;
+  double? _qiblaCacheLng;
+  List<int>? _cachedWeekPrayerCounts;
+  String? _weekCountsCacheKey;
+  String? _lastPersistedStreakJson;
+  DateTime? _fridayCacheDay;
+  bool? _fridayCacheValue;
+
+  bool get isFriday {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    if (_fridayCacheDay == day && _fridayCacheValue != null) {
+      return _fridayCacheValue!;
+    }
+    _fridayCacheDay = day;
+    _fridayCacheValue = now.weekday == DateTime.friday;
+    return _fridayCacheValue!;
+  }
+
   HomePrayerStreakState get prayerStreakState => _prayerStreakState;
   List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
 
   String? get qiblaInfo {
-    if (latitude == null || longitude == null) return null;
+    if (latitude == null || longitude == null) {
+      _cachedQiblaInfo = null;
+      _qiblaCacheLat = null;
+      _qiblaCacheLng = null;
+      return null;
+    }
+    if (_cachedQiblaInfo != null &&
+        _qiblaCacheLat == latitude &&
+        _qiblaCacheLng == longitude) {
+      return _cachedQiblaInfo;
+    }
     final coordinates = Coordinates(latitude!, longitude!);
     final qibla = Qibla(coordinates).direction;
     final distanceMeters = Geolocator.distanceBetween(
@@ -83,7 +114,11 @@ class HomeTabViewModel extends ChangeNotifier {
       Qibla.MAKKAH.longitude,
     );
     final distanceKm = distanceMeters / 1000;
-    return '${qibla.toStringAsFixed(0)}° • ${distanceKm.toStringAsFixed(0)} km';
+    _qiblaCacheLat = latitude;
+    _qiblaCacheLng = longitude;
+    _cachedQiblaInfo =
+        '${qibla.toStringAsFixed(0)}° • ${distanceKm.toStringAsFixed(0)} km';
+    return _cachedQiblaInfo;
   }
 
   bool get showQiblaBearingDetails {
@@ -96,6 +131,29 @@ class HomeTabViewModel extends ChangeNotifier {
     _initialized = true;
     await _loadAll();
     _startTicker();
+    // Review / Superwall / events after first home frame — not on the critical path.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      unawaited(_loadDeferredAfterFirstFrame());
+    });
+  }
+
+  /// Pause/resume the minute ticker when the Home tab is not visible.
+  void setTabActive(bool active) {
+    if (_tabActive == active) return;
+    _tabActive = active;
+    if (active) {
+      _startTicker();
+    } else {
+      _ticker?.cancel();
+      _ticker = null;
+    }
+  }
+
+  Future<void> _loadDeferredAfterFirstFrame() async {
+    await _loadSubscriptionStatus();
+    // Qibla subtitle may depend on subscription — one cheap notify.
+    notifyListeners();
+    unawaited(_loadEvents());
     unawaited(AppReviewService.onAppResumed());
   }
 
@@ -126,17 +184,26 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      userName = await StorageService.userName ?? 'User';
-      locationName = await StorageService.locationName;
-      locationSubtitle = await StorageService.locationSubtitle;
-      latitude = await StorageService.locationLatitude;
-      longitude = await StorageService.locationLongitude;
-      _lastAppliedSect = await StorageService.sect;
-      await _loadVerse();
-      await _loadSubscriptionStatus();
-      await _loadPrayerTimes();
-      await _loadPrayerStreak();
-      _loadEvents();
+      final profile = await Future.wait<Object?>([
+        StorageService.userName,
+        StorageService.locationName,
+        StorageService.locationSubtitle,
+        StorageService.locationLatitude,
+        StorageService.locationLongitude,
+        StorageService.sect,
+      ]);
+      userName = (profile[0] as String?) ?? 'User';
+      locationName = profile[1] as String?;
+      locationSubtitle = profile[2] as String?;
+      latitude = profile[3] as double?;
+      longitude = profile[4] as double?;
+      _lastAppliedSect = profile[5] as String?;
+
+      await Future.wait([
+        _loadVerse(),
+        _loadPrayerTimes(),
+        _loadPrayerStreak(),
+      ]);
     } catch (_) {
       // Keep last good state and always release loading to avoid stuck spinner.
     } finally {
@@ -148,8 +215,7 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> _loadSubscriptionStatus() async {
     await AppSuperwall.syncSubscriptionState();
 
-    _subscriptionActive =
-        AppSuperwall.subscriptionActiveNotifier.value;
+    _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
   }
 
   Future<void> _loadPrayerStreak() async {
@@ -170,6 +236,10 @@ class HomeTabViewModel extends ChangeNotifier {
 
     _prayerStreakState = _ensureWeekDays(state, weekStart);
     _recomputeStreakDays(now);
+    _invalidateWeekPrayerCountsCache();
+    if (raw != null) {
+      _lastPersistedStreakJson = raw;
+    }
     await _persistPrayerStreak();
   }
 
@@ -361,7 +431,11 @@ class HomeTabViewModel extends ChangeNotifier {
 
   List<int> get weekPrayerCounts {
     final dates = currentWeekDates;
-    return dates
+    final cacheKey = _streakCacheKey(dates);
+    if (_cachedWeekPrayerCounts != null && _weekCountsCacheKey == cacheKey) {
+      return _cachedWeekPrayerCounts!;
+    }
+    final counts = dates
         .map((date) {
           final dateKey = _dayKeyFormat.format(date);
           return _prayerStreakState.weekDays
@@ -372,6 +446,22 @@ class HomeTabViewModel extends ChangeNotifier {
               0;
         })
         .toList(growable: false);
+    _cachedWeekPrayerCounts = counts;
+    _weekCountsCacheKey = cacheKey;
+    return counts;
+  }
+
+  String _streakCacheKey(List<DateTime> dates) {
+    final dayPart = dates.map(_dayKeyFormat.format).join('|');
+    final prayersPart = _prayerStreakState.weekDays
+        .map((d) => '${d.dateKey}:${d.selectedPrayers.length}')
+        .join(',');
+    return '$dayPart#$prayersPart#$streakDays';
+  }
+
+  void _invalidateWeekPrayerCountsCache() {
+    _cachedWeekPrayerCounts = null;
+    _weekCountsCacheKey = null;
   }
 
   List<HomePrayerChecklistDay> get currentWeekChecklistDays =>
@@ -431,6 +521,7 @@ class HomeTabViewModel extends ChangeNotifier {
       completedDateKeys: completedDates,
     );
     _recomputeStreakDays(DateTime.now());
+    _invalidateWeekPrayerCountsCache();
     await _persistPrayerStreak();
     notifyListeners();
   }
@@ -498,11 +589,15 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _persistPrayerStreak() async {
-    await StorageService.setHomePrayerStreakJson(_prayerStreakState.toJson());
+    final json = _prayerStreakState.toJson();
+    if (json == _lastPersistedStreakJson) return;
+    _lastPersistedStreakJson = json;
+    await StorageService.setHomePrayerStreakJson(json);
   }
 
   void _startTicker() {
     _ticker?.cancel();
+    if (!_tabActive) return;
     _ticker = Timer.periodic(const Duration(minutes: 1), (_) async {
       await _loadPrayerTimes();
       await _loadPrayerStreak();

@@ -347,7 +347,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeFindMasjid => 'البحث عن مسجد بالقرب مني';
 
   @override
-  String get homeSearchNearbyMosques => 'بحث المساجد القريبة.';
+  String get homeSearchNearbyMosques =>
+      'اعثر على مساجد قريبة من OpenStreetMap.';
 
   @override
   String get homePrayerStreak => 'خطوط الصلاة';
@@ -429,7 +430,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tabTasbih => 'التسبيح';
 
   @override
-  String get tabQuran => 'القرآن';
+  String get tabQuran => 'تعلّم';
 
   @override
   String get quranLoadFailed => 'فشل تحميل بيانات القرآن';
@@ -438,7 +439,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranTabSubtitle => 'قراءة واستكشاف القرآن الكريم';
 
   @override
+  String get quranTabSubtitleExtended =>
+      'Read, listen and perfect your tajweed';
+
+  @override
   String get quranSearchHint => 'بحث في سورة...';
+
+  @override
+  String get quranSearchHintExtended => 'Search surah or meaning...';
+
+  @override
+  String get quranNoResults => 'No results found';
 
   @override
   String get quranNoSurahsFound => 'لم يتم العثور على سورة';
@@ -471,13 +482,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranSurahLabel => 'سورة';
 
   @override
-  String get quranModeSurah => 'Surah';
+  String get quranModeSurah => 'سورة';
 
   @override
-  String get quranModeJuz => 'Juz';
+  String get quranModeJuz => 'جزء';
 
   @override
-  String get quranModePage => 'Page';
+  String get quranModePage => 'صفحة';
 
   @override
   String get quranJuzLabel => 'Juz';
@@ -507,6 +518,119 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranNextPage => 'Next page';
 
   @override
+  String get quranMarkPageRead => 'Read';
+
+  @override
+  String quranPageMarkedRead(int page) {
+    return 'Page $page marked as read';
+  }
+
+  @override
+  String get quranMushafComplete => 'Complete';
+
+  @override
+  String get quranPageEmpty => 'No ayahs on this page';
+
+  @override
+  String get quranTranslationUnavailable =>
+      'Translation not available for this ayah';
+
+  @override
+  String quranJuzProgressLabel(int percent, int juz) {
+    return '$percent% of Juz $juz';
+  }
+
+  @override
+  String get quranBookmarksTitle => 'Bookmarks';
+
+  @override
+  String get quranBookmarksEmpty => 'No bookmarks yet';
+
+  @override
+  String get quranBookmark => 'Bookmark';
+
+  @override
+  String get quranBookmarkSaved => 'Bookmark saved';
+
+  @override
+  String get quranBookmarkRemoved => 'Bookmark removed';
+
+  @override
+  String quranBookmarkCount(int count) {
+    return '$count saved';
+  }
+
+  @override
+  String get quranQuickTajweed => 'Tajweed drill';
+
+  @override
+  String get quranQuickTajweedSub => 'Recite & score';
+
+  @override
+  String get quranLastListened => 'Last listened';
+
+  @override
+  String get quranNoneYet => 'None yet';
+
+  @override
+  String get quranOpenPage => 'Open page';
+
+  @override
+  String get quranOpenJuz => 'Open Juz';
+
+  @override
+  String get quranOpenAyah => 'Open ayah';
+
+  @override
+  String get quranReadingToolsTitle => 'أدوات القراءة';
+
+  @override
+  String get quranQuickActions => 'Quick actions';
+
+  @override
+  String get quranReadingToolsHint =>
+      'التفسير وتجويد الألوان وكلمة بكلمة وقراء إضافيون قريبًا.';
+
+  @override
+  String get quranCopy => 'Copy';
+
+  @override
+  String get quranShare => 'Share';
+
+  @override
+  String get quranCopied => 'Copied to clipboard';
+
+  @override
+  String get quranShareCopiedHint => 'Copied — paste to share';
+
+  @override
+  String get quranColorTajweed => 'Color Tajweed';
+
+  @override
+  String get quranTafsir => 'Tafsir';
+
+  @override
+  String get quranWordByWord => 'Word-by-word';
+
+  @override
+  String get quranReciters => 'Reciters';
+
+  @override
+  String get quranComingSoon => 'Coming soon';
+
+  @override
+  String get tajweedDisabledHint =>
+      'فعّل ممارسة التجويد بالذكاء الاصطناعي من إعدادات القراءة';
+
+  @override
+  String get readingSettingsTajweedPractice =>
+      'ممارسة التجويد بالذكاء الاصطناعي';
+
+  @override
+  String get readingSettingsTajweedPracticeSubtitle =>
+      'اتلُ الآيات واحصل على ملاحظات';
+
+  @override
   String get quranAudioSettingsTitle => 'Audio settings';
 
   @override
@@ -528,82 +652,127 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranRepeatSurah => 'Surah';
 
   @override
-  String get readingSettingsTitle => 'Reading Settings';
+  String get readingSettingsTitle => 'إعدادات القراءة';
 
   @override
-  String get readingSettingsArabicFontSize => 'Arabic font size';
+  String get readingSettingsArabicFontSize => 'حجم خط العربية';
 
   @override
-  String get readingSettingsTranslationFontSize => 'Translation font size';
+  String get readingSettingsTranslationFontSize => 'حجم خط الترجمة';
 
   @override
-  String get readingSettingsLineSpacing => 'Line spacing';
+  String get readingSettingsLineSpacing => 'تباعد الأسطر';
 
   @override
-  String get readingSettingsDefaultMode => 'Default reading mode';
+  String get readingSettingsDefaultMode => 'وضع القراءة الافتراضي';
 
   @override
-  String get readingSettingsRememberPosition => 'Remember last position';
+  String get readingSettingsRememberPosition => 'تذكّر آخر موضع';
 
   @override
-  String get readingSettingsScript => 'Arabic script';
+  String get readingSettingsScript => 'الرسم العربي';
 
   @override
-  String get readingSettingsScriptUthmani => 'Uthmani (Hafs)';
+  String get readingSettingsScriptUthmani => 'عثماني (حفص)';
 
   @override
-  String get readingSettingsScriptIndopak => 'IndoPak (Hafs)';
+  String get readingSettingsScriptIndopak => 'هندوباك (حفص)';
 
   @override
-  String get readingSettingsShowTranslation => 'Show translation';
+  String get readingSettingsArabicFont => 'خط العربية';
 
   @override
-  String get readingSettingsShowTransliteration => 'Show transliteration';
+  String get readingSettingsFontUthmanic => 'عثماني حفص';
 
   @override
-  String get readingSettingsTranslationSection => 'Translation';
+  String get readingSettingsFontNooreHuda => 'نور هدى';
 
   @override
-  String get readingSettingsTranslationLabel => 'Translation';
+  String get readingSettingsFontSystem => 'النظام (أصلي)';
 
   @override
-  String get readingSettingsTranslationCurrent => 'Current';
+  String get readingSettingsShowTranslation => 'إظهار الترجمة';
 
   @override
-  String get readingSettingsInstalledTranslations => 'Installed';
+  String get readingSettingsShowTransliteration => 'إظهار النقحرة';
 
   @override
-  String get readingSettingsAvailableTranslations => 'Available';
+  String get readingSettingsTranslationSection => 'الترجمة';
 
   @override
-  String get readingSettingsTranslationInstalled => 'Installed';
+  String get readingSettingsTranslationLabel => 'الترجمة';
 
   @override
-  String get readingSettingsTranslationSelected => 'Selected';
+  String get readingSettingsTranslationCurrent => 'الحالية';
 
   @override
-  String get readingSettingsTranslationDownload => 'Download';
+  String get readingSettingsInstalledTranslations => 'مثبّتة';
 
   @override
-  String get readingSettingsTranslationInstalling => 'Installing…';
+  String get readingSettingsAvailableTranslations => 'متاحة';
 
   @override
-  String get readingSettingsTranslationDownloading => 'Downloading…';
+  String get readingSettingsTranslationInstalled => 'مثبّتة';
 
   @override
-  String get readingSettingsLayoutTheme => 'Quran layout';
+  String get readingSettingsTranslationSelected => 'محددة';
 
   @override
-  String get readingSettingsLayoutClassic => 'Classic';
+  String get readingSettingsTranslationDownload => 'تنزيل';
 
   @override
-  String get readingSettingsLayoutSimple => 'Simple';
+  String get readingSettingsTranslationInstalling => 'جارٍ التثبيت…';
 
   @override
-  String get readingSettingsLayoutColor => 'Color Quran';
+  String get readingSettingsTranslationDownloading => 'جارٍ التنزيل…';
 
   @override
-  String get readingSettingsPreview => 'Preview';
+  String get readingSettingsLayoutTheme => 'تخطيط القرآن';
+
+  @override
+  String get readingSettingsLayoutClassic => 'مصحف';
+
+  @override
+  String get readingSettingsLayoutSimple => 'بسيط';
+
+  @override
+  String get readingSettingsLayoutColor => 'قرآن ملوّن';
+
+  @override
+  String get readingSettingsColorTheme => 'سمة القراءة';
+
+  @override
+  String get readingSettingsColorThemeParchment => 'رقّ';
+
+  @override
+  String get readingSettingsColorThemeEmerald => 'زمردي';
+
+  @override
+  String get readingSettingsColorThemeMidnight => 'منتصف الليل';
+
+  @override
+  String get readingSettingsPreview => 'معاينة';
+
+  @override
+  String get readingSettingsResetHistoryTitle => 'إعادة تعيين بيانات القراءة';
+
+  @override
+  String get readingSettingsResetHistorySubtitle =>
+      'يمسح متابعة القراءة وتقدّم الصفحات والإشارات المرجعية والاختصارات';
+
+  @override
+  String get readingSettingsResetHistoryConfirmTitle =>
+      'إعادة تعيين بيانات القراءة؟';
+
+  @override
+  String get readingSettingsResetHistoryConfirmBody =>
+      'سيؤدي هذا إلى إزالة متابعة القراءة وتقدّم الصفحات والإشارات المرجعية وآخر استماع واختصارات التجويد. تُحفظ إعدادات العرض والترجمة.';
+
+  @override
+  String get readingSettingsResetHistoryDone => 'تم مسح بيانات القراءة';
+
+  @override
+  String get readingSettingsResetHistoryButton => 'إعادة تعيين';
 
   @override
   String get tajweedListenToAyah => 'Listen to ayah';
@@ -613,6 +782,55 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tajweedTapToStop => 'Tap to stop';
+
+  @override
+  String get tajweedListeningHint => 'Listening... recite clearly';
+
+  @override
+  String get tajweedStopAnalyse => 'Stop & analyse';
+
+  @override
+  String get tajweedWordAccuracyLabel => 'WORD ACCURACY';
+
+  @override
+  String get tajweedWordReviewLabel => 'WORD REVIEW';
+
+  @override
+  String get tajweedResultEncouragement =>
+      'Beautiful effort — keep practicing your tajweed.';
+
+  @override
+  String get quranReciteCheckTajweed => 'Recite & check tajweed';
+
+  @override
+  String get quranTajweedLegendGhunnah => 'Ghunnah';
+
+  @override
+  String get quranTajweedLegendGhunnahDesc => 'Nasal hold, 2 counts';
+
+  @override
+  String get quranTajweedLegendQalqalah => 'Qalqalah';
+
+  @override
+  String get quranTajweedLegendQalqalahDesc => 'Echo bounce';
+
+  @override
+  String get quranTajweedLegendMadd => 'Madd';
+
+  @override
+  String get quranTajweedLegendMaddDesc => 'Prolong the vowel';
+
+  @override
+  String get quranTajweedLegendIdgham => 'Idgham';
+
+  @override
+  String get quranTajweedLegendIdghamDesc => 'Merge letters';
+
+  @override
+  String get quranTajweedLegendIkhfa => 'Ikhfa';
+
+  @override
+  String get quranTajweedLegendIkhfaDesc => 'Hide the noon';
 
   @override
   String get save => 'يحفظ';
@@ -665,6 +883,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tasbihResetTotal => 'مسح التاريخ';
+
+  @override
+  String tasbihLoopLabel(int number) {
+    return 'الدورة $number';
+  }
+
+  @override
+  String get tasbihCurrentDhikr => 'الذكر الحالي';
+
+  @override
+  String get tasbihViewAll => 'عرض الكل';
+
+  @override
+  String get tasbihSaveSession => 'حفظ الجلسة';
+
+  @override
+  String get tasbihSessionSaved => 'تم حفظ الجلسة';
+
+  @override
+  String get tasbihSwipeHint => 'مرّر الحبات عبر المنتصف للعد · للخلف للتراجع';
+
+  @override
+  String get tasbihEditGoalTitle => 'تعيين الهدف';
+
+  @override
+  String get tasbihCustomGoalHint => 'أدخل رقمًا (مثل 33)';
+
+  @override
+  String get tasbihSoundOn => 'الصوت قيد التشغيل';
+
+  @override
+  String get tasbihSoundOff => 'الصوت متوقف';
+
+  @override
+  String tasbihSessionSummary(int total, int goal, int loops) {
+    return 'إجمالي هذه الجلسة $total · الهدف $goal · الدورات المكتملة $loops';
+  }
 
   @override
   String get focusModeActivated => 'تم تنشيط وضع التركيز';
@@ -988,7 +1243,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qiblaWestShort => 'دبليو';
 
   @override
-  String get nearbyMosquesTitle => 'المساجد القريبة';
+  String get nearbyMosquesTitle => 'مساجد قريبة';
 
   @override
   String get nearbyMosquesTryAgain => 'حاول ثانية';
@@ -1004,7 +1259,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'لم يتم العثور على أي مساجد في الداخل';
 
   @override
-  String get nearbyMosquesSearchRadius => 'نصف قطر البحث: 5 كم';
+  String nearbyMosquesSearchRadius(int radiusKm) {
+    return 'نصف قطر البحث: $radiusKm كم';
+  }
 
   @override
   String get nearbyMosquesMapPreviewUnavailable =>
@@ -1024,8 +1281,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'ستظهر المساجد القريبة هنا بمجرد تحميل النتائج.';
 
   @override
-  String get nearbyMosquesNoneWithinRadius =>
-      'لم يتم العثور على مساجد في نطاق 5 كم';
+  String nearbyMosquesNoneWithinRadius(int radiusKm) {
+    return 'لم يتم العثور على مساجد في نطاق $radiusKm كم';
+  }
 
   @override
   String get nearbyMosquesLocationRequired =>
@@ -1076,13 +1334,27 @@ class AppLocalizationsAr extends AppLocalizations {
       'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get nearbyMosquesEmptyHint =>
-      'لا يوجد شيء مدرج على بعد 5 كم على OpenStreetMap لهذا المكان. حاول مرة أخرى لاحقًا أو انقل الخريطة.';
+  String nearbyMosquesEmptyHint(int radiusKm) {
+    return 'لا يوجد شيء مدرج على بعد $radiusKm كم على OpenStreetMap لهذا المكان. حاول مرة أخرى لاحقًا أو انتقل لمكان آخر.';
+  }
 
   @override
-  String nearbyMosquesFoundWithin(int count) {
-    return '$count المساجد التي تم العثور عليها في نطاق 5 كم';
+  String nearbyMosquesFoundWithin(int count, int radiusKm) {
+    return '$count مسجد ضمن نطاق $radiusKm كم';
   }
+
+  @override
+  String nearbyMosquesCountNearby(int count) {
+    return '$count مسجد قريب';
+  }
+
+  @override
+  String nearbyMosquesResultsMeta(int radiusKm) {
+    return 'ضمن $radiusKm كم · مرتبة حسب المسافة';
+  }
+
+  @override
+  String get nearbyMosquesDirections => 'الاتجاهات';
 
   @override
   String get tasbihDeleteDhikrTitle => 'حذف الذكر؟';
@@ -1138,4 +1410,297 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeAiErrorEmptyContent => 'محتوى الرد فارغ.';
+
+  @override
+  String get libraryHomeTitle => 'المكتبة الإسلامية';
+
+  @override
+  String get libraryHomeSubtitle =>
+      'تعلّم الحديث والأدعية وأسماء الله الحسنى والمزيد';
+
+  @override
+  String get libraryHubTitle => 'المكتبة الإسلامية';
+
+  @override
+  String get libraryModuleQuran => 'القرآن';
+
+  @override
+  String get libraryModuleQuranSub => 'اقرأ واستمع وتدرّب على التجويد';
+
+  @override
+  String get libraryModuleHadith => 'الحديث';
+
+  @override
+  String get libraryModuleHadithSub => 'مجموعات من مصادر موثوقة';
+
+  @override
+  String get libraryModuleDuas => 'الأدعية والأذكار';
+
+  @override
+  String get libraryModuleDuasSub => 'أذكار الصباح والمساء والحياة اليومية';
+
+  @override
+  String get libraryModulePrayerMethods => 'الصلاة والطرق الإسلامية';
+
+  @override
+  String get libraryModulePrayerMethodsSub => 'الوضوء والصلاة والحج والمزيد';
+
+  @override
+  String get libraryModuleFiqh => 'الفقه والتقاليد';
+
+  @override
+  String get libraryModuleFiqhSub =>
+      'أهل السنة والشيعة والمذاهب وأهل الحديث والمزيد';
+
+  @override
+  String get libraryModuleNames => 'أسماء الله الحسنى';
+
+  @override
+  String get libraryModuleNamesSub => 'تعلّم وتأمّل في أسماء الله الحسنى';
+
+  @override
+  String get libraryModulePillarsIslam => 'أركان الإسلام';
+
+  @override
+  String get libraryModulePillarsIslamSub => 'الأسس الخمسة للإيمان والعمل';
+
+  @override
+  String get libraryModulePillarsIman => 'أركان الإيمان';
+
+  @override
+  String get libraryModulePillarsImanSub => 'أركان الإيمان الستة';
+
+  @override
+  String get libraryModuleProphets => 'النبي محمد ﷺ';
+
+  @override
+  String get libraryModuleProphetsSub => 'حياته ورسالته ودروسه الخالدة';
+
+  @override
+  String get libraryModuleOccasions => 'المناسبات الإسلامية';
+
+  @override
+  String get libraryModuleOccasionsSub => 'رمضان والعيد والحج والأيام المباركة';
+
+  @override
+  String get libraryKeyLesson => 'الدرس الأساسي';
+
+  @override
+  String libraryCardProgress(int current, int total) {
+    return '$current من $total';
+  }
+
+  @override
+  String get libraryPrevious => 'السابق';
+
+  @override
+  String get libraryNext => 'التالي';
+
+  @override
+  String get libraryBookmark => 'إشارة مرجعية';
+
+  @override
+  String get libraryCopy => 'نسخ';
+
+  @override
+  String get libraryShare => 'مشاركة';
+
+  @override
+  String get libraryCopied => 'تم النسخ إلى الحافظة';
+
+  @override
+  String get libraryShareCopiedHint => 'تم النسخ — الصق للمشاركة';
+
+  @override
+  String get libraryBookmarkSaved => 'تم حفظ الإشارة المرجعية';
+
+  @override
+  String get libraryBookmarkRemoved => 'تمت إزالة الإشارة المرجعية';
+
+  @override
+  String get libraryTranslation => 'الترجمة';
+
+  @override
+  String get libraryTransliteration => 'النطق اللاتيني';
+
+  @override
+  String get libraryMeaning => 'المعنى';
+
+  @override
+  String get libraryBookmarksTitle => 'عناصر التعلم المحفوظة';
+
+  @override
+  String get libraryBookmarksSubtitle =>
+      'الحديث والأدعية والأسماء والفقه والمزيد';
+
+  @override
+  String get libraryBookmarksEmpty =>
+      'لا توجد عناصر محفوظة بعد. اضغط على إشارة مرجعية في أي عنصر تعليمي لحفظه هنا.';
+
+  @override
+  String get libraryMarkCompleted => 'تعيين كمكتمل';
+
+  @override
+  String get librarySectionCompleted => 'مكتمل';
+
+  @override
+  String get libraryReflection => 'تأمّل';
+
+  @override
+  String get libraryComingSoonTitle => 'قريبًا';
+
+  @override
+  String get libraryComingSoonBody =>
+      'هذا القسم قيد الإعداد. عد في تحديث لاحق.';
+
+  @override
+  String get librarySearchHint => 'بحث…';
+
+  @override
+  String get librarySearchEmpty => 'لا توجد نتائج';
+
+  @override
+  String libraryItemCount(int count) {
+    return '$count عنصر';
+  }
+
+  @override
+  String librarySearchResultCount(int shown, int total) {
+    return '$shown من $total';
+  }
+
+  @override
+  String libraryContinueFrom(int number) {
+    return 'متابعة · $number';
+  }
+
+  @override
+  String get libraryInProgress => 'قيد التقدّم';
+
+  @override
+  String libraryReference(String source) {
+    return 'المرجع: $source';
+  }
+
+  @override
+  String libraryDuaCount(int count) {
+    return '$count أدعية';
+  }
+
+  @override
+  String get libraryDuaCategoryMorning => 'الصباح';
+
+  @override
+  String get libraryDuaCategoryEvening => 'المساء';
+
+  @override
+  String get libraryDuaCategoryDailyLife => 'الحياة اليومية';
+
+  @override
+  String get libraryDuaCategorySleep => 'النوم';
+
+  @override
+  String get libraryDuaCategoryFood => 'الطعام';
+
+  @override
+  String get libraryDuaCategoryTravel => 'السفر';
+
+  @override
+  String get libraryDuaCategoryIllness => 'المرض';
+
+  @override
+  String get libraryDuaCategoryProtection => 'الحماية';
+
+  @override
+  String get libraryDuaCategoryForgiveness => 'المغفرة';
+
+  @override
+  String get libraryDuaCategoryParents => 'الوالدان';
+
+  @override
+  String libraryHadithCount(int count) {
+    return '$count حديث';
+  }
+
+  @override
+  String get libraryHadithNarrator => 'الراوي:';
+
+  @override
+  String get libraryHadithSource => 'المصدر:';
+
+  @override
+  String get libraryHadithCollectionBukhari => 'صحيح البخاري';
+
+  @override
+  String get libraryHadithCollectionMuslim => 'صحيح مسلم';
+
+  @override
+  String get libraryHadithCollectionRiyad => 'رياض الصالحين';
+
+  @override
+  String get libraryHadithCollectionNawawi => 'الأربعون النووية';
+
+  @override
+  String get libraryHadithCollectionHisnul => 'حصن المسلم';
+
+  @override
+  String libraryGuideStepCount(int count) {
+    return '$count خطوات';
+  }
+
+  @override
+  String libraryGuideStepLabel(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get libraryGuideWudu => 'الوضوء';
+
+  @override
+  String get libraryGuideSalah => 'الصلاة';
+
+  @override
+  String get libraryGuideGhusl => 'الغسل';
+
+  @override
+  String get libraryGuideTayammum => 'التيمم';
+
+  @override
+  String get libraryGuideJanazah => 'صلاة الجنازة';
+
+  @override
+  String get libraryGuideUmrah => 'العمرة';
+
+  @override
+  String get libraryGuideHajj => 'الحج';
+
+  @override
+  String get libraryGuideFasting => 'الصيام';
+
+  @override
+  String get libraryGuideZakat => 'الزكاة';
+
+  @override
+  String get libraryGuideTawbah => 'التوبة';
+
+  @override
+  String get libraryOccasionImportance => 'الأهمية';
+
+  @override
+  String get libraryOccasionVirtues => 'الفضائل';
+
+  @override
+  String get libraryOccasionRecommendedActs => 'الأعمال المستحبة';
+
+  @override
+  String get libraryFiqhOverview => 'نظرة عامة';
+
+  @override
+  String get libraryFiqhKeyPoints => 'النقاط الرئيسية';
+
+  @override
+  String get libraryFiqhDifferences => 'الفروق البارزة';
+
+  @override
+  String get libraryFiqhCommonGround => 'القواسم المشتركة';
 }

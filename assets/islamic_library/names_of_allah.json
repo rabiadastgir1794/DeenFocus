@@ -1,0 +1,797 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "index": 1,
+      "arabic": "الرَّحْمَنُ",
+      "transliteration": "Ar-Rahman",
+      "meaning": "The Most Gracious",
+      "explanation": "Allah is The Most Gracious. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the most gracious change the way you respond to today's challenges?"
+    },
+    {
+      "index": 2,
+      "arabic": "الرَّحِيمُ",
+      "transliteration": "Ar-Raheem",
+      "meaning": "The Most Merciful",
+      "explanation": "Allah is The Most Merciful. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the most merciful change the way you respond to today's challenges?"
+    },
+    {
+      "index": 3,
+      "arabic": "الْمَلِكُ",
+      "transliteration": "Al-Malik",
+      "meaning": "The King",
+      "explanation": "Allah is The King. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the king change the way you respond to today's challenges?"
+    },
+    {
+      "index": 4,
+      "arabic": "الْقُدُّوسُ",
+      "transliteration": "Al-Quddus",
+      "meaning": "The Most Holy",
+      "explanation": "Allah is The Most Holy. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the most holy change the way you respond to today's challenges?"
+    },
+    {
+      "index": 5,
+      "arabic": "السَّلَامُ",
+      "transliteration": "As-Salam",
+      "meaning": "The Source of Peace",
+      "explanation": "Allah is The Source of Peace. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the source of peace change the way you respond to today's challenges?"
+    },
+    {
+      "index": 6,
+      "arabic": "الْمُؤْمِنُ",
+      "transliteration": "Al-Mu'min",
+      "meaning": "The Guardian of Faith",
+      "explanation": "Allah is The Guardian of Faith. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the guardian of faith change the way you respond to today's challenges?"
+    },
+    {
+      "index": 7,
+      "arabic": "الْمُهَيْمِنُ",
+      "transliteration": "Al-Muhaymin",
+      "meaning": "The Protector",
+      "explanation": "Allah is The Protector. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the protector change the way you respond to today's challenges?"
+    },
+    {
+      "index": 8,
+      "arabic": "الْعَزِيزُ",
+      "transliteration": "Al-Aziz",
+      "meaning": "The Almighty",
+      "explanation": "Allah is The Almighty. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the almighty change the way you respond to today's challenges?"
+    },
+    {
+      "index": 9,
+      "arabic": "الْجَبَّارُ",
+      "transliteration": "Al-Jabbar",
+      "meaning": "The Compeller",
+      "explanation": "Allah is The Compeller. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the compeller change the way you respond to today's challenges?"
+    },
+    {
+      "index": 10,
+      "arabic": "الْمُتَكَبِّرُ",
+      "transliteration": "Al-Mutakabbir",
+      "meaning": "The Supreme",
+      "explanation": "Allah is The Supreme. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the supreme change the way you respond to today's challenges?"
+    },
+    {
+      "index": 11,
+      "arabic": "الْخَالِقُ",
+      "transliteration": "Al-Khaliq",
+      "meaning": "The Creator",
+      "explanation": "Allah is The Creator. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the creator change the way you respond to today's challenges?"
+    },
+    {
+      "index": 12,
+      "arabic": "الْبَارِئُ",
+      "transliteration": "Al-Bari",
+      "meaning": "The Maker",
+      "explanation": "Allah is The Maker. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the maker change the way you respond to today's challenges?"
+    },
+    {
+      "index": 13,
+      "arabic": "الْمُصَوِّرُ",
+      "transliteration": "Al-Musawwir",
+      "meaning": "The Fashioner",
+      "explanation": "Allah is The Fashioner. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the fashioner change the way you respond to today's challenges?"
+    },
+    {
+      "index": 14,
+      "arabic": "الْغَفَّارُ",
+      "transliteration": "Al-Ghaffar",
+      "meaning": "The Repeatedly Forgiving",
+      "explanation": "Allah is The Repeatedly Forgiving. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the repeatedly forgiving change the way you respond to today's challenges?"
+    },
+    {
+      "index": 15,
+      "arabic": "الْقَهَّارُ",
+      "transliteration": "Al-Qahhar",
+      "meaning": "The Subduer",
+      "explanation": "Allah is The Subduer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the subduer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 16,
+      "arabic": "الْوَهَّابُ",
+      "transliteration": "Al-Wahhab",
+      "meaning": "The Bestower",
+      "explanation": "Allah is The Bestower. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the bestower change the way you respond to today's challenges?"
+    },
+    {
+      "index": 17,
+      "arabic": "الرَّزَّاقُ",
+      "transliteration": "Ar-Razzaq",
+      "meaning": "The Provider",
+      "explanation": "Allah is The Provider. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the provider change the way you respond to today's challenges?"
+    },
+    {
+      "index": 18,
+      "arabic": "الْفَتَّاحُ",
+      "transliteration": "Al-Fattah",
+      "meaning": "The Opener",
+      "explanation": "Allah is The Opener. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the opener change the way you respond to today's challenges?"
+    },
+    {
+      "index": 19,
+      "arabic": "الْعَلِيمُ",
+      "transliteration": "Al-Alim",
+      "meaning": "The All-Knowing",
+      "explanation": "Allah is The All-Knowing. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the all-knowing change the way you respond to today's challenges?"
+    },
+    {
+      "index": 20,
+      "arabic": "الْقَابِضُ",
+      "transliteration": "Al-Qabid",
+      "meaning": "The Withholder",
+      "explanation": "Allah is The Withholder. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the withholder change the way you respond to today's challenges?"
+    },
+    {
+      "index": 21,
+      "arabic": "الْبَاسِطُ",
+      "transliteration": "Al-Basit",
+      "meaning": "The Extender",
+      "explanation": "Allah is The Extender. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the extender change the way you respond to today's challenges?"
+    },
+    {
+      "index": 22,
+      "arabic": "الْخَافِضُ",
+      "transliteration": "Al-Khafid",
+      "meaning": "The Abaser",
+      "explanation": "Allah is The Abaser. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the abaser change the way you respond to today's challenges?"
+    },
+    {
+      "index": 23,
+      "arabic": "الرَّافِعُ",
+      "transliteration": "Ar-Rafi",
+      "meaning": "The Exalter",
+      "explanation": "Allah is The Exalter. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the exalter change the way you respond to today's challenges?"
+    },
+    {
+      "index": 24,
+      "arabic": "الْمُعِزُّ",
+      "transliteration": "Al-Mu'izz",
+      "meaning": "The Honourer",
+      "explanation": "Allah is The Honourer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the honourer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 25,
+      "arabic": "الْمُذِلُّ",
+      "transliteration": "Al-Mudhill",
+      "meaning": "The Humiliator",
+      "explanation": "Allah is The Humiliator. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the humiliator change the way you respond to today's challenges?"
+    },
+    {
+      "index": 26,
+      "arabic": "السَّمِيعُ",
+      "transliteration": "As-Sami",
+      "meaning": "The All-Hearing",
+      "explanation": "Allah is The All-Hearing. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the all-hearing change the way you respond to today's challenges?"
+    },
+    {
+      "index": 27,
+      "arabic": "الْبَصِيرُ",
+      "transliteration": "Al-Basir",
+      "meaning": "The All-Seeing",
+      "explanation": "Allah is The All-Seeing. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the all-seeing change the way you respond to today's challenges?"
+    },
+    {
+      "index": 28,
+      "arabic": "الْحَكَمُ",
+      "transliteration": "Al-Hakam",
+      "meaning": "The Judge",
+      "explanation": "Allah is The Judge. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the judge change the way you respond to today's challenges?"
+    },
+    {
+      "index": 29,
+      "arabic": "الْعَدْلُ",
+      "transliteration": "Al-Adl",
+      "meaning": "The Just",
+      "explanation": "Allah is The Just. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the just change the way you respond to today's challenges?"
+    },
+    {
+      "index": 30,
+      "arabic": "اللَّطِيفُ",
+      "transliteration": "Al-Latif",
+      "meaning": "The Subtle One",
+      "explanation": "Allah is The Subtle One. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the subtle one change the way you respond to today's challenges?"
+    },
+    {
+      "index": 31,
+      "arabic": "الْخَبِيرُ",
+      "transliteration": "Al-Khabir",
+      "meaning": "The All-Aware",
+      "explanation": "Allah is The All-Aware. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the all-aware change the way you respond to today's challenges?"
+    },
+    {
+      "index": 32,
+      "arabic": "الْحَلِيمُ",
+      "transliteration": "Al-Halim",
+      "meaning": "The Forbearing",
+      "explanation": "Allah is The Forbearing. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the forbearing change the way you respond to today's challenges?"
+    },
+    {
+      "index": 33,
+      "arabic": "الْعَظِيمُ",
+      "transliteration": "Al-Azim",
+      "meaning": "The Magnificent",
+      "explanation": "Allah is The Magnificent. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the magnificent change the way you respond to today's challenges?"
+    },
+    {
+      "index": 34,
+      "arabic": "الْغَفُورُ",
+      "transliteration": "Al-Ghafur",
+      "meaning": "The Forgiving",
+      "explanation": "Allah is The Forgiving. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the forgiving change the way you respond to today's challenges?"
+    },
+    {
+      "index": 35,
+      "arabic": "الشَّكُورُ",
+      "transliteration": "Ash-Shakur",
+      "meaning": "The Appreciative",
+      "explanation": "Allah is The Appreciative. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the appreciative change the way you respond to today's challenges?"
+    },
+    {
+      "index": 36,
+      "arabic": "الْعَلِيُّ",
+      "transliteration": "Al-Ali",
+      "meaning": "The Most High",
+      "explanation": "Allah is The Most High. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the most high change the way you respond to today's challenges?"
+    },
+    {
+      "index": 37,
+      "arabic": "الْكَبِيرُ",
+      "transliteration": "Al-Kabir",
+      "meaning": "The Greatest",
+      "explanation": "Allah is The Greatest. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the greatest change the way you respond to today's challenges?"
+    },
+    {
+      "index": 38,
+      "arabic": "الْحَفِيظُ",
+      "transliteration": "Al-Hafiz",
+      "meaning": "The Preserver",
+      "explanation": "Allah is The Preserver. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the preserver change the way you respond to today's challenges?"
+    },
+    {
+      "index": 39,
+      "arabic": "الْمُقِيتُ",
+      "transliteration": "Al-Muqit",
+      "meaning": "The Sustainer",
+      "explanation": "Allah is The Sustainer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the sustainer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 40,
+      "arabic": "الْحَسِيبُ",
+      "transliteration": "Al-Hasib",
+      "meaning": "The Reckoner",
+      "explanation": "Allah is The Reckoner. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the reckoner change the way you respond to today's challenges?"
+    },
+    {
+      "index": 41,
+      "arabic": "الْجَلِيلُ",
+      "transliteration": "Al-Jalil",
+      "meaning": "The Majestic",
+      "explanation": "Allah is The Majestic. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the majestic change the way you respond to today's challenges?"
+    },
+    {
+      "index": 42,
+      "arabic": "الْكَرِيمُ",
+      "transliteration": "Al-Karim",
+      "meaning": "The Generous",
+      "explanation": "Allah is The Generous. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the generous change the way you respond to today's challenges?"
+    },
+    {
+      "index": 43,
+      "arabic": "الرَّقِيبُ",
+      "transliteration": "Ar-Raqib",
+      "meaning": "The Watchful",
+      "explanation": "Allah is The Watchful. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the watchful change the way you respond to today's challenges?"
+    },
+    {
+      "index": 44,
+      "arabic": "الْمُجِيبُ",
+      "transliteration": "Al-Mujib",
+      "meaning": "The Responsive",
+      "explanation": "Allah is The Responsive. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the responsive change the way you respond to today's challenges?"
+    },
+    {
+      "index": 45,
+      "arabic": "الْوَاسِعُ",
+      "transliteration": "Al-Wasi",
+      "meaning": "The All-Encompassing",
+      "explanation": "Allah is The All-Encompassing. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the all-encompassing change the way you respond to today's challenges?"
+    },
+    {
+      "index": 46,
+      "arabic": "الْحَكِيمُ",
+      "transliteration": "Al-Hakim",
+      "meaning": "The Wise",
+      "explanation": "Allah is The Wise. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the wise change the way you respond to today's challenges?"
+    },
+    {
+      "index": 47,
+      "arabic": "الْوَدُودُ",
+      "transliteration": "Al-Wadud",
+      "meaning": "The Loving",
+      "explanation": "Allah is The Loving. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the loving change the way you respond to today's challenges?"
+    },
+    {
+      "index": 48,
+      "arabic": "الْمَجِيدُ",
+      "transliteration": "Al-Majid",
+      "meaning": "The Glorious",
+      "explanation": "Allah is The Glorious. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the glorious change the way you respond to today's challenges?"
+    },
+    {
+      "index": 49,
+      "arabic": "الْبَاعِثُ",
+      "transliteration": "Al-Ba'ith",
+      "meaning": "The Resurrector",
+      "explanation": "Allah is The Resurrector. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the resurrector change the way you respond to today's challenges?"
+    },
+    {
+      "index": 50,
+      "arabic": "الشَّهِيدُ",
+      "transliteration": "Ash-Shahid",
+      "meaning": "The Witness",
+      "explanation": "Allah is The Witness. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the witness change the way you respond to today's challenges?"
+    },
+    {
+      "index": 51,
+      "arabic": "الْحَقُّ",
+      "transliteration": "Al-Haqq",
+      "meaning": "The Truth",
+      "explanation": "Allah is The Truth. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the truth change the way you respond to today's challenges?"
+    },
+    {
+      "index": 52,
+      "arabic": "الْوَكِيلُ",
+      "transliteration": "Al-Wakil",
+      "meaning": "The Trustee",
+      "explanation": "Allah is The Trustee. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the trustee change the way you respond to today's challenges?"
+    },
+    {
+      "index": 53,
+      "arabic": "الْقَوِيُّ",
+      "transliteration": "Al-Qawi",
+      "meaning": "The Strong",
+      "explanation": "Allah is The Strong. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the strong change the way you respond to today's challenges?"
+    },
+    {
+      "index": 54,
+      "arabic": "الْمَتِينُ",
+      "transliteration": "Al-Matin",
+      "meaning": "The Firm",
+      "explanation": "Allah is The Firm. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the firm change the way you respond to today's challenges?"
+    },
+    {
+      "index": 55,
+      "arabic": "الْوَلِيُّ",
+      "transliteration": "Al-Wali",
+      "meaning": "The Protecting Friend",
+      "explanation": "Allah is The Protecting Friend. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the protecting friend change the way you respond to today's challenges?"
+    },
+    {
+      "index": 56,
+      "arabic": "الْحَمِيدُ",
+      "transliteration": "Al-Hamid",
+      "meaning": "The Praiseworthy",
+      "explanation": "Allah is The Praiseworthy. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the praiseworthy change the way you respond to today's challenges?"
+    },
+    {
+      "index": 57,
+      "arabic": "الْمُحْصِي",
+      "transliteration": "Al-Muhsi",
+      "meaning": "The Accounter",
+      "explanation": "Allah is The Accounter. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the accounter change the way you respond to today's challenges?"
+    },
+    {
+      "index": 58,
+      "arabic": "الْمُبْدِئُ",
+      "transliteration": "Al-Mubdi",
+      "meaning": "The Originator",
+      "explanation": "Allah is The Originator. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the originator change the way you respond to today's challenges?"
+    },
+    {
+      "index": 59,
+      "arabic": "الْمُعِيدُ",
+      "transliteration": "Al-Muid",
+      "meaning": "The Restorer",
+      "explanation": "Allah is The Restorer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the restorer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 60,
+      "arabic": "الْمُحْيِي",
+      "transliteration": "Al-Muhyi",
+      "meaning": "The Giver of Life",
+      "explanation": "Allah is The Giver of Life. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the giver of life change the way you respond to today's challenges?"
+    },
+    {
+      "index": 61,
+      "arabic": "الْمُمِيتُ",
+      "transliteration": "Al-Mumit",
+      "meaning": "The Bringer of Death",
+      "explanation": "Allah is The Bringer of Death. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the bringer of death change the way you respond to today's challenges?"
+    },
+    {
+      "index": 62,
+      "arabic": "الْحَيُّ",
+      "transliteration": "Al-Hayy",
+      "meaning": "The Ever-Living",
+      "explanation": "Allah is The Ever-Living. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the ever-living change the way you respond to today's challenges?"
+    },
+    {
+      "index": 63,
+      "arabic": "الْقَيُّومُ",
+      "transliteration": "Al-Qayyum",
+      "meaning": "The Self-Subsisting",
+      "explanation": "Allah is The Self-Subsisting. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the self-subsisting change the way you respond to today's challenges?"
+    },
+    {
+      "index": 64,
+      "arabic": "الْوَاجِدُ",
+      "transliteration": "Al-Wajid",
+      "meaning": "The Finder",
+      "explanation": "Allah is The Finder. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the finder change the way you respond to today's challenges?"
+    },
+    {
+      "index": 65,
+      "arabic": "الْمَاجِدُ",
+      "transliteration": "Al-Majid",
+      "meaning": "The Noble",
+      "explanation": "Allah is The Noble. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the noble change the way you respond to today's challenges?"
+    },
+    {
+      "index": 66,
+      "arabic": "الْوَاحِدُ",
+      "transliteration": "Al-Wahid",
+      "meaning": "The One",
+      "explanation": "Allah is The One. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the one change the way you respond to today's challenges?"
+    },
+    {
+      "index": 67,
+      "arabic": "الْأَحَدُ",
+      "transliteration": "Al-Ahad",
+      "meaning": "The Unique",
+      "explanation": "Allah is The Unique. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the unique change the way you respond to today's challenges?"
+    },
+    {
+      "index": 68,
+      "arabic": "الصَّمَدُ",
+      "transliteration": "As-Samad",
+      "meaning": "The Eternal",
+      "explanation": "Allah is The Eternal. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the eternal change the way you respond to today's challenges?"
+    },
+    {
+      "index": 69,
+      "arabic": "الْقَادِرُ",
+      "transliteration": "Al-Qadir",
+      "meaning": "The Able",
+      "explanation": "Allah is The Able. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the able change the way you respond to today's challenges?"
+    },
+    {
+      "index": 70,
+      "arabic": "الْمُقْتَدِرُ",
+      "transliteration": "Al-Muqtadir",
+      "meaning": "The Powerful",
+      "explanation": "Allah is The Powerful. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the powerful change the way you respond to today's challenges?"
+    },
+    {
+      "index": 71,
+      "arabic": "الْمُقَدِّمُ",
+      "transliteration": "Al-Muqaddim",
+      "meaning": "The Expediter",
+      "explanation": "Allah is The Expediter. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the expediter change the way you respond to today's challenges?"
+    },
+    {
+      "index": 72,
+      "arabic": "الْمُؤَخِّرُ",
+      "transliteration": "Al-Mu'akhkhir",
+      "meaning": "The Delayer",
+      "explanation": "Allah is The Delayer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the delayer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 73,
+      "arabic": "الْأَوَّلُ",
+      "transliteration": "Al-Awwal",
+      "meaning": "The First",
+      "explanation": "Allah is The First. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the first change the way you respond to today's challenges?"
+    },
+    {
+      "index": 74,
+      "arabic": "الْآخِرُ",
+      "transliteration": "Al-Akhir",
+      "meaning": "The Last",
+      "explanation": "Allah is The Last. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the last change the way you respond to today's challenges?"
+    },
+    {
+      "index": 75,
+      "arabic": "الظَّاهِرُ",
+      "transliteration": "Az-Zahir",
+      "meaning": "The Manifest",
+      "explanation": "Allah is The Manifest. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the manifest change the way you respond to today's challenges?"
+    },
+    {
+      "index": 76,
+      "arabic": "الْبَاطِنُ",
+      "transliteration": "Al-Batin",
+      "meaning": "The Hidden",
+      "explanation": "Allah is The Hidden. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the hidden change the way you respond to today's challenges?"
+    },
+    {
+      "index": 77,
+      "arabic": "الْوَالِي",
+      "transliteration": "Al-Wali",
+      "meaning": "The Governor",
+      "explanation": "Allah is The Governor. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the governor change the way you respond to today's challenges?"
+    },
+    {
+      "index": 78,
+      "arabic": "الْمُتَعَالِي",
+      "transliteration": "Al-Muta'ali",
+      "meaning": "The Most Exalted",
+      "explanation": "Allah is The Most Exalted. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the most exalted change the way you respond to today's challenges?"
+    },
+    {
+      "index": 79,
+      "arabic": "الْبَرُّ",
+      "transliteration": "Al-Barr",
+      "meaning": "The Source of Goodness",
+      "explanation": "Allah is The Source of Goodness. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the source of goodness change the way you respond to today's challenges?"
+    },
+    {
+      "index": 80,
+      "arabic": "التَّوَّابُ",
+      "transliteration": "At-Tawwab",
+      "meaning": "The Acceptor of Repentance",
+      "explanation": "Allah is The Acceptor of Repentance. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the acceptor of repentance change the way you respond to today's challenges?"
+    },
+    {
+      "index": 81,
+      "arabic": "الْمُنْتَقِمُ",
+      "transliteration": "Al-Muntaqim",
+      "meaning": "The Avenger",
+      "explanation": "Allah is The Avenger. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the avenger change the way you respond to today's challenges?"
+    },
+    {
+      "index": 82,
+      "arabic": "الْعَفُوُّ",
+      "transliteration": "Al-Afuww",
+      "meaning": "The Pardoner",
+      "explanation": "Allah is The Pardoner. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the pardoner change the way you respond to today's challenges?"
+    },
+    {
+      "index": 83,
+      "arabic": "الرَّءُوفُ",
+      "transliteration": "Ar-Ra'uf",
+      "meaning": "The Compassionate",
+      "explanation": "Allah is The Compassionate. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the compassionate change the way you respond to today's challenges?"
+    },
+    {
+      "index": 84,
+      "arabic": "مَالِكُ الْمُلْكِ",
+      "transliteration": "Malik-ul-Mulk",
+      "meaning": "Owner of Sovereignty",
+      "explanation": "Allah is Owner of Sovereignty. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is owner of sovereignty change the way you respond to today's challenges?"
+    },
+    {
+      "index": 85,
+      "arabic": "ذُو الْجَلَالِ وَالْإِكْرَامِ",
+      "transliteration": "Dhul-Jalali wal-Ikram",
+      "meaning": "Lord of Majesty and Honour",
+      "explanation": "Allah is Lord of Majesty and Honour. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is lord of majesty and honour change the way you respond to today's challenges?"
+    },
+    {
+      "index": 86,
+      "arabic": "الْمُقْسِطُ",
+      "transliteration": "Al-Muqsit",
+      "meaning": "The Equitable",
+      "explanation": "Allah is The Equitable. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the equitable change the way you respond to today's challenges?"
+    },
+    {
+      "index": 87,
+      "arabic": "الْجَامِعُ",
+      "transliteration": "Al-Jami",
+      "meaning": "The Gatherer",
+      "explanation": "Allah is The Gatherer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the gatherer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 88,
+      "arabic": "الْغَنِيُّ",
+      "transliteration": "Al-Ghani",
+      "meaning": "The Self-Sufficient",
+      "explanation": "Allah is The Self-Sufficient. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the self-sufficient change the way you respond to today's challenges?"
+    },
+    {
+      "index": 89,
+      "arabic": "الْمُغْنِي",
+      "transliteration": "Al-Mughni",
+      "meaning": "The Enricher",
+      "explanation": "Allah is The Enricher. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the enricher change the way you respond to today's challenges?"
+    },
+    {
+      "index": 90,
+      "arabic": "الْمَانِعُ",
+      "transliteration": "Al-Mani",
+      "meaning": "The Preventer",
+      "explanation": "Allah is The Preventer. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the preventer change the way you respond to today's challenges?"
+    },
+    {
+      "index": 91,
+      "arabic": "الضَّارُّ",
+      "transliteration": "Ad-Darr",
+      "meaning": "The Distresser",
+      "explanation": "Allah is The Distresser. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the distresser change the way you respond to today's challenges?"
+    },
+    {
+      "index": 92,
+      "arabic": "النَّافِعُ",
+      "transliteration": "An-Nafi",
+      "meaning": "The Benefactor",
+      "explanation": "Allah is The Benefactor. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the benefactor change the way you respond to today's challenges?"
+    },
+    {
+      "index": 93,
+      "arabic": "النُّورُ",
+      "transliteration": "An-Nur",
+      "meaning": "The Light",
+      "explanation": "Allah is The Light. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the light change the way you respond to today's challenges?"
+    },
+    {
+      "index": 94,
+      "arabic": "الْهَادِي",
+      "transliteration": "Al-Hadi",
+      "meaning": "The Guide",
+      "explanation": "Allah is The Guide. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the guide change the way you respond to today's challenges?"
+    },
+    {
+      "index": 95,
+      "arabic": "الْبَدِيعُ",
+      "transliteration": "Al-Badi",
+      "meaning": "The Originator",
+      "explanation": "Allah is The Originator. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the originator change the way you respond to today's challenges?"
+    },
+    {
+      "index": 96,
+      "arabic": "الْبَاقِي",
+      "transliteration": "Al-Baqi",
+      "meaning": "The Everlasting",
+      "explanation": "Allah is The Everlasting. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the everlasting change the way you respond to today's challenges?"
+    },
+    {
+      "index": 97,
+      "arabic": "الْوَارِثُ",
+      "transliteration": "Al-Warith",
+      "meaning": "The Inheritor",
+      "explanation": "Allah is The Inheritor. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the inheritor change the way you respond to today's challenges?"
+    },
+    {
+      "index": 98,
+      "arabic": "الرَّشِيدُ",
+      "transliteration": "Ar-Rashid",
+      "meaning": "The Guide to the Right Path",
+      "explanation": "Allah is The Guide to the Right Path. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the guide to the right path change the way you respond to today's challenges?"
+    },
+    {
+      "index": 99,
+      "arabic": "الصَّبُورُ",
+      "transliteration": "As-Sabur",
+      "meaning": "The Patient",
+      "explanation": "Allah is The Patient. Reflect on this name in your du'a and daily remembrance, seeking closeness through knowing His beautiful attributes.",
+      "reflection": "How can remembering that Allah is the patient change the way you respond to today's challenges?"
+    }
+  ]
+}

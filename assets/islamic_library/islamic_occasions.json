@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "title": "Ramadan",
+      "importance": "Ramadan is the month in which the Quran was revealed—a guided mercy and clear criterion for humanity.",
+      "virtues": "The gates of Paradise are opened, devils are chained, and every good deed is multiplied.",
+      "recommendedActs": "Fast sincerely, increase Quran recitation, give charity, pray Taraweeh, and seek Laylatul Qadr in the last ten nights.",
+      "index": 1
+    },
+    {
+      "title": "Eid al-Fitr",
+      "importance": "Eid al-Fitr marks the completion of Ramadan and gratitude to Allah for enabling the fast.",
+      "virtues": "It is a day of joy, community, and thankfulness after a month of worship and self-discipline.",
+      "recommendedActs": "Pay Zakat al-Fitr, perform Eid prayer, wear your best clothes, greet others, and visit family while maintaining Islamic manners.",
+      "index": 2
+    },
+    {
+      "title": "Eid al-Adha",
+      "importance": "Eid al-Adha commemorates the devotion of Ibrahim (AS) and the rites of Hajj during Dhul Hijjah.",
+      "virtues": "It teaches sacrifice, obedience to Allah, and care for those in need through the udhiyah (sacrifice).",
+      "recommendedActs": "Perform Eid prayer, offer sacrifice if able, share meat with the poor, and increase takbir in the first ten days of Dhul Hijjah.",
+      "index": 3
+    },
+    {
+      "title": "Hajj season",
+      "importance": "Hajj is a once-in-a-lifetime pillar for those who are able—a profound journey of unity and submission.",
+      "virtues": "A accepted Hajj brings forgiveness of sins and renewal of purpose. The plain of Arafah is the heart of Hajj.",
+      "recommendedActs": "Those not performing Hajj can fast on the Day of Arafah, increase dhikr, and make du'a for those at the sacred sites.",
+      "index": 4
+    },
+    {
+      "title": "Ashura",
+      "importance": "The 10th of Muharram is the day Allah saved Musa (AS) and his people from Pharaoh.",
+      "virtues": "Fasting on Ashura expiates the sins of the previous year (when combined with fasting a day before or after, per the Sunnah).",
+      "recommendedActs": "Fast the 9th and 10th of Muharram if possible, reflect on Allah's help to the oppressed, and increase gratitude.",
+      "index": 5
+    },
+    {
+      "title": "Laylatul Qadr",
+      "importance": "Laylatul Qadr is better than a thousand months—it is the night the Quran's revelation began.",
+      "virtues": "Worship on this single night can surpass decades of reward. The angels descend with peace until Fajr.",
+      "recommendedActs": "Seek it in the odd nights of the last ten days of Ramadan through prayer, Quran, du'a, and istighfar.",
+      "index": 6
+    },
+    {
+      "title": "Jumu'ah (Friday)",
+      "importance": "Friday is the best day on which the sun rises. It includes a weekly congregational prayer and a weekly reminder.",
+      "virtues": "There is a moment on Friday when du'a is accepted. Sins between Fridays are forgiven for those who bathe and attend with sincerity.",
+      "recommendedActs": "Perform ghusl, wear clean clothes, arrive early to the masjid, listen attentively to the khutbah, and increase salawat upon the Prophet ﷺ.",
+      "index": 7
+    }
+  ]
+}

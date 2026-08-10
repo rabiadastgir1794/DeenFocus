@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/segment_control_style.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
 
@@ -101,6 +102,7 @@ class HomeCalendarSection extends StatelessWidget {
                   ),
                   SegmentedButton<bool>(
                     showSelectedIcon: false,
+                    style: deenSegmentStyle(context),
                     segments: [
                       ButtonSegment<bool>(
                         value: true,
@@ -123,17 +125,19 @@ class HomeCalendarSection extends StatelessWidget {
                       localeName: l10n.localeName,
                       weekStart: weeklyWeekStart,
                       selectedDate: selectedDate,
-                      eventDates: weekEvents
-                          .map((e) => e.date)
-                          .toList(growable: false),
+                      eventDayKeys: {
+                        for (final e in weekEvents)
+                          _calendarDayKey(e.date),
+                      },
                       onTap: onDateTap,
                     )
                   : _HomeMonthlyCalendar(
                       monthDate: visibleMonth,
                       selectedDate: selectedDate,
-                      eventDates: monthEvents
-                          .map((e) => e.date)
-                          .toList(growable: false),
+                      eventDayKeys: {
+                        for (final e in monthEvents)
+                          _calendarDayKey(e.date),
+                      },
                       onTap: onDateTap,
                     ),
             ],
@@ -183,19 +187,22 @@ class HomeCalendarSection extends StatelessWidget {
   }
 }
 
+String _calendarDayKey(DateTime date) =>
+    '${date.year}-${date.month}-${date.day}';
+
 class _HomeWeeklyCalendar extends StatelessWidget {
   const _HomeWeeklyCalendar({
     required this.localeName,
     required this.weekStart,
     required this.selectedDate,
-    required this.eventDates,
+    required this.eventDayKeys,
     required this.onTap,
   });
 
   final String localeName;
   final DateTime weekStart;
   final DateTime? selectedDate;
-  final List<DateTime> eventDates;
+  final Set<String> eventDayKeys;
   final ValueChanged<DateTime> onTap;
 
   @override
@@ -219,10 +226,7 @@ class _HomeWeeklyCalendar extends StatelessWidget {
             today.month == date.month &&
             today.day == date.day;
         final isTodaySelected = isToday && isSelected;
-        final hasEvent = eventDates.any(
-          (d) =>
-              d.year == date.year && d.month == date.month && d.day == date.day,
-        );
+        final hasEvent = eventDayKeys.contains(_calendarDayKey(date));
 
         return Expanded(
           child: InkWell(
@@ -284,13 +288,13 @@ class _HomeMonthlyCalendar extends StatelessWidget {
   const _HomeMonthlyCalendar({
     required this.monthDate,
     required this.selectedDate,
-    required this.eventDates,
+    required this.eventDayKeys,
     required this.onTap,
   });
 
   final DateTime monthDate;
   final DateTime? selectedDate;
-  final List<DateTime> eventDates;
+  final Set<String> eventDayKeys;
   final ValueChanged<DateTime> onTap;
 
   @override
@@ -332,12 +336,7 @@ class _HomeMonthlyCalendar extends StatelessWidget {
                 today.month == date.month &&
                 today.day == date.day;
             final isTodaySelected = isToday && isSelected;
-            final hasEvent = eventDates.any(
-              (d) =>
-                  d.year == date.year &&
-                  d.month == date.month &&
-                  d.day == date.day,
-            );
+            final hasEvent = eventDayKeys.contains(_calendarDayKey(date));
 
             return InkWell(
               key: ValueKey(

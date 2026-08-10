@@ -106,7 +106,7 @@
   "homeQiblaSubtitleGuiding": "Guiding you toward the Qibla",
   "homeToMakkah": "to Makkah",
   "homeFindMasjid": "Find Masjid Near Me",
-  "homeSearchNearbyMosques": "Search nearby mosques.",
+  "homeSearchNearbyMosques": "Find mosques nearby from OpenStreetMap.",
   "homePrayerStreak": "Prayer Streaks",
   "homeOpenStreakDetails": "Open streak details.",
   "homeTodaysPrayers": "Today's Prayers",
@@ -133,10 +133,13 @@
   "tabHome": "Home",
   "tabFocus": "Focus",
   "tabTasbih": "Tasbih",
-  "tabQuran": "Quran",
+  "tabQuran": "Learn",
   "quranLoadFailed": "Failed to load Quran data",
   "quranTabSubtitle": "Read and explore the Holy Quran",
+  "quranTabSubtitleExtended": "Read, listen and perfect your tajweed",
   "quranSearchHint": "Search surah...",
+  "quranSearchHintExtended": "Search surah or meaning...",
+  "quranNoResults": "No results found",
   "quranNoSurahsFound": "No surahs found",
   "quranVersesLabel": "verses",
   "quranTextOptions": "Text options",
@@ -159,6 +162,56 @@
   "quranNextJuz": "Next Juz",
   "quranPreviousPage": "Previous page",
   "quranNextPage": "Next page",
+  "quranMarkPageRead": "Read",
+  "quranPageMarkedRead": "Page {page} marked as read",
+  "@quranPageMarkedRead": {
+    "placeholders": {
+      "page": { "type": "int" }
+    }
+  },
+  "quranMushafComplete": "Complete",
+  "quranPageEmpty": "No ayahs on this page",
+  "quranTranslationUnavailable": "Translation not available for this ayah",
+  "quranJuzProgressLabel": "{percent}% of Juz {juz}",
+  "@quranJuzProgressLabel": {
+    "placeholders": {
+      "percent": { "type": "int" },
+      "juz": { "type": "int" }
+    }
+  },
+  "quranBookmarksTitle": "Bookmarks",
+  "quranBookmarksEmpty": "No bookmarks yet",
+  "quranBookmark": "Bookmark",
+  "quranBookmarkSaved": "Bookmark saved",
+  "quranBookmarkRemoved": "Bookmark removed",
+  "quranBookmarkCount": "{count} saved",
+  "@quranBookmarkCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "quranQuickTajweed": "Tajweed drill",
+  "quranQuickTajweedSub": "Recite & score",
+  "quranLastListened": "Last listened",
+  "quranNoneYet": "None yet",
+  "quranOpenPage": "Open page",
+  "quranOpenJuz": "Open Juz",
+  "quranOpenAyah": "Open ayah",
+  "quranReadingToolsTitle": "Reading tools",
+  "quranQuickActions": "Quick actions",
+  "quranReadingToolsHint": "Tafsir, color Tajweed, word-by-word, and extra reciters coming soon.",
+  "quranCopy": "Copy",
+  "quranShare": "Share",
+  "quranCopied": "Copied to clipboard",
+  "quranShareCopiedHint": "Copied — paste to share",
+  "quranColorTajweed": "Color Tajweed",
+  "quranTafsir": "Tafsir",
+  "quranWordByWord": "Word-by-word",
+  "quranReciters": "Reciters",
+  "quranComingSoon": "Coming soon",
+  "tajweedDisabledHint": "Enable AI Tajweed Practice in Reading Settings",
+  "readingSettingsTajweedPractice": "AI Tajweed Practice",
+  "readingSettingsTajweedPracticeSubtitle": "Recite ayahs and get feedback",
   "quranAudioSettingsTitle": "Audio settings",
   "quranPlaybackSpeed": "Playback speed",
   "quranVolume": "Volume",
@@ -175,6 +228,10 @@
   "readingSettingsScript": "Arabic script",
   "readingSettingsScriptUthmani": "Uthmani (Hafs)",
   "readingSettingsScriptIndopak": "IndoPak (Hafs)",
+  "readingSettingsArabicFont": "Arabic font",
+  "readingSettingsFontUthmanic": "Uthmanic Hafs",
+  "readingSettingsFontNooreHuda": "Noore Huda",
+  "readingSettingsFontSystem": "System (native)",
   "readingSettingsShowTranslation": "Show translation",
   "readingSettingsShowTransliteration": "Show transliteration",
   "readingSettingsTranslationSection": "Translation",
@@ -188,13 +245,39 @@
   "readingSettingsTranslationInstalling": "Installing…",
   "readingSettingsTranslationDownloading": "Downloading…",
   "readingSettingsLayoutTheme": "Quran layout",
-  "readingSettingsLayoutClassic": "Classic",
+  "readingSettingsLayoutClassic": "Mushaf",
   "readingSettingsLayoutSimple": "Simple",
   "readingSettingsLayoutColor": "Color Quran",
+  "readingSettingsColorTheme": "Reading theme",
+  "readingSettingsColorThemeParchment": "Parchment",
+  "readingSettingsColorThemeEmerald": "Emerald",
+  "readingSettingsColorThemeMidnight": "Midnight",
   "readingSettingsPreview": "Preview",
+  "readingSettingsResetHistoryTitle": "Reset reading data",
+  "readingSettingsResetHistorySubtitle": "Clears continue reading, page progress, bookmarks, and quick actions",
+  "readingSettingsResetHistoryConfirmTitle": "Reset reading data?",
+  "readingSettingsResetHistoryConfirmBody": "This removes continue reading, page completion progress, bookmarks, last listened, and last Tajweed shortcuts. Your display and translation settings are kept.",
+  "readingSettingsResetHistoryDone": "Reading data cleared",
+  "readingSettingsResetHistoryButton": "Reset",
   "tajweedListenToAyah": "Listen to ayah",
   "tajweedStartReciting": "Start reciting",
   "tajweedTapToStop": "Tap to stop",
+  "tajweedListeningHint": "Listening... recite clearly",
+  "tajweedStopAnalyse": "Stop & analyse",
+  "tajweedWordAccuracyLabel": "WORD ACCURACY",
+  "tajweedWordReviewLabel": "WORD REVIEW",
+  "tajweedResultEncouragement": "Beautiful effort — keep practicing your tajweed.",
+  "quranReciteCheckTajweed": "Recite & check tajweed",
+  "quranTajweedLegendGhunnah": "Ghunnah",
+  "quranTajweedLegendGhunnahDesc": "Nasal hold, 2 counts",
+  "quranTajweedLegendQalqalah": "Qalqalah",
+  "quranTajweedLegendQalqalahDesc": "Echo bounce",
+  "quranTajweedLegendMadd": "Madd",
+  "quranTajweedLegendMaddDesc": "Prolong the vowel",
+  "quranTajweedLegendIdgham": "Idgham",
+  "quranTajweedLegendIdghamDesc": "Merge letters",
+  "quranTajweedLegendIkhfa": "Ikhfa",
+  "quranTajweedLegendIkhfaDesc": "Hide the noon",
   "save": "Save",
   "tasbihBack": "Back",
   "tasbihTabTitle": "Tasbih",
@@ -212,6 +295,29 @@
   "tasbihRestart": "Restart",
   "tasbihCurrentCount": "Current Count",
   "tasbihResetTotal": "Clear History",
+  "tasbihLoopLabel": "Loop {number}",
+  "@tasbihLoopLabel": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "tasbihCurrentDhikr": "Current Dhikr",
+  "tasbihViewAll": "View All",
+  "tasbihSaveSession": "Save session",
+  "tasbihSessionSaved": "Session saved",
+  "tasbihSwipeHint": "Slide beads through the center · reverse to undo",
+  "tasbihEditGoalTitle": "Set goal",
+  "tasbihCustomGoalHint": "Enter a number (e.g. 33)",
+  "tasbihSoundOn": "Sound on",
+  "tasbihSoundOff": "Sound off",
+  "tasbihSessionSummary": "Total this session {total} · Goal {goal} · Loops completed {loops}",
+  "@tasbihSessionSummary": {
+    "placeholders": {
+      "total": { "type": "int" },
+      "goal": { "type": "int" },
+      "loops": { "type": "int" }
+    }
+  },
   "focusModeActivated": "Focus Mode Activated",
   "focusSetUpHomeCardTitle": "Set up Focus mode",
   "focusTabSubtitle": "Stay focused when it matters most",
@@ -327,18 +433,28 @@
   "qiblaSouthShort": "S",
   "qiblaEastShort": "E",
   "qiblaWestShort": "W",
-  "nearbyMosquesTitle": "Nearby Mosques",
+  "nearbyMosquesTitle": "Mosques found nearby",
   "nearbyMosquesTryAgain": "Try again",
   "nearbyMosquesOpenGoogle": "Open in Google Maps",
   "nearbyMosquesOpenApple": "Open in Apple Maps",
   "nearbyMosquesNoMosquesFoundWithin": "No mosques found within",
-  "nearbyMosquesSearchRadius": "Search radius: 5 km",
+  "nearbyMosquesSearchRadius": "Search radius: {radiusKm} km",
+  "@nearbyMosquesSearchRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesMapPreviewUnavailable": "Map preview unavailable right now.",
   "nearbyMosquesWaitingForLocation": "Waiting for your location.",
   "nearbyMosquesFetchingLocation": "Fetching your location…",
   "nearbyMosquesCurrentLocationLabel": "Current location",
   "nearbyMosquesAppearAfterLoad": "Nearby mosques will appear here once results load.",
-  "nearbyMosquesNoneWithinRadius": "No mosques found within 5 km",
+  "nearbyMosquesNoneWithinRadius": "No mosques found within {radiusKm} km",
+  "@nearbyMosquesNoneWithinRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesLocationRequired": "Location access is required to find nearby mosques.",
   "nearbyMosquesPermissionOff": "Location permission is turned off. Enable it in settings to see nearby mosques.",
   "nearbyMosquesLocationUnavailable": "We could not read your current location right now.",
@@ -351,15 +467,32 @@
   "nearbyMosquesFormatError": "We could not read the mosque list right now. Please try again later.",
   "nearbyMosquesPlatformError": "We could not complete that step. Check your connection and try again.",
   "nearbyMosquesSomethingWentWrong": "Something went wrong. Please try again.",
-  "nearbyMosquesEmptyHint": "Nothing listed within 5 km on OpenStreetMap for this spot. Try again later or move the map.",
-  "nearbyMosquesFoundWithin": "{count} mosques found within 5 km",
-  "@nearbyMosquesFoundWithin": {
+  "nearbyMosquesEmptyHint": "Nothing listed within {radiusKm} km on OpenStreetMap for this spot. Try again later or move farther.",
+  "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "radiusKm": { "type": "int" }
     }
   },
+  "nearbyMosquesFoundWithin": "{count} mosques found within {radiusKm} km",
+  "@nearbyMosquesFoundWithin": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesCountNearby": "{count} mosques nearby",
+  "@nearbyMosquesCountNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nearbyMosquesResultsMeta": "Within {radiusKm} km · Sorted by distance",
+  "@nearbyMosquesResultsMeta": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesDirections": "Directions",
   "tasbihDeleteDhikrTitle": "Delete dhikr?",
   "tasbihDelete": "Delete",
   "focusAndroidBlockingNotReady": "Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.",
@@ -385,5 +518,143 @@
     }
   },
   "homeAiErrorEmptyResponse": "No response returned from the assistant.",
-  "homeAiErrorEmptyContent": "Empty response content."
+  "homeAiErrorEmptyContent": "Empty response content.",
+  "libraryHomeTitle": "Islamic Library",
+  "libraryHomeSubtitle": "Learn Hadith, duas, the 99 Names, and more",
+  "libraryHubTitle": "Islamic Library",
+  "libraryModuleQuran": "Quran",
+  "libraryModuleQuranSub": "Read, listen, and practice tajweed",
+  "libraryModuleHadith": "Hadith",
+  "libraryModuleHadithSub": "Collections from authentic sources",
+  "libraryModuleDuas": "Duas & Adhkar",
+  "libraryModuleDuasSub": "Morning, evening, and daily remembrance",
+  "libraryModulePrayerMethods": "Prayer & Islamic Methods",
+  "libraryModulePrayerMethodsSub": "Wudu, salah, hajj, and more",
+  "libraryModuleFiqh": "Fiqh & Traditions",
+  "libraryModuleFiqhSub": "Sunni, Shia, madhabs, Ahl-e Hadith, and more",
+  "libraryModuleNames": "99 Names of Allah",
+  "libraryModuleNamesSub": "Learn and reflect on Asma ul-Husna",
+  "libraryModulePillarsIslam": "Pillars of Islam",
+  "libraryModulePillarsIslamSub": "The five foundations of faith in action",
+  "libraryModulePillarsIman": "Pillars of Iman",
+  "libraryModulePillarsImanSub": "The six articles of belief",
+  "libraryModuleProphets": "Prophet Muhammad",
+  "libraryModuleProphetsSub": "His life, mission, and timeless lessons",
+  "libraryModuleOccasions": "Islamic Occasions",
+  "libraryModuleOccasionsSub": "Ramadan, Eid, Hajj, and sacred days",
+  "libraryKeyLesson": "Key lesson",
+  "libraryCardProgress": "{current} of {total}",
+  "@libraryCardProgress": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "libraryPrevious": "Previous",
+  "libraryNext": "Next",
+  "libraryBookmark": "Bookmark",
+  "libraryCopy": "Copy",
+  "libraryShare": "Share",
+  "libraryCopied": "Copied to clipboard",
+  "libraryShareCopiedHint": "Copied — paste to share",
+  "libraryBookmarkSaved": "Bookmark saved",
+  "libraryBookmarkRemoved": "Bookmark removed",
+  "libraryTranslation": "Translation",
+  "libraryTransliteration": "Transliteration",
+  "libraryMeaning": "Meaning",
+  "libraryBookmarksTitle": "Saved learning items",
+  "libraryBookmarksSubtitle": "Hadith, duas, names, fiqh, and more",
+  "libraryBookmarksEmpty": "No saved items yet. Tap Bookmark on any learning item to save it here.",
+  "libraryMarkCompleted": "Mark completed",
+  "librarySectionCompleted": "Completed",
+  "libraryReflection": "Reflection",
+  "libraryComingSoonTitle": "Coming soon",
+  "libraryComingSoonBody": "This module is being prepared. Check back in a future update.",
+  "librarySearchHint": "Search…",
+  "librarySearchEmpty": "No matching items",
+  "libraryItemCount": "{count} items",
+  "@libraryItemCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "librarySearchResultCount": "{shown} of {total}",
+  "@librarySearchResultCount": {
+    "placeholders": {
+      "shown": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "libraryContinueFrom": "Continue · {number}",
+  "@libraryContinueFrom": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "libraryInProgress": "In progress",
+  "libraryReference": "Reference: {source}",
+  "@libraryReference": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "libraryDuaCount": "{count} duas",
+  "@libraryDuaCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "libraryDuaCategoryMorning": "Morning",
+  "libraryDuaCategoryEvening": "Evening",
+  "libraryDuaCategoryDailyLife": "Daily Life",
+  "libraryDuaCategorySleep": "Sleep",
+  "libraryDuaCategoryFood": "Food",
+  "libraryDuaCategoryTravel": "Travel",
+  "libraryDuaCategoryIllness": "Illness",
+  "libraryDuaCategoryProtection": "Protection",
+  "libraryDuaCategoryForgiveness": "Forgiveness",
+  "libraryDuaCategoryParents": "Parents",
+  "libraryHadithCount": "{count} hadith",
+  "@libraryHadithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "libraryHadithNarrator": "Narrator:",
+  "libraryHadithSource": "Source:",
+  "libraryHadithCollectionBukhari": "Sahih al-Bukhari",
+  "libraryHadithCollectionMuslim": "Sahih Muslim",
+  "libraryHadithCollectionRiyad": "Riyad us-Saliheen",
+  "libraryHadithCollectionNawawi": "40 Hadith Nawawi",
+  "libraryHadithCollectionHisnul": "Hisnul Muslim",
+  "libraryGuideStepCount": "{count} steps",
+  "@libraryGuideStepCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "libraryGuideStepLabel": "Step {current} of {total}",
+  "@libraryGuideStepLabel": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "libraryGuideWudu": "Wudu",
+  "libraryGuideSalah": "Salah",
+  "libraryGuideGhusl": "Ghusl",
+  "libraryGuideTayammum": "Tayammum",
+  "libraryGuideJanazah": "Janazah Prayer",
+  "libraryGuideUmrah": "Umrah",
+  "libraryGuideHajj": "Hajj",
+  "libraryGuideFasting": "Fasting",
+  "libraryGuideZakat": "Zakat",
+  "libraryGuideTawbah": "Tawbah",
+  "libraryOccasionImportance": "Importance",
+  "libraryOccasionVirtues": "Virtues",
+  "libraryOccasionRecommendedActs": "Recommended acts",
+  "libraryFiqhOverview": "Overview",
+  "libraryFiqhKeyPoints": "Key points",
+  "libraryFiqhDifferences": "Notable differences",
+  "libraryFiqhCommonGround": "Common ground"
 }

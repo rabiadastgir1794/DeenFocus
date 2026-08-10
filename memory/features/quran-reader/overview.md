@@ -12,8 +12,9 @@ the feature that the tajweed coaching feature (see
 
 - **Data (text)**: `lib/features/quran/data/quran_local_repository.dart` —
   Hive-backed `SurahSummary` (114 rows) and `AyahRecord` (surah/ayah/Arabic/
-  English text), seeded once from `assets/raw/quran_paak.json` +
-  `assets/raw/english_translation.json`. Seed versioning via
+  English text), seeded once from bundled `assets/raw/quran_paak.json`
+  (Arabic only, seed v2). Translation text overlays at read time from
+  downloaded R2 packs via `QuranTranslationService`. Seed versioning via
   `StorageService.quranSeedVersion`. Phase 1 added `getAllAyahs()` and
   `getAyahsByKeys()` for Juz/Page lookups — no schema change, no seed bump.
 - **Data (Mushaf layout)**: `assets/quran/uthmani.json` — per-ayah
@@ -54,15 +55,17 @@ the feature that the tajweed coaching feature (see
   `openPage()` for performance.
 - **Reading Settings**: `lib/features/quran/view/reading_settings_screen.dart`
   — Arabic/translation font size, line spacing, default mode, remember last
-  position. Backed by new `StorageService` keys (fonts reuse the existing
-  `quranArabicFontSp`/`quranEnglishFontSp` keys).
+  position, layout/script, and (when Show Translation is on) catalog-driven
+  translation pick/download. App UI language stays in Settings → Language and
+  is independent. Backed by `StorageService` keys (fonts reuse
+  `quranArabicFontSp`/`quranEnglishFontSp`).
 
 ## Key design decisions
 
-- Quran text/translation ship as bundled JSON assets, not fetched at runtime
-  — the app must work fully offline for reading (recitation *audio* streams
-  remotely today; this is a gap for the offline tajweed feature to be aware
-  of — the tajweed feature must not depend on that remote audio path).
+- Arabic Quran text ships as a bundled JSON asset; translations download from
+  R2 on demand (see `translation-downloads-2026-08-03.md`). Recitation *audio*
+  streams remotely today; the app must work offline for Arabic reading once
+  a translation pack is downloaded.
 - Mushaf page/juz numbers are real, standard Madani Mushaf numbers (sourced
   from Tanzil's official metadata, not app-invented pseudo-pagination) — see
   ADR-001. Page rendering is text reflow with the app's own typography, not

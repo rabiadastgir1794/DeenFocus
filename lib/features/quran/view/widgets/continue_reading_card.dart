@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../reading_engine/reading_mode.dart';
+import 'quran_reader_theme.dart';
 
-/// "Continue Reading" card shown on the Quran home screen (Phase 1, item 2)
-/// when a previous reading position exists.
+/// "Continue Reading" card on the Quran home screen with progress.
 class ContinueReadingCard extends StatelessWidget {
   const ContinueReadingCard({
     super.key,
@@ -14,6 +14,7 @@ class ContinueReadingCard extends StatelessWidget {
     required this.ayahNumber,
     required this.pageNumber,
     required this.juzNumber,
+    required this.juzProgressPercent,
     required this.onTap,
   });
 
@@ -22,84 +23,98 @@ class ContinueReadingCard extends StatelessWidget {
   final int ayahNumber;
   final int pageNumber;
   final int juzNumber;
+  final int juzProgressPercent;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
+    final palette = context.quranReader;
+    final progress = (juzProgressPercent / 100).clamp(0.0, 1.0);
 
-    final subtitle = switch (mode) {
-      ReadingMode.surah => '$surahName • ${l10n.quranSurahLabel.toLowerCase()} $ayahNumber',
-      ReadingMode.juz => '${l10n.quranJuzLabel} $juzNumber • $surahName $ayahNumber',
-      ReadingMode.page => '${l10n.quranPageLabel} $pageNumber • $surahName $ayahNumber',
+    final headline = switch (mode) {
+      ReadingMode.surah => '$surahName · ${l10n.quranSurahLabel} $ayahNumber',
+      ReadingMode.juz => '$surahName · ${l10n.quranSurahLabel} $ayahNumber',
+      ReadingMode.page => '$surahName · ${l10n.quranSurahLabel} $ayahNumber',
     };
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(22.r),
         onTap: onTap,
         child: Ink(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                colorScheme.primary.withValues(alpha: 0.16),
-                colorScheme.primary.withValues(alpha: 0.06),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: colorScheme.primary.withValues(alpha: 0.25)),
+            color: palette.paper,
+            borderRadius: BorderRadius.circular(22.r),
+            border: Border.all(color: palette.accent.withValues(alpha: 0.28)),
+            boxShadow: palette.softShadow,
           ),
           child: Row(
             children: [
-              Container(
-                width: 44.w,
-                height: 44.w,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.auto_stories_rounded,
-                  color: colorScheme.primary,
-                  size: 22.sp,
+              SizedBox(
+                width: 52.r,
+                height: 52.r,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: progress > 0 ? progress : null,
+                      strokeWidth: 3.5,
+                      backgroundColor: palette.accent.withValues(alpha: 0.22),
+                      color: palette.primary,
+                    ),
+                    Icon(
+                      Icons.auto_stories_rounded,
+                      color: palette.primary,
+                      size: 22.sp,
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 14.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.quranContinueReading,
+                      l10n.quranContinueReading.toUpperCase(),
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
+                        letterSpacing: 0.5,
+                        color: palette.primary,
                       ),
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 5.h),
                     Text(
-                      subtitle,
+                      headline,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700,
+                        color: palette.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    Text(
+                      l10n.quranJuzProgressLabel(juzProgressPercent, juzNumber),
+                      style: TextStyle(
                         fontSize: 12.sp,
-                        color: colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                        color: palette.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
+              SizedBox(width: 8.w),
               Icon(
                 Icons.play_circle_fill_rounded,
-                color: colorScheme.primary,
-                size: 28.sp,
+                color: palette.primary,
+                size: 34.sp,
               ),
             ],
           ),

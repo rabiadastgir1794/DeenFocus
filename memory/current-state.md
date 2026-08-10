@@ -1,13 +1,595 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-07-30 — **DIY CoreML encoder post-training optimization comparison
-> complete (palette-8 / INT8 win; FP32 production candidate NOT replaced).**
-> Prior: iOS DIY pack on live R2; DIY functional CoreML from `.nemo`; ANE-parity
-> feasibility (no); Arabic script parity; normalizeArabic.
+> Last updated: 2026-08-10 — Tasbih sound toggle removed; Duas/Adhkar expanded (~96 daily remembrances).
+
+## Status: Islamic Library UX (2026-08-08)
+Hub module cards back to **colored Material icons** (WebP covers unwired).
+**Completed** / mark-section actions removed from list + detail pages (bookmarks
+and continue-from progress kept). Hub order after Quran: Hadith → Duas → Prayer →
+**99 Names** → Fiqh → Pillars → Prophets → Occasions.
+
+## Status: Islamic Library covers (2026-08-08)
+Flat minimal WebP illustrations (~3–4 KB each, ~69 KB total) for **hub module
+cards** and **Dua category lists** only. Generated via `tool/generate_library_covers.py`
+into `assets/islamic_library/covers/`. Detail pages stay typography-focused
+(`LearningDetailScaffold` — no header images). Widgets: `LibraryCoverAssets`,
+`LibraryCoverThumb`, `LibraryCoverBanner`.
+
+## Status: Islamic Library (2026-08-07)
+All 10 hub modules live on the Learn tab. **Quran** unchanged. All other modules
+use searchable **list → detail** (Hadith/Duas/Prayer: category → list → detail).
+Swipeable `LearningCardPager` removed. Bookmarks/progress/deep-open kept
+(index-based; bookmark opens list then auto-pushes detail). Shared widgets:
+`LearningItemTile`, `LearningSearchableList`, `LearningDetailScaffold`,
+`LearningItemDetailScreen`. Names detail reuses existing fields only (no
+placeholder benefits/references). Unified **Saved learning items** screen still
+on hub. Educational JSON body remains English.
+See [`memory/features/islamic-library/overview.md`](features/islamic-library/overview.md).
+
+## Status: Quran themes + Tajweed placement (2026-08-06)
+- Reading themes differentiated again: Parchment (warm cream/gold), Emerald
+  (green-tinted), Midnight (cool slate). Previews show bg + paper + primary bar.
+- AI Tajweed Practice moved from App Settings → Reading Settings; **default on**.
+  Hint copy points to Reading Settings. Debug CoreML/Asset rows stay in Settings.
+
+## Status: Quran theme + fonts (2026-08-06)
+- Reader palette primaries use `AppColors.primary` / `primaryDark` on all color
+  themes (no more off-brand `#3E7C3D`). Default reading theme is **emerald**.
+- Reading Settings → **Arabic font**: Uthmanic Hafs, Noore Huda (bundled), or
+  System/native (iOS Geeza Pro / Android Noto Naskh + fallbacks). Independent of
+  script orthography.
+
+## Status: Home performance (2026-08-06)
+Audited Home tab jank (~0.5–1s hitch after navigate). Optimizations (UI/behavior
+unchanged): Selector-scoped rebuilds, deferred Superwall/events/review after
+first frame, parallel prefs + verse/prayer/streak load, cached qiblaInfo /
+weekPrayerCounts, marquee TextPainter once + RepaintBoundary, prayer countdown
+isolated to 1 Hz widget, pause minute ticker + countdown when tab inactive,
+O(1) calendar event-day keys, daily verse via `getAyahsByKeys` + `getSurah`.
+
+
+## Status: Mushaf chrome (2026-08-05)
+Ornate double-border / diamond-corner frame removed. Mushaf page view again uses
+soft paper `QuranMushafPageFrame` (thin accent border + shadow).
+`quran_mushaf_ornament_frame.dart` deleted.
+
+## Status: Page view layout prefs (2026-08-05)
+Full-page and surah-scoped Mushaf page readers load `quranLayoutTheme`:
+Color Quran word bands, Simple (no page frame / plain ayah marks), Mushaf soft
+framed page. Reloads after Reading Settings return.
+
+## Status: Quran layouts — Mushaf vs Simple (2026-08-05)
+- **Mushaf** (was Classic): soft paper page frame, bordered ayah cards, soft surah header.
+- **Simple**: flat list, no page chrome, light dividers.
+- **Color Quran**: Mushaf chrome + per-word color bands.
+- Settings preview reflects the selected layout.
+
+## Status: Quran reading color themes (2026-08-05)
+- **Themes:** Parchment (warm cream), Emerald (app primary/sand), Midnight (deep green).
+- Each theme resolves light + dark palettes from app brightness.
+- Picker in **Reading Settings → Reading theme**; applies to Surah/Juz/Mushaf
+  readers, Continue Reading card, and settings preview.
+
+## Status: Bookmark sync & reading progress (2026-08-05)
+- **Bookmarks:** `QuranBookmarkService.revision` notifies listeners; bookmarks
+  screen and Quran tab refresh when an ayah bookmark is removed from surah view.
+- **Continue reading:** Surah screen flushes `ReadingEngine` before pop; first
+  ayah recorded on open via `openSurah`; position persists immediately (no debounce).
+
+## Status: Quran & Tajweed UI redesign (2026-08-05)
+Surah detail, Tajweed recording, and scoring screens restyled to match new mocks
+**without removing functionality**:
+
+- **Surah view** (`surah_detail_bottom_sheet.dart`, `ayah_card.dart` `surahDetail`
+  style): header card + tajweed legend chips, per-ayah cards with speaker/mic/
+  bookmark actions, green “Recite & check tajweed” CTA; share button removed.
+- **Tajweed recording** (`tajweed_recording_view.dart`, `tajweed_mic_button.dart`,
+  `tajweed_waveform.dart`): large mic with pulse rings, animated waveform,
+  tap mic to start/stop, listen-to-ayah on page, Cancel + Stop & analyse while
+  recording; CoreML debug toggle preserved.
+- **Scoring** (`tajweed_result_view.dart`): circular word-accuracy ring, feedback
+  text, word-review tiles, stat rows, Try again / Done — same VM hooks.
+
+Also in this branch: page progress grid, bookmarks, continue reading, full-page
+mushaf reader, last listened / last Tajweed quick actions on Quran tab.
+
+**Next:** Manual QA on simulator/device for all three flows.
+
+## Status: Quran translation downloads (2026-08-03)
+Arabic Quran stays bundled; translations download via native `AIAssetPlugin`
+(`translation_pack`) + shared R2 `catalog.json`. **Catalog is source of truth**
+(no hardcoded language map). Catalog cached 24h. Quran read uses disk only.
+All languages kept on disk.
+
+**UX:** Translation pick/download lives in **Reading Settings** (when Show
+Translation is on) — not Settings → Language. App locale ≠ Quran translation.
+UI: Current label, Installed group first, Available group with download size
+from catalog `approxSizeBytes`, states Selected/Installed/Download/
+Downloading/Installing. Instant switch for installed packs; download auto-
+selects. Selection persists; missing pack falls back to English → Arabic.
+`listAvailableTranslations` force-refreshes catalog (offline → disk cache)
+so newly published languages appear without waiting 24h.
+
+**Default English (silent):** Fresh install backgrounds `en` after `runApp`
+(no dialog, no startup block). Reading Settings shows Installing → Installed.
+Open Quran screens refresh via `installationRevision`. Offline retries on resume.
+Detail:
+[`memory/features/quran-reader/translation-downloads-2026-08-03.md`](features/quran-reader/translation-downloads-2026-08-03.md)
+
+**R2 live:** translation packs in production `catalog.json` (10 languages):
+- `en` Saheeh — `translations/en-saheeh/1.0.0/`
+- `ur` Jalandhry — `translations/ur-jalandhry/1.0.0/`
+- `es` Cortes — `translations/es-cortes/1.0.0/`
+- `hi` Farooq Khan — `translations/hi-farooq/1.0.0/`
+- `it` Piccardo — `translations/it-piccardo/1.0.0/`
+- `nl` Leemhuis — `translations/nl-leemhuis/1.0.0/`
+- `pt` El-Hayek — `translations/pt-elhayek/1.0.0/`
+- `ro` Grigore — `translations/ro-grigore/1.0.0/`
+- `ru` Kuliev — `translations/ru-kuliev/1.0.0/`
+- `zh` Ma Jian — `translations/zh-majian/1.0.0/`
+  Catalog-only publish (no app code). Convert via
+  `tool/ai_assets/convert_tanzil_translation_txt.py`. Tajweed packs untouched.
+
+## Status: Canonical lexical = production scorer (2026-08-03)
+ADR-010 Canonical lexical is always used (Debug/Profile/Release). Settings
+“Canonical lexical (M3 debug)” toggle removed. Native
+`CanonicalLexicalAuthority.productionEnabled` always returns `true`. Official→DIY
+CoreML failover unchanged; both engines use Canonical. Debug-only: CoreML
+override, Asset Debug, practice Official↔DIY banner.
+
+## Status: iOS Official → DIY CoreML session failover (2026-08-03)
+**Production in all builds** (Debug/Profile/Release): prefer Official CoreML;
+on load/init/inference failure silently activate DIY CoreML for the process
+lifetime; retry Official next launch; errors only if both fail. Not ONNX.
+Canonical lexical is always-on (not a Settings toggle). Detail:
+[`memory/features/tajweed/ios-official-diy-session-failover-2026-08-03.md`](features/tajweed/ios-official-diy-session-failover-2026-08-03.md)
+See also: [`memory/features/tajweed/canonical-lexical-production-always-on-2026-08-03.md`](features/tajweed/canonical-lexical-production-always-on-2026-08-03.md)
+
+## Status: Official CoreML = production iOS default (2026-08-03)
+Live R2 `catalog.json` now points iOS at `v1.2.0` Official HF multifunction
+CoreML (~261 MB). DIY `v1.1.0` kept for rollback / Debug override. CoreML was
+never removed — DIY was also CoreML; Official was Debug-only until this catalog
+flip. Detail:
+[`memory/features/tajweed/ios-official-coreml-production-default-2026-08-03.md`](features/tajweed/ios-official-coreml-production-default-2026-08-03.md)
+
+## Status: CoreML production vs debug toggles (2026-08-03)
+**Invariant:** Release must download/install/load/run iOS CoreML (Android ONNX)
+via production `catalog.json` when AI Tajweed is enabled. `kDebugMode` /
+`#if DEBUG` gate **only** developer UIs (Asset Debug, iOS CoreML catalog
+override, practice-screen Official↔DIY banner). Canonical lexical is always on.
+Do **not** wrap `ensureModel` / `prepareModel` / inference in debug checks.
+
+## Status: Reading Settings live preview (2026-08-03)
+Pinned Bismillah preview at top of Reading Settings updates live with Arabic
+font size, translation size, line spacing, script, layout, and translation /
+transliteration toggles.
+
+## Status: Classic vs Simple Quran layout contrast (2026-08-03)
+Classic: bordered soft cards, circle badge, light shadow. Simple: flat list,
+muted number, hairline divider, no card fill/border. Color keeps card chrome
++ word bands. Change in `AyahCard`.
+
+## Status: Tajweed practice overflow + listen repeat-off (2026-08-03)
+Recording view: ayah card scrolls in `Expanded`/`SingleChildScrollView`; recite
+controls stay pinned. Reference audio on complete: pause then seek to zero so
+Repeat Off does not restart; loop mode reapplied after `setUrl`.
+
+## Status: Tajweed listen-to-ayah controls (2026-08-03)
+Reference audio pauses (keeps position) instead of disposing; tap again resumes.
+On completion, icon returns to speaker and seek resets to start. Tune icon opens
+the shared Quran audio settings sheet (speed / volume / repeat) on the practice
+screen. Prefs persist via StorageService with Surah/Juz/Page readers.
+
+## Status: Quran reading settings — unified launcher (2026-08-03)
+Surah popup menu (English/Arabic + font size) removed. All Quran surfaces use
+`ReadingSettingsScreen` via `QuranReadingSettingsLauncher` (tune icon): Quran tab,
+Surah detail, Juz list, Juz reading, Mushaf page view. Reader screens reload
+display prefs when returning from settings.
+
+## Status: runApp → first frame ~31s — instrumenting (2026-08-02)
+Native/Hive path healthy (~4.8s to runApp). Detailed `[STARTUP]` markers on
+DeenlyApp, createAppRouter, providers, ScreenUtilInit, themes, MaterialApp.router,
+GoRouter builders/redirect, NAV observer, SplashScreen. No optimizations.
+Cold-launch and compare mark gaps / sync deltas in `StartupProbe.dumpSummary`.
+
+## Status: Hive.initFlutter timeout — root cause (2026-08-02)
+Not a Hive bug: `initFlutter` only awaits `path_provider.getApplicationDocumentsDirectory`.
+Optimize pass raced Hive with `runApp` + concurrent Logger path_provider, wrapped
+Hive in a **5s timeout**, then started Superwall after the skip — storage never
+initialized. Restored Binding → MediaKit → Logger → Hive → runApp → background
+services; removed Hive timeout; `[STARTUP]` marks restored; path_provider probed
+before Hive. Detail:
+[`memory/features/hive-initflutter-hang-root-cause-2026-08-02.md`](features/hive-initflutter-hang-root-cause-2026-08-02.md)
+
+## Status: Flutter startup optimized (2026-08-02)
+Partially rolled back for Hive/order (above). Bundled Plus Jakarta + deferred
+Home/Onboarding routes remain. Do **not** re-defer Hive/Logger past `runApp`.
+Detail:
+[`memory/features/flutter-startup-optimization-2026-08-02.md`](features/flutter-startup-optimization-2026-08-02.md)
+
+## Status: Flutter startup bottlenecks — instrumented (2026-08-02)
+Superseded by optimization above. Prior probe notes:
+[`memory/features/flutter-startup-bottleneck-breakdown-2026-08-02.md`](features/flutter-startup-bottleneck-breakdown-2026-08-02.md)
+
+## Status: iOS launch profiling → first-frame bottleneck fixed (2026-08-02)
+Native `didFinishLaunching` ~14 ms; no plugin ≥100 ms. Slowest stage was
+**runApp → first frame (~21 s)** from `GoogleFonts.plusJakartaSansTextTheme`
+HTTP fetch. Fix: bootstrap themes for frame 0; apply Plus Jakarta after first
+frame. Detail:
+[`memory/features/ios-launch-path-timing-2026-08-02.md`](features/ios-launch-path-timing-2026-08-02.md)
+
+## Status: CoreML modelObtain ~7s every score — fixed (2026-08-02)
+**Cause:** (1) specialized `predict_T*` loaded only on first score per bucket;
+(2) `ensureModel` always `unload()`’d ASR/head, wiping cache on every practice
+entry. **Fix:** unload only when pack version/SHA changes; specialized preload
+runs in background **after** `prepareModel` completes; keep cache across
+idempotent `load()`. **UI follow-up:** `TajweedModelSession` skips install
+chrome when pack is on disk / already prepared this process; leaves download
+UI before prepare (never stuck at 100%); no 0% flash between ayahs. CoreML
+cache untouched. Detail:
+[`memory/features/tajweed/coreml-lifetime-cache-2026-08-02.md`](features/tajweed/coreml-lifetime-cache-2026-08-02.md)
+
+## Status: Tajweed must be lazy until practice opens (2026-08-02)
+Audit vs fast baseline `aaf5513`: native engine/lexicon/CoreML/ONNX were already
+off the launch path (post 2026-07-31 lexicon ANR fix). Eager bits were Dart
+router/settings imports + EventChannel `onListen` constructing the engine.
+Fixed: `TajweedPracticeGate` deferred load; Settings deferred Tajweed imports;
+`onListen` only stores the sink. Detail:
+[`memory/features/tajweed/startup-eager-load-audit-2026-08-02.md`](features/tajweed/startup-eager-load-audit-2026-08-02.md)
+
+## Status: Flutter first-frame ~21s after runApp (2026-08-02)
+Native startup healthy (~14 ms). Gap is Flutter: `GoogleFonts.plusJakartaSansTextTheme`
+fetches Plus Jakarta Sans over HTTP (not in pubspec fonts); first Text paint waits.
+Probes: `[STARTUP] GoogleFonts.pendingFonts done` vs `first Flutter frame`.
+Detail: [`memory/features/flutter-first-frame-delay-2026-08-02.md`](features/flutter-first-frame-delay-2026-08-02.md)
+(Ignore Google Fonts for the Tajweed laziness work above.)
+
+## Status: Short-ayah ASR deletions (Kawthar-class) — root cause (2026-08-01)
+**Not** CTC collapse, audio trim, pad pollution, or normalization. Official
+CoreML greedy argmax blanks frames where ONNX still emits letters (e.g. `م`);
+iOS hyp matches host Official on the same WAV. Lexical scorer is downstream only.
+Detail: [`memory/features/tajweed/short-surah-asr-deletion-root-cause-2026-08-01.md`](features/tajweed/short-surah-asr-deletion-root-cause-2026-08-01.md)
+
+## Status: Scoring pipeline perf (2026-08-01)
+Instrumented stages (Android `timingsMs` parity + FA/head split). Optimized
+CoreML `NSNumber` I/O (~200× parse / ~1000× fill on host microbench), flat CTC
+aligner DP (identical intervals), iOS lexicon NDJSON streaming. Scoring logic
+unchanged. Detail:
+[`memory/features/tajweed/scoring-pipeline-perf-2026-08-01.md`](features/tajweed/scoring-pipeline-perf-2026-08-01.md)
+
+## Status: iOS white launch screen — root cause fixed (2026-08-01)
+**Cause:** `GeneratedPluginRegistrant.register` was commented out → prefs/path
+channels hung → Dart never painted → white `LaunchScreen.storyboard` stuck.
+
+**Behavior-preserving follow-up:** Dart init order restored (MediaKit → Logger →
+Hive → `runApp` → Superwall/services as before). Only keep plugin registration,
+DEBUG timing logs, and deferred FocusIOSDebugLogger I/O.
+Detail: [`memory/features/ios-startup-white-screen-2026-08-01.md`](features/ios-startup-white-screen-2026-08-01.md)
+
+**Build slowness (separate):** Superwall `Superscript` pod ~253MB + 12MB lexicon
+asset copy dominate install/link — not fixed by commenting out plugins.
+
+## Status: TajweedLiveCompare — per-attempt archive (2026-08-01)
+Each score still writes `last.wav` + `last_stages.json`, and also archives
+`{surah}_{ayah}_attempt_NNNN.wav` + matching `.json` (never overwrites history).
+iOS: Documents/TajweedLiveCompare/; Android: externalFilesDir/TajweedLiveCompare/.
+
+## Status: M3 flag not reaching score — fixed (2026-07-31)
+**Bug:** iOS `setCanonicalLexicalProductionEnabled` cast `args["enabled"] as? Bool`
+failed when Flutter delivered `NSNumber` → set never persisted. Settings switch
+stayed optimistically ON; score still read flag=OFF → `authority=legacy`.
+
+**Fix:** parse Bool|NSNumber; in-memory flag cache; `synchronize`/`commit`; set
+echoes confirmed value; Flutter no longer silent-no-ops MissingPlugin.
+
+**Verify:** toggle ON → snackbar says "native confirmed" → log
+`[TajweedCanonical] flag set productionEnabled=YES` then score
+`authority branch=canonical` / `authority=canonical`.
+
+## Status: Launch hang — root cause + fix (2026-07-31)
+**Cause:** Android `TajweedEngine` init (from `configureFlutterEngine`) called
+`CanonicalLexiconStore.loadIfNeeded()` and synchronously parsed **~12MB**
+`ayahs.ndjson` (6236 ayahs) on the **main thread** → ANR / frozen phone on launch.
+
+**Fix:**
+- Lexicon: `bind()` only at engine construct; `loadIfNeeded()` only on score worker.
+- `TajweedChannelHandler` lazy-inits engine; flag get/set never constructs engine.
+- iOS: flag channel methods skip `TajweedEngine.shared` (Settings can call them).
+
+**Verify:** cold launch; console should reach Flutter `[STARTUP] runApp` quickly with
+**no** `[TajweedCanonical] loaded …` until first score.
+
+## Status: ADR-010 M3 — Canonical lexical = production (always on)
+**Canonical is always on** (Debug/Profile/Release). Legacy display-string lexical
+path is no longer selectable. Settings / CoreML Debug toggles removed.
+
+Pipeline: lexicon expected IDs + Stage-2/rematerialize hyp + canonical DP →
+existing `WordAlignOp` / pronunciation head / Flutter JSON. Display Mushaf is
+UI-only. Fail closed if ayah missing from pack.
+
+**Doc:** [`memory/features/tajweed/canonical-lexical-production-always-on-2026-08-03.md`](features/tajweed/canonical-lexical-production-always-on-2026-08-03.md)  
+**M3 history:** [`memory/features/tajweed/canonical-lexicon-m3.md`](features/tajweed/canonical-lexicon-m3.md)  
+**ADR:** [`memory/decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md`](decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md)
+
+## Status: iOS launch hang — mitigation (2026-07-31)
+**Symptom:** Debug builds on iPhone stuck on native LaunchScreen (Xcode Run logs
+~23:44–23:54 showed multi-minute sessions with empty console).
+
+**Mitigations shipped (no scoring/M3 change):**
+- Defer `TajweedEngine.shared` until first MethodChannel call (no `AVAudioEngine`
+  on AppDelegate launch path); lazy `AVAudioEngine` in recorder.
+- `main.dart`: timeouts around Logger/Hive; Superwall configure after first frame.
+- Splash: prefs timeout + null-safe l10n; LaunchScreen no longer references
+  missing `LaunchImage.png` assets.
+- Superwall configure Completer capped at 8s.
+
+**Verify:** Rebuild/run on device; Xcode console should show `[DeenFocus]
+didFinishLaunching` then Flutter `[STARTUP] runApp`. If still stuck, capture
+console from first paint.
+
+## Status: ADR-010 M2.6 — real-world lab validation (2026-07-31)
+**Lab only — no production scoring/UI/M3.** Framework + initial evidence on 5
+recordings (3 Arab professional goldens via ONNX ASR + 2 live captures).
+
+**Results:** legacy mean **84.2%** → canonical **95.0%** (+10.8 pp); FP **1→0**;
+FN increase **0**; golden/presentation/live regression suites **0 worse**.
+Acceptance on seed: **PASS**. Diversity placeholders not yet filled.
+
+**Clitic rematerialization** (M2.5 policy) applied in **lab** `canonical_evaluator`
+only — production `TajweedLexicalScoring` untouched.
+
+**Run:** `cd tajweed-lab && PYTHONPATH=. python3 scripts/run_m26_evaluation.py --seed`
+
+**Docs / reports:**
+- [`memory/features/tajweed/canonical-lexicon-m26.md`](features/tajweed/canonical-lexicon-m26.md)
+- [`memory/features/tajweed/reports/m26-real-world-2026-07-31.md`](features/tajweed/reports/m26-real-world-2026-07-31.md)
+- Dataset: `memory/features/tajweed/fixtures/m26_real_world/`
+
+**Next action:** Fill diversity speaker slots + complete `m26_human_review.csv`;
+still **no M3** until policy G1–G7 + product sign-off.
+
+## Status: ADR-010 M2.5 — canonical lexical policy freeze (2026-07-31)
+**Design only — no code, no M3, no production score change.** M2 showed architecture
+is correct; remaining accuracy gap is undefined spoken-word policy (especially
+clitic / word boundaries), not more Unicode.
+
+**Frozen policy:** one Madani Uthmani token = one word ID; `و`/`ف` attached when
+Uthmani attaches; hyp rematerializes split ASR; Stage-2 closed equivalence set;
+align on IDs only; no fuzzy matching.
+
+**Doc:** [`memory/features/tajweed/canonical-lexical-policy-spec-2026-07-31.md`](features/tajweed/canonical-lexical-policy-spec-2026-07-31.md)  
+**ADR:** [`memory/decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md`](decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md)
+
+**Next action (still pre-M3):** ~~sign off Q1–Q6 → M2.6~~ **M2.6 done** — expand
+diversity WAVs + human review; only then consider M3 if G1–G7 still pass.
+
+## Status: ADR-010 M2 — shadow evaluation (2026-07-31)
+**M2 measurement complete.** 778-case lab comparison (legacy vs canonical).
+Production scoring **unchanged**. Legacy remains authoritative.
+
+**Results:** legacy mean **75.4%** → canonical **76.8%** (+1.4 pp); **78** false subs
+removed; **0** live-capture regressions; **5** golden cases where canonical < legacy
+(clitic boundary policy — addressed by M2.5 policy, not M3 code).
+
+**Recommendation:** Needs more work before cutover.
+
+**Run:** `cd tajweed-lab && PYTHONPATH=. python3 scripts/run_m2_shadow_evaluation.py`
+
+**Docs:**
+- [`memory/features/tajweed/canonical-lexicon-m2.md`](features/tajweed/canonical-lexicon-m2.md)
+- [`memory/features/tajweed/reports/m2-shadow-evaluation-2026-07-31.md`](features/tajweed/reports/m2-shadow-evaluation-2026-07-31.md)
+
+## Status: ADR-010 M1 — canonical lexicon + shadow infra (2026-07-31)
+**M1 delivered.** Complete spoken-Quran lexicon (6236 ayahs), versioned pack
+generation, fail-closed validation, and DEBUG-only shadow evaluator on iOS +
+Android. **Zero production scoring/UI/behavior change** — legacy
+`TajweedLexicalScoring` path remains authoritative.
+
+**Artifacts:**
+- Pack: `memory/features/tajweed/fixtures/canonical_lexicon_v1/` (`1.0.0`)
+- Generator: `tajweed-lab/canonical_lexicon/`
+- CLI: `tajweed-lab/scripts/generate_lexicon.py`
+- Sync: `tajweed-lab/scripts/sync_canonical_lexicon_pack.sh`
+- Doc: [`memory/features/tajweed/canonical-lexicon-m1.md`](features/tajweed/canonical-lexicon-m1.md)
+- ADR: [`memory/decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md`](decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md)
+
+**Shadow:** `[TajweedCanonicalShadow]` + `canonicalShadow` in `last_stages.json`
+(DEBUG builds only). Not touched: `normalizeArabic`, `lexicalWords`,
+`prepareExpectedWords`, `alignWords`.
+
+**Next action:** M2 — measure shadow vs legacy on golden set (Fatiha, 2:2–2:7,
+presentation_space_cases) + live corpus before any cutover.
+
+## Status: Display-script lexical dependency audit (2026-07-31)
+Investigation only (no code). Verdict: **ADR-010 via shadow-first; do not purge
+display-script from the legacy evaluator first.** Expected tokens still come from
+`normalizeArabic(Mushaf)` on every ayah; 25% IndoPak ayahs FALLBACK to display
+boundaries. `ذالك`≠`ذلك` is preserved by dagger→ا when next=ل (Phase 1 kaf-drop
+never fires). `الصلاوه`/`الصلاه` and `رزقنهم`/`رزقناهم` are orthographic, not ASR.
+Doc: [`memory/features/tajweed/display-script-lexical-dependency-audit-2026-07-31.md`](features/tajweed/display-script-lexical-dependency-audit-2026-07-31.md).
+
+**Next action:** M2 shadow measurement (see ADR-010 M1 status above).
+
+## Status: ADR-010 canonical lexical evaluator (2026-07-31)
+**M1–M2.6 complete (lab).** Policy freeze + rematerialization + real-audio shadow
+evidence. Production scoring unchanged. M3 still blocked.
+ADR: [`memory/decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md`](decisions/ADR-010-canonical-spoken-quran-lexical-evaluator.md).
+Policy: [`memory/features/tajweed/canonical-lexical-policy-spec-2026-07-31.md`](features/tajweed/canonical-lexical-policy-spec-2026-07-31.md).
+M2.6: [`memory/features/tajweed/canonical-lexicon-m26.md`](features/tajweed/canonical-lexicon-m26.md).
+
+**Next action:** Expand multi-speaker dataset; human-review CSV; do not start M3.
+
+## Status: iOS post-score fatal error fixed (2026-07-31)
+**Root cause:** `TajweedLexicalScoring.normalizeArabic` called `UInt32(next)` when
+`next == -1` (dagger alif U+0670 at end of token / no following base letter).
+Swift traps with `Fatal error: Negative value is not representable`. Kotlin uses
+`Int` family checks and was unaffected.
+
+**Fix:** Guard `next >= 0` before `UInt32` conversion; mirror Kotlin sentinel logic.
+Regression test: `testNormalizeArabicDaggerAlifAtEndDoesNotTrap`.
+
+**Next action:** Rebuild iOS; confirm scoring completes without crash on ayahs that
+previously died at end of pipeline (check `[TajweedLexical]` then result UI).
+
+## Status: ASR foundation feasibility (2026-07-31)
+Research-only. `Muno459/fastconformer-quran` is purpose-built Quran-Hafs ASR
+(EveryAyah + tlog phone + Muaalem; SOTA offline board) — **not Option C**.
+Phone WER ~9% + our live `model_limitation` failures mean 95–98% worldwide
+lexical is **not** model-guaranteed → **Option B**: keep model near-term, build
+ASR-swappable lexicon architecture, start eval/migration plan (license NPL too).
+Doc: [`memory/features/tajweed/asr-foundation-feasibility-2026-07-31.md`](features/tajweed/asr-foundation-feasibility-2026-07-31.md).
+
+**Next action:** Accept Option B; define DeenFocus accent/beginner eval cohort;
+ADR-010 only with ASR-swappable requirement — do not implement yet.
+
+## Status: Canonical Spoken-Quran Engine design (2026-07-31)
+Engineering design for next-gen scoring: versioned canonical lexicon as sole
+lexical authority; separate linguistic normalize; align on canonical tokens;
+pronunciation + tajweed as independent layers; three-axis feedback.
+Phased migration M0–M7 with effort/risks/rollback. **No implementation yet.**
+Doc: [`memory/features/tajweed/canonical-spoken-quran-engine-design-2026-07-31.md`](features/tajweed/canonical-spoken-quran-engine-design-2026-07-31.md).
+
+**Next action:** Accept design → draft ADR-010 (Phase M0); do not add more
+Unicode hacks; complete Phase 3 live QA of Phase 1/2 in parallel.
+
+## Status: Recitation evaluation architecture review (2026-07-31)
+Design-only (no code). Verdict: layered pipeline (ASR → canonical Quran norm →
+linguistic norm → align → pronunciation → tajweed → feedback) is superior to
+further `normalizeArabic` patches. Keep Phase 1/2 wins; stop treating Mushaf
+glyphs as the path to worldwide correctness. Remaining hard problems are
+canonical lexicon + ASR ceiling + real tajweed stage, not more dagger rules.
+Doc: [`memory/features/tajweed/recitation-evaluation-architecture-review-2026-07-31.md`](features/tajweed/recitation-evaluation-architecture-review-2026-07-31.md).
+
+**Next action:** Phase 3 manual live QA of Phase 1/2 fixes; then decide Horizon B
+(extract layers) vs continue product UI — do not add more orthography hacks.
+
+## Status: Lexical Phase 1/2 + mismatch instrumentation (2026-07-31)
+Deterministic lexical fixes only (no ASR/CoreML/CTC/pronunciation changes):
+- `prepareHypothesisWords`: peel attached ASR `و` before align
+- `filterLexicalExpectedWords`: drop non-lexical marks (e.g. IndoPak `٭`)
+- `normalizeArabic`: dagger U+0670 drop before ya/kaf/end-after-ya; `اولائك`→`اولئك`
+- Phase 2: strip U+0653–U+065F + U+066D in letterstream
+- Every sub/miss/extra logs `reason=` (`attached_waw`, `dagger_alif`, `hamza_variant`,
+  `quranic_mark`, `model`) in `[TajweedLexical]`, `last_stages.json`, and tokens.
+
+**Next action (Phase 3):** rebuild; re-run manual live takes (2:5, 2:7, 2:2). Expect
+2:5 ≈100% lexical; remaining subs should show `reason=model` only.
+
+## Status: Presentation-token tokenizer (2026-07-31)
+`TajweedLexicalScoring.lexicalWords(text, referenceText)` segments any mushaf
+onto Uthmani word boundaries via shared letterstream (whitespace/ZW ignored).
+Flutter passes `lexicalReferenceArabic` (Uthmani) with display `expectedArabic`.
+763 IndoPak presentation-boundary cases regression-tested on Android (+ iOS
+mirrors). ASR / `alignWords` DP unchanged.
+Doc: [`memory/features/tajweed/presentation-token-tokenizer-2026-07-31.md`](features/tajweed/presentation-token-tokenizer-2026-07-31.md).
+
+**Next action:** rebuild apps; practice IndoPak Fatiha 1:6 — expect `اهدنا` match.
+
+## Status: IndoPak اهْدِنَا presentation space (2026-07-31)
+IndoPak 1:6 corpus text contains a real **U+0020** between `اِہۡدِ` and `نَا`.
+`splitWords` splits before `normalizeArabic` → `["اهد","نا"]` vs ASR `["اهدنا"]`.
+Not a surviving format control inside normalize; Android and iOS tokenize
+identically. ~761 ayahs have similar word-count skew vs Uthmani letterstream.
+ASR / `alignWords` not changed — fix belongs in tokenizer/normalizer (or
+lexical resegmentation) next.
+Doc: [`memory/features/tajweed/indopak-presentation-space-ihdina-2026-07-31.md`](features/tajweed/indopak-presentation-space-ihdina-2026-07-31.md).
+
+**Next action:** implement lexical token merge / Uthmani-guided resegmentation
+before `alignWords`; do not touch ASR.
+
+## Status: ONNX vs Official decoder divergence (2026-07-31)
+Same golden WAVs: first **content** split is encoder/logit numerics on overlapping
+frames (cosine ~0.89–0.94, ~7–12% greedy argmax mismatch) — **not** CTC collapse
+and **not** `tokens.txt` (byte-identical). Official often drops the final vowel
+piece (`ِ` / `ٌ`) vs ONNX. Host Official needs `CPU_AND_NE` (GPU/CPU → NaN).
+Script + dumps:
+`tajweed-lab/experiments/diy_coreml_poc/compare_onnx_vs_official_decoder.py`,
+`…/reports/onnx_vs_official_decoder/`.
+Doc: [`memory/features/tajweed/onnx-vs-official-decoder-divergence-2026-07-31.md`](features/tajweed/onnx-vs-official-decoder-divergence-2026-07-31.md).
+
+**Next action:** if product needs word-identical ASR, accept model-graph gap or
+revisit Official vs ONNX encoder parity — do not “fix” CTC/tokenizer.
+
+## Status: Heh-family normalizeArabic mushaf parity (2026-07-30)
+Verified IndoPak corpus uses ہ (not ه) and `لِلّٰہِ` (dagger + heh goal).
+Normalization only: fold heh-family → ه; strip dagger alif when next base is
+heh-family so `لله` ≡ `لِلّٰہِ`. Scoring/alignWords unchanged.
+Doc: [`memory/features/tajweed/normalize-heh-mushaf-parity-2026-07-30.md`](features/tajweed/normalize-heh-mushaf-parity-2026-07-30.md).
+
+**Next action:** rebuild app; confirm IndoPak Fatiha 1:2 lexical match vs Imlaei ASR.
+
+## Status: E2E Tajweed timing / missing ~7.5 s (2026-07-30)
+Prior stage sum (~900 ms) excluded work inside `predict()` that still counted
+toward `totalPipelineMs`. New stages: `coremlModelObtainMs`,
+`coremlInputCopyMs`, `coremlOutputParseMs`, plus mic stop / validate / WAV dump
+/ Flutter callback+first frame. No VAD on iOS (`vadEndOfSpeechWaitMs=0`).
+Look for `[TajweedE2E]` / `[TajweedPipeline]`; expect cold
+`modelWasColdLoad=true` to dominate first score for a bucket.
+Doc: [`memory/features/tajweed/e2e-pipeline-timing-gap-2026-07-30.md`](features/tajweed/e2e-pipeline-timing-gap-2026-07-30.md).
+
+**Next action:** rebuild, score once (cold) then again (warm same bucket); confirm
+`modelObtainMs` explains the gap.
+
+## Status: iOS Tajweed pipeline stage timing instrumentation (2026-07-30)
+Each recitation logs `[TajweedPipeline]` with mel/pad/encoder/ctc/lexical/pron/total
+ms plus active manifest version, encoder SHA, API, function name, compute units.
+Superseded/extended by E2E status above.
+
+## Status: iOS dual CoreML + DEBUG Official default (2026-07-30)
+Dual-model architecture unchanged (manifest-driven DIY + Official). **Local
+DEBUG** builds default to Official (`TajweedDevModelOverride` → R2
+`ios/tajweed/v1.2.0/`). Settings → **iOS CoreML model (Debug)** switches
+Official / DIY / production catalog without touching live `catalog.json`.
+Release/TestFlight ignore the override. Production catalog still DIY
+`v1.1.0`. Official is **dev/eval only** until licensing clears.
+Doc: [`memory/features/tajweed/ios-dual-coreml-architecture-2026-07-30.md`](features/tajweed/ios-dual-coreml-architecture-2026-07-30.md).
+
+**Next action:** on device, open Debug selector → Ensure Official → switch DIY
+→ confirm both load; leave production catalog alone.
+
+## Status: Official HF CoreML vs DIY palette-8 (2026-07-30)
+Host golden comparison:
+[`memory/features/tajweed/official-vs-diy-coreml-comparison-2026-07-30.md`](features/tajweed/official-vs-diy-coreml-comparison-2026-07-30.md).
+Official equal on transcripts/lexical, ~23× faster host latency, larger pack.
+Architecture follow-up: dual-model status above.
+
+## Status: Lexical iOS ≡ Android + selected Quran script (2026-07-30)
+Verified expected ayah comes from Flutter `StorageService.quranScript` →
+`QuranScriptTexts` on both platforms. Aligned `normalizeArabic` /
+`splitWords` (added IndoPak keheh/Farsi-yeh folds + drop empty tokens).
+Unit tests green on Android + iOS. Report:
+[`memory/features/tajweed/lexical-ios-android-parity-2026-07-30.md`](features/tajweed/lexical-ios-android-parity-2026-07-30.md).
+ASR/CoreML untouched. Live dumps log raw/norm expected+hyp via `TajweedLexical`.
+
+## Status: Live Android vs iOS recitation divergence (2026-07-30)
+Investigation (not a product feature): same live ayah on both devices → dump
+WAV + stages → cross-feed Android ONNX vs iOS CoreML. Report:
+[`memory/features/tajweed/android-ios-live-recitation-divergence-2026-07-30.md`](features/tajweed/android-ios-live-recitation-divergence-2026-07-30.md).
+
+**Ready:** `TajweedLiveCaptureDump` on both platforms; host
+`compare_live_pipelines.py`. **Blocked on:** paired mic captures after rebuild.
+On identical WAV, first structural divergence is encoder `T_out` (dynamic vs
+fixed 600); CTC hyp still matches — goldens do not explain Android-OK/iOS-fail.
+
+## Status: iOS palette-8 encoder is the production R2 candidate (2026-07-30)
+Promoted the validated 8-bit k-means palettized DIY encoder into the existing
+runtime pipeline (R2 + `catalog.json` + `model_manifest.json` + `ensureModel()` +
+SHA-256). Full report:
+[`memory/features/tajweed/ios-palette8-production-promotion-2026-07-30.md`](features/tajweed/ios-palette8-production-promotion-2026-07-30.md).
+
+**R2:** `ios/tajweed/v1.1.0/` **still live** via catalog; official successor
+staged at `v1.2.0` (see Official HF status above). Android `android/tajweed/v1/`
+URLs/artifacts unchanged. Encoder SHA
+`96d36feaefb56a4be7044cda1d5bb825d935b7b0e323fc995c58c6dea92b032a`
+(byte-identical to lab `palette_8bit`). Download/install ~158.8 MB artifacts.
+No models in IPA.
+
+**Next action:** superseded for production candidate decision by official HF
+comparison; keep v1.1.0 until catalog flip.
 
 ## Status: DIY CoreML encoder optimization comparison (2026-07-30)
 User asked to evaluate architecture-preserving compressions on the self-generated
-encoder **without replacing the production candidate**. Full report:
+encoder **without replacing the production candidate** (at the time). Full report:
 [`memory/features/tajweed/diy-coreml-encoder-optimization-2026-07-30.md`](features/tajweed/diy-coreml-encoder-optimization-2026-07-30.md)
 (lab mirror: `tajweed-lab/experiments/diy_coreml_poc/reports/encoder_optimization_comparison.md`).
 
@@ -15,22 +597,17 @@ encoder **without replacing the production candidate**. Full report:
 
 | Technique | Size | Exact transcripts | Mean \|Δpron\| | Verdict |
 |---|---:|:---:|---:|---|
-| FP32 baseline (current candidate) | 587 MB | 3/3 | 0 | keep as production for now |
+| FP32 baseline (superseded on R2) | 587 MB | 3/3 | 0 | replaced by palette-8 on R2 |
 | FP16 convert | 294 MB | NaN | — | reject |
 | Prune 50% (weight compression) | 240 MB | 0/3 | 0.098 | reject |
-| **Palettize 8-bit** | **146 MB** | **3/3** | **0.0034** | **recommended** |
+| **Palettize 8-bit** | **146 MB** | **3/3** | **0.0034** | **promoted to R2 v1.1.0** |
 | Palettize 4-bit | 74 MB | 0/3 | 0.019 | reject |
 | **Linear INT8** | **149 MB** | **3/3** | **0.0036** | **runner-up** |
 | Linear INT4 | — | — | — | needs iOS18 re-convert |
 
-**Recommendation:** prefer `palette_8bit` (or `linear_int8`) for a future R2 version
-after real-iPhone validation. Production FP32 weight SHA unchanged
-(`f8848ad7…`); R2 `ios/tajweed/v1` untouched. Harness:
+**Recommendation (executed):** `palette_8bit` published as `ios/tajweed/v1.1.0`
+(immutable; FP32 `v1` removed). Harness:
 `experiments/diy_coreml_poc/evaluate_encoder_optimizations.py`.
-
-**Next action (await approval):** side-load `artifacts/optimization/palette_8bit/`
-via `TajweedImport` on a real iPhone → measure latency/ANE → only then publish as
-`ios/tajweed/v1.1.0` (immutable; do not overwrite v1).
 
 ## Status: iOS Tajweed DIY CoreML pack — migrated to production R2 asset distribution (2026-07-30)
 Follow-up to the entry directly below. User asked: is the DIY pack bundled or

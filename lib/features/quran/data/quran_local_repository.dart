@@ -140,6 +140,15 @@ class QuranLocalRepository {
     return surahs;
   }
 
+  /// Single-surah lookup by number (O(1) Hive key). Prefer over [getSurahs]
+  /// when only one name is needed (e.g. home daily verse).
+  Future<SurahSummary?> getSurah(int surahNumber) async {
+    await ensureInitialized();
+    final map = _surahBox.get(surahNumber);
+    if (map == null) return null;
+    return SurahSummary.fromMap(map);
+  }
+
   Future<List<AyahRecord>> getAyahsBySurah(int surahNumber) async {
     await ensureInitialized();
     final records =
