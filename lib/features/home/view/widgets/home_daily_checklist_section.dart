@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
+import 'home_card_open_arrow.dart';
 
-/// Daily Checklist section showing trackable daily habits inside a card.
+/// Compact Daily Checklist entry card for Home.
+///
+/// Progress is derived from [completedItems] vs [DailyChecklistItem.values].
 class HomeDailyChecklistSection extends StatelessWidget {
   const HomeDailyChecklistSection({
     super.key,
     required this.backgroundColor,
     required this.completedItems,
-    required this.onToggleItem,
+    required this.onOpen,
   });
 
   final Color backgroundColor;
   final Set<DailyChecklistItem> completedItems;
-  final ValueChanged<DailyChecklistItem> onToggleItem;
+  final VoidCallback onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -26,194 +29,111 @@ class HomeDailyChecklistSection extends StatelessWidget {
         ? colorScheme.outlineVariant.withValues(alpha: 0.35)
         : colorScheme.outlineVariant.withValues(alpha: 0.25);
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: backgroundColor,
+    final total = DailyChecklistItem.values.length;
+    final completed = completedItems.length.clamp(0, total);
+    final progress = total == 0 ? 0.0 : completed / total;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onOpen,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor, width: 1.1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.checklist_rounded,
-                size: 20,
-                color: colorScheme.primary,
-              ),
-              SizedBox(width: Spacing.sm),
-              Text(
-                l10n.dailyChecklistTitle,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+        child: Ink(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor, width: 1.1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.07),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          _ChecklistSectionHeader(title: l10n.dailyChecklistSectionPrayer),
-          _ChecklistItem(
-            title: l10n.dailyChecklistFajr,
-            isCompleted: completedItems.contains(DailyChecklistItem.fajr),
-            onTap: () => onToggleItem(DailyChecklistItem.fajr),
+          padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
+          child: Row(
+            children: [
+              _ChecklistProgressRing(
+                completed: completed,
+                total: total,
+                progress: progress,
+                colorScheme: colorScheme,
+              ),
+              SizedBox(width: Spacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.dailyChecklistTitle,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.dailyChecklistProgress(completed, total),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: Spacing.sm),
+              const HomeCardOpenArrow(),
+            ],
           ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistTahajjud,
-            isCompleted: completedItems.contains(DailyChecklistItem.tahajjud),
-            onTap: () => onToggleItem(DailyChecklistItem.tahajjud),
-          ),
-          _ChecklistSectionHeader(title: l10n.dailyChecklistSectionQuranDhikr),
-          _ChecklistItem(
-            title: l10n.dailyChecklistQuran,
-            isCompleted: completedItems.contains(DailyChecklistItem.quran),
-            onTap: () => onToggleItem(DailyChecklistItem.quran),
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistMorningAdhkar,
-            isCompleted:
-                completedItems.contains(DailyChecklistItem.morningAdhkar),
-            onTap: () => onToggleItem(DailyChecklistItem.morningAdhkar),
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistEveningAdhkar,
-            isCompleted:
-                completedItems.contains(DailyChecklistItem.eveningAdhkar),
-            onTap: () => onToggleItem(DailyChecklistItem.eveningAdhkar),
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistDhikr,
-            isCompleted: completedItems.contains(DailyChecklistItem.dhikr),
-            onTap: () => onToggleItem(DailyChecklistItem.dhikr),
-          ),
-          _ChecklistSectionHeader(title: l10n.dailyChecklistSectionGoodDeeds),
-          _ChecklistItem(
-            title: l10n.dailyChecklistCharity,
-            isCompleted: completedItems.contains(DailyChecklistItem.charity),
-            onTap: () => onToggleItem(DailyChecklistItem.charity),
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistSmileAtSomeone,
-            isCompleted:
-                completedItems.contains(DailyChecklistItem.smileAtSomeone),
-            onTap: () => onToggleItem(DailyChecklistItem.smileAtSomeone),
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistFamilyCall,
-            isCompleted: completedItems.contains(DailyChecklistItem.familyCall),
-            onTap: () => onToggleItem(DailyChecklistItem.familyCall),
-          ),
-          _ChecklistSectionHeader(
-            title: l10n.dailyChecklistSectionDistraction,
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistNoMusicToday,
-            isCompleted:
-                completedItems.contains(DailyChecklistItem.noMusicToday),
-            onTap: () => onToggleItem(DailyChecklistItem.noMusicToday),
-          ),
-          _ChecklistItem(
-            title: l10n.dailyChecklistNoSocialMediaBeforeIsha,
-            isCompleted: completedItems
-                .contains(DailyChecklistItem.noSocialMediaBeforeIsha),
-            onTap: () =>
-                onToggleItem(DailyChecklistItem.noSocialMediaBeforeIsha),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChecklistSectionHeader extends StatelessWidget {
-  const _ChecklistSectionHeader({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(top: 6, bottom: 2),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: colorScheme.primary,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );
   }
 }
 
-class _ChecklistItem extends StatelessWidget {
-  const _ChecklistItem({
-    required this.title,
-    required this.isCompleted,
-    required this.onTap,
+class _ChecklistProgressRing extends StatelessWidget {
+  const _ChecklistProgressRing({
+    required this.completed,
+    required this.total,
+    required this.progress,
+    required this.colorScheme,
   });
 
-  final String title;
-  final bool isCompleted;
-  final VoidCallback onTap;
+  final int completed;
+  final int total;
+  final double progress;
+  final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            Container(
-              width: 22,
-              height: 22,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isCompleted
-                      ? colorScheme.primary
-                      : colorScheme.outlineVariant,
-                  width: 1.8,
-                ),
-                color: isCompleted ? colorScheme.primary : Colors.transparent,
-              ),
-              child: isCompleted
-                  ? Icon(
-                      Icons.check,
-                      size: 14,
-                      color: colorScheme.onPrimary,
-                    )
-                  : null,
+    return SizedBox(
+      width: 52,
+      height: 52,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            width: 52,
+            height: 52,
+            child: CircularProgressIndicator(
+              value: progress,
+              strokeWidth: 5,
+              strokeCap: StrokeCap.round,
+              backgroundColor:
+                  colorScheme.outlineVariant.withValues(alpha: 0.35),
+              color: colorScheme.primary,
             ),
-            SizedBox(width: Spacing.md),
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  decoration: isCompleted
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                  color: isCompleted
-                      ? colorScheme.onSurfaceVariant
-                      : colorScheme.onSurface,
-                ),
-              ),
+          ),
+          Text(
+            '$completed/$total',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+              fontSize: 11,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

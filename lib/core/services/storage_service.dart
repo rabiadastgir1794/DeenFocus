@@ -67,6 +67,8 @@ abstract class StorageService {
       'prayer_reminder_prompted_keys';
   static const String _keyDailyChecklistJson = 'daily_checklist_json';
   static const String _keyStreakRestoreUsed = 'streak_restore_used';
+  static const String _keyPendingPostOnboardingPaywall =
+      'pending_post_onboarding_paywall';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -79,6 +81,17 @@ abstract class StorageService {
   static Future<void> setOnboardingCompleted(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyOnboardingCompleted, value);
+  }
+
+  /// One-shot: show first-time Superwall after onboarding lands on Home.
+  static Future<bool> get pendingPostOnboardingPaywall async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyPendingPostOnboardingPaywall) ?? false;
+  }
+
+  static Future<void> setPendingPostOnboardingPaywall(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyPendingPostOnboardingPaywall, value);
   }
 
   static Future<String?> get userName async {

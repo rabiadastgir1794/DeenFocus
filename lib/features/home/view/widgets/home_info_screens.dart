@@ -40,101 +40,110 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
     return Scaffold(
       backgroundColor: chatBackground,
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
-        title: l10n.homeAiChatTitle,
-        onBack: () => Navigator.of(context).pop(),
-      ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: _messages.isEmpty
-                    ? _HomeAiChatEmptyState(
-                        colorScheme: colorScheme,
-                        onSuggestion: _applySuggestion,
-                        suggestions: [
-                          l10n.homeAiSuggestion1,
-                          l10n.homeAiSuggestion2,
-                          l10n.homeAiSuggestion3,
-                        ],
-                      )
-                    : ListView.builder(
-                        reverse: true,
-                        padding: const EdgeInsets.only(top: 16),
-                        itemCount: _messages.length,
-                        itemBuilder: (context, index) {
-                          final message =
-                              _messages[_messages.length - 1 - index];
-                          return _ChatBubble(message: message);
-                        },
-                      ),
-              ),
-              Material(
-                color: composerBackground,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: inputBackground,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: TextField(
-                            controller: _inputController,
-                            minLines: 1,
-                            maxLines: 5,
-                            textInputAction: TextInputAction.send,
-                            onChanged: (_) => setState(() {}),
-                            onSubmitted: (_) => _sendMessage(),
-                            decoration: InputDecoration(
-                              hintText: l10n.homeAiAskQuestionHint,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              hintStyle: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.homeAiChatTitle,
+              backLabel: l10n.insightsBack,
+              onBack: () => Navigator.of(context).pop(),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: _messages.isEmpty
+                          ? _HomeAiChatEmptyState(
+                              colorScheme: colorScheme,
+                              onSuggestion: _applySuggestion,
+                              suggestions: [
+                                l10n.homeAiSuggestion1,
+                                l10n.homeAiSuggestion2,
+                                l10n.homeAiSuggestion3,
+                              ],
+                            )
+                          : ListView.builder(
+                              reverse: true,
+                              padding: const EdgeInsets.only(top: 16),
+                              itemCount: _messages.length,
+                              itemBuilder: (context, index) {
+                                final message =
+                                    _messages[_messages.length - 1 - index];
+                                return _ChatBubble(message: message);
+                              },
+                            ),
+                    ),
+                    Material(
+                      color: composerBackground,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: inputBackground,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: TextField(
+                                  controller: _inputController,
+                                  minLines: 1,
+                                  maxLines: 5,
+                                  textInputAction: TextInputAction.send,
+                                  onChanged: (_) => setState(() {}),
+                                  onSubmitted: (_) => _sendMessage(),
+                                  decoration: InputDecoration(
+                                    hintText: l10n.homeAiAskQuestionHint,
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    hintStyle: TextStyle(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: colorScheme.onSurface),
+                                ),
                               ),
                             ),
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: colorScheme.onSurface),
-                          ),
+                            const SizedBox(width: 8),
+                            FilledButton(
+                              onPressed: _canSend ? _sendMessage : null,
+                              style: FilledButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Text(
+                                l10n.homeAiSend,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      FilledButton(
-                        onPressed: _canSend ? _sendMessage : null,
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          l10n.homeAiSend,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

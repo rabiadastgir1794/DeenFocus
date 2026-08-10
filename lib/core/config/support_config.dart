@@ -1,10 +1,16 @@
 /// Support / donation configuration — values may be overridden via `--dart-define`.
+///
+/// Donations are one-time contributions and are completely separate from
+/// Superwall / subscription products.
 abstract class SupportConfig {
   SupportConfig._();
 
-  static const int minContributionAmount = 1;
-  static const int maxContributionAmount = 100;
-  static const int defaultContributionAmount = 10;
+  /// Preset one-time support amounts (USD).
+  static const List<int> contributionAmounts = <int>[10, 25, 50, 100, 250];
+
+  static const int defaultContributionAmount = 50;
+  static const int minContributionAmount = 10;
+  static const int maxContributionAmount = 250;
 
   static const String supportEmail = String.fromEnvironment(
     'SUPPORT_EMAIL',
@@ -16,7 +22,9 @@ abstract class SupportConfig {
     'SUPPORT_WHATSAPP_NUMBER',
   );
 
-  /// Optional hosted checkout URL. When empty, contributions open a prefilled email.
+  /// Optional hosted checkout URL for one-time support.
+  /// When empty, contributions open a prefilled email.
+  /// Do not use Superwall subscription placements for donations.
   static const String paymentUrl = String.fromEnvironment(
     'SUPPORT_PAYMENT_URL',
   );

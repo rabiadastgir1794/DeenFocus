@@ -168,7 +168,15 @@ class HomePrayerStreakSection extends StatelessWidget {
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              const ['M', 'T', 'W', 'T', 'F', 'S', 'S'][index],
+                              [
+                                l10n.weekdayLetterMon,
+                                l10n.weekdayLetterTue,
+                                l10n.weekdayLetterWed,
+                                l10n.weekdayLetterThu,
+                                l10n.weekdayLetterFri,
+                                l10n.weekdayLetterSat,
+                                l10n.weekdayLetterSun,
+                              ][index],
                               style: Theme.of(context)
                                   .textTheme
                                   .labelSmall

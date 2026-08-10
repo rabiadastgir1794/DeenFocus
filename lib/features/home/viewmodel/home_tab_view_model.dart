@@ -51,7 +51,9 @@ class HomeTabViewModel extends ChangeNotifier {
   DateTime weeklyVisibleWeekStart = HomeTabViewModel._startOfWeekFor(
     DateTime.now(),
   );
-  bool weeklyCalendar = true;
+  /// Week/month toggle for legacy home calendar section. Full Calendar screen
+  /// always navigates by Gregorian month via [goToNextMonth]/[goToPreviousMonth].
+  bool weeklyCalendar = false;
   int streakDays = 0;
   HomePrayerStreakState _prayerStreakState = const HomePrayerStreakState(
     weekStartDateKey: '',
@@ -848,38 +850,37 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void goToNextMonth() {
-    if (weeklyCalendar) {
-      weeklyVisibleWeekStart = weeklyVisibleWeekStart.add(
-        const Duration(days: 7),
-      );
-      visibleMonth = DateTime(
-        weeklyVisibleWeekStart.year,
-        weeklyVisibleWeekStart.month,
-        1,
-      );
-    } else {
-      visibleMonth = DateTime(visibleMonth.year, visibleMonth.month + 1, 1);
-      weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
-    }
+  /// Advances [visibleMonth] by exactly one Gregorian month.
+  void goToNextMonth() => _shiftVisibleMonthBy(1);
+
+  /// Moves [visibleMonth] back by exactly one Gregorian month.
+  void goToPreviousMonth() => _shiftVisibleMonthBy(-1);
+
+  /// Week-row navigation for weekly calendar mode (±7 days).
+  void goToNextWeek() => _shiftVisibleWeekBy(1);
+
+  void goToPreviousWeek() => _shiftVisibleWeekBy(-1);
+
+  void _shiftVisibleMonthBy(int deltaMonths) {
+    visibleMonth = DateTime(
+      visibleMonth.year,
+      visibleMonth.month + deltaMonths,
+      1,
+    );
+    weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
     _refreshVisibleEvents();
     notifyListeners();
   }
 
-  void goToPreviousMonth() {
-    if (weeklyCalendar) {
-      weeklyVisibleWeekStart = weeklyVisibleWeekStart.subtract(
-        const Duration(days: 7),
-      );
-      visibleMonth = DateTime(
-        weeklyVisibleWeekStart.year,
-        weeklyVisibleWeekStart.month,
-        1,
-      );
-    } else {
-      visibleMonth = DateTime(visibleMonth.year, visibleMonth.month - 1, 1);
-      weeklyVisibleWeekStart = _startOfWeekFor(visibleMonth);
-    }
+  void _shiftVisibleWeekBy(int deltaWeeks) {
+    weeklyVisibleWeekStart = weeklyVisibleWeekStart.add(
+      Duration(days: 7 * deltaWeeks),
+    );
+    visibleMonth = DateTime(
+      weeklyVisibleWeekStart.year,
+      weeklyVisibleWeekStart.month,
+      1,
+    );
     _refreshVisibleEvents();
     notifyListeners();
   }

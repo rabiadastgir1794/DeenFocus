@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import 'home_card_open_arrow.dart';
 
 /// Today's Focus Score — score, stars, and category percentages stay in sync.
 ///
 /// Pass [detailed] for Insights progress bars; Home uses the compact breakdown.
+/// When [onTap] is set, the card is tappable and shows [HomeCardOpenArrow].
 class HomeFocusScoreSection extends StatelessWidget {
   const HomeFocusScoreSection({
     super.key,
@@ -15,6 +17,7 @@ class HomeFocusScoreSection extends StatelessWidget {
     required this.dhikrPercent,
     required this.distractionPercent,
     this.detailed = false,
+    this.onTap,
   });
 
   final Color backgroundColor;
@@ -24,6 +27,7 @@ class HomeFocusScoreSection extends StatelessWidget {
   final int dhikrPercent;
   final int distractionPercent;
   final bool detailed;
+  final VoidCallback? onTap;
 
   /// Each star ≈ 20 points. Reference empty state shows 1 filled star.
   int get _filledStars {
@@ -40,105 +44,147 @@ class HomeFocusScoreSection extends StatelessWidget {
         ? colorScheme.outlineVariant.withValues(alpha: 0.35)
         : colorScheme.outlineVariant.withValues(alpha: 0.25);
     final filledStars = _filledStars;
+    final isTappable = onTap != null;
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor, width: 1.1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final content = Padding(
+      padding: EdgeInsets.fromLTRB(16, 16, isTappable ? 14 : 16, 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.focusScoreTitle,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.focusScoreTitle,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List<Widget>.generate(5, (index) {
+                        final isFilled = index < filledStars;
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Icon(
+                            isFilled
+                                ? Icons.star_rounded
+                                : Icons.star_outline_rounded,
+                            color: isFilled
+                                ? colorScheme.primary
+                                : colorScheme.outlineVariant,
+                            size: 18,
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '$score',
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     fontWeight: FontWeight.w700,
+                    color: colorScheme.primary,
+                    height: 1,
+                    fontSize: 48,
                   ),
                 ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List<Widget>.generate(5, (index) {
-                  final isFilled = index < filledStars;
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 2),
-                    child: Icon(
-                      isFilled
-                          ? Icons.star_rounded
-                          : Icons.star_outline_rounded,
-                      color: isFilled
-                          ? colorScheme.primary
-                          : colorScheme.outlineVariant,
-                      size: 18,
+                if (detailed) ...[
+                  const SizedBox(height: 14),
+                  _FocusProgressRow(
+                    label: l10n.focusScorePrayer,
+                    percent: prayerPercent,
+                    colorScheme: colorScheme,
+                  ),
+                  const SizedBox(height: 10),
+                  _FocusProgressRow(
+                    label: l10n.focusScoreQuran,
+                    percent: quranPercent,
+                    colorScheme: colorScheme,
+                  ),
+                  const SizedBox(height: 10),
+                  _FocusProgressRow(
+                    label: l10n.focusScoreDhikr,
+                    percent: dhikrPercent,
+                    colorScheme: colorScheme,
+                  ),
+                  const SizedBox(height: 10),
+                  _FocusProgressRow(
+                    label: l10n.focusScoreDistraction,
+                    percent: distractionPercent,
+                    colorScheme: colorScheme,
+                  ),
+                ] else ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    l10n.focusScoreBreakdown(
+                      prayerPercent,
+                      quranPercent,
+                      dhikrPercent,
+                      distractionPercent,
                     ),
-                  );
-                }),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          if (isTappable) ...[
+            const SizedBox(width: 8),
+            const HomeCardOpenArrow(),
+          ],
+        ],
+      ),
+    );
+
+    if (!isTappable) {
+      return Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor, width: 1.1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.07),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: content,
+      );
+    }
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Ink(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor, width: 1.1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.07),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            '$score',
-            style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: colorScheme.primary,
-              height: 1,
-              fontSize: 48,
-            ),
-          ),
-          if (detailed) ...[
-            const SizedBox(height: 14),
-            _FocusProgressRow(
-              label: l10n.focusScorePrayer,
-              percent: prayerPercent,
-              colorScheme: colorScheme,
-            ),
-            const SizedBox(height: 10),
-            _FocusProgressRow(
-              label: l10n.focusScoreQuran,
-              percent: quranPercent,
-              colorScheme: colorScheme,
-            ),
-            const SizedBox(height: 10),
-            _FocusProgressRow(
-              label: l10n.focusScoreDhikr,
-              percent: dhikrPercent,
-              colorScheme: colorScheme,
-            ),
-            const SizedBox(height: 10),
-            _FocusProgressRow(
-              label: l10n.focusScoreDistraction,
-              percent: distractionPercent,
-              colorScheme: colorScheme,
-            ),
-          ] else ...[
-            const SizedBox(height: 10),
-            Text(
-              l10n.focusScoreBreakdown(
-                prayerPercent,
-                quranPercent,
-                dhikrPercent,
-                distractionPercent,
-              ),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ],
+          child: content,
+        ),
       ),
     );
   }

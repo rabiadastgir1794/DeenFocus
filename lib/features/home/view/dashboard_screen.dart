@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../../../core/services/storage_service.dart';
+import '../../../core/superwall/app_superwall.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/focus/view/focus_tab_screen.dart';
 import '../../../features/home/view/home_tab_screen.dart';
@@ -19,6 +23,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
   final Set<int> _visitedIndexes = <int>{0};
 
+  /// Prevents duplicate post-onboarding Superwall presentation in one session.
+  static bool _postOnboardingPaywallHandled = false;
+
   static const List<_AppTab> _tabs = <_AppTab>[
     _AppTab(id: 'home', icon: Icons.home_outlined),
     _AppTab(id: 'focus', icon: Icons.shield_outlined),
@@ -26,6 +33,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _AppTab(id: 'learn', icon: Icons.school_outlined),
     _AppTab(id: 'settings', icon: Icons.settings_outlined),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_maybePresentPostOnboardingPaywall());
+    });
+  }
+
+  /// After "Start My 7-Day Free Trial": Home first, then Superwall once
+  /// for non-subscribers. Subscribed users skip Superwall entirely.
+  Future<void> _maybePresentPostOnboardingPaywall() async {
+    if (_postOnboardingPaywallHandled) return;
+    final pending = await StorageService.pendingPostOnboardingPaywall;
+    if (!pending) return;
+
+    // Clear before presenting so rebuilds / resume cannot re-trigger.
+    _postOnboardingPaywallHandled = true;
+    await StorageService.setPendingPostOnboardingPaywall(false);
+    if (!mounted) return;
+
+    await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
+      () {},
+      debugContext: 'post_onboarding_home',
+      placementOverride: SuperwallPlacements.firstTimeOfferWall,
+    );
+  }
 
   void _onDestinationSelected(int index) {
     // Tabs are not gated by Superwall — paywalls are surfaced by the

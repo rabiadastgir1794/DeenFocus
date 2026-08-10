@@ -11,6 +11,7 @@ import '../../../core/constants/app_languages.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/services/locale_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -80,6 +81,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     with WidgetsBindingObserver {
   bool _scheduledPostOnboardingNavigation = false;
   bool _scheduledLocationAutoAdvance = false;
+  bool _isAdvancingPage = false;
   OnboardingViewModel? _listeningVm;
 
   @override
@@ -123,9 +125,21 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      context.read<OnboardingViewModel>().recheckPermissions();
-    }
+    if (state != AppLifecycleState.resumed) return;
+
+    final vm = context.read<OnboardingViewModel>();
+    final wasOnNotificationStep = vm.isNotificationStep;
+    final notificationGrantedBefore = vm.notificationGranted;
+
+    vm.recheckPermissions().then((_) {
+      if (!mounted) return;
+      final current = context.read<OnboardingViewModel>();
+      if (wasOnNotificationStep &&
+          !notificationGrantedBefore &&
+          current.notificationGranted) {
+        _goToNextPage(current);
+      }
+    });
   }
 
   AppLanguage _currentAppLanguage(LocaleService localeService) {
@@ -278,6 +292,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     if (!context.mounted) return;
 
     if (status.isGranted || status.isLimited) {
+      await _goToNextPage(vm);
       return;
     }
 
@@ -292,25 +307,42 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
         onPrimaryTap: () => PermissionService.openAppSettingsAsync(),
         onSecondaryTap: () {},
       );
-      if (context.mounted) {
-        await vm.recheckPermissions();
+      if (!context.mounted) return;
+      await vm.recheckPermissions();
+      if (vm.notificationGranted) {
+        await _goToNextPage(vm);
       }
     }
   }
 
-  Future<void> _onScreenTimeAllowTap(OnboardingViewModel vm) async {
-    await vm.requestScreenTime();
+  Future<void> _onScreenTimeAllowTap(
+    BuildContext context,
+    OnboardingViewModel vm,
+  ) async {
+    final result = await vm.requestScreenTime();
+    if (!context.mounted) return;
+    if (result.granted) {
+      await _goToNextPage(vm);
+    }
   }
 
   Future<void> _goToNextPage(OnboardingViewModel vm) async {
+    if (_isAdvancingPage) return;
     if (vm.currentIndex >= vm.totalSteps - 1) return;
+    if (!widget.pageController.hasClients) return;
+
+    _isAdvancingPage = true;
     FocusManager.instance.primaryFocus?.unfocus();
     final nextIndex = vm.currentIndex + 1;
-    await widget.pageController.animateToPage(
-      nextIndex,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    try {
+      await widget.pageController.animateToPage(
+        nextIndex,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } finally {
+      _isAdvancingPage = false;
+    }
   }
 
   Future<void> _skipToLocationStep(OnboardingViewModel vm) async {
@@ -466,7 +498,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                       showEnableButton: !vm.notificationGranted,
                     ),
                     OnboardingScreenTimePage(
-                      onAllowTap: () => _onScreenTimeAllowTap(vm),
+                      onAllowTap: () => _onScreenTimeAllowTap(context, vm),
                       isLoading: vm.screenTimeRequesting,
                     ),
                     OnboardingSubscriptionPage(
@@ -498,84 +530,68 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                   height: 56.h,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
-                        vm.goNext,
-                        debugContext: 'onboarding_get_started',
-                        placementOverride:
-                            SuperwallPlacements.firstTimeOfferWall,
-                      );
+                      // Complete onboarding → Home first. Superwall is presented
+                      // once from Dashboard for non-subscribers only.
+                      if (!AppSuperwall.subscriptionActiveNotifier.value) {
+                        await StorageService.setPendingPostOnboardingPaywall(
+                          true,
+                        );
+                      }
+                      vm.goNext();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
-                      elevation: 2,
-                      shadowColor: Colors.black.withValues(alpha: 0.1),
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                     ),
-                    child: Stack(
-                      alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 16.w),
-                            child: Icon(
-                              Icons.workspace_premium_rounded,
-                              size: 20.sp,
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.getStarted,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w700,
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
                         ),
-                        Text(
-                          AppLocalizations.of(context)!.getStarted,
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                        SizedBox(width: 6.w),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 22.sp,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 10.h),
-                SizedBox(
-                  width: double.infinity,
-                  height: 56.h,
-                  child: OutlinedButton(
-                    onPressed: vm.goNext,
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Theme.of(context).primaryColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                SizedBox(height: 12.h),
+                TextButton(
+                  onPressed: vm.goNext,
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
                     ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 16.w),
-                            child: Icon(
-                              Icons.card_giftcard_rounded,
-                              size: 20.sp,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.continueForFree,
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
+                    foregroundColor: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.72),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.continueForFree,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13.5.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),

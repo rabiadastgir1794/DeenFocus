@@ -46,28 +46,25 @@ class SupportContactService {
     return _launch(uri);
   }
 
+  /// Launches one-time support checkout (hosted URL) or a prefilled email.
+  /// Never interacts with Superwall or subscription products.
   Future<SupportLaunchResult> submitContribution({
     required int amount,
-    String? purpose,
   }) async {
     if (SupportConfig.hasPaymentUrl) {
       final uri = Uri.parse(SupportConfig.paymentUrl).replace(
         queryParameters: <String, String>{
           'amount': '$amount',
-          if (purpose != null && purpose.trim().isNotEmpty)
-            'purpose': purpose.trim(),
+          'type': 'one_time_support',
         },
       );
       return _launch(uri);
     }
 
-    final purposeLine = purpose == null || purpose.trim().isEmpty
-        ? ''
-        : '\nPurpose: ${purpose.trim()}';
     return openEmail(
       subject: 'DeenFocus support — \$$amount',
       body:
-          'Assalamu alaikum,\n\nI would like to support DeenFocus with a one-time contribution of \$$amount.$purposeLine\n\nJazakAllah khair.',
+          'Assalamu alaikum,\n\nI would like to support DeenFocus with a one-time contribution of \$$amount.\n\nJazakAllah khair.',
     );
   }
 

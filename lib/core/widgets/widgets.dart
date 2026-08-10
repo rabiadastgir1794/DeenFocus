@@ -8,4 +8,5 @@ export 'app_permission_dialog.dart';
 export 'app_text_button.dart';
 export 'app_empty_state.dart';
 export 'app_top_back_button.dart';
+export 'app_centered_nav_header.dart';
 export 'custom_app_bar.dart';

@@ -639,14 +639,14 @@ class FocusController extends ChangeNotifier {
     return '${values.take(3).join(', ')} +${values.length - 3} more';
   }
 
-  String modeTitle(FocusModeType mode) {
+  String modeTitle(FocusModeType mode, AppLocalizations l10n) {
     switch (mode) {
       case FocusModeType.child:
-        return 'Child Mode';
+        return l10n.focusChildModeTitle;
       case FocusModeType.nightDiscipline:
-        return 'Night Discipline';
+        return l10n.focusNightDisciplineTitle;
       case FocusModeType.salah:
-        return 'Salah Mode';
+        return l10n.focusSalahFocusModeTitle;
     }
   }
 
@@ -704,60 +704,62 @@ class FocusController extends ChangeNotifier {
     if (_lockState.isLocked) {
       if (_isStaleChildLockReason) {
         if (_settings.nightDisciplineEnabled && _settings.salahModeEnabled) {
-          return 'Night Discipline and Salah mode are blocking selected apps.';
+          return l10n.focusHomeBlockingNightAndSalah;
         }
         if (_settings.nightDisciplineEnabled) {
-          return 'Night Discipline is blocking selected apps.';
+          return l10n.focusHomeBlockingNight;
         }
         if (_settings.salahModeEnabled) {
-          return 'Salah mode is blocking selected apps.';
+          return l10n.focusHomeBlockingSalah;
         }
       }
-      return _lockState.reason ?? 'Selected apps are blocked right now.';
+      return _lockState.reason ?? l10n.focusHomeAppsBlockedNow;
     }
     if (isAnyModeEnabled) {
       if (_settings.childModeEnabled) {
-        return '${modeTitle(FocusModeType.child)} is enabled.';
+        return l10n.focusHomeModeEnabled(modeTitle(FocusModeType.child, l10n));
       }
       final parts = <String>[];
       if (_settings.nightDisciplineEnabled) {
-        parts.add(modeTitle(FocusModeType.nightDiscipline));
+        parts.add(modeTitle(FocusModeType.nightDiscipline, l10n));
       }
       if (_settings.salahModeEnabled) {
-        parts.add(modeTitle(FocusModeType.salah));
+        parts.add(modeTitle(FocusModeType.salah, l10n));
       }
       if (parts.isEmpty) {
-        return 'Choose a mode to protect your attention.';
+        return l10n.focusHomeChooseMode;
       }
       if (parts.length == 1) {
-        return '${parts.first} is enabled.';
+        return l10n.focusHomeModeEnabled(parts.first);
       }
-      return '${parts.join(' and ')} are enabled.';
+      return l10n.focusHomeModesEnabled(parts.join(' · '));
     }
     return l10n.focusChooseAppsEnableMode;
   }
 
-  String get statusCaption {
-    if (!_settings.hasSelectedApps) return 'Select apps to start';
+  String statusCaption(AppLocalizations l10n) {
+    if (!_settings.hasSelectedApps) return l10n.focusStatusSelectApps;
     if (_lockState.isLocked) {
       if (_isStaleChildLockReason) {
         if (_settings.nightDisciplineEnabled && _settings.salahModeEnabled) {
-          return 'Night Discipline and Salah mode are blocking apps now';
+          return l10n.focusStatusBlockingNightAndSalah;
         }
         if (_settings.nightDisciplineEnabled) {
-          return 'Night Discipline is blocking apps now';
+          return l10n.focusStatusBlockingNight;
         }
         if (_settings.salahModeEnabled) {
-          return 'Salah mode is blocking apps now';
+          return l10n.focusStatusBlockingSalah;
         }
       }
-      return _lockState.reason ?? 'Apps are locked now';
+      return _lockState.reason ?? l10n.focusStatusAppsLocked;
     }
     if (isTemporarilyUnlocked && _settings.temporarilyUnlockedUntil != null) {
-      return 'Unlocked until ${DateFormat.jm().format(_settings.temporarilyUnlockedUntil!)}';
+      return l10n.focusStatusUnlockedUntil(
+        DateFormat.jm().format(_settings.temporarilyUnlockedUntil!),
+      );
     }
-    if (!isAnyModeEnabled) return 'No focus mode enabled';
-    return 'Ready to lock $selectedTargetPhrase';
+    if (!isAnyModeEnabled) return l10n.focusStatusNoMode;
+    return l10n.focusStatusReadyToLock(selectedTargetPhrase);
   }
 
   Future<void> _load() async {

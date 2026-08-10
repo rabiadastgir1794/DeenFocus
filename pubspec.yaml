@@ -108,6 +108,7 @@ flutter:
     - assets/video/video_thumbnail.png
     - assets/ai_chat_icon.png
     - assets/app_icon.png
+    - assets/support/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

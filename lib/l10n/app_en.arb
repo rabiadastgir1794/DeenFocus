@@ -8,8 +8,8 @@
   "skip": "Skip",
   "notNow": "Not now",
   "continueButton": "Continue",
-  "continueForFree": "Continue with Free Plan",
-  "getStarted": "Unlock Premium",
+  "continueForFree": "Maybe later — explore the app first",
+  "getStarted": "Start My 7-Day Free Trial",
   "language": "Language",
   "cancel": "Cancel",
   "ok": "OK",
@@ -56,8 +56,12 @@
   "screenTimeStepOf": "STEP {current} OF {total}",
   "@screenTimeStepOf": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "screenTimeStep1Title": "Open the Screen Time prompt",
@@ -72,7 +76,10 @@
   "screenTimePromptMessage": "'{appName}' would like to access Screen Time",
   "@screenTimePromptMessage": {
     "placeholders": {
-      "appName": { "type": "String", "example": "Deen Focus" }
+      "appName": {
+        "type": "String",
+        "example": "Deen Focus"
+      }
     }
   },
   "screenTimeDontAllow": "Don't Allow",
@@ -138,45 +145,33 @@
   "focusFeatureAiSubtitle": "Ask about your Deen",
   "focusFeatureInsightsTitle": "Insights",
   "focusFeatureInsightsSubtitle": "Weekly & monthly stats",
-  "investTitle": "Invest in Your Deen",
-  "investSubtitle": "You don't think twice about spending on coffee or snacks...",
-  "investComparisonTitle": "Go Premium or Continue with Free Plan",
-  "investDailyCoffee": "Daily coffee",
-  "investDailyCoffeePrice": "$5/day",
-  "investFastFood": "Fast food",
-  "investFastFoodPrice": "$10/meal",
-  "investYourDeen": "Your Deen",
-  "investYourDeenPrice": "$4.99/mo",
-  "investComparisonQuote": "You spend $10 on small things without thinking - why not invest in your Deen?",
-  "bestValueTag": "BEST VALUE",
-  "mostPopularChoice": "Most popular choice",
-  "monthlyPriceValue": "$4.99",
-  "monthlyPriceSuffix": "/month",
-  "monthlyPlanSubtitle": "Billed monthly • Cancel anytime",
-  "yearlyPriceValue": "$24.99",
-  "yearlyPriceSuffix": "/year",
-  "yearlyPlanSubtitle": "Save 50% • Billed annually",
-  "lifetimePriceValue": "$79.99",
-  "lifetimePriceSuffix": " lifetime",
-  "lifetimePlanSubtitle": "One-time purchase • Forever access",
-  "everythingYouGet": "Everything you get",
-  "featureFocusModeAllModes": "Unlimited Focus Mode with all 3 modes",
-  "featurePrayerAnalyticsStreaks": "Advanced prayer analytics & streaks",
-  "featureAiAssistant": "AI Islamic assistant",
-  "featurePrioritySupportEarlyAccess": "Priority support & early access",
+  "investTitle": "Invest in Deen",
+  "investSubtitle": "The best investment isn't in things that fade — it's in what draws you closer to Allah. Try everything free for 7 days.",
+  "investPremiumUnlocked": "PREMIUM UNLOCKED",
+  "investTrialPill": "✨ 7 days free — cancel anytime before it ends",
+  "investFeatureAiTitle": "AI Islamic Assistant",
+  "investFeatureAiBody": "Ask anything about your Deen — answers rooted in authentic sources.",
+  "investFeaturePrayerModeTitle": "Full-Screen Prayer Mode",
+  "investFeaturePrayerModeBody": "A calm, distraction-free screen that calls you to Salah.",
+  "investFeatureAppBlockingTitle": "Advanced App Blocking",
+  "investFeatureAppBlockingBody": "Granular control over which apps lock, and exactly when.",
+  "investFeatureNightModeTitle": "Night Discipline Mode",
+  "investFeatureNightModeBody": "Wind down on time, sleep better, and wake up for Fajr.",
+  "investFeaturePlannerTitle": "Prayer Planner & Progress",
+  "investFeaturePlannerBody": "Streaks, insights and journals that keep you consistent.",
+  "investFeatureToolsTitle": "Exclusive Islamic Tools",
+  "investFeatureToolsBody": "Hijri calendar, Duas, Tasbih, 99 Names and more.",
+  "investFeatureThemesTitle": "Premium Themes & Updates",
+  "investFeatureThemesBody": "Beautiful themes plus every new feature we ship.",
+  "investFeatureTajweedTitle": "Master Tajweed",
+  "investFeatureTajweedBody": "Improve your recitation with guided lessons and real-time feedback.",
   "socialProofPrefix": "Join ",
   "socialProofHighlight": "10,000+",
-  "socialProofSuffix": " Muslims already growing with Deen Focus",
+  "socialProofSuffix": " Muslims growing with DeenFocus",
   "mostPopular": "Most Popular",
   "monthlyLabel": "Monthly",
-  "monthlyPrice": "$4.99/month · billed monthly · cancel anytime",
   "yearlyLabel": "Yearly",
-  "yearlyPrice": "$24.99/year · save 50% · billed annually",
   "lifetimeLabel": "Lifetime",
-  "lifetimePrice": "$79.99 lifetime · one-time purchase · forever access",
-  "featurePrayerAnalytics": "Advanced prayer analytics",
-  "featureFocusMode": "Unlimited focus mode",
-  "featureMasjidMode": "Masjid auto mode",
   "featureNoAds": "Removes all ads",
   "featureSupport": "Priority support",
   "homeTitle": "Deenly Home",
@@ -203,13 +198,17 @@
   "homePrayersInARow": "{count} prayers in a row",
   "@homePrayersInARow": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "homeDayStreakCount": "{count} days",
   "@homeDayStreakCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "homeInsights": "Insights",
@@ -298,7 +297,6 @@
   "calendarEventWhiteDaysDesc": "Recommended fasting days",
   "cycleModeActiveTitle": "\"Allah intends ease for you and does not intend hardship for you.\" — Quran 2:185",
   "cycleModeActiveSubtitle": "During this period, your prayer streak is protected. Your cycle days are highlighted in pink, and Cycle Mode turns off automatically when the cycle ends.",
-  "cycleModeActiveSubtitleOld": "{days, plural, =1{Auto-ends tomorrow} other{Auto-ends in {days} days}}",
   "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
   "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
   "cycleModeAutoEndInfo": "{days, plural, =0{Ends today} =1{Automatically ends tomorrow} other{Automatically ends in {days} days}}",
@@ -345,6 +343,18 @@
   "cycleModeTitle": "Cycle Mode",
   "cycleModeSubtitle": "For menstruation — pause prayers, keep your streak",
   "dailyChecklistTitle": "Daily Checklist",
+  "dailyChecklistSubtitle": "Track your daily spiritual goals",
+  "dailyChecklistProgress": "{completed} of {total} completed",
+  "@dailyChecklistProgress": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "dailyChecklistSectionPrayer": "Prayer",
   "dailyChecklistSectionQuranDhikr": "Quran & Dhikr",
   "dailyChecklistSectionGoodDeeds": "Good deeds",
@@ -398,28 +408,35 @@
   "quickActionsSupportUsSubtitle": "Help us grow",
   "quickActionsSupportUsMessage": "Thank you for considering to support DeenFocus! Support features coming soon.",
   "supportUsTitle": "Support DeenFocus",
-  "supportUsHeroTitle": "Help keep DeenFocus growing",
-  "supportUsHeroBody": "DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.",
-  "supportUsFundSection": "YOUR CONTRIBUTIONS FUND",
-  "supportUsFundFeature1Title": "New Islamic features",
-  "supportUsFundFeature1Subtitle": "Fresh tools to deepen your worship",
-  "supportUsFundFeature2Title": "Server & infrastructure",
-  "supportUsFundFeature2Subtitle": "Keeping the app fast and reliable",
-  "supportUsFundFeature3Title": "Bug fixes & updates",
-  "supportUsFundFeature3Subtitle": "A smoother, more stable experience",
-  "supportUsFundFeature4Title": "Quran, Salah & productivity",
-  "supportUsFundFeature4Subtitle": "Continual improvements to core features",
+  "supportUsHeroTitle": "Support DeenFocus",
+  "supportUsHeroBody": "Your support helps us keep improving DeenFocus and contribute to meaningful causes.",
+  "supportUsFundSection": "Your support helps fund",
+  "supportUsFundSectionSubtitle": "We use your support to create more good.",
+  "supportUsFundFeature1Title": "New Features",
+  "supportUsFundFeature1Subtitle": "Build and improve meaningful DeenFocus features.",
+  "supportUsFundFeature2Title": "Bug Fixes",
+  "supportUsFundFeature2Subtitle": "Keep the app stable, fast and reliable for everyone.",
+  "supportUsFundFeature3Title": "People in Need",
+  "supportUsFundFeature3Subtitle": "Support efforts that help people facing hardship and difficult times.",
+  "supportUsFundFeature4Title": "Charity & Community",
+  "supportUsFundFeature4Subtitle": "Contribute towards charitable initiatives and community support.",
   "supportUsNeedHelp": "NEED HELP?",
   "supportUsWhatsApp": "Chat on WhatsApp",
   "supportUsEmailSupport": "Email Support",
-  "supportUsChooseAmountTitle": "Choose a one-time amount",
-  "supportUsChooseAmountSubtitle": "Every bit helps keep DeenFocus growing.",
-  "supportUsCustomAmountLabel": "Or enter a custom amount",
-  "supportUsPurposeLabel": "Purpose of your donation (optional)",
-  "supportUsPurposeHint": "e.g. Sadaqah, Zakat, app development...",
-  "supportUsPurposeNote": "Tell us the purpose and we'll utilize your contribution accordingly.",
-  "supportUsOptionalFooter": "Support is entirely optional and helps us keep improving DeenFocus.",
-  "supportUsCta": "Support with {amount}",
+  "supportUsChooseAmountTitle": "Choose a support amount",
+  "supportUsChooseAmountSubtitle": "You can support multiple times.",
+  "supportUsSecurePaymentNote": "Secure one-time payment · No recurring charges",
+  "supportUsTrustBanner": "Secure • One-time Support • You can support multiple times",
+  "supportUsImpactSectionTitle": "Where your support makes a difference",
+  "supportUsImpactSectionSubtitle": "Every contribution has a lasting impact.",
+  "supportUsImpactPalestine": "Support & Awareness for Palestine",
+  "supportUsImpactNeedy": "Helping Those in Need",
+  "supportUsImpactCommunity": "Charity & Community Support",
+  "supportUsImpactExperience": "Better DeenFocus Experience",
+  "supportUsImpactFeatures": "New Features & Upgrades",
+  "supportUsImpactQuran": "Quran & Islamic Learning",
+  "supportUsImpactServers": "Servers & App Reliability",
+  "supportUsCta": "Support DeenFocus with {amount}",
   "@supportUsCta": {
     "placeholders": {
       "amount": {
@@ -789,7 +806,9 @@
   "insightsPrayerStreakCount": "{count} prayers",
   "@insightsPrayerStreakCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "insightsPrayersInARow": "Prayers in a row",
@@ -810,8 +829,12 @@
   "insightsCompletionSummary": "You completed {done} out of {possible} prayers. Alhamdulillah — keep going!",
   "@insightsCompletionSummary": {
     "placeholders": {
-      "done": { "type": "int" },
-      "possible": { "type": "int" }
+      "done": {
+        "type": "int"
+      },
+      "possible": {
+        "type": "int"
+      }
     }
   },
   "insightsFocusExcellent": "Excellent — keep it up!",
@@ -829,7 +852,9 @@
   "insightsCycleModeFooter": "Cycle Mode days are protected and not counted as streak breaks. You have {days} protected day(s) available.",
   "@insightsCycleModeFooter": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "insightsCycleModeFooterOff": "Enable Cycle Mode to protect your streak during rest days.",
@@ -844,7 +869,9 @@
   "prayerCompletionCompleted": "{prayer} has been completed",
   "@prayerCompletionCompleted": {
     "placeholders": {
-      "prayer": { "type": "String" }
+      "prayer": {
+        "type": "String"
+      }
     }
   },
   "prayerCompletionStreakIncreased": "Your prayer streak has increased",
@@ -853,20 +880,92 @@
   "prayerCompletionNextPrayer": "Next prayer in {when}",
   "@prayerCompletionNextPrayer": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "prayerCompletionMinutes": "{minutes} minutes",
   "@prayerCompletionMinutes": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "prayerCompletionHoursMinutes": "{hours}h {minutes}m",
   "@prayerCompletionHoursMinutes": {
     "placeholders": {
-      "hours": { "type": "int" },
-      "minutes": { "type": "int" }
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "weekdayLetterMon": "M",
+  "weekdayLetterTue": "T",
+  "weekdayLetterWed": "W",
+  "weekdayLetterThu": "T",
+  "weekdayLetterFri": "F",
+  "weekdayLetterSat": "S",
+  "weekdayLetterSun": "S",
+  "focusHomeBlockingNightAndSalah": "Night Discipline and Salah mode are blocking selected apps.",
+  "focusHomeBlockingNight": "Night Discipline is blocking selected apps.",
+  "focusHomeBlockingSalah": "Salah mode is blocking selected apps.",
+  "focusHomeAppsBlockedNow": "Selected apps are blocked right now.",
+  "focusHomeModeEnabled": "{mode} is enabled.",
+  "focusHomeModesEnabled": "{modes} are enabled.",
+  "focusHomeChooseMode": "Choose a mode to protect your attention.",
+  "focusStatusSelectApps": "Select apps to start",
+  "focusStatusBlockingNightAndSalah": "Night Discipline and Salah mode are blocking apps now",
+  "focusStatusBlockingNight": "Night Discipline is blocking apps now",
+  "focusStatusBlockingSalah": "Salah mode is blocking apps now",
+  "focusStatusAppsLocked": "Apps are locked now",
+  "focusStatusUnlockedUntil": "Unlocked until {time}",
+  "focusStatusNoMode": "No focus mode enabled",
+  "focusStatusReadyToLock": "Ready to lock {targets}",
+  "@focusHomeModeEnabled": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "@focusHomeModesEnabled": {
+    "placeholders": {
+      "modes": {
+        "type": "String"
+      }
+    }
+  },
+  "@focusStatusUnlockedUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@focusStatusReadyToLock": {
+    "placeholders": {
+      "targets": {
+        "type": "String"
+      }
+    }
+  },
+  "homeCountdownHms": "{hours}h {minutes}m {seconds}s",
+  "@homeCountdownHms": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
     }
   }
 }

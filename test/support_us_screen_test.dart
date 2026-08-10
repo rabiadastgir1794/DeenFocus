@@ -23,10 +23,10 @@ Widget _wrap(Widget child) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('SupportUsScreen renders hero, fund items, and CTA', (
+  testWidgets('SupportUsScreen renders redesigned support UI', (
     WidgetTester tester,
   ) async {
-    tester.view.physicalSize = const Size(390, 2200);
+    tester.view.physicalSize = const Size(390, 2800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
       tester.view.resetPhysicalSize();
@@ -37,15 +37,23 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Support DeenFocus'), findsOneWidget);
-    expect(find.text('Help keep DeenFocus growing'), findsOneWidget);
-    expect(find.text('New Islamic features'), findsOneWidget);
-    expect(find.text('Chat on WhatsApp'), findsOneWidget);
-    expect(find.text('Email Support'), findsOneWidget);
-    expect(find.text('Choose a one-time amount'), findsOneWidget);
+    expect(
+      find.text(
+        'Your support helps us keep improving DeenFocus and contribute to meaningful causes.',
+      ),
+      findsNothing,
+    );
+    expect(find.text('Choose a support amount'), findsOneWidget);
+    expect(find.text('\$50'), findsWidgets);
+    expect(find.text('New Features'), findsOneWidget);
+    expect(find.text('People in Need'), findsOneWidget);
+    expect(find.text('Where your support makes a difference'), findsOneWidget);
   });
 
-  testWidgets('slider updates displayed amount', (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(390, 2200);
+  testWidgets('selecting amount chip updates view model', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 2800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
       tester.view.resetPhysicalSize();
@@ -55,20 +63,12 @@ void main() {
     await tester.pumpWidget(_wrap(const SupportUsScreen()));
     await tester.pumpAndSettle();
 
-    final slider = find.byType(Slider);
-    await tester.scrollUntilVisible(
-      slider,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.drag(slider, const Offset(120, 0));
+    await tester.tap(find.text('\$100').first);
     await tester.pumpAndSettle();
 
     final vm = tester
         .element(find.byType(SupportUsScreen))
         .read<SupportViewModel>();
-    expect(vm.amount, isNot(10));
+    expect(vm.amount, 100);
   });
 }

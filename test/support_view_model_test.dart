@@ -4,44 +4,34 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('SupportViewModel', () {
-    test('defaults to configured amount', () {
+    test('defaults to \$50 preset', () {
       final vm = SupportViewModel();
+      expect(vm.amount, 50);
       expect(vm.amount, SupportViewModel.defaultContributionAmount);
     });
 
-    test('slider updates clamped amount', () {
+    test('selectAmount updates only valid presets', () {
       final vm = SupportViewModel();
-      vm.setAmountFromSlider(42.7);
-      expect(vm.amount, 43);
-      vm.setAmountFromSlider(200);
-      expect(vm.amount, SupportViewModel.maxAmount);
-      vm.setAmountFromSlider(0);
-      expect(vm.amount, SupportViewModel.minAmount);
+      vm.selectAmount(25);
+      expect(vm.amount, 25);
+      vm.selectAmount(250);
+      expect(vm.amount, 250);
+      vm.selectAmount(15); // not a preset
+      expect(vm.amount, 250);
     });
 
-    test('custom text updates amount when valid', () {
-      final vm = SupportViewModel();
-      vm.setAmountFromText('25');
-      expect(vm.amount, 25);
-      vm.setAmountFromText('abc');
-      expect(vm.amount, 25);
-    });
-
-    test('purpose updates independently', () {
-      final vm = SupportViewModel();
-      vm.setPurpose('Sadaqah');
-      expect(vm.purpose, 'Sadaqah');
+    test('presetAmounts match design', () {
+      expect(
+        SupportViewModel.presetAmounts,
+        <int>[10, 25, 50, 100, 250],
+      );
     });
   });
 
   group('SupportContactService', () {
-    test('submitContribution builds mailto when payment URL is empty', () async {
+    test('submitContribution completes without throwing', () async {
       const service = SupportContactService();
-      // Cannot launch in unit tests; ensure method completes without throwing.
-      final result = await service.submitContribution(
-        amount: 10,
-        purpose: 'Sadaqah',
-      );
+      final result = await service.submitContribution(amount: 50);
       expect(result, isNotNull);
     });
   });

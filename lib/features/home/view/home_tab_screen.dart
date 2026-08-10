@@ -23,6 +23,7 @@ import 'widgets/home_circle_icon_button.dart';
 import 'widgets/home_cycle_mode_banner.dart';
 import 'widgets/home_cycle_mode_settings_sheet.dart';
 import 'widgets/home_daily_checklist_section.dart';
+import 'widgets/home_daily_checklist_sheet.dart';
 import 'widgets/home_focus_score_section.dart';
 import 'widgets/home_info_screens.dart';
 import 'widgets/home_islamic_date_header.dart';
@@ -457,7 +458,7 @@ class _HomeTabViewState extends State<_HomeTabView>
             HomeDailyChecklistSection(
               backgroundColor: softCardColor,
               completedItems: vm.dailyChecklistCompletedItems,
-              onToggleItem: vm.toggleDailyChecklistItem,
+              onOpen: () => unawaited(showDailyChecklistSheet(context)),
             ),
             const SizedBox(height: 14),
             HomeFocusScoreSection(
@@ -467,6 +468,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               quranPercent: vm.todayQuranPercent,
               dhikrPercent: vm.todayDhikrPercent,
               distractionPercent: vm.todayDistractionPercent,
+              onTap: () => unawaited(_openInsights(context, vm)),
             ),
             if (vm.isFriday) ...[
               const SizedBox(height: 14),

@@ -148,7 +148,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  _formatRemaining(remaining),
+                  _formatRemaining(l10n, remaining),
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -163,11 +163,11 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
     );
   }
 
-  String _formatRemaining(Duration value) {
+  String _formatRemaining(AppLocalizations l10n, Duration value) {
     final hours = value.inHours;
     final minutes = value.inMinutes.remainder(60);
     final seconds = value.inSeconds.remainder(60);
-    return '${hours}h ${minutes}m ${seconds}s';
+    return l10n.homeCountdownHms(hours, minutes, seconds);
   }
 
   Duration? _dynamicRemaining(HomePrayerTimesData? prayerTimes) {

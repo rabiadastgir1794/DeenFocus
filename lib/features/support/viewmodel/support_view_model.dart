@@ -10,44 +10,25 @@ class SupportViewModel extends ChangeNotifier {
   final SupportContactService _contactService;
 
   int _amount = SupportConfig.defaultContributionAmount;
-  String _purpose = '';
   bool _isSubmitting = false;
   bool _isOpeningContact = false;
   SupportLaunchResult? _lastResult;
 
   int get amount => _amount;
-  String get purpose => _purpose;
   bool get isSubmitting => _isSubmitting;
   bool get isOpeningContact => _isOpeningContact;
   bool get isBusy => _isSubmitting || _isOpeningContact;
   SupportLaunchResult? get lastResult => _lastResult;
 
-  static int get minAmount => SupportConfig.minContributionAmount;
-  static int get maxAmount => SupportConfig.maxContributionAmount;
+  static List<int> get presetAmounts => SupportConfig.contributionAmounts;
   static int get defaultContributionAmount =>
       SupportConfig.defaultContributionAmount;
 
-  void setAmountFromSlider(double value) {
-    final next = value.round().clamp(minAmount, maxAmount);
-    if (next == _amount) return;
-    _amount = next;
+  void selectAmount(int value) {
+    if (!SupportConfig.contributionAmounts.contains(value)) return;
+    if (value == _amount) return;
+    _amount = value;
     _lastResult = null;
-    notifyListeners();
-  }
-
-  void setAmountFromText(String raw) {
-    final parsed = int.tryParse(raw.trim());
-    if (parsed == null) return;
-    final next = parsed.clamp(minAmount, maxAmount);
-    if (next == _amount) return;
-    _amount = next;
-    _lastResult = null;
-    notifyListeners();
-  }
-
-  void setPurpose(String value) {
-    if (value == _purpose) return;
-    _purpose = value;
     notifyListeners();
   }
 
@@ -57,16 +38,14 @@ class SupportViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// One-time support payment. Never touches subscription / Superwall state.
   Future<SupportLaunchResult> submitContribution() async {
     if (_isSubmitting) return SupportLaunchResult.failed;
     _isSubmitting = true;
     _lastResult = null;
     notifyListeners();
 
-    final result = await _contactService.submitContribution(
-      amount: _amount,
-      purpose: _purpose,
-    );
+    final result = await _contactService.submitContribution(amount: _amount);
 
     _isSubmitting = false;
     _lastResult = result;

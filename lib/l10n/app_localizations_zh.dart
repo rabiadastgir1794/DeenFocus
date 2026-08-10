@@ -15,7 +15,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appTagline => '信仰。重点。一致性';
 
   @override
-  String get welcomeGreeting => 'ASSALAMU ALAIKUM';
+  String get welcomeGreeting => '安塞拉姆·阿莱库姆';
 
   @override
   String get welcomeTagline => '祈祷模式。儿童模式。睡眠模式。';
@@ -34,10 +34,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get continueButton => '继续';
 
   @override
-  String get continueForFree => '继续使用免费计划';
+  String get continueForFree => '稍后再说 — 先探索应用';
 
   @override
-  String get getStarted => '解锁高级版';
+  String get getStarted => '开始我的7天免费试用';
 
   @override
   String get language => '语言';
@@ -89,36 +89,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get namePlaceholder => '你的名字';
 
   @override
-  String get locationTitle => 'Find Your Qibla';
+  String get locationTitle => '找到你的朝拜方向';
 
   @override
-  String get locationSubtitle =>
-      'Enable location for accurate Qibla, prayer times and nearby masjids.';
+  String get locationSubtitle => '开启定位以获取准确的朝拜方向、礼拜时间与附近清真寺。';
 
   @override
   String get locationButton => '允许位置访问';
 
   @override
-  String get locationManualEntry => 'Or enter your city';
+  String get locationManualEntry => '或输入你的城市';
 
   @override
-  String get locationPrivacyNote => 'Stays on your device';
+  String get locationPrivacyNote => '仅保存在你的设备上';
 
   @override
-  String get locationFeaturePrayerTimesTitle => 'Prayer times';
+  String get locationFeaturePrayerTimesTitle => '礼拜时间';
 
   @override
-  String get locationFeatureQiblaTitle => 'Qibla';
+  String get locationFeatureQiblaTitle => '朝拜方向';
 
   @override
-  String get locationFeatureMasjidsTitle => 'Masjids';
+  String get locationFeatureMasjidsTitle => '清真寺';
 
   @override
-  String get notificationsTitle => 'Never Miss a Prayer';
+  String get notificationsTitle => '不错过每一次礼拜';
 
   @override
-  String get notificationsSubtitle =>
-      'Adhan alerts, focus reminders and daily dhikr — delivered right when you need them.';
+  String get notificationsSubtitle => '唤礼提醒、专注提醒与每日记主——在你需要时送达。';
 
   @override
   String get notificationsButton => '启用通知';
@@ -127,40 +125,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationsEnabled => '通知已启用';
 
   @override
-  String get notificationsPreviewDate => 'Friday, 10 July';
+  String get notificationsPreviewDate => '7月10日，星期五';
 
   @override
   String get notificationsPreviewTime => '6:42';
 
   @override
-  String get notificationsPreviewNow => 'now';
+  String get notificationsPreviewNow => '现在';
 
   @override
-  String get notificationsPreviewMinutesAgo => '2m';
+  String get notificationsPreviewMinutesAgo => '2分钟前';
 
   @override
-  String get notificationsPreviewHourAgo => '1h';
+  String get notificationsPreviewHourAgo => '1小时前';
 
   @override
-  String get notificationsPreviewAdhanTitle => 'Maghrib Adhan';
+  String get notificationsPreviewAdhanTitle => '昏礼唤礼';
 
   @override
-  String get notificationsPreviewAdhanBody =>
-      'It\'s time to pray. Apps are paused.';
+  String get notificationsPreviewAdhanBody => '礼拜时间到了。应用已暂停。';
 
   @override
-  String get notificationsPreviewDhikrTitle => 'Daily Dhikr';
+  String get notificationsPreviewDhikrTitle => '每日记主';
 
   @override
-  String get notificationsPreviewDhikrBody =>
-      'SubhanAllah — take a minute to remember.';
+  String get notificationsPreviewDhikrBody => 'سبحان الله — 花一分钟记念真主。';
 
   @override
-  String get notificationsPreviewStreakTitle => 'Streak';
+  String get notificationsPreviewStreakTitle => '连续记录';
 
   @override
-  String get notificationsPreviewStreakBody =>
-      '7 days of complete prayers. Keep going!';
+  String get notificationsPreviewStreakBody => '已连续完整礼拜 7 天。继续加油！';
 
   @override
   String get screenTimeTitle => '启用屏幕使用时间';
@@ -172,55 +167,50 @@ class AppLocalizationsZh extends AppLocalizations {
   String get screenTimeButton => '允许屏幕使用时间访问';
 
   @override
-  String get screenTimePrivacyNote =>
-      'Deen Focus never reads your data — it only pauses the apps you choose.';
+  String get screenTimePrivacyNote => 'Deen Focus 绝不会读取你的数据——只会暂停你选择的应用。';
 
   @override
   String screenTimeStepOf(int current, int total) {
-    return 'STEP $current OF $total';
+    return '第 $current 步，共 $total 步';
   }
 
   @override
-  String get screenTimeStep1Title => 'Open the Screen Time prompt';
+  String get screenTimeStep1Title => '打开屏幕使用时间提示';
 
   @override
-  String get screenTimeStep1Body =>
-      'Tap \'Allow Screen Time Access\' — your device will show its own permission sheet.';
+  String get screenTimeStep1Body => '点按「允许屏幕使用时间访问」——设备会显示自己的权限请求。';
 
   @override
-  String get screenTimeStep2Title => 'Tap Continue, then Allow';
+  String get screenTimeStep2Title => '点按继续，然后允许';
 
   @override
-  String get screenTimeStep2Body =>
-      'Approve the request so Deen Focus can pause apps at the right moments.';
+  String get screenTimeStep2Body => '批准请求，以便 Deen Focus 能在合适的时机暂停应用。';
 
   @override
-  String get screenTimeStep3Title => 'Choose apps to lock';
+  String get screenTimeStep3Title => '选择要锁定的应用';
 
   @override
-  String get screenTimeStep3Body =>
-      'Pick the apps that distract you most — social, games, video, anything.';
+  String get screenTimeStep3Body => '挑选最容易让你分心的应用——社交、游戏、视频等。';
 
   @override
-  String get screenTimeStep4Title => 'You\'re protected';
+  String get screenTimeStep4Title => '你已受保护';
 
   @override
-  String get screenTimeStep4Body =>
-      'Apps lock automatically during Salah, sleep time and child mode.';
+  String get screenTimeStep4Body => '应用会在礼拜、睡眠时间和儿童模式下自动锁定。';
 
   @override
-  String get screenTimePromptTitle => 'Screen Time';
+  String get screenTimePromptTitle => '屏幕使用时间';
 
   @override
   String screenTimePromptMessage(String appName) {
-    return '\'$appName\' would like to access Screen Time';
+    return '「$appName」想访问屏幕使用时间';
   }
 
   @override
-  String get screenTimeDontAllow => 'Don\'t Allow';
+  String get screenTimeDontAllow => '不允许';
 
   @override
-  String get screenTimePromptContinue => 'Continue';
+  String get screenTimePromptContinue => '继续';
 
   @override
   String get screenTimeAppInstagram => 'Instagram';
@@ -232,275 +222,250 @@ class AppLocalizationsZh extends AppLocalizations {
   String get screenTimeAppYouTube => 'YouTube';
 
   @override
-  String get screenTimeAppGames => 'Games';
+  String get screenTimeAppGames => '游戏';
 
   @override
-  String get screenTimeAndroidStep1Title => 'Open Usage Access settings';
+  String get screenTimeAndroidStep1Title => '打开使用情况访问权限';
 
   @override
   String get screenTimeAndroidStep1Body =>
-      'Tap \'Allow Screen Time Access\' — your device will open Usage Access for Deen Focus.';
+      '点按「允许屏幕使用时间访问」——设备将为 Deen Focus 打开使用情况访问。';
 
   @override
-  String get screenTimeAndroidStep2Title => 'Enable Accessibility';
+  String get screenTimeAndroidStep2Title => '启用无障碍功能';
 
   @override
   String get screenTimeAndroidStep2Body =>
-      'Turn on the Deen Focus service so apps can pause during Salah, sleep, and child mode.';
+      '开启 Deen Focus 服务，以便在礼拜、睡眠和儿童模式下暂停应用。';
 
   @override
-  String get screenTimeAndroidStep3Title => 'Choose apps to lock';
+  String get screenTimeAndroidStep3Title => '选择要锁定的应用';
 
   @override
-  String get screenTimeAndroidStep3Body =>
-      'Pick the apps that distract you most — social, games, video, anything.';
+  String get screenTimeAndroidStep3Body => '挑选最容易让你分心的应用——社交、游戏、视频等。';
 
   @override
-  String get screenTimeAndroidStep4Title => 'You\'re protected';
+  String get screenTimeAndroidStep4Title => '你已受保护';
 
   @override
-  String get screenTimeAndroidStep4Body =>
-      'Apps lock automatically during Salah, sleep time and child mode.';
+  String get screenTimeAndroidStep4Body => '应用会在礼拜、睡眠时间和儿童模式下自动锁定。';
 
   @override
-  String get screenTimeAndroidUsageTitle => 'Usage access';
+  String get screenTimeAndroidUsageTitle => '使用情况访问权限';
 
   @override
-  String get screenTimeAndroidUsageMessage =>
-      'Allow Deen Focus to track which other apps are being used.';
+  String get screenTimeAndroidUsageMessage => '允许 Deen Focus 跟踪其他应用的使用情况。';
 
   @override
-  String get screenTimeAndroidAccessibilityTitle => 'Accessibility';
+  String get screenTimeAndroidAccessibilityTitle => '无障碍';
 
   @override
   String get screenTimeAndroidAccessibilityMessage =>
-      'Deen Focus needs Accessibility to pause distracting apps during focus sessions.';
+      'Deen Focus 需要无障碍权限，才能在专注时段暂停分心应用。';
 
   @override
-  String get screenTimeAndroidPermit => 'Allow';
+  String get screenTimeAndroidPermit => '允许';
 
   @override
-  String get screenTimeAndroidEnable => 'Enable';
+  String get screenTimeAndroidEnable => '启用';
 
   @override
-  String get screenTimeAndroidNotNow => 'Not now';
+  String get screenTimeAndroidNotNow => '暂不';
 
   @override
-  String get focusModesTitle => 'Everything in One App';
+  String get focusModesTitle => '一站式功能合集';
 
   @override
-  String get focusModesSubtitle =>
-      'Explore all that Deen Focus offers. Tap a focus mode to see how it works.';
+  String get focusModesSubtitle => '探索 Deen Focus 提供的一切。点按专注模式了解其工作方式。';
 
   @override
-  String get focusModesSectionLabel => 'FOCUS MODES · TAP TO LEARN MORE';
+  String get focusModesSectionLabel => '专注模式 · 点按了解更多';
 
   @override
-  String get focusPrayerTrackingSectionLabel => 'PRAYER & TRACKING';
+  String get focusPrayerTrackingSectionLabel => '礼拜与追踪';
 
   @override
-  String get focusLearningHubSectionLabel => 'LEARNING HUB';
+  String get focusLearningHubSectionLabel => '学习中心';
 
   @override
-  String get focusMoreSectionLabel => 'MORE';
+  String get focusMoreSectionLabel => '更多';
 
   @override
   String get focusPrayerModeTitle => '祈祷模式';
 
   @override
-  String get focusPrayerModeDescription =>
-      'Block distracting apps automatically during Salah so you can pray with full khushu.';
+  String get focusPrayerModeDescription => '在礼拜期间自动屏蔽分心应用，让你能以充分的专注（khushu）祈祷。';
 
   @override
-  String get focusPrayerModeBullet1 => 'Auto-locks apps at prayer time';
+  String get focusPrayerModeBullet1 => '礼拜时间自动锁定应用';
 
   @override
-  String get focusPrayerModeBullet2 => 'Unlocks when you\'re done';
+  String get focusPrayerModeBullet2 => '完成后自动解锁';
 
   @override
-  String get focusPrayerModeBullet3 => 'Builds focus & consistency';
+  String get focusPrayerModeBullet3 => '培养专注与坚持';
 
   @override
   String get focusSleepModeTitle => '睡眠模式';
 
   @override
-  String get focusSleepModeDescription =>
-      'Wind down the halal way. Block apps at bedtime so you rest well and wake for Fajr.';
+  String get focusSleepModeDescription => '以清真的方式放松。睡前屏蔽应用，好好休息并按时起床做晨礼。';
 
   @override
-  String get focusSleepModeBullet1 => 'Auto-blocks apps at bedtime';
+  String get focusSleepModeBullet1 => '睡前自动屏蔽应用';
 
   @override
-  String get focusSleepModeBullet2 => 'Gentle Fajr wake reminders';
+  String get focusSleepModeBullet2 => '温和的晨礼起床提醒';
 
   @override
-  String get focusSleepModeBullet3 => 'Protects your sleep & Fajr';
+  String get focusSleepModeBullet3 => '守护你的睡眠与晨礼';
 
   @override
   String get focusChildModeTitle => '儿童模式';
 
   @override
-  String get focusChildModeDescription =>
-      'Handing your phone to your child? Instantly lock apps so they only see what\'s safe.';
+  String get focusChildModeDescription => '要把手机给孩子？立即锁定应用，让他们只能看到安全内容。';
 
   @override
-  String get focusChildModeBullet1 => 'One-tap safe mode';
+  String get focusChildModeBullet1 => '一键安全模式';
 
   @override
-  String get focusChildModeBullet2 => 'Passcode-protected exit';
+  String get focusChildModeBullet2 => '密码保护退出';
 
   @override
-  String get focusChildModeBullet3 => 'Peace of mind, every time';
+  String get focusChildModeBullet3 => '每次都安心';
 
   @override
-  String get focusModeGotIt => 'Got it';
+  String get focusModeGotIt => '知道了';
 
   @override
-  String get focusFeaturePrayerTimesTitle => 'Accurate Prayer Times';
+  String get focusFeaturePrayerTimesTitle => '精准礼拜时间';
 
   @override
-  String get focusFeaturePrayerTimesSubtitle => 'Adhan & reminders';
+  String get focusFeaturePrayerTimesSubtitle => '唤礼与提醒';
 
   @override
-  String get focusFeatureStreaksTitle => 'Streaks';
+  String get focusFeatureStreaksTitle => '连续记录';
 
   @override
-  String get focusFeatureStreaksSubtitle => 'Stay consistent';
+  String get focusFeatureStreaksSubtitle => '保持坚持';
 
   @override
-  String get focusFeatureChecklistTitle => 'Daily Checklist';
+  String get focusFeatureChecklistTitle => '每日清单';
 
   @override
-  String get focusFeatureChecklistSubtitle => 'Build good habits';
+  String get focusFeatureChecklistSubtitle => '培养好习惯';
 
   @override
-  String get focusFeatureQiblaTitle => 'Qibla & Masjid';
+  String get focusFeatureQiblaTitle => '朝拜与清真寺';
 
   @override
-  String get focusFeatureQiblaSubtitle => 'Direction & mosques';
+  String get focusFeatureQiblaSubtitle => '方向与清真寺';
 
   @override
-  String get focusFeatureQuranTitle => 'Quran';
+  String get focusFeatureQuranTitle => '古兰经';
 
   @override
-  String get focusFeatureQuranSubtitle => 'Translations, Juzz & pages';
+  String get focusFeatureQuranSubtitle => '译文、卷次与页码';
 
   @override
-  String get focusFeatureHadithTitle => 'Hadith';
+  String get focusFeatureHadithTitle => '圣训';
 
   @override
-  String get focusFeatureHadithSubtitle => 'Authentic collections';
+  String get focusFeatureHadithSubtitle => '可靠圣训集';
 
   @override
-  String get focusFeatureDuasTitle => 'Duas';
+  String get focusFeatureDuasTitle => '都阿';
 
   @override
-  String get focusFeatureDuasSubtitle => 'Daily supplications';
+  String get focusFeatureDuasSubtitle => '日常祈祷';
 
   @override
-  String get focusFeatureTasbihTitle => 'Tasbih';
+  String get focusFeatureTasbihTitle => '赞珠';
 
   @override
-  String get focusFeatureTasbihSubtitle => 'Digital dhikr counter';
+  String get focusFeatureTasbihSubtitle => '电子记主计数器';
 
   @override
-  String get focusFeatureAiTitle => 'AI Companion';
+  String get focusFeatureAiTitle => 'AI 伙伴';
 
   @override
-  String get focusFeatureAiSubtitle => 'Ask about your Deen';
+  String get focusFeatureAiSubtitle => '询问有关信仰的问题';
 
   @override
-  String get focusFeatureInsightsTitle => 'Insights';
+  String get focusFeatureInsightsTitle => '洞察';
 
   @override
-  String get focusFeatureInsightsSubtitle => 'Weekly & monthly stats';
+  String get focusFeatureInsightsSubtitle => '每周与每月统计';
 
   @override
-  String get investTitle => '投资你的迪恩';
+  String get investTitle => '投资于迪尼';
 
   @override
-  String get investSubtitle => '你不会三思而后行地花在咖啡或零食上......';
+  String get investSubtitle => '最好的投资不是转瞬即逝之物，而是能让你更亲近真主的事物。免费试用全部功能7天。';
 
   @override
-  String get investComparisonTitle => '升级高级版或继续免费使用';
+  String get investPremiumUnlocked => '高级版已解锁';
 
   @override
-  String get investDailyCoffee => '每日咖啡';
+  String get investTrialPill => '✨ 7天免费 — 结束前可随时取消';
 
   @override
-  String get investDailyCoffeePrice => '5 美元/天';
+  String get investFeatureAiTitle => 'AI伊斯兰助手';
 
   @override
-  String get investFastFood => '快餐';
+  String get investFeatureAiBody => '关于信仰的任何问题均可提问 — 答案基于可靠来源。';
 
   @override
-  String get investFastFoodPrice => '\$10/餐';
+  String get investFeaturePrayerModeTitle => '全屏礼拜模式';
 
   @override
-  String get investYourDeen => '你的迪恩';
+  String get investFeaturePrayerModeBody => '平静、无干扰的界面，提醒你礼拜。';
 
   @override
-  String get investYourDeenPrice => '\$4.99/月';
+  String get investFeatureAppBlockingTitle => '高级应用锁定';
 
   @override
-  String get investComparisonQuote => '您不假思索地在小事上花费了 10 美元 - 为什么不投资您的 Deen 呢？';
+  String get investFeatureAppBlockingBody => '精细控制哪些应用在何时锁定。';
 
   @override
-  String get bestValueTag => '最超值';
+  String get investFeatureNightModeTitle => '夜间自律模式';
 
   @override
-  String get mostPopularChoice => '最受欢迎的选择';
+  String get investFeatureNightModeBody => '按时放松、睡得更好，并为晨礼醒来。';
 
   @override
-  String get monthlyPriceValue => '4.99 美元';
+  String get investFeaturePlannerTitle => '礼拜规划与进度';
 
   @override
-  String get monthlyPriceSuffix => '/月';
+  String get investFeaturePlannerBody => '连续记录、洞察与日记，助你保持坚持。';
 
   @override
-  String get monthlyPlanSubtitle => '按月计费 • 随时取消';
+  String get investFeatureToolsTitle => '专属伊斯兰工具';
 
   @override
-  String get yearlyPriceValue => '24.99 美元';
+  String get investFeatureToolsBody => '希吉来历、都阿、赞珠、99美名等。';
 
   @override
-  String get yearlyPriceSuffix => '/年';
+  String get investFeatureThemesTitle => '高级主题与更新';
 
   @override
-  String get yearlyPlanSubtitle => '节省 50% • 按年计费';
+  String get investFeatureThemesBody => '精美主题，以及我们推出的每一项新功能。';
 
   @override
-  String get lifetimePriceValue => '79.99 美元';
+  String get investFeatureTajweedTitle => '掌握泰吉维德';
 
   @override
-  String get lifetimePriceSuffix => '寿命';
+  String get investFeatureTajweedBody => '通过引导课程与实时反馈提升诵读。';
 
   @override
-  String get lifetimePlanSubtitle => '一次性购买 • 永久访问';
-
-  @override
-  String get everythingYouGet => '你得到的一切';
-
-  @override
-  String get featureFocusModeAllModes => '具有全部 3 种模式的无限对焦模式';
-
-  @override
-  String get featurePrayerAnalyticsStreaks => '高级祷告分析和连续祷告';
-
-  @override
-  String get featureAiAssistant => 'AI伊斯兰助手';
-
-  @override
-  String get featurePrioritySupportEarlyAccess => '优先支持和抢先体验';
-
-  @override
-  String get socialProofPrefix => '加入';
+  String get socialProofPrefix => '加入 ';
 
   @override
   String get socialProofHighlight => '10,000+';
 
   @override
-  String get socialProofSuffix => '穆斯林已经与 Deen Focus 一起成长';
+  String get socialProofSuffix => ' 位穆斯林与 DeenFocus 一同成长';
 
   @override
   String get mostPopular => '最受欢迎';
@@ -509,28 +474,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get monthlyLabel => '每月';
 
   @override
-  String get monthlyPrice => '4.99 美元/月 · 每月计费 · 随时取消';
-
-  @override
   String get yearlyLabel => '每年';
 
   @override
-  String get yearlyPrice => '24.99 美元/年 · 节省 50% · 按年计费';
-
-  @override
   String get lifetimeLabel => '寿命';
-
-  @override
-  String get lifetimePrice => '终身使用 79.99 美元 · 一次性购买 · 永久使用';
-
-  @override
-  String get featurePrayerAnalytics => '高级祈祷分析';
-
-  @override
-  String get featureFocusMode => '无限对焦模式';
-
-  @override
-  String get featureMasjidMode => '清真寺自动模式';
 
   @override
   String get featureNoAds => '删除所有广告';
@@ -660,43 +607,43 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeJummahReminder => '不要忘记《Surah Al-Kahf》。';
 
   @override
-  String get hijriYear => 'AH';
+  String get hijriYear => '希吉来';
 
   @override
-  String get hijriMonthMuharram => 'Muharram';
+  String get hijriMonthMuharram => '穆哈兰姆月';
 
   @override
-  String get hijriMonthSafar => 'Safar';
+  String get hijriMonthSafar => '赛法尔月';
 
   @override
-  String get hijriMonthRabiAlAwwal => 'Rabi\' al-Awwal';
+  String get hijriMonthRabiAlAwwal => '赖比尔·敖外鲁月';
 
   @override
-  String get hijriMonthRabiAlThani => 'Rabi\' al-Thani';
+  String get hijriMonthRabiAlThani => '赖比尔·阿色尼月';
 
   @override
-  String get hijriMonthJumadaAlAwwal => 'Jumada al-Awwal';
+  String get hijriMonthJumadaAlAwwal => '主马达·敖外鲁月';
 
   @override
-  String get hijriMonthJumadaAlThani => 'Jumada al-Thani';
+  String get hijriMonthJumadaAlThani => '主马达·阿色尼月';
 
   @override
-  String get hijriMonthRajab => 'Rajab';
+  String get hijriMonthRajab => '赖哲卜月';
 
   @override
-  String get hijriMonthShaban => 'Sha\'ban';
+  String get hijriMonthShaban => '舍尔邦月';
 
   @override
-  String get hijriMonthRamadan => 'Ramadan';
+  String get hijriMonthRamadan => '莱麦丹月';
 
   @override
-  String get hijriMonthShawwal => 'Shawwal';
+  String get hijriMonthShawwal => '闪瓦鲁月';
 
   @override
-  String get hijriMonthDhuAlQadah => 'Dhu al-Qi\'dah';
+  String get hijriMonthDhuAlQadah => '都尔·喀尔德月';
 
   @override
-  String get hijriMonthDhuAlHijjah => 'Dhu al-Hijjah';
+  String get hijriMonthDhuAlHijjah => '都尔·黑哲月';
 
   @override
   String get calendarTitle => 'Islamic Calendar';
@@ -815,35 +762,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendarEventAshuraDesc => '10th of Muharram';
 
   @override
-  String get calendarEventJumuah => 'Jumu\'ah';
+  String get calendarEventJumuah => '主麻';
 
   @override
-  String get calendarEventJumuahDesc => 'Friday congregational prayer';
+  String get calendarEventJumuahDesc => '主麻聚礼';
 
   @override
-  String get calendarEventWhiteDays => 'White Days';
+  String get calendarEventWhiteDays => '白日';
 
   @override
-  String get calendarEventWhiteDaysDesc => 'Recommended fasting days';
+  String get calendarEventWhiteDaysDesc => '每月十三至十五日';
 
   @override
-  String get cycleModeActiveTitle =>
-      'Allah intends ease for you and does not intend hardship for you. — Quran 2:185';
+  String get cycleModeActiveTitle => '“真主欲你们便利，不要你们困难。” — 古兰经 2:185';
 
   @override
   String get cycleModeActiveSubtitle =>
       '在此期间，您的礼拜连续记录会受到保护。经期日以粉色标示，周期结束后周期模式会自动关闭。';
-
-  @override
-  String cycleModeActiveSubtitleOld(num days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: 'Auto-ends in $days days',
-      one: 'Auto-ends tomorrow',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get cycleModeStreakProtected =>
@@ -858,9 +793,9 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'Automatically ends in $days days',
-      one: 'Automatically ends tomorrow',
-      zero: 'Ends today',
+      other: '将在 $days 天后自动结束',
+      one: '明天自动结束',
+      zero: '今天结束',
     );
     return '$_temp0';
   }
@@ -909,42 +844,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String prayerReminderTitle(String prayer) {
-    return 'Did you pray $prayer?';
+    return '你完成$prayer了吗？';
   }
 
   @override
-  String get prayerReminderSubtitle =>
-      'Keep your streak alive by logging your prayer.';
+  String get prayerReminderSubtitle => '记录礼拜，保持你的连续记录。';
 
   @override
-  String get prayerReminderYesButton => 'Yes, Alhamdulillah';
+  String get prayerReminderYesButton => '是的，艾哈迈杜里拉';
 
   @override
-  String get prayerReminderLaterButton => 'I\'ll mark later';
+  String get prayerReminderLaterButton => '稍后再标记';
 
   @override
-  String get homeTrialBannerTitle =>
-      'Free for 7 days — become a better Muslim ✨';
+  String get homeTrialBannerTitle => '免费 7 天 — 成为更好的穆斯林 ✨';
 
   @override
-  String get homeTrialBannerSubtitle =>
-      'Every feature unlocked. Start your journey today.';
+  String get homeTrialBannerSubtitle => '所有功能已解锁。今天开始你的旅程。';
 
   @override
-  String get homeFocusModeTitle => 'Focus Mode';
+  String get homeFocusModeTitle => '专注模式';
 
   @override
-  String get homeFocusModeSubtitle => 'Block distracting apps during Salah';
+  String get homeFocusModeSubtitle => '礼拜期间屏蔽分心应用';
 
   @override
-  String get cycleModeTitle => 'Cycle Mode';
+  String get cycleModeTitle => '生理期模式';
 
   @override
-  String get cycleModeSubtitle =>
-      'For menstruation — pause prayers, keep your streak';
+  String get cycleModeSubtitle => '月经期间 — 暂停礼拜，保留连续记录';
 
   @override
-  String get dailyChecklistTitle => 'Daily Checklist';
+  String get dailyChecklistTitle => '每日清单';
+
+  @override
+  String get dailyChecklistSubtitle => '追踪你的每日精神目标';
+
+  @override
+  String dailyChecklistProgress(int completed, int total) {
+    return '已完成 $completed/$total';
+  }
 
   @override
   String get dailyChecklistSectionPrayer => '礼拜';
@@ -959,16 +898,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dailyChecklistSectionDistraction => '分心控制';
 
   @override
-  String get dailyChecklistFajr => 'Fajr';
+  String get dailyChecklistFajr => '晨礼';
 
   @override
   String get dailyChecklistTahajjud => '夜功拜';
 
   @override
-  String get dailyChecklistQuran => 'Quran';
+  String get dailyChecklistQuran => '古兰经';
 
   @override
-  String get dailyChecklistMorningAdhkar => 'Morning Adhkar';
+  String get dailyChecklistMorningAdhkar => '晨间记主词';
 
   @override
   String get dailyChecklistEveningAdhkar => '晚间记主词';
@@ -977,20 +916,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dailyChecklistDhikr => '记念';
 
   @override
-  String get dailyChecklistCharity => 'Charity';
+  String get dailyChecklistCharity => '施舍';
 
   @override
-  String get dailyChecklistSmileAtSomeone => 'Smile at someone';
+  String get dailyChecklistSmileAtSomeone => '对他人微笑';
 
   @override
-  String get dailyChecklistFamilyCall => 'Family call';
+  String get dailyChecklistFamilyCall => '给家人打电话';
 
   @override
-  String get dailyChecklistNoMusicToday => 'No music today';
+  String get dailyChecklistNoMusicToday => '今天不听歌';
 
   @override
-  String get dailyChecklistNoSocialMediaBeforeIsha =>
-      'No social media before Isha';
+  String get dailyChecklistNoSocialMediaBeforeIsha => '宵礼前不上社交媒体';
 
   @override
   String get focusScoreTitle => '今日专注分数';
@@ -1048,113 +986,123 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get quickActionsCalendar => 'Calendar';
+  String get quickActionsCalendar => '日历';
 
   @override
-  String get quickActionsCalendarSubtitle => 'View Islamic dates';
+  String get quickActionsCalendarSubtitle => '查看伊斯兰日期';
 
   @override
-  String get quickActionsSupportUs => 'Support Us';
+  String get quickActionsSupportUs => '支持我们';
 
   @override
-  String get quickActionsSupportUsSubtitle => 'Help us grow';
+  String get quickActionsSupportUsSubtitle => '帮助我们成长';
 
   @override
-  String get quickActionsSupportUsMessage =>
-      'Thank you for considering to support DeenFocus! Support features coming soon.';
+  String get quickActionsSupportUsMessage => '感谢你考虑支持 DeenFocus！支持功能即将推出。';
 
   @override
-  String get supportUsTitle => 'Support DeenFocus';
+  String get supportUsTitle => '支持 DeenFocus';
 
   @override
-  String get supportUsHeroTitle => 'Help keep DeenFocus growing';
+  String get supportUsHeroTitle => '支持 DeenFocus';
 
   @override
-  String get supportUsHeroBody =>
-      'DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.';
+  String get supportUsHeroBody => '你的支持帮助我们持续改进 DeenFocus，并为有意义的事业贡献力量。';
 
   @override
-  String get supportUsFundSection => 'YOUR CONTRIBUTIONS FUND';
+  String get supportUsFundSection => '你的支持用于资助';
 
   @override
-  String get supportUsFundFeature1Title => 'New Islamic features';
+  String get supportUsFundSectionSubtitle => '我们用你的支持创造更多善举。';
 
   @override
-  String get supportUsFundFeature1Subtitle =>
-      'Fresh tools to deepen your worship';
+  String get supportUsFundFeature1Title => '新功能';
 
   @override
-  String get supportUsFundFeature2Title => 'Server & infrastructure';
+  String get supportUsFundFeature1Subtitle => '构建并改进有意义的 DeenFocus 功能。';
 
   @override
-  String get supportUsFundFeature2Subtitle =>
-      'Keeping the app fast and reliable';
+  String get supportUsFundFeature2Title => '漏洞修复';
 
   @override
-  String get supportUsFundFeature3Title => 'Bug fixes & updates';
+  String get supportUsFundFeature2Subtitle => '让应用对每个人都保持稳定、快速、可靠。';
 
   @override
-  String get supportUsFundFeature3Subtitle =>
-      'A smoother, more stable experience';
+  String get supportUsFundFeature3Title => '帮助有需要的人';
 
   @override
-  String get supportUsFundFeature4Title => 'Quran, Salah & productivity';
+  String get supportUsFundFeature3Subtitle => '支持帮助困境中人们的行动。';
 
   @override
-  String get supportUsFundFeature4Subtitle =>
-      'Continual improvements to core features';
+  String get supportUsFundFeature4Title => '慈善与社区';
 
   @override
-  String get supportUsNeedHelp => 'NEED HELP?';
+  String get supportUsFundFeature4Subtitle => '为慈善项目和社区支持做出贡献。';
 
   @override
-  String get supportUsWhatsApp => 'Chat on WhatsApp';
+  String get supportUsNeedHelp => '需要帮助？';
 
   @override
-  String get supportUsEmailSupport => 'Email Support';
+  String get supportUsWhatsApp => '通过 WhatsApp 聊天';
 
   @override
-  String get supportUsChooseAmountTitle => 'Choose a one-time amount';
+  String get supportUsEmailSupport => '邮件支持';
 
   @override
-  String get supportUsChooseAmountSubtitle =>
-      'Every bit helps keep DeenFocus growing.';
+  String get supportUsChooseAmountTitle => '选择支持金额';
 
   @override
-  String get supportUsCustomAmountLabel => 'Or enter a custom amount';
+  String get supportUsChooseAmountSubtitle => '你可以多次支持。';
 
   @override
-  String get supportUsPurposeLabel => 'Purpose of your donation (optional)';
+  String get supportUsSecurePaymentNote => '安全的一次性付款 · 无定期扣费';
 
   @override
-  String get supportUsPurposeHint => 'e.g. Sadaqah, Zakat, app development...';
+  String get supportUsTrustBanner => '安全 • 一次性支持 • 可多次支持';
 
   @override
-  String get supportUsPurposeNote =>
-      'Tell us the purpose and we\'ll utilize your contribution accordingly.';
+  String get supportUsImpactSectionTitle => '你的支持带来的改变';
 
   @override
-  String get supportUsOptionalFooter =>
-      'Support is entirely optional and helps us keep improving DeenFocus.';
+  String get supportUsImpactSectionSubtitle => '每一份贡献都有持久影响。';
+
+  @override
+  String get supportUsImpactPalestine => '支持与关注巴勒斯坦';
+
+  @override
+  String get supportUsImpactNeedy => '帮助有需要的人';
+
+  @override
+  String get supportUsImpactCommunity => '慈善与社区支持';
+
+  @override
+  String get supportUsImpactExperience => '更好的 DeenFocus 体验';
+
+  @override
+  String get supportUsImpactFeatures => '新功能与升级';
+
+  @override
+  String get supportUsImpactQuran => '古兰经与伊斯兰学习';
+
+  @override
+  String get supportUsImpactServers => '服务器与应用可靠性';
 
   @override
   String supportUsCta(String amount) {
-    return 'Support with $amount';
+    return '以 $amount 支持 DeenFocus';
   }
 
   @override
-  String get supportUsWhatsAppPrefill =>
-      'Assalamu alaikum, I need help with DeenFocus.';
+  String get supportUsWhatsAppPrefill => '安塞拉姆·阿莱库姆，我需要 DeenFocus 的帮助。';
 
   @override
-  String get supportUsEmailSubject => 'DeenFocus support request';
+  String get supportUsEmailSubject => 'DeenFocus 支持请求';
 
   @override
-  String get supportUsLaunchUnavailable =>
-      'Could not open that app on this device.';
+  String get supportUsLaunchUnavailable => '无法在此设备上打开该应用。';
 
   @override
-  String get supportUsLaunchFailed => 'Something went wrong. Please try again.';
+  String get supportUsLaunchFailed => '出了点问题，请重试。';
 
   @override
   String get homeAiChatDescription => '询问有关祈祷时间、古兰经和伊斯兰教指导的任何问题。';
@@ -1945,7 +1893,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeYourNewLocation => 'your new location';
 
   @override
-  String get insightsPrayerStreak => 'Prayer streak';
+  String get insightsPrayerStreak => '礼拜连续';
 
   @override
   String insightsPrayerStreakCount(int count) {
@@ -1953,10 +1901,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get insightsPrayersInARow => 'Prayers in a row';
+  String get insightsPrayersInARow => '连续礼拜次数';
 
   @override
-  String get insightsDaysInARow => 'Days in a row';
+  String get insightsDaysInARow => '连续天数';
 
   @override
   String get insightsChipUpToday => '↑ +1';
@@ -2003,41 +1951,41 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get insightsFocusExcellent => 'Excellent — keep it up!';
+  String get insightsFocusExcellent => '很棒 — 继续保持！';
 
   @override
-  String get insightsFocusKeepGoing => 'Keep building your focus';
+  String get insightsFocusKeepGoing => '继续提升你的专注';
 
   @override
-  String get insightsTodaysPrayers => 'Today\'s prayers';
+  String get insightsTodaysPrayers => '今日礼拜';
 
   @override
   String get insightsPrayersCompletedLabel =>
       'Prayers completed — Alhamdulillah!';
 
   @override
-  String get insightsCycleModeActiveLabel => 'Cycle mode active';
+  String get insightsCycleModeActiveLabel => '生理期模式已开启';
 
   @override
-  String get insightsProtectedByCycleMode => 'Your streak is protected.';
+  String get insightsProtectedByCycleMode => '你的连续记录已受保护。';
 
   @override
-  String get insightsCurrentPrayerStreak => 'Current prayer streak';
+  String get insightsCurrentPrayerStreak => '当前礼拜连续';
 
   @override
-  String get insightsBestPrayerStreak => 'Best prayer streak';
+  String get insightsBestPrayerStreak => '最佳礼拜连续';
 
   @override
-  String get insightsCurrentDayStreak => 'Current day streak';
+  String get insightsCurrentDayStreak => '当前日连续';
 
   @override
-  String get insightsCycleProtectedDays => 'Cycle protected days';
+  String get insightsCycleProtectedDays => '生理期保护天数';
 
   @override
-  String get insightsAchievements => 'Achievements';
+  String get insightsAchievements => '成就';
 
   @override
-  String get insightsAchieved => 'Achieved';
+  String get insightsAchieved => '已达成';
 
   @override
   String insightsCycleModeFooter(int days) {
@@ -2045,61 +1993,137 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get insightsCycleModeFooterOff =>
-      'Enable Cycle Mode to protect your streak during rest days.';
+  String get insightsCycleModeFooterOff => '开启生理期模式，在休息日保护你的连续记录。';
 
   @override
-  String get achievementFirstPrayerStreak => 'First Prayer Streak';
+  String get achievementFirstPrayerStreak => '首次礼拜连续';
 
   @override
-  String get achievementSevenPrayerStreak => 'Seven Prayer Streak';
+  String get achievementSevenPrayerStreak => '七次礼拜连续';
 
   @override
-  String get achievementThirtyPrayerStreak => 'Thirty Prayer Streak';
+  String get achievementThirtyPrayerStreak => '三十次礼拜连续';
 
   @override
-  String get achievementFajrWarrior => 'Fajr Warrior';
+  String get achievementFajrWarrior => '晨礼勇士';
 
   @override
-  String get achievementQuranReader => 'Quran Reader';
+  String get achievementQuranReader => '古兰经读者';
 
   @override
-  String get achievementDhikrMaster => 'Dhikr Master';
+  String get achievementDhikrMaster => '记主大师';
 
   @override
-  String get achievementConsistencyChampion => 'Consistency Champion';
+  String get achievementConsistencyChampion => '坚持冠军';
 
   @override
-  String get prayerCompletionAlhamdulillah => 'Alhamdulillah!';
+  String get prayerCompletionAlhamdulillah => '艾哈迈杜里拉！';
 
   @override
   String prayerCompletionCompleted(String prayer) {
-    return '$prayer has been completed';
+    return '$prayer 已完成';
   }
 
   @override
-  String get prayerCompletionStreakIncreased =>
-      'Your prayer streak has increased';
+  String get prayerCompletionStreakIncreased => '你的礼拜连续记录已增加';
 
   @override
-  String get prayerCompletionKeepGoing =>
-      'Every prayer brings you closer to Allah. Keep going!';
+  String get prayerCompletionKeepGoing => '每一次礼拜都让你更亲近真主。继续加油！';
 
   @override
-  String get prayerCompletionContinue => 'Continue';
+  String get prayerCompletionContinue => '继续';
 
   @override
   String prayerCompletionNextPrayer(String when) {
-    return 'Next prayer in $when';
+    return '下一个祷告在 $when';
   }
 
   @override
   String prayerCompletionMinutes(int minutes) {
-    return '$minutes minutes';
+    return '$minutes 分钟';
   }
 
   @override
   String prayerCompletionHoursMinutes(int hours, int minutes) {
-    return '${hours}h ${minutes}m';
+    return '$hours小时 $minutes分';
+  }
+
+  @override
+  String get weekdayLetterMon => '一';
+
+  @override
+  String get weekdayLetterTue => '二';
+
+  @override
+  String get weekdayLetterWed => '三';
+
+  @override
+  String get weekdayLetterThu => '四';
+
+  @override
+  String get weekdayLetterFri => '五';
+
+  @override
+  String get weekdayLetterSat => '六';
+
+  @override
+  String get weekdayLetterSun => '日';
+
+  @override
+  String get focusHomeBlockingNightAndSalah => '夜间自律与礼拜模式正在屏蔽所选应用。';
+
+  @override
+  String get focusHomeBlockingNight => '夜间自律模式正在屏蔽所选应用。';
+
+  @override
+  String get focusHomeBlockingSalah => '礼拜模式正在屏蔽所选应用。';
+
+  @override
+  String get focusHomeAppsBlockedNow => '所选应用当前已被屏蔽。';
+
+  @override
+  String focusHomeModeEnabled(String mode) {
+    return '$mode 已开启。';
+  }
+
+  @override
+  String focusHomeModesEnabled(String modes) {
+    return '$modes 已开启。';
+  }
+
+  @override
+  String get focusHomeChooseMode => '选择一种模式来保护你的专注';
+
+  @override
+  String get focusStatusSelectApps => '选择应用以开始';
+
+  @override
+  String get focusStatusBlockingNightAndSalah => '夜间自律与礼拜模式正在屏蔽应用';
+
+  @override
+  String get focusStatusBlockingNight => '夜间自律模式正在屏蔽应用';
+
+  @override
+  String get focusStatusBlockingSalah => '礼拜模式正在屏蔽应用';
+
+  @override
+  String get focusStatusAppsLocked => '应用当前已锁定';
+
+  @override
+  String focusStatusUnlockedUntil(String time) {
+    return '解锁至 $time';
+  }
+
+  @override
+  String get focusStatusNoMode => '未启用专注模式';
+
+  @override
+  String focusStatusReadyToLock(String targets) {
+    return '准备锁定 $targets';
+  }
+
+  @override
+  String homeCountdownHms(int hours, int minutes, int seconds) {
+    return '$hours小时 $minutes分 $seconds秒';
   }
 }

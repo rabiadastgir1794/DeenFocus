@@ -296,15 +296,25 @@ class _HomeMonthlyCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final first = DateTime(monthDate.year, monthDate.month, 1);
     final daysInMonth = DateTime(monthDate.year, monthDate.month + 1, 0).day;
     final leading = first.weekday % 7;
     final today = DateTime.now();
+    final weekdayLabels = [
+      l10n.weekdayLetterSun,
+      l10n.weekdayLetterMon,
+      l10n.weekdayLetterTue,
+      l10n.weekdayLetterWed,
+      l10n.weekdayLetterThu,
+      l10n.weekdayLetterFri,
+      l10n.weekdayLetterSat,
+    ];
 
     return Column(
       children: [
         Row(
-          children: const ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+          children: weekdayLabels
               .map((label) => Expanded(child: Center(child: Text(label))))
               .toList(),
         ),

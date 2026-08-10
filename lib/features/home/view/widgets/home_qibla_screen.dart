@@ -127,21 +127,15 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
     final l10n = AppLocalizations.of(context)!;
 
     if (_resolving) {
-      return Scaffold(
-        appBar: CustomAppBar(
-          title: l10n.homeQiblaDirection,
-          onBack: () => Navigator.of(context).pop(),
-        ),
+      return _qiblaScaffold(
+        l10n: l10n,
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_permissionDenied) {
-      return Scaffold(
-        appBar: CustomAppBar(
-          title: l10n.homeQiblaDirection,
-          onBack: () => Navigator.of(context).pop(),
-        ),
+      return _qiblaScaffold(
+        l10n: l10n,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -178,11 +172,8 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
     }
 
     if (_locationUnavailable) {
-      return Scaffold(
-        appBar: CustomAppBar(
-          title: l10n.homeQiblaDirection,
-          onBack: () => Navigator.of(context).pop(),
-        ),
+      return _qiblaScaffold(
+        l10n: l10n,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -240,12 +231,9 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
       'en_US',
     ).format(distanceKm.round());
 
-    return Scaffold(
+    return _qiblaScaffold(
+      l10n: l10n,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: l10n.homeQiblaDirection,
-        onBack: () => Navigator.of(context).pop(),
-      ),
       body: StreamBuilder<double>(
         stream: stream,
         builder: (context, snapshot) {
@@ -254,46 +242,60 @@ class _HomeQiblaScreenState extends State<HomeQiblaScreen>
           final angleDelta = _normalizedDelta(qiblaDirection, heading);
           final aligned = hasLiveHeading && angleDelta <= 10;
 
-          return Stack(
-            children: [
-              SafeArea(
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 26, 20, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          cityLabel,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontSize: 32,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: Center(
-                            child: _QiblaCompassView(
-                              heading: heading,
-                              qiblaDirection: qiblaDirection,
-                              aligned: aligned,
-                              distanceFormatted: distanceFormatted,
-                              hasLiveHeading: hasLiveHeading,
-                            ),
-                          ),
-                        ),
-                      ],
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 26, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    cityLabel,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 32,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: Center(
+                      child: _QiblaCompassView(
+                        heading: heading,
+                        qiblaDirection: qiblaDirection,
+                        aligned: aligned,
+                        distanceFormatted: distanceFormatted,
+                        hasLiveHeading: hasLiveHeading,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _qiblaScaffold({
+    required AppLocalizations l10n,
+    required Widget body,
+    Color? backgroundColor,
+  }) {
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.homeQiblaDirection,
+              backLabel: l10n.insightsBack,
+              onBack: () => Navigator.of(context).pop(),
+            ),
+            Expanded(child: body),
+          ],
+        ),
       ),
     );
   }

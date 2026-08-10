@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/home_islamic_events_helper.dart';
 import '../../helpers/islamic_event_catalog.dart';
@@ -44,10 +45,10 @@ class _HomeCalendarScreenState extends State<HomeCalendarScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _CalendarHeader(
+            AppCenteredNavHeader(
               title: l10n.calendarTitle,
+              backLabel: l10n.calendarBack,
               onBack: () => Navigator.of(context).pop(),
-              colorScheme: colorScheme,
             ),
             Expanded(
               child: ListView(
@@ -149,56 +150,6 @@ class _HomeCalendarScreenState extends State<HomeCalendarScreen> {
     ];
   }
 
-}
-
-class _CalendarHeader extends StatelessWidget {
-  const _CalendarHeader({
-    required this.title,
-    required this.onBack,
-    required this.colorScheme,
-  });
-
-  final String title;
-  final VoidCallback onBack;
-  final ColorScheme colorScheme;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-      child: SizedBox(
-        height: 48,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: TextButton.icon(
-                onPressed: onBack,
-                style: TextButton.styleFrom(
-                  foregroundColor: colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
-                label: Text(
-                  l10n.calendarBack,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _TodayDateCard extends StatefulWidget {
@@ -438,6 +389,7 @@ class _MonthlyCalendarCard extends StatefulWidget {
 class _MonthlyCalendarCardState extends State<_MonthlyCalendarCard> {
   List<HijriCalendarDay> _days = const [];
   bool _refreshing = false;
+  int _loadGeneration = 0;
 
   @override
   void initState() {
@@ -465,12 +417,15 @@ class _MonthlyCalendarCardState extends State<_MonthlyCalendarCard> {
   }
 
   Future<void> _load() async {
+    final generation = ++_loadGeneration;
+    final year = widget.visibleMonth.year;
+    final month = widget.visibleMonth.month;
     setState(() => _refreshing = true);
     final days = await HijriDateService.getMonthCalendar(
-      year: widget.visibleMonth.year,
-      month: widget.visibleMonth.month,
+      year: year,
+      month: month,
     );
-    if (!mounted) return;
+    if (!mounted || generation != _loadGeneration) return;
     setState(() {
       _days = days;
       _refreshing = false;

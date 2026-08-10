@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
@@ -45,21 +46,27 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
           body: SafeArea(
             child: Column(
               children: [
-                _Header(
-                  l10n: l10n,
-                  colorScheme: colorScheme,
+                AppCenteredNavHeader(
+                  title: l10n.insightsTitle,
+                  backLabel: l10n.insightsBack,
                   onBack: () => Navigator.of(context).pop(),
-                  onCalendar: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) =>
-                            ChangeNotifierProvider<HomeTabViewModel>.value(
-                          value: vm,
-                          child: const HomeCalendarScreen(),
+                  trailing: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) =>
+                              ChangeNotifierProvider<HomeTabViewModel>.value(
+                            value: vm,
+                            child: const HomeCalendarScreen(),
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.calendar_month_rounded,
+                      color: colorScheme.primary,
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: ListView(
@@ -124,53 +131,6 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
           ),
         );
       },
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.l10n,
-    required this.colorScheme,
-    required this.onBack,
-    required this.onCalendar,
-  });
-
-  final AppLocalizations l10n;
-  final ColorScheme colorScheme;
-  final VoidCallback onBack;
-  final VoidCallback onCalendar;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 4, 8, 4),
-      child: SizedBox(
-        height: 48,
-        child: Row(
-          children: [
-            TextButton.icon(
-              onPressed: onBack,
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
-              label: Text(l10n.insightsBack),
-              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
-            ),
-            Expanded(
-              child: Text(
-                l10n.insightsTitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            IconButton(
-              onPressed: onCalendar,
-              icon: Icon(Icons.calendar_month_rounded, color: colorScheme.primary),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

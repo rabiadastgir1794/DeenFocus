@@ -171,13 +171,13 @@ abstract class AppLocalizations {
   /// No description provided for @continueForFree.
   ///
   /// In en, this message translates to:
-  /// **'Continue with Free Plan'**
+  /// **'Maybe later — explore the app first'**
   String get continueForFree;
 
   /// No description provided for @getStarted.
   ///
   /// In en, this message translates to:
-  /// **'Unlock Premium'**
+  /// **'Start My 7-Day Free Trial'**
   String get getStarted;
 
   /// No description provided for @language.
@@ -885,158 +885,122 @@ abstract class AppLocalizations {
   /// No description provided for @investTitle.
   ///
   /// In en, this message translates to:
-  /// **'Invest in Your Deen'**
+  /// **'Invest in Deen'**
   String get investTitle;
 
   /// No description provided for @investSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'You don\'t think twice about spending on coffee or snacks...'**
+  /// **'The best investment isn\'t in things that fade — it\'s in what draws you closer to Allah. Try everything free for 7 days.'**
   String get investSubtitle;
 
-  /// No description provided for @investComparisonTitle.
+  /// No description provided for @investPremiumUnlocked.
   ///
   /// In en, this message translates to:
-  /// **'Go Premium or Continue with Free Plan'**
-  String get investComparisonTitle;
+  /// **'PREMIUM UNLOCKED'**
+  String get investPremiumUnlocked;
 
-  /// No description provided for @investDailyCoffee.
+  /// No description provided for @investTrialPill.
   ///
   /// In en, this message translates to:
-  /// **'Daily coffee'**
-  String get investDailyCoffee;
+  /// **'✨ 7 days free — cancel anytime before it ends'**
+  String get investTrialPill;
 
-  /// No description provided for @investDailyCoffeePrice.
+  /// No description provided for @investFeatureAiTitle.
   ///
   /// In en, this message translates to:
-  /// **'\$5/day'**
-  String get investDailyCoffeePrice;
+  /// **'AI Islamic Assistant'**
+  String get investFeatureAiTitle;
 
-  /// No description provided for @investFastFood.
+  /// No description provided for @investFeatureAiBody.
   ///
   /// In en, this message translates to:
-  /// **'Fast food'**
-  String get investFastFood;
+  /// **'Ask anything about your Deen — answers rooted in authentic sources.'**
+  String get investFeatureAiBody;
 
-  /// No description provided for @investFastFoodPrice.
+  /// No description provided for @investFeaturePrayerModeTitle.
   ///
   /// In en, this message translates to:
-  /// **'\$10/meal'**
-  String get investFastFoodPrice;
+  /// **'Full-Screen Prayer Mode'**
+  String get investFeaturePrayerModeTitle;
 
-  /// No description provided for @investYourDeen.
+  /// No description provided for @investFeaturePrayerModeBody.
   ///
   /// In en, this message translates to:
-  /// **'Your Deen'**
-  String get investYourDeen;
+  /// **'A calm, distraction-free screen that calls you to Salah.'**
+  String get investFeaturePrayerModeBody;
 
-  /// No description provided for @investYourDeenPrice.
+  /// No description provided for @investFeatureAppBlockingTitle.
   ///
   /// In en, this message translates to:
-  /// **'\$4.99/mo'**
-  String get investYourDeenPrice;
+  /// **'Advanced App Blocking'**
+  String get investFeatureAppBlockingTitle;
 
-  /// No description provided for @investComparisonQuote.
+  /// No description provided for @investFeatureAppBlockingBody.
   ///
   /// In en, this message translates to:
-  /// **'You spend \$10 on small things without thinking - why not invest in your Deen?'**
-  String get investComparisonQuote;
+  /// **'Granular control over which apps lock, and exactly when.'**
+  String get investFeatureAppBlockingBody;
 
-  /// No description provided for @bestValueTag.
+  /// No description provided for @investFeatureNightModeTitle.
   ///
   /// In en, this message translates to:
-  /// **'BEST VALUE'**
-  String get bestValueTag;
+  /// **'Night Discipline Mode'**
+  String get investFeatureNightModeTitle;
 
-  /// No description provided for @mostPopularChoice.
+  /// No description provided for @investFeatureNightModeBody.
   ///
   /// In en, this message translates to:
-  /// **'Most popular choice'**
-  String get mostPopularChoice;
+  /// **'Wind down on time, sleep better, and wake up for Fajr.'**
+  String get investFeatureNightModeBody;
 
-  /// No description provided for @monthlyPriceValue.
+  /// No description provided for @investFeaturePlannerTitle.
   ///
   /// In en, this message translates to:
-  /// **'\$4.99'**
-  String get monthlyPriceValue;
+  /// **'Prayer Planner & Progress'**
+  String get investFeaturePlannerTitle;
 
-  /// No description provided for @monthlyPriceSuffix.
+  /// No description provided for @investFeaturePlannerBody.
   ///
   /// In en, this message translates to:
-  /// **'/month'**
-  String get monthlyPriceSuffix;
+  /// **'Streaks, insights and journals that keep you consistent.'**
+  String get investFeaturePlannerBody;
 
-  /// No description provided for @monthlyPlanSubtitle.
+  /// No description provided for @investFeatureToolsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Billed monthly • Cancel anytime'**
-  String get monthlyPlanSubtitle;
+  /// **'Exclusive Islamic Tools'**
+  String get investFeatureToolsTitle;
 
-  /// No description provided for @yearlyPriceValue.
+  /// No description provided for @investFeatureToolsBody.
   ///
   /// In en, this message translates to:
-  /// **'\$24.99'**
-  String get yearlyPriceValue;
+  /// **'Hijri calendar, Duas, Tasbih, 99 Names and more.'**
+  String get investFeatureToolsBody;
 
-  /// No description provided for @yearlyPriceSuffix.
+  /// No description provided for @investFeatureThemesTitle.
   ///
   /// In en, this message translates to:
-  /// **'/year'**
-  String get yearlyPriceSuffix;
+  /// **'Premium Themes & Updates'**
+  String get investFeatureThemesTitle;
 
-  /// No description provided for @yearlyPlanSubtitle.
+  /// No description provided for @investFeatureThemesBody.
   ///
   /// In en, this message translates to:
-  /// **'Save 50% • Billed annually'**
-  String get yearlyPlanSubtitle;
+  /// **'Beautiful themes plus every new feature we ship.'**
+  String get investFeatureThemesBody;
 
-  /// No description provided for @lifetimePriceValue.
+  /// No description provided for @investFeatureTajweedTitle.
   ///
   /// In en, this message translates to:
-  /// **'\$79.99'**
-  String get lifetimePriceValue;
+  /// **'Master Tajweed'**
+  String get investFeatureTajweedTitle;
 
-  /// No description provided for @lifetimePriceSuffix.
+  /// No description provided for @investFeatureTajweedBody.
   ///
   /// In en, this message translates to:
-  /// **' lifetime'**
-  String get lifetimePriceSuffix;
-
-  /// No description provided for @lifetimePlanSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'One-time purchase • Forever access'**
-  String get lifetimePlanSubtitle;
-
-  /// No description provided for @everythingYouGet.
-  ///
-  /// In en, this message translates to:
-  /// **'Everything you get'**
-  String get everythingYouGet;
-
-  /// No description provided for @featureFocusModeAllModes.
-  ///
-  /// In en, this message translates to:
-  /// **'Unlimited Focus Mode with all 3 modes'**
-  String get featureFocusModeAllModes;
-
-  /// No description provided for @featurePrayerAnalyticsStreaks.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced prayer analytics & streaks'**
-  String get featurePrayerAnalyticsStreaks;
-
-  /// No description provided for @featureAiAssistant.
-  ///
-  /// In en, this message translates to:
-  /// **'AI Islamic assistant'**
-  String get featureAiAssistant;
-
-  /// No description provided for @featurePrioritySupportEarlyAccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Priority support & early access'**
-  String get featurePrioritySupportEarlyAccess;
+  /// **'Improve your recitation with guided lessons and real-time feedback.'**
+  String get investFeatureTajweedBody;
 
   /// No description provided for @socialProofPrefix.
   ///
@@ -1053,7 +1017,7 @@ abstract class AppLocalizations {
   /// No description provided for @socialProofSuffix.
   ///
   /// In en, this message translates to:
-  /// **' Muslims already growing with Deen Focus'**
+  /// **' Muslims growing with DeenFocus'**
   String get socialProofSuffix;
 
   /// No description provided for @mostPopular.
@@ -1068,53 +1032,17 @@ abstract class AppLocalizations {
   /// **'Monthly'**
   String get monthlyLabel;
 
-  /// No description provided for @monthlyPrice.
-  ///
-  /// In en, this message translates to:
-  /// **'\$4.99/month · billed monthly · cancel anytime'**
-  String get monthlyPrice;
-
   /// No description provided for @yearlyLabel.
   ///
   /// In en, this message translates to:
   /// **'Yearly'**
   String get yearlyLabel;
 
-  /// No description provided for @yearlyPrice.
-  ///
-  /// In en, this message translates to:
-  /// **'\$24.99/year · save 50% · billed annually'**
-  String get yearlyPrice;
-
   /// No description provided for @lifetimeLabel.
   ///
   /// In en, this message translates to:
   /// **'Lifetime'**
   String get lifetimeLabel;
-
-  /// No description provided for @lifetimePrice.
-  ///
-  /// In en, this message translates to:
-  /// **'\$79.99 lifetime · one-time purchase · forever access'**
-  String get lifetimePrice;
-
-  /// No description provided for @featurePrayerAnalytics.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced prayer analytics'**
-  String get featurePrayerAnalytics;
-
-  /// No description provided for @featureFocusMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Unlimited focus mode'**
-  String get featureFocusMode;
-
-  /// No description provided for @featureMasjidMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Masjid auto mode'**
-  String get featureMasjidMode;
 
   /// No description provided for @featureNoAds.
   ///
@@ -1698,12 +1626,6 @@ abstract class AppLocalizations {
   /// **'During this period, your prayer streak is protected. Your cycle days are highlighted in pink, and Cycle Mode turns off automatically when the cycle ends.'**
   String get cycleModeActiveSubtitle;
 
-  /// No description provided for @cycleModeActiveSubtitleOld.
-  ///
-  /// In en, this message translates to:
-  /// **'{days, plural, =1{Auto-ends tomorrow} other{Auto-ends in {days} days}}'**
-  String cycleModeActiveSubtitleOld(num days);
-
   /// No description provided for @cycleModeStreakProtected.
   ///
   /// In en, this message translates to:
@@ -1853,6 +1775,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Daily Checklist'**
   String get dailyChecklistTitle;
+
+  /// No description provided for @dailyChecklistSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your daily spiritual goals'**
+  String get dailyChecklistSubtitle;
+
+  /// No description provided for @dailyChecklistProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{completed} of {total} completed'**
+  String dailyChecklistProgress(int completed, int total);
 
   /// No description provided for @dailyChecklistSectionPrayer.
   ///
@@ -2084,67 +2018,73 @@ abstract class AppLocalizations {
   /// No description provided for @supportUsHeroTitle.
   ///
   /// In en, this message translates to:
-  /// **'Help keep DeenFocus growing'**
+  /// **'Support DeenFocus'**
   String get supportUsHeroTitle;
 
   /// No description provided for @supportUsHeroBody.
   ///
   /// In en, this message translates to:
-  /// **'DeenFocus is built with love to help the Ummah stay focused and consistent. Your support keeps it alive and improving for everyone.'**
+  /// **'Your support helps us keep improving DeenFocus and contribute to meaningful causes.'**
   String get supportUsHeroBody;
 
   /// No description provided for @supportUsFundSection.
   ///
   /// In en, this message translates to:
-  /// **'YOUR CONTRIBUTIONS FUND'**
+  /// **'Your support helps fund'**
   String get supportUsFundSection;
+
+  /// No description provided for @supportUsFundSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We use your support to create more good.'**
+  String get supportUsFundSectionSubtitle;
 
   /// No description provided for @supportUsFundFeature1Title.
   ///
   /// In en, this message translates to:
-  /// **'New Islamic features'**
+  /// **'New Features'**
   String get supportUsFundFeature1Title;
 
   /// No description provided for @supportUsFundFeature1Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Fresh tools to deepen your worship'**
+  /// **'Build and improve meaningful DeenFocus features.'**
   String get supportUsFundFeature1Subtitle;
 
   /// No description provided for @supportUsFundFeature2Title.
   ///
   /// In en, this message translates to:
-  /// **'Server & infrastructure'**
+  /// **'Bug Fixes'**
   String get supportUsFundFeature2Title;
 
   /// No description provided for @supportUsFundFeature2Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Keeping the app fast and reliable'**
+  /// **'Keep the app stable, fast and reliable for everyone.'**
   String get supportUsFundFeature2Subtitle;
 
   /// No description provided for @supportUsFundFeature3Title.
   ///
   /// In en, this message translates to:
-  /// **'Bug fixes & updates'**
+  /// **'People in Need'**
   String get supportUsFundFeature3Title;
 
   /// No description provided for @supportUsFundFeature3Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'A smoother, more stable experience'**
+  /// **'Support efforts that help people facing hardship and difficult times.'**
   String get supportUsFundFeature3Subtitle;
 
   /// No description provided for @supportUsFundFeature4Title.
   ///
   /// In en, this message translates to:
-  /// **'Quran, Salah & productivity'**
+  /// **'Charity & Community'**
   String get supportUsFundFeature4Title;
 
   /// No description provided for @supportUsFundFeature4Subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Continual improvements to core features'**
+  /// **'Contribute towards charitable initiatives and community support.'**
   String get supportUsFundFeature4Subtitle;
 
   /// No description provided for @supportUsNeedHelp.
@@ -2168,49 +2108,85 @@ abstract class AppLocalizations {
   /// No description provided for @supportUsChooseAmountTitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose a one-time amount'**
+  /// **'Choose a support amount'**
   String get supportUsChooseAmountTitle;
 
   /// No description provided for @supportUsChooseAmountSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Every bit helps keep DeenFocus growing.'**
+  /// **'You can support multiple times.'**
   String get supportUsChooseAmountSubtitle;
 
-  /// No description provided for @supportUsCustomAmountLabel.
+  /// No description provided for @supportUsSecurePaymentNote.
   ///
   /// In en, this message translates to:
-  /// **'Or enter a custom amount'**
-  String get supportUsCustomAmountLabel;
+  /// **'Secure one-time payment · No recurring charges'**
+  String get supportUsSecurePaymentNote;
 
-  /// No description provided for @supportUsPurposeLabel.
+  /// No description provided for @supportUsTrustBanner.
   ///
   /// In en, this message translates to:
-  /// **'Purpose of your donation (optional)'**
-  String get supportUsPurposeLabel;
+  /// **'Secure • One-time Support • You can support multiple times'**
+  String get supportUsTrustBanner;
 
-  /// No description provided for @supportUsPurposeHint.
+  /// No description provided for @supportUsImpactSectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Sadaqah, Zakat, app development...'**
-  String get supportUsPurposeHint;
+  /// **'Where your support makes a difference'**
+  String get supportUsImpactSectionTitle;
 
-  /// No description provided for @supportUsPurposeNote.
+  /// No description provided for @supportUsImpactSectionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Tell us the purpose and we\'ll utilize your contribution accordingly.'**
-  String get supportUsPurposeNote;
+  /// **'Every contribution has a lasting impact.'**
+  String get supportUsImpactSectionSubtitle;
 
-  /// No description provided for @supportUsOptionalFooter.
+  /// No description provided for @supportUsImpactPalestine.
   ///
   /// In en, this message translates to:
-  /// **'Support is entirely optional and helps us keep improving DeenFocus.'**
-  String get supportUsOptionalFooter;
+  /// **'Support & Awareness for Palestine'**
+  String get supportUsImpactPalestine;
+
+  /// No description provided for @supportUsImpactNeedy.
+  ///
+  /// In en, this message translates to:
+  /// **'Helping Those in Need'**
+  String get supportUsImpactNeedy;
+
+  /// No description provided for @supportUsImpactCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Charity & Community Support'**
+  String get supportUsImpactCommunity;
+
+  /// No description provided for @supportUsImpactExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Better DeenFocus Experience'**
+  String get supportUsImpactExperience;
+
+  /// No description provided for @supportUsImpactFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'New Features & Upgrades'**
+  String get supportUsImpactFeatures;
+
+  /// No description provided for @supportUsImpactQuran.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran & Islamic Learning'**
+  String get supportUsImpactQuran;
+
+  /// No description provided for @supportUsImpactServers.
+  ///
+  /// In en, this message translates to:
+  /// **'Servers & App Reliability'**
+  String get supportUsImpactServers;
 
   /// No description provided for @supportUsCta.
   ///
   /// In en, this message translates to:
-  /// **'Support with {amount}'**
+  /// **'Support DeenFocus with {amount}'**
   String supportUsCta(String amount);
 
   /// No description provided for @supportUsWhatsAppPrefill.
@@ -4018,6 +3994,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{hours}h {minutes}m'**
   String prayerCompletionHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @weekdayLetterMon.
+  ///
+  /// In en, this message translates to:
+  /// **'M'**
+  String get weekdayLetterMon;
+
+  /// No description provided for @weekdayLetterTue.
+  ///
+  /// In en, this message translates to:
+  /// **'T'**
+  String get weekdayLetterTue;
+
+  /// No description provided for @weekdayLetterWed.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get weekdayLetterWed;
+
+  /// No description provided for @weekdayLetterThu.
+  ///
+  /// In en, this message translates to:
+  /// **'T'**
+  String get weekdayLetterThu;
+
+  /// No description provided for @weekdayLetterFri.
+  ///
+  /// In en, this message translates to:
+  /// **'F'**
+  String get weekdayLetterFri;
+
+  /// No description provided for @weekdayLetterSat.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get weekdayLetterSat;
+
+  /// No description provided for @weekdayLetterSun.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get weekdayLetterSun;
+
+  /// No description provided for @focusHomeBlockingNightAndSalah.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Discipline and Salah mode are blocking selected apps.'**
+  String get focusHomeBlockingNightAndSalah;
+
+  /// No description provided for @focusHomeBlockingNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Discipline is blocking selected apps.'**
+  String get focusHomeBlockingNight;
+
+  /// No description provided for @focusHomeBlockingSalah.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah mode is blocking selected apps.'**
+  String get focusHomeBlockingSalah;
+
+  /// No description provided for @focusHomeAppsBlockedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected apps are blocked right now.'**
+  String get focusHomeAppsBlockedNow;
+
+  /// No description provided for @focusHomeModeEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'{mode} is enabled.'**
+  String focusHomeModeEnabled(String mode);
+
+  /// No description provided for @focusHomeModesEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'{modes} are enabled.'**
+  String focusHomeModesEnabled(String modes);
+
+  /// No description provided for @focusHomeChooseMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a mode to protect your attention.'**
+  String get focusHomeChooseMode;
+
+  /// No description provided for @focusStatusSelectApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Select apps to start'**
+  String get focusStatusSelectApps;
+
+  /// No description provided for @focusStatusBlockingNightAndSalah.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Discipline and Salah mode are blocking apps now'**
+  String get focusStatusBlockingNightAndSalah;
+
+  /// No description provided for @focusStatusBlockingNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Discipline is blocking apps now'**
+  String get focusStatusBlockingNight;
+
+  /// No description provided for @focusStatusBlockingSalah.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah mode is blocking apps now'**
+  String get focusStatusBlockingSalah;
+
+  /// No description provided for @focusStatusAppsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are locked now'**
+  String get focusStatusAppsLocked;
+
+  /// No description provided for @focusStatusUnlockedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked until {time}'**
+  String focusStatusUnlockedUntil(String time);
+
+  /// No description provided for @focusStatusNoMode.
+  ///
+  /// In en, this message translates to:
+  /// **'No focus mode enabled'**
+  String get focusStatusNoMode;
+
+  /// No description provided for @focusStatusReadyToLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to lock {targets}'**
+  String focusStatusReadyToLock(String targets);
+
+  /// No description provided for @homeCountdownHms.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m {seconds}s'**
+  String homeCountdownHms(int hours, int minutes, int seconds);
 }
 
 class _AppLocalizationsDelegate

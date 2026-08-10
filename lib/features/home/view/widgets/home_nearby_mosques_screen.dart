@@ -250,25 +250,32 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.nearbyMosquesTitle,
-        onBack: () => Navigator.of(context).pop(),
-      ),
       body: SafeArea(
-        top: false,
-        child: RefreshIndicator(
-          onRefresh: () => _load(forceRefresh: true),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: _buildBody(l10n, isDark),
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.nearbyMosquesTitle,
+              backLabel: l10n.insightsBack,
+              onBack: () => Navigator.of(context).pop(),
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () => _load(forceRefresh: true),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraints.maxHeight),
+                        child: _buildBody(l10n, isDark),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );

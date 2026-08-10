@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 
 /// Prayer Reminder Popup that shows when the app opens if the most recent
@@ -50,9 +51,7 @@ class PrayerReminderPopup {
               
               // Title
               Text(
-                l10n.prayerReminderTitle(
-                  prayer.name[0].toUpperCase() + prayer.name.substring(1),
-                ),
+                l10n.prayerReminderTitle(prayer.label(l10n)),
                 textAlign: TextAlign.center,
                 style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
