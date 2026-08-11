@@ -14,6 +14,7 @@ class HomePrayerStreakSection extends StatelessWidget {
     this.onInsightsTap,
     this.onRestoreStreak,
     this.canRestoreStreak = false,
+    this.isCycleThemeActive = false,
     this.weekCycleModeDays = const <bool>[
       false,
       false,
@@ -35,6 +36,10 @@ class HomePrayerStreakSection extends StatelessWidget {
   final VoidCallback? onRestoreStreak;
   final bool canRestoreStreak;
 
+  /// When Cycle Mode is ON, accents use app Cycle pink; card shell stays normal.
+  final bool isCycleThemeActive;
+
+  /// Same Cycle Mode pink as toggle / banner / calendar (`#FF9EC5`).
   static const _cyclePink = Color(0xFFFF9EC5);
   static const _cyclePinkDark = Color(0xFFE59DB7);
 
@@ -43,10 +48,14 @@ class HomePrayerStreakSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cycleColor = isDark ? _cyclePinkDark : _cyclePink;
+    final accent = isCycleThemeActive ? cycleColor : colorScheme.primary;
     final borderColor = isDark
         ? colorScheme.outlineVariant.withValues(alpha: 0.35)
         : AppColors.outlineVariantLight.withValues(alpha: 0.35);
-    final cycleColor = isDark ? _cyclePinkDark : _cyclePink;
+    final restoreChipColor = isDark
+        ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.45)
+        : const Color(0xFFEEEEEA);
 
     return Material(
       color: Colors.transparent,
@@ -56,6 +65,7 @@ class HomePrayerStreakSection extends StatelessWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
+            // Keep the normal soft card — only accents turn Cycle pink.
             color: backgroundColor,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: borderColor),
@@ -98,16 +108,19 @@ class HomePrayerStreakSection extends StatelessWidget {
                                 .textTheme
                                 .labelLarge
                                 ?.copyWith(
-                                  color: colorScheme.primary.withValues(
-                                    alpha: 0.85,
-                                  ),
+                                  color: isCycleThemeActive
+                                      ? cycleColor
+                                      : colorScheme.primary
+                                          .withValues(alpha: 0.85),
                                   fontWeight: FontWeight.w600,
                                 ),
                           ),
                           Icon(
                             Icons.chevron_right_rounded,
                             size: 18,
-                            color: colorScheme.primary.withValues(alpha: 0.85),
+                            color: isCycleThemeActive
+                                ? cycleColor
+                                : colorScheme.primary.withValues(alpha: 0.85),
                           ),
                         ],
                       ),
@@ -125,6 +138,8 @@ class HomePrayerStreakSection extends StatelessWidget {
                       title: l10n.insightsPrayerStreak,
                       value: '$prayerStreak',
                       subtitle: l10n.insightsPrayersInARow,
+                      accentColor: accent,
+                      titleUsesAccent: isCycleThemeActive,
                       colorScheme: colorScheme,
                     ),
                   ),
@@ -140,6 +155,8 @@ class HomePrayerStreakSection extends StatelessWidget {
                       title: l10n.insightsDayStreak,
                       value: '$dayStreak',
                       subtitle: l10n.insightsDaysInARow,
+                      accentColor: accent,
+                      titleUsesAccent: isCycleThemeActive,
                       colorScheme: colorScheme,
                     ),
                   ),
@@ -202,11 +219,7 @@ class HomePrayerStreakSection extends StatelessWidget {
               if (canRestoreStreak && onRestoreStreak != null) ...[
                 const SizedBox(height: 14),
                 Material(
-                  color: isDark
-                      ? colorScheme.surfaceContainerHighest.withValues(
-                          alpha: 0.45,
-                        )
-                      : const Color(0xFFEEEEEA),
+                  color: restoreChipColor,
                   borderRadius: BorderRadius.circular(24),
                   child: InkWell(
                     onTap: onRestoreStreak,
@@ -221,7 +234,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                           Icon(
                             Icons.refresh_rounded,
                             size: 18,
-                            color: colorScheme.primary,
+                            color: accent,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -231,7 +244,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                                   .textTheme
                                   .labelLarge
                                   ?.copyWith(
-                                    color: colorScheme.primary,
+                                    color: accent,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -256,6 +269,8 @@ class _StreakMetric extends StatelessWidget {
     required this.title,
     required this.value,
     required this.subtitle,
+    required this.accentColor,
+    required this.titleUsesAccent,
     required this.colorScheme,
   });
 
@@ -263,17 +278,22 @@ class _StreakMetric extends StatelessWidget {
   final String title;
   final String value;
   final String subtitle;
+  final Color accentColor;
+  final bool titleUsesAccent;
   final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final titleColor = titleUsesAccent
+        ? accentColor
+        : colorScheme.onSurface.withValues(alpha: 0.75);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, color: colorScheme.primary, size: 16),
+            Icon(icon, color: accentColor, size: 16),
             const SizedBox(width: 5),
             Expanded(
               child: Text(
@@ -281,7 +301,7 @@ class _StreakMetric extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onSurface.withValues(alpha: 0.75),
+                  color: titleColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -292,7 +312,7 @@ class _StreakMetric extends StatelessWidget {
         Text(
           value,
           style: textTheme.headlineSmall?.copyWith(
-            color: colorScheme.primary,
+            color: accentColor,
             fontWeight: FontWeight.w800,
             height: 1.05,
           ),
@@ -335,6 +355,9 @@ class _DayBar extends StatelessWidget {
         ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.55)
         : const Color(0xFFE8E8E4);
     final fillColor = isCycleDay ? cycleColor : colorScheme.primary;
+    // Cycle days: soft pink well + solid pink base bar (reference).
+    final cycleTrack = cycleColor.withValues(alpha: isDark ? 0.28 : 0.22);
+    final cycleBar = cycleColor;
 
     return SizedBox(
       height: 36,
@@ -343,33 +366,29 @@ class _DayBar extends StatelessWidget {
         child: Container(
           height: 28,
           decoration: BoxDecoration(
-            color: isCycleDay
-                ? cycleColor.withValues(alpha: isDark ? 0.22 : 0.18)
-                : trackColor,
+            color: isCycleDay ? cycleTrack : trackColor,
             borderRadius: BorderRadius.circular(8),
           ),
           alignment: Alignment.bottomCenter,
           child: fill <= 0
               ? (isCycleDay
                   ? FractionallySizedBox(
-                      heightFactor: 0.15,
+                      heightFactor: 0.22,
                       widthFactor: 1,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: cycleColor.withValues(alpha: 0.85),
+                          color: cycleBar,
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     )
                   : const SizedBox.shrink())
               : FractionallySizedBox(
-                  heightFactor: fill.clamp(0.15, 1.0),
+                  heightFactor: fill.clamp(0.22, 1.0),
                   widthFactor: 1,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: fillColor.withValues(
-                        alpha: isCycleDay ? 0.85 : 1,
-                      ),
+                      color: isCycleDay ? cycleBar : fillColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),

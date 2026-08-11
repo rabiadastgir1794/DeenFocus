@@ -179,6 +179,46 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: Spacing.md.h),
+            Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(color: borderColor),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: Spacing.md.w,
+                vertical: Spacing.sm.h + 2.h,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.homePrayerAlarmEnableLabel,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          l10n.homePrayerAlarmEnableSubtitle(prayerLabel),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: settings.alarmEnabled,
+                    onChanged: (value) =>
+                        vm.setPrayerAlarmEnabled(prayer, value),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: Spacing.lg.h),
             AppButton(
               label: l10n.save,

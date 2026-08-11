@@ -9,6 +9,7 @@ import '../../support/viewmodel/support_view_model.dart';
 
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/prayer_alarm_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/theme_service.dart';
 import '../../../core/superwall/premium_gate.dart';
@@ -28,13 +29,13 @@ import 'widgets/home_focus_score_section.dart';
 import 'widgets/home_info_screens.dart';
 import 'widgets/home_islamic_date_header.dart';
 import 'widgets/home_nearby_mosques_screen.dart';
+import 'widgets/home_prayer_completion_popup.dart';
 import 'widgets/home_prayer_reminder_popup.dart';
 import 'widgets/home_insights_screen.dart';
 import 'widgets/home_prayer_streak_section.dart';
 import 'widgets/home_prayer_times_section.dart';
 import 'widgets/home_qibla_screen.dart';
 import 'widgets/home_verse_marquee.dart';
-import 'widgets/home_mark_prayer_sheet.dart';
 
 class HomeTabScreen extends StatelessWidget {
   const HomeTabScreen({super.key, required this.onOpenFocusTab});
@@ -80,6 +81,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         unawaited(_checkLocationChange());
+        unawaited(_consumePendingPrayerAlarmAction());
         unawaited(_checkAndShowPrayerReminder());
       }
     });
@@ -147,10 +149,26 @@ class _HomeTabViewState extends State<_HomeTabView>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       // Focus refresh is handled once by [_AppLifecycleFocusRefresher] in main.dart.
-      context.read<HomeTabViewModel>().onAppResumed();
-      unawaited(_checkLocationChange());
-      unawaited(_checkAndShowPrayerReminder());
+      unawaited(_onHomeResumed());
     }
+  }
+
+  Future<void> _onHomeResumed() async {
+    // Load streak/settings first so "I've Prayed" marks against fresh state.
+    await context.read<HomeTabViewModel>().onAppResumed();
+    if (!mounted) return;
+    await _consumePendingPrayerAlarmAction();
+    if (!mounted) return;
+    unawaited(_checkLocationChange());
+    unawaited(_checkAndShowPrayerReminder());
+  }
+
+  /// Handles "I've Prayed" from native Prayer Alarm (AlarmKit / FSI activity).
+  Future<void> _consumePendingPrayerAlarmAction() async {
+    final prayer =
+        await PrayerAlarmService.instance.consumePendingPrayedAction();
+    if (!mounted || prayer == null) return;
+    await _confirmReminderPrayerOnTime(prayer);
   }
 
   Future<void> _checkLocationChange() async {
@@ -315,17 +333,38 @@ class _HomeTabViewState extends State<_HomeTabView>
       );
 
       if (!mounted) return;
-      await PrayerReminderPopup.show(
+      final confirmed = await PrayerReminderPopup.show(
         context: context,
         prayer: target,
-        onMarkPrayer: () {
-          if (!context.mounted) return;
-          openPrayerAction(context, target);
-        },
       );
+      if (!mounted || confirmed != true) return;
+
+      // Yes, Alhamdulillah → mark on-time immediately (no second status sheet).
+      await _confirmReminderPrayerOnTime(target);
     } finally {
       _prayerReminderCheckInFlight = false;
     }
+  }
+
+  /// Marks the reminder target on-time and shows the existing streak popup
+  /// when [PrayerMarkResult.celebrated] is true. Does not open the status sheet.
+  Future<void> _confirmReminderPrayerOnTime(TrackablePrayer prayer) async {
+    if (!mounted) return;
+    final vm = context.read<HomeTabViewModel>();
+    final result = await vm.markPrayerStatus(
+      DateTime.now(),
+      prayer,
+      PrayerMarkStatus.onTime,
+    );
+    if (!mounted || result == null || !result.celebrated) return;
+
+    final remaining =
+        vm.prayerTimes?.nextPrayerTime?.difference(DateTime.now());
+    await showPrayerCompletionPopup(
+      context,
+      result: result,
+      nextPrayerIn: remaining,
+    );
   }
 
   @override
@@ -432,6 +471,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               weekPrayerCounts: vm.weekPrayerCounts,
               weekCycleModeDays: weekCycleModeDays,
               backgroundColor: softCardColor,
+              isCycleThemeActive: vm.cycleModeEnabled,
               canRestoreStreak: vm.canRestoreStreak,
               onTap: () => unawaited(_openInsights(context, vm)),
               onInsightsTap: () => unawaited(_openInsights(context, vm)),

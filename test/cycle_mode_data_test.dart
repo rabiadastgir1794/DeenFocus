@@ -437,6 +437,7 @@ void main() {
 
     test('Draft after history: Saturday sealed historically is not pink', () {
       // Accidental enable on 1 Aug, then disable + draft for 12 Aug.
+      // Same-day disable seals nothing; leftover single-day seals are purged.
       final after = CycleModeData(
         isEnabled: true,
         startDate: DateTime(2026, 8, 1),
@@ -446,20 +447,66 @@ void main() {
             cycleLength: 6,
           );
       expect(after.isEnabled, isFalse);
-      expect(after.containsDate(DateTime(2026, 8, 1)), isTrue); // history
+      expect(after.containsDate(DateTime(2026, 8, 1)), isFalse);
       expect(after.containsDate(DateTime(2026, 8, 12)), isFalse); // draft
-      // Home week must not paint Saturday pink while toggle is OFF.
       expect(
         policy(after).isHighlightable(DateTime(2026, 8, 1), now: now),
         isFalse,
       );
 
-      // Legacy Edit-bug cleanup removes that mistaken same-day seal.
-      final purged = after.purgeLegacyEditBugHistory(now: now);
+      // Legacy same-day seal residue (if any) is still purged on load.
+      final polluted = after.copyWith(
+        history: [
+          CycleModeInterval(
+            startDate: DateTime(2026, 8, 1),
+            endDate: DateTime(2026, 8, 1),
+            pauseStreaks: true,
+            excludeFromStatistics: true,
+          ),
+        ],
+      );
+      final purged = polluted.purgeLegacyEditBugHistory(now: now);
       expect(purged.history, isEmpty);
       expect(purged.containsDate(DateTime(2026, 8, 1)), isFalse);
+    });
+
+    test('same-day disableOn seals no history', () {
+      final stopped = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 11),
+        cycleLength: 6,
+        pauseStreaks: true,
+        excludeFromStatistics: true,
+      ).disableOn(DateTime(2026, 8, 11, 15));
+      expect(stopped.isEnabled, isFalse);
+      expect(stopped.history, isEmpty);
       expect(
-        policy(purged).isHighlightable(DateTime(2026, 8, 1), now: now),
+        CycleModePolicy(stopped).shouldExcludeFromStatistics(
+          DateTime(2026, 8, 11),
+        ),
+        isFalse,
+      );
+    });
+
+    test('purge drops same-day toggle artifact equal to today', () {
+      final today = DateTime(2026, 8, 11);
+      final polluted = CycleModeData(
+        isEnabled: false,
+        startDate: today,
+        cycleLength: 6,
+        history: [
+          CycleModeInterval(
+            startDate: today,
+            endDate: today,
+            pauseStreaks: true,
+            excludeFromStatistics: true,
+          ),
+        ],
+      );
+      final purged = polluted.purgeLegacyEditBugHistory(now: today);
+      expect(purged.history, isEmpty);
+      expect(
+        CycleModePolicy(purged).shouldExcludeFromStatistics(today),
         isFalse,
       );
     });

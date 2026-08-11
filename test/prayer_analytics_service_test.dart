@@ -210,6 +210,138 @@ void main() {
       });
       expect(restored[yKey]!.containsKey(TrackablePrayer.dhuhr), isFalse);
     });
+
+    test('fresh install / empty past — no Restore for healthy tip', () {
+      // Before default Asr hour so tip is Dhuhr (streak 2), not Asr unmarked.
+      final now = DateTime(2026, 8, 11, 14, 30);
+      final key = PrayerAnalyticsService.dayKey(now);
+      final history = {
+        key: {
+          TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+          TrackablePrayer.dhuhr: PrayerMarkStatus.onTime,
+        },
+      };
+      final snap = PrayerAnalyticsService.calculate(
+        now: now,
+        statusHistory: history,
+        isCycleDay: neverCycle,
+      );
+      expect(snap.prayerStreak, 2);
+      expect(snap.canRestoreStreak, isFalse);
+      expect(
+        RestoreCalculator.findTarget(
+          now: now,
+          statusHistory: history,
+          isCycleDay: neverCycle,
+        ),
+        isNull,
+      );
+    });
+
+    test('valid unbroken streak — no Restore', () {
+      final now = DateTime(2026, 8, 11, 21, 0);
+      final today = DateTime(2026, 8, 11);
+      final yesterday = DateTime(2026, 8, 10);
+      final history = {
+        PrayerAnalyticsService.dayKey(yesterday): allFive(),
+        PrayerAnalyticsService.dayKey(today): allFive(),
+      };
+      expect(
+        PrayerAnalyticsService.calculate(
+          now: now,
+          statusHistory: history,
+          isCycleDay: neverCycle,
+        ).canRestoreStreak,
+        isFalse,
+      );
+    });
+
+    test('broken within 24h with prior chain — Restore appears', () {
+      final now = DateTime(2026, 8, 11, 21, 30);
+      final today = DateTime(2026, 8, 11);
+      final history = {
+        PrayerAnalyticsService.dayKey(today): {
+          TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+          TrackablePrayer.dhuhr: PrayerMarkStatus.onTime,
+          TrackablePrayer.asr: PrayerMarkStatus.onTime,
+          TrackablePrayer.maghrib: PrayerMarkStatus.onTime,
+          TrackablePrayer.isha: PrayerMarkStatus.missed,
+        },
+      };
+      final snap = PrayerAnalyticsService.calculate(
+        now: now,
+        statusHistory: history,
+        isCycleDay: neverCycle,
+      );
+      expect(snap.prayerStreak, 0);
+      expect(snap.canRestoreStreak, isTrue);
+      expect(snap.restoreTarget!.prayer, TrackablePrayer.isha);
+    });
+
+    test('does not create a streak from scratch (miss with no older marks)', () {
+      final now = DateTime(2026, 8, 11, 10, 0);
+      final history = {
+        PrayerAnalyticsService.dayKey(now): {
+          TrackablePrayer.fajr: PrayerMarkStatus.missed,
+        },
+      };
+      expect(
+        RestoreCalculator.findTarget(
+          now: now,
+          statusHistory: history,
+          isCycleDay: neverCycle,
+        ),
+        isNull,
+      );
+    });
+
+    test('Cycle Mode pause skips break on paused day for Restore', () {
+      // Morning: yesterday Isha (20:00) still inside 24h window.
+      final now = DateTime(2026, 8, 11, 10, 0);
+      final today = DateTime(2026, 8, 11);
+      final yesterday = DateTime(2026, 8, 10);
+      final history = {
+        PrayerAnalyticsService.dayKey(yesterday): {
+          TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+          TrackablePrayer.dhuhr: PrayerMarkStatus.onTime,
+          TrackablePrayer.asr: PrayerMarkStatus.onTime,
+          TrackablePrayer.maghrib: PrayerMarkStatus.onTime,
+          TrackablePrayer.isha: PrayerMarkStatus.missed,
+        },
+      };
+      bool pausedToday(DateTime d) =>
+          PrayerAnalyticsService.dayKey(d) ==
+          PrayerAnalyticsService.dayKey(today);
+
+      final during = PrayerAnalyticsService.calculate(
+        now: now,
+        statusHistory: history,
+        isPausedStreakDay: pausedToday,
+        isExcludedStatsDay: pausedToday,
+      );
+      expect(during.canRestoreStreak, isTrue);
+      expect(during.restoreTarget!.prayer, TrackablePrayer.isha);
+      expect(
+        during.restoreTarget!.dateKey,
+        PrayerAnalyticsService.dayKey(yesterday),
+      );
+
+      // After OFF with healthy tip — no Restore.
+      final healthy = {
+        PrayerAnalyticsService.dayKey(today): {
+          TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+          TrackablePrayer.dhuhr: PrayerMarkStatus.onTime,
+        },
+      };
+      expect(
+        PrayerAnalyticsService.calculate(
+          now: DateTime(2026, 8, 11, 14, 30),
+          statusHistory: healthy,
+          isCycleDay: neverCycle,
+        ).canRestoreStreak,
+        isFalse,
+      );
+    });
   });
 
   group('sync snapshot', () {

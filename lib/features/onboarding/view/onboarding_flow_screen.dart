@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deenly/features/onboarding/view/onboarding_focus_mode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +17,16 @@ import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../focus/services/focus_app_selection_flow.dart';
+import '../../focus/viewmodel/focus_controller.dart';
 import '../viewmodel/onboarding_view_model.dart';
 import 'onboarding_name_page.dart';
 import 'onboarding_location_page.dart';
 import 'onboarding_notifications_page.dart';
 import 'onboarding_screen_time_page.dart';
 import 'onboarding_sect_page.dart';
+import 'onboarding_app_lock_demo_page.dart';
+import 'onboarding_select_apps_page.dart';
 import 'onboarding_subscription_page.dart';
 import 'onboarding_welcome_page.dart';
 import 'widgets/onboarding_theme_toggle.dart';
@@ -82,6 +88,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
   bool _scheduledPostOnboardingNavigation = false;
   bool _scheduledLocationAutoAdvance = false;
   bool _isAdvancingPage = false;
+  bool _selectAppsAutoAdvancing = false;
+  bool _appLockDemoImmersive = false;
+  Timer? _selectAppsAutoAdvanceTimer;
   OnboardingViewModel? _listeningVm;
 
   @override
@@ -102,9 +111,33 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
 
   @override
   void dispose() {
+    _selectAppsAutoAdvanceTimer?.cancel();
     _listeningVm?.removeListener(_onOnboardingViewModelChanged);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _cancelSelectAppsAutoAdvance() {
+    _selectAppsAutoAdvanceTimer?.cancel();
+    _selectAppsAutoAdvanceTimer = null;
+    if (_selectAppsAutoAdvancing && mounted) {
+      setState(() => _selectAppsAutoAdvancing = false);
+    } else {
+      _selectAppsAutoAdvancing = false;
+    }
+  }
+
+  void _scheduleSelectAppsAutoAdvance(OnboardingViewModel vm) {
+    _selectAppsAutoAdvanceTimer?.cancel();
+    setState(() => _selectAppsAutoAdvancing = true);
+    _selectAppsAutoAdvanceTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      setState(() => _selectAppsAutoAdvancing = false);
+      final current = context.read<OnboardingViewModel>();
+      if (current.isSelectAppsStep) {
+        unawaited(_goToNextPage(current));
+      }
+    });
   }
 
   void _onOnboardingViewModelChanged() {
@@ -331,12 +364,33 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     if (vm.currentIndex >= vm.totalSteps - 1) return;
     if (!widget.pageController.hasClients) return;
 
+    _cancelSelectAppsAutoAdvance();
     _isAdvancingPage = true;
     FocusManager.instance.primaryFocus?.unfocus();
     final nextIndex = vm.currentIndex + 1;
     try {
       await widget.pageController.animateToPage(
         nextIndex,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } finally {
+      _isAdvancingPage = false;
+    }
+  }
+
+  Future<void> _goToPreviousPage(OnboardingViewModel vm) async {
+    if (_isAdvancingPage) return;
+    if (vm.currentIndex <= 0) return;
+    if (!widget.pageController.hasClients) return;
+
+    _cancelSelectAppsAutoAdvance();
+    _isAdvancingPage = true;
+    FocusManager.instance.primaryFocus?.unfocus();
+    final prevIndex = vm.currentIndex - 1;
+    try {
+      await widget.pageController.animateToPage(
+        prevIndex,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -354,11 +408,41 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
   }
 
   Future<void> _onSkipPressed(OnboardingViewModel vm) async {
-    if (vm.isLocationStep || vm.isNotificationStep || vm.isScreenTimeStep) {
+    if (vm.isLocationStep ||
+        vm.isNotificationStep ||
+        vm.isScreenTimeStep ||
+        vm.isSelectAppsStep ||
+        vm.isAppLockDemoStep) {
       await _goToNextPage(vm);
       return;
     }
     await _skipToLocationStep(vm);
+  }
+
+  Future<void> _onSelectAppsTap(
+    BuildContext context,
+    OnboardingViewModel vm,
+  ) async {
+    if (vm.selectAppsLoading || _selectAppsAutoAdvancing) return;
+    vm.setSelectAppsLoading(true);
+    try {
+      // Skip premium during onboarding — App Lock Demo + subscription follow.
+      await FocusAppSelectionFlow.open(
+        context: context,
+        requirePremium: false,
+        requireAccessibilityDisclosure: true,
+      );
+    } finally {
+      if (context.mounted) {
+        vm.setSelectAppsLoading(false);
+      }
+    }
+    if (!context.mounted) return;
+    final focus = context.read<FocusController>();
+    // After a real selection, show the Focus-style count chip then continue.
+    if (focus.selectedAppCount > 0) {
+      _scheduleSelectAppsAutoAdvance(vm);
+    }
   }
 
   Widget _buildTopBar(
@@ -412,7 +496,9 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                     isWelcomeStep ||
                         vm.isLocationStep ||
                         vm.isNotificationStep ||
-                        vm.isScreenTimeStep
+                        vm.isScreenTimeStep ||
+                        vm.isSelectAppsStep ||
+                        vm.isAppLockDemoStep
                     ? colorScheme.onSurfaceVariant
                     : colorScheme.primary,
                 padding: EdgeInsets.symmetric(horizontal: Spacing.sm.w),
@@ -447,84 +533,165 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     final isScreenTimeStep =
         vm.currentIndex == OnboardingViewModel.screenTimeStepIndex;
     final isBusyScreenTimeStep = isScreenTimeStep && vm.screenTimeRequesting;
+    final isBusySelectAppsStep = vm.isSelectAppsStep &&
+        (vm.selectAppsLoading || _selectAppsAutoAdvancing);
     final isWelcomeStep = vm.currentIndex == 0;
+    final demoImmersive = vm.isAppLockDemoStep && _appLockDemoImmersive;
+    final l10n = AppLocalizations.of(context)!;
 
+    // Keep PageView in one stable slot. Remounting it when immersive toggles
+    // resets the controller to page 0 (welcome) — that was the Start Demo bug.
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: demoImmersive ? Colors.black : null,
       body: AbsorbPointer(
-        absorbing: isBusyScreenTimeStep,
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              if (!isWelcomeStep)
-                AppStepProgressLine(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
-                ),
-              _buildTopBar(context, vm, localeService),
-              Expanded(
-                child: PageView(
-                  controller: widget.pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (index) {
-                    if (vm.currentIndex ==
-                            OnboardingViewModel.locationStepIndex &&
-                        index != OnboardingViewModel.locationStepIndex) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    }
-                    vm.setStep(index);
-                  },
-                  children: [
-                    const OnboardingWelcomePage(),
-                    const OnboardingFocusModePage(),
-                    OnboardingSectPage(
-                      selectedSect: vm.selectedSect,
-                      onSectSelected: vm.setSelectedSect,
+        absorbing: isBusyScreenTimeStep || isBusySelectAppsStep,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            SafeArea(
+              top: !demoImmersive,
+              bottom: false,
+              child: Column(
+                children: [
+                  if (!demoImmersive && !isWelcomeStep)
+                    AppStepProgressLine(
+                      totalSteps: vm.totalSteps,
+                      currentIndex: vm.currentIndex,
                     ),
-                    OnboardingNamePage(
-                      controller: widget.nameController,
-                      onChanged: vm.setUserName,
+                  if (!demoImmersive)
+                    _buildTopBar(context, vm, localeService),
+                  Expanded(
+                    child: PageView(
+                      key: const ValueKey('onboarding_page_view'),
+                      controller: widget.pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: (index) {
+                        if (vm.currentIndex ==
+                                OnboardingViewModel.locationStepIndex &&
+                            index != OnboardingViewModel.locationStepIndex) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        }
+                        if (index !=
+                                OnboardingViewModel.appLockDemoStepIndex &&
+                            _appLockDemoImmersive) {
+                          setState(() => _appLockDemoImmersive = false);
+                        }
+                        vm.setStep(index);
+                      },
+                      children: [
+                        const OnboardingWelcomePage(),
+                        const OnboardingFocusModePage(),
+                        OnboardingSectPage(
+                          selectedSect: vm.selectedSect,
+                          onSectSelected: vm.setSelectedSect,
+                        ),
+                        OnboardingNamePage(
+                          controller: widget.nameController,
+                          onChanged: vm.setUserName,
+                        ),
+                        OnboardingLocationPage(
+                          initialSelection: vm.selectedLocation,
+                          onLocationSelected: vm.setSelectedLocation,
+                          onPermissionChanged: vm.setLocationGranted,
+                          onPermissionLocationResolved:
+                              vm.applyPermissionLocation,
+                        ),
+                        OnboardingNotificationsPage(
+                          onEnableTap: () =>
+                              _onNotificationEnableTap(context, vm),
+                          isLoading: vm.notificationRequesting,
+                          showEnableButton: !vm.notificationGranted,
+                        ),
+                        OnboardingScreenTimePage(
+                          onAllowTap: () =>
+                              _onScreenTimeAllowTap(context, vm),
+                          isLoading: vm.screenTimeRequesting,
+                        ),
+                        OnboardingSelectAppsPage(
+                          onSelectAppsTap: () =>
+                              _onSelectAppsTap(context, vm),
+                          onSkipForNowTap: () => _goToNextPage(vm),
+                          isLoading: vm.selectAppsLoading,
+                          isAutoAdvancing: _selectAppsAutoAdvancing,
+                        ),
+                        OnboardingAppLockDemoPage(
+                          isActive: vm.isAppLockDemoStep,
+                          onComplete: () => _goToNextPage(vm),
+                          onExitToPrevious: () => _goToPreviousPage(vm),
+                          onImmersiveChanged: (immersive) {
+                            if (!mounted) return;
+                            if (_appLockDemoImmersive == immersive) return;
+                            // Defer so we never setState during PageView build.
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (!mounted) return;
+                              if (_appLockDemoImmersive == immersive) return;
+                              setState(
+                                () => _appLockDemoImmersive = immersive,
+                              );
+                            });
+                          },
+                        ),
+                        OnboardingSubscriptionPage(
+                          selectedPlan: vm.selectedPlan,
+                          onPlanSelected: vm.setSelectedPlan,
+                        ),
+                      ],
                     ),
-                    OnboardingLocationPage(
-                      initialSelection: vm.selectedLocation,
-                      onLocationSelected: vm.setSelectedLocation,
-                      onPermissionChanged: vm.setLocationGranted,
-                      onPermissionLocationResolved: vm.applyPermissionLocation,
+                  ),
+                ],
+              ),
+            ),
+            if (demoImmersive)
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: TextButton(
+                    onPressed: () => _onSkipPressed(vm),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white.withValues(alpha: 0.92),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Spacing.md.w,
+                        vertical: 8.h,
+                      ),
                     ),
-                    OnboardingNotificationsPage(
-                      onEnableTap: () => _onNotificationEnableTap(context, vm),
-                      isLoading: vm.notificationRequesting,
-                      showEnableButton: !vm.notificationGranted,
+                    child: Text(
+                      l10n.skip,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        shadows: const [
+                          Shadow(blurRadius: 8, color: Colors.black54),
+                        ],
+                      ),
                     ),
-                    OnboardingScreenTimePage(
-                      onAllowTap: () => _onScreenTimeAllowTap(context, vm),
-                      isLoading: vm.screenTimeRequesting,
-                    ),
-                    OnboardingSubscriptionPage(
-                      selectedPlan: vm.selectedPlan,
-                      onPlanSelected: vm.setSelectedPlan,
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
-      bottomNavigationBar: SafeArea(
+      bottomNavigationBar: demoImmersive
+          ? null
+          : SafeArea(
         top: false,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             Spacing.lg.w,
-            16,
+            vm.isAppLockDemoStep ? 10 : 16,
             Spacing.lg.w,
             Spacing.md.h,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (vm.currentIndex == vm.totalSteps - 1) ...[
+              if (vm.isAppLockDemoStep) ...[
+                // Intro / completion: shared onboarding stepper only.
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
+                ),
+              ] else if (vm.currentIndex == vm.totalSteps - 1) ...[
                 SizedBox(
                   width: double.infinity,
                   height: 56.h,
@@ -595,19 +762,26 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                     ),
                   ),
                 ),
+                SizedBox(height: Spacing.md.h),
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
+                ),
               ] else ...[
                 AppButton(
                   label: AppLocalizations.of(context)!.continueButton,
-                  enabled: !vm.isContinueDisabled && !isBusyScreenTimeStep,
+                  enabled: !vm.isContinueDisabled &&
+                      !isBusyScreenTimeStep &&
+                      !isBusySelectAppsStep,
                   showTrailingIcon: true,
                   onPressed: () => _goToNextPage(vm),
                 ),
+                SizedBox(height: Spacing.md.h),
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
+                ),
               ],
-              SizedBox(height: Spacing.md.h),
-              AppProgressIndicator(
-                totalSteps: vm.totalSteps,
-                currentIndex: vm.currentIndex,
-              ),
             ],
           ),
         ),

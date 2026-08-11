@@ -16,6 +16,7 @@ import '../../../core/widgets/focus_app_icon.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
+import 'focus_apps_picker_sheet.dart';
 
 String _salahBlockingDescription(AppLocalizations l10n) {
   return l10n.focusPrayerBlockingDescriptionIos;
@@ -778,7 +779,7 @@ class _SelectedAppsSection extends StatelessWidget {
           ),
           if (showGlobalSelector) ...[
             const SizedBox(height: 12),
-            _AppsGrid(onAppToggle: onToggleApp),
+            FocusAppsGrid(onAppToggle: onToggleApp),
           ],
         ],
       ),
@@ -1370,147 +1371,6 @@ class _NightTimePill extends StatelessWidget {
   }
 }
 
-class _AppsGrid extends StatelessWidget {
-  const _AppsGrid({required this.onAppToggle});
-
-  final Future<void> Function(FocusInstalledApp app) onAppToggle;
-  static const int _maxRows = 5;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    return Selector<FocusController, _AppsGridData>(
-      selector: (_, vm) => _AppsGridData(
-        isLoadingApps: vm.isLoadingApps,
-        apps: vm.installedApps,
-      ),
-      builder: (context, data, _) {
-        if (data.isLoadingApps) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                const Center(child: CircularProgressIndicator()),
-                const SizedBox(height: 12),
-                Text(
-                  l10n.focusLoadingInstalledApps,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (data.apps.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              l10n.focusNoInstalledAppsToShow,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          );
-        }
-
-        final maxHeight = MediaQuery.sizeOf(context).height * 0.58;
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: SizedBox(
-            width: double.infinity,
-            height: maxHeight.clamp(280.0, 460.0),
-            child: GridView.builder(
-              scrollDirection: Axis.horizontal,
-              clipBehavior: Clip.hardEdge,
-              itemCount: data.apps.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: _maxRows,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                mainAxisExtent: 88,
-              ),
-              itemBuilder: (context, index) {
-                final app = data.apps[index];
-                return RepaintBoundary(
-                  key: ValueKey<String>('focus-app-${app.packageName}'),
-                  child: _GridAppTile(
-                    app: app,
-                    colorScheme: colorScheme,
-                    onTap: onAppToggle,
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _GridAppTile extends StatelessWidget {
-  const _GridAppTile({
-    required this.app,
-    required this.colorScheme,
-    required this.onTap,
-  });
-
-  final FocusInstalledApp app;
-  final ColorScheme colorScheme;
-  final Future<void> Function(FocusInstalledApp app) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final selected = context.select<FocusController, bool>(
-      (vm) => vm.settings.selectedApps.containsKey(app.packageName),
-    );
-    final textStyle = Theme.of(
-      context,
-    ).textTheme.bodySmall?.copyWith(fontSize: 10, fontWeight: FontWeight.w500);
-    final selectedColor = colorScheme.primary.withValues(alpha: 0.15);
-    final unselectedColor = colorScheme.surfaceContainerHighest.withValues(
-      alpha: 0.5,
-    );
-    final selectedBorderColor = colorScheme.primary.withValues(alpha: 0.3);
-    return InkWell(
-      onTap: () => unawaited(onTap(app)),
-      borderRadius: BorderRadius.circular(14),
-      child: Ink(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: selected ? selectedColor : unselectedColor,
-          border: Border.all(
-            color: selected ? selectedBorderColor : Colors.transparent,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FocusAppIcon(
-              label: app.appName,
-              iconBytes: app.iconBytes,
-              size: 28,
-              radius: 10,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              app.appName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: textStyle,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _TopBannerData {
   const _TopBannerData({required this.title, required this.detail});
 
@@ -1689,24 +1549,6 @@ class _ModesSectionData {
     nightEndHour,
     nightEndMinute,
   );
-}
-
-class _AppsGridData {
-  const _AppsGridData({required this.isLoadingApps, required this.apps});
-
-  final bool isLoadingApps;
-  final List<FocusInstalledApp> apps;
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is _AppsGridData &&
-        other.isLoadingApps == isLoadingApps &&
-        listEquals(other.apps, apps);
-  }
-
-  @override
-  int get hashCode => Object.hash(isLoadingApps, Object.hashAll(apps));
 }
 
 class _SelectedAppChipData {

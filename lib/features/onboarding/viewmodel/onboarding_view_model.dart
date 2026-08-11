@@ -13,7 +13,7 @@ import '../model/subscription_plan.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel() {
-    _totalSteps = 8;
+    _totalSteps = 10;
     _selectedPlan = SubscriptionPlan.yearly;
   }
 
@@ -21,6 +21,9 @@ class OnboardingViewModel extends ChangeNotifier {
   static const int locationStepIndex = 4;
   static const int notificationStepIndex = 5;
   static const int screenTimeStepIndex = 6;
+  static const int selectAppsStepIndex = 7;
+  static const int appLockDemoStepIndex = 8;
+  static const int subscriptionStepIndex = 9;
   static const int sectStepIndex = 2;
   static const int nameStepIndex = 3;
 
@@ -58,10 +61,23 @@ class OnboardingViewModel extends ChangeNotifier {
       _currentIndex < 2 ||
       _currentIndex == locationStepIndex ||
       _currentIndex == notificationStepIndex ||
-      _currentIndex == screenTimeStepIndex;
+      _currentIndex == screenTimeStepIndex ||
+      _currentIndex == selectAppsStepIndex ||
+      _currentIndex == appLockDemoStepIndex;
   bool get isLocationStep => _currentIndex == locationStepIndex;
   bool get isNotificationStep => _currentIndex == notificationStepIndex;
   bool get isScreenTimeStep => _currentIndex == screenTimeStepIndex;
+  bool get isSelectAppsStep => _currentIndex == selectAppsStepIndex;
+  bool get isAppLockDemoStep => _currentIndex == appLockDemoStepIndex;
+
+  bool _selectAppsLoading = false;
+  bool get selectAppsLoading => _selectAppsLoading;
+
+  void setSelectAppsLoading(bool value) {
+    if (_selectAppsLoading == value) return;
+    _selectAppsLoading = value;
+    notifyListeners();
+  }
 
   /// Location was resolved via permission and the flow should auto-advance.
   bool _pendingLocationAutoAdvance = false;

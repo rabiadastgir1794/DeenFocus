@@ -69,6 +69,7 @@ abstract class PrayerAnalyticsService {
 
   static String dayKey(DateTime date) => dayKeyFormat.format(date);
 
+  /// On Time and Qadha both count — no separate streak rules between them.
   static bool countsForPrayerStreak(PrayerMarkStatus status) =>
       status == PrayerMarkStatus.onTime || status == PrayerMarkStatus.qada;
 
@@ -190,7 +191,20 @@ abstract class PrayerAnalyticsService {
   }
 }
 
-/// Consecutive completed prayers (onTime or qada).
+/// Consecutive individual prayer slots (not days).
+///
+/// Rules:
+/// * [PrayerMarkStatus.onTime] and [PrayerMarkStatus.qada] both count.
+/// * Missed or started-but-unmarked tip → streak 0.
+/// * Upcoming (not started, unmarked) slots are ignored — they never break
+///   the streak.
+/// * Paused Cycle Mode days ([isCycleDay]) bridge the tip chain:
+///   - Missed / unmarked slots on paused days never tip-break.
+///   - When an older non-paused tip exists, pause-day marks are skipped so they
+///     neither inflate nor break a pre-cycle streak.
+///   - When the tip lives only on paused day(s), counting marks there are kept
+///     so Cycle Mode never resets the streak — and after Cycle Mode ends those
+///     marks still continue the chain behind new On Time/Qadha.
 abstract class PrayerStreakCalculator {
   static int calculate({
     required DateTime now,
@@ -205,7 +219,22 @@ abstract class PrayerStreakCalculator {
 
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
-      if (isCycleDay(date)) continue;
+      final paused = isCycleDay(date);
+
+      if (paused) {
+        // Prefer the older non-paused tip so pause-day marks do not inflate.
+        if (_nonPausedTipExists(
+          fromDayOffset: dayOffset + 1,
+          today: today,
+          now: now,
+          statusHistory: statusHistory,
+          isCycleDay: isCycleDay,
+          prayerStartTime: prayerStartTime,
+        )) {
+          continue;
+        }
+        // No older non-paused tip — counting marks preserve / continue the tip.
+      }
 
       final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
           const <TrackablePrayer, PrayerMarkStatus>{};
@@ -222,7 +251,20 @@ abstract class PrayerStreakCalculator {
             slotIndex: i,
           );
           if (!started && status == PrayerMarkStatus.none) break;
-          slots.add(status);
+          if (paused) {
+            if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
+              slots.add(status);
+            }
+          } else {
+            slots.add(status);
+          }
+        }
+      } else if (paused) {
+        for (final prayer in order) {
+          final status = statuses[prayer] ?? PrayerMarkStatus.none;
+          if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
+            slots.add(status);
+          }
         }
       } else {
         for (final prayer in order) {
@@ -250,6 +292,53 @@ abstract class PrayerStreakCalculator {
     return streak;
   }
 
+  /// True when walking older days (skipping paused) would find a counting tip
+  /// before a tip-breaking slot — i.e. the streak can bridge past [fromDayOffset].
+  static bool _nonPausedTipExists({
+    required int fromDayOffset,
+    required DateTime today,
+    required DateTime now,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+    required DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
+  }) {
+    final order = TrackablePrayer.values;
+    for (var dayOffset = fromDayOffset; dayOffset < 400; dayOffset++) {
+      final date = today.subtract(Duration(days: dayOffset));
+      if (isCycleDay(date)) continue;
+
+      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+          const <TrackablePrayer, PrayerMarkStatus>{};
+      final slots = <PrayerMarkStatus>[];
+      if (dayOffset == 0) {
+        for (var i = 0; i < order.length; i++) {
+          final prayer = order[i];
+          final status = statuses[prayer] ?? PrayerMarkStatus.none;
+          final started = _hasStarted(
+            now: now,
+            prayer: prayer,
+            prayerStartTime: prayerStartTime,
+            slotIndex: i,
+          );
+          if (!started && status == PrayerMarkStatus.none) break;
+          slots.add(status);
+        }
+      } else {
+        for (final prayer in order) {
+          slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
+        }
+      }
+
+      for (var i = slots.length - 1; i >= 0; i--) {
+        if (PrayerAnalyticsService.countsForPrayerStreak(slots[i])) {
+          return true;
+        }
+        return false;
+      }
+    }
+    return false;
+  }
+
   static bool _hasStarted({
     required DateTime now,
     required TrackablePrayer prayer,
@@ -263,7 +352,10 @@ abstract class PrayerStreakCalculator {
   }
 }
 
-/// Consecutive days with all five prayers completed (onTime or qada).
+/// Consecutive calendar days with all five prayers completed (onTime or qada).
+///
+/// Today's incomplete day is skipped (does not break a prior day streak).
+/// Separate from [PrayerStreakCalculator]. Paused Cycle Mode days are bridged.
 abstract class DayStreakCalculator {
   static int calculate({
     required DateTime now,
@@ -444,8 +536,12 @@ abstract class PrayerRateCalculator {
 
 /// Snapchat-style restore: fix the most recent break within 24 hours.
 abstract class RestoreCalculator {
-  /// Finds the most recent streak-breaking slot (missed / unmarked) whose
-  /// scheduled start is within the last 24 hours.
+  /// Finds the most recent reconnectable streak break whose scheduled start is
+  /// within the last 24 hours.
+  ///
+  /// A slot is eligible only when it is started + non-counting **and** there is
+  /// at least one older counting mark (so Restore never invents a streak on a
+  /// fresh install / empty history).
   static RestoreTarget? findTarget({
     required DateTime now,
     required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
@@ -456,7 +552,7 @@ abstract class RestoreCalculator {
     final today = DateTime(now.year, now.month, now.day);
     final order = TrackablePrayer.values;
 
-    // Walk newest → oldest; first non-counting started slot in the window.
+    // Walk newest → oldest; first reconnectable non-counting started slot.
     for (var dayOffset = 0; dayOffset <= 1; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
       if (isCycleDay(date)) continue;
@@ -477,16 +573,59 @@ abstract class RestoreCalculator {
         if (slotTime.isBefore(windowStart)) continue; // older than 24h
 
         final status = statuses[prayer] ?? PrayerMarkStatus.none;
-        if (!PrayerAnalyticsService.countsForPrayerStreak(status)) {
-          return RestoreTarget(
-            date: date,
-            dateKey: PrayerAnalyticsService.dayKey(date),
-            prayer: prayer,
-          );
+        if (PrayerAnalyticsService.countsForPrayerStreak(status)) continue;
+        if (!_hasOlderCountingMark(
+          candidateDate: date,
+          candidateIndex: i,
+          statusHistory: statusHistory,
+          isCycleDay: isCycleDay,
+        )) {
+          continue;
         }
+        return RestoreTarget(
+          date: date,
+          dateKey: PrayerAnalyticsService.dayKey(date),
+          prayer: prayer,
+        );
       }
     }
     return null;
+  }
+
+  /// True when any older slot (same day earlier, or prior non-paused days) has
+  /// an On Time / Qadha mark — i.e. restoring would reconnect a real tip.
+  static bool _hasOlderCountingMark({
+    required DateTime candidateDate,
+    required int candidateIndex,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required bool Function(DateTime date) isCycleDay,
+  }) {
+    final order = TrackablePrayer.values;
+    final day = DateTime(
+      candidateDate.year,
+      candidateDate.month,
+      candidateDate.day,
+    );
+
+    final sameDay =
+        statusHistory[PrayerAnalyticsService.dayKey(day)] ??
+        const <TrackablePrayer, PrayerMarkStatus>{};
+    for (var i = candidateIndex - 1; i >= 0; i--) {
+      final status = sameDay[order[i]] ?? PrayerMarkStatus.none;
+      if (PrayerAnalyticsService.countsForPrayerStreak(status)) return true;
+    }
+
+    for (var dayOffset = 1; dayOffset < 400; dayOffset++) {
+      final date = day.subtract(Duration(days: dayOffset));
+      if (isCycleDay(date)) continue;
+      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
+          const <TrackablePrayer, PrayerMarkStatus>{};
+      for (final prayer in order) {
+        final status = statuses[prayer] ?? PrayerMarkStatus.none;
+        if (PrayerAnalyticsService.countsForPrayerStreak(status)) return true;
+      }
+    }
+    return false;
   }
 
   /// Returns a new status history with [target] marked onTime.

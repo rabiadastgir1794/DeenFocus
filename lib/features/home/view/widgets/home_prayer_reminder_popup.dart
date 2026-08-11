@@ -7,11 +7,13 @@ import '../../model/home_models.dart';
 
 /// Prayer Reminder Popup that shows when the app opens if the most recent
 /// prayer hasn't been marked. Encourages users to keep their streak alive.
+///
+/// Returns `true` when the user taps Yes, `false` for Later, and `null` if
+/// dismissed. Callers should mark the prayer on-time when the result is `true`.
 class PrayerReminderPopup {
   static Future<bool?> show({
     required BuildContext context,
     required TrackablePrayer prayer,
-    required VoidCallback onMarkPrayer,
   }) async {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
@@ -33,7 +35,6 @@ class PrayerReminderPopup {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon
               Container(
                 width: 80,
                 height: 80,
@@ -48,8 +49,6 @@ class PrayerReminderPopup {
                 ),
               ),
               SizedBox(height: Spacing.lg),
-              
-              // Title
               Text(
                 l10n.prayerReminderTitle(prayer.label(l10n)),
                 textAlign: TextAlign.center,
@@ -58,8 +57,6 @@ class PrayerReminderPopup {
                 ),
               ),
               SizedBox(height: Spacing.sm),
-              
-              // Subtitle
               Text(
                 l10n.prayerReminderSubtitle,
                 textAlign: TextAlign.center,
@@ -69,15 +66,10 @@ class PrayerReminderPopup {
                 ),
               ),
               SizedBox(height: Spacing.lg),
-              
-              // Primary Button
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop(true);
-                    onMarkPrayer();
-                  },
+                  onPressed: () => Navigator.of(ctx).pop(true),
                   style: FilledButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -88,8 +80,6 @@ class PrayerReminderPopup {
                 ),
               ),
               SizedBox(height: Spacing.sm),
-              
-              // Secondary Button
               SizedBox(
                 width: double.infinity,
                 child: TextButton(

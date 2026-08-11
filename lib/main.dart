@@ -17,6 +17,7 @@ import 'core/logger/trace_helpers.dart';
 import 'core/services/app_notification_service.dart';
 import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
+import 'core/services/prayer_alarm_service.dart';
 import 'core/services/theme_service.dart';
 import 'core/services/user_profile_service.dart';
 import 'core/services/widget_sync_service.dart';
@@ -81,6 +82,7 @@ Future<void> _initializeServices() async {
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
   unawaited(DailyRefreshService.instance.initialize());
   unawaited(AppNotificationService.instance.initialize());
+  unawaited(PrayerAlarmService.instance.initialize());
 }
 
 class DeenlyApp extends StatefulWidget {

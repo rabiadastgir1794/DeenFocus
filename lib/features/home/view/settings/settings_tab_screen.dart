@@ -23,7 +23,9 @@ import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_demo_video_settings_card.dart';
+import 'settings_app_demo_screen.dart';
 import 'settings_calculation_method_screen.dart';
+import 'settings_prayer_alarms_screen.dart';
 
 class SettingsTabScreen extends StatefulWidget {
   const SettingsTabScreen({super.key, this.isTabActive = false});
@@ -510,6 +512,17 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                     );
                   },
                 ),
+                _SettingsRow(
+                  icon: Icons.alarm_rounded,
+                  label: l10n.settingsPrayerAlarmsTitle,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SettingsPrayerAlarmsScreen(),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -537,6 +550,22 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   icon: Icons.email_outlined,
                   label: l10n.settingsContactUsTitle,
                   onTap: () => unawaited(_onContactUsTapped(context)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _SettingsGroup(
+              children: [
+                _SettingsRow(
+                  icon: Icons.play_circle_outline_rounded,
+                  label: l10n.settingsAppDemoLabel,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SettingsAppDemoScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
