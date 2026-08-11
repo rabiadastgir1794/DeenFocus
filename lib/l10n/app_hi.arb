@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "इसी से Deen Focus सलाह, नींद के समय और चाइल्ड मोड के दौरान ध्यान भटकाने वाले ऐप्स को रोकता है।",
   "screenTimeButton": "स्क्रीन टाइम एक्सेस की अनुमति दें",
   "screenTimePrivacyNote": "Deen Focus कभी आपका डेटा नहीं पढ़ता — यह केवल आपके चुने ऐप्स को रोकता है।",
+  "onboardingSelectAppsTitlePrefix": "चुनें",
+  "onboardingSelectAppsTitleAccent": "लॉक करने के ऐप्स",
+  "onboardingSelectAppsSubtitle": "नमाज़ के समय लॉक करने वाले ऐप्स चुनें।",
+  "onboardingSelectAppsButton": "ऐप्स चुनें",
+  "onboardingSelectAppsSkipForNow": "अभी छोड़ें",
+  "onboardingSelectAppsMockAllApps": "सभी ऐप्स और श्रेणियाँ",
+  "onboardingSelectAppsMockPhotos": "फ़ोटो",
+  "onboardingSelectAppsMockNotes": "नोट्स",
+  "onboardingSelectAppsMockMusic": "संगीत",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "पॉडकास्ट",
   "screenTimeStepOf": "चरण {current} / {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "अपनी नमाज़ दर्ज करके स्ट्रीक जारी रखें।",
   "prayerReminderYesButton": "हाँ, अल्हम्दुलिल्लाह",
   "prayerReminderLaterButton": "बाद में चिह्नित करूँगा",
+  "prayerNotificationSubtitleFajr": "“निस्संदेह, भोर की तिलावत सदैव साक्षी बनाई जाती है।” — क़ुरआन 17:78",
+  "prayerNotificationSubtitleDhuhr": "“सूर्य के ढलने पर नमाज़ क़ायम करो...” — क़ुरआन 17:78",
+  "prayerNotificationSubtitleAsr": "“नमाज़ों की पाबंदी करो, विशेषकर मध्य नमाज़ की।” — क़ुरआन 2:238",
+  "prayerNotificationSubtitleMaghrib": "“अतः जब शाम हो तो अल्लाह की तसबीह करो...” — क़ुरआन 30:17",
+  "prayerNotificationSubtitleIsha": "“नमाज़ क़ायम करो -  रात के अंधकार तक।” — क़ुरआन 17:78",
   "homeAiChatDescription": "प्रार्थना के समय, कुरान और इस्लामी मार्गदर्शन के बारे में कुछ भी पूछें।",
   "homeDay": "दिन",
   "homeDays": "दिन",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "बेहतर DeenFocus अनुभव",
   "supportUsImpactFeatures": "नई सुविधाएँ और अपग्रेड",
   "supportUsImpactQuran": "क़ुरान और इस्लामी शिक्षा",
-  "supportUsImpactServers": "सर्वर और ऐप विश्वसनीयता"
+  "supportUsImpactServers": "सर्वर और ऐप विश्वसनीयता",
+  "appLockDemoIntroTitle": "ऐप लॉक कैसे काम करता है देखें",
+  "appLockDemoIntroSubtitle": "DeenFocus में रहें। अगली स्क्रीन पर Instagram पर टैप करें और नमाज़ के समय रुकना देखें।",
+  "appLockDemoStartButton": "डेमो शुरू करें",
+  "appLockDemoTryOpeningApp": "Instagram खोलकर देखें",
+  "appLockDemoSalahModeBadge": "सलाह मोड",
+  "appLockDemoTimeToPray": "नमाज़ का समय हो गया है",
+  "appLockDemoRemainingTime": "बाकी समय: {time}",
+  "appLockDemoIvePrayed": "मैंने {prayerName} पढ़ ली",
+  "appLockDemoAlhamdulillah": "अलहम्दुलिल्लाह",
+  "appLockDemoPrayerCompleted": "{prayerName} पूरी हुई",
+  "appLockDemoStreakIncreased": "आपकी नमाज़ स्ट्रीक बढ़ गई",
+  "appLockDemoPrayerStreakLabel": "नमाज़ स्ट्रीक",
+  "appLockDemoDayStreakLabel": "दिन स्ट्रीक",
+  "appLockDemoNextPrayerIn": "अगली नमाज़ {minutes} मिनट में",
+  "appLockDemoStreakMotivation": "आगे बढ़ते रहें! आपकी नियमितता आपको अल्लाह के करीब लाती है।",
+  "appLockDemoCompletionSubtitle": "नमाज़ पढ़ें। एक बार चेक इन करें।\nफिर अपने दिन पर लौटें।",
+  "appLockDemoCompletionBody": "ऐप लॉक सलाह के दौरान चुने हुए ऐप्स को धीरे से रोकता है ताकि आप नमाज़ पर ध्यान दे सकें — फिर जब तैयार हों, आगे बढ़ें।",
+  "appLockDemoContinueSetup": "सेटअप जारी रखें",
+  "appLockDemoAppMessages": "संदेश",
+  "appLockDemoAppCalendar": "कैलेंडर",
+  "appLockDemoAppPhotos": "फ़ोटो",
+  "appLockDemoAppCamera": "कैमरा",
+  "appLockDemoAppMail": "मेल",
+  "appLockDemoAppMaps": "मानचित्र",
+  "appLockDemoAppWeather": "मौसम",
+  "appLockDemoAppClock": "घड़ी",
+  "appLockDemoAppNotes": "नोट्स",
+  "appLockDemoAppSettings": "सेटिंग्स",
+  "appLockDemoAppMusic": "संगीत",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "नमाज़ अलार्म",
+  "settingsPrayerAlarmsSubtitle": "पूर्ण नमाज़ अलार्म जो साइलेंट मोड को पार कर सकते हैं",
+  "prayerAlarmsMasterLabel": "नमाज़ अलार्म चालू करें",
+  "prayerAlarmsMasterSubtitle": "प्रत्येक चयनित नमाज़ के लिए नेटिव अलार्म शेड्यूल करें",
+  "prayerAlarmsSnoozeLabel": "स्नूज़ अवधि",
+  "prayerAlarmsSnoozeMinutes": "{minutes} मिनट",
+  "prayerAlarmsPerPrayerSection": "नमाज़ के अनुसार अलार्म",
+  "prayerAlarmsPermissionNeeded": "समय पर बजने के लिए अलार्म अनुमति दें।",
+  "prayerAlarmsPermissionButton": "अलार्म अनुमति दें",
+  "prayerAlarmsFsiNeeded": "लॉक स्क्रीन पर दिखाने के लिए फुल-स्क्रीन अलार्म अनुमति दें। बिना इसके बैनर सूचना रहेगी।",
+  "prayerAlarmsFsiButton": "फुल-स्क्रीन सेटिंग्स",
+  "prayerAlarmsUnsupported": "इस डिवाइस पर नेटिव नमाज़ अलार्म उपलब्ध नहीं हैं। सॉफ्ट नोटिफिकेशन काम करते रहेंगे।",
+  "prayerAlarmsIosFallback": "इस iOS संस्करण पर AlarmKit के बजाय सॉफ्ट नोटिफिकेशन उपयोग होते हैं।",
+  "homePrayerAlarmEnableLabel": "नमाज़ अलार्म",
+  "homePrayerAlarmEnableSubtitle": "{prayerName} पर नेटिव अलार्म बजाएँ",
+  "prayerAlarmBadge": "नमाज़ अलार्म",
+  "prayerAlarmSubtitle": "नमाज़ का समय",
+  "prayerAlarmTitle": "{prayerName} — नमाज़ का समय",
+  "prayerAlarmIvePrayed": "मैंने नमाज़ पढ़ी",
+  "prayerAlarmDismiss": "खारिज करें",
+  "prayerAlarmSnooze": "स्नूज़",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "फ़ोन",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "रिमाइंडर",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "पुस्तकें",
+  "appLockDemoAppHealth": "स्वास्थ्य",
+  "appLockDemoAppWallet": "वॉलेट",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "अलार्म अनुमति आवश्यक",
+  "prayerAlarmsDeniedMessage": "अलार्म अनुमति मिलने तक प्रार्थना अलार्म बंद रहेंगे। सौम्य सूचनाएँ प्रभावित नहीं होतीं।",
+  "prayerAlarmsOpenSettings": "सेटिंग्स खोलें",
+  "prayerAlarmsStatusReady": "अलार्म शेड्यूल के लिए तैयार हैं",
+  "prayerAlarmsStatusNeedsPermission": "अनुमति चाहिए — अलार्म सक्रिय नहीं",
+  "prayerAlarmsStatusFallback": "इस डिवाइस पर सौम्य सूचनाएँ उपयोग हो रही हैं",
+  "prayerAlarmsStatusFsiOptional": "अलार्म चालू हैं। लॉक स्क्रीन के लिए फुल-स्क्रीन सक्षम करें।",
+  "prayerAlarmsCancel": "अभी नहीं",
+  "settingsAppDemoLabel": "ऐप डेमो",
+  "settingsAppDemoChooseModeTitle": "ऐप लॉक आज़माएँ",
+  "settingsAppDemoChooseModeSubtitle": "एक फ़ोकस मोड चुनें और देखें कि चुने गए ऐप्स कैसे रुकते हैं — DeenFocus छोड़े बिना।",
+  "appLockDemoDone": "हो गया",
+  "appLockDemoSleepIntroTitle": "स्लीप मोड कैसे काम करता है देखें",
+  "appLockDemoSleepIntroSubtitle": "DeenFocus में रहें। अगली स्क्रीन पर Instagram पर टैप करें और सोने के समय रुकना देखें।",
+  "appLockDemoSleepModeBadge": "स्लीप मोड",
+  "appLockDemoSleepLockTitle": "आराम करने का समय है",
+  "appLockDemoSleepLockCta": "मैं आराम के लिए तैयार हूँ",
+  "appLockDemoSleepCompleted": "स्लीप मोड सुरक्षित",
+  "appLockDemoSleepRewardSubtitle": "आपकी रात की सुरक्षा बढ़ गई",
+  "appLockDemoSleepStreakLabel": "रात स्ट्रीक",
+  "appLockDemoSleepRewardFooter": "सुबह के लिए फज्र रिमाइंडर सेट",
+  "appLockDemoSleepMotivation": "आज रात अच्छी नींद लें ताकि फज्र के लिए ऊर्जा के साथ उठ सकें।",
+  "appLockDemoSleepCompletionSubtitle": "शांत रातें।\nताज़ी सुबहें।",
+  "appLockDemoSleepCompletionBody": "स्लीप मोड रात में चुने हुए ऐप्स को धीरे से रोकता है ताकि आप आराम कर सकें — फिर जब तैयार हों आगे बढ़ें।",
+  "appLockDemoChildIntroTitle": "चाइल्ड मोड कैसे काम करता है देखें",
+  "appLockDemoChildIntroSubtitle": "DeenFocus में रहें। अगली स्क्रीन पर Instagram पर टैप करें और चाइल्ड मोड चालू होने पर लॉक देखें।",
+  "appLockDemoChildModeBadge": "चाइल्ड मोड",
+  "appLockDemoChildLockTitle": "ऐप्स सुरक्षित हैं",
+  "appLockDemoChildLockDetail": "चाइल्ड मोड चालू रहते चुने हुए ऐप्स लॉक रहते हैं",
+  "appLockDemoChildLockCta": "समझ गया",
+  "appLockDemoChildCompleted": "चाइल्ड मोड सक्रिय",
+  "appLockDemoChildRewardSubtitle": "आपकी सुरक्षा स्ट्रीक बढ़ गई",
+  "appLockDemoChildStreakLabel": "सुरक्षा स्ट्रीक",
+  "appLockDemoChildRewardFooter": "अपने पासकोड से कभी भी बाहर निकलें",
+  "appLockDemoChildMotivation": "हर बार फ़ोन देते समय सुकून।",
+  "appLockDemoChildCompletionSubtitle": "एक टैप सुरक्षित मोड।\nकेवल वही जो आप अनुमति दें।",
+  "appLockDemoChildCompletionBody": "चाइल्ड मोड चुने हुए ऐप्स लॉक करता है ताकि आपका बच्चा केवल सुरक्षित चीज़ें देखे — फिर जब तैयार हों अनलॉक करें।",
+  "appLockDemoSleepCompletionTitle": "आज रात अच्छी नींद लें",
+  "appLockDemoChildCompletionTitle": "सुकून भरा मन",
+  "settingsAppDemoPrayerCardSubtitle": "सलाह के समय ध्यान भटकाने वाले ऐप्स रोकें, ताकि आप पूरी मौजूदगी से नमाज़ पढ़ सकें।",
+  "settingsAppDemoSleepCardSubtitle": "अपनी रातों की रक्षा करें ताकि आराम आसान हो — और फ़ज्र हल्का लगे।",
+  "settingsAppDemoChildCardSubtitle": "बेफ़िक्र होकर फ़ोन दें — केवल अनुमति वाले ऐप्स खुले रहेंगे।"
 }

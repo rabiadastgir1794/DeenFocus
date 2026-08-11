@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../core/services/device_apps_service.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/focus_enforcement_service.dart';
+import '../../../core/services/prayer_alarm_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
@@ -139,7 +140,11 @@ class FocusController extends ChangeNotifier {
       latitude: lat,
       longitude: lng,
       forceReschedule: true,
-      daysAheadOverride: _rollingScheduleDays,
+    );
+    await PrayerAlarmService.instance.rescheduleAlarms(
+      latitude: lat,
+      longitude: lng,
+      forceReschedule: true,
     );
   }
 

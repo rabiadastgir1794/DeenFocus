@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "هذا ما يتيح لـ Deen Focus إيقاف التطبيقات المشتتة أثناء الصلاة ووقت النوم ووضع الطفل.",
   "screenTimeButton": "السماح بالوصول إلى وقت الشاشة",
   "screenTimePrivacyNote": "لا يقرأ Deen Focus بياناتك أبدًا — فهو يوقف فقط التطبيقات التي تختارها.",
+  "onboardingSelectAppsTitlePrefix": "اختر",
+  "onboardingSelectAppsTitleAccent": "التطبيقات للقفل",
+  "onboardingSelectAppsSubtitle": "اختر التطبيقات التي تريد قفلها عند حلول وقت الصلاة.",
+  "onboardingSelectAppsButton": "اختيار التطبيقات",
+  "onboardingSelectAppsSkipForNow": "تخطَّ الآن",
+  "onboardingSelectAppsMockAllApps": "كل التطبيقات والفئات",
+  "onboardingSelectAppsMockPhotos": "الصور",
+  "onboardingSelectAppsMockNotes": "الملاحظات",
+  "onboardingSelectAppsMockMusic": "الموسيقى",
+  "onboardingSelectAppsMockSafari": "سفاري",
+  "onboardingSelectAppsMockPodcasts": "البودكاست",
   "screenTimeStepOf": "الخطوة {current} من {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -266,6 +277,11 @@
   "prayerReminderSubtitle": "حافظ على سلسلتك من خلال تسجيل صلاتك",
   "prayerReminderYesButton": "نعم، الحمد لله",
   "prayerReminderLaterButton": "سأسجلها لاحقاً",
+  "prayerNotificationSubtitleFajr": "«إن قرآن الفجر كان مشهوداً.» — القرآن 17:78",
+  "prayerNotificationSubtitleDhuhr": "«أقم الصلاة لدلوك الشمس...» — القرآن 17:78",
+  "prayerNotificationSubtitleAsr": "«حافظوا على الصلوات والصلاة الوسطى.» — القرآن 2:238",
+  "prayerNotificationSubtitleMaghrib": "«فسبحان الله حين تمسون...» — القرآن 30:17",
+  "prayerNotificationSubtitleIsha": "«أقم الصلاة - إلى غسق الليل.» — القرآن 17:78",
   "homeAiChatDescription": "اسأل أي شيء عن أوقات الصلاة والقرآن والإرشادات الإسلامية.",
   "homeDay": "يوم",
   "homeDays": "أيام",
@@ -801,5 +817,156 @@
   "supportUsImpactExperience": "تجربة DeenFocus أفضل",
   "supportUsImpactFeatures": "ميزات وتحديثات جديدة",
   "supportUsImpactQuran": "القرآن والتعلم الإسلامي",
-  "supportUsImpactServers": "الخوادم وموثوقية التطبيق"
+  "supportUsImpactServers": "الخوادم وموثوقية التطبيق",
+  "appLockDemoIntroTitle": "تعرّف على قفل التطبيقات",
+  "appLockDemoIntroSubtitle": "ابقَ داخل DeenFocus. في الشاشة التالية، اضغط على إنستغرام لترى كيف يتوقف وقت الصلاة.",
+  "appLockDemoStartButton": "ابدأ العرض",
+  "appLockDemoTryOpeningApp": "جرّب فتح إنستغرام",
+  "appLockDemoSalahModeBadge": "وضع الصلاة",
+  "appLockDemoTimeToPray": "حان وقت الصلاة",
+  "appLockDemoRemainingTime": "الوقت المتبقي: {time}",
+  "appLockDemoIvePrayed": "لقد صليت {prayerName}",
+  "appLockDemoAlhamdulillah": "الحمد لله",
+  "appLockDemoPrayerCompleted": "أُكملت صلاة {prayerName}",
+  "appLockDemoStreakIncreased": "زاد سجل صلواتك المتتالية",
+  "appLockDemoPrayerStreakLabel": "سلسلة الصلاة",
+  "appLockDemoDayStreakLabel": "سلسلة الأيام",
+  "appLockDemoNextPrayerIn": "الصلاة التالية بعد {minutes} دقيقة",
+  "appLockDemoStreakMotivation": "استمر! ثباتك يقربك إلى الله.",
+  "appLockDemoCompletionSubtitle": "صلِّ. سجّل مرة واحدة.\nثم ارجع ليومك.",
+  "appLockDemoCompletionBody": "يقف قفل التطبيقات بلطف التطبيقات المختارة أثناء الصلاة حتى تركز — ثم تتابع عندما تكون مستعدًا.",
+  "appLockDemoContinueSetup": "متابعة الإعداد",
+  "appLockDemoAppMessages": "الرسائل",
+  "appLockDemoAppCalendar": "التقويم",
+  "appLockDemoAppPhotos": "الصور",
+  "appLockDemoAppCamera": "الكاميرا",
+  "appLockDemoAppMail": "البريد",
+  "appLockDemoAppMaps": "الخرائط",
+  "appLockDemoAppWeather": "الطقس",
+  "appLockDemoAppClock": "الساعة",
+  "appLockDemoAppNotes": "الملاحظات",
+  "appLockDemoAppSettings": "الإعدادات",
+  "appLockDemoAppMusic": "الموسيقى",
+  "appLockDemoAppInstagram": "إنستغرام",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "منبهات الصلاة",
+  "settingsPrayerAlarmsSubtitle": "منبهات صلاة كاملة يمكنها تجاوز الوضع الصامت",
+  "prayerAlarmsMasterLabel": "تفعيل منبهات الصلاة",
+  "prayerAlarmsMasterSubtitle": "جدولة منبه أصلي لكل صلاة مختارة",
+  "prayerAlarmsSnoozeLabel": "مدة التأجيل",
+  "prayerAlarmsSnoozeMinutes": "{minutes} دقيقة",
+  "prayerAlarmsPerPrayerSection": "المنبهات حسب الصلاة",
+  "prayerAlarmsPermissionNeeded": "اسمح بإذن المنبه حتى تنطلق منبهات الصلاة في وقتها.",
+  "prayerAlarmsPermissionButton": "السماح بالمنبهات",
+  "prayerAlarmsFsiNeeded": "اسمح بالمنبهات بملء الشاشة لتظهر فوق شاشة القفل. بدون ذلك تبقى كإشعار بانر.",
+  "prayerAlarmsFsiButton": "إعدادات ملء الشاشة",
+  "prayerAlarmsUnsupported": "منبهات الصلاة الأصلية غير متاحة على هذا الجهاز. تظل إشعارات الصلاة اللينة تعمل.",
+  "prayerAlarmsIosFallback": "في إصدار iOS هذا، تُستخدم إشعارات الصلاة اللينة بدل AlarmKit.",
+  "homePrayerAlarmEnableLabel": "منبه الصلاة",
+  "homePrayerAlarmEnableSubtitle": "تشغيل منبه أصلي عند {prayerName}",
+  "prayerAlarmBadge": "منبه الصلاة",
+  "prayerAlarmSubtitle": "حان وقت الصلاة",
+  "prayerAlarmTitle": "{prayerName} — حان وقت الصلاة",
+  "prayerAlarmIvePrayed": "لقد صليت",
+  "prayerAlarmDismiss": "رفض",
+  "prayerAlarmSnooze": "تأجيل",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "الهاتف",
+  "appLockDemoAppSafari": "سفاري",
+  "appLockDemoAppFaceTime": "فيستايم",
+  "appLockDemoAppReminders": "التذكيرات",
+  "appLockDemoAppAppStore": "متجر التطبيقات",
+  "appLockDemoAppBooks": "الكتب",
+  "appLockDemoAppHealth": "الصحة",
+  "appLockDemoAppWallet": "المحفظة",
+  "appLockDemoAppChrome": "كروم",
+  "prayerAlarmsDeniedTitle": "إذن المنبه مطلوب",
+  "prayerAlarmsDeniedMessage": "تبقى منبهات الصلاة متوقفة حتى تسمح بإذن المنبه. الإشعارات الهادئة غير متأثرة.",
+  "prayerAlarmsOpenSettings": "فتح الإعدادات",
+  "prayerAlarmsStatusReady": "المنبهات جاهزة للجدولة",
+  "prayerAlarmsStatusNeedsPermission": "الإذن مطلوب — المنبهات غير نشطة",
+  "prayerAlarmsStatusFallback": "استخدام إشعارات هادئة على هذا الجهاز",
+  "prayerAlarmsStatusFsiOptional": "المنبهات مفعّلة. فعّل ملء الشاشة للظهور فوق شاشة القفل.",
+  "prayerAlarmsCancel": "ليس الآن",
+  "settingsAppDemoLabel": "عرض التطبيق",
+  "settingsAppDemoChooseModeTitle": "جرّب قفل التطبيقات",
+  "settingsAppDemoChooseModeSubtitle": "اختر وضع تركيز وشاهد كيف تتوقف التطبيقات المحددة — دون مغادرة DeenFocus.",
+  "appLockDemoDone": "تم",
+  "appLockDemoSleepIntroTitle": "تعرّف على وضع النوم",
+  "appLockDemoSleepIntroSubtitle": "ابقَ داخل DeenFocus. في الشاشة التالية، اضغط على إنستغرام لترى كيف يتوقف وقت النوم.",
+  "appLockDemoSleepModeBadge": "وضع النوم",
+  "appLockDemoSleepLockTitle": "حان وقت الراحة",
+  "appLockDemoSleepLockCta": "أنا مستعد للراحة",
+  "appLockDemoSleepCompleted": "تم حماية وضع النوم",
+  "appLockDemoSleepRewardSubtitle": "زادت حماية ليلتك",
+  "appLockDemoSleepStreakLabel": "سلسلة الليل",
+  "appLockDemoSleepRewardFooter": "تم ضبط تذكير الفجر للصباح",
+  "appLockDemoSleepMotivation": "نم جيدًا الليلة لتستيقظ لصلاة الفجر بنشاط.",
+  "appLockDemoSleepCompletionSubtitle": "ليالٍ هادئة.\nصباحات صافية.",
+  "appLockDemoSleepCompletionBody": "يضع وضع النوم التطبيقات المحددة على إيقاف مؤقت بلطف ليلًا حتى ترتاح — ثم تتابع عندما تكون مستعدًا.",
+  "appLockDemoChildIntroTitle": "تعرّف على وضع الطفل",
+  "appLockDemoChildIntroSubtitle": "ابقَ داخل DeenFocus. في الشاشة التالية، اضغط على إنستغرام لترى القفل عند تفعيل وضع الطفل.",
+  "appLockDemoChildModeBadge": "وضع الطفل",
+  "appLockDemoChildLockTitle": "التطبيقات محمية",
+  "appLockDemoChildLockDetail": "تبقى التطبيقات المحددة مقفلة أثناء وضع الطفل",
+  "appLockDemoChildLockCta": "حسنًا",
+  "appLockDemoChildCompleted": "وضع الطفل مفعّل",
+  "appLockDemoChildRewardSubtitle": "زادت سلسلة الحماية",
+  "appLockDemoChildStreakLabel": "سلسلة الأمان",
+  "appLockDemoChildRewardFooter": "اخرج في أي وقت برمزك السري",
+  "appLockDemoChildMotivation": "راحة بال في كل مرة تعطي هاتفك.",
+  "appLockDemoChildCompletionSubtitle": "وضع آمن بضغطة.\nفقط ما تسمح به.",
+  "appLockDemoChildCompletionBody": "يقفل وضع الطفل التطبيقات المحددة حتى يرى طفلك فقط ما هو آمن — ثم تفتح القفل عندما تكون مستعدًا.",
+  "appLockDemoSleepCompletionTitle": "نم بهدوء الليلة",
+  "appLockDemoChildCompletionTitle": "راحة البال",
+  "settingsAppDemoPrayerCardSubtitle": "أوقف المشتتات وقت الصلاة لتصلّي بحضور قلب.",
+  "settingsAppDemoSleepCardSubtitle": "احمِ ليلك لترتاح أفضل — ويستيقظ فجرك أخف.",
+  "settingsAppDemoChildCardSubtitle": "سلّم هاتفك مطمئنًا: فقط التطبيقات المسموحة تبقى مفتوحة."
 }

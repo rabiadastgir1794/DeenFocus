@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../features/home/helpers/home_daily_verse_helper.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import 'app_notification_service.dart';
+import 'prayer_alarm_service.dart';
 import 'storage_service.dart';
 import 'widget_sync_service.dart';
 
@@ -33,9 +34,17 @@ class DailyRefreshService {
         latitude: latitude,
         longitude: longitude,
       );
+      final needsPrayerReschedule =
+          await StorageService.needsPrayerNotificationReschedule;
       await AppNotificationService.instance.reschedulePrayerNotifications(
         latitude: latitude,
         longitude: longitude,
+        forceReschedule: needsPrayerReschedule,
+      );
+      await PrayerAlarmService.instance.rescheduleAlarms(
+        latitude: latitude,
+        longitude: longitude,
+        forceReschedule: needsPrayerReschedule,
       );
     }
 

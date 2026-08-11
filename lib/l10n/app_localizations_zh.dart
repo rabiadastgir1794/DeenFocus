@@ -170,6 +170,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get screenTimePrivacyNote => 'Deen Focus 绝不会读取你的数据——只会暂停你选择的应用。';
 
   @override
+  String get onboardingSelectAppsTitlePrefix => '选择';
+
+  @override
+  String get onboardingSelectAppsTitleAccent => '要锁定的应用';
+
+  @override
+  String get onboardingSelectAppsSubtitle => '选择祷告时要锁定的应用。';
+
+  @override
+  String get onboardingSelectAppsButton => '选择应用';
+
+  @override
+  String get onboardingSelectAppsSkipForNow => '暂时跳过';
+
+  @override
+  String get onboardingSelectAppsMockAllApps => '所有应用和类别';
+
+  @override
+  String get onboardingSelectAppsMockPhotos => '照片';
+
+  @override
+  String get onboardingSelectAppsMockNotes => '备忘录';
+
+  @override
+  String get onboardingSelectAppsMockMusic => '音乐';
+
+  @override
+  String get onboardingSelectAppsMockSafari => 'Safari';
+
+  @override
+  String get onboardingSelectAppsMockPodcasts => '播客';
+
+  @override
   String screenTimeStepOf(int current, int total) {
     return '第 $current 步，共 $total 步';
   }
@@ -855,6 +888,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get prayerReminderLaterButton => '稍后再标记';
+
+  @override
+  String get prayerNotificationSubtitleFajr => '“晨礼的诵读确是被见证的。” — 古兰经 17:78';
+
+  @override
+  String get prayerNotificationSubtitleDhuhr => '“当太阳偏西时当谨守拜功……” — 古兰经 17:78';
+
+  @override
+  String get prayerNotificationSubtitleAsr => '“你们当谨守拜功，尤其是中间的拜功。” — 古兰经 2:238';
+
+  @override
+  String get prayerNotificationSubtitleMaghrib => '“故你们在傍晚当赞颂真主……” — 古兰经 30:17';
+
+  @override
+  String get prayerNotificationSubtitleIsha => '“当谨守拜功 — 直到黑夜降临。” — 古兰经 17:78';
 
   @override
   String get homeTrialBannerTitle => '免费 7 天 — 成为更好的穆斯林 ✨';
@@ -2126,4 +2174,330 @@ class AppLocalizationsZh extends AppLocalizations {
   String homeCountdownHms(int hours, int minutes, int seconds) {
     return '$hours小时 $minutes分 $seconds秒';
   }
+
+  @override
+  String get appLockDemoIntroTitle => '看看应用锁定如何运作';
+
+  @override
+  String get appLockDemoIntroSubtitle =>
+      '留在 DeenFocus。下一屏点击 Instagram，看看礼拜时间如何暂停应用。';
+
+  @override
+  String get appLockDemoStartButton => '开始演示';
+
+  @override
+  String get appLockDemoTryOpeningApp => '试着打开 Instagram';
+
+  @override
+  String get appLockDemoSalahModeBadge => '礼拜模式';
+
+  @override
+  String get appLockDemoTimeToPray => '礼拜时间到了';
+
+  @override
+  String appLockDemoRemainingTime(String time) {
+    return '剩余时间：$time';
+  }
+
+  @override
+  String appLockDemoIvePrayed(String prayerName) {
+    return '我已完成 $prayerName';
+  }
+
+  @override
+  String get appLockDemoAlhamdulillah => 'الحمد لله';
+
+  @override
+  String appLockDemoPrayerCompleted(String prayerName) {
+    return '$prayerName 已完成';
+  }
+
+  @override
+  String get appLockDemoStreakIncreased => '你的礼拜连续记录增加了';
+
+  @override
+  String get appLockDemoPrayerStreakLabel => '礼拜连续';
+
+  @override
+  String get appLockDemoDayStreakLabel => '日连续';
+
+  @override
+  String appLockDemoNextPrayerIn(String minutes) {
+    return '$minutes 分钟后下一次礼拜';
+  }
+
+  @override
+  String get appLockDemoStreakMotivation => '继续加油！你的坚持让你更接近真主。';
+
+  @override
+  String get appLockDemoCompletionSubtitle => '礼拜。确认一次。\n然后回到你的一天。';
+
+  @override
+  String get appLockDemoCompletionBody => '应用锁定会在礼拜期间轻柔暂停所选应用，让你专注礼拜——准备好后再继续。';
+
+  @override
+  String get appLockDemoContinueSetup => '继续设置';
+
+  @override
+  String get appLockDemoAppMessages => '信息';
+
+  @override
+  String get appLockDemoAppCalendar => '日历';
+
+  @override
+  String get appLockDemoAppPhotos => '照片';
+
+  @override
+  String get appLockDemoAppCamera => '相机';
+
+  @override
+  String get appLockDemoAppMail => '邮件';
+
+  @override
+  String get appLockDemoAppMaps => '地图';
+
+  @override
+  String get appLockDemoAppWeather => '天气';
+
+  @override
+  String get appLockDemoAppClock => '时钟';
+
+  @override
+  String get appLockDemoAppNotes => '备忘录';
+
+  @override
+  String get appLockDemoAppSettings => '设置';
+
+  @override
+  String get appLockDemoAppMusic => '音乐';
+
+  @override
+  String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerAlarmsTitle => '礼拜闹钟';
+
+  @override
+  String get settingsPrayerAlarmsSubtitle => '可突破静音模式的完整礼拜闹钟';
+
+  @override
+  String get prayerAlarmsMasterLabel => '启用礼拜闹钟';
+
+  @override
+  String get prayerAlarmsMasterSubtitle => '为每个所选礼拜安排系统闹钟';
+
+  @override
+  String get prayerAlarmsSnoozeLabel => '贪睡时长';
+
+  @override
+  String prayerAlarmsSnoozeMinutes(int minutes) {
+    return '$minutes 分钟';
+  }
+
+  @override
+  String get prayerAlarmsPerPrayerSection => '按礼拜设置闹钟';
+
+  @override
+  String get prayerAlarmsPermissionNeeded => '请允许闹钟权限，以便准时响起。';
+
+  @override
+  String get prayerAlarmsPermissionButton => '允许闹钟';
+
+  @override
+  String get prayerAlarmsFsiNeeded => '请允许全屏闹钟以便显示在锁屏上。否则将以横幅通知提醒。';
+
+  @override
+  String get prayerAlarmsFsiButton => '全屏设置';
+
+  @override
+  String get prayerAlarmsUnsupported => '此设备不支持原生礼拜闹钟。轻提醒通知仍然可用。';
+
+  @override
+  String get prayerAlarmsIosFallback => '在此 iOS 版本上，使用轻提醒通知代替 AlarmKit。';
+
+  @override
+  String get prayerAlarmsDeniedTitle => '需要闹钟权限';
+
+  @override
+  String get prayerAlarmsDeniedMessage => '在允许闹钟权限之前，礼拜闹钟保持关闭。轻柔通知不受影响。';
+
+  @override
+  String get prayerAlarmsOpenSettings => '打开设置';
+
+  @override
+  String get prayerAlarmsStatusReady => '闹钟已准备好安排';
+
+  @override
+  String get prayerAlarmsStatusNeedsPermission => '需要权限 — 闹钟未启用';
+
+  @override
+  String get prayerAlarmsStatusFallback => '此设备使用轻柔通知';
+
+  @override
+  String get prayerAlarmsStatusFsiOptional => '闹钟已开启。启用全屏以覆盖锁屏。';
+
+  @override
+  String get prayerAlarmsCancel => '暂时不用';
+
+  @override
+  String get homePrayerAlarmEnableLabel => '礼拜闹钟';
+
+  @override
+  String homePrayerAlarmEnableSubtitle(String prayerName) {
+    return '在$prayerName响起系统闹钟';
+  }
+
+  @override
+  String get prayerAlarmBadge => '礼拜闹钟';
+
+  @override
+  String get prayerAlarmSubtitle => '礼拜时间到了';
+
+  @override
+  String prayerAlarmTitle(String prayerName) {
+    return '$prayerName — 礼拜时间到了';
+  }
+
+  @override
+  String get prayerAlarmIvePrayed => '我已礼拜';
+
+  @override
+  String get prayerAlarmDismiss => '关闭';
+
+  @override
+  String get prayerAlarmSnooze => '稍后提醒';
+
+  @override
+  String get appLockDemoAppPhone => '电话';
+
+  @override
+  String get appLockDemoAppSafari => 'Safari';
+
+  @override
+  String get appLockDemoAppFaceTime => 'FaceTime';
+
+  @override
+  String get appLockDemoAppReminders => '提醒事项';
+
+  @override
+  String get appLockDemoAppAppStore => 'App Store';
+
+  @override
+  String get appLockDemoAppBooks => '图书';
+
+  @override
+  String get appLockDemoAppHealth => '健康';
+
+  @override
+  String get appLockDemoAppWallet => '钱包';
+
+  @override
+  String get appLockDemoAppChrome => 'Chrome';
+
+  @override
+  String get settingsAppDemoLabel => '应用演示';
+
+  @override
+  String get settingsAppDemoChooseModeTitle => '体验应用锁定';
+
+  @override
+  String get settingsAppDemoChooseModeSubtitle =>
+      '选择一种专注模式，看看所选应用如何暂停——无需离开 DeenFocus。';
+
+  @override
+  String get appLockDemoDone => '完成';
+
+  @override
+  String get appLockDemoSleepIntroTitle => '看看睡眠模式如何运作';
+
+  @override
+  String get appLockDemoSleepIntroSubtitle =>
+      '留在 DeenFocus。下一屏点击 Instagram，看看就寝时如何暂停应用。';
+
+  @override
+  String get appLockDemoSleepModeBadge => '睡眠模式';
+
+  @override
+  String get appLockDemoSleepLockTitle => '该放松休息了';
+
+  @override
+  String get appLockDemoSleepLockCta => '我准备休息了';
+
+  @override
+  String get appLockDemoSleepCompleted => '睡眠模式已保护';
+
+  @override
+  String get appLockDemoSleepRewardSubtitle => '你的夜间保护增加了';
+
+  @override
+  String get appLockDemoSleepStreakLabel => '夜间连续';
+
+  @override
+  String get appLockDemoSleepRewardFooter => '已设置晨礼提醒';
+
+  @override
+  String get appLockDemoSleepMotivation => '今晚好好休息，以便精力充沛地醒来做晨礼。';
+
+  @override
+  String get appLockDemoSleepCompletionSubtitle => '安静的夜晚。\n清爽的早晨。';
+
+  @override
+  String get appLockDemoSleepCompletionBody =>
+      '睡眠模式会在夜间轻柔暂停所选应用，让你休息——准备好后再继续。';
+
+  @override
+  String get appLockDemoChildIntroTitle => '看看儿童模式如何运作';
+
+  @override
+  String get appLockDemoChildIntroSubtitle =>
+      '留在 DeenFocus。下一屏点击 Instagram，看看儿童模式开启时如何锁定。';
+
+  @override
+  String get appLockDemoChildModeBadge => '儿童模式';
+
+  @override
+  String get appLockDemoChildLockTitle => '应用已受保护';
+
+  @override
+  String get appLockDemoChildLockDetail => '开启儿童模式时，所选应用保持锁定';
+
+  @override
+  String get appLockDemoChildLockCta => '知道了';
+
+  @override
+  String get appLockDemoChildCompleted => '儿童模式已开启';
+
+  @override
+  String get appLockDemoChildRewardSubtitle => '你的保护连续记录增加了';
+
+  @override
+  String get appLockDemoChildStreakLabel => '安全连续';
+
+  @override
+  String get appLockDemoChildRewardFooter => '随时可用密码退出';
+
+  @override
+  String get appLockDemoChildMotivation => '每次交出手机都更安心。';
+
+  @override
+  String get appLockDemoChildCompletionSubtitle => '一键安全模式。\n只显示你允许的内容。';
+
+  @override
+  String get appLockDemoChildCompletionBody =>
+      '儿童模式会锁定所选应用，让孩子只看到安全内容——准备好后再解锁。';
+
+  @override
+  String get appLockDemoSleepCompletionTitle => '今晚好好休息';
+
+  @override
+  String get appLockDemoChildCompletionTitle => '安心无用';
+
+  @override
+  String get settingsAppDemoPrayerCardSubtitle => '在礼拜时暂停干扰，让你专心祈祷。';
+
+  @override
+  String get settingsAppDemoSleepCardSubtitle => '守护夜晚，让休息更轻松——晨礼也更轻盈。';
+
+  @override
+  String get settingsAppDemoChildCardSubtitle => '安心交出手机：只有你允许的应用保持可用。';
 }

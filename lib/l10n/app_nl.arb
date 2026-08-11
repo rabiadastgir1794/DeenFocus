@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "Hiermee kan Deen Focus afleidende apps pauzeren tijdens Salah, slaaptijd en kindermodus.",
   "screenTimeButton": "Toegang tot Schermtijd toestaan",
   "screenTimePrivacyNote": "Deen Focus leest nooit je gegevens — het pauzeert alleen de apps die je kiest.",
+  "onboardingSelectAppsTitlePrefix": "Selecteer",
+  "onboardingSelectAppsTitleAccent": "apps om te vergrendelen",
+  "onboardingSelectAppsSubtitle": "Selecteer de apps die je wilt vergrendelen tijdens gebedstijd.",
+  "onboardingSelectAppsButton": "Apps selecteren",
+  "onboardingSelectAppsSkipForNow": "Nu overslaan",
+  "onboardingSelectAppsMockAllApps": "Alle apps & categorieën",
+  "onboardingSelectAppsMockPhotos": "Foto’s",
+  "onboardingSelectAppsMockNotes": "Notities",
+  "onboardingSelectAppsMockMusic": "Muziek",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "Podcasts",
   "screenTimeStepOf": "STAP {current} VAN {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "Houd je reeks levend door je gebed te loggen.",
   "prayerReminderYesButton": "Ja, Alhamdulillah",
   "prayerReminderLaterButton": "Ik markeer later",
+  "prayerNotificationSubtitleFajr": "“Voorwaar, de recitatie van de dageraad wordt altijd bijgewoond.” — Koran 17:78",
+  "prayerNotificationSubtitleDhuhr": "“Verricht het gebed bij het dalen van de zon...” — Koran 17:78",
+  "prayerNotificationSubtitleAsr": "“Waak strikt over de gebeden, vooral het middelste gebed.” — Koran 2:238",
+  "prayerNotificationSubtitleMaghrib": "“Verheerlijk Allah dus wanneer jullie de avond bereiken...” — Koran 30:17",
+  "prayerNotificationSubtitleIsha": "“Verricht het gebed -  tot de duisternis van de nacht.” — Koran 17:78",
   "homeAiChatDescription": "Vraag alles over gebedstijden, de Koran en islamitische richtlijnen.",
   "homeDay": "Dag",
   "homeDays": "Dagen",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "Betere DeenFocus-ervaring",
   "supportUsImpactFeatures": "Nieuwe functies & upgrades",
   "supportUsImpactQuran": "Koran & islamitisch leren",
-  "supportUsImpactServers": "Servers & app-betrouwbaarheid"
+  "supportUsImpactServers": "Servers & app-betrouwbaarheid",
+  "appLockDemoIntroTitle": "Zo werkt App-vergrendeling",
+  "appLockDemoIntroSubtitle": "Blijf in DeenFocus. Tik op het volgende scherm op Instagram om te zien hoe het pauzeert tijdens gebedstijd.",
+  "appLockDemoStartButton": "Demo starten",
+  "appLockDemoTryOpeningApp": "Probeer Instagram te openen",
+  "appLockDemoSalahModeBadge": "SALAH-MODUS",
+  "appLockDemoTimeToPray": "Het is tijd om te bidden",
+  "appLockDemoRemainingTime": "Resterende tijd: {time}",
+  "appLockDemoIvePrayed": "Ik heb {prayerName} gebeden",
+  "appLockDemoAlhamdulillah": "Alhamdulillah",
+  "appLockDemoPrayerCompleted": "{prayerName} voltooid",
+  "appLockDemoStreakIncreased": "Je gebedsreeks is gestegen",
+  "appLockDemoPrayerStreakLabel": "GEBEDSREEKS",
+  "appLockDemoDayStreakLabel": "DAGREEKS",
+  "appLockDemoNextPrayerIn": "Volgend gebed over {minutes} minuten",
+  "appLockDemoStreakMotivation": "Ga zo door! Jouw consistentie brengt je dichter bij Allah.",
+  "appLockDemoCompletionSubtitle": "Bid. Check één keer in.\nGa verder met je dag.",
+  "appLockDemoCompletionBody": "App-vergrendeling pauzeert geselecteerde apps zachtjes tijdens Salah zodat je kunt focussen — daarna ga je verder wanneer je klaar bent.",
+  "appLockDemoContinueSetup": "Setup voortzetten",
+  "appLockDemoAppMessages": "Berichten",
+  "appLockDemoAppCalendar": "Agenda",
+  "appLockDemoAppPhotos": "Foto’s",
+  "appLockDemoAppCamera": "Camera",
+  "appLockDemoAppMail": "Mail",
+  "appLockDemoAppMaps": "Kaarten",
+  "appLockDemoAppWeather": "Weer",
+  "appLockDemoAppClock": "Klok",
+  "appLockDemoAppNotes": "Notities",
+  "appLockDemoAppSettings": "Instellingen",
+  "appLockDemoAppMusic": "Muziek",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "Gebedsalarmen",
+  "settingsPrayerAlarmsSubtitle": "Volledige gebedsalarmen die stille modus kunnen doorbreken",
+  "prayerAlarmsMasterLabel": "Gebedsalarmen inschakelen",
+  "prayerAlarmsMasterSubtitle": "Plan een native alarm voor elk geselecteerd gebed",
+  "prayerAlarmsSnoozeLabel": "Snoozeduur",
+  "prayerAlarmsSnoozeMinutes": "{minutes} minuten",
+  "prayerAlarmsPerPrayerSection": "Alarmen per gebed",
+  "prayerAlarmsPermissionNeeded": "Sta alarmtoestemming toe zodat gebedsalarmen op tijd afgaan.",
+  "prayerAlarmsPermissionButton": "Alarmen toestaan",
+  "prayerAlarmsFsiNeeded": "Sta full-screen alarmen toe voor het vergrendelscherm. Zonder dat verschijnen ze als banner.",
+  "prayerAlarmsFsiButton": "Full-screen instellingen",
+  "prayerAlarmsUnsupported": "Native gebedsalarmen zijn niet beschikbaar op dit apparaat. Softmeldingen blijven werken.",
+  "prayerAlarmsIosFallback": "Op deze iOS-versie worden softmeldingen gebruikt in plaats van AlarmKit.",
+  "homePrayerAlarmEnableLabel": "Gebedsalarm",
+  "homePrayerAlarmEnableSubtitle": "Laat een native alarm afgaan bij {prayerName}",
+  "prayerAlarmBadge": "Gebedsalarm",
+  "prayerAlarmSubtitle": "Tijd om te bidden",
+  "prayerAlarmTitle": "{prayerName} — Tijd om te bidden",
+  "prayerAlarmIvePrayed": "Ik heb gebeden",
+  "prayerAlarmDismiss": "Sluiten",
+  "prayerAlarmSnooze": "Snooze",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "Telefoon",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "Herinneringen",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "Boeken",
+  "appLockDemoAppHealth": "Gezondheid",
+  "appLockDemoAppWallet": "Wallet",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "Alarmtoestemming vereist",
+  "prayerAlarmsDeniedMessage": "Gebedsalarmen blijven uit tot je alarmtoestemming geeft. Zachte meldingen blijven werken.",
+  "prayerAlarmsOpenSettings": "Open Instellingen",
+  "prayerAlarmsStatusReady": "Alarmen zijn klaar om te plannen",
+  "prayerAlarmsStatusNeedsPermission": "Toestemming nodig — alarmen zijn niet actief",
+  "prayerAlarmsStatusFallback": "Op dit apparaat worden zachte meldingen gebruikt",
+  "prayerAlarmsStatusFsiOptional": "Alarmen staan aan. Schakel full-screen in voor het vergrendelscherm.",
+  "prayerAlarmsCancel": "Niet nu",
+  "settingsAppDemoLabel": "App-demo",
+  "settingsAppDemoChooseModeTitle": "Ervaar App Lock",
+  "settingsAppDemoChooseModeSubtitle": "Kies een Focus-modus en zie hoe geselecteerde apps pauzeren — zonder DeenFocus te verlaten.",
+  "appLockDemoDone": "Klaar",
+  "appLockDemoSleepIntroTitle": "Zo werkt de Slaapmodus",
+  "appLockDemoSleepIntroSubtitle": "Blijf in DeenFocus. Tik op het volgende scherm op Instagram om te zien hoe het pauzeert bij bedtijd.",
+  "appLockDemoSleepModeBadge": "SLAAPMODUS",
+  "appLockDemoSleepLockTitle": "Tijd om tot rust te komen",
+  "appLockDemoSleepLockCta": "Ik ben klaar om te rusten",
+  "appLockDemoSleepCompleted": "Slaapmodus beschermd",
+  "appLockDemoSleepRewardSubtitle": "Je nachtelijke bescherming is toegenomen",
+  "appLockDemoSleepStreakLabel": "NACHTREEKS",
+  "appLockDemoSleepRewardFooter": "Fajr-herinnering ingesteld voor de ochtend",
+  "appLockDemoSleepMotivation": "Slaap lekker vannacht zodat je met energie opstaat voor Fajr.",
+  "appLockDemoSleepCompletionSubtitle": "Rustige nachten.\nHeldere ochtenden.",
+  "appLockDemoSleepCompletionBody": "Slaapmodus pauzeert geselecteerde apps ’s nachts zachtjes zodat je kunt rusten — daarna ga je verder wanneer je klaar bent.",
+  "appLockDemoChildIntroTitle": "Zo werkt de Kindmodus",
+  "appLockDemoChildIntroSubtitle": "Blijf in DeenFocus. Tik op het volgende scherm op Instagram om de vergrendeling met Kindmodus te zien.",
+  "appLockDemoChildModeBadge": "KINDMODUS",
+  "appLockDemoChildLockTitle": "Apps zijn beschermd",
+  "appLockDemoChildLockDetail": "Geselecteerde apps blijven vergrendeld terwijl Kindmodus aan staat",
+  "appLockDemoChildLockCta": "Begrepen",
+  "appLockDemoChildCompleted": "Kindmodus actief",
+  "appLockDemoChildRewardSubtitle": "Je beschermingsreeks is toegenomen",
+  "appLockDemoChildStreakLabel": "VEILIGE REEKS",
+  "appLockDemoChildRewardFooter": "Verlaat op elk moment met je toegangscode",
+  "appLockDemoChildMotivation": "Gemoedsrust elke keer dat je je telefoon doorgeeft.",
+  "appLockDemoChildCompletionSubtitle": "Veilige modus met één tip.\nAlleen wat jij toelaat.",
+  "appLockDemoChildCompletionBody": "Kindmodus vergrendelt geselecteerde apps zodat je kind alleen ziet wat veilig is — daarna ontgrendel je wanneer je klaar bent.",
+  "appLockDemoSleepCompletionTitle": "Slaap lekker vannacht",
+  "appLockDemoChildCompletionTitle": "Gemoedsrust",
+  "settingsAppDemoPrayerCardSubtitle": "Pauzeer afleidingen tijdens Salah zodat je met aanwezigheid kunt bidden.",
+  "settingsAppDemoSleepCardSubtitle": "Bescherm je nachten zodat rust makkelijker komt — en Fajr lichter voelt.",
+  "settingsAppDemoChildCardSubtitle": "Geef je telefoon met vertrouwen door — alleen toegestane apps blijven open."
 }

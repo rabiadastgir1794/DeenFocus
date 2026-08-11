@@ -16,4 +16,10 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="PrayerAlarmTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">#F7F5F0</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+
 </resources>

@@ -177,6 +177,41 @@ class AppLocalizationsAz extends AppLocalizations {
       'Deen Focus heç vaxt məlumatlarınızı oxumur — yalnız seçdiyiniz tətbiqləri dayandırır.';
 
   @override
+  String get onboardingSelectAppsTitlePrefix => 'Seçin';
+
+  @override
+  String get onboardingSelectAppsTitleAccent => 'Kilidlənəcək Tətbiqlər';
+
+  @override
+  String get onboardingSelectAppsSubtitle =>
+      'Namaz vaxtı kilidləmək istədiyiniz tətbiqləri seçin.';
+
+  @override
+  String get onboardingSelectAppsButton => 'Tətbiqləri seç';
+
+  @override
+  String get onboardingSelectAppsSkipForNow => 'İndi keç';
+
+  @override
+  String get onboardingSelectAppsMockAllApps =>
+      'Bütün tətbiqlər və kateqoriyalar';
+
+  @override
+  String get onboardingSelectAppsMockPhotos => 'Şəkillər';
+
+  @override
+  String get onboardingSelectAppsMockNotes => 'Qeydlər';
+
+  @override
+  String get onboardingSelectAppsMockMusic => 'Musiqi';
+
+  @override
+  String get onboardingSelectAppsMockSafari => 'Safari';
+
+  @override
+  String get onboardingSelectAppsMockPodcasts => 'Podkastlar';
+
+  @override
   String screenTimeStepOf(int current, int total) {
     return 'ADDIM $current / $total';
   }
@@ -894,6 +929,26 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get prayerReminderLaterButton => 'Sonra işarələyəcəyəm';
+
+  @override
+  String get prayerNotificationSubtitleFajr =>
+      '“Həqiqətən, dan yerinin tilavəti həmişə şahidlik edilir.” — Quran 17:78';
+
+  @override
+  String get prayerNotificationSubtitleDhuhr =>
+      '“Günəşin enməsi zamanı namazı qılın...” — Quran 17:78';
+
+  @override
+  String get prayerNotificationSubtitleAsr =>
+      '“Namazları, xüsusən orta namazı ciddi qoruyun.” — Quran 2:238';
+
+  @override
+  String get prayerNotificationSubtitleMaghrib =>
+      '“Axşama çatdığınızda Allahı tərifləyin...” — Quran 30:17';
+
+  @override
+  String get prayerNotificationSubtitleIsha =>
+      '“Namazı qılın - gecənin qaranlığına qədər.” — Quran 17:78';
 
   @override
   String get homeTrialBannerTitle =>
@@ -2247,4 +2302,353 @@ class AppLocalizationsAz extends AppLocalizations {
   String homeCountdownHms(int hours, int minutes, int seconds) {
     return '${hours}s ${minutes}d ${seconds}san';
   }
+
+  @override
+  String get appLockDemoIntroTitle => 'Tətbiq Kilidinin necə işlədiyini görün';
+
+  @override
+  String get appLockDemoIntroSubtitle =>
+      'DeenFocus-da qalın. Növbəti ekranda Instagram-a toxunun və namaz vaxtında necə dayandığını görün.';
+
+  @override
+  String get appLockDemoStartButton => 'Demo-ya başla';
+
+  @override
+  String get appLockDemoTryOpeningApp => 'Instagram-ı açmağa cəhd edin';
+
+  @override
+  String get appLockDemoSalahModeBadge => 'NAMAZ REJİMİ';
+
+  @override
+  String get appLockDemoTimeToPray => 'Namaz vaxtıdır';
+
+  @override
+  String appLockDemoRemainingTime(String time) {
+    return 'Qalan vaxt: $time';
+  }
+
+  @override
+  String appLockDemoIvePrayed(String prayerName) {
+    return '$prayerName namazını qıldım';
+  }
+
+  @override
+  String get appLockDemoAlhamdulillah => 'Əlhəmdulillah';
+
+  @override
+  String appLockDemoPrayerCompleted(String prayerName) {
+    return '$prayerName tamamlandı';
+  }
+
+  @override
+  String get appLockDemoStreakIncreased => 'Namaz seriyanız artdı';
+
+  @override
+  String get appLockDemoPrayerStreakLabel => 'NAMAZ SERİYASI';
+
+  @override
+  String get appLockDemoDayStreakLabel => 'GÜN SERİYASI';
+
+  @override
+  String appLockDemoNextPrayerIn(String minutes) {
+    return 'Növbəti namaz $minutes dəqiqəyə';
+  }
+
+  @override
+  String get appLockDemoStreakMotivation =>
+      'Davam edin! Ardıcıllığınız sizi Allaha yaxınlaşdırır.';
+
+  @override
+  String get appLockDemoCompletionSubtitle =>
+      'Namaz qılın. Bir dəfə qeyd edin.\nGününüzə qayıdın.';
+
+  @override
+  String get appLockDemoCompletionBody =>
+      'Tətbiq Kilidi seçilmiş proqramları namaz zamanı yumşaq şəkildə dayandırır ki, diqqətinizi namaza verəsiniz — sonra davam edin.';
+
+  @override
+  String get appLockDemoContinueSetup => 'Qurulmaya davam et';
+
+  @override
+  String get appLockDemoAppMessages => 'Mesajlar';
+
+  @override
+  String get appLockDemoAppCalendar => 'Təqvim';
+
+  @override
+  String get appLockDemoAppPhotos => 'Fotolar';
+
+  @override
+  String get appLockDemoAppCamera => 'Kamera';
+
+  @override
+  String get appLockDemoAppMail => 'Poçt';
+
+  @override
+  String get appLockDemoAppMaps => 'Xəritələr';
+
+  @override
+  String get appLockDemoAppWeather => 'Hava';
+
+  @override
+  String get appLockDemoAppClock => 'Saat';
+
+  @override
+  String get appLockDemoAppNotes => 'Qeydlər';
+
+  @override
+  String get appLockDemoAppSettings => 'Parametrlər';
+
+  @override
+  String get appLockDemoAppMusic => 'Musiqi';
+
+  @override
+  String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerAlarmsTitle => 'Namaz siqnalları';
+
+  @override
+  String get settingsPrayerAlarmsSubtitle =>
+      'Səssiz rejimi keçə bilən tam namaz siqnalları';
+
+  @override
+  String get prayerAlarmsMasterLabel => 'Namaz siqnallarını aktiv et';
+
+  @override
+  String get prayerAlarmsMasterSubtitle =>
+      'Hər seçilmiş namaz üçün yerli siqnal planlaşdır';
+
+  @override
+  String get prayerAlarmsSnoozeLabel => 'Təxirə salma müddəti';
+
+  @override
+  String prayerAlarmsSnoozeMinutes(int minutes) {
+    return '$minutes dəqiqə';
+  }
+
+  @override
+  String get prayerAlarmsPerPrayerSection => 'Namaza görə siqnallar';
+
+  @override
+  String get prayerAlarmsPermissionNeeded =>
+      'Vaxtında çalsın deyə siqnal icazəsi verin.';
+
+  @override
+  String get prayerAlarmsPermissionButton => 'Siqnallara icazə ver';
+
+  @override
+  String get prayerAlarmsFsiNeeded =>
+      'Kilid ekranında görünməsi üçün tam ekran siqnallarına icazə verin. Olmasa banner bildiriş kimi işləyir.';
+
+  @override
+  String get prayerAlarmsFsiButton => 'Tam ekran ayarları';
+
+  @override
+  String get prayerAlarmsUnsupported =>
+      'Bu cihazda yerli namaz siqnalları yoxdur. Yumşaq bildirişlər işləməyə davam edir.';
+
+  @override
+  String get prayerAlarmsIosFallback =>
+      'Bu iOS versiyasında AlarmKit əvəzinə yumşaq bildirişlər istifadə olunur.';
+
+  @override
+  String get prayerAlarmsDeniedTitle => 'Siqnal icazəsi tələb olunur';
+
+  @override
+  String get prayerAlarmsDeniedMessage =>
+      'Siqnal icazəsi verilənə qədər namaz siqnalları sönülü qalır. Yumşaq bildirişlər təsirlənmir.';
+
+  @override
+  String get prayerAlarmsOpenSettings => 'Parametrləri aç';
+
+  @override
+  String get prayerAlarmsStatusReady => 'Siqnallar planlaşdırmağa hazırdır';
+
+  @override
+  String get prayerAlarmsStatusNeedsPermission =>
+      'İcazə lazımdır — siqnallar aktiv deyil';
+
+  @override
+  String get prayerAlarmsStatusFallback =>
+      'Bu cihazda yumşaq bildirişlər istifadə olunur';
+
+  @override
+  String get prayerAlarmsStatusFsiOptional =>
+      'Siqnallar açıqdır. Kilid ekranı üçün tam ekranı aktiv edin.';
+
+  @override
+  String get prayerAlarmsCancel => 'Indi yox';
+
+  @override
+  String get homePrayerAlarmEnableLabel => 'Namaz siqnalı';
+
+  @override
+  String homePrayerAlarmEnableSubtitle(String prayerName) {
+    return '$prayerName vaxtında yerli siqnal çalsın';
+  }
+
+  @override
+  String get prayerAlarmBadge => 'Namaz siqnalı';
+
+  @override
+  String get prayerAlarmSubtitle => 'Namaz vaxtıdır';
+
+  @override
+  String prayerAlarmTitle(String prayerName) {
+    return '$prayerName — Namaz vaxtıdır';
+  }
+
+  @override
+  String get prayerAlarmIvePrayed => 'Namaz qıldım';
+
+  @override
+  String get prayerAlarmDismiss => 'Bağla';
+
+  @override
+  String get prayerAlarmSnooze => 'Təxirə sal';
+
+  @override
+  String get appLockDemoAppPhone => 'Telefon';
+
+  @override
+  String get appLockDemoAppSafari => 'Safari';
+
+  @override
+  String get appLockDemoAppFaceTime => 'FaceTime';
+
+  @override
+  String get appLockDemoAppReminders => 'Xatırlatmalar';
+
+  @override
+  String get appLockDemoAppAppStore => 'App Store';
+
+  @override
+  String get appLockDemoAppBooks => 'Kitablar';
+
+  @override
+  String get appLockDemoAppHealth => 'Sağlamlıq';
+
+  @override
+  String get appLockDemoAppWallet => 'Pul kisəsi';
+
+  @override
+  String get appLockDemoAppChrome => 'Chrome';
+
+  @override
+  String get settingsAppDemoLabel => 'Tətbiq demosu';
+
+  @override
+  String get settingsAppDemoChooseModeTitle => 'Tətbiq Kilidini sınayın';
+
+  @override
+  String get settingsAppDemoChooseModeSubtitle =>
+      'Bir Fokus rejimi seçin və seçilmiş tətbiqlərin necə dayandığını görün — DeenFocus-dan çıxmadan.';
+
+  @override
+  String get appLockDemoDone => 'Hazırdır';
+
+  @override
+  String get appLockDemoSleepIntroTitle =>
+      'Yuxu rejiminin necə işlədiyini görün';
+
+  @override
+  String get appLockDemoSleepIntroSubtitle =>
+      'DeenFocus-da qalın. Növbəti ekranda Instagram-a toxunun və yatmaq vaxtında necə dayandığını görün.';
+
+  @override
+  String get appLockDemoSleepModeBadge => 'YUXU REJİMİ';
+
+  @override
+  String get appLockDemoSleepLockTitle => 'İstirahət vaxtıdır';
+
+  @override
+  String get appLockDemoSleepLockCta => 'İstirahətə hazıram';
+
+  @override
+  String get appLockDemoSleepCompleted => 'Yuxu rejimi qorundu';
+
+  @override
+  String get appLockDemoSleepRewardSubtitle => 'Gecə qorumanız artdı';
+
+  @override
+  String get appLockDemoSleepStreakLabel => 'GECƏ SERİYASI';
+
+  @override
+  String get appLockDemoSleepRewardFooter =>
+      'Səhər üçün Fəcr xatırlatması quruldu';
+
+  @override
+  String get appLockDemoSleepMotivation =>
+      'Bu gecə yaxşı dincəlin ki, Fəcrə enerji ilə qalxasınız.';
+
+  @override
+  String get appLockDemoSleepCompletionSubtitle =>
+      'Sakit gecələr.\nAydın səhərlər.';
+
+  @override
+  String get appLockDemoSleepCompletionBody =>
+      'Yuxu rejimi gecə seçilmiş proqramları yumşaq şəkildə dayandırır ki, dincələsiniz — sonra davam edin.';
+
+  @override
+  String get appLockDemoChildIntroTitle =>
+      'Uşaq rejiminin necə işlədiyini görün';
+
+  @override
+  String get appLockDemoChildIntroSubtitle =>
+      'DeenFocus-da qalın. Növbəti ekranda Instagram-a toxunun və Uşaq rejimi açıq olanda kilidi görün.';
+
+  @override
+  String get appLockDemoChildModeBadge => 'UŞAQ REJİMİ';
+
+  @override
+  String get appLockDemoChildLockTitle => 'Proqramlar qorunur';
+
+  @override
+  String get appLockDemoChildLockDetail =>
+      'Uşaq rejimi açıq ikən seçilmiş proqramlar kiliddə qalır';
+
+  @override
+  String get appLockDemoChildLockCta => 'Anladım';
+
+  @override
+  String get appLockDemoChildCompleted => 'Uşaq rejimi aktivdir';
+
+  @override
+  String get appLockDemoChildRewardSubtitle => 'Qoruma seriyanız artdı';
+
+  @override
+  String get appLockDemoChildStreakLabel => 'TƏHLÜKƏSİZLİK SERİYASI';
+
+  @override
+  String get appLockDemoChildRewardFooter => 'İstənilən vaxt şifrənizlə çıxın';
+
+  @override
+  String get appLockDemoChildMotivation => 'Telefonu hər verdikdə rahatlıq.';
+
+  @override
+  String get appLockDemoChildCompletionSubtitle =>
+      'Bir toxunuşla təhlükəsiz rejim.\nYalnız icazə verdikləriniz.';
+
+  @override
+  String get appLockDemoChildCompletionBody =>
+      'Uşaq rejimi seçilmiş proqramları kilidləyir ki, uşağınız yalnız təhlükəsiz olanı görsün — sonra kilidi açın.';
+
+  @override
+  String get appLockDemoSleepCompletionTitle => 'Bu gecə yaxşı dincəlin';
+
+  @override
+  String get appLockDemoChildCompletionTitle => 'Rahatlıq';
+
+  @override
+  String get settingsAppDemoPrayerCardSubtitle =>
+      'Namaz vaxtı diqqəti yayındıranları dayandırın ki, huşu ilə namaz qılasınız.';
+
+  @override
+  String get settingsAppDemoSleepCardSubtitle =>
+      'Gecələrinizi qoruyun ki, daha rahat yatın — və Fəcr daha yüngül olsun.';
+
+  @override
+  String get settingsAppDemoChildCardSubtitle =>
+      'Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır.';
 }

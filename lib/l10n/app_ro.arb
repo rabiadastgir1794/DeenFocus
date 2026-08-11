@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "Asta îi permite Deen Focus să oprească aplicațiile care distrag în timpul Salah, somnului și modului copil.",
   "screenTimeButton": "Permite accesul la Timp ecran",
   "screenTimePrivacyNote": "Deen Focus nu îți citește niciodată datele — doar pune în pauză aplicațiile pe care le alegi.",
+  "onboardingSelectAppsTitlePrefix": "Selectează",
+  "onboardingSelectAppsTitleAccent": "aplicațiile de blocat",
+  "onboardingSelectAppsSubtitle": "Selectează aplicațiile pe care vrei să le blochezi la ora rugăciunii.",
+  "onboardingSelectAppsButton": "Selectează aplicații",
+  "onboardingSelectAppsSkipForNow": "Sari peste momentan",
+  "onboardingSelectAppsMockAllApps": "Toate aplicațiile și categoriile",
+  "onboardingSelectAppsMockPhotos": "Poze",
+  "onboardingSelectAppsMockNotes": "Note",
+  "onboardingSelectAppsMockMusic": "Muzică",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "Podcasturi",
   "screenTimeStepOf": "PASUL {current} DIN {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "Păstrează-ți seria înregistrând rugăciunea.",
   "prayerReminderYesButton": "Da, Alhamdulillah",
   "prayerReminderLaterButton": "Voi marca mai târziu",
+  "prayerNotificationSubtitleFajr": "„Într-adevăr, recitarea zorilor este întotdeauna martoră.” — Coran 17:78",
+  "prayerNotificationSubtitleDhuhr": "„Stabilește rugăciunea la coborârea soarelui...” — Coran 17:78",
+  "prayerNotificationSubtitleAsr": "„Păziți cu strictețe rugăciunile, mai ales rugăciunea de mijloc.” — Coran 2:238",
+  "prayerNotificationSubtitleMaghrib": "„Așadar, slăviți-L pe Allah când ajungeți seara...” — Coran 30:17",
+  "prayerNotificationSubtitleIsha": "„Stabilește rugăciunea -  până la întunericul nopții.” — Coran 17:78",
   "homeAiChatDescription": "Întrebați orice despre orele de rugăciune, Coran și îndrumări islamice.",
   "homeDay": "Zi",
   "homeDays": "Zile",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "Experiență DeenFocus mai bună",
   "supportUsImpactFeatures": "Funcții noi și actualizări",
   "supportUsImpactQuran": "Coran și învățare islamică",
-  "supportUsImpactServers": "Servere și fiabilitatea aplicației"
+  "supportUsImpactServers": "Servere și fiabilitatea aplicației",
+  "appLockDemoIntroTitle": "Vezi cum funcționează blocarea aplicațiilor",
+  "appLockDemoIntroSubtitle": "Rămâi în DeenFocus. Pe ecranul următor, atinge Instagram ca să vezi pauza la ora rugăciunii.",
+  "appLockDemoStartButton": "Pornește demo-ul",
+  "appLockDemoTryOpeningApp": "Încearcă să deschizi Instagram",
+  "appLockDemoSalahModeBadge": "MOD SALAH",
+  "appLockDemoTimeToPray": "Este timpul să te rogi",
+  "appLockDemoRemainingTime": "Timp rămas: {time}",
+  "appLockDemoIvePrayed": "Am făcut {prayerName}",
+  "appLockDemoAlhamdulillah": "Alhamdulillah",
+  "appLockDemoPrayerCompleted": "{prayerName} finalizată",
+  "appLockDemoStreakIncreased": "Seria ta de rugăciuni a crescut",
+  "appLockDemoPrayerStreakLabel": "SERIE RUGĂCIUNE",
+  "appLockDemoDayStreakLabel": "SERIE ZILE",
+  "appLockDemoNextPrayerIn": "Următoarea rugăciune în {minutes} minute",
+  "appLockDemoStreakMotivation": "Continuă! Consistența te apropie de Allah.",
+  "appLockDemoCompletionSubtitle": "Roagă-te. Confirmă o dată.\nRevino la ziua ta.",
+  "appLockDemoCompletionBody": "Blocarea aplicațiilor pune ușor pe pauză aplicațiile selectate în timpul Salah ca să te concentrezi — apoi continui când ești gata.",
+  "appLockDemoContinueSetup": "Continuă configurarea",
+  "appLockDemoAppMessages": "Mesaje",
+  "appLockDemoAppCalendar": "Calendar",
+  "appLockDemoAppPhotos": "Poze",
+  "appLockDemoAppCamera": "Cameră",
+  "appLockDemoAppMail": "Mail",
+  "appLockDemoAppMaps": "Hărți",
+  "appLockDemoAppWeather": "Vreme",
+  "appLockDemoAppClock": "Ceas",
+  "appLockDemoAppNotes": "Note",
+  "appLockDemoAppSettings": "Setări",
+  "appLockDemoAppMusic": "Muzică",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "Alarme de rugăciune",
+  "settingsPrayerAlarmsSubtitle": "Alarme complete care pot trece de modul silențios",
+  "prayerAlarmsMasterLabel": "Activează alarmele de rugăciune",
+  "prayerAlarmsMasterSubtitle": "Programează o alarmă nativă pentru fiecare rugăciune selectată",
+  "prayerAlarmsSnoozeLabel": "Durata amânării",
+  "prayerAlarmsSnoozeMinutes": "{minutes} minute",
+  "prayerAlarmsPerPrayerSection": "Alarme pe rugăciune",
+  "prayerAlarmsPermissionNeeded": "Permite alarma pentru a suna la timp.",
+  "prayerAlarmsPermissionButton": "Permite alarme",
+  "prayerAlarmsFsiNeeded": "Permite alarme pe ecran complet pentru ecranul de blocare. Fără asta apar ca banner.",
+  "prayerAlarmsFsiButton": "Setări ecran complet",
+  "prayerAlarmsUnsupported": "Alarmele native nu sunt disponibile pe acest dispozitiv. Notificările soft funcționează în continuare.",
+  "prayerAlarmsIosFallback": "Pe această versiune iOS se folosesc notificări soft în loc de AlarmKit.",
+  "homePrayerAlarmEnableLabel": "Alarmă de rugăciune",
+  "homePrayerAlarmEnableSubtitle": "Sună o alarmă nativă la {prayerName}",
+  "prayerAlarmBadge": "Alarmă de rugăciune",
+  "prayerAlarmSubtitle": "Este timpul să te rogi",
+  "prayerAlarmTitle": "{prayerName} — Este timpul să te rogi",
+  "prayerAlarmIvePrayed": "M-am rugat",
+  "prayerAlarmDismiss": "Închide",
+  "prayerAlarmSnooze": "Amână",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "Telefon",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "Mementouri",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "Cărți",
+  "appLockDemoAppHealth": "Sănătate",
+  "appLockDemoAppWallet": "Portofel",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "Este necesară permisiunea de alarmă",
+  "prayerAlarmsDeniedMessage": "Alarmele de rugăciune rămân oprite până acordați permisiunea. Notificările soft nu sunt afectate.",
+  "prayerAlarmsOpenSettings": "Deschide Setări",
+  "prayerAlarmsStatusReady": "Alarmele sunt gata de programare",
+  "prayerAlarmsStatusNeedsPermission": "Permisiune necesară — alarmele nu sunt active",
+  "prayerAlarmsStatusFallback": "Se folosesc notificări soft pe acest dispozitiv",
+  "prayerAlarmsStatusFsiOptional": "Alarmele sunt pornite. Activează ecranul complet pentru blocare.",
+  "prayerAlarmsCancel": "Nu acum",
+  "settingsAppDemoLabel": "Demo aplicație",
+  "settingsAppDemoChooseModeTitle": "Experimentează App Lock",
+  "settingsAppDemoChooseModeSubtitle": "Alege un mod Focus și vezi cum aplicațiile selectate se pun pe pauză — fără să părăsești DeenFocus.",
+  "appLockDemoDone": "Gata",
+  "appLockDemoSleepIntroTitle": "Vezi cum funcționează Modul Somn",
+  "appLockDemoSleepIntroSubtitle": "Rămâi în DeenFocus. Pe ecranul următor, atinge Instagram ca să vezi pauza la ora de culcare.",
+  "appLockDemoSleepModeBadge": "MOD SOMN",
+  "appLockDemoSleepLockTitle": "E timpul să te odihnești",
+  "appLockDemoSleepLockCta": "Sunt gata să mă odihnesc",
+  "appLockDemoSleepCompleted": "Modul Somn protejat",
+  "appLockDemoSleepRewardSubtitle": "Protecția ta de noapte a crescut",
+  "appLockDemoSleepStreakLabel": "SERIE NOAPTE",
+  "appLockDemoSleepRewardFooter": "Memento Fajr setat pentru dimineață",
+  "appLockDemoSleepMotivation": "Odihnește-te bine în noaptea asta ca să te trezești cu energie pentru Fajr.",
+  "appLockDemoSleepCompletionSubtitle": "Nopți liniștite.\nDimineți clare.",
+  "appLockDemoSleepCompletionBody": "Modul Somn pune ușor pe pauză aplicațiile selectate noaptea ca să te odihnești — apoi continui când ești gata.",
+  "appLockDemoChildIntroTitle": "Vezi cum funcționează Modul Copil",
+  "appLockDemoChildIntroSubtitle": "Rămâi în DeenFocus. Pe ecranul următor, atinge Instagram ca să vezi blocarea cu Modul Copil.",
+  "appLockDemoChildModeBadge": "MOD COPIL",
+  "appLockDemoChildLockTitle": "Aplicațiile sunt protejate",
+  "appLockDemoChildLockDetail": "Aplicațiile selectate rămân blocate cât timp Modul Copil este activ",
+  "appLockDemoChildLockCta": "Am înțeles",
+  "appLockDemoChildCompleted": "Modul Copil activ",
+  "appLockDemoChildRewardSubtitle": "Seria ta de protecție a crescut",
+  "appLockDemoChildStreakLabel": "SERIE SIGURĂ",
+  "appLockDemoChildRewardFooter": "Ieși oricând cu codul tău",
+  "appLockDemoChildMotivation": "Liniște de fiecare dată când dai telefonul.",
+  "appLockDemoChildCompletionSubtitle": "Mod sigur dintr-o atingere.\nDoar ce permiți tu.",
+  "appLockDemoChildCompletionBody": "Modul Copil blochează aplicațiile selectate ca micuțul tău să vadă doar ce e sigur — apoi deblochezi când ești gata.",
+  "appLockDemoSleepCompletionTitle": "Odihnește-te bine în noaptea asta",
+  "appLockDemoChildCompletionTitle": "Liniște sufletească",
+  "settingsAppDemoPrayerCardSubtitle": "Pune pe pauză distragerile la Salah ca să te rogi cu prezență.",
+  "settingsAppDemoSleepCardSubtitle": "Protejează-ți nopțile ca odihna să vină mai ușor — iar Fajr să fie mai ușor.",
+  "settingsAppDemoChildCardSubtitle": "Încredințează telefonul liniștit: rămân deschise doar aplicațiile permise."
 }

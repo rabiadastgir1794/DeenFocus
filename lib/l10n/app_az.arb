@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "Bu, Deen Focus-un namaz, yuxu vaxtı və uşaq rejimi zamanı diqqəti yayındıran tətbiqləri dayandırmasına imkan verir.",
   "screenTimeButton": "Ekran Vaxtına İcazə Ver",
   "screenTimePrivacyNote": "Deen Focus heç vaxt məlumatlarınızı oxumur — yalnız seçdiyiniz tətbiqləri dayandırır.",
+  "onboardingSelectAppsTitlePrefix": "Seçin",
+  "onboardingSelectAppsTitleAccent": "Kilidlənəcək Tətbiqlər",
+  "onboardingSelectAppsSubtitle": "Namaz vaxtı kilidləmək istədiyiniz tətbiqləri seçin.",
+  "onboardingSelectAppsButton": "Tətbiqləri seç",
+  "onboardingSelectAppsSkipForNow": "İndi keç",
+  "onboardingSelectAppsMockAllApps": "Bütün tətbiqlər və kateqoriyalar",
+  "onboardingSelectAppsMockPhotos": "Şəkillər",
+  "onboardingSelectAppsMockNotes": "Qeydlər",
+  "onboardingSelectAppsMockMusic": "Musiqi",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "Podkastlar",
   "screenTimeStepOf": "ADDIM {current} / {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "Namazınızı qeyd edərək seriyanızı davam etdirin.",
   "prayerReminderYesButton": "Bəli, Əlhəmdulillah",
   "prayerReminderLaterButton": "Sonra işarələyəcəyəm",
+  "prayerNotificationSubtitleFajr": "“Həqiqətən, dan yerinin tilavəti həmişə şahidlik edilir.” — Quran 17:78",
+  "prayerNotificationSubtitleDhuhr": "“Günəşin enməsi zamanı namazı qılın...” — Quran 17:78",
+  "prayerNotificationSubtitleAsr": "“Namazları, xüsusən orta namazı ciddi qoruyun.” — Quran 2:238",
+  "prayerNotificationSubtitleMaghrib": "“Axşama çatdığınızda Allahı tərifləyin...” — Quran 30:17",
+  "prayerNotificationSubtitleIsha": "“Namazı qılın - gecənin qaranlığına qədər.” — Quran 17:78",
   "homeAiChatDescription": "Namaz vaxtları, Quran və İslami rəhbər haqqında hər şeyi soruşun.",
   "homeDay": "gün",
   "homeDays": "Günlər",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "Daha yaxşı DeenFocus təcrübəsi",
   "supportUsImpactFeatures": "Yeni funksiyalar və yeniləmələr",
   "supportUsImpactQuran": "Quran və İslam öyrənməsi",
-  "supportUsImpactServers": "Serverlər və tətbiq etibarlılığı"
+  "supportUsImpactServers": "Serverlər və tətbiq etibarlılığı",
+  "appLockDemoIntroTitle": "Tətbiq Kilidinin necə işlədiyini görün",
+  "appLockDemoIntroSubtitle": "DeenFocus-da qalın. Növbəti ekranda Instagram-a toxunun və namaz vaxtında necə dayandığını görün.",
+  "appLockDemoStartButton": "Demo-ya başla",
+  "appLockDemoTryOpeningApp": "Instagram-ı açmağa cəhd edin",
+  "appLockDemoSalahModeBadge": "NAMAZ REJİMİ",
+  "appLockDemoTimeToPray": "Namaz vaxtıdır",
+  "appLockDemoRemainingTime": "Qalan vaxt: {time}",
+  "appLockDemoIvePrayed": "{prayerName} namazını qıldım",
+  "appLockDemoAlhamdulillah": "Əlhəmdulillah",
+  "appLockDemoPrayerCompleted": "{prayerName} tamamlandı",
+  "appLockDemoStreakIncreased": "Namaz seriyanız artdı",
+  "appLockDemoPrayerStreakLabel": "NAMAZ SERİYASI",
+  "appLockDemoDayStreakLabel": "GÜN SERİYASI",
+  "appLockDemoNextPrayerIn": "Növbəti namaz {minutes} dəqiqəyə",
+  "appLockDemoStreakMotivation": "Davam edin! Ardıcıllığınız sizi Allaha yaxınlaşdırır.",
+  "appLockDemoCompletionSubtitle": "Namaz qılın. Bir dəfə qeyd edin.\nGününüzə qayıdın.",
+  "appLockDemoCompletionBody": "Tətbiq Kilidi seçilmiş proqramları namaz zamanı yumşaq şəkildə dayandırır ki, diqqətinizi namaza verəsiniz — sonra davam edin.",
+  "appLockDemoContinueSetup": "Qurulmaya davam et",
+  "appLockDemoAppMessages": "Mesajlar",
+  "appLockDemoAppCalendar": "Təqvim",
+  "appLockDemoAppPhotos": "Fotolar",
+  "appLockDemoAppCamera": "Kamera",
+  "appLockDemoAppMail": "Poçt",
+  "appLockDemoAppMaps": "Xəritələr",
+  "appLockDemoAppWeather": "Hava",
+  "appLockDemoAppClock": "Saat",
+  "appLockDemoAppNotes": "Qeydlər",
+  "appLockDemoAppSettings": "Parametrlər",
+  "appLockDemoAppMusic": "Musiqi",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "Namaz siqnalları",
+  "settingsPrayerAlarmsSubtitle": "Səssiz rejimi keçə bilən tam namaz siqnalları",
+  "prayerAlarmsMasterLabel": "Namaz siqnallarını aktiv et",
+  "prayerAlarmsMasterSubtitle": "Hər seçilmiş namaz üçün yerli siqnal planlaşdır",
+  "prayerAlarmsSnoozeLabel": "Təxirə salma müddəti",
+  "prayerAlarmsSnoozeMinutes": "{minutes} dəqiqə",
+  "prayerAlarmsPerPrayerSection": "Namaza görə siqnallar",
+  "prayerAlarmsPermissionNeeded": "Vaxtında çalsın deyə siqnal icazəsi verin.",
+  "prayerAlarmsPermissionButton": "Siqnallara icazə ver",
+  "prayerAlarmsFsiNeeded": "Kilid ekranında görünməsi üçün tam ekran siqnallarına icazə verin. Olmasa banner bildiriş kimi işləyir.",
+  "prayerAlarmsFsiButton": "Tam ekran ayarları",
+  "prayerAlarmsUnsupported": "Bu cihazda yerli namaz siqnalları yoxdur. Yumşaq bildirişlər işləməyə davam edir.",
+  "prayerAlarmsIosFallback": "Bu iOS versiyasında AlarmKit əvəzinə yumşaq bildirişlər istifadə olunur.",
+  "homePrayerAlarmEnableLabel": "Namaz siqnalı",
+  "homePrayerAlarmEnableSubtitle": "{prayerName} vaxtında yerli siqnal çalsın",
+  "prayerAlarmBadge": "Namaz siqnalı",
+  "prayerAlarmSubtitle": "Namaz vaxtıdır",
+  "prayerAlarmTitle": "{prayerName} — Namaz vaxtıdır",
+  "prayerAlarmIvePrayed": "Namaz qıldım",
+  "prayerAlarmDismiss": "Bağla",
+  "prayerAlarmSnooze": "Təxirə sal",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "Telefon",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "Xatırlatmalar",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "Kitablar",
+  "appLockDemoAppHealth": "Sağlamlıq",
+  "appLockDemoAppWallet": "Pul kisəsi",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "Siqnal icazəsi tələb olunur",
+  "prayerAlarmsDeniedMessage": "Siqnal icazəsi verilənə qədər namaz siqnalları sönülü qalır. Yumşaq bildirişlər təsirlənmir.",
+  "prayerAlarmsOpenSettings": "Parametrləri aç",
+  "prayerAlarmsStatusReady": "Siqnallar planlaşdırmağa hazırdır",
+  "prayerAlarmsStatusNeedsPermission": "İcazə lazımdır — siqnallar aktiv deyil",
+  "prayerAlarmsStatusFallback": "Bu cihazda yumşaq bildirişlər istifadə olunur",
+  "prayerAlarmsStatusFsiOptional": "Siqnallar açıqdır. Kilid ekranı üçün tam ekranı aktiv edin.",
+  "prayerAlarmsCancel": "Indi yox",
+  "settingsAppDemoLabel": "Tətbiq demosu",
+  "settingsAppDemoChooseModeTitle": "Tətbiq Kilidini sınayın",
+  "settingsAppDemoChooseModeSubtitle": "Bir Fokus rejimi seçin və seçilmiş tətbiqlərin necə dayandığını görün — DeenFocus-dan çıxmadan.",
+  "appLockDemoDone": "Hazırdır",
+  "appLockDemoSleepIntroTitle": "Yuxu rejiminin necə işlədiyini görün",
+  "appLockDemoSleepIntroSubtitle": "DeenFocus-da qalın. Növbəti ekranda Instagram-a toxunun və yatmaq vaxtında necə dayandığını görün.",
+  "appLockDemoSleepModeBadge": "YUXU REJİMİ",
+  "appLockDemoSleepLockTitle": "İstirahət vaxtıdır",
+  "appLockDemoSleepLockCta": "İstirahətə hazıram",
+  "appLockDemoSleepCompleted": "Yuxu rejimi qorundu",
+  "appLockDemoSleepRewardSubtitle": "Gecə qorumanız artdı",
+  "appLockDemoSleepStreakLabel": "GECƏ SERİYASI",
+  "appLockDemoSleepRewardFooter": "Səhər üçün Fəcr xatırlatması quruldu",
+  "appLockDemoSleepMotivation": "Bu gecə yaxşı dincəlin ki, Fəcrə enerji ilə qalxasınız.",
+  "appLockDemoSleepCompletionSubtitle": "Sakit gecələr.\nAydın səhərlər.",
+  "appLockDemoSleepCompletionBody": "Yuxu rejimi gecə seçilmiş proqramları yumşaq şəkildə dayandırır ki, dincələsiniz — sonra davam edin.",
+  "appLockDemoChildIntroTitle": "Uşaq rejiminin necə işlədiyini görün",
+  "appLockDemoChildIntroSubtitle": "DeenFocus-da qalın. Növbəti ekranda Instagram-a toxunun və Uşaq rejimi açıq olanda kilidi görün.",
+  "appLockDemoChildModeBadge": "UŞAQ REJİMİ",
+  "appLockDemoChildLockTitle": "Proqramlar qorunur",
+  "appLockDemoChildLockDetail": "Uşaq rejimi açıq ikən seçilmiş proqramlar kiliddə qalır",
+  "appLockDemoChildLockCta": "Anladım",
+  "appLockDemoChildCompleted": "Uşaq rejimi aktivdir",
+  "appLockDemoChildRewardSubtitle": "Qoruma seriyanız artdı",
+  "appLockDemoChildStreakLabel": "TƏHLÜKƏSİZLİK SERİYASI",
+  "appLockDemoChildRewardFooter": "İstənilən vaxt şifrənizlə çıxın",
+  "appLockDemoChildMotivation": "Telefonu hər verdikdə rahatlıq.",
+  "appLockDemoChildCompletionSubtitle": "Bir toxunuşla təhlükəsiz rejim.\nYalnız icazə verdikləriniz.",
+  "appLockDemoChildCompletionBody": "Uşaq rejimi seçilmiş proqramları kilidləyir ki, uşağınız yalnız təhlükəsiz olanı görsün — sonra kilidi açın.",
+  "appLockDemoSleepCompletionTitle": "Bu gecə yaxşı dincəlin",
+  "appLockDemoChildCompletionTitle": "Rahatlıq",
+  "settingsAppDemoPrayerCardSubtitle": "Namaz vaxtı diqqəti yayındıranları dayandırın ki, huşu ilə namaz qılasınız.",
+  "settingsAppDemoSleepCardSubtitle": "Gecələrinizi qoruyun ki, daha rahat yatın — və Fəcr daha yüngül olsun.",
+  "settingsAppDemoChildCardSubtitle": "Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır."
 }

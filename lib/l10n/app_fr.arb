@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "C'est ce qui permet à Deen Focus de mettre en pause les apps distrayantes pendant la Salah, le sommeil et le mode enfant.",
   "screenTimeButton": "Autoriser l'accès au Temps d'écran",
   "screenTimePrivacyNote": "Deen Focus ne lit jamais vos données — il met seulement en pause les apps que vous choisissez.",
+  "onboardingSelectAppsTitlePrefix": "Sélectionnez",
+  "onboardingSelectAppsTitleAccent": "les apps à verrouiller",
+  "onboardingSelectAppsSubtitle": "Sélectionnez les applications à verrouiller au moment de la prière.",
+  "onboardingSelectAppsButton": "Sélectionner des apps",
+  "onboardingSelectAppsSkipForNow": "Passer pour l’instant",
+  "onboardingSelectAppsMockAllApps": "Toutes les apps et catégories",
+  "onboardingSelectAppsMockPhotos": "Photos",
+  "onboardingSelectAppsMockNotes": "Notes",
+  "onboardingSelectAppsMockMusic": "Musique",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "Podcasts",
   "screenTimeStepOf": "ÉTAPE {current} SUR {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "Gardez votre série en enregistrant votre prière.",
   "prayerReminderYesButton": "Oui, Alhamdulillah",
   "prayerReminderLaterButton": "Je marquerai plus tard",
+  "prayerNotificationSubtitleFajr": "« En vérité, la récitation de l’aube est toujours témoignée. » — Coran 17:78",
+  "prayerNotificationSubtitleDhuhr": "« Accomplis la prière au déclin du soleil... » — Coran 17:78",
+  "prayerNotificationSubtitleAsr": "« Soyez assidus aux prières, surtout à la prière médiane. » — Coran 2:238",
+  "prayerNotificationSubtitleMaghrib": "« Glorifiez donc Allah lorsque vous atteignez le soir... » — Coran 30:17",
+  "prayerNotificationSubtitleIsha": "« Accomplis la prière -  jusqu’à l’obscurité de la nuit. » — Coran 17:78",
   "homeAiChatDescription": "Demandez n'importe quoi sur les heures de prière, le Coran et les conseils islamiques.",
   "homeDay": "Jour",
   "homeDays": "Jours",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "Meilleure expérience DeenFocus",
   "supportUsImpactFeatures": "Nouvelles fonctionnalités et mises à jour",
   "supportUsImpactQuran": "Coran et apprentissage islamique",
-  "supportUsImpactServers": "Serveurs et fiabilité de l’app"
+  "supportUsImpactServers": "Serveurs et fiabilité de l’app",
+  "appLockDemoIntroTitle": "Découvrez le verrouillage d’apps",
+  "appLockDemoIntroSubtitle": "Restez dans DeenFocus. Sur l’écran suivant, touchez Instagram pour voir la pause à l’heure de la prière.",
+  "appLockDemoStartButton": "Lancer la démo",
+  "appLockDemoTryOpeningApp": "Essayez d’ouvrir Instagram",
+  "appLockDemoSalahModeBadge": "MODE SALAH",
+  "appLockDemoTimeToPray": "C’est l’heure de prier",
+  "appLockDemoRemainingTime": "Temps restant : {time}",
+  "appLockDemoIvePrayed": "J’ai prié {prayerName}",
+  "appLockDemoAlhamdulillah": "Alhamdulillah",
+  "appLockDemoPrayerCompleted": "{prayerName} terminée",
+  "appLockDemoStreakIncreased": "Votre série de prières a augmenté",
+  "appLockDemoPrayerStreakLabel": "SÉRIE DE PRIÈRE",
+  "appLockDemoDayStreakLabel": "SÉRIE DE JOURS",
+  "appLockDemoNextPrayerIn": "Prochaine prière dans {minutes} minutes",
+  "appLockDemoStreakMotivation": "Continuez ! Votre constance vous rapproche d’Allah.",
+  "appLockDemoCompletionSubtitle": "Priez. Validez une fois.\nReprenez votre journée.",
+  "appLockDemoCompletionBody": "Le verrouillage d’apps met en pause en douceur les apps choisies pendant la Salah pour que vous puissiez vous concentrer — puis vous continuez quand vous êtes prêt.",
+  "appLockDemoContinueSetup": "Continuer la configuration",
+  "appLockDemoAppMessages": "Messages",
+  "appLockDemoAppCalendar": "Calendrier",
+  "appLockDemoAppPhotos": "Photos",
+  "appLockDemoAppCamera": "Appareil photo",
+  "appLockDemoAppMail": "Mail",
+  "appLockDemoAppMaps": "Plans",
+  "appLockDemoAppWeather": "Météo",
+  "appLockDemoAppClock": "Horloge",
+  "appLockDemoAppNotes": "Notes",
+  "appLockDemoAppSettings": "Réglages",
+  "appLockDemoAppMusic": "Musique",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "Alarmes de prière",
+  "settingsPrayerAlarmsSubtitle": "Alarmes complètes pouvant passer le mode silencieux",
+  "prayerAlarmsMasterLabel": "Activer les alarmes de prière",
+  "prayerAlarmsMasterSubtitle": "Planifier une alarme native pour chaque prière sélectionnée",
+  "prayerAlarmsSnoozeLabel": "Durée du report",
+  "prayerAlarmsSnoozeMinutes": "{minutes} minutes",
+  "prayerAlarmsPerPrayerSection": "Alarmes par prière",
+  "prayerAlarmsPermissionNeeded": "Autorisez les alarmes pour qu'elles se déclenchent à l'heure.",
+  "prayerAlarmsPermissionButton": "Autoriser les alarmes",
+  "prayerAlarmsFsiNeeded": "Autorisez les alarmes plein écran pour l’écran de verrouillage. Sinon, elles s’affichent en bannière.",
+  "prayerAlarmsFsiButton": "Réglages plein écran",
+  "prayerAlarmsUnsupported": "Les alarmes natives ne sont pas disponibles sur cet appareil. Les notifications douces fonctionnent toujours.",
+  "prayerAlarmsIosFallback": "Sur cette version d'iOS, les notifications douces remplacent AlarmKit.",
+  "homePrayerAlarmEnableLabel": "Alarme de prière",
+  "homePrayerAlarmEnableSubtitle": "Sonner une alarme native à {prayerName}",
+  "prayerAlarmBadge": "Alarme de prière",
+  "prayerAlarmSubtitle": "Il est temps de prier",
+  "prayerAlarmTitle": "{prayerName} — Il est temps de prier",
+  "prayerAlarmIvePrayed": "J'ai prié",
+  "prayerAlarmDismiss": "Ignorer",
+  "prayerAlarmSnooze": "Reporter",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "Téléphone",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "Rappels",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "Livres",
+  "appLockDemoAppHealth": "Santé",
+  "appLockDemoAppWallet": "Wallet",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "Autorisation d’alarme requise",
+  "prayerAlarmsDeniedMessage": "Les alarmes de prière restent désactivées jusqu’à l’autorisation. Les notifications douces ne sont pas affectées.",
+  "prayerAlarmsOpenSettings": "Ouvrir Réglages",
+  "prayerAlarmsStatusReady": "Les alarmes sont prêtes à être planifiées",
+  "prayerAlarmsStatusNeedsPermission": "Autorisation requise — alarmes inactives",
+  "prayerAlarmsStatusFallback": "Notifications douces utilisées sur cet appareil",
+  "prayerAlarmsStatusFsiOptional": "Alarmes activées. Activez le plein écran pour l’écran de verrouillage.",
+  "prayerAlarmsCancel": "Pas maintenant",
+  "settingsAppDemoLabel": "Démo de l’app",
+  "settingsAppDemoChooseModeTitle": "Découvrez le verrouillage",
+  "settingsAppDemoChooseModeSubtitle": "Choisissez un mode Focus et voyez comment les apps sélectionnées se mettent en pause — sans quitter DeenFocus.",
+  "appLockDemoDone": "Terminé",
+  "appLockDemoSleepIntroTitle": "Découvrez le mode Sommeil",
+  "appLockDemoSleepIntroSubtitle": "Restez dans DeenFocus. Sur l’écran suivant, touchez Instagram pour voir la pause à l’heure du coucher.",
+  "appLockDemoSleepModeBadge": "MODE SOMMEIL",
+  "appLockDemoSleepLockTitle": "Il est temps de se reposer",
+  "appLockDemoSleepLockCta": "Je suis prêt à me reposer",
+  "appLockDemoSleepCompleted": "Mode Sommeil protégé",
+  "appLockDemoSleepRewardSubtitle": "Votre protection nocturne a augmenté",
+  "appLockDemoSleepStreakLabel": "SÉRIE NUIT",
+  "appLockDemoSleepRewardFooter": "Rappel Fajr prévu pour le matin",
+  "appLockDemoSleepMotivation": "Reposez-vous bien ce soir pour vous lever pour Fajr avec énergie.",
+  "appLockDemoSleepCompletionSubtitle": "Nuits calmes.\nMatins clairs.",
+  "appLockDemoSleepCompletionBody": "Le mode Sommeil met en pause en douceur les apps choisies la nuit pour que vous puissiez vous reposer — puis vous continuez.",
+  "appLockDemoChildIntroTitle": "Découvrez le mode Enfant",
+  "appLockDemoChildIntroSubtitle": "Restez dans DeenFocus. Sur l’écran suivant, touchez Instagram pour voir le verrouillage en mode Enfant.",
+  "appLockDemoChildModeBadge": "MODE ENFANT",
+  "appLockDemoChildLockTitle": "Les apps sont protégées",
+  "appLockDemoChildLockDetail": "Les apps sélectionnées restent verrouillées en mode Enfant",
+  "appLockDemoChildLockCta": "Compris",
+  "appLockDemoChildCompleted": "Mode Enfant actif",
+  "appLockDemoChildRewardSubtitle": "Votre série de protection a augmenté",
+  "appLockDemoChildStreakLabel": "SÉRIE SÉCURITÉ",
+  "appLockDemoChildRewardFooter": "Quittez à tout moment avec votre code",
+  "appLockDemoChildMotivation": "L’esprit tranquille chaque fois que vous prêtez votre téléphone.",
+  "appLockDemoChildCompletionSubtitle": "Mode sûr en un tap.\nSeulement ce que vous autorisez.",
+  "appLockDemoChildCompletionBody": "Le mode Enfant verrouille les apps choisies pour que votre enfant ne voie que ce qui est sûr — puis vous déverrouillez.",
+  "appLockDemoSleepCompletionTitle": "Reposez-vous bien ce soir",
+  "appLockDemoChildCompletionTitle": "L’esprit tranquille",
+  "settingsAppDemoPrayerCardSubtitle": "Mettez les distractions en pause pendant la Salah pour prier avec présence.",
+  "settingsAppDemoSleepCardSubtitle": "Protégez vos nuits pour mieux vous reposer — et un Fajr plus léger.",
+  "settingsAppDemoChildCardSubtitle": "Confiez votre téléphone en toute sérénité : seules les apps autorisées restent ouvertes."
 }

@@ -83,8 +83,17 @@ class AppNotificationService {
     _lastFocusScheduleSignature = null;
   }
 
+  /// Forces the next [reschedulePrayerNotifications] to rebuild even if the
+  /// computed signature matches the in-memory cache.
+  void invalidatePrayerScheduleCache() {
+    _lastPrayerScheduleSignature = null;
+  }
+
   bool _hadIosFocusNotificationPendingCapSkip = false;
   bool _iosFocusNotificationsRetryPending = false;
+
+  /// Android can keep a longer rolling batch; iOS stays short for the 64-pending cap.
+  static int get defaultPrayerScheduleDaysAhead => Platform.isIOS ? 3 : 7;
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -144,9 +153,12 @@ class AppNotificationService {
   static const int _prayerNotificationIdStart = 1000;
   static const int _prayerNotificationIdEnd = 1199;
 
-  /// iOS allows at most 64 pending local notifications per app; leave headroom
-  /// so focus transition alerts are not silently dropped after prayer reminders.
-  static const int _iosMaxPendingLocalNotifications = 62;
+  /// Hard iOS limit for pending local notifications per app.
+  static const int _iosPendingNotificationLimit = 64;
+
+  /// Reserve capacity so the nearest 3 calendar days × 5 prayers stay schedulable
+  /// even when focus/other alerts compete for the iOS pending pool.
+  static const int _iosPrayerReserveSlots = 15;
 
   Future<void> reschedulePrayerNotifications({
     required double latitude,
@@ -156,9 +168,24 @@ class AppNotificationService {
   }) async {
     final run = _prayerSyncSerial.then((_) async {
       final isSpanish = await _isSpanishLocale();
+      final l10n = await _focusNotificationsLocalizations();
       await initialize();
+
+      final needsTzReschedule =
+          await StorageService.needsPrayerNotificationReschedule;
+      final effectiveForce = forceReschedule || needsTzReschedule;
+
       if (!await _hasNotificationPermission()) {
+        // Permission / master toggle off must clear leftovers so revoked access
+        // cannot leave orphaned prayer reminders firing.
         _lastPrayerScheduleSignature = null;
+        await _cancelRange(
+          _prayerNotificationIdStart,
+          _prayerNotificationIdEnd,
+        );
+        if (needsTzReschedule) {
+          await StorageService.setNeedsPrayerNotificationReschedule(false);
+        }
         return;
       }
       await _ensureAndroidExactAlarmOrFallback();
@@ -170,33 +197,29 @@ class AppNotificationService {
           ? PrayerSettingsState.defaults()
           : PrayerSettingsState.fromJson(prayerSettingsRaw);
       final customTimeOverrides = prayerSettings.customTimeOverrides;
+      final calculationMethod = await StorageService.calculationMethod ?? '';
+      final asrMethod = await StorageService.asrMethod ?? '';
+      final localeCode = await StorageService.localeCode ?? 'en';
 
       final now = DateTime.now();
-      final int daysAhead;
-      if (daysAheadOverride != null) {
-        daysAhead = daysAheadOverride.clamp(1, 7);
-      } else {
-        // iOS: keep the batch small so Salah/Night focus alerts still fit under the
-        // 64 pending-notification limit. Android uses the same horizon as focus
-        // scheduling; refill extends on Salah home unlock.
-        daysAhead = 2;
-      }
+      final daysAhead =
+          (daysAheadOverride ?? defaultPrayerScheduleDaysAhead).clamp(1, 7);
+      // Calendar-day iteration (not Duration) so DST transitions cannot skip a day.
+      final today = DateTime(now.year, now.month, now.day);
       final datasets = <({int dayOffset, HomePrayerTimesData data})>[
         for (var d = 0; d < daysAhead; d++)
           (
             dayOffset: d,
-            // Keep prayer reminder times deterministic and aligned with focus
-            // scheduling. The cached helper can briefly lag across resume/day
-            // boundaries, which is enough to fire a reminder that does not line
-            // up with the active lock window.
+            // Fresh calculation — never the home cache — so reminders align with
+            // the current method/location and focus lock windows.
             data: HomePrayerTimesHelper.applyCustomOverrides(
               data: await HomePrayerTimesHelper.generatePrayerTimesForDate(
                 latitude: latitude,
                 longitude: longitude,
-                date: now.add(Duration(days: d)),
+                date: DateTime(today.year, today.month, today.day + d),
               ),
               overridesMinutesSinceMidnight: customTimeOverrides,
-              referenceTime: now.add(Duration(days: d)),
+              referenceTime: DateTime(today.year, today.month, today.day + d, 12),
             ),
           ),
       ];
@@ -205,21 +228,32 @@ class AppNotificationService {
         latitude: latitude,
         longitude: longitude,
         datasets: datasets,
+        prayerSettings: prayerSettings,
+        calculationMethod: calculationMethod,
+        asrMethod: asrMethod,
+        localeCode: localeCode,
+        timeZoneName: now.timeZoneName,
+        daysAhead: daysAhead,
       );
-      if (_lastPrayerScheduleSignature == signature && !forceReschedule) {
+      // Identical schedule → keep existing pending Fajr→Isha alarms. Never cancel
+      // just because resume/daily-refresh set a dirty flag after NTP TIME_CHANGED.
+      if (_lastPrayerScheduleSignature == signature) {
+        if (needsTzReschedule) {
+          await StorageService.setNeedsPrayerNotificationReschedule(false);
+        }
         await FocusEnforcementService.appendDebugLog(
           'notifications.prayer.sync',
-          'skipped reschedule because signature is unchanged',
+          'skipped reschedule because signature is unchanged '
+          '(force=$effectiveForce)',
         );
         return;
       }
 
-      // Cancel only our prayer slot IDs. Do not use [cancelAll] — it removes every
-      // notification from the tray (delivered + other channels), so reminders and
-      // focus notifications would vanish whenever we reschedule (resume, refresh).
+      // Cancel stale prayer IDs first so they are not counted toward the iOS cap.
+      // Do not use [cancelAll] — it would clear unrelated tray notifications.
       await _cancelRange(_prayerNotificationIdStart, _prayerNotificationIdEnd);
 
-      // Schedule up to [daysAhead] days — stable IDs keep replacements deterministic.
+      final candidates = <PrayerScheduleCandidate>[];
       for (final dataset in datasets) {
         for (final slot in dataset.data.slots.where(
           (slot) => slot.id != HomePrayerId.sunrise,
@@ -229,24 +263,64 @@ class AppNotificationService {
               ? const PrayerSettingEntry()
               : prayerSettings.forPrayer(trackable);
           if (!entry.notificationsEnabled) continue;
-
-          final id =
-              _prayerNotificationIdStart +
-              dataset.dayOffset * 20 +
-              _slotIndex(slot.id);
-          await _scheduleIfFuture(
-            id: id,
-            when: slot.time,
-            title: _prayerTimeTitle(slot.id, isSpanish: isSpanish),
-            body: _prayerTimeBody(slot.id, isSpanish: isSpanish),
-            details: _prayerNotificationDetailsFor(entry.sound),
-            // Avoid alarm-clock UI side effects ("approaching"/upcoming alarm).
-            preferAlarmClock: false,
+          candidates.add(
+            PrayerScheduleCandidate(
+              id:
+                  _prayerNotificationIdStart +
+                  dataset.dayOffset * 20 +
+                  _slotIndex(slot.id),
+              when: slot.time,
+              title: _prayerTimeTitle(slot.id, isSpanish: isSpanish),
+              body: _prayerTimeBody(slot.id, l10n),
+              details: _prayerNotificationDetailsFor(entry.sound),
+              payload: 'prayer:${slot.id.name}',
+            ),
           );
         }
       }
 
+      var toSchedule = candidates;
+      if (Platform.isIOS) {
+        // Only free focus/other alerts for prayers that will actually be scheduled
+        // (nearest upcoming within the 3-day horizon), not a blanket 15 always.
+        final futureCount = prioritizeNearestPrayerSlots(
+          candidates: candidates,
+          room: _iosPendingNotificationLimit,
+          now: now,
+        ).length;
+        final needed = iosPrayerSlotsToProtect(futureCandidateCount: futureCount);
+        await _ensureIosRoomForPrayers(needed: needed);
+        final pending = await _plugin.pendingNotificationRequests();
+        final room = (_iosPendingNotificationLimit - pending.length).clamp(
+          0,
+          _iosPendingNotificationLimit,
+        );
+        toSchedule = prioritizeNearestPrayerSlots(
+          candidates: candidates,
+          room: room,
+          now: now,
+        );
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.prayer.sync',
+          'ios cap needed=$needed room=$room candidates=${candidates.length} '
+          'selected=${toSchedule.length}',
+        );
+      }
+
+      for (final candidate in toSchedule) {
+        await _schedulePrayerCandidate(candidate);
+      }
+
       _lastPrayerScheduleSignature = signature;
+      if (needsTzReschedule) {
+        await StorageService.setNeedsPrayerNotificationReschedule(false);
+      }
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.prayer.sync',
+        'scheduled soft prayer reminders daysAhead=$daysAhead '
+        'scheduledCount=${toSchedule.length} '
+        'force=$effectiveForce tz=${now.timeZoneName}',
+      );
     });
     _prayerSyncSerial = run.catchError((Object _) {});
     await run;
@@ -418,6 +492,7 @@ class AppNotificationService {
         body: body,
         details: _nightTransitionNotificationDetails,
         preferAlarmClock: false,
+        iosScheduleRole: _IosScheduleRole.focus,
       );
       if (Platform.isIOS && !scheduled && at.isAfter(DateTime.now())) {
         _hadIosFocusNotificationPendingCapSkip = true;
@@ -568,33 +643,77 @@ class AppNotificationService {
     );
   }
 
+  Future<void> _schedulePrayerCandidate(PrayerScheduleCandidate candidate) async {
+    await _scheduleIfFuture(
+      id: candidate.id,
+      when: candidate.when,
+      title: candidate.title,
+      body: candidate.body,
+      details: candidate.details,
+      payload: candidate.payload,
+      // Prayer times must beat Doze. alarmClock is the reliable Android path;
+      // focus/other alerts keep preferAlarmClock=false.
+      preferAlarmClock: true,
+      iosScheduleRole: _IosScheduleRole.prayer,
+    );
+  }
+
   Future<bool> _scheduleIfFuture({
     required int id,
     required DateTime when,
     required String title,
     required String body,
     required NotificationDetails details,
+    String? payload,
     bool preferAlarmClock = false,
+    _IosScheduleRole iosScheduleRole = _IosScheduleRole.focus,
   }) async {
     final safeTitle = title.trim().isEmpty ? 'Deenly' : title.trim();
     final safeBody = body.trim().isEmpty
         ? 'Open Deenly for details.'
         : body.trim();
-    final scheduledAt = when.toLocal();
-    if (!scheduledAt.isAfter(DateTime.now())) {
+    // Prayer slots are already local wall times truncated to the minute.
+    final scheduledAt = when.isUtc ? when.toLocal() : when;
+    final scheduledMinute = DateTime(
+      scheduledAt.year,
+      scheduledAt.month,
+      scheduledAt.day,
+      scheduledAt.hour,
+      scheduledAt.minute,
+    );
+    // Exact prayer time only — never schedule or show a late catch-up.
+    if (!scheduledMinute.isAfter(DateTime.now())) {
       await FocusEnforcementService.appendDebugLog(
         'notifications.skip',
-        'id=$id title=$safeTitle scheduledAt=${scheduledAt.toIso8601String()} reason=past',
+        'id=$id title=$safeTitle scheduledAt=${scheduledMinute.toIso8601String()} '
+        'reason=past',
       );
       return false;
     }
 
     if (Platform.isIOS) {
       final pending = await _plugin.pendingNotificationRequests();
-      if (pending.length >= _iosMaxPendingLocalNotifications) {
+      final prayerPending = pending.where(_isPrayerNotificationId).length;
+      final nonPrayerPending = pending.length - prayerPending;
+      final blocked = switch (iosScheduleRole) {
+        // Prayers may use the full OS pool; caller already ranked nearest-first.
+        _IosScheduleRole.prayer =>
+          pending.length >= _iosPendingNotificationLimit,
+        // Focus/other must leave reserved capacity for prayer reminders.
+        _IosScheduleRole.focus => () {
+          final reserved = prayerPending > _iosPrayerReserveSlots
+              ? prayerPending
+              : _iosPrayerReserveSlots;
+          final focusBudget = _iosPendingNotificationLimit - reserved;
+          return nonPrayerPending >= focusBudget;
+        }(),
+      };
+      if (blocked) {
         await FocusEnforcementService.appendDebugLog(
           'notifications.skip',
-          'id=$id title=$safeTitle reason=ios_pending_cap pending=${pending.length}',
+          'id=$id title=$safeTitle reason=ios_pending_cap '
+          'role=${iosScheduleRole.name} pending=${pending.length} '
+          'prayerPending=$prayerPending nonPrayerPending=$nonPrayerPending',
         );
         return false;
       }
@@ -602,10 +721,20 @@ class AppNotificationService {
 
     await FocusEnforcementService.appendDebugLog(
       'notifications.schedule',
-      'id=$id title=$safeTitle scheduledAt=${scheduledAt.toIso8601String()}',
+      'id=$id title=$safeTitle scheduledAt=${scheduledMinute.toIso8601String()} '
+      'payload=$payload',
     );
 
-    final whenTz = tz.TZDateTime.from(scheduledAt, tz.local);
+    // Build TZDateTime from wall-clock components in tz.local so the OS trigger
+    // matches the calculated prayer minute (not a UTC reinterpretation).
+    final whenTz = tz.TZDateTime(
+      tz.local,
+      scheduledMinute.year,
+      scheduledMinute.month,
+      scheduledMinute.day,
+      scheduledMinute.hour,
+      scheduledMinute.minute,
+    );
 
     if (Platform.isAndroid) {
       Future<void> scheduleWith(AndroidScheduleMode mode) {
@@ -618,6 +747,7 @@ class AppNotificationService {
           androidScheduleMode: mode,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
+          payload: payload,
         );
       }
 
@@ -657,6 +787,7 @@ class AppNotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
       );
     }
     return true;
@@ -735,27 +866,23 @@ class AppNotificationService {
     try {
       final timezoneName = await FlutterTimezone.getLocalTimezone();
       tz.setLocalLocation(tz.getLocation(timezoneName));
+      return;
     } catch (_) {
-      tz.setLocalLocation(tz.UTC);
+      // Fall through to offset-based location — never force UTC for wall times.
+    }
+    try {
+      final offsetHours = DateTime.now().timeZoneOffset.inHours;
+      // Etc/GMT signs are inverted from conventional UTC offsets.
+      final locationName = offsetHours == 0
+          ? 'Etc/UTC'
+          : 'Etc/GMT${offsetHours > 0 ? '-' : '+'}${offsetHours.abs()}';
+      tz.setLocalLocation(tz.getLocation(locationName));
+    } catch (_) {
+      // Leave tz.local unchanged if both lookups fail.
     }
   }
 
-  int _slotIndex(HomePrayerId id) {
-    switch (id) {
-      case HomePrayerId.fajr:
-        return 0;
-      case HomePrayerId.sunrise:
-        return 1;
-      case HomePrayerId.dhuhr:
-        return 2;
-      case HomePrayerId.asr:
-        return 3;
-      case HomePrayerId.maghrib:
-        return 4;
-      case HomePrayerId.isha:
-        return 5;
-    }
-  }
+  int _slotIndex(HomePrayerId id) => _slotIndexStatic(id);
 
   String _prayerLabel(HomePrayerId id, {bool isSpanish = false}) {
     if (isSpanish) {
@@ -794,8 +921,21 @@ class AppNotificationService {
     return "It's time for ${_prayerLabel(id, isSpanish: isSpanish)}";
   }
 
-  String _prayerTimeBody(HomePrayerId id, {required bool isSpanish}) {
-    return 'Take a moment for ${_prayerLabel(id, isSpanish: isSpanish)} prayer.';
+  String _prayerTimeBody(HomePrayerId id, AppLocalizations l10n) {
+    switch (id) {
+      case HomePrayerId.fajr:
+        return l10n.prayerNotificationSubtitleFajr;
+      case HomePrayerId.dhuhr:
+        return l10n.prayerNotificationSubtitleDhuhr;
+      case HomePrayerId.asr:
+        return l10n.prayerNotificationSubtitleAsr;
+      case HomePrayerId.maghrib:
+        return l10n.prayerNotificationSubtitleMaghrib;
+      case HomePrayerId.isha:
+        return l10n.prayerNotificationSubtitleIsha;
+      case HomePrayerId.sunrise:
+        return '';
+    }
   }
 
   Future<bool> _isSpanishLocale() async {
@@ -807,21 +947,133 @@ class AppNotificationService {
     required double latitude,
     required double longitude,
     required List<({int dayOffset, HomePrayerTimesData data})> datasets,
+    required PrayerSettingsState prayerSettings,
+    required String calculationMethod,
+    required String asrMethod,
+    required String localeCode,
+    required String timeZoneName,
+    required int daysAhead,
   }) {
     final prayerParts = <String>[
       latitude.toStringAsFixed(4),
       longitude.toStringAsFixed(4),
+      calculationMethod,
+      asrMethod,
+      localeCode,
+      timeZoneName,
+      'days=$daysAhead',
     ];
+    for (final prayer in TrackablePrayer.values) {
+      final entry = prayerSettings.forPrayer(prayer);
+      prayerParts.add(
+        '${prayer.name}:en=${entry.notificationsEnabled}:snd=${entry.sound.name}',
+      );
+    }
     for (final dataset in datasets) {
       for (final slot in dataset.data.slots.where(
         (slot) => slot.id != HomePrayerId.sunrise,
       )) {
+        final local = slot.time.isUtc ? slot.time.toLocal() : slot.time;
         prayerParts.add(
-          '${dataset.dayOffset}:${slot.id.name}:${slot.time.toIso8601String()}',
+          '${dataset.dayOffset}:${slot.id.name}:'
+          '${local.year}-${local.month}-${local.day}'
+          'T${local.hour}:${local.minute}',
         );
       }
     }
     return prayerParts.join('|');
+  }
+
+  /// Stable notification id for a prayer on a day offset (0 = today).
+  @visibleForTesting
+  static int prayerNotificationIdFor(HomePrayerId id, int dayOffset) {
+    return _prayerNotificationIdStart + dayOffset * 20 + _slotIndexStatic(id);
+  }
+
+  static int _slotIndexStatic(HomePrayerId id) {
+    switch (id) {
+      case HomePrayerId.fajr:
+        return 0;
+      case HomePrayerId.sunrise:
+        return 1;
+      case HomePrayerId.dhuhr:
+        return 2;
+      case HomePrayerId.asr:
+        return 3;
+      case HomePrayerId.maghrib:
+        return 4;
+      case HomePrayerId.isha:
+        return 5;
+    }
+  }
+
+  static bool _isPrayerNotificationId(PendingNotificationRequest request) {
+    return request.id >= _prayerNotificationIdStart &&
+        request.id <= _prayerNotificationIdEnd;
+  }
+
+  /// How many pending slots to protect/free for the current upcoming prayer set.
+  /// Never more than [_iosPrayerReserveSlots]; never more than real candidates.
+  @visibleForTesting
+  static int iosPrayerSlotsToProtect({
+    required int futureCandidateCount,
+    int reserveSlots = _iosPrayerReserveSlots,
+  }) {
+    if (futureCandidateCount <= 0) return 0;
+    return futureCandidateCount > reserveSlots
+        ? reserveSlots
+        : futureCandidateCount;
+  }
+
+  /// Keeps the soonest future prayer slots when iOS pending capacity is tight.
+  @visibleForTesting
+  static List<PrayerScheduleCandidate> prioritizeNearestPrayerSlots({
+    required List<PrayerScheduleCandidate> candidates,
+    required int room,
+    required DateTime now,
+  }) {
+    if (room <= 0) return const <PrayerScheduleCandidate>[];
+    final future = candidates.where((candidate) {
+      final local = candidate.when.isUtc
+          ? candidate.when.toLocal()
+          : candidate.when;
+      final minute = DateTime(
+        local.year,
+        local.month,
+        local.day,
+        local.hour,
+        local.minute,
+      );
+      return minute.isAfter(now);
+    }).toList(growable: false)..sort((a, b) => a.when.compareTo(b.when));
+    if (future.length <= room) return future;
+    return future.sublist(0, room);
+  }
+
+  /// Frees lower-priority focus/other pending alerts so prayer reminders fit.
+  /// No-op when [needed] is already available — does not strip focus preemptively.
+  Future<void> _ensureIosRoomForPrayers({required int needed}) async {
+    if (!Platform.isIOS || needed <= 0) return;
+    final pending = await _plugin.pendingNotificationRequests();
+    final room = _iosPendingNotificationLimit - pending.length;
+    if (room >= needed) return;
+
+    // Drop unlock / night chatter first, then lock alerts, then legacy IDs.
+    const ranges = <(int, int)>[
+      (_salahUnlockNotificationIdStart, _salahUnlockNotificationIdEnd),
+      (_nightLockNotificationIdStart, _nightUnlockNotificationIdEnd),
+      (_salahLockNotificationIdStart, _salahLockNotificationIdStart + 99),
+      (2000, 2059),
+    ];
+    for (final range in ranges) {
+      await _cancelRange(range.$1, range.$2);
+      final after = await _plugin.pendingNotificationRequests();
+      if (_iosPendingNotificationLimit - after.length >= needed) {
+        invalidateFocusScheduleCache();
+        return;
+      }
+    }
+    invalidateFocusScheduleCache();
   }
 
   /// Stable signature for focus transition + native schedule sync deduplication.
@@ -874,4 +1126,25 @@ class AppNotificationService {
 
     return parts.join('|');
   }
+}
+
+enum _IosScheduleRole { prayer, focus }
+
+@visibleForTesting
+class PrayerScheduleCandidate {
+  const PrayerScheduleCandidate({
+    required this.id,
+    required this.when,
+    required this.title,
+    required this.body,
+    required this.details,
+    required this.payload,
+  });
+
+  final int id;
+  final DateTime when;
+  final String title;
+  final String body;
+  final NotificationDetails details;
+  final String payload;
 }

@@ -30,6 +30,7 @@ private enum ManagedSettingsStoreHolder {
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
   private let widgetChannelName = "com.app.deenly.deenly/widgets"
   private let locationSearchChannelName = "com.app.deenly.deenly/location_search"
+  // Prayer alarms use PrayerAlarmBridge (`com.app.deenly.deenly/prayer_alarm`).
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
   private let widgetAppGroup = "group.com.rnr.deenfocus"
 
@@ -65,6 +66,8 @@ private enum ManagedSettingsStoreHolder {
         name: qiblaEventChannelName,
         binaryMessenger: messenger
       )
+
+      PrayerAlarmBridge.register(messenger: messenger)
 
       focusMethodChannel.setMethodCallHandler { call, result in
         switch call.method {

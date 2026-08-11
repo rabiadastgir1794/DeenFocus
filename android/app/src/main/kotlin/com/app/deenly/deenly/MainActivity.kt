@@ -1,5 +1,6 @@
 package com.rnr.deenfocus
 
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.hardware.GeomagneticField
@@ -8,6 +9,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.android.FlutterActivity
@@ -21,7 +23,14 @@ class MainActivity : FlutterActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Required so warm-start "I've Prayed" extras are visible to MethodChannel.
+        setIntent(intent)
+    }
     private val focusMethodChannelName = "com.app.deenly.deenly/focus"
+    private val prayerAlarmChannelName = "com.app.deenly.deenly/prayer_alarm"
     private val qiblaMethodChannelName = "com.app.deenly.deenly/qibla_compass_method"
     private val qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
     private val widgetMethodChannelName = "com.app.deenly.deenly/widgets"
@@ -39,6 +48,13 @@ class MainActivity : FlutterActivity() {
             focusMethodChannelName,
         ).setMethodCallHandler { call, result ->
             handleFocusMethodCall(call, result)
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            prayerAlarmChannelName,
+        ).setMethodCallHandler { call, result ->
+            handlePrayerAlarmMethodCall(call, result)
         }
 
         MethodChannel(
@@ -72,6 +88,93 @@ class MainActivity : FlutterActivity() {
                 }
                 else -> result.notImplemented()
             }
+        }
+    }
+
+    private fun handlePrayerAlarmMethodCall(
+        call: MethodCall,
+        result: MethodChannel.Result,
+    ) {
+        when (call.method) {
+            "getCapabilities" -> {
+                result.success(
+                    mapOf(
+                        "platform" to "android",
+                        "implementation" to "fullscreen_intent",
+                        "supportsNativeAlarm" to true,
+                        "supportsFullScreen" to true,
+                        "requiresAlarmKitEntitlement" to false,
+                        "androidSdk" to android.os.Build.VERSION.SDK_INT,
+                        "canUseFullScreenIntent" to
+                            PrayerAlarmScheduler.canUseFullScreenIntent(applicationContext),
+                    ),
+                )
+            }
+            "getAuthorizationStatus" -> {
+                // Exact alarm is required to schedule. Notifications are required to present.
+                // FSI remains a separate optional capability.
+                result.success(
+                    when {
+                        !canScheduleExactAlarms() -> "denied"
+                        !areNotificationsEnabled() -> "denied"
+                        else -> "authorized"
+                    },
+                )
+            }
+            "requestAuthorization" -> {
+                // Exact-alarm only. FSI is a separate capability surfaced in Flutter UI.
+                // Opening Settings is not a denial — Flutter waits for resume to re-check.
+                // Notification permission is requested from Flutter before this call.
+                when {
+                    !canScheduleExactAlarms() -> {
+                        val opened = openExactAlarmSettings()
+                        result.success(if (opened) "notDetermined" else "denied")
+                    }
+                    !areNotificationsEnabled() -> result.success("denied")
+                    else -> result.success("authorized")
+                }
+            }
+            "openExactAlarmSettings" -> {
+                result.success(openExactAlarmSettings())
+            }
+            "canUseFullScreenIntent" -> {
+                result.success(PrayerAlarmScheduler.canUseFullScreenIntent(applicationContext))
+            }
+            "openFullScreenIntentSettings" -> {
+                result.success(
+                    PrayerAlarmScheduler.openFullScreenIntentSettings(applicationContext),
+                )
+            }
+            "scheduleAlarms" -> {
+                val alarms = call.argument<List<Map<String, Any?>>>("alarms").orEmpty()
+                val replaceAll = call.argument<Boolean>("replaceAll") ?: true
+                PrayerAlarmScheduler.scheduleAll(applicationContext, alarms, replaceAll)
+                result.success(null)
+            }
+            "cancelAll" -> {
+                PrayerAlarmScheduler.cancelAll(applicationContext, clearStore = true)
+                result.success(null)
+            }
+            "cancelAlarm" -> {
+                val id = call.argument<String>("id")
+                if (id.isNullOrBlank()) {
+                    result.error("INVALID_ARGS", "id required", null)
+                } else {
+                    PrayerAlarmScheduler.cancelOne(applicationContext, id)
+                    result.success(null)
+                }
+            }
+            "consumePendingPrayedAction" -> {
+                val fromIntent = intent?.getStringExtra("prayer_alarm_prayed")
+                if (!fromIntent.isNullOrBlank()) {
+                    intent?.removeExtra("prayer_alarm_prayed")
+                    PrayerAlarmStore.setPendingPrayed(applicationContext, null)
+                    result.success(fromIntent)
+                } else {
+                    result.success(PrayerAlarmStore.consumePendingPrayed(applicationContext))
+                }
+            }
+            else -> result.notImplemented()
         }
     }
 
@@ -278,6 +381,40 @@ class MainActivity : FlutterActivity() {
             }
             .sortedBy { (it["appName"] as String).lowercase() }
             .toList()
+    }
+
+    private fun canScheduleExactAlarms(): Boolean {
+        return runCatching {
+            val am = getSystemService(ALARM_SERVICE) as android.app.AlarmManager
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                am.canScheduleExactAlarms()
+            } else {
+                true
+            }
+        }.getOrDefault(true)
+    }
+
+    private fun areNotificationsEnabled(): Boolean {
+        return runCatching {
+            NotificationManagerCompat.from(this).areNotificationsEnabled()
+        }.getOrDefault(true)
+    }
+
+    private fun openExactAlarmSettings(): Boolean {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+            return false
+        }
+        return runCatching {
+            startActivity(
+                Intent(
+                    android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                ).apply {
+                    data = android.net.Uri.parse("package:$packageName")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                },
+            )
+            true
+        }.getOrDefault(false)
     }
 }
 

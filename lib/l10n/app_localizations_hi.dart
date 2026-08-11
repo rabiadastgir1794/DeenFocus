@@ -178,6 +178,40 @@ class AppLocalizationsHi extends AppLocalizations {
       'Deen Focus कभी आपका डेटा नहीं पढ़ता — यह केवल आपके चुने ऐप्स को रोकता है।';
 
   @override
+  String get onboardingSelectAppsTitlePrefix => 'चुनें';
+
+  @override
+  String get onboardingSelectAppsTitleAccent => 'लॉक करने के ऐप्स';
+
+  @override
+  String get onboardingSelectAppsSubtitle =>
+      'नमाज़ के समय लॉक करने वाले ऐप्स चुनें।';
+
+  @override
+  String get onboardingSelectAppsButton => 'ऐप्स चुनें';
+
+  @override
+  String get onboardingSelectAppsSkipForNow => 'अभी छोड़ें';
+
+  @override
+  String get onboardingSelectAppsMockAllApps => 'सभी ऐप्स और श्रेणियाँ';
+
+  @override
+  String get onboardingSelectAppsMockPhotos => 'फ़ोटो';
+
+  @override
+  String get onboardingSelectAppsMockNotes => 'नोट्स';
+
+  @override
+  String get onboardingSelectAppsMockMusic => 'संगीत';
+
+  @override
+  String get onboardingSelectAppsMockSafari => 'Safari';
+
+  @override
+  String get onboardingSelectAppsMockPodcasts => 'पॉडकास्ट';
+
+  @override
   String screenTimeStepOf(int current, int total) {
     return 'चरण $current / $total';
   }
@@ -891,6 +925,26 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get prayerReminderLaterButton => 'बाद में चिह्नित करूँगा';
+
+  @override
+  String get prayerNotificationSubtitleFajr =>
+      '“निस्संदेह, भोर की तिलावत सदैव साक्षी बनाई जाती है।” — क़ुरआन 17:78';
+
+  @override
+  String get prayerNotificationSubtitleDhuhr =>
+      '“सूर्य के ढलने पर नमाज़ क़ायम करो...” — क़ुरआन 17:78';
+
+  @override
+  String get prayerNotificationSubtitleAsr =>
+      '“नमाज़ों की पाबंदी करो, विशेषकर मध्य नमाज़ की।” — क़ुरआन 2:238';
+
+  @override
+  String get prayerNotificationSubtitleMaghrib =>
+      '“अतः जब शाम हो तो अल्लाह की तसबीह करो...” — क़ुरआन 30:17';
+
+  @override
+  String get prayerNotificationSubtitleIsha =>
+      '“नमाज़ क़ायम करो -  रात के अंधकार तक।” — क़ुरआन 17:78';
 
   @override
   String get homeTrialBannerTitle => '7 दिन मुफ़्त — बेहतर मुसलमान बनें ✨';
@@ -2238,4 +2292,350 @@ class AppLocalizationsHi extends AppLocalizations {
   String homeCountdownHms(int hours, int minutes, int seconds) {
     return '$hoursघं $minutesमि $secondsसे';
   }
+
+  @override
+  String get appLockDemoIntroTitle => 'ऐप लॉक कैसे काम करता है देखें';
+
+  @override
+  String get appLockDemoIntroSubtitle =>
+      'DeenFocus में रहें। अगली स्क्रीन पर Instagram पर टैप करें और नमाज़ के समय रुकना देखें।';
+
+  @override
+  String get appLockDemoStartButton => 'डेमो शुरू करें';
+
+  @override
+  String get appLockDemoTryOpeningApp => 'Instagram खोलकर देखें';
+
+  @override
+  String get appLockDemoSalahModeBadge => 'सलाह मोड';
+
+  @override
+  String get appLockDemoTimeToPray => 'नमाज़ का समय हो गया है';
+
+  @override
+  String appLockDemoRemainingTime(String time) {
+    return 'बाकी समय: $time';
+  }
+
+  @override
+  String appLockDemoIvePrayed(String prayerName) {
+    return 'मैंने $prayerName पढ़ ली';
+  }
+
+  @override
+  String get appLockDemoAlhamdulillah => 'अलहम्दुलिल्लाह';
+
+  @override
+  String appLockDemoPrayerCompleted(String prayerName) {
+    return '$prayerName पूरी हुई';
+  }
+
+  @override
+  String get appLockDemoStreakIncreased => 'आपकी नमाज़ स्ट्रीक बढ़ गई';
+
+  @override
+  String get appLockDemoPrayerStreakLabel => 'नमाज़ स्ट्रीक';
+
+  @override
+  String get appLockDemoDayStreakLabel => 'दिन स्ट्रीक';
+
+  @override
+  String appLockDemoNextPrayerIn(String minutes) {
+    return 'अगली नमाज़ $minutes मिनट में';
+  }
+
+  @override
+  String get appLockDemoStreakMotivation =>
+      'आगे बढ़ते रहें! आपकी नियमितता आपको अल्लाह के करीब लाती है।';
+
+  @override
+  String get appLockDemoCompletionSubtitle =>
+      'नमाज़ पढ़ें। एक बार चेक इन करें।\nफिर अपने दिन पर लौटें।';
+
+  @override
+  String get appLockDemoCompletionBody =>
+      'ऐप लॉक सलाह के दौरान चुने हुए ऐप्स को धीरे से रोकता है ताकि आप नमाज़ पर ध्यान दे सकें — फिर जब तैयार हों, आगे बढ़ें।';
+
+  @override
+  String get appLockDemoContinueSetup => 'सेटअप जारी रखें';
+
+  @override
+  String get appLockDemoAppMessages => 'संदेश';
+
+  @override
+  String get appLockDemoAppCalendar => 'कैलेंडर';
+
+  @override
+  String get appLockDemoAppPhotos => 'फ़ोटो';
+
+  @override
+  String get appLockDemoAppCamera => 'कैमरा';
+
+  @override
+  String get appLockDemoAppMail => 'मेल';
+
+  @override
+  String get appLockDemoAppMaps => 'मानचित्र';
+
+  @override
+  String get appLockDemoAppWeather => 'मौसम';
+
+  @override
+  String get appLockDemoAppClock => 'घड़ी';
+
+  @override
+  String get appLockDemoAppNotes => 'नोट्स';
+
+  @override
+  String get appLockDemoAppSettings => 'सेटिंग्स';
+
+  @override
+  String get appLockDemoAppMusic => 'संगीत';
+
+  @override
+  String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerAlarmsTitle => 'नमाज़ अलार्म';
+
+  @override
+  String get settingsPrayerAlarmsSubtitle =>
+      'पूर्ण नमाज़ अलार्म जो साइलेंट मोड को पार कर सकते हैं';
+
+  @override
+  String get prayerAlarmsMasterLabel => 'नमाज़ अलार्म चालू करें';
+
+  @override
+  String get prayerAlarmsMasterSubtitle =>
+      'प्रत्येक चयनित नमाज़ के लिए नेटिव अलार्म शेड्यूल करें';
+
+  @override
+  String get prayerAlarmsSnoozeLabel => 'स्नूज़ अवधि';
+
+  @override
+  String prayerAlarmsSnoozeMinutes(int minutes) {
+    return '$minutes मिनट';
+  }
+
+  @override
+  String get prayerAlarmsPerPrayerSection => 'नमाज़ के अनुसार अलार्म';
+
+  @override
+  String get prayerAlarmsPermissionNeeded =>
+      'समय पर बजने के लिए अलार्म अनुमति दें।';
+
+  @override
+  String get prayerAlarmsPermissionButton => 'अलार्म अनुमति दें';
+
+  @override
+  String get prayerAlarmsFsiNeeded =>
+      'लॉक स्क्रीन पर दिखाने के लिए फुल-स्क्रीन अलार्म अनुमति दें। बिना इसके बैनर सूचना रहेगी।';
+
+  @override
+  String get prayerAlarmsFsiButton => 'फुल-स्क्रीन सेटिंग्स';
+
+  @override
+  String get prayerAlarmsUnsupported =>
+      'इस डिवाइस पर नेटिव नमाज़ अलार्म उपलब्ध नहीं हैं। सॉफ्ट नोटिफिकेशन काम करते रहेंगे।';
+
+  @override
+  String get prayerAlarmsIosFallback =>
+      'इस iOS संस्करण पर AlarmKit के बजाय सॉफ्ट नोटिफिकेशन उपयोग होते हैं।';
+
+  @override
+  String get prayerAlarmsDeniedTitle => 'अलार्म अनुमति आवश्यक';
+
+  @override
+  String get prayerAlarmsDeniedMessage =>
+      'अलार्म अनुमति मिलने तक प्रार्थना अलार्म बंद रहेंगे। सौम्य सूचनाएँ प्रभावित नहीं होतीं।';
+
+  @override
+  String get prayerAlarmsOpenSettings => 'सेटिंग्स खोलें';
+
+  @override
+  String get prayerAlarmsStatusReady => 'अलार्म शेड्यूल के लिए तैयार हैं';
+
+  @override
+  String get prayerAlarmsStatusNeedsPermission =>
+      'अनुमति चाहिए — अलार्म सक्रिय नहीं';
+
+  @override
+  String get prayerAlarmsStatusFallback =>
+      'इस डिवाइस पर सौम्य सूचनाएँ उपयोग हो रही हैं';
+
+  @override
+  String get prayerAlarmsStatusFsiOptional =>
+      'अलार्म चालू हैं। लॉक स्क्रीन के लिए फुल-स्क्रीन सक्षम करें।';
+
+  @override
+  String get prayerAlarmsCancel => 'अभी नहीं';
+
+  @override
+  String get homePrayerAlarmEnableLabel => 'नमाज़ अलार्म';
+
+  @override
+  String homePrayerAlarmEnableSubtitle(String prayerName) {
+    return '$prayerName पर नेटिव अलार्म बजाएँ';
+  }
+
+  @override
+  String get prayerAlarmBadge => 'नमाज़ अलार्म';
+
+  @override
+  String get prayerAlarmSubtitle => 'नमाज़ का समय';
+
+  @override
+  String prayerAlarmTitle(String prayerName) {
+    return '$prayerName — नमाज़ का समय';
+  }
+
+  @override
+  String get prayerAlarmIvePrayed => 'मैंने नमाज़ पढ़ी';
+
+  @override
+  String get prayerAlarmDismiss => 'खारिज करें';
+
+  @override
+  String get prayerAlarmSnooze => 'स्नूज़';
+
+  @override
+  String get appLockDemoAppPhone => 'फ़ोन';
+
+  @override
+  String get appLockDemoAppSafari => 'Safari';
+
+  @override
+  String get appLockDemoAppFaceTime => 'FaceTime';
+
+  @override
+  String get appLockDemoAppReminders => 'रिमाइंडर';
+
+  @override
+  String get appLockDemoAppAppStore => 'App Store';
+
+  @override
+  String get appLockDemoAppBooks => 'पुस्तकें';
+
+  @override
+  String get appLockDemoAppHealth => 'स्वास्थ्य';
+
+  @override
+  String get appLockDemoAppWallet => 'वॉलेट';
+
+  @override
+  String get appLockDemoAppChrome => 'Chrome';
+
+  @override
+  String get settingsAppDemoLabel => 'ऐप डेमो';
+
+  @override
+  String get settingsAppDemoChooseModeTitle => 'ऐप लॉक आज़माएँ';
+
+  @override
+  String get settingsAppDemoChooseModeSubtitle =>
+      'एक फ़ोकस मोड चुनें और देखें कि चुने गए ऐप्स कैसे रुकते हैं — DeenFocus छोड़े बिना।';
+
+  @override
+  String get appLockDemoDone => 'हो गया';
+
+  @override
+  String get appLockDemoSleepIntroTitle => 'स्लीप मोड कैसे काम करता है देखें';
+
+  @override
+  String get appLockDemoSleepIntroSubtitle =>
+      'DeenFocus में रहें। अगली स्क्रीन पर Instagram पर टैप करें और सोने के समय रुकना देखें।';
+
+  @override
+  String get appLockDemoSleepModeBadge => 'स्लीप मोड';
+
+  @override
+  String get appLockDemoSleepLockTitle => 'आराम करने का समय है';
+
+  @override
+  String get appLockDemoSleepLockCta => 'मैं आराम के लिए तैयार हूँ';
+
+  @override
+  String get appLockDemoSleepCompleted => 'स्लीप मोड सुरक्षित';
+
+  @override
+  String get appLockDemoSleepRewardSubtitle => 'आपकी रात की सुरक्षा बढ़ गई';
+
+  @override
+  String get appLockDemoSleepStreakLabel => 'रात स्ट्रीक';
+
+  @override
+  String get appLockDemoSleepRewardFooter => 'सुबह के लिए फज्र रिमाइंडर सेट';
+
+  @override
+  String get appLockDemoSleepMotivation =>
+      'आज रात अच्छी नींद लें ताकि फज्र के लिए ऊर्जा के साथ उठ सकें।';
+
+  @override
+  String get appLockDemoSleepCompletionSubtitle => 'शांत रातें।\nताज़ी सुबहें।';
+
+  @override
+  String get appLockDemoSleepCompletionBody =>
+      'स्लीप मोड रात में चुने हुए ऐप्स को धीरे से रोकता है ताकि आप आराम कर सकें — फिर जब तैयार हों आगे बढ़ें।';
+
+  @override
+  String get appLockDemoChildIntroTitle => 'चाइल्ड मोड कैसे काम करता है देखें';
+
+  @override
+  String get appLockDemoChildIntroSubtitle =>
+      'DeenFocus में रहें। अगली स्क्रीन पर Instagram पर टैप करें और चाइल्ड मोड चालू होने पर लॉक देखें।';
+
+  @override
+  String get appLockDemoChildModeBadge => 'चाइल्ड मोड';
+
+  @override
+  String get appLockDemoChildLockTitle => 'ऐप्स सुरक्षित हैं';
+
+  @override
+  String get appLockDemoChildLockDetail =>
+      'चाइल्ड मोड चालू रहते चुने हुए ऐप्स लॉक रहते हैं';
+
+  @override
+  String get appLockDemoChildLockCta => 'समझ गया';
+
+  @override
+  String get appLockDemoChildCompleted => 'चाइल्ड मोड सक्रिय';
+
+  @override
+  String get appLockDemoChildRewardSubtitle => 'आपकी सुरक्षा स्ट्रीक बढ़ गई';
+
+  @override
+  String get appLockDemoChildStreakLabel => 'सुरक्षा स्ट्रीक';
+
+  @override
+  String get appLockDemoChildRewardFooter =>
+      'अपने पासकोड से कभी भी बाहर निकलें';
+
+  @override
+  String get appLockDemoChildMotivation => 'हर बार फ़ोन देते समय सुकून।';
+
+  @override
+  String get appLockDemoChildCompletionSubtitle =>
+      'एक टैप सुरक्षित मोड।\nकेवल वही जो आप अनुमति दें।';
+
+  @override
+  String get appLockDemoChildCompletionBody =>
+      'चाइल्ड मोड चुने हुए ऐप्स लॉक करता है ताकि आपका बच्चा केवल सुरक्षित चीज़ें देखे — फिर जब तैयार हों अनलॉक करें।';
+
+  @override
+  String get appLockDemoSleepCompletionTitle => 'आज रात अच्छी नींद लें';
+
+  @override
+  String get appLockDemoChildCompletionTitle => 'सुकून भरा मन';
+
+  @override
+  String get settingsAppDemoPrayerCardSubtitle =>
+      'सलाह के समय ध्यान भटकाने वाले ऐप्स रोकें, ताकि आप पूरी मौजूदगी से नमाज़ पढ़ सकें।';
+
+  @override
+  String get settingsAppDemoSleepCardSubtitle =>
+      'अपनी रातों की रक्षा करें ताकि आराम आसान हो — और फ़ज्र हल्का लगे।';
+
+  @override
+  String get settingsAppDemoChildCardSubtitle =>
+      'बेफ़िक्र होकर फ़ोन दें — केवल अनुमति वाले ऐप्स खुले रहेंगे।';
 }

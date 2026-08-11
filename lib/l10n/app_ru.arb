@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "Это позволяет Deen Focus приостанавливать отвлекающие приложения во время намаза, сна и детского режима.",
   "screenTimeButton": "Разрешить доступ к Экранному времени",
   "screenTimePrivacyNote": "Deen Focus никогда не читает ваши данные — он только приостанавливает выбранные приложения.",
+  "onboardingSelectAppsTitlePrefix": "Выберите",
+  "onboardingSelectAppsTitleAccent": "приложения для блокировки",
+  "onboardingSelectAppsSubtitle": "Выберите приложения, которые нужно блокировать во время намаза.",
+  "onboardingSelectAppsButton": "Выбрать приложения",
+  "onboardingSelectAppsSkipForNow": "Пропустить пока",
+  "onboardingSelectAppsMockAllApps": "Все приложения и категории",
+  "onboardingSelectAppsMockPhotos": "Фото",
+  "onboardingSelectAppsMockNotes": "Заметки",
+  "onboardingSelectAppsMockMusic": "Музыка",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "Подкасты",
   "screenTimeStepOf": "ШАГ {current} ИЗ {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "Сохраните серию, отметив намаз.",
   "prayerReminderYesButton": "Да, Альхамдулиллах",
   "prayerReminderLaterButton": "Отмечу позже",
+  "prayerNotificationSubtitleFajr": "«Воистину, чтение на заре всегда бывает засвидетельствовано.» — Коран 17:78",
+  "prayerNotificationSubtitleDhuhr": "«Совершай молитву с момента склонения солнца...» — Коран 17:78",
+  "prayerNotificationSubtitleAsr": "«Строго блюдите молитвы, особенно среднюю молитву.» — Коран 2:238",
+  "prayerNotificationSubtitleMaghrib": "«Так прославляйте Аллаха, когда наступает вечер...» — Коран 30:17",
+  "prayerNotificationSubtitleIsha": "«Совершай молитву -  до наступления ночной тьмы.» — Коран 17:78",
   "homeAiChatDescription": "Спросите что-нибудь о времени молитв, Коране и исламском руководстве.",
   "homeDay": "День",
   "homeDays": "Дни",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "Лучший опыт DeenFocus",
   "supportUsImpactFeatures": "Новые функции и обновления",
   "supportUsImpactQuran": "Коран и исламское обучение",
-  "supportUsImpactServers": "Серверы и надёжность приложения"
+  "supportUsImpactServers": "Серверы и надёжность приложения",
+  "appLockDemoIntroTitle": "Как работает блокировка приложений",
+  "appLockDemoIntroSubtitle": "Оставайтесь в DeenFocus. На следующем экране нажмите Instagram, чтобы увидеть паузу во время намаза.",
+  "appLockDemoStartButton": "Начать демо",
+  "appLockDemoTryOpeningApp": "Попробуйте открыть Instagram",
+  "appLockDemoSalahModeBadge": "РЕЖИМ САЛЯТ",
+  "appLockDemoTimeToPray": "Пора молиться",
+  "appLockDemoRemainingTime": "Осталось: {time}",
+  "appLockDemoIvePrayed": "Я совершил(а) {prayerName}",
+  "appLockDemoAlhamdulillah": "Альхамдулиллях",
+  "appLockDemoPrayerCompleted": "{prayerName} выполнена",
+  "appLockDemoStreakIncreased": "Ваша серия намазов выросла",
+  "appLockDemoPrayerStreakLabel": "СЕРИЯ НАМАЗОВ",
+  "appLockDemoDayStreakLabel": "СЕРИЯ ДНЕЙ",
+  "appLockDemoNextPrayerIn": "Следующий намаз через {minutes} мин",
+  "appLockDemoStreakMotivation": "Продолжайте! Постоянство приближает вас к Аллаху.",
+  "appLockDemoCompletionSubtitle": "Помолитесь. Отметьте один раз.\nВернитесь к своему дню.",
+  "appLockDemoCompletionBody": "Блокировка приложений мягко ставит выбранные приложения на паузу во время намаза, чтобы вы могли сосредоточиться — затем продолжайте, когда будете готовы.",
+  "appLockDemoContinueSetup": "Продолжить настройку",
+  "appLockDemoAppMessages": "Сообщения",
+  "appLockDemoAppCalendar": "Календарь",
+  "appLockDemoAppPhotos": "Фото",
+  "appLockDemoAppCamera": "Камера",
+  "appLockDemoAppMail": "Почта",
+  "appLockDemoAppMaps": "Карты",
+  "appLockDemoAppWeather": "Погода",
+  "appLockDemoAppClock": "Часы",
+  "appLockDemoAppNotes": "Заметки",
+  "appLockDemoAppSettings": "Настройки",
+  "appLockDemoAppMusic": "Музыка",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "Будильники намаза",
+  "settingsPrayerAlarmsSubtitle": "Полноценные будильники, которые могут обойти беззвучный режим",
+  "prayerAlarmsMasterLabel": "Включить будильники намаза",
+  "prayerAlarmsMasterSubtitle": "Запланировать системный будильник для каждого выбранного намаза",
+  "prayerAlarmsSnoozeLabel": "Длительность отложения",
+  "prayerAlarmsSnoozeMinutes": "{minutes} мин.",
+  "prayerAlarmsPerPrayerSection": "Будильники по намазам",
+  "prayerAlarmsPermissionNeeded": "Разрешите будильники, чтобы они срабатывали вовремя.",
+  "prayerAlarmsPermissionButton": "Разрешить будильники",
+  "prayerAlarmsFsiNeeded": "Разрешите полноэкранные будильники для экрана блокировки. Иначе они будут как баннер.",
+  "prayerAlarmsFsiButton": "Настройки полного экрана",
+  "prayerAlarmsUnsupported": "Системные будильники недоступны на этом устройстве. Мягкие уведомления продолжают работать.",
+  "prayerAlarmsIosFallback": "На этой версии iOS используются мягкие уведомления вместо AlarmKit.",
+  "homePrayerAlarmEnableLabel": "Будильник намаза",
+  "homePrayerAlarmEnableSubtitle": "Системный будильник во время {prayerName}",
+  "prayerAlarmBadge": "Будильник намаза",
+  "prayerAlarmSubtitle": "Время намаза",
+  "prayerAlarmTitle": "{prayerName} — Время намаза",
+  "prayerAlarmIvePrayed": "Я совершил намаз",
+  "prayerAlarmDismiss": "Закрыть",
+  "prayerAlarmSnooze": "Отложить",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "Телефон",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "Напоминания",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "Книги",
+  "appLockDemoAppHealth": "Здоровье",
+  "appLockDemoAppWallet": "Кошелёк",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "Требуется разрешение на будильник",
+  "prayerAlarmsDeniedMessage": "Будильники намаза остаются выключенными, пока вы не разрешите доступ. Мягкие уведомления не затрагиваются.",
+  "prayerAlarmsOpenSettings": "Открыть Настройки",
+  "prayerAlarmsStatusReady": "Будильники готовы к планированию",
+  "prayerAlarmsStatusNeedsPermission": "Нужно разрешение — будильники неактивны",
+  "prayerAlarmsStatusFallback": "На этом устройстве используются мягкие уведомления",
+  "prayerAlarmsStatusFsiOptional": "Будильники включены. Включите полный экран для экрана блокировки.",
+  "prayerAlarmsCancel": "Не сейчас",
+  "settingsAppDemoLabel": "Демо приложения",
+  "settingsAppDemoChooseModeTitle": "Попробуйте блокировку",
+  "settingsAppDemoChooseModeSubtitle": "Выберите режим Focus и посмотрите, как выбранные приложения ставятся на паузу — не покидая DeenFocus.",
+  "appLockDemoDone": "Готово",
+  "appLockDemoSleepIntroTitle": "Как работает режим сна",
+  "appLockDemoSleepIntroSubtitle": "Оставайтесь в DeenFocus. На следующем экране нажмите Instagram, чтобы увидеть паузу перед сном.",
+  "appLockDemoSleepModeBadge": "РЕЖИМ СНА",
+  "appLockDemoSleepLockTitle": "Пора отдыхать",
+  "appLockDemoSleepLockCta": "Я готов отдохнуть",
+  "appLockDemoSleepCompleted": "Режим сна защищён",
+  "appLockDemoSleepRewardSubtitle": "Ваша ночная защита выросла",
+  "appLockDemoSleepStreakLabel": "НОЧНАЯ СЕРИЯ",
+  "appLockDemoSleepRewardFooter": "Напоминание о Фаджре на утро установлено",
+  "appLockDemoSleepMotivation": "Хорошо отдохните ночью, чтобы встать на Фаджр с силами.",
+  "appLockDemoSleepCompletionSubtitle": "Тихие ночи.\nЯсные утра.",
+  "appLockDemoSleepCompletionBody": "Режим сна мягко ставит выбранные приложения на паузу ночью, чтобы вы могли отдохнуть — затем продолжайте, когда будете готовы.",
+  "appLockDemoChildIntroTitle": "Как работает детский режим",
+  "appLockDemoChildIntroSubtitle": "Оставайтесь в DeenFocus. На следующем экране нажмите Instagram, чтобы увидеть блокировку в детском режиме.",
+  "appLockDemoChildModeBadge": "ДЕТСКИЙ РЕЖИМ",
+  "appLockDemoChildLockTitle": "Приложения защищены",
+  "appLockDemoChildLockDetail": "Выбранные приложения остаются заблокированными в детском режиме",
+  "appLockDemoChildLockCta": "Понятно",
+  "appLockDemoChildCompleted": "Детский режим активен",
+  "appLockDemoChildRewardSubtitle": "Ваша серия защиты выросла",
+  "appLockDemoChildStreakLabel": "БЕЗОПАСНАЯ СЕРИЯ",
+  "appLockDemoChildRewardFooter": "Выйдите в любой момент с паролем",
+  "appLockDemoChildMotivation": "Спокойствие каждый раз, когда вы даёте телефон.",
+  "appLockDemoChildCompletionSubtitle": "Безопасный режим в одно касание.\nТолько то, что вы разрешаете.",
+  "appLockDemoChildCompletionBody": "Детский режим блокирует выбранные приложения, чтобы ребёнок видел только безопасное — затем вы разблокируете.",
+  "appLockDemoSleepCompletionTitle": "Спокойной ночи",
+  "appLockDemoChildCompletionTitle": "Спокойствие",
+  "settingsAppDemoPrayerCardSubtitle": "Приостанавливайте отвлечения во время намаза, чтобы молиться с присутствием.",
+  "settingsAppDemoSleepCardSubtitle": "Защитите ночи, чтобы отдых давался легче — а Фаджр ощущался легче.",
+  "settingsAppDemoChildCardSubtitle": "Передавайте телефон спокойно: открытыми остаются только разрешённые приложения."
 }

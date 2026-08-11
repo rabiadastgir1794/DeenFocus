@@ -9,10 +9,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/app_review_service.dart';
+import '../../../core/services/daily_refresh_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/prayer_alarm_service.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/services/daily_refresh_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
@@ -290,9 +291,19 @@ class HomeTabViewModel extends ChangeNotifier {
       await _refreshAchievements();
     }
     if (latitude != null && longitude != null) {
+      final needsPrayerReschedule =
+          await StorageService.needsPrayerNotificationReschedule;
       await AppNotificationService.instance.reschedulePrayerNotifications(
         latitude: latitude!,
         longitude: longitude!,
+        forceReschedule: needsPrayerReschedule,
+      );
+      // Match soft reminders: do not cancel+rebuild native alarms on every
+      // resume — that can drop a just-due Isha still waiting to fire.
+      await PrayerAlarmService.instance.rescheduleAlarms(
+        latitude: latitude!,
+        longitude: longitude!,
+        forceReschedule: needsPrayerReschedule,
       );
     }
     await AppReviewService.onAppResumed();
@@ -322,6 +333,8 @@ class HomeTabViewModel extends ChangeNotifier {
       await _computeFocusScore();
       await _refreshAchievements();
       _loadEvents();
+      // Ensure soft prayer reminders exist even if DailyRefresh raced/failed.
+      await _rescheduleNotificationsIfPossible();
     } catch (_) {
       // Keep last good state and always release loading to avoid stuck spinner.
     } finally {
@@ -458,6 +471,16 @@ class HomeTabViewModel extends ChangeNotifier {
       longitude: longitude!,
       forceReschedule: true,
     );
+    await _reschedulePrayerAlarmsIfPossible();
+  }
+
+  Future<void> _reschedulePrayerAlarmsIfPossible() async {
+    if (latitude == null || longitude == null) return;
+    await PrayerAlarmService.instance.rescheduleAlarms(
+      latitude: latitude!,
+      longitude: longitude!,
+      forceReschedule: true,
+    );
   }
 
   /// Sets (or clears, when [minutesSinceMidnight] is null) a custom time for
@@ -500,6 +523,18 @@ class HomeTabViewModel extends ChangeNotifier {
     await _persistPrayerSettings();
     notifyListeners();
     unawaited(_rescheduleNotificationsIfPossible());
+  }
+
+  Future<void> setPrayerAlarmEnabled(
+    TrackablePrayer prayer,
+    bool enabled,
+  ) async {
+    final entry =
+        _prayerSettings.forPrayer(prayer).copyWith(alarmEnabled: enabled);
+    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
+    await _persistPrayerSettings();
+    notifyListeners();
+    unawaited(_reschedulePrayerAlarmsIfPossible());
   }
 
   // Cycle Mode methods
@@ -763,6 +798,7 @@ class HomeTabViewModel extends ChangeNotifier {
     if (_lastAppliedSect == sect) return;
     _lastAppliedSect = sect;
     await _loadPrayerTimes();
+    await _rescheduleNotificationsIfPossible();
     notifyListeners();
   }
 
@@ -777,6 +813,7 @@ class HomeTabViewModel extends ChangeNotifier {
     _lastAppliedMethod = method;
     _lastAppliedAsr = asr;
     await _loadPrayerTimes();
+    await _rescheduleNotificationsIfPossible();
     notifyListeners();
   }
 
@@ -793,6 +830,7 @@ class HomeTabViewModel extends ChangeNotifier {
     locationName = newLocationName;
     locationSubtitle = newLocationSubtitle;
     await _loadPrayerTimes();
+    await _rescheduleNotificationsIfPossible();
     notifyListeners();
   }
 

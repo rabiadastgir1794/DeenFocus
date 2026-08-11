@@ -438,6 +438,72 @@ abstract class AppLocalizations {
   /// **'Deen Focus never reads your data — it only pauses the apps you choose.'**
   String get screenTimePrivacyNote;
 
+  /// No description provided for @onboardingSelectAppsTitlePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get onboardingSelectAppsTitlePrefix;
+
+  /// No description provided for @onboardingSelectAppsTitleAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps to Lock'**
+  String get onboardingSelectAppsTitleAccent;
+
+  /// No description provided for @onboardingSelectAppsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the apps you want to lock when it\'s time to pray.'**
+  String get onboardingSelectAppsSubtitle;
+
+  /// No description provided for @onboardingSelectAppsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Apps'**
+  String get onboardingSelectAppsButton;
+
+  /// No description provided for @onboardingSelectAppsSkipForNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for Now'**
+  String get onboardingSelectAppsSkipForNow;
+
+  /// No description provided for @onboardingSelectAppsMockAllApps.
+  ///
+  /// In en, this message translates to:
+  /// **'All Apps & Categories'**
+  String get onboardingSelectAppsMockAllApps;
+
+  /// No description provided for @onboardingSelectAppsMockPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get onboardingSelectAppsMockPhotos;
+
+  /// No description provided for @onboardingSelectAppsMockNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get onboardingSelectAppsMockNotes;
+
+  /// No description provided for @onboardingSelectAppsMockMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get onboardingSelectAppsMockMusic;
+
+  /// No description provided for @onboardingSelectAppsMockSafari.
+  ///
+  /// In en, this message translates to:
+  /// **'Safari'**
+  String get onboardingSelectAppsMockSafari;
+
+  /// No description provided for @onboardingSelectAppsMockPodcasts.
+  ///
+  /// In en, this message translates to:
+  /// **'Podcasts'**
+  String get onboardingSelectAppsMockPodcasts;
+
   /// No description provided for @screenTimeStepOf.
   ///
   /// In en, this message translates to:
@@ -1733,6 +1799,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I\'ll mark later'**
   String get prayerReminderLaterButton;
+
+  /// No description provided for @prayerNotificationSubtitleFajr.
+  ///
+  /// In en, this message translates to:
+  /// **'“Indeed, the recitation of dawn is ever witnessed.” — Qur’an 17:78'**
+  String get prayerNotificationSubtitleFajr;
+
+  /// No description provided for @prayerNotificationSubtitleDhuhr.
+  ///
+  /// In en, this message translates to:
+  /// **'“Establish prayer at the decline of the sun...” — Qur’an 17:78'**
+  String get prayerNotificationSubtitleDhuhr;
+
+  /// No description provided for @prayerNotificationSubtitleAsr.
+  ///
+  /// In en, this message translates to:
+  /// **'“Guard strictly the prayers, especially the middle prayer.” — Qur’an 2:238'**
+  String get prayerNotificationSubtitleAsr;
+
+  /// No description provided for @prayerNotificationSubtitleMaghrib.
+  ///
+  /// In en, this message translates to:
+  /// **'“So glorify Allah when you reach the evening...” — Qur’an 30:17'**
+  String get prayerNotificationSubtitleMaghrib;
+
+  /// No description provided for @prayerNotificationSubtitleIsha.
+  ///
+  /// In en, this message translates to:
+  /// **'“Establish prayer -  until the darkness of the night.” — Qur’an 17:78'**
+  String get prayerNotificationSubtitleIsha;
 
   /// No description provided for @homeTrialBannerTitle.
   ///
@@ -4132,6 +4228,618 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{hours}h {minutes}m {seconds}s'**
   String homeCountdownHms(int hours, int minutes, int seconds);
+
+  /// No description provided for @appLockDemoIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how App Lock works'**
+  String get appLockDemoIntroTitle;
+
+  /// No description provided for @appLockDemoIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. On the next screen, tap Instagram to see it pause at prayer time.'**
+  String get appLockDemoIntroSubtitle;
+
+  /// No description provided for @appLockDemoStartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the demo'**
+  String get appLockDemoStartButton;
+
+  /// No description provided for @appLockDemoTryOpeningApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Try opening Instagram'**
+  String get appLockDemoTryOpeningApp;
+
+  /// No description provided for @appLockDemoSalahModeBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'SALAH MODE'**
+  String get appLockDemoSalahModeBadge;
+
+  /// No description provided for @appLockDemoTimeToPray.
+  ///
+  /// In en, this message translates to:
+  /// **'It’s time to pray'**
+  String get appLockDemoTimeToPray;
+
+  /// No description provided for @appLockDemoRemainingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining time: {time}'**
+  String appLockDemoRemainingTime(String time);
+
+  /// No description provided for @appLockDemoIvePrayed.
+  ///
+  /// In en, this message translates to:
+  /// **'I’ve prayed {prayerName}'**
+  String appLockDemoIvePrayed(String prayerName);
+
+  /// No description provided for @appLockDemoAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah'**
+  String get appLockDemoAlhamdulillah;
+
+  /// No description provided for @appLockDemoPrayerCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayerName} completed'**
+  String appLockDemoPrayerCompleted(String prayerName);
+
+  /// No description provided for @appLockDemoStreakIncreased.
+  ///
+  /// In en, this message translates to:
+  /// **'Your prayer streak increased'**
+  String get appLockDemoStreakIncreased;
+
+  /// No description provided for @appLockDemoPrayerStreakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PRAYER STREAK'**
+  String get appLockDemoPrayerStreakLabel;
+
+  /// No description provided for @appLockDemoDayStreakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DAY STREAK'**
+  String get appLockDemoDayStreakLabel;
+
+  /// No description provided for @appLockDemoNextPrayerIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next prayer in {minutes} minutes'**
+  String appLockDemoNextPrayerIn(String minutes);
+
+  /// No description provided for @appLockDemoStreakMotivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going! Your consistency brings you closer to Allah.'**
+  String get appLockDemoStreakMotivation;
+
+  /// No description provided for @appLockDemoCompletionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pray. Check in once.\nGet back to your day.'**
+  String get appLockDemoCompletionSubtitle;
+
+  /// No description provided for @appLockDemoCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock gently pauses selected apps during Salah so you can focus on prayer — then continue when you’re ready.'**
+  String get appLockDemoCompletionBody;
+
+  /// No description provided for @appLockDemoContinueSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue setup'**
+  String get appLockDemoContinueSetup;
+
+  /// No description provided for @appLockDemoAppMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get appLockDemoAppMessages;
+
+  /// No description provided for @appLockDemoAppCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get appLockDemoAppCalendar;
+
+  /// No description provided for @appLockDemoAppPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get appLockDemoAppPhotos;
+
+  /// No description provided for @appLockDemoAppCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get appLockDemoAppCamera;
+
+  /// No description provided for @appLockDemoAppMail.
+  ///
+  /// In en, this message translates to:
+  /// **'Mail'**
+  String get appLockDemoAppMail;
+
+  /// No description provided for @appLockDemoAppMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Maps'**
+  String get appLockDemoAppMaps;
+
+  /// No description provided for @appLockDemoAppWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get appLockDemoAppWeather;
+
+  /// No description provided for @appLockDemoAppClock.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock'**
+  String get appLockDemoAppClock;
+
+  /// No description provided for @appLockDemoAppNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get appLockDemoAppNotes;
+
+  /// No description provided for @appLockDemoAppSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get appLockDemoAppSettings;
+
+  /// No description provided for @appLockDemoAppMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get appLockDemoAppMusic;
+
+  /// No description provided for @appLockDemoAppInstagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get appLockDemoAppInstagram;
+
+  /// No description provided for @settingsPrayerAlarmsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Alarms'**
+  String get settingsPrayerAlarmsTitle;
+
+  /// No description provided for @settingsPrayerAlarmsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full prayer alarms that can break through Silent Mode'**
+  String get settingsPrayerAlarmsSubtitle;
+
+  /// No description provided for @prayerAlarmsMasterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Prayer Alarms'**
+  String get prayerAlarmsMasterLabel;
+
+  /// No description provided for @prayerAlarmsMasterSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule a native alarm for each selected prayer'**
+  String get prayerAlarmsMasterSubtitle;
+
+  /// No description provided for @prayerAlarmsSnoozeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Snooze duration'**
+  String get prayerAlarmsSnoozeLabel;
+
+  /// No description provided for @prayerAlarmsSnoozeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String prayerAlarmsSnoozeMinutes(int minutes);
+
+  /// No description provided for @prayerAlarmsPerPrayerSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarms by prayer'**
+  String get prayerAlarmsPerPrayerSection;
+
+  /// No description provided for @prayerAlarmsPermissionNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow alarm permission so prayer alarms can fire on time.'**
+  String get prayerAlarmsPermissionNeeded;
+
+  /// No description provided for @prayerAlarmsPermissionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow alarms'**
+  String get prayerAlarmsPermissionButton;
+
+  /// No description provided for @prayerAlarmsFsiNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow full-screen alarms so they can appear over the lock screen. Without this, alarms still notify as a banner.'**
+  String get prayerAlarmsFsiNeeded;
+
+  /// No description provided for @prayerAlarmsFsiButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-screen settings'**
+  String get prayerAlarmsFsiButton;
+
+  /// No description provided for @prayerAlarmsUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Native prayer alarms are not available on this device. Soft prayer notifications still work.'**
+  String get prayerAlarmsUnsupported;
+
+  /// No description provided for @prayerAlarmsIosFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'On this iOS version, soft prayer notifications are used instead of AlarmKit.'**
+  String get prayerAlarmsIosFallback;
+
+  /// No description provided for @prayerAlarmsDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarm permission required'**
+  String get prayerAlarmsDeniedTitle;
+
+  /// No description provided for @prayerAlarmsDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Alarms stay off until you allow alarm permission. Soft prayer notifications are unaffected.'**
+  String get prayerAlarmsDeniedMessage;
+
+  /// No description provided for @prayerAlarmsOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get prayerAlarmsOpenSettings;
+
+  /// No description provided for @prayerAlarmsStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarms are ready to schedule'**
+  String get prayerAlarmsStatusReady;
+
+  /// No description provided for @prayerAlarmsStatusNeedsPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission needed — alarms are not active'**
+  String get prayerAlarmsStatusNeedsPermission;
+
+  /// No description provided for @prayerAlarmsStatusFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Using soft notifications on this device'**
+  String get prayerAlarmsStatusFallback;
+
+  /// No description provided for @prayerAlarmsStatusFsiOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarms are on. Enable full-screen for lock-screen takeover.'**
+  String get prayerAlarmsStatusFsiOptional;
+
+  /// No description provided for @prayerAlarmsCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get prayerAlarmsCancel;
+
+  /// No description provided for @homePrayerAlarmEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Alarm'**
+  String get homePrayerAlarmEnableLabel;
+
+  /// No description provided for @homePrayerAlarmEnableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ring a native alarm at {prayerName}'**
+  String homePrayerAlarmEnableSubtitle(String prayerName);
+
+  /// No description provided for @prayerAlarmBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Alarm'**
+  String get prayerAlarmBadge;
+
+  /// No description provided for @prayerAlarmSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to Pray'**
+  String get prayerAlarmSubtitle;
+
+  /// No description provided for @prayerAlarmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayerName} — Time to Pray'**
+  String prayerAlarmTitle(String prayerName);
+
+  /// No description provided for @prayerAlarmIvePrayed.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve Prayed'**
+  String get prayerAlarmIvePrayed;
+
+  /// No description provided for @prayerAlarmDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get prayerAlarmDismiss;
+
+  /// No description provided for @prayerAlarmSnooze.
+  ///
+  /// In en, this message translates to:
+  /// **'Snooze'**
+  String get prayerAlarmSnooze;
+
+  /// No description provided for @appLockDemoAppPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get appLockDemoAppPhone;
+
+  /// No description provided for @appLockDemoAppSafari.
+  ///
+  /// In en, this message translates to:
+  /// **'Safari'**
+  String get appLockDemoAppSafari;
+
+  /// No description provided for @appLockDemoAppFaceTime.
+  ///
+  /// In en, this message translates to:
+  /// **'FaceTime'**
+  String get appLockDemoAppFaceTime;
+
+  /// No description provided for @appLockDemoAppReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get appLockDemoAppReminders;
+
+  /// No description provided for @appLockDemoAppAppStore.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store'**
+  String get appLockDemoAppAppStore;
+
+  /// No description provided for @appLockDemoAppBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'Books'**
+  String get appLockDemoAppBooks;
+
+  /// No description provided for @appLockDemoAppHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get appLockDemoAppHealth;
+
+  /// No description provided for @appLockDemoAppWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get appLockDemoAppWallet;
+
+  /// No description provided for @appLockDemoAppChrome.
+  ///
+  /// In en, this message translates to:
+  /// **'Chrome'**
+  String get appLockDemoAppChrome;
+
+  /// No description provided for @settingsAppDemoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'App Demo'**
+  String get settingsAppDemoLabel;
+
+  /// No description provided for @settingsAppDemoChooseModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience App Lock'**
+  String get settingsAppDemoChooseModeTitle;
+
+  /// No description provided for @settingsAppDemoChooseModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Focus Mode and see how selected apps pause — without leaving DeenFocus.'**
+  String get settingsAppDemoChooseModeSubtitle;
+
+  /// No description provided for @appLockDemoDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get appLockDemoDone;
+
+  /// No description provided for @appLockDemoSleepIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how Sleep Mode works'**
+  String get appLockDemoSleepIntroTitle;
+
+  /// No description provided for @appLockDemoSleepIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. On the next screen, tap Instagram to see it pause at bedtime.'**
+  String get appLockDemoSleepIntroSubtitle;
+
+  /// No description provided for @appLockDemoSleepModeBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'SLEEP MODE'**
+  String get appLockDemoSleepModeBadge;
+
+  /// No description provided for @appLockDemoSleepLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to wind down'**
+  String get appLockDemoSleepLockTitle;
+
+  /// No description provided for @appLockDemoSleepLockCta.
+  ///
+  /// In en, this message translates to:
+  /// **'I’m ready to rest'**
+  String get appLockDemoSleepLockCta;
+
+  /// No description provided for @appLockDemoSleepCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep Mode protected'**
+  String get appLockDemoSleepCompleted;
+
+  /// No description provided for @appLockDemoSleepRewardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your night protection increased'**
+  String get appLockDemoSleepRewardSubtitle;
+
+  /// No description provided for @appLockDemoSleepStreakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NIGHT STREAK'**
+  String get appLockDemoSleepStreakLabel;
+
+  /// No description provided for @appLockDemoSleepRewardFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr reminder set for morning'**
+  String get appLockDemoSleepRewardFooter;
+
+  /// No description provided for @appLockDemoSleepMotivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest well tonight so you can rise for Fajr with energy.'**
+  String get appLockDemoSleepMotivation;
+
+  /// No description provided for @appLockDemoSleepCompletionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet nights.\nClear mornings.'**
+  String get appLockDemoSleepCompletionSubtitle;
+
+  /// No description provided for @appLockDemoSleepCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep Mode gently pauses selected apps at night so you can rest — then continue when you’re ready.'**
+  String get appLockDemoSleepCompletionBody;
+
+  /// No description provided for @appLockDemoChildIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how Child Mode works'**
+  String get appLockDemoChildIntroTitle;
+
+  /// No description provided for @appLockDemoChildIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. On the next screen, tap Instagram to see it lock when Child Mode is on.'**
+  String get appLockDemoChildIntroSubtitle;
+
+  /// No description provided for @appLockDemoChildModeBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'CHILD MODE'**
+  String get appLockDemoChildModeBadge;
+
+  /// No description provided for @appLockDemoChildLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps are protected'**
+  String get appLockDemoChildLockTitle;
+
+  /// No description provided for @appLockDemoChildLockDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected apps stay locked while Child Mode is on'**
+  String get appLockDemoChildLockDetail;
+
+  /// No description provided for @appLockDemoChildLockCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get appLockDemoChildLockCta;
+
+  /// No description provided for @appLockDemoChildCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Mode active'**
+  String get appLockDemoChildCompleted;
+
+  /// No description provided for @appLockDemoChildRewardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your protection streak increased'**
+  String get appLockDemoChildRewardSubtitle;
+
+  /// No description provided for @appLockDemoChildStreakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SAFE STREAK'**
+  String get appLockDemoChildStreakLabel;
+
+  /// No description provided for @appLockDemoChildRewardFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit anytime with your passcode'**
+  String get appLockDemoChildRewardFooter;
+
+  /// No description provided for @appLockDemoChildMotivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Peace of mind every time you hand over your phone.'**
+  String get appLockDemoChildMotivation;
+
+  /// No description provided for @appLockDemoChildCompletionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One tap safe mode.\nOnly what you allow.'**
+  String get appLockDemoChildCompletionSubtitle;
+
+  /// No description provided for @appLockDemoChildCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Mode locks selected apps so your child only sees what’s safe — then you unlock when you’re ready.'**
+  String get appLockDemoChildCompletionBody;
+
+  /// No description provided for @appLockDemoSleepCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest well tonight'**
+  String get appLockDemoSleepCompletionTitle;
+
+  /// No description provided for @appLockDemoChildCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Peace of mind'**
+  String get appLockDemoChildCompletionTitle;
+
+  /// No description provided for @settingsAppDemoPrayerCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause distractions at Salah so you can pray with presence.'**
+  String get settingsAppDemoPrayerCardSubtitle;
+
+  /// No description provided for @settingsAppDemoSleepCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your nights so rest comes easier — and Fajr feels lighter.'**
+  String get settingsAppDemoSleepCardSubtitle;
+
+  /// No description provided for @settingsAppDemoChildCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over your phone knowing only allowed apps stay open.'**
+  String get settingsAppDemoChildCardSubtitle;
 }
 
 class _AppLocalizationsDelegate

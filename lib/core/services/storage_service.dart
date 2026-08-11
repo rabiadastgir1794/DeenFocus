@@ -69,6 +69,12 @@ abstract class StorageService {
   static const String _keyStreakRestoreUsed = 'streak_restore_used';
   static const String _keyPendingPostOnboardingPaywall =
       'pending_post_onboarding_paywall';
+  static const String _keyPrayerAlarmsEnabled = 'prayer_alarms_enabled';
+  static const String _keyPrayerAlarmSnoozeMinutes =
+      'prayer_alarm_snooze_minutes';
+  static const String _keyNeedsPrayerNotificationReschedule =
+      'needs_prayer_notification_reschedule';
+  static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -341,6 +347,32 @@ abstract class StorageService {
     await prefs.setString(_keyPrayerSettingsJson, value);
   }
 
+  /// Master switch for native Prayer Alarms (AlarmKit / full-screen intent).
+  /// Defaults to off so existing users keep soft notifications only.
+  static Future<bool> get prayerAlarmsEnabled async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyPrayerAlarmsEnabled) ?? false;
+  }
+
+  static Future<void> setPrayerAlarmsEnabled(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyPrayerAlarmsEnabled, value);
+  }
+
+  static Future<int> get prayerAlarmSnoozeMinutes async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyPrayerAlarmSnoozeMinutes) ??
+        defaultPrayerAlarmSnoozeMinutes;
+  }
+
+  static Future<void> setPrayerAlarmSnoozeMinutes(int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(
+      _keyPrayerAlarmSnoozeMinutes,
+      value.clamp(1, 60),
+    );
+  }
+
   static Future<String?> get focusSettingsJson async {
     final prefs = await _prefs;
     return prefs.getString(_keyFocusSettingsJson);
@@ -379,6 +411,18 @@ abstract class StorageService {
   static Future<void> setAppNotificationsEnabled(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyAppNotificationsEnabled, value);
+  }
+
+  /// Set by native code after timezone/clock changes so Flutter force-reschedules
+  /// soft prayer reminders with recalculated wall times.
+  static Future<bool> get needsPrayerNotificationReschedule async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyNeedsPrayerNotificationReschedule) ?? false;
+  }
+
+  static Future<void> setNeedsPrayerNotificationReschedule(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyNeedsPrayerNotificationReschedule, value);
   }
 
   static Future<double?> get nearbyMosquesCacheLatitude async {

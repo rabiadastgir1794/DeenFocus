@@ -177,6 +177,40 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا يقرأ Deen Focus بياناتك أبدًا — فهو يوقف فقط التطبيقات التي تختارها.';
 
   @override
+  String get onboardingSelectAppsTitlePrefix => 'اختر';
+
+  @override
+  String get onboardingSelectAppsTitleAccent => 'التطبيقات للقفل';
+
+  @override
+  String get onboardingSelectAppsSubtitle =>
+      'اختر التطبيقات التي تريد قفلها عند حلول وقت الصلاة.';
+
+  @override
+  String get onboardingSelectAppsButton => 'اختيار التطبيقات';
+
+  @override
+  String get onboardingSelectAppsSkipForNow => 'تخطَّ الآن';
+
+  @override
+  String get onboardingSelectAppsMockAllApps => 'كل التطبيقات والفئات';
+
+  @override
+  String get onboardingSelectAppsMockPhotos => 'الصور';
+
+  @override
+  String get onboardingSelectAppsMockNotes => 'الملاحظات';
+
+  @override
+  String get onboardingSelectAppsMockMusic => 'الموسيقى';
+
+  @override
+  String get onboardingSelectAppsMockSafari => 'سفاري';
+
+  @override
+  String get onboardingSelectAppsMockPodcasts => 'البودكاست';
+
+  @override
   String screenTimeStepOf(int current, int total) {
     return 'الخطوة $current من $total';
   }
@@ -881,6 +915,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get prayerReminderLaterButton => 'سأسجلها لاحقاً';
+
+  @override
+  String get prayerNotificationSubtitleFajr =>
+      '«إن قرآن الفجر كان مشهوداً.» — القرآن 17:78';
+
+  @override
+  String get prayerNotificationSubtitleDhuhr =>
+      '«أقم الصلاة لدلوك الشمس...» — القرآن 17:78';
+
+  @override
+  String get prayerNotificationSubtitleAsr =>
+      '«حافظوا على الصلوات والصلاة الوسطى.» — القرآن 2:238';
+
+  @override
+  String get prayerNotificationSubtitleMaghrib =>
+      '«فسبحان الله حين تمسون...» — القرآن 30:17';
+
+  @override
+  String get prayerNotificationSubtitleIsha =>
+      '«أقم الصلاة - إلى غسق الليل.» — القرآن 17:78';
 
   @override
   String get homeTrialBannerTitle => 'مجاناً لمدة ٧ أيام — كن مسلماً أفضل ✨';
@@ -2213,4 +2267,348 @@ class AppLocalizationsAr extends AppLocalizations {
   String homeCountdownHms(int hours, int minutes, int seconds) {
     return '$hours س $minutes د $seconds ث';
   }
+
+  @override
+  String get appLockDemoIntroTitle => 'تعرّف على قفل التطبيقات';
+
+  @override
+  String get appLockDemoIntroSubtitle =>
+      'ابقَ داخل DeenFocus. في الشاشة التالية، اضغط على إنستغرام لترى كيف يتوقف وقت الصلاة.';
+
+  @override
+  String get appLockDemoStartButton => 'ابدأ العرض';
+
+  @override
+  String get appLockDemoTryOpeningApp => 'جرّب فتح إنستغرام';
+
+  @override
+  String get appLockDemoSalahModeBadge => 'وضع الصلاة';
+
+  @override
+  String get appLockDemoTimeToPray => 'حان وقت الصلاة';
+
+  @override
+  String appLockDemoRemainingTime(String time) {
+    return 'الوقت المتبقي: $time';
+  }
+
+  @override
+  String appLockDemoIvePrayed(String prayerName) {
+    return 'لقد صليت $prayerName';
+  }
+
+  @override
+  String get appLockDemoAlhamdulillah => 'الحمد لله';
+
+  @override
+  String appLockDemoPrayerCompleted(String prayerName) {
+    return 'أُكملت صلاة $prayerName';
+  }
+
+  @override
+  String get appLockDemoStreakIncreased => 'زاد سجل صلواتك المتتالية';
+
+  @override
+  String get appLockDemoPrayerStreakLabel => 'سلسلة الصلاة';
+
+  @override
+  String get appLockDemoDayStreakLabel => 'سلسلة الأيام';
+
+  @override
+  String appLockDemoNextPrayerIn(String minutes) {
+    return 'الصلاة التالية بعد $minutes دقيقة';
+  }
+
+  @override
+  String get appLockDemoStreakMotivation => 'استمر! ثباتك يقربك إلى الله.';
+
+  @override
+  String get appLockDemoCompletionSubtitle =>
+      'صلِّ. سجّل مرة واحدة.\nثم ارجع ليومك.';
+
+  @override
+  String get appLockDemoCompletionBody =>
+      'يقف قفل التطبيقات بلطف التطبيقات المختارة أثناء الصلاة حتى تركز — ثم تتابع عندما تكون مستعدًا.';
+
+  @override
+  String get appLockDemoContinueSetup => 'متابعة الإعداد';
+
+  @override
+  String get appLockDemoAppMessages => 'الرسائل';
+
+  @override
+  String get appLockDemoAppCalendar => 'التقويم';
+
+  @override
+  String get appLockDemoAppPhotos => 'الصور';
+
+  @override
+  String get appLockDemoAppCamera => 'الكاميرا';
+
+  @override
+  String get appLockDemoAppMail => 'البريد';
+
+  @override
+  String get appLockDemoAppMaps => 'الخرائط';
+
+  @override
+  String get appLockDemoAppWeather => 'الطقس';
+
+  @override
+  String get appLockDemoAppClock => 'الساعة';
+
+  @override
+  String get appLockDemoAppNotes => 'الملاحظات';
+
+  @override
+  String get appLockDemoAppSettings => 'الإعدادات';
+
+  @override
+  String get appLockDemoAppMusic => 'الموسيقى';
+
+  @override
+  String get appLockDemoAppInstagram => 'إنستغرام';
+
+  @override
+  String get settingsPrayerAlarmsTitle => 'منبهات الصلاة';
+
+  @override
+  String get settingsPrayerAlarmsSubtitle =>
+      'منبهات صلاة كاملة يمكنها تجاوز الوضع الصامت';
+
+  @override
+  String get prayerAlarmsMasterLabel => 'تفعيل منبهات الصلاة';
+
+  @override
+  String get prayerAlarmsMasterSubtitle => 'جدولة منبه أصلي لكل صلاة مختارة';
+
+  @override
+  String get prayerAlarmsSnoozeLabel => 'مدة التأجيل';
+
+  @override
+  String prayerAlarmsSnoozeMinutes(int minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String get prayerAlarmsPerPrayerSection => 'المنبهات حسب الصلاة';
+
+  @override
+  String get prayerAlarmsPermissionNeeded =>
+      'اسمح بإذن المنبه حتى تنطلق منبهات الصلاة في وقتها.';
+
+  @override
+  String get prayerAlarmsPermissionButton => 'السماح بالمنبهات';
+
+  @override
+  String get prayerAlarmsFsiNeeded =>
+      'اسمح بالمنبهات بملء الشاشة لتظهر فوق شاشة القفل. بدون ذلك تبقى كإشعار بانر.';
+
+  @override
+  String get prayerAlarmsFsiButton => 'إعدادات ملء الشاشة';
+
+  @override
+  String get prayerAlarmsUnsupported =>
+      'منبهات الصلاة الأصلية غير متاحة على هذا الجهاز. تظل إشعارات الصلاة اللينة تعمل.';
+
+  @override
+  String get prayerAlarmsIosFallback =>
+      'في إصدار iOS هذا، تُستخدم إشعارات الصلاة اللينة بدل AlarmKit.';
+
+  @override
+  String get prayerAlarmsDeniedTitle => 'إذن المنبه مطلوب';
+
+  @override
+  String get prayerAlarmsDeniedMessage =>
+      'تبقى منبهات الصلاة متوقفة حتى تسمح بإذن المنبه. الإشعارات الهادئة غير متأثرة.';
+
+  @override
+  String get prayerAlarmsOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get prayerAlarmsStatusReady => 'المنبهات جاهزة للجدولة';
+
+  @override
+  String get prayerAlarmsStatusNeedsPermission =>
+      'الإذن مطلوب — المنبهات غير نشطة';
+
+  @override
+  String get prayerAlarmsStatusFallback =>
+      'استخدام إشعارات هادئة على هذا الجهاز';
+
+  @override
+  String get prayerAlarmsStatusFsiOptional =>
+      'المنبهات مفعّلة. فعّل ملء الشاشة للظهور فوق شاشة القفل.';
+
+  @override
+  String get prayerAlarmsCancel => 'ليس الآن';
+
+  @override
+  String get homePrayerAlarmEnableLabel => 'منبه الصلاة';
+
+  @override
+  String homePrayerAlarmEnableSubtitle(String prayerName) {
+    return 'تشغيل منبه أصلي عند $prayerName';
+  }
+
+  @override
+  String get prayerAlarmBadge => 'منبه الصلاة';
+
+  @override
+  String get prayerAlarmSubtitle => 'حان وقت الصلاة';
+
+  @override
+  String prayerAlarmTitle(String prayerName) {
+    return '$prayerName — حان وقت الصلاة';
+  }
+
+  @override
+  String get prayerAlarmIvePrayed => 'لقد صليت';
+
+  @override
+  String get prayerAlarmDismiss => 'رفض';
+
+  @override
+  String get prayerAlarmSnooze => 'تأجيل';
+
+  @override
+  String get appLockDemoAppPhone => 'الهاتف';
+
+  @override
+  String get appLockDemoAppSafari => 'سفاري';
+
+  @override
+  String get appLockDemoAppFaceTime => 'فيستايم';
+
+  @override
+  String get appLockDemoAppReminders => 'التذكيرات';
+
+  @override
+  String get appLockDemoAppAppStore => 'متجر التطبيقات';
+
+  @override
+  String get appLockDemoAppBooks => 'الكتب';
+
+  @override
+  String get appLockDemoAppHealth => 'الصحة';
+
+  @override
+  String get appLockDemoAppWallet => 'المحفظة';
+
+  @override
+  String get appLockDemoAppChrome => 'كروم';
+
+  @override
+  String get settingsAppDemoLabel => 'عرض التطبيق';
+
+  @override
+  String get settingsAppDemoChooseModeTitle => 'جرّب قفل التطبيقات';
+
+  @override
+  String get settingsAppDemoChooseModeSubtitle =>
+      'اختر وضع تركيز وشاهد كيف تتوقف التطبيقات المحددة — دون مغادرة DeenFocus.';
+
+  @override
+  String get appLockDemoDone => 'تم';
+
+  @override
+  String get appLockDemoSleepIntroTitle => 'تعرّف على وضع النوم';
+
+  @override
+  String get appLockDemoSleepIntroSubtitle =>
+      'ابقَ داخل DeenFocus. في الشاشة التالية، اضغط على إنستغرام لترى كيف يتوقف وقت النوم.';
+
+  @override
+  String get appLockDemoSleepModeBadge => 'وضع النوم';
+
+  @override
+  String get appLockDemoSleepLockTitle => 'حان وقت الراحة';
+
+  @override
+  String get appLockDemoSleepLockCta => 'أنا مستعد للراحة';
+
+  @override
+  String get appLockDemoSleepCompleted => 'تم حماية وضع النوم';
+
+  @override
+  String get appLockDemoSleepRewardSubtitle => 'زادت حماية ليلتك';
+
+  @override
+  String get appLockDemoSleepStreakLabel => 'سلسلة الليل';
+
+  @override
+  String get appLockDemoSleepRewardFooter => 'تم ضبط تذكير الفجر للصباح';
+
+  @override
+  String get appLockDemoSleepMotivation =>
+      'نم جيدًا الليلة لتستيقظ لصلاة الفجر بنشاط.';
+
+  @override
+  String get appLockDemoSleepCompletionSubtitle =>
+      'ليالٍ هادئة.\nصباحات صافية.';
+
+  @override
+  String get appLockDemoSleepCompletionBody =>
+      'يضع وضع النوم التطبيقات المحددة على إيقاف مؤقت بلطف ليلًا حتى ترتاح — ثم تتابع عندما تكون مستعدًا.';
+
+  @override
+  String get appLockDemoChildIntroTitle => 'تعرّف على وضع الطفل';
+
+  @override
+  String get appLockDemoChildIntroSubtitle =>
+      'ابقَ داخل DeenFocus. في الشاشة التالية، اضغط على إنستغرام لترى القفل عند تفعيل وضع الطفل.';
+
+  @override
+  String get appLockDemoChildModeBadge => 'وضع الطفل';
+
+  @override
+  String get appLockDemoChildLockTitle => 'التطبيقات محمية';
+
+  @override
+  String get appLockDemoChildLockDetail =>
+      'تبقى التطبيقات المحددة مقفلة أثناء وضع الطفل';
+
+  @override
+  String get appLockDemoChildLockCta => 'حسنًا';
+
+  @override
+  String get appLockDemoChildCompleted => 'وضع الطفل مفعّل';
+
+  @override
+  String get appLockDemoChildRewardSubtitle => 'زادت سلسلة الحماية';
+
+  @override
+  String get appLockDemoChildStreakLabel => 'سلسلة الأمان';
+
+  @override
+  String get appLockDemoChildRewardFooter => 'اخرج في أي وقت برمزك السري';
+
+  @override
+  String get appLockDemoChildMotivation => 'راحة بال في كل مرة تعطي هاتفك.';
+
+  @override
+  String get appLockDemoChildCompletionSubtitle =>
+      'وضع آمن بضغطة.\nفقط ما تسمح به.';
+
+  @override
+  String get appLockDemoChildCompletionBody =>
+      'يقفل وضع الطفل التطبيقات المحددة حتى يرى طفلك فقط ما هو آمن — ثم تفتح القفل عندما تكون مستعدًا.';
+
+  @override
+  String get appLockDemoSleepCompletionTitle => 'نم بهدوء الليلة';
+
+  @override
+  String get appLockDemoChildCompletionTitle => 'راحة البال';
+
+  @override
+  String get settingsAppDemoPrayerCardSubtitle =>
+      'أوقف المشتتات وقت الصلاة لتصلّي بحضور قلب.';
+
+  @override
+  String get settingsAppDemoSleepCardSubtitle =>
+      'احمِ ليلك لترتاح أفضل — ويستيقظ فجرك أخف.';
+
+  @override
+  String get settingsAppDemoChildCardSubtitle =>
+      'سلّم هاتفك مطمئنًا: فقط التطبيقات المسموحة تبقى مفتوحة.';
 }

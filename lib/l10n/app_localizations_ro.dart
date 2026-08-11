@@ -181,6 +181,41 @@ class AppLocalizationsRo extends AppLocalizations {
       'Deen Focus nu îți citește niciodată datele — doar pune în pauză aplicațiile pe care le alegi.';
 
   @override
+  String get onboardingSelectAppsTitlePrefix => 'Selectează';
+
+  @override
+  String get onboardingSelectAppsTitleAccent => 'aplicațiile de blocat';
+
+  @override
+  String get onboardingSelectAppsSubtitle =>
+      'Selectează aplicațiile pe care vrei să le blochezi la ora rugăciunii.';
+
+  @override
+  String get onboardingSelectAppsButton => 'Selectează aplicații';
+
+  @override
+  String get onboardingSelectAppsSkipForNow => 'Sari peste momentan';
+
+  @override
+  String get onboardingSelectAppsMockAllApps =>
+      'Toate aplicațiile și categoriile';
+
+  @override
+  String get onboardingSelectAppsMockPhotos => 'Poze';
+
+  @override
+  String get onboardingSelectAppsMockNotes => 'Note';
+
+  @override
+  String get onboardingSelectAppsMockMusic => 'Muzică';
+
+  @override
+  String get onboardingSelectAppsMockSafari => 'Safari';
+
+  @override
+  String get onboardingSelectAppsMockPodcasts => 'Podcasturi';
+
+  @override
   String screenTimeStepOf(int current, int total) {
     return 'PASUL $current DIN $total';
   }
@@ -901,6 +936,26 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get prayerReminderLaterButton => 'Voi marca mai târziu';
+
+  @override
+  String get prayerNotificationSubtitleFajr =>
+      '„Într-adevăr, recitarea zorilor este întotdeauna martoră.” — Coran 17:78';
+
+  @override
+  String get prayerNotificationSubtitleDhuhr =>
+      '„Stabilește rugăciunea la coborârea soarelui...” — Coran 17:78';
+
+  @override
+  String get prayerNotificationSubtitleAsr =>
+      '„Păziți cu strictețe rugăciunile, mai ales rugăciunea de mijloc.” — Coran 2:238';
+
+  @override
+  String get prayerNotificationSubtitleMaghrib =>
+      '„Așadar, slăviți-L pe Allah când ajungeți seara...” — Coran 30:17';
+
+  @override
+  String get prayerNotificationSubtitleIsha =>
+      '„Stabilește rugăciunea -  până la întunericul nopții.” — Coran 17:78';
 
   @override
   String get homeTrialBannerTitle =>
@@ -2266,4 +2321,356 @@ class AppLocalizationsRo extends AppLocalizations {
   String homeCountdownHms(int hours, int minutes, int seconds) {
     return '${hours}h ${minutes}m ${seconds}s';
   }
+
+  @override
+  String get appLockDemoIntroTitle =>
+      'Vezi cum funcționează blocarea aplicațiilor';
+
+  @override
+  String get appLockDemoIntroSubtitle =>
+      'Rămâi în DeenFocus. Pe ecranul următor, atinge Instagram ca să vezi pauza la ora rugăciunii.';
+
+  @override
+  String get appLockDemoStartButton => 'Pornește demo-ul';
+
+  @override
+  String get appLockDemoTryOpeningApp => 'Încearcă să deschizi Instagram';
+
+  @override
+  String get appLockDemoSalahModeBadge => 'MOD SALAH';
+
+  @override
+  String get appLockDemoTimeToPray => 'Este timpul să te rogi';
+
+  @override
+  String appLockDemoRemainingTime(String time) {
+    return 'Timp rămas: $time';
+  }
+
+  @override
+  String appLockDemoIvePrayed(String prayerName) {
+    return 'Am făcut $prayerName';
+  }
+
+  @override
+  String get appLockDemoAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String appLockDemoPrayerCompleted(String prayerName) {
+    return '$prayerName finalizată';
+  }
+
+  @override
+  String get appLockDemoStreakIncreased => 'Seria ta de rugăciuni a crescut';
+
+  @override
+  String get appLockDemoPrayerStreakLabel => 'SERIE RUGĂCIUNE';
+
+  @override
+  String get appLockDemoDayStreakLabel => 'SERIE ZILE';
+
+  @override
+  String appLockDemoNextPrayerIn(String minutes) {
+    return 'Următoarea rugăciune în $minutes minute';
+  }
+
+  @override
+  String get appLockDemoStreakMotivation =>
+      'Continuă! Consistența te apropie de Allah.';
+
+  @override
+  String get appLockDemoCompletionSubtitle =>
+      'Roagă-te. Confirmă o dată.\nRevino la ziua ta.';
+
+  @override
+  String get appLockDemoCompletionBody =>
+      'Blocarea aplicațiilor pune ușor pe pauză aplicațiile selectate în timpul Salah ca să te concentrezi — apoi continui când ești gata.';
+
+  @override
+  String get appLockDemoContinueSetup => 'Continuă configurarea';
+
+  @override
+  String get appLockDemoAppMessages => 'Mesaje';
+
+  @override
+  String get appLockDemoAppCalendar => 'Calendar';
+
+  @override
+  String get appLockDemoAppPhotos => 'Poze';
+
+  @override
+  String get appLockDemoAppCamera => 'Cameră';
+
+  @override
+  String get appLockDemoAppMail => 'Mail';
+
+  @override
+  String get appLockDemoAppMaps => 'Hărți';
+
+  @override
+  String get appLockDemoAppWeather => 'Vreme';
+
+  @override
+  String get appLockDemoAppClock => 'Ceas';
+
+  @override
+  String get appLockDemoAppNotes => 'Note';
+
+  @override
+  String get appLockDemoAppSettings => 'Setări';
+
+  @override
+  String get appLockDemoAppMusic => 'Muzică';
+
+  @override
+  String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerAlarmsTitle => 'Alarme de rugăciune';
+
+  @override
+  String get settingsPrayerAlarmsSubtitle =>
+      'Alarme complete care pot trece de modul silențios';
+
+  @override
+  String get prayerAlarmsMasterLabel => 'Activează alarmele de rugăciune';
+
+  @override
+  String get prayerAlarmsMasterSubtitle =>
+      'Programează o alarmă nativă pentru fiecare rugăciune selectată';
+
+  @override
+  String get prayerAlarmsSnoozeLabel => 'Durata amânării';
+
+  @override
+  String prayerAlarmsSnoozeMinutes(int minutes) {
+    return '$minutes minute';
+  }
+
+  @override
+  String get prayerAlarmsPerPrayerSection => 'Alarme pe rugăciune';
+
+  @override
+  String get prayerAlarmsPermissionNeeded =>
+      'Permite alarma pentru a suna la timp.';
+
+  @override
+  String get prayerAlarmsPermissionButton => 'Permite alarme';
+
+  @override
+  String get prayerAlarmsFsiNeeded =>
+      'Permite alarme pe ecran complet pentru ecranul de blocare. Fără asta apar ca banner.';
+
+  @override
+  String get prayerAlarmsFsiButton => 'Setări ecran complet';
+
+  @override
+  String get prayerAlarmsUnsupported =>
+      'Alarmele native nu sunt disponibile pe acest dispozitiv. Notificările soft funcționează în continuare.';
+
+  @override
+  String get prayerAlarmsIosFallback =>
+      'Pe această versiune iOS se folosesc notificări soft în loc de AlarmKit.';
+
+  @override
+  String get prayerAlarmsDeniedTitle => 'Este necesară permisiunea de alarmă';
+
+  @override
+  String get prayerAlarmsDeniedMessage =>
+      'Alarmele de rugăciune rămân oprite până acordați permisiunea. Notificările soft nu sunt afectate.';
+
+  @override
+  String get prayerAlarmsOpenSettings => 'Deschide Setări';
+
+  @override
+  String get prayerAlarmsStatusReady => 'Alarmele sunt gata de programare';
+
+  @override
+  String get prayerAlarmsStatusNeedsPermission =>
+      'Permisiune necesară — alarmele nu sunt active';
+
+  @override
+  String get prayerAlarmsStatusFallback =>
+      'Se folosesc notificări soft pe acest dispozitiv';
+
+  @override
+  String get prayerAlarmsStatusFsiOptional =>
+      'Alarmele sunt pornite. Activează ecranul complet pentru blocare.';
+
+  @override
+  String get prayerAlarmsCancel => 'Nu acum';
+
+  @override
+  String get homePrayerAlarmEnableLabel => 'Alarmă de rugăciune';
+
+  @override
+  String homePrayerAlarmEnableSubtitle(String prayerName) {
+    return 'Sună o alarmă nativă la $prayerName';
+  }
+
+  @override
+  String get prayerAlarmBadge => 'Alarmă de rugăciune';
+
+  @override
+  String get prayerAlarmSubtitle => 'Este timpul să te rogi';
+
+  @override
+  String prayerAlarmTitle(String prayerName) {
+    return '$prayerName — Este timpul să te rogi';
+  }
+
+  @override
+  String get prayerAlarmIvePrayed => 'M-am rugat';
+
+  @override
+  String get prayerAlarmDismiss => 'Închide';
+
+  @override
+  String get prayerAlarmSnooze => 'Amână';
+
+  @override
+  String get appLockDemoAppPhone => 'Telefon';
+
+  @override
+  String get appLockDemoAppSafari => 'Safari';
+
+  @override
+  String get appLockDemoAppFaceTime => 'FaceTime';
+
+  @override
+  String get appLockDemoAppReminders => 'Mementouri';
+
+  @override
+  String get appLockDemoAppAppStore => 'App Store';
+
+  @override
+  String get appLockDemoAppBooks => 'Cărți';
+
+  @override
+  String get appLockDemoAppHealth => 'Sănătate';
+
+  @override
+  String get appLockDemoAppWallet => 'Portofel';
+
+  @override
+  String get appLockDemoAppChrome => 'Chrome';
+
+  @override
+  String get settingsAppDemoLabel => 'Demo aplicație';
+
+  @override
+  String get settingsAppDemoChooseModeTitle => 'Experimentează App Lock';
+
+  @override
+  String get settingsAppDemoChooseModeSubtitle =>
+      'Alege un mod Focus și vezi cum aplicațiile selectate se pun pe pauză — fără să părăsești DeenFocus.';
+
+  @override
+  String get appLockDemoDone => 'Gata';
+
+  @override
+  String get appLockDemoSleepIntroTitle => 'Vezi cum funcționează Modul Somn';
+
+  @override
+  String get appLockDemoSleepIntroSubtitle =>
+      'Rămâi în DeenFocus. Pe ecranul următor, atinge Instagram ca să vezi pauza la ora de culcare.';
+
+  @override
+  String get appLockDemoSleepModeBadge => 'MOD SOMN';
+
+  @override
+  String get appLockDemoSleepLockTitle => 'E timpul să te odihnești';
+
+  @override
+  String get appLockDemoSleepLockCta => 'Sunt gata să mă odihnesc';
+
+  @override
+  String get appLockDemoSleepCompleted => 'Modul Somn protejat';
+
+  @override
+  String get appLockDemoSleepRewardSubtitle =>
+      'Protecția ta de noapte a crescut';
+
+  @override
+  String get appLockDemoSleepStreakLabel => 'SERIE NOAPTE';
+
+  @override
+  String get appLockDemoSleepRewardFooter =>
+      'Memento Fajr setat pentru dimineață';
+
+  @override
+  String get appLockDemoSleepMotivation =>
+      'Odihnește-te bine în noaptea asta ca să te trezești cu energie pentru Fajr.';
+
+  @override
+  String get appLockDemoSleepCompletionSubtitle =>
+      'Nopți liniștite.\nDimineți clare.';
+
+  @override
+  String get appLockDemoSleepCompletionBody =>
+      'Modul Somn pune ușor pe pauză aplicațiile selectate noaptea ca să te odihnești — apoi continui când ești gata.';
+
+  @override
+  String get appLockDemoChildIntroTitle => 'Vezi cum funcționează Modul Copil';
+
+  @override
+  String get appLockDemoChildIntroSubtitle =>
+      'Rămâi în DeenFocus. Pe ecranul următor, atinge Instagram ca să vezi blocarea cu Modul Copil.';
+
+  @override
+  String get appLockDemoChildModeBadge => 'MOD COPIL';
+
+  @override
+  String get appLockDemoChildLockTitle => 'Aplicațiile sunt protejate';
+
+  @override
+  String get appLockDemoChildLockDetail =>
+      'Aplicațiile selectate rămân blocate cât timp Modul Copil este activ';
+
+  @override
+  String get appLockDemoChildLockCta => 'Am înțeles';
+
+  @override
+  String get appLockDemoChildCompleted => 'Modul Copil activ';
+
+  @override
+  String get appLockDemoChildRewardSubtitle =>
+      'Seria ta de protecție a crescut';
+
+  @override
+  String get appLockDemoChildStreakLabel => 'SERIE SIGURĂ';
+
+  @override
+  String get appLockDemoChildRewardFooter => 'Ieși oricând cu codul tău';
+
+  @override
+  String get appLockDemoChildMotivation =>
+      'Liniște de fiecare dată când dai telefonul.';
+
+  @override
+  String get appLockDemoChildCompletionSubtitle =>
+      'Mod sigur dintr-o atingere.\nDoar ce permiți tu.';
+
+  @override
+  String get appLockDemoChildCompletionBody =>
+      'Modul Copil blochează aplicațiile selectate ca micuțul tău să vadă doar ce e sigur — apoi deblochezi când ești gata.';
+
+  @override
+  String get appLockDemoSleepCompletionTitle =>
+      'Odihnește-te bine în noaptea asta';
+
+  @override
+  String get appLockDemoChildCompletionTitle => 'Liniște sufletească';
+
+  @override
+  String get settingsAppDemoPrayerCardSubtitle =>
+      'Pune pe pauză distragerile la Salah ca să te rogi cu prezență.';
+
+  @override
+  String get settingsAppDemoSleepCardSubtitle =>
+      'Protejează-ți nopțile ca odihna să vină mai ușor — iar Fajr să fie mai ușor.';
+
+  @override
+  String get settingsAppDemoChildCardSubtitle =>
+      'Încredințează telefonul liniștit: rămân deschise doar aplicațiile permise.';
 }

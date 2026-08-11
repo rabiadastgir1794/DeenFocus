@@ -1,0 +1,5 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "I've Prayed";
+"prayer_alarm_subtitle" = "Time to Pray";
+"prayer_alarm_dismiss" = "Dismiss";
+"prayer_alarm_badge" = "Prayer Alarm";

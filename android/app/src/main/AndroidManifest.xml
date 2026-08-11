@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Public Downloads access: legacy devices + some OEM paths; scoped storage may still require MediaStore on newer APIs. -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -51,6 +54,24 @@
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/FocusBlockedTheme" />
+        <activity
+            android:name=".PrayerAlarmActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:taskAffinity=""
+            android:theme="@style/PrayerAlarmTheme" />
+        <receiver
+            android:name=".PrayerAlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.rnr.deenfocus.action.PRAYER_ALARM_FIRE" />
+                <action android:name="com.rnr.deenfocus.action.PRAYER_ALARM_SNOOZE" />
+                <action android:name="com.rnr.deenfocus.action.PRAYER_ALARM_DISMISS" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".FocusAccessibilityService"
             android:exported="false"

@@ -189,10 +189,11 @@ class HomePrayerChecklistDay {
 }
 
 /// Per-prayer settings: custom time override, notification sound, and
-/// whether notifications are enabled for that specific prayer.
+/// whether notifications / native prayer alarms are enabled for that prayer.
 class PrayerSettingEntry {
   const PrayerSettingEntry({
     this.notificationsEnabled = true,
+    this.alarmEnabled = true,
     this.sound = PrayerNotificationSound.fullAdhan,
     this.customTimeMinutes,
   });
@@ -200,6 +201,8 @@ class PrayerSettingEntry {
   factory PrayerSettingEntry.fromMap(Map<String, dynamic> map) {
     return PrayerSettingEntry(
       notificationsEnabled: map['notificationsEnabled'] as bool? ?? true,
+      // Default true so enabling the master Prayer Alarms switch covers all five.
+      alarmEnabled: map['alarmEnabled'] as bool? ?? true,
       sound: PrayerNotificationSound.values
               .where((value) => value.name == map['sound'])
               .firstOrNull ??
@@ -208,10 +211,13 @@ class PrayerSettingEntry {
     );
   }
 
-  /// Whether the user wants a notification for this prayer at all.
+  /// Whether the user wants a soft notification for this prayer at all.
   final bool notificationsEnabled;
 
-  /// Which sound plays when the notification fires.
+  /// Whether a native Prayer Alarm should fire for this prayer.
+  final bool alarmEnabled;
+
+  /// Which sound plays when the notification / alarm fires.
   final PrayerNotificationSound sound;
 
   /// Minutes since local midnight; null means use the calculated time.
@@ -219,12 +225,14 @@ class PrayerSettingEntry {
 
   PrayerSettingEntry copyWith({
     bool? notificationsEnabled,
+    bool? alarmEnabled,
     PrayerNotificationSound? sound,
     int? customTimeMinutes,
     bool clearCustomTime = false,
   }) {
     return PrayerSettingEntry(
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      alarmEnabled: alarmEnabled ?? this.alarmEnabled,
       sound: sound ?? this.sound,
       customTimeMinutes: clearCustomTime
           ? null
@@ -235,6 +243,7 @@ class PrayerSettingEntry {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'notificationsEnabled': notificationsEnabled,
+      'alarmEnabled': alarmEnabled,
       'sound': sound.name,
       if (customTimeMinutes != null) 'customTimeMinutes': customTimeMinutes,
     };
@@ -747,6 +756,13 @@ class CycleModeData {
       final isSingleDay = lengthDays <= 1;
 
       if (!isEnabled) {
+        // Same-day ON→OFF artifact: single-day seal equal to "today".
+        // A real one-day cycle is sealed when disabling on a *later* day.
+        if (isSingleDay &&
+            interval.startDate == today &&
+            interval.endDate == today) {
+          continue;
+        }
         if (isSingleDay && interval.startDate != draftStart) continue;
         if (lengthDays <= 2 && interval.endDate.isBefore(draftStart)) {
           continue;
@@ -797,7 +813,8 @@ class CycleModeData {
   /// history seals through the previous calendar day (capped at [plannedEndDate]).
   ///
   /// Example: active 1–3 Aug, disable on 4 Aug → history ends 3 Aug; 4 Aug is ❌.
-  /// Disabling on the start day seals that single day.
+  /// Same-day enable→disable seals nothing (disable day stays normal; prayer
+  /// history/graph must not be hidden by a one-day pause/exclude seal).
   /// Idempotent when already disabled — never appends duplicate history.
   CycleModeData disableOn(DateTime date) {
     if (!isEnabled) {
@@ -819,11 +836,8 @@ class CycleModeData {
     if (day.isAfter(plannedEnd)) {
       // Already past natural end — seal the full planned window.
       end = plannedEnd;
-    } else if (day == start) {
-      // Same-day enable/disable — keep a one-day historical record.
-      end = start;
     } else {
-      // Disable day is exclusive (returns to normal).
+      // Disable day is exclusive (returns to normal), including start day.
       end = day.subtract(const Duration(days: 1));
     }
 

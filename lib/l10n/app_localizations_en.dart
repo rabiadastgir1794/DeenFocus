@@ -178,6 +178,40 @@ class AppLocalizationsEn extends AppLocalizations {
       'Deen Focus never reads your data — it only pauses the apps you choose.';
 
   @override
+  String get onboardingSelectAppsTitlePrefix => 'Select';
+
+  @override
+  String get onboardingSelectAppsTitleAccent => 'Apps to Lock';
+
+  @override
+  String get onboardingSelectAppsSubtitle =>
+      'Select the apps you want to lock when it\'s time to pray.';
+
+  @override
+  String get onboardingSelectAppsButton => 'Select Apps';
+
+  @override
+  String get onboardingSelectAppsSkipForNow => 'Skip for Now';
+
+  @override
+  String get onboardingSelectAppsMockAllApps => 'All Apps & Categories';
+
+  @override
+  String get onboardingSelectAppsMockPhotos => 'Photos';
+
+  @override
+  String get onboardingSelectAppsMockNotes => 'Notes';
+
+  @override
+  String get onboardingSelectAppsMockMusic => 'Music';
+
+  @override
+  String get onboardingSelectAppsMockSafari => 'Safari';
+
+  @override
+  String get onboardingSelectAppsMockPodcasts => 'Podcasts';
+
+  @override
   String screenTimeStepOf(int current, int total) {
     return 'STEP $current OF $total';
   }
@@ -887,6 +921,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prayerReminderLaterButton => 'I\'ll mark later';
+
+  @override
+  String get prayerNotificationSubtitleFajr =>
+      '“Indeed, the recitation of dawn is ever witnessed.” — Qur’an 17:78';
+
+  @override
+  String get prayerNotificationSubtitleDhuhr =>
+      '“Establish prayer at the decline of the sun...” — Qur’an 17:78';
+
+  @override
+  String get prayerNotificationSubtitleAsr =>
+      '“Guard strictly the prayers, especially the middle prayer.” — Qur’an 2:238';
+
+  @override
+  String get prayerNotificationSubtitleMaghrib =>
+      '“So glorify Allah when you reach the evening...” — Qur’an 30:17';
+
+  @override
+  String get prayerNotificationSubtitleIsha =>
+      '“Establish prayer -  until the darkness of the night.” — Qur’an 17:78';
 
   @override
   String get homeTrialBannerTitle =>
@@ -2234,4 +2288,353 @@ class AppLocalizationsEn extends AppLocalizations {
   String homeCountdownHms(int hours, int minutes, int seconds) {
     return '${hours}h ${minutes}m ${seconds}s';
   }
+
+  @override
+  String get appLockDemoIntroTitle => 'See how App Lock works';
+
+  @override
+  String get appLockDemoIntroSubtitle =>
+      'Stay in DeenFocus. On the next screen, tap Instagram to see it pause at prayer time.';
+
+  @override
+  String get appLockDemoStartButton => 'Start the demo';
+
+  @override
+  String get appLockDemoTryOpeningApp => 'Try opening Instagram';
+
+  @override
+  String get appLockDemoSalahModeBadge => 'SALAH MODE';
+
+  @override
+  String get appLockDemoTimeToPray => 'It’s time to pray';
+
+  @override
+  String appLockDemoRemainingTime(String time) {
+    return 'Remaining time: $time';
+  }
+
+  @override
+  String appLockDemoIvePrayed(String prayerName) {
+    return 'I’ve prayed $prayerName';
+  }
+
+  @override
+  String get appLockDemoAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String appLockDemoPrayerCompleted(String prayerName) {
+    return '$prayerName completed';
+  }
+
+  @override
+  String get appLockDemoStreakIncreased => 'Your prayer streak increased';
+
+  @override
+  String get appLockDemoPrayerStreakLabel => 'PRAYER STREAK';
+
+  @override
+  String get appLockDemoDayStreakLabel => 'DAY STREAK';
+
+  @override
+  String appLockDemoNextPrayerIn(String minutes) {
+    return 'Next prayer in $minutes minutes';
+  }
+
+  @override
+  String get appLockDemoStreakMotivation =>
+      'Keep going! Your consistency brings you closer to Allah.';
+
+  @override
+  String get appLockDemoCompletionSubtitle =>
+      'Pray. Check in once.\nGet back to your day.';
+
+  @override
+  String get appLockDemoCompletionBody =>
+      'App Lock gently pauses selected apps during Salah so you can focus on prayer — then continue when you’re ready.';
+
+  @override
+  String get appLockDemoContinueSetup => 'Continue setup';
+
+  @override
+  String get appLockDemoAppMessages => 'Messages';
+
+  @override
+  String get appLockDemoAppCalendar => 'Calendar';
+
+  @override
+  String get appLockDemoAppPhotos => 'Photos';
+
+  @override
+  String get appLockDemoAppCamera => 'Camera';
+
+  @override
+  String get appLockDemoAppMail => 'Mail';
+
+  @override
+  String get appLockDemoAppMaps => 'Maps';
+
+  @override
+  String get appLockDemoAppWeather => 'Weather';
+
+  @override
+  String get appLockDemoAppClock => 'Clock';
+
+  @override
+  String get appLockDemoAppNotes => 'Notes';
+
+  @override
+  String get appLockDemoAppSettings => 'Settings';
+
+  @override
+  String get appLockDemoAppMusic => 'Music';
+
+  @override
+  String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerAlarmsTitle => 'Prayer Alarms';
+
+  @override
+  String get settingsPrayerAlarmsSubtitle =>
+      'Full prayer alarms that can break through Silent Mode';
+
+  @override
+  String get prayerAlarmsMasterLabel => 'Enable Prayer Alarms';
+
+  @override
+  String get prayerAlarmsMasterSubtitle =>
+      'Schedule a native alarm for each selected prayer';
+
+  @override
+  String get prayerAlarmsSnoozeLabel => 'Snooze duration';
+
+  @override
+  String prayerAlarmsSnoozeMinutes(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get prayerAlarmsPerPrayerSection => 'Alarms by prayer';
+
+  @override
+  String get prayerAlarmsPermissionNeeded =>
+      'Allow alarm permission so prayer alarms can fire on time.';
+
+  @override
+  String get prayerAlarmsPermissionButton => 'Allow alarms';
+
+  @override
+  String get prayerAlarmsFsiNeeded =>
+      'Allow full-screen alarms so they can appear over the lock screen. Without this, alarms still notify as a banner.';
+
+  @override
+  String get prayerAlarmsFsiButton => 'Full-screen settings';
+
+  @override
+  String get prayerAlarmsUnsupported =>
+      'Native prayer alarms are not available on this device. Soft prayer notifications still work.';
+
+  @override
+  String get prayerAlarmsIosFallback =>
+      'On this iOS version, soft prayer notifications are used instead of AlarmKit.';
+
+  @override
+  String get prayerAlarmsDeniedTitle => 'Alarm permission required';
+
+  @override
+  String get prayerAlarmsDeniedMessage =>
+      'Prayer Alarms stay off until you allow alarm permission. Soft prayer notifications are unaffected.';
+
+  @override
+  String get prayerAlarmsOpenSettings => 'Open Settings';
+
+  @override
+  String get prayerAlarmsStatusReady => 'Alarms are ready to schedule';
+
+  @override
+  String get prayerAlarmsStatusNeedsPermission =>
+      'Permission needed — alarms are not active';
+
+  @override
+  String get prayerAlarmsStatusFallback =>
+      'Using soft notifications on this device';
+
+  @override
+  String get prayerAlarmsStatusFsiOptional =>
+      'Alarms are on. Enable full-screen for lock-screen takeover.';
+
+  @override
+  String get prayerAlarmsCancel => 'Not now';
+
+  @override
+  String get homePrayerAlarmEnableLabel => 'Prayer Alarm';
+
+  @override
+  String homePrayerAlarmEnableSubtitle(String prayerName) {
+    return 'Ring a native alarm at $prayerName';
+  }
+
+  @override
+  String get prayerAlarmBadge => 'Prayer Alarm';
+
+  @override
+  String get prayerAlarmSubtitle => 'Time to Pray';
+
+  @override
+  String prayerAlarmTitle(String prayerName) {
+    return '$prayerName — Time to Pray';
+  }
+
+  @override
+  String get prayerAlarmIvePrayed => 'I\'ve Prayed';
+
+  @override
+  String get prayerAlarmDismiss => 'Dismiss';
+
+  @override
+  String get prayerAlarmSnooze => 'Snooze';
+
+  @override
+  String get appLockDemoAppPhone => 'Phone';
+
+  @override
+  String get appLockDemoAppSafari => 'Safari';
+
+  @override
+  String get appLockDemoAppFaceTime => 'FaceTime';
+
+  @override
+  String get appLockDemoAppReminders => 'Reminders';
+
+  @override
+  String get appLockDemoAppAppStore => 'App Store';
+
+  @override
+  String get appLockDemoAppBooks => 'Books';
+
+  @override
+  String get appLockDemoAppHealth => 'Health';
+
+  @override
+  String get appLockDemoAppWallet => 'Wallet';
+
+  @override
+  String get appLockDemoAppChrome => 'Chrome';
+
+  @override
+  String get settingsAppDemoLabel => 'App Demo';
+
+  @override
+  String get settingsAppDemoChooseModeTitle => 'Experience App Lock';
+
+  @override
+  String get settingsAppDemoChooseModeSubtitle =>
+      'Choose a Focus Mode and see how selected apps pause — without leaving DeenFocus.';
+
+  @override
+  String get appLockDemoDone => 'Done';
+
+  @override
+  String get appLockDemoSleepIntroTitle => 'See how Sleep Mode works';
+
+  @override
+  String get appLockDemoSleepIntroSubtitle =>
+      'Stay in DeenFocus. On the next screen, tap Instagram to see it pause at bedtime.';
+
+  @override
+  String get appLockDemoSleepModeBadge => 'SLEEP MODE';
+
+  @override
+  String get appLockDemoSleepLockTitle => 'Time to wind down';
+
+  @override
+  String get appLockDemoSleepLockCta => 'I’m ready to rest';
+
+  @override
+  String get appLockDemoSleepCompleted => 'Sleep Mode protected';
+
+  @override
+  String get appLockDemoSleepRewardSubtitle =>
+      'Your night protection increased';
+
+  @override
+  String get appLockDemoSleepStreakLabel => 'NIGHT STREAK';
+
+  @override
+  String get appLockDemoSleepRewardFooter => 'Fajr reminder set for morning';
+
+  @override
+  String get appLockDemoSleepMotivation =>
+      'Rest well tonight so you can rise for Fajr with energy.';
+
+  @override
+  String get appLockDemoSleepCompletionSubtitle =>
+      'Quiet nights.\nClear mornings.';
+
+  @override
+  String get appLockDemoSleepCompletionBody =>
+      'Sleep Mode gently pauses selected apps at night so you can rest — then continue when you’re ready.';
+
+  @override
+  String get appLockDemoChildIntroTitle => 'See how Child Mode works';
+
+  @override
+  String get appLockDemoChildIntroSubtitle =>
+      'Stay in DeenFocus. On the next screen, tap Instagram to see it lock when Child Mode is on.';
+
+  @override
+  String get appLockDemoChildModeBadge => 'CHILD MODE';
+
+  @override
+  String get appLockDemoChildLockTitle => 'Apps are protected';
+
+  @override
+  String get appLockDemoChildLockDetail =>
+      'Selected apps stay locked while Child Mode is on';
+
+  @override
+  String get appLockDemoChildLockCta => 'Got it';
+
+  @override
+  String get appLockDemoChildCompleted => 'Child Mode active';
+
+  @override
+  String get appLockDemoChildRewardSubtitle =>
+      'Your protection streak increased';
+
+  @override
+  String get appLockDemoChildStreakLabel => 'SAFE STREAK';
+
+  @override
+  String get appLockDemoChildRewardFooter => 'Exit anytime with your passcode';
+
+  @override
+  String get appLockDemoChildMotivation =>
+      'Peace of mind every time you hand over your phone.';
+
+  @override
+  String get appLockDemoChildCompletionSubtitle =>
+      'One tap safe mode.\nOnly what you allow.';
+
+  @override
+  String get appLockDemoChildCompletionBody =>
+      'Child Mode locks selected apps so your child only sees what’s safe — then you unlock when you’re ready.';
+
+  @override
+  String get appLockDemoSleepCompletionTitle => 'Rest well tonight';
+
+  @override
+  String get appLockDemoChildCompletionTitle => 'Peace of mind';
+
+  @override
+  String get settingsAppDemoPrayerCardSubtitle =>
+      'Pause distractions at Salah so you can pray with presence.';
+
+  @override
+  String get settingsAppDemoSleepCardSubtitle =>
+      'Protect your nights so rest comes easier — and Fajr feels lighter.';
+
+  @override
+  String get settingsAppDemoChildCardSubtitle =>
+      'Hand over your phone knowing only allowed apps stay open.';
 }

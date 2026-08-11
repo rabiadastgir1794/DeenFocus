@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "Questo consente a Deen Focus di mettere in pausa le app che distraggono durante Salah, il sonno e la modalità bambino.",
   "screenTimeButton": "Consenti accesso a Tempo di utilizzo",
   "screenTimePrivacyNote": "Deen Focus non legge mai i tuoi dati — mette in pausa solo le app che scegli.",
+  "onboardingSelectAppsTitlePrefix": "Seleziona",
+  "onboardingSelectAppsTitleAccent": "app da bloccare",
+  "onboardingSelectAppsSubtitle": "Seleziona le app da bloccare quando è ora di pregare.",
+  "onboardingSelectAppsButton": "Seleziona app",
+  "onboardingSelectAppsSkipForNow": "Salta per ora",
+  "onboardingSelectAppsMockAllApps": "Tutte le app e categorie",
+  "onboardingSelectAppsMockPhotos": "Foto",
+  "onboardingSelectAppsMockNotes": "Note",
+  "onboardingSelectAppsMockMusic": "Musica",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "Podcast",
   "screenTimeStepOf": "PASSAGGIO {current} DI {total}",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "Mantieni la serie registrando la tua preghiera.",
   "prayerReminderYesButton": "Sì, Alhamdulillah",
   "prayerReminderLaterButton": "Segnerò più tardi",
+  "prayerNotificationSubtitleFajr": "“In verità, la recitazione dell’alba è sempre testimoniata.” — Corano 17:78",
+  "prayerNotificationSubtitleDhuhr": "“Stabilisci la preghiera al declino del sole...” — Corano 17:78",
+  "prayerNotificationSubtitleAsr": "“Custodite strettamente le preghiere, specialmente la preghiera di mezzo.” — Corano 2:238",
+  "prayerNotificationSubtitleMaghrib": "“Glorificate dunque Allah quando giungete alla sera...” — Corano 30:17",
+  "prayerNotificationSubtitleIsha": "“Stabilisci la preghiera -  fino all’oscurità della notte.” — Corano 17:78",
   "homeAiChatDescription": "Chiedi qualsiasi cosa sui tempi di preghiera, sul Corano e sulla guida islamica.",
   "homeDay": "Giorno",
   "homeDays": "Giorni",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "Esperienza DeenFocus migliore",
   "supportUsImpactFeatures": "Nuove funzionalità e aggiornamenti",
   "supportUsImpactQuran": "Corano e apprendimento islamico",
-  "supportUsImpactServers": "Server e affidabilità dell’app"
+  "supportUsImpactServers": "Server e affidabilità dell’app",
+  "appLockDemoIntroTitle": "Scopri come funziona il blocco app",
+  "appLockDemoIntroSubtitle": "Resta in DeenFocus. Nella schermata successiva tocca Instagram per vedere la pausa all’ora della preghiera.",
+  "appLockDemoStartButton": "Avvia la demo",
+  "appLockDemoTryOpeningApp": "Prova ad aprire Instagram",
+  "appLockDemoSalahModeBadge": "MODALITÀ SALAH",
+  "appLockDemoTimeToPray": "È ora di pregare",
+  "appLockDemoRemainingTime": "Tempo rimanente: {time}",
+  "appLockDemoIvePrayed": "Ho pregato {prayerName}",
+  "appLockDemoAlhamdulillah": "Alhamdulillah",
+  "appLockDemoPrayerCompleted": "{prayerName} completata",
+  "appLockDemoStreakIncreased": "La tua serie di preghiere è aumentata",
+  "appLockDemoPrayerStreakLabel": "SERIE PREGHIERA",
+  "appLockDemoDayStreakLabel": "SERIE GIORNI",
+  "appLockDemoNextPrayerIn": "Prossima preghiera tra {minutes} minuti",
+  "appLockDemoStreakMotivation": "Continua così! La costanza ti avvicina ad Allah.",
+  "appLockDemoCompletionSubtitle": "Prega. Conferma una volta.\nTorna alla tua giornata.",
+  "appLockDemoCompletionBody": "Il blocco app mette in pausa delicatamente le app selezionate durante la Salah così puoi concentrarti — poi continui quando sei pronto.",
+  "appLockDemoContinueSetup": "Continua configurazione",
+  "appLockDemoAppMessages": "Messaggi",
+  "appLockDemoAppCalendar": "Calendario",
+  "appLockDemoAppPhotos": "Foto",
+  "appLockDemoAppCamera": "Fotocamera",
+  "appLockDemoAppMail": "Mail",
+  "appLockDemoAppMaps": "Mappe",
+  "appLockDemoAppWeather": "Meteo",
+  "appLockDemoAppClock": "Orologio",
+  "appLockDemoAppNotes": "Note",
+  "appLockDemoAppSettings": "Impostazioni",
+  "appLockDemoAppMusic": "Musica",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "Sveglie di preghiera",
+  "settingsPrayerAlarmsSubtitle": "Sveglie complete che possono superare la modalità silenziosa",
+  "prayerAlarmsMasterLabel": "Attiva sveglie di preghiera",
+  "prayerAlarmsMasterSubtitle": "Programma una sveglia nativa per ogni preghiera selezionata",
+  "prayerAlarmsSnoozeLabel": "Durata snooze",
+  "prayerAlarmsSnoozeMinutes": "{minutes} minuti",
+  "prayerAlarmsPerPrayerSection": "Sveglie per preghiera",
+  "prayerAlarmsPermissionNeeded": "Consenti l'autorizzazione sveglia affinché suonino in orario.",
+  "prayerAlarmsPermissionButton": "Consenti sveglie",
+  "prayerAlarmsFsiNeeded": "Consenti sveglie a schermo intero per la schermata di blocco. Altrimenti restano come banner.",
+  "prayerAlarmsFsiButton": "Impostazioni schermo intero",
+  "prayerAlarmsUnsupported": "Le sveglie native non sono disponibili su questo dispositivo. Restano le notifiche soft.",
+  "prayerAlarmsIosFallback": "Su questa versione iOS si usano notifiche soft al posto di AlarmKit.",
+  "homePrayerAlarmEnableLabel": "Sveglia di preghiera",
+  "homePrayerAlarmEnableSubtitle": "Suona una sveglia nativa a {prayerName}",
+  "prayerAlarmBadge": "Sveglia di preghiera",
+  "prayerAlarmSubtitle": "È ora di pregare",
+  "prayerAlarmTitle": "{prayerName} — È ora di pregare",
+  "prayerAlarmIvePrayed": "Ho pregato",
+  "prayerAlarmDismiss": "Ignora",
+  "prayerAlarmSnooze": "Posticipa",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "Telefono",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "Promemoria",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "Libri",
+  "appLockDemoAppHealth": "Salute",
+  "appLockDemoAppWallet": "Wallet",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "Autorizzazione sveglia richiesta",
+  "prayerAlarmsDeniedMessage": "Le sveglie di preghiera restano disattivate finché non consenti l’autorizzazione. Le notifiche soft non sono interessate.",
+  "prayerAlarmsOpenSettings": "Apri Impostazioni",
+  "prayerAlarmsStatusReady": "Le sveglie sono pronte da programmare",
+  "prayerAlarmsStatusNeedsPermission": "Autorizzazione necessaria — sveglie non attive",
+  "prayerAlarmsStatusFallback": "Su questo dispositivo si usano notifiche soft",
+  "prayerAlarmsStatusFsiOptional": "Sveglie attive. Abilita lo schermo intero per il blocco schermo.",
+  "prayerAlarmsCancel": "Non ora",
+  "settingsAppDemoLabel": "Demo dell’app",
+  "settingsAppDemoChooseModeTitle": "Prova il blocco app",
+  "settingsAppDemoChooseModeSubtitle": "Scegli una modalità Focus e vedi come le app selezionate si mettono in pausa — senza uscire da DeenFocus.",
+  "appLockDemoDone": "Fatto",
+  "appLockDemoSleepIntroTitle": "Scopri come funziona la modalità Sonno",
+  "appLockDemoSleepIntroSubtitle": "Resta in DeenFocus. Nella schermata successiva tocca Instagram per vedere la pausa all’ora di dormire.",
+  "appLockDemoSleepModeBadge": "MODALITÀ SONNO",
+  "appLockDemoSleepLockTitle": "È ora di riposare",
+  "appLockDemoSleepLockCta": "Sono pronto a riposare",
+  "appLockDemoSleepCompleted": "Modalità Sonno protetta",
+  "appLockDemoSleepRewardSubtitle": "La tua protezione notturna è aumentata",
+  "appLockDemoSleepStreakLabel": "SERIE NOTTE",
+  "appLockDemoSleepRewardFooter": "Promemoria Fajr impostato per la mattina",
+  "appLockDemoSleepMotivation": "Riposa bene stasera per alzarti con energia per Fajr.",
+  "appLockDemoSleepCompletionSubtitle": "Notti tranquille.\nMattine chiare.",
+  "appLockDemoSleepCompletionBody": "La modalità Sonno mette in pausa delicatamente le app selezionate di notte così puoi riposare — poi continui quando sei pronto.",
+  "appLockDemoChildIntroTitle": "Scopri come funziona la modalità Bambino",
+  "appLockDemoChildIntroSubtitle": "Resta in DeenFocus. Nella schermata successiva tocca Instagram per vedere il blocco con la modalità Bambino.",
+  "appLockDemoChildModeBadge": "MODALITÀ BAMBINO",
+  "appLockDemoChildLockTitle": "Le app sono protette",
+  "appLockDemoChildLockDetail": "Le app selezionate restano bloccate con la modalità Bambino",
+  "appLockDemoChildLockCta": "Ho capito",
+  "appLockDemoChildCompleted": "Modalità Bambino attiva",
+  "appLockDemoChildRewardSubtitle": "La tua serie di protezione è aumentata",
+  "appLockDemoChildStreakLabel": "SERIE SICURA",
+  "appLockDemoChildRewardFooter": "Esci in qualsiasi momento con il tuo codice",
+  "appLockDemoChildMotivation": "Tranquillità ogni volta che presti il telefono.",
+  "appLockDemoChildCompletionSubtitle": "Modalità sicura con un tocco.\nSolo ciò che permetti.",
+  "appLockDemoChildCompletionBody": "La modalità Bambino blocca le app selezionate così tuo figlio vede solo ciò che è sicuro — poi sblocchi quando sei pronto.",
+  "appLockDemoSleepCompletionTitle": "Riposa bene stasera",
+  "appLockDemoChildCompletionTitle": "Tranquillità",
+  "settingsAppDemoPrayerCardSubtitle": "Metti in pausa le distrazioni durante la Salah per pregare con presenza.",
+  "settingsAppDemoSleepCardSubtitle": "Proteggi le tue notti per riposare meglio — e un Fajr più leggero.",
+  "settingsAppDemoChildCardSubtitle": "Consegna il telefono con serenità: restano aperte solo le app consentite."
 }

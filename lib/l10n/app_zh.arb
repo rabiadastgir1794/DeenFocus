@@ -52,6 +52,17 @@
   "screenTimeSubtitle": "这让 Deen Focus 能在礼拜、睡眠时间和儿童模式下暂停分心应用。",
   "screenTimeButton": "允许屏幕使用时间访问",
   "screenTimePrivacyNote": "Deen Focus 绝不会读取你的数据——只会暂停你选择的应用。",
+  "onboardingSelectAppsTitlePrefix": "选择",
+  "onboardingSelectAppsTitleAccent": "要锁定的应用",
+  "onboardingSelectAppsSubtitle": "选择祷告时要锁定的应用。",
+  "onboardingSelectAppsButton": "选择应用",
+  "onboardingSelectAppsSkipForNow": "暂时跳过",
+  "onboardingSelectAppsMockAllApps": "所有应用和类别",
+  "onboardingSelectAppsMockPhotos": "照片",
+  "onboardingSelectAppsMockNotes": "备忘录",
+  "onboardingSelectAppsMockMusic": "音乐",
+  "onboardingSelectAppsMockSafari": "Safari",
+  "onboardingSelectAppsMockPodcasts": "播客",
   "screenTimeStepOf": "第 {current} 步，共 {total} 步",
   "@screenTimeStepOf": {
     "placeholders": {
@@ -265,6 +276,11 @@
   "prayerReminderSubtitle": "记录礼拜，保持你的连续记录。",
   "prayerReminderYesButton": "是的，艾哈迈杜里拉",
   "prayerReminderLaterButton": "稍后再标记",
+  "prayerNotificationSubtitleFajr": "“晨礼的诵读确是被见证的。” — 古兰经 17:78",
+  "prayerNotificationSubtitleDhuhr": "“当太阳偏西时当谨守拜功……” — 古兰经 17:78",
+  "prayerNotificationSubtitleAsr": "“你们当谨守拜功，尤其是中间的拜功。” — 古兰经 2:238",
+  "prayerNotificationSubtitleMaghrib": "“故你们在傍晚当赞颂真主……” — 古兰经 30:17",
+  "prayerNotificationSubtitleIsha": "“当谨守拜功 — 直到黑夜降临。” — 古兰经 17:78",
   "homeAiChatDescription": "询问有关祈祷时间、古兰经和伊斯兰教指导的任何问题。",
   "homeDay": "天",
   "homeDays": "天",
@@ -817,5 +833,156 @@
   "supportUsImpactExperience": "更好的 DeenFocus 体验",
   "supportUsImpactFeatures": "新功能与升级",
   "supportUsImpactQuran": "古兰经与伊斯兰学习",
-  "supportUsImpactServers": "服务器与应用可靠性"
+  "supportUsImpactServers": "服务器与应用可靠性",
+  "appLockDemoIntroTitle": "看看应用锁定如何运作",
+  "appLockDemoIntroSubtitle": "留在 DeenFocus。下一屏点击 Instagram，看看礼拜时间如何暂停应用。",
+  "appLockDemoStartButton": "开始演示",
+  "appLockDemoTryOpeningApp": "试着打开 Instagram",
+  "appLockDemoSalahModeBadge": "礼拜模式",
+  "appLockDemoTimeToPray": "礼拜时间到了",
+  "appLockDemoRemainingTime": "剩余时间：{time}",
+  "appLockDemoIvePrayed": "我已完成 {prayerName}",
+  "appLockDemoAlhamdulillah": "الحمد لله",
+  "appLockDemoPrayerCompleted": "{prayerName} 已完成",
+  "appLockDemoStreakIncreased": "你的礼拜连续记录增加了",
+  "appLockDemoPrayerStreakLabel": "礼拜连续",
+  "appLockDemoDayStreakLabel": "日连续",
+  "appLockDemoNextPrayerIn": "{minutes} 分钟后下一次礼拜",
+  "appLockDemoStreakMotivation": "继续加油！你的坚持让你更接近真主。",
+  "appLockDemoCompletionSubtitle": "礼拜。确认一次。\n然后回到你的一天。",
+  "appLockDemoCompletionBody": "应用锁定会在礼拜期间轻柔暂停所选应用，让你专注礼拜——准备好后再继续。",
+  "appLockDemoContinueSetup": "继续设置",
+  "appLockDemoAppMessages": "信息",
+  "appLockDemoAppCalendar": "日历",
+  "appLockDemoAppPhotos": "照片",
+  "appLockDemoAppCamera": "相机",
+  "appLockDemoAppMail": "邮件",
+  "appLockDemoAppMaps": "地图",
+  "appLockDemoAppWeather": "天气",
+  "appLockDemoAppClock": "时钟",
+  "appLockDemoAppNotes": "备忘录",
+  "appLockDemoAppSettings": "设置",
+  "appLockDemoAppMusic": "音乐",
+  "appLockDemoAppInstagram": "Instagram",
+  "@appLockDemoRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoIvePrayed": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoPrayerCompleted": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@appLockDemoNextPrayerIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerAlarmsTitle": "礼拜闹钟",
+  "settingsPrayerAlarmsSubtitle": "可突破静音模式的完整礼拜闹钟",
+  "prayerAlarmsMasterLabel": "启用礼拜闹钟",
+  "prayerAlarmsMasterSubtitle": "为每个所选礼拜安排系统闹钟",
+  "prayerAlarmsSnoozeLabel": "贪睡时长",
+  "prayerAlarmsSnoozeMinutes": "{minutes} 分钟",
+  "prayerAlarmsPerPrayerSection": "按礼拜设置闹钟",
+  "prayerAlarmsPermissionNeeded": "请允许闹钟权限，以便准时响起。",
+  "prayerAlarmsPermissionButton": "允许闹钟",
+  "prayerAlarmsFsiNeeded": "请允许全屏闹钟以便显示在锁屏上。否则将以横幅通知提醒。",
+  "prayerAlarmsFsiButton": "全屏设置",
+  "prayerAlarmsUnsupported": "此设备不支持原生礼拜闹钟。轻提醒通知仍然可用。",
+  "prayerAlarmsIosFallback": "在此 iOS 版本上，使用轻提醒通知代替 AlarmKit。",
+  "homePrayerAlarmEnableLabel": "礼拜闹钟",
+  "homePrayerAlarmEnableSubtitle": "在{prayerName}响起系统闹钟",
+  "prayerAlarmBadge": "礼拜闹钟",
+  "prayerAlarmSubtitle": "礼拜时间到了",
+  "prayerAlarmTitle": "{prayerName} — 礼拜时间到了",
+  "prayerAlarmIvePrayed": "我已礼拜",
+  "prayerAlarmDismiss": "关闭",
+  "prayerAlarmSnooze": "稍后提醒",
+  "@prayerAlarmsSnoozeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@homePrayerAlarmEnableSubtitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@prayerAlarmTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
+  "appLockDemoAppPhone": "电话",
+  "appLockDemoAppSafari": "Safari",
+  "appLockDemoAppFaceTime": "FaceTime",
+  "appLockDemoAppReminders": "提醒事项",
+  "appLockDemoAppAppStore": "App Store",
+  "appLockDemoAppBooks": "图书",
+  "appLockDemoAppHealth": "健康",
+  "appLockDemoAppWallet": "钱包",
+  "appLockDemoAppChrome": "Chrome",
+  "prayerAlarmsDeniedTitle": "需要闹钟权限",
+  "prayerAlarmsDeniedMessage": "在允许闹钟权限之前，礼拜闹钟保持关闭。轻柔通知不受影响。",
+  "prayerAlarmsOpenSettings": "打开设置",
+  "prayerAlarmsStatusReady": "闹钟已准备好安排",
+  "prayerAlarmsStatusNeedsPermission": "需要权限 — 闹钟未启用",
+  "prayerAlarmsStatusFallback": "此设备使用轻柔通知",
+  "prayerAlarmsStatusFsiOptional": "闹钟已开启。启用全屏以覆盖锁屏。",
+  "prayerAlarmsCancel": "暂时不用",
+  "settingsAppDemoLabel": "应用演示",
+  "settingsAppDemoChooseModeTitle": "体验应用锁定",
+  "settingsAppDemoChooseModeSubtitle": "选择一种专注模式，看看所选应用如何暂停——无需离开 DeenFocus。",
+  "appLockDemoDone": "完成",
+  "appLockDemoSleepIntroTitle": "看看睡眠模式如何运作",
+  "appLockDemoSleepIntroSubtitle": "留在 DeenFocus。下一屏点击 Instagram，看看就寝时如何暂停应用。",
+  "appLockDemoSleepModeBadge": "睡眠模式",
+  "appLockDemoSleepLockTitle": "该放松休息了",
+  "appLockDemoSleepLockCta": "我准备休息了",
+  "appLockDemoSleepCompleted": "睡眠模式已保护",
+  "appLockDemoSleepRewardSubtitle": "你的夜间保护增加了",
+  "appLockDemoSleepStreakLabel": "夜间连续",
+  "appLockDemoSleepRewardFooter": "已设置晨礼提醒",
+  "appLockDemoSleepMotivation": "今晚好好休息，以便精力充沛地醒来做晨礼。",
+  "appLockDemoSleepCompletionSubtitle": "安静的夜晚。\n清爽的早晨。",
+  "appLockDemoSleepCompletionBody": "睡眠模式会在夜间轻柔暂停所选应用，让你休息——准备好后再继续。",
+  "appLockDemoChildIntroTitle": "看看儿童模式如何运作",
+  "appLockDemoChildIntroSubtitle": "留在 DeenFocus。下一屏点击 Instagram，看看儿童模式开启时如何锁定。",
+  "appLockDemoChildModeBadge": "儿童模式",
+  "appLockDemoChildLockTitle": "应用已受保护",
+  "appLockDemoChildLockDetail": "开启儿童模式时，所选应用保持锁定",
+  "appLockDemoChildLockCta": "知道了",
+  "appLockDemoChildCompleted": "儿童模式已开启",
+  "appLockDemoChildRewardSubtitle": "你的保护连续记录增加了",
+  "appLockDemoChildStreakLabel": "安全连续",
+  "appLockDemoChildRewardFooter": "随时可用密码退出",
+  "appLockDemoChildMotivation": "每次交出手机都更安心。",
+  "appLockDemoChildCompletionSubtitle": "一键安全模式。\n只显示你允许的内容。",
+  "appLockDemoChildCompletionBody": "儿童模式会锁定所选应用，让孩子只看到安全内容——准备好后再解锁。",
+  "appLockDemoSleepCompletionTitle": "今晚好好休息",
+  "appLockDemoChildCompletionTitle": "安心无用",
+  "settingsAppDemoPrayerCardSubtitle": "在礼拜时暂停干扰，让你专心祈祷。",
+  "settingsAppDemoSleepCardSubtitle": "守护夜晚，让休息更轻松——晨礼也更轻盈。",
+  "settingsAppDemoChildCardSubtitle": "安心交出手机：只有你允许的应用保持可用。"
 }
