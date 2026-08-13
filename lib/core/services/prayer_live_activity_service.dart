@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show ValueNotifier, kIsWeb;
 import 'package:flutter/material.dart' show Locale;
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +23,9 @@ class PrayerLiveActivityService {
   static const MethodChannel _channel = MethodChannel(
     'com.app.deenly.deenly/prayer_live_activity',
   );
+
+  /// Mirrors the persisted Live Activity preference for UI listeners (e.g. Settings).
+  final ValueNotifier<bool?> preferenceListenable = ValueNotifier<bool?>(null);
 
   Future<void> _syncSerial = Future<void>.value();
   String? _lastPayloadSignature;
@@ -141,13 +144,18 @@ class PrayerLiveActivityService {
   Future<bool> resolveEnabled() async {
     final caps = await getCapabilities();
     final supported = caps['supportsLiveActivity'] == true;
-    if (!supported) return false;
+    if (!supported) {
+      preferenceListenable.value = false;
+      return false;
+    }
 
     final preference = await StorageService.prayerLiveActivityEnabledPreference;
     if (preference == null) {
       await StorageService.setPrayerLiveActivityEnabled(true);
+      preferenceListenable.value = true;
       return true;
     }
+    preferenceListenable.value = preference;
     return preference;
   }
 
@@ -167,6 +175,7 @@ class PrayerLiveActivityService {
 
   Future<void> setEnabled(bool enabled, {bool forceSync = true}) async {
     await StorageService.setPrayerLiveActivityEnabled(enabled);
+    preferenceListenable.value = enabled;
     if (enabled) {
       await syncFromStorage(force: forceSync);
     } else {

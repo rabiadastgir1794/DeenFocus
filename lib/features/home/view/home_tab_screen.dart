@@ -17,6 +17,7 @@ import '../../../core/services/user_profile_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
+import '../helpers/home_daily_verse_helper.dart';
 import '../model/home_models.dart';
 import '../viewmodel/home_tab_view_model.dart';
 import 'widgets/home_calendar_screen.dart';
@@ -547,8 +548,16 @@ class _HomeTabViewState extends State<_HomeTabView>
   String _verseText(AppLocalizations l10n, HomeDailyVerse? verse) {
     if (verse == null) return l10n.homeDailyVerseFallback;
     final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
-    final quote = useArabic ? verse.arabicText : verse.englishText;
-    return '"$quote" — ${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}';
+    final quote = HomeDailyVerseHelper.localizedText(
+      verse,
+      useArabic: useArabic,
+    );
+    final source = HomeDailyVerseHelper.localizedSource(
+      verse,
+      l10n: l10n,
+      useArabic: useArabic,
+    );
+    return '"$quote" — $source';
   }
 
   Future<void> _openQiblaScreen(

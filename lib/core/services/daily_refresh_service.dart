@@ -46,6 +46,10 @@ class DailyRefreshService {
         longitude: longitude,
         forceReschedule: needsPrayerReschedule,
       );
+      await AppNotificationService.instance.syncNightlyWrapUpReminder(
+        latitude: latitude,
+        longitude: longitude,
+      );
     }
 
     await WidgetSyncService.instance.syncTimeline();

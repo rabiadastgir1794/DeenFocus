@@ -4,6 +4,7 @@ import '../../../../../l10n/app_localizations.dart';
 import 'app_lock_demo_completion.dart';
 import 'app_lock_demo_controller.dart';
 import 'app_lock_demo_copy.dart';
+import 'app_lock_demo_enable_offer.dart';
 import 'app_lock_demo_home_screen.dart';
 import 'app_lock_demo_intro.dart';
 import 'app_lock_demo_mode.dart';
@@ -22,6 +23,7 @@ class AppLockDemoFlow extends StatefulWidget {
     this.isActive = true,
     this.fromSettings = false,
     this.onImmersiveChanged,
+    this.onEnableFocusMode,
   });
 
   final AppLockDemoMode mode;
@@ -30,6 +32,9 @@ class AppLockDemoFlow extends StatefulWidget {
   final bool isActive;
   final bool fromSettings;
   final ValueChanged<bool>? onImmersiveChanged;
+
+  /// Settings App Demo: user accepted the post-demo enable offer.
+  final VoidCallback? onEnableFocusMode;
 
   @override
   State<AppLockDemoFlow> createState() => _AppLockDemoFlowState();
@@ -93,6 +98,12 @@ class _AppLockDemoFlowState extends State<AppLockDemoFlow> {
     widget.onComplete();
   }
 
+  void _handleEnableFocusMode() {
+    if (_completed) return;
+    _completed = true;
+    (widget.onEnableFocusMode ?? widget.onComplete)();
+  }
+
   AppLockDemoCopy _copy(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final remaining = _controller.remaining;
@@ -146,6 +157,7 @@ class _AppLockDemoFlowState extends State<AppLockDemoFlow> {
       AppLockDemoPhase.prayerLock => const Duration(milliseconds: 560),
       AppLockDemoPhase.streakReward => const Duration(milliseconds: 420),
       AppLockDemoPhase.completion => const Duration(milliseconds: 480),
+      AppLockDemoPhase.enableOffer => const Duration(milliseconds: 420),
       _ => const Duration(milliseconds: 360),
     };
   }
@@ -215,7 +227,9 @@ class _AppLockDemoFlowState extends State<AppLockDemoFlow> {
     switch (phase) {
       case AppLockDemoPhase.intro:
         return AppLockDemoIntro(
-          copy: copy,
+          navTitle: copy.navTitle,
+          introTitle: copy.introTitle,
+          introSubtitle: copy.introSubtitle,
           onStartDemo: _controller.startDemo,
           onBack: widget.onExit,
           showCenteredNavHeader: widget.fromSettings,
@@ -242,8 +256,20 @@ class _AppLockDemoFlowState extends State<AppLockDemoFlow> {
         );
       case AppLockDemoPhase.completion:
         return AppLockDemoCompletion(
-          copy: copy,
-          onContinue: _handleComplete,
+          completionTitle: copy.completionTitle,
+          completionSubtitle: copy.completionSubtitle,
+          completionBody: copy.completionBody,
+          completionCta: copy.completionCta,
+          showCompletionHeart: copy.showCompletionHeart,
+          onContinue: widget.fromSettings
+              ? _controller.openEnableOffer
+              : _handleComplete,
+        );
+      case AppLockDemoPhase.enableOffer:
+        return AppLockDemoEnableOffer(
+          mode: widget.mode,
+          onEnable: _handleEnableFocusMode,
+          onNotNow: _handleComplete,
         );
     }
   }

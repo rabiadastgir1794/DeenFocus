@@ -95,8 +95,8 @@ class WidgetSyncService {
           verse = await HomeDailyVerseHelper.loadDailyVerseForDate(
             date: date,
             useArabic: useArabicVerse,
-            // Medium widget shows at most 2 lines with no truncation.
-            maxChars: useArabicVerse ? 72 : 108,
+            // Medium widget: complete ayah only, natural 2-line fit (no truncation).
+            maxChars: useArabicVerse ? 64 : 90,
           );
         } catch (_) {
           verse = null;
@@ -126,9 +126,15 @@ class WidgetSyncService {
         'verse': verse == null
             ? null
             : <String, dynamic>{
-                'text': useArabicVerse ? verse.arabicText : verse.englishText,
-                'source':
-                    '${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}',
+                'text': HomeDailyVerseHelper.localizedText(
+                  verse,
+                  useArabic: useArabicVerse,
+                ),
+                'source': HomeDailyVerseHelper.localizedSource(
+                  verse,
+                  l10n: l10n,
+                  useArabic: useArabicVerse,
+                ),
               },
         'progress': _progressForDay(
           dayKey: dayKey,

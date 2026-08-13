@@ -3,12 +3,21 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/storage_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../quran/data/quran_local_repository.dart';
 import '../model/home_models.dart';
 import 'surah_ayah_count_helper.dart';
 
 abstract class HomeDailyVerseHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
+
+  /// Known complete, short ayahs from the same Quran DB (widget last resort).
+  static const List<DailyVerseRef> _widgetCompleteFallbacks = [
+    DailyVerseRef(surahNumber: 1, ayahNumber: 5),
+    DailyVerseRef(surahNumber: 1, ayahNumber: 4),
+    DailyVerseRef(surahNumber: 112, ayahNumber: 2),
+    DailyVerseRef(surahNumber: 108, ayahNumber: 1),
+  ];
 
   /// Day-seeded verse picker used by Home and widgets.
   /// [attempt] keeps attempt 0 identical to the historical seed.
@@ -25,8 +34,9 @@ abstract class HomeDailyVerseHelper {
 
   /// Loads a complete ayah from the trusted Quran DB for [date].
   ///
-  /// When [maxChars] is set (Medium widget), only returns ayahs that fit
-  /// naturally in ~2 lines — still using the same daily-verse refs/source.
+  /// When [maxChars] is set (Medium widget), only returns a full ayah that
+  /// naturally fits in ~2 lines. Continuation fragments and overlong ayahs
+  /// are skipped — never truncated.
   static Future<HomeDailyVerse?> loadDailyVerseForDate({
     required DateTime date,
     required bool useArabic,
@@ -41,35 +51,60 @@ abstract class HomeDailyVerseHelper {
         : getDailyVerseRefForDate(date);
     final primary = await loadDailyVerse(primaryRef);
     if (maxChars == null) return primary;
-    if (primary != null &&
-        _fitsTwoLines(
-          useArabic ? primary.arabicText : primary.englishText,
-          maxChars: maxChars,
-        )) {
-      return primary;
-    }
 
-    // Same daily-verse picker/source; walk attempts until a complete short ayah fits.
-    // Do not persist widget-only alternates — Home keeps today's primary ref.
-    for (var attempt = 1; attempt <= 24; attempt++) {
-      final ref = getDailyVerseRefForDate(date, attempt: attempt);
-      final verse = await loadDailyVerse(ref);
-      if (verse == null) continue;
+    HomeDailyVerse? takeIfSuitable(HomeDailyVerse? verse) {
+      if (verse == null) return null;
       final text = useArabic ? verse.arabicText : verse.englishText;
-      if (!_fitsTwoLines(text, maxChars: maxChars)) continue;
+      if (!_isCompleteTwoLineVerse(
+        text,
+        maxChars: maxChars,
+        useArabic: useArabic,
+      )) {
+        return null;
+      }
       return verse;
     }
 
-    // Trusted short fallback from the same Quran DB (never truncate on widget).
-    return loadDailyVerse(
-      const DailyVerseRef(surahNumber: 112, ayahNumber: 1),
-    );
+    final suitablePrimary = takeIfSuitable(primary);
+    if (suitablePrimary != null) return suitablePrimary;
+
+    // Same daily-verse picker/source; walk attempts until a complete short ayah fits.
+    // Do not persist widget-only alternates — Home keeps today's primary ref.
+    for (var attempt = 1; attempt <= 40; attempt++) {
+      final verse = takeIfSuitable(
+        await loadDailyVerse(getDailyVerseRefForDate(date, attempt: attempt)),
+      );
+      if (verse != null) return verse;
+    }
+
+    for (final ref in _widgetCompleteFallbacks) {
+      final verse = takeIfSuitable(await loadDailyVerse(ref));
+      if (verse != null) return verse;
+    }
+
+    // Prefer empty over an incomplete / truncated verse on the widget.
+    return null;
   }
 
-  static bool _fitsTwoLines(String text, {required int maxChars}) {
+  /// True when [text] is a full ayah that fits the Medium widget's 2-line area.
+  static bool _isCompleteTwoLineVerse(
+    String text, {
+    required int maxChars,
+    required bool useArabic,
+  }) {
     final normalized = text.trim().replaceAll(RegExp(r'\s+'), ' ');
     if (normalized.isEmpty || normalized.contains('\n')) return false;
-    return normalized.length <= maxChars;
+    if (normalized.length > maxChars) return false;
+
+    // Arabic ayahs are complete units from the DB; length alone is enough.
+    if (useArabic) return true;
+
+    // Saheeh International often continues mid-thought with "-" / "," / ";".
+    // Those read as cut-off on the widget even when the full ayah string is shown.
+    if (RegExp(r'[-–—…,;:]\s*$').hasMatch(normalized)) return false;
+
+    // Require a finished English sentence / closed bracket so the line feels whole.
+    return RegExp(r'''[.!?]"?'?$|\]"?'?$''').hasMatch(normalized);
   }
 
   static Future<DailyVerseRef> getOrGenerateDailyVerseRef({
@@ -117,8 +152,33 @@ abstract class HomeDailyVerseHelper {
       surahNumber: ref.surahNumber,
       ayahNumber: ref.ayahNumber,
       surahName: surah?.name ?? 'Surah ${ref.surahNumber}',
+      arabicSurahName: surah?.arabicName ?? '',
       arabicText: ayah.arabicText,
       englishText: ayah.englishText,
     );
+  }
+
+  /// Localized citation for Home / widgets (matches Quran reader style).
+  static String localizedSource(
+    HomeDailyVerse verse, {
+    required AppLocalizations l10n,
+    required bool useArabic,
+  }) {
+    final locale = l10n.localeName.toLowerCase();
+    if (useArabic && verse.arabicSurahName.trim().isNotEmpty) {
+      return '${verse.arabicSurahName} ${verse.surahNumber}:${verse.ayahNumber}';
+    }
+    if (locale.startsWith('en') && verse.surahName.trim().isNotEmpty) {
+      return '${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}';
+    }
+    return '${l10n.quranSurahLabel} ${verse.surahNumber}:${verse.ayahNumber}';
+  }
+
+  /// Quran DB only ships Arabic + English bodies; pick by app language.
+  static String localizedText(
+    HomeDailyVerse verse, {
+    required bool useArabic,
+  }) {
+    return useArabic ? verse.arabicText : verse.englishText;
   }
 }

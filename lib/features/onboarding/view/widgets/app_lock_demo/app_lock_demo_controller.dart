@@ -86,6 +86,12 @@ class AppLockDemoController extends ChangeNotifier {
     _goTo(AppLockDemoPhase.completion);
   }
 
+  /// Settings App Demo only — offer to enable the real Focus Mode.
+  void openEnableOffer() {
+    if (_phase != AppLockDemoPhase.completion) return;
+    _goTo(AppLockDemoPhase.enableOffer);
+  }
+
   void _startRemainingTicker() {
     _remainingTimer?.cancel();
     _remainingTimer = Timer.periodic(const Duration(seconds: 1), (_) {

@@ -11,39 +11,60 @@ struct PrayerLiveActivityWidget: Widget {
         state: context.state
       )
     } dynamicIsland: { context in
+      // Expanded DI top band (leading/trailing/center) is only as tall as the
+      // camera row. Multi-line stacks there get clipped by the system — put
+      // secondary copy in `.bottom`, which owns the space under the cutout.
       DynamicIsland {
         DynamicIslandExpandedRegion(.leading) {
-          VStack(alignment: .leading, spacing: 2) {
-            Text(context.state.nowLabel)
-              .font(.caption2.weight(.semibold))
-              .foregroundStyle(.secondary)
-            Text(context.state.currentPrayerLabel)
-              .font(.headline.weight(.bold))
-          }
+          Text(context.state.currentPrayerLabel)
+            .font(.headline.weight(.bold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .truncationMode(.tail)
         }
         DynamicIslandExpandedRegion(.trailing) {
           Text(context.state.currentPrayerTimeLabel)
             .font(.title3.weight(.bold))
             .monospacedDigit()
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
         }
         DynamicIslandExpandedRegion(.bottom) {
-          HStack {
-            Text(context.state.nextPrayerLine)
-              .font(.caption)
-              .foregroundStyle(.secondary)
-              .lineLimit(1)
-            Spacer()
+          HStack(alignment: .top, spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
+              Text(context.state.nowLabel)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+                .truncationMode(.tail)
+              Text(context.state.nextPrayerLine)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+                .truncationMode(.tail)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
             Text(context.attributes.brandName)
               .font(.caption2.weight(.semibold))
+              .foregroundStyle(.secondary)
+              .lineLimit(1)
+              .layoutPriority(-1)
           }
         }
       } compactLeading: {
         Text(context.state.currentPrayerLabel)
           .font(.caption2.weight(.bold))
+          .lineLimit(1)
+          .minimumScaleFactor(0.8)
       } compactTrailing: {
         Text(context.state.currentPrayerTimeLabel)
           .font(.caption2.weight(.semibold))
           .monospacedDigit()
+          .lineLimit(1)
+          .minimumScaleFactor(0.8)
       } minimal: {
         Image(systemName: "moon.stars.fill")
       }

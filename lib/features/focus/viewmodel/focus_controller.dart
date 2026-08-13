@@ -146,6 +146,10 @@ class FocusController extends ChangeNotifier {
       longitude: lng,
       forceReschedule: true,
     );
+    await AppNotificationService.instance.syncNightlyWrapUpReminder(
+      latitude: lat,
+      longitude: lng,
+    );
   }
 
   Future<void> requestInstalledApps() async {

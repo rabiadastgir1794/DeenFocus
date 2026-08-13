@@ -2757,4 +2757,315 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsAppDemoChildCardSubtitle =>
       'Confiez votre téléphone en toute sérénité : seules les apps autorisées restent ouvertes.';
+
+  @override
+  String get settingsAppDemoHomeFeaturesTitle =>
+      'Restez connecté d’un coup d’œil';
+
+  @override
+  String get settingsAppDemoHomeFeaturesSubtitle =>
+      'Voyez comment les widgets et l’activité en direct gardent les heures de prière proches — sans ouvrir l’app.';
+
+  @override
+  String get settingsAppDemoWidgetsCardSubtitle =>
+      'Verset du jour et horaires de prière sur l’écran d’accueil, toujours à jour.';
+
+  @override
+  String get settingsAppDemoLiveActivityCardSubtitle =>
+      'Prière actuelle et suivante sur l’écran de verrouillage et Dynamic Island.';
+
+  @override
+  String get featureDemoContinue => 'Continuer';
+
+  @override
+  String get featureDemoSampleStatusTime => '09:41';
+
+  @override
+  String get featureDemoOfferWidgetManualBody =>
+      'Votre appareil n’autorise pas les apps à placer des widgets automatiquement. Ajoutez le grand widget DeenFocus depuis la galerie de widgets de l’écran d’accueil.';
+
+  @override
+  String get featureDemoOfferWidgetManualTitle =>
+      'Ajoutez le widget depuis l’écran d’accueil';
+
+  @override
+  String get featureDemoOfferNo => 'Non';
+
+  @override
+  String get featureDemoOfferYes => 'Oui';
+
+  @override
+  String get featureDemoOfferLiveActivityTitle =>
+      'Voulez-vous activer l’activité en direct sur votre appareil ?';
+
+  @override
+  String get featureDemoOfferWidgetsTitle =>
+      'Voulez-vous ajouter ce widget à votre écran d’accueil ?';
+
+  @override
+  String get featureDemoWidgetsTitle => 'Widgets';
+
+  @override
+  String get featureDemoWidgetsIntroTitle => 'Découvrez vos widgets';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitle =>
+      'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsShowcaseCallout =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsDetailsTitle =>
+      'Guidance de prière d’un coup d’œil';
+
+  @override
+  String get featureDemoWidgetsDetailsBody =>
+      'Le widget moyen affiche le verset du jour et les cinq prières — mis à jour à l’ouverture de DeenFocus.';
+
+  @override
+  String get featureDemoWidgetsCompletionTitle => 'Widgets prêts';
+
+  @override
+  String get featureDemoWidgetsCompletionSubtitle =>
+      'Des rappels de foi sur votre écran d’accueil.';
+
+  @override
+  String get featureDemoWidgetsCompletionBody =>
+      'Ajoutez les widgets DeenFocus depuis la galerie, puis ouvrez l’app une fois pour synchroniser.';
+
+  @override
+  String get featureDemoWidgetsHomeHint => 'Mercredi 13 août';
+
+  @override
+  String get featureDemoWidgetSampleDate => 'Mer. 13 août';
+
+  @override
+  String get featureDemoWidgetSampleVerse =>
+      'C’est Toi que nous adorons et c’est Toi dont nous implorons le secours.';
+
+  @override
+  String get featureDemoWidgetSampleSource => 'Sourate 1:5';
+
+  @override
+  String get featureDemoLiveActivityTitle => 'Activité en direct';
+
+  @override
+  String get featureDemoLiveActivityIntroTitle => 'Voir l’activité en direct';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitle =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityShowcaseCallout => 'Tap Prayer Calculation';
+
+  @override
+  String get featureDemoLiveActivityDetailsTitle =>
+      'Mises à jour de prière toujours visibles';
+
+  @override
+  String get featureDemoLiveActivityDetailsBody =>
+      'L’activité en direct garde Maghrib, Isha et le compte à rebours sur l’écran de verrouillage — activez-la dans Réglages.';
+
+  @override
+  String get featureDemoLiveActivityCompletionTitle =>
+      'Activité en direct prête';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitle =>
+      'La prochaine prière, toujours proche.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBody =>
+      'Activez l’activité en direct dans Réglages → Calcul de prière pour l’afficher sur l’écran de verrouillage.';
+
+  @override
+  String get featureDemoLiveActivityLockHint => 'Mercredi 13 août';
+
+  @override
+  String get featureDemoLiveActivitySampleTime => '18:48';
+
+  @override
+  String get featureDemoLiveActivitySampleNextTime => '20:11';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleIos =>
+      'Restez dans DeenFocus. Appuyez longuement sur l’écran d’accueil, ajoutez un widget et essayez les 3 tailles.';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleAndroid =>
+      'Restez dans DeenFocus. Appuyez longuement sur l’écran d’accueil, ouvrez le sélecteur et essayez les 3 tailles.';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutIos =>
+      'Appuyez longuement sur l’écran d’accueil';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutAndroid =>
+      'Appuyez longuement sur l’écran d’accueil';
+
+  @override
+  String get featureDemoWidgetsAddCallout =>
+      'Touchez + pour choisir un widget DeenFocus';
+
+  @override
+  String get featureDemoWidgetsAddSlotLabel => 'Ajouter un widget';
+
+  @override
+  String get featureDemoWidgetsGalleryTitle => 'Choisissez un widget DeenFocus';
+
+  @override
+  String get featureDemoWidgetsGallerySubtitle =>
+      'Passez de Petit à Moyen à Grand — puis ajoutez-le à l’écran d’accueil.';
+
+  @override
+  String get featureDemoWidgetsAddCta => 'Ajouter le widget';
+
+  @override
+  String get featureDemoWidgetsAddCtaAndroid => 'Ajouter le widget';
+
+  @override
+  String get featureDemoWidgetsChangeCta => 'Changer la taille';
+
+  @override
+  String get featureDemoWidgetSizeSmall => 'Petit';
+
+  @override
+  String get featureDemoWidgetSizeMedium => 'Moyen';
+
+  @override
+  String get featureDemoWidgetSizeLarge => 'Grand';
+
+  @override
+  String get featureDemoWidgetSizeSmallSubtitle =>
+      'Horaires de prière compacts';
+
+  @override
+  String get featureDemoWidgetSizeMediumSubtitle =>
+      'Verset du jour et les cinq prières';
+
+  @override
+  String get featureDemoWidgetSizeLargeSubtitle =>
+      'Progression des prières et planning du jour';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleIos =>
+      'Restez dans DeenFocus. Activez l’activité en direct, puis voyez l’écran de verrouillage et Dynamic Island.';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleAndroid =>
+      'Restez dans DeenFocus. Activez l’activité en direct, puis voyez la notification permanente et le panneau.';
+
+  @override
+  String get featureDemoLiveOpenPrayerCalcCallout => 'Touchez Calcul de prière';
+
+  @override
+  String get featureDemoLiveEnableToggleCallout =>
+      'Activez « Activer l’activité en direct »';
+
+  @override
+  String get featureDemoLiveLockScreenCallout =>
+      'Votre activité de prière sur l’écran de verrouillage';
+
+  @override
+  String get featureDemoLiveCompactTitle => 'Dynamic Island compacte';
+
+  @override
+  String get featureDemoLiveCompactCallout =>
+      'La prière actuelle reste visible en haut';
+
+  @override
+  String get featureDemoLiveExpandCta => 'Agrandir Dynamic Island';
+
+  @override
+  String get featureDemoLiveExpandedTitle => 'Dynamic Island agrandie';
+
+  @override
+  String get featureDemoLiveExpandedCallout =>
+      'Heure actuelle et prochaine prière ensemble';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleIos =>
+      'Lock Screen and Dynamic Island, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleAndroid =>
+      'Ongoing prayer updates, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyIos =>
+      'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyAndroid =>
+      'Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.';
+
+  @override
+  String get featureDemoAndroidStatusBarHint => 'Ongoing notification';
+
+  @override
+  String get featureDemoAndroidOngoingTitle =>
+      'Notification de prière en direct';
+
+  @override
+  String get featureDemoAndroidOngoingCallout =>
+      'Silent ongoing update — current and next prayer';
+
+  @override
+  String get featureDemoAndroidOpenShadeCta =>
+      'Ouvrir le panneau de notifications';
+
+  @override
+  String get featureDemoAndroidShadeTitle => 'Panneau de notifications';
+
+  @override
+  String get featureDemoAndroidShadeCallout =>
+      'Expand to see the full current and next prayer status';
+
+  @override
+  String get featureDemoAndroidOngoingBadge => 'En cours';
+
+  @override
+  String get appLockDemoOfferPrayerTitle => 'Prêt à essayer le Mode Prière ?';
+
+  @override
+  String get appLockDemoOfferSleepTitle => 'Prêt à essayer le Mode Sommeil ?';
+
+  @override
+  String get appLockDemoOfferChildTitle => 'Prêt à essayer le Mode Enfant ?';
+
+  @override
+  String get appLockDemoOfferPrayerCta => 'Activer le Mode Prière';
+
+  @override
+  String get appLockDemoOfferSleepCta => 'Activer le Mode Sommeil';
+
+  @override
+  String get appLockDemoOfferChildCta => 'Activer le Mode Enfant';
+
+  @override
+  String get appLockDemoOfferNotNow => 'Pas maintenant';
+
+  @override
+  String get nightlyWrapUpPrayersTitle => 'Terminez les prières d’aujourd’hui';
+
+  @override
+  String get nightlyWrapUpPrayersBody =>
+      'Marquez les prières incomplètes ou manquées pour protéger votre série de prières.';
+
+  @override
+  String get nightlyWrapUpChecklistTitle => 'Complétez votre liste du jour';
+
+  @override
+  String get nightlyWrapUpChecklistBody =>
+      'Quelques éléments restent ouverts — concluez votre journée avec intention.';
+
+  @override
+  String get nightlyWrapUpBothTitle => 'Concluez votre journée';
+
+  @override
+  String get nightlyWrapUpBothBody =>
+      'Marquez les prières restantes et terminez votre liste du jour avant la fin de la journée.';
 }

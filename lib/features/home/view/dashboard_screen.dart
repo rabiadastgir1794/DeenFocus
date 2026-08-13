@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../features/focus/focus_entry_intent.dart';
+import '../../../features/focus/model/focus_models.dart';
 import '../../../features/focus/view/focus_tab_screen.dart';
 import '../../../features/home/view/home_tab_screen.dart';
 import '../../../features/home/view/settings/settings_tab_screen.dart';
@@ -69,6 +71,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       _currentIndex = index;
       _visitedIndexes.add(index);
+    });
+  }
+
+  void _openFocusAndRequestEnable(FocusModeType mode) {
+    FocusEntryIntent.requestEnableMode(mode);
+    if (!mounted) return;
+    setState(() {
+      _currentIndex = 1;
+      _visitedIndexes.add(1);
     });
   }
 
@@ -159,7 +170,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 3:
         return const QuranTabScreen();
       case 4:
-        return SettingsTabScreen(isTabActive: _currentIndex == 4);
+        return SettingsTabScreen(
+          isTabActive: _currentIndex == 4,
+          onRequestEnableFocusMode: _openFocusAndRequestEnable,
+        );
       default:
         return const SizedBox.shrink();
     }

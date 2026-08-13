@@ -4,20 +4,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/spacing.dart';
 import '../../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../../l10n/app_localizations.dart';
-import 'app_lock_demo_copy.dart';
 
+/// Shared demo intro chrome (App Lock + feature demos).
 class AppLockDemoIntro extends StatelessWidget {
   const AppLockDemoIntro({
     super.key,
-    required this.copy,
+    required this.navTitle,
+    required this.introTitle,
+    required this.introSubtitle,
     required this.onStartDemo,
     required this.onBack,
+    this.startButtonLabel,
     this.showCenteredNavHeader = false,
   });
 
-  final AppLockDemoCopy copy;
+  final String navTitle;
+  final String introTitle;
+  final String introSubtitle;
   final VoidCallback onStartDemo;
   final VoidCallback onBack;
+  final String? startButtonLabel;
 
   /// Settings uses calendar-style Back + title. Onboarding already has chrome.
   final bool showCenteredNavHeader;
@@ -35,7 +41,7 @@ class AppLockDemoIntro extends StatelessWidget {
       children: [
         if (showCenteredNavHeader)
           AppCenteredNavHeader(
-            title: copy.navTitle,
+            title: navTitle,
             backLabel: l10n.calendarBack,
             onBack: onBack,
           )
@@ -62,7 +68,7 @@ class AppLockDemoIntro extends StatelessWidget {
               children: [
                 const Spacer(flex: 2),
                 Text(
-                  copy.introTitle,
+                  introTitle,
                   textAlign: TextAlign.center,
                   style: textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.w800,
@@ -74,7 +80,7 @@ class AppLockDemoIntro extends StatelessWidget {
                 ),
                 SizedBox(height: Spacing.md.h),
                 Text(
-                  copy.introSubtitle,
+                  introSubtitle,
                   textAlign: TextAlign.center,
                   style: textTheme.bodyLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
@@ -99,7 +105,7 @@ class AppLockDemoIntro extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          l10n.appLockDemoStartButton,
+                          startButtonLabel ?? l10n.appLockDemoStartButton,
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,

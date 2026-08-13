@@ -15,8 +15,10 @@ import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
+import '../../features/home/helpers/nightly_wrap_up_planner.dart';
 import '../../features/home/helpers/prayer_label_helper.dart';
 import '../../features/home/model/home_models.dart';
+import '../../features/home/services/cycle_mode_policy.dart';
 
 void _onNotificationResponse(NotificationResponse response) {
   unawaited(
@@ -68,6 +70,16 @@ class AppNotificationService {
     importance: Importance.high,
   );
 
+  /// Same visual weight as other Deenly reminders (beep tone, high importance).
+  static const _wrapUpChannel = AndroidNotificationChannel(
+    'daily_wrap_up',
+    'Daily wrap-up',
+    description:
+        'Evening reminders to finish prayers and your Daily Checklist.',
+    importance: Importance.high,
+    sound: RawResourceAndroidNotificationSound('beep'),
+  );
+
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
   static const MethodChannel _focusMethodChannel = MethodChannel(
@@ -76,8 +88,10 @@ class AppNotificationService {
   bool _initialized = false;
   Future<void> _prayerSyncSerial = Future<void>.value();
   Future<void> _focusSyncSerial = Future<void>.value();
+  Future<void> _wrapUpSyncSerial = Future<void>.value();
   String? _lastPrayerScheduleSignature;
   String? _lastFocusScheduleSignature;
+  String? _lastWrapUpScheduleSignature;
 
   /// Forces the next [syncFocusNotifications] to rebuild pending alerts.
   void invalidateFocusScheduleCache() {
@@ -131,6 +145,7 @@ class AppNotificationService {
     await androidPlugin?.createNotificationChannel(_prayerChannelBeep);
     await androidPlugin?.createNotificationChannel(_prayerChannelMute);
     await androidPlugin?.createNotificationChannel(_focusChannel);
+    await androidPlugin?.createNotificationChannel(_wrapUpChannel);
 
     _initialized = true;
   }
@@ -153,6 +168,10 @@ class AppNotificationService {
   /// Enough IDs for multiple days × 6 prayer indices (sunrise skipped when scheduling).
   static const int _prayerNotificationIdStart = 1000;
   static const int _prayerNotificationIdEnd = 1199;
+
+  /// Nightly Daily Wrap-Up (Isha + 1h). Separate from Fajr→Isha soft reminders.
+  static const int _wrapUpNotificationIdStart = 5000;
+  static const int _wrapUpNotificationIdEnd = 5006;
 
   /// Hard iOS limit for pending local notifications per app.
   static const int _iosPendingNotificationLimit = 64;
@@ -325,6 +344,199 @@ class AppNotificationService {
     _prayerSyncSerial = run.catchError((Object _) {});
     await run;
   }
+
+  /// Schedules or cancels tonight's Daily Wrap-Up reminder at Isha + 1 hour.
+  ///
+  /// Sleep / Night Discipline must never suppress this reminder. Cycle Mode
+  /// follows the existing in-app reminder rule ([CycleModePolicy.isCycleMember]).
+  Future<void> syncNightlyWrapUpReminder({
+    required double latitude,
+    required double longitude,
+  }) async {
+    final run = _wrapUpSyncSerial.then((_) async {
+      final l10n = await _focusNotificationsLocalizations();
+      await initialize();
+
+      if (!await _hasNotificationPermission()) {
+        _lastWrapUpScheduleSignature = null;
+        await _cancelRange(
+          _wrapUpNotificationIdStart,
+          _wrapUpNotificationIdEnd,
+        );
+        return;
+      }
+      await _ensureAndroidExactAlarmOrFallback();
+      await _setLocalTimezone();
+
+      final now = DateTime.now();
+      final today = NightlyWrapUpPlanner.dateKeyDate(now);
+      final dateKey = NightlyWrapUpPlanner.dateKeyFor(today);
+
+      final prayerSettingsRaw = await StorageService.prayerSettingsJson;
+      final prayerSettings = prayerSettingsRaw == null
+          ? PrayerSettingsState.defaults()
+          : PrayerSettingsState.fromJson(prayerSettingsRaw);
+      final customTimeOverrides = prayerSettings.customTimeOverrides;
+
+      final times = HomePrayerTimesHelper.applyCustomOverrides(
+        data: await HomePrayerTimesHelper.generatePrayerTimesForDate(
+          latitude: latitude,
+          longitude: longitude,
+          date: today,
+        ),
+        overridesMinutesSinceMidnight: customTimeOverrides,
+        referenceTime: DateTime(today.year, today.month, today.day, 12),
+      );
+      final isha = times.slots
+          .where((slot) => slot.id == HomePrayerId.isha)
+          .map((slot) => slot.time)
+          .firstOrNull;
+      if (isha == null) {
+        await _cancelRange(
+          _wrapUpNotificationIdStart,
+          _wrapUpNotificationIdEnd,
+        );
+        _lastWrapUpScheduleSignature = 'no-isha';
+        return;
+      }
+
+      final cyclePolicy = CycleModePolicy(await StorageService.cycleModeData);
+      // Match existing prayer-reminder suppression: cycle member days skip.
+      final skipForCycle = cyclePolicy.isCycleMember(today);
+
+      final checklistRaw = await StorageService.dailyChecklistJson;
+      final checklistState = checklistRaw == null || checklistRaw.isEmpty
+          ? null
+          : DailyChecklistState.fromJson(checklistRaw);
+      final checklistCompleted = NightlyWrapUpPlanner.checklistCompletedForDate(
+        stored: checklistState,
+        dateKey: dateKey,
+      );
+
+      final prayerStatuses = await _todayPrayerStatuses(dateKey);
+      final plan = NightlyWrapUpPlanner.planForDay(
+        ishaTime: isha,
+        prayerStatuses: prayerStatuses,
+        checklistCompleted: checklistCompleted,
+        skipForCycleMode: skipForCycle,
+      );
+
+      final localeCode = await StorageService.localeCode ?? 'en';
+      final signature = plan == null
+          ? 'skip|$dateKey|$localeCode|cycle=$skipForCycle'
+          : 'schedule|$dateKey|$localeCode|${plan.kind.name}|'
+              '${plan.when.toIso8601String()}|'
+              '${latitude.toStringAsFixed(4)}|${longitude.toStringAsFixed(4)}';
+
+      if (_lastWrapUpScheduleSignature == signature) {
+        return;
+      }
+
+      await _cancelRange(
+        _wrapUpNotificationIdStart,
+        _wrapUpNotificationIdEnd,
+      );
+
+      if (plan == null) {
+        _lastWrapUpScheduleSignature = signature;
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.wrap_up.sync',
+          'cancelled — nothing to remind (cycle=$skipForCycle)',
+        );
+        return;
+      }
+
+      final id = nightlyWrapUpNotificationIdFor(0);
+      final copy = _wrapUpCopy(plan.kind, l10n);
+      final scheduled = await _scheduleIfFuture(
+        id: id,
+        when: plan.when,
+        title: copy.title,
+        body: copy.body,
+        details: _wrapUpNotificationDetails,
+        payload: 'wrap_up:${plan.kind.name}',
+        preferAlarmClock: true,
+        iosScheduleRole: _IosScheduleRole.focus,
+      );
+      _lastWrapUpScheduleSignature = signature;
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.wrap_up.sync',
+        'kind=${plan.kind.name} when=${plan.when.toIso8601String()} '
+        'scheduled=$scheduled id=$id',
+      );
+    });
+    _wrapUpSyncSerial = run.catchError((Object _) {});
+    await run;
+  }
+
+  Future<Map<TrackablePrayer, PrayerMarkStatus>> _todayPrayerStatuses(
+    String dateKey,
+  ) async {
+    final raw = await StorageService.homePrayerStreakJson;
+    if (raw == null || raw.isEmpty) {
+      return const <TrackablePrayer, PrayerMarkStatus>{};
+    }
+    final state = HomePrayerStreakState.fromJson(raw);
+    final merged = <TrackablePrayer, PrayerMarkStatus>{
+      ...?state.statusHistory[dateKey],
+    };
+    for (final day in state.weekDays) {
+      if (day.dateKey != dateKey) continue;
+      for (final prayer in TrackablePrayer.values) {
+        final status = day.statusFor(prayer);
+        if (status != PrayerMarkStatus.none) {
+          merged[prayer] = status;
+        }
+      }
+    }
+    return merged;
+  }
+
+  ({String title, String body}) _wrapUpCopy(
+    NightlyWrapUpContentKind kind,
+    AppLocalizations l10n,
+  ) {
+    return switch (kind) {
+      NightlyWrapUpContentKind.prayers => (
+          title: l10n.nightlyWrapUpPrayersTitle,
+          body: l10n.nightlyWrapUpPrayersBody,
+        ),
+      NightlyWrapUpContentKind.checklist => (
+          title: l10n.nightlyWrapUpChecklistTitle,
+          body: l10n.nightlyWrapUpChecklistBody,
+        ),
+      NightlyWrapUpContentKind.both => (
+          title: l10n.nightlyWrapUpBothTitle,
+          body: l10n.nightlyWrapUpBothBody,
+        ),
+    };
+  }
+
+  NotificationDetails get _wrapUpNotificationDetails => NotificationDetails(
+        android: AndroidNotificationDetails(
+          _wrapUpChannel.id,
+          _wrapUpChannel.name,
+          channelDescription: _wrapUpChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          sound: _wrapUpChannel.sound,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.daily_wrap_up',
+        ),
+        macOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.daily_wrap_up',
+        ),
+      );
 
   /// Night discipline: one ID per upcoming lock / unlock (same horizon as prayer batch).
   static const int _nightLockNotificationIdStart = 4000;
@@ -952,6 +1164,22 @@ class AppNotificationService {
   @visibleForTesting
   static int prayerNotificationIdFor(HomePrayerId id, int dayOffset) {
     return _prayerNotificationIdStart + dayOffset * 20 + _slotIndexStatic(id);
+  }
+
+  /// Stable notification id for the Nightly Daily Wrap-Up (0 = today).
+  @visibleForTesting
+  static int nightlyWrapUpNotificationIdFor(int dayOffset) {
+    return _wrapUpNotificationIdStart + dayOffset;
+  }
+
+  @visibleForTesting
+  static bool isNightlyWrapUpNotificationId(int id) {
+    return id >= _wrapUpNotificationIdStart && id <= _wrapUpNotificationIdEnd;
+  }
+
+  @visibleForTesting
+  static bool isPrayerSoftNotificationId(int id) {
+    return id >= _prayerNotificationIdStart && id <= _prayerNotificationIdEnd;
   }
 
   static int _slotIndexStatic(HomePrayerId id) {
