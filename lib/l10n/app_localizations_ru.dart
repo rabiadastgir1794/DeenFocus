@@ -953,6 +953,11 @@ class AppLocalizationsRu extends AppLocalizations {
       '«Совершай молитву -  до наступления ночной тьмы.» — Коран 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'Время для $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       'Бесплатно 7 дней — станьте лучшим мусульманином ✨';
 
@@ -1612,6 +1617,26 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Укажите местоположение в Deen Focus, чтобы загрузить намазы и аят дня.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Ваш прогресс намаза';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed из $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'намазов выполнено.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Продолжайте — сегодня осталось $count намазов';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Альхамдулиллах — все намазы на сегодня выполнены';
 
   @override
   String get focusChildModeActive => 'Детский режим активен';
@@ -2420,6 +2445,59 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Обновления намаза';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live Activity следующего намаза на экране блокировки';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Будьте в курсе с первого взгляда';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Смотрите следующий намаз и его время прямо на экране блокировки.';
+
+  @override
+  String get liveActivityEnableLabel => 'Включить Live Activity';
+
+  @override
+  String get liveActivityPromptNotNow => 'Не сейчас';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Live Activities недоступны на этом устройстве.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Разрешите уведомления, чтобы обновления намаза отображались на экране блокировки.';
+
+  @override
+  String get liveActivityPermissionButton => 'Разрешить уведомления';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity включена';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity выключена';
+
+  @override
+  String get liveActivityNowLabel => 'Сейчас';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Обновлено в $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer в $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Будильники намаза';

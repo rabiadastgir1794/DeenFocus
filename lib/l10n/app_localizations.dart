@@ -1830,6 +1830,12 @@ abstract class AppLocalizations {
   /// **'“Establish prayer -  until the darkness of the night.” — Qur’an 17:78'**
   String get prayerNotificationSubtitleIsha;
 
+  /// No description provided for @prayerNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time for {prayerName}'**
+  String prayerNotificationTitle(String prayerName);
+
   /// No description provided for @homeTrialBannerTitle.
   ///
   /// In en, this message translates to:
@@ -2992,6 +2998,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set your location in Deen Focus to load prayers and the daily verse.'**
   String get widgetSetLocationForPrayers;
+
+  /// No description provided for @widgetPrayerProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Prayer Progress'**
+  String get widgetPrayerProgressTitle;
+
+  /// No description provided for @widgetPrayerProgressCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{completed} of {total}'**
+  String widgetPrayerProgressCount(int completed, int total);
+
+  /// No description provided for @widgetPrayersCompletedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'prayers completed.'**
+  String get widgetPrayersCompletedSubtitle;
+
+  /// No description provided for @widgetPrayersLeftToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going — {count} prayers left today'**
+  String widgetPrayersLeftToday(int count);
+
+  /// No description provided for @widgetAllPrayersDoneToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah — all prayers complete today'**
+  String get widgetAllPrayersDoneToday;
 
   /// No description provided for @focusChildModeActive.
   ///
@@ -4408,6 +4444,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Instagram'**
   String get appLockDemoAppInstagram;
+
+  /// No description provided for @settingsPrayerUpdatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Updates'**
+  String get settingsPrayerUpdatesTitle;
+
+  /// No description provided for @settingsPrayerUpdatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity for your next prayer on the Lock Screen'**
+  String get settingsPrayerUpdatesSubtitle;
+
+  /// No description provided for @liveActivitySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activities'**
+  String get liveActivitySectionTitle;
+
+  /// No description provided for @liveActivityStayUpdatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated at a glance'**
+  String get liveActivityStayUpdatedTitle;
+
+  /// No description provided for @liveActivityStayUpdatedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See your next prayer and its time directly on your Lock Screen.'**
+  String get liveActivityStayUpdatedBody;
+
+  /// No description provided for @liveActivityEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Live Activity'**
+  String get liveActivityEnableLabel;
+
+  /// No description provided for @liveActivityPromptNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get liveActivityPromptNotNow;
+
+  /// No description provided for @liveActivityUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activities are not available on this device.'**
+  String get liveActivityUnsupported;
+
+  /// No description provided for @liveActivityPermissionNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications so prayer updates can appear on your Lock Screen.'**
+  String get liveActivityPermissionNeeded;
+
+  /// No description provided for @liveActivityPermissionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get liveActivityPermissionButton;
+
+  /// No description provided for @liveActivityStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity is on'**
+  String get liveActivityStatusActive;
+
+  /// No description provided for @liveActivityStatusOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity is off'**
+  String get liveActivityStatusOff;
+
+  /// No description provided for @liveActivityNowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get liveActivityNowLabel;
+
+  /// No description provided for @liveActivityUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated at {time}'**
+  String liveActivityUpdatedAt(String time);
+
+  /// No description provided for @liveActivityNextAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayer} at {time}'**
+  String liveActivityNextAt(String prayer, String time);
 
   /// No description provided for @settingsPrayerAlarmsTitle.
   ///

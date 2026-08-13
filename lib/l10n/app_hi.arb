@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“नमाज़ों की पाबंदी करो, विशेषकर मध्य नमाज़ की।” — क़ुरआन 2:238",
   "prayerNotificationSubtitleMaghrib": "“अतः जब शाम हो तो अल्लाह की तसबीह करो...” — क़ुरआन 30:17",
   "prayerNotificationSubtitleIsha": "“नमाज़ क़ायम करो -  रात के अंधकार तक।” — क़ुरआन 17:78",
+  "prayerNotificationTitle": "{prayerName} का समय हो गया है",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "प्रार्थना के समय, कुरान और इस्लामी मार्गदर्शन के बारे में कुछ भी पूछें।",
   "homeDay": "दिन",
   "homeDays": "दिन",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "नमाज़ अपडेट",
+  "settingsPrayerUpdatesSubtitle": "लॉक स्क्रीन पर अगली नमाज़ की लाइव गतिविधि",
+  "liveActivitySectionTitle": "लाइव गतिविधि",
+  "liveActivityStayUpdatedTitle": "एक नज़र में अपडेट रहें",
+  "liveActivityStayUpdatedBody": "लॉक स्क्रीन पर सीधे अपनी अगली नमाज़ और उसका समय देखें।",
+  "liveActivityEnableLabel": "लाइव गतिविधि सक्षम करें",
+  "liveActivityPromptNotNow": "अभी नहीं",
+  "liveActivityUnsupported": "इस डिवाइस पर लाइव गतिविधि उपलब्ध नहीं है।",
+  "liveActivityPermissionNeeded": "लॉक स्क्रीन पर नमाज़ अपडेट दिखाने के लिए सूचनाओं की अनुमति दें।",
+  "liveActivityPermissionButton": "सूचनाएँ अनुमति दें",
+  "liveActivityStatusActive": "लाइव गतिविधि चालू है",
+  "liveActivityStatusOff": "लाइव गतिविधि बंद है",
+  "liveActivityNowLabel": "अब",
+  "liveActivityUpdatedAt": "{time} पर अपडेट किया गया",
+  "liveActivityNextAt": "{prayer} {time} पर",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "नमाज़ अलार्म",
   "settingsPrayerAlarmsSubtitle": "पूर्ण नमाज़ अलार्म जो साइलेंट मोड को पार कर सकते हैं",
   "prayerAlarmsMasterLabel": "नमाज़ अलार्म चालू करें",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "सुकून भरा मन",
   "settingsAppDemoPrayerCardSubtitle": "सलाह के समय ध्यान भटकाने वाले ऐप्स रोकें, ताकि आप पूरी मौजूदगी से नमाज़ पढ़ सकें।",
   "settingsAppDemoSleepCardSubtitle": "अपनी रातों की रक्षा करें ताकि आराम आसान हो — और फ़ज्र हल्का लगे।",
-  "settingsAppDemoChildCardSubtitle": "बेफ़िक्र होकर फ़ोन दें — केवल अनुमति वाले ऐप्स खुले रहेंगे।"
+  "settingsAppDemoChildCardSubtitle": "बेफ़िक्र होकर फ़ोन दें — केवल अनुमति वाले ऐप्स खुले रहेंगे।",
+  "widgetPrayerProgressTitle": "आपकी नमाज़ प्रगति",
+  "widgetPrayerProgressCount": "{completed} में से {total}",
+  "widgetPrayersCompletedSubtitle": "नमाज़ें पूर्ण।",
+  "widgetPrayersLeftToday": "जारी रखें — आज {count} नमाज़ बाकी हैं",
+  "widgetAllPrayersDoneToday": "अल्हम्दुलिल्लाह — आज की सभी नमाज़ें पूरी",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

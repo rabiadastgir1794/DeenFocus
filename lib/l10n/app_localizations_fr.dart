@@ -955,6 +955,11 @@ class AppLocalizationsFr extends AppLocalizations {
       '« Accomplis la prière -  jusqu’à l’obscurité de la nuit. » — Coran 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'C\'est l\'heure de $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       'Gratuit 7 jours — devenez un meilleur musulman ✨';
 
@@ -1618,6 +1623,26 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Définissez votre position dans Deen Focus pour charger les prières et le verset du jour.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Votre progression de prière';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed sur $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'prières accomplies.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Continuez — $count prières restantes aujourd’hui';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Alhamdulillah — toutes les prières d’aujourd’hui sont faites';
 
   @override
   String get focusChildModeActive => 'Mode enfant actif';
@@ -2430,6 +2455,59 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Mises à jour de prière';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live Activity pour votre prochaine prière sur l\'écran de verrouillage';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Restez informé d\'un coup d\'œil';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Voyez votre prochaine prière et son heure directement sur l\'écran de verrouillage.';
+
+  @override
+  String get liveActivityEnableLabel => 'Activer la Live Activity';
+
+  @override
+  String get liveActivityPromptNotNow => 'Pas maintenant';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Les Live Activities ne sont pas disponibles sur cet appareil.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Autorisez les notifications pour afficher les mises à jour de prière sur l\'écran de verrouillage.';
+
+  @override
+  String get liveActivityPermissionButton => 'Autoriser les notifications';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity activée';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity désactivée';
+
+  @override
+  String get liveActivityNowLabel => 'Maintenant';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Mis à jour à $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer à $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Alarmes de prière';

@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../constants/app_languages.dart';
+import 'app_notification_service.dart';
+import 'prayer_alarm_service.dart';
+import 'prayer_live_activity_service.dart';
 import 'storage_service.dart';
+import 'widget_sync_service.dart';
 
 /// Holds the app's current locale, persists it, and notifies when it changes.
 /// Use with Provider so the app rebuilds when locale changes.
@@ -39,6 +45,32 @@ class LocaleService extends ChangeNotifier {
         : normalized.languageCode;
     await StorageService.setLocaleCode(code);
     notifyListeners();
+    // Widgets / live activity / scheduled notifications bake copy at write time.
+    unawaited(_resyncLocalizedSurfaces());
+  }
+
+  Future<void> _resyncLocalizedSurfaces() async {
+    unawaited(WidgetSyncService.instance.syncTimeline());
+    unawaited(
+      PrayerLiveActivityService.instance.syncFromStorage(force: true),
+    );
+    final latitude = await StorageService.locationLatitude;
+    final longitude = await StorageService.locationLongitude;
+    if (latitude == null || longitude == null) return;
+    unawaited(
+      AppNotificationService.instance.reschedulePrayerNotifications(
+        latitude: latitude,
+        longitude: longitude,
+        forceReschedule: true,
+      ),
+    );
+    unawaited(
+      PrayerAlarmService.instance.rescheduleAlarms(
+        latitude: latitude,
+        longitude: longitude,
+        forceReschedule: true,
+      ),
+    );
   }
 
   /// Set locale from a stored code string (e.g. 'en', 'ar_SA').

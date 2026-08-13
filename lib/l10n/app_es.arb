@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Custodiad estrictamente las oraciones, especialmente la oración intermedia.” — Corán 2:238",
   "prayerNotificationSubtitleMaghrib": "“Así pues, glorificad a Alá cuando lleguéis al atardecer...” — Corán 30:17",
   "prayerNotificationSubtitleIsha": "“Establece la oración -  hasta la oscuridad de la noche.” — Corán 17:78",
+  "prayerNotificationTitle": "Es hora de {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Pregunte cualquier cosa sobre los tiempos de oración, el Corán y la orientación islámica.",
   "homeDay": "Día",
   "homeDays": "Días",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Actualizaciones de oración",
+  "settingsPrayerUpdatesSubtitle": "Live Activity de tu próxima oración en la pantalla de bloqueo",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Mantente al día de un vistazo",
+  "liveActivityStayUpdatedBody": "Ve tu próxima oración y su hora directamente en la pantalla de bloqueo.",
+  "liveActivityEnableLabel": "Activar Live Activity",
+  "liveActivityPromptNotNow": "Ahora no",
+  "liveActivityUnsupported": "Live Activities no están disponibles en este dispositivo.",
+  "liveActivityPermissionNeeded": "Permite las notificaciones para ver actualizaciones de oración en la pantalla de bloqueo.",
+  "liveActivityPermissionButton": "Permitir notificaciones",
+  "liveActivityStatusActive": "Live Activity activada",
+  "liveActivityStatusOff": "Live Activity desactivada",
+  "liveActivityNowLabel": "Ahora",
+  "liveActivityUpdatedAt": "Actualizado a las {time}",
+  "liveActivityNextAt": "{prayer} a las {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Alarmas de oración",
   "settingsPrayerAlarmsSubtitle": "Alarmas completas que pueden atravesar el modo silencioso",
   "prayerAlarmsMasterLabel": "Activar alarmas de oración",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Tranquilidad",
   "settingsAppDemoPrayerCardSubtitle": "Pausa las distracciones en el Salah para orar con presencia.",
   "settingsAppDemoSleepCardSubtitle": "Protege tus noches para descansar mejor — y que el Fajr se sienta más ligero.",
-  "settingsAppDemoChildCardSubtitle": "Entrega tu teléfono con tranquilidad: solo quedan abiertas las apps permitidas."
+  "settingsAppDemoChildCardSubtitle": "Entrega tu teléfono con tranquilidad: solo quedan abiertas las apps permitidas.",
+  "widgetPrayerProgressTitle": "Tu progreso de oración",
+  "widgetPrayerProgressCount": "{completed} de {total}",
+  "widgetPrayersCompletedSubtitle": "oraciones completadas.",
+  "widgetPrayersLeftToday": "Sigue así — quedan {count} oraciones hoy",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — todas las oraciones de hoy completas",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

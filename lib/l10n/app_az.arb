@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Namazları, xüsusən orta namazı ciddi qoruyun.” — Quran 2:238",
   "prayerNotificationSubtitleMaghrib": "“Axşama çatdığınızda Allahı tərifləyin...” — Quran 30:17",
   "prayerNotificationSubtitleIsha": "“Namazı qılın - gecənin qaranlığına qədər.” — Quran 17:78",
+  "prayerNotificationTitle": "{prayerName} vaxtıdır",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Namaz vaxtları, Quran və İslami rəhbər haqqında hər şeyi soruşun.",
   "homeDay": "gün",
   "homeDays": "Günlər",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Namaz yeniləmələri",
+  "settingsPrayerUpdatesSubtitle": "Kilid ekranında növbəti namaz üçün Live Activity",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Bir baxışda yenilənmiş qalın",
+  "liveActivityStayUpdatedBody": "Növbəti namazı və vaxtını birbaşa kilid ekranında görün.",
+  "liveActivityEnableLabel": "Live Activity-ni aktiv et",
+  "liveActivityPromptNotNow": "İndi yox",
+  "liveActivityUnsupported": "Bu cihazda Live Activities əlçatan deyil.",
+  "liveActivityPermissionNeeded": "Kilid ekranında namaz yeniləmələri üçün bildirişlərə icazə verin.",
+  "liveActivityPermissionButton": "Bildirişlərə icazə ver",
+  "liveActivityStatusActive": "Live Activity açıqdır",
+  "liveActivityStatusOff": "Live Activity bağlıdır",
+  "liveActivityNowLabel": "İndi",
+  "liveActivityUpdatedAt": "{time} yeniləndi",
+  "liveActivityNextAt": "{prayer} {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Namaz siqnalları",
   "settingsPrayerAlarmsSubtitle": "Səssiz rejimi keçə bilən tam namaz siqnalları",
   "prayerAlarmsMasterLabel": "Namaz siqnallarını aktiv et",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Rahatlıq",
   "settingsAppDemoPrayerCardSubtitle": "Namaz vaxtı diqqəti yayındıranları dayandırın ki, huşu ilə namaz qılasınız.",
   "settingsAppDemoSleepCardSubtitle": "Gecələrinizi qoruyun ki, daha rahat yatın — və Fəcr daha yüngül olsun.",
-  "settingsAppDemoChildCardSubtitle": "Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır."
+  "settingsAppDemoChildCardSubtitle": "Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır.",
+  "widgetPrayerProgressTitle": "Namaz irəliləyişiniz",
+  "widgetPrayerProgressCount": "{completed} / {total}",
+  "widgetPrayersCompletedSubtitle": "namaz tamamlandı.",
+  "widgetPrayersLeftToday": "Davam edin — bu gün {count} namaz qalıb",
+  "widgetAllPrayersDoneToday": "Əlhəmdulillah — bu gün bütün namazlar tamamlandı",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

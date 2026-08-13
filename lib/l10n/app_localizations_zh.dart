@@ -905,6 +905,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get prayerNotificationSubtitleIsha => '“当谨守拜功 — 直到黑夜降临。” — 古兰经 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return '$prayerName时间到了';
+  }
+
+  @override
   String get homeTrialBannerTitle => '免费 7 天 — 成为更好的穆斯林 ✨';
 
   @override
@@ -1513,6 +1518,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get widgetSetLocationForPrayers => '在 Deen Focus 中设置位置以加载礼拜和每日经文。';
+
+  @override
+  String get widgetPrayerProgressTitle => '你的礼拜进度';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed/$total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => '已完成礼拜。';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return '继续加油 — 今天还剩 $count 次礼拜';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday => '艾哈姆杜利拉 — 今天所有礼拜已完成';
 
   @override
   String get focusChildModeActive => '儿童模式激活';
@@ -2273,6 +2297,55 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => '礼拜更新';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle => '在锁定屏幕上查看下一场礼拜的实时活动';
+
+  @override
+  String get liveActivitySectionTitle => '实时活动';
+
+  @override
+  String get liveActivityStayUpdatedTitle => '一眼掌握最新动态';
+
+  @override
+  String get liveActivityStayUpdatedBody => '在锁定屏幕上直接查看下一场礼拜及其时间。';
+
+  @override
+  String get liveActivityEnableLabel => '启用实时活动';
+
+  @override
+  String get liveActivityPromptNotNow => '暂不';
+
+  @override
+  String get liveActivityUnsupported => '此设备不支持实时活动。';
+
+  @override
+  String get liveActivityPermissionNeeded => '请允许通知，以便在锁定屏幕上显示礼拜更新。';
+
+  @override
+  String get liveActivityPermissionButton => '允许通知';
+
+  @override
+  String get liveActivityStatusActive => '实时活动已开启';
+
+  @override
+  String get liveActivityStatusOff => '实时活动已关闭';
+
+  @override
+  String get liveActivityNowLabel => '现在';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return '更新于 $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => '礼拜闹钟';

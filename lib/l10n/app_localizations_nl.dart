@@ -949,6 +949,11 @@ class AppLocalizationsNl extends AppLocalizations {
       '“Verricht het gebed -  tot de duisternis van de nacht.” — Koran 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'Het is tijd voor $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       '7 dagen gratis — word een betere moslim ✨';
 
@@ -1602,6 +1607,26 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Stel je locatie in Deen Focus in om gebeden en het dagvers te laden.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Jouw gebedsvoortgang';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed van $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'gebeden voltooid.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Ga zo door — vandaag nog $count gebeden';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Alhamdulillah — alle gebeden vandaag voltooid';
 
   @override
   String get focusChildModeActive => 'Kindmodus actief';
@@ -2406,6 +2431,59 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Gebedsupdates';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live Activity voor je volgende gebed op het vergrendelscherm';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'In één oogopslag bijgewerkt';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Bekijk je volgende gebed en tijd direct op het vergrendelscherm.';
+
+  @override
+  String get liveActivityEnableLabel => 'Live Activity inschakelen';
+
+  @override
+  String get liveActivityPromptNotNow => 'Niet nu';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Live Activities zijn niet beschikbaar op dit apparaat.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Sta meldingen toe zodat gebedsupdates op het vergrendelscherm verschijnen.';
+
+  @override
+  String get liveActivityPermissionButton => 'Meldingen toestaan';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity is aan';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity is uit';
+
+  @override
+  String get liveActivityNowLabel => 'Nu';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Bijgewerkt om $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer om $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Gebedsalarmen';

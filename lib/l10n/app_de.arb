@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "„Haltet die Gebete ein, besonders das mittlere Gebet.“ — Qur’an 2:238",
   "prayerNotificationSubtitleMaghrib": "„So preist Allah, wenn ihr den Abend erreicht...“ — Qur’an 30:17",
   "prayerNotificationSubtitleIsha": "„Verrichtet das Gebet -  bis zur Dunkelheit der Nacht.“ — Qur’an 17:78",
+  "prayerNotificationTitle": "Es ist Zeit für {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Fragen Sie alles zu Gebetszeiten, Koran und islamischer Führung.",
   "homeDay": "Tag",
   "homeDays": "Tage",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Gebets-Updates",
+  "settingsPrayerUpdatesSubtitle": "Live-Aktivität für dein nächstes Gebet auf dem Sperrbildschirm",
+  "liveActivitySectionTitle": "Live-Aktivitäten",
+  "liveActivityStayUpdatedTitle": "Auf einen Blick informiert",
+  "liveActivityStayUpdatedBody": "Sieh dein nächstes Gebet und seine Zeit direkt auf dem Sperrbildschirm.",
+  "liveActivityEnableLabel": "Live-Aktivität aktivieren",
+  "liveActivityPromptNotNow": "Nicht jetzt",
+  "liveActivityUnsupported": "Live-Aktivitäten sind auf diesem Gerät nicht verfügbar.",
+  "liveActivityPermissionNeeded": "Erlaube Mitteilungen, damit Gebets-Updates auf dem Sperrbildschirm erscheinen.",
+  "liveActivityPermissionButton": "Mitteilungen erlauben",
+  "liveActivityStatusActive": "Live-Aktivität ist aktiv",
+  "liveActivityStatusOff": "Live-Aktivität ist aus",
+  "liveActivityNowLabel": "Jetzt",
+  "liveActivityUpdatedAt": "Aktualisiert um {time}",
+  "liveActivityNextAt": "{prayer} um {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Gebetsalarme",
   "settingsPrayerAlarmsSubtitle": "Volle Gebetsalarme, die den Stummmodus durchbrechen können",
   "prayerAlarmsMasterLabel": "Gebetsalarme aktivieren",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Mit gutem Gefühl",
   "settingsAppDemoPrayerCardSubtitle": "Pausiere Ablenkungen zur Salah, damit du mit Präsenz beten kannst.",
   "settingsAppDemoSleepCardSubtitle": "Schütze deine Nächte, damit Ruhe leichter fällt — und Fajr leichter wird.",
-  "settingsAppDemoChildCardSubtitle": "Gib dein Handy mit Zuversicht weiter — nur erlaubte Apps bleiben offen."
+  "settingsAppDemoChildCardSubtitle": "Gib dein Handy mit Zuversicht weiter — nur erlaubte Apps bleiben offen.",
+  "widgetPrayerProgressTitle": "Dein Gebetsfortschritt",
+  "widgetPrayerProgressCount": "{completed} von {total}",
+  "widgetPrayersCompletedSubtitle": "Gebete abgeschlossen.",
+  "widgetPrayersLeftToday": "Weiter so — noch {count} Gebete heute",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — alle Gebete heute erledigt",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

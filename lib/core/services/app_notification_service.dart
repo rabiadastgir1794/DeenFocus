@@ -15,6 +15,7 @@ import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
 import '../../l10n/app_localizations.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
+import '../../features/home/helpers/prayer_label_helper.dart';
 import '../../features/home/model/home_models.dart';
 
 void _onNotificationResponse(NotificationResponse response) {
@@ -167,7 +168,6 @@ class AppNotificationService {
     int? daysAheadOverride,
   }) async {
     final run = _prayerSyncSerial.then((_) async {
-      final isSpanish = await _isSpanishLocale();
       final l10n = await _focusNotificationsLocalizations();
       await initialize();
 
@@ -270,7 +270,7 @@ class AppNotificationService {
                   dataset.dayOffset * 20 +
                   _slotIndex(slot.id),
               when: slot.time,
-              title: _prayerTimeTitle(slot.id, isSpanish: isSpanish),
+              title: _prayerTimeTitle(slot.id, l10n),
               body: _prayerTimeBody(slot.id, l10n),
               details: _prayerNotificationDetailsFor(entry.sound),
               payload: 'prayer:${slot.id.name}',
@@ -884,41 +884,10 @@ class AppNotificationService {
 
   int _slotIndex(HomePrayerId id) => _slotIndexStatic(id);
 
-  String _prayerLabel(HomePrayerId id, {bool isSpanish = false}) {
-    if (isSpanish) {
-      switch (id) {
-        case HomePrayerId.fajr:
-          return 'Fajr';
-        case HomePrayerId.sunrise:
-          return 'Amanecer';
-        case HomePrayerId.dhuhr:
-          return 'Dhuhr';
-        case HomePrayerId.asr:
-          return 'Asr';
-        case HomePrayerId.maghrib:
-          return 'Maghrib';
-        case HomePrayerId.isha:
-          return 'Isha';
-      }
-    }
-    switch (id) {
-      case HomePrayerId.fajr:
-        return 'Fajr';
-      case HomePrayerId.sunrise:
-        return 'Sunrise';
-      case HomePrayerId.dhuhr:
-        return 'Dhuhr';
-      case HomePrayerId.asr:
-        return 'Asr';
-      case HomePrayerId.maghrib:
-        return 'Maghrib';
-      case HomePrayerId.isha:
-        return 'Isha';
-    }
-  }
-
-  String _prayerTimeTitle(HomePrayerId id, {required bool isSpanish}) {
-    return "It's time for ${_prayerLabel(id, isSpanish: isSpanish)}";
+  String _prayerTimeTitle(HomePrayerId id, AppLocalizations l10n) {
+    final trackable = id.trackablePrayer;
+    if (trackable == null) return '';
+    return l10n.prayerNotificationTitle(trackable.label(l10n));
   }
 
   String _prayerTimeBody(HomePrayerId id, AppLocalizations l10n) {
@@ -936,11 +905,6 @@ class AppNotificationService {
       case HomePrayerId.sunrise:
         return '';
     }
-  }
-
-  Future<bool> _isSpanishLocale() async {
-    final code = (await StorageService.localeCode)?.toLowerCase();
-    return code != null && code.startsWith('es');
   }
 
   String _buildPrayerScheduleSignature({

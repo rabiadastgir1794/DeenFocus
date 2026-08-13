@@ -958,6 +958,11 @@ class AppLocalizationsRo extends AppLocalizations {
       '„Stabilește rugăciunea -  până la întunericul nopții.” — Coran 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'Este timpul pentru $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       'Gratuit 7 zile — deveniți un musulman mai bun ✨';
 
@@ -1614,6 +1619,26 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Setează locația în Deen Focus pentru a încărca rugăciunile și versetul zilei.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Progresul tău de rugăciune';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed din $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'rugăciuni finalizate.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Continuă — mai ai $count rugăciuni azi';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Alhamdulillah — toate rugăciunile de azi sunt complete';
 
   @override
   String get focusChildModeActive => 'Mod copil activ';
@@ -2424,6 +2449,59 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Actualizări rugăciune';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live Activity pentru următoarea rugăciune pe ecranul de blocare';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Rămâi la curent dintr-o privire';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Vezi următoarea rugăciune și ora ei direct pe ecranul de blocare.';
+
+  @override
+  String get liveActivityEnableLabel => 'Activează Live Activity';
+
+  @override
+  String get liveActivityPromptNotNow => 'Nu acum';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Live Activities nu sunt disponibile pe acest dispozitiv.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Permite notificările pentru actualizări de rugăciune pe ecranul de blocare.';
+
+  @override
+  String get liveActivityPermissionButton => 'Permite notificările';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity este activă';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity este dezactivată';
+
+  @override
+  String get liveActivityNowLabel => 'Acum';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Actualizat la $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer la $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Alarme de rugăciune';

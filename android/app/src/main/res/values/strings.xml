@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Deenly</string>
     <string name="daily_verse">Daily Verse</string>
+    <string name="widget_prayer_progress_title">Your Prayer Progress</string>
+    <string name="widget_prayers_completed_subtitle">prayers completed.</string>
     <string name="widget_small_name">Deenly Small Widget</string>
     <string name="widget_medium_name">Deenly Medium Widget</string>
     <string name="widget_large_name">Deenly Large Widget</string>

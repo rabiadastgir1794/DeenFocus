@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "„Păziți cu strictețe rugăciunile, mai ales rugăciunea de mijloc.” — Coran 2:238",
   "prayerNotificationSubtitleMaghrib": "„Așadar, slăviți-L pe Allah când ajungeți seara...” — Coran 30:17",
   "prayerNotificationSubtitleIsha": "„Stabilește rugăciunea -  până la întunericul nopții.” — Coran 17:78",
+  "prayerNotificationTitle": "Este timpul pentru {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Întrebați orice despre orele de rugăciune, Coran și îndrumări islamice.",
   "homeDay": "Zi",
   "homeDays": "Zile",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Actualizări rugăciune",
+  "settingsPrayerUpdatesSubtitle": "Live Activity pentru următoarea rugăciune pe ecranul de blocare",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Rămâi la curent dintr-o privire",
+  "liveActivityStayUpdatedBody": "Vezi următoarea rugăciune și ora ei direct pe ecranul de blocare.",
+  "liveActivityEnableLabel": "Activează Live Activity",
+  "liveActivityPromptNotNow": "Nu acum",
+  "liveActivityUnsupported": "Live Activities nu sunt disponibile pe acest dispozitiv.",
+  "liveActivityPermissionNeeded": "Permite notificările pentru actualizări de rugăciune pe ecranul de blocare.",
+  "liveActivityPermissionButton": "Permite notificările",
+  "liveActivityStatusActive": "Live Activity este activă",
+  "liveActivityStatusOff": "Live Activity este dezactivată",
+  "liveActivityNowLabel": "Acum",
+  "liveActivityUpdatedAt": "Actualizat la {time}",
+  "liveActivityNextAt": "{prayer} la {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Alarme de rugăciune",
   "settingsPrayerAlarmsSubtitle": "Alarme complete care pot trece de modul silențios",
   "prayerAlarmsMasterLabel": "Activează alarmele de rugăciune",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Liniște sufletească",
   "settingsAppDemoPrayerCardSubtitle": "Pune pe pauză distragerile la Salah ca să te rogi cu prezență.",
   "settingsAppDemoSleepCardSubtitle": "Protejează-ți nopțile ca odihna să vină mai ușor — iar Fajr să fie mai ușor.",
-  "settingsAppDemoChildCardSubtitle": "Încredințează telefonul liniștit: rămân deschise doar aplicațiile permise."
+  "settingsAppDemoChildCardSubtitle": "Încredințează telefonul liniștit: rămân deschise doar aplicațiile permise.",
+  "widgetPrayerProgressTitle": "Progresul tău de rugăciune",
+  "widgetPrayerProgressCount": "{completed} din {total}",
+  "widgetPrayersCompletedSubtitle": "rugăciuni finalizate.",
+  "widgetPrayersLeftToday": "Continuă — mai ai {count} rugăciuni azi",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — toate rugăciunile de azi sunt complete",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“你们当谨守拜功，尤其是中间的拜功。” — 古兰经 2:238",
   "prayerNotificationSubtitleMaghrib": "“故你们在傍晚当赞颂真主……” — 古兰经 30:17",
   "prayerNotificationSubtitleIsha": "“当谨守拜功 — 直到黑夜降临。” — 古兰经 17:78",
+  "prayerNotificationTitle": "{prayerName}时间到了",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "询问有关祈祷时间、古兰经和伊斯兰教指导的任何问题。",
   "homeDay": "天",
   "homeDays": "天",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "礼拜更新",
+  "settingsPrayerUpdatesSubtitle": "在锁定屏幕上查看下一场礼拜的实时活动",
+  "liveActivitySectionTitle": "实时活动",
+  "liveActivityStayUpdatedTitle": "一眼掌握最新动态",
+  "liveActivityStayUpdatedBody": "在锁定屏幕上直接查看下一场礼拜及其时间。",
+  "liveActivityEnableLabel": "启用实时活动",
+  "liveActivityPromptNotNow": "暂不",
+  "liveActivityUnsupported": "此设备不支持实时活动。",
+  "liveActivityPermissionNeeded": "请允许通知，以便在锁定屏幕上显示礼拜更新。",
+  "liveActivityPermissionButton": "允许通知",
+  "liveActivityStatusActive": "实时活动已开启",
+  "liveActivityStatusOff": "实时活动已关闭",
+  "liveActivityNowLabel": "现在",
+  "liveActivityUpdatedAt": "更新于 {time}",
+  "liveActivityNextAt": "{prayer} {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "礼拜闹钟",
   "settingsPrayerAlarmsSubtitle": "可突破静音模式的完整礼拜闹钟",
   "prayerAlarmsMasterLabel": "启用礼拜闹钟",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "安心无用",
   "settingsAppDemoPrayerCardSubtitle": "在礼拜时暂停干扰，让你专心祈祷。",
   "settingsAppDemoSleepCardSubtitle": "守护夜晚，让休息更轻松——晨礼也更轻盈。",
-  "settingsAppDemoChildCardSubtitle": "安心交出手机：只有你允许的应用保持可用。"
+  "settingsAppDemoChildCardSubtitle": "安心交出手机：只有你允许的应用保持可用。",
+  "widgetPrayerProgressTitle": "你的礼拜进度",
+  "widgetPrayerProgressCount": "{completed}/{total}",
+  "widgetPrayersCompletedSubtitle": "已完成礼拜。",
+  "widgetPrayersLeftToday": "继续加油 — 今天还剩 {count} 次礼拜",
+  "widgetAllPrayersDoneToday": "艾哈姆杜利拉 — 今天所有礼拜已完成",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

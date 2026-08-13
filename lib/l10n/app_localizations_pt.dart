@@ -951,6 +951,11 @@ class AppLocalizationsPt extends AppLocalizations {
       '“Estabelece a oração -  até a escuridão da noite.” — Alcorão 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'É hora de $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       'Grátis por 7 dias — torne-se um muçulmano melhor ✨';
 
@@ -1607,6 +1612,26 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Defina sua localização no Deen Focus para carregar orações e o verso do dia.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Seu progresso de oração';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed de $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'orações concluídas.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Continue — faltam $count orações hoje';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Alhamdulillah — todas as orações de hoje concluídas';
 
   @override
   String get focusChildModeActive => 'Modo infantil ativo';
@@ -2416,6 +2441,59 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Atualizações de oração';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live Activity da próxima oração na tela de bloqueio';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Fique atualizado de relance';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Veja sua próxima oração e horário diretamente na tela de bloqueio.';
+
+  @override
+  String get liveActivityEnableLabel => 'Ativar Live Activity';
+
+  @override
+  String get liveActivityPromptNotNow => 'Agora não';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Live Activities não estão disponíveis neste dispositivo.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Permita notificações para mostrar atualizações de oração na tela de bloqueio.';
+
+  @override
+  String get liveActivityPermissionButton => 'Permitir notificações';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity ativada';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity desativada';
+
+  @override
+  String get liveActivityNowLabel => 'Agora';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Atualizado às $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer às $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Alarmes de oração';

@@ -9,35 +9,67 @@ import 'surah_ayah_count_helper.dart';
 
 abstract class HomeDailyVerseHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
-  static const int _widgetVerseBucketMinutes = 5;
 
-  static DailyVerseRef getDailyVerseRefForDate(DateTime date) {
+  /// Day-seeded verse picker used by Home and widgets.
+  /// [attempt] keeps attempt 0 identical to the historical seed.
+  static DailyVerseRef getDailyVerseRefForDate(DateTime date, {int attempt = 0}) {
     final normalizedDate = DateTime(date.year, date.month, date.day);
-    final random = Random(
-      normalizedDate.millisecondsSinceEpoch ~/ Duration.millisecondsPerDay,
-    );
+    final daySeed =
+        normalizedDate.millisecondsSinceEpoch ~/ Duration.millisecondsPerDay;
+    final random = Random(daySeed ^ (attempt * 0x9E3779B9));
     final surahNumber = random.nextInt(kSurahAyahCount.length) + 1;
     final ayahCount = kSurahAyahCount[surahNumber] ?? 1;
     final ayahNumber = random.nextInt(ayahCount) + 1;
     return DailyVerseRef(surahNumber: surahNumber, ayahNumber: ayahNumber);
   }
 
-  static DailyVerseRef getWidgetVerseRefForMoment(DateTime moment) {
-    final normalizedMoment = DateTime(
-      moment.year,
-      moment.month,
-      moment.day,
-      moment.hour,
-      (moment.minute ~/ _widgetVerseBucketMinutes) * _widgetVerseBucketMinutes,
+  /// Loads a complete ayah from the trusted Quran DB for [date].
+  ///
+  /// When [maxChars] is set (Medium widget), only returns ayahs that fit
+  /// naturally in ~2 lines — still using the same daily-verse refs/source.
+  static Future<HomeDailyVerse?> loadDailyVerseForDate({
+    required DateTime date,
+    required bool useArabic,
+    int? maxChars,
+  }) async {
+    final now = DateTime.now();
+    final isToday =
+        date.year == now.year && date.month == now.month && date.day == now.day;
+
+    final primaryRef = isToday
+        ? await getOrGenerateDailyVerseRef(now: date)
+        : getDailyVerseRefForDate(date);
+    final primary = await loadDailyVerse(primaryRef);
+    if (maxChars == null) return primary;
+    if (primary != null &&
+        _fitsTwoLines(
+          useArabic ? primary.arabicText : primary.englishText,
+          maxChars: maxChars,
+        )) {
+      return primary;
+    }
+
+    // Same daily-verse picker/source; walk attempts until a complete short ayah fits.
+    // Do not persist widget-only alternates — Home keeps today's primary ref.
+    for (var attempt = 1; attempt <= 24; attempt++) {
+      final ref = getDailyVerseRefForDate(date, attempt: attempt);
+      final verse = await loadDailyVerse(ref);
+      if (verse == null) continue;
+      final text = useArabic ? verse.arabicText : verse.englishText;
+      if (!_fitsTwoLines(text, maxChars: maxChars)) continue;
+      return verse;
+    }
+
+    // Trusted short fallback from the same Quran DB (never truncate on widget).
+    return loadDailyVerse(
+      const DailyVerseRef(surahNumber: 112, ayahNumber: 1),
     );
-    final random = Random(
-      normalizedMoment.millisecondsSinceEpoch ~/
-          Duration(minutes: _widgetVerseBucketMinutes).inMilliseconds,
-    );
-    final surahNumber = random.nextInt(kSurahAyahCount.length) + 1;
-    final ayahCount = kSurahAyahCount[surahNumber] ?? 1;
-    final ayahNumber = random.nextInt(ayahCount) + 1;
-    return DailyVerseRef(surahNumber: surahNumber, ayahNumber: ayahNumber);
+  }
+
+  static bool _fitsTwoLines(String text, {required int maxChars}) {
+    final normalized = text.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (normalized.isEmpty || normalized.contains('\n')) return false;
+    return normalized.length <= maxChars;
   }
 
   static Future<DailyVerseRef> getOrGenerateDailyVerseRef({

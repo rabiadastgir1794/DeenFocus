@@ -352,6 +352,14 @@
   "prayerNotificationSubtitleAsr": "“Guard strictly the prayers, especially the middle prayer.” — Qur’an 2:238",
   "prayerNotificationSubtitleMaghrib": "“So glorify Allah when you reach the evening...” — Qur’an 30:17",
   "prayerNotificationSubtitleIsha": "“Establish prayer -  until the darkness of the night.” — Qur’an 17:78",
+  "prayerNotificationTitle": "It's time for {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeTrialBannerTitle": "Free for 7 days — become a better Muslim ✨",
   "homeTrialBannerSubtitle": "Every feature unlocked. Start your journey today.",
   "homeFocusModeTitle": "Focus Mode",
@@ -658,6 +666,28 @@
   "widgetDailyVerseTitle": "Daily Verse",
   "widgetOpenAppTimelineHint": "Open Deen Focus to prepare your daily verse and prayer widget data.",
   "widgetSetLocationForPrayers": "Set your location in Deen Focus to load prayers and the daily verse.",
+  "widgetPrayerProgressTitle": "Your Prayer Progress",
+  "widgetPrayerProgressCount": "{completed} of {total}",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetPrayersCompletedSubtitle": "prayers completed.",
+  "widgetPrayersLeftToday": "Keep going — {count} prayers left today",
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetAllPrayersDoneToday": "Alhamdulillah — all prayers complete today",
   "focusChildModeActive": "Child Mode Active",
   "focusSalahAndNightModeActive": "Salah and Night Mode Active",
   "focusSalahModeActive": "Salah Mode Active",
@@ -1038,6 +1068,38 @@
   "@appLockDemoNextPrayerIn": {
     "placeholders": {
       "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPrayerUpdatesTitle": "Prayer Updates",
+  "settingsPrayerUpdatesSubtitle": "Live Activity for your next prayer on the Lock Screen",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Stay updated at a glance",
+  "liveActivityStayUpdatedBody": "See your next prayer and its time directly on your Lock Screen.",
+  "liveActivityEnableLabel": "Enable Live Activity",
+  "liveActivityPromptNotNow": "Not now",
+  "liveActivityUnsupported": "Live Activities are not available on this device.",
+  "liveActivityPermissionNeeded": "Allow notifications so prayer updates can appear on your Lock Screen.",
+  "liveActivityPermissionButton": "Allow notifications",
+  "liveActivityStatusActive": "Live Activity is on",
+  "liveActivityStatusOff": "Live Activity is off",
+  "liveActivityNowLabel": "Now",
+  "liveActivityUpdatedAt": "Updated at {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "liveActivityNextAt": "{prayer} at {time}",
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
         "type": "String"
       }
     }

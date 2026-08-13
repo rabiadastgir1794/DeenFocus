@@ -14,6 +14,8 @@ import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/locale_service.dart';
+import '../../../../core/services/permission_service.dart';
+import '../../../../core/services/prayer_live_activity_service.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -38,13 +40,99 @@ class SettingsTabScreen extends StatefulWidget {
   State<SettingsTabScreen> createState() => _SettingsTabScreenState();
 }
 
-class _SettingsTabScreenState extends State<SettingsTabScreen> {
+class _SettingsTabScreenState extends State<SettingsTabScreen>
+    with WidgetsBindingObserver {
   late final Future<PackageInfo> _packageInfoFuture;
+  bool _liveActivityEnabled = false;
+  bool _liveActivitySupported = false;
+  bool _liveActivityBusy = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _packageInfoFuture = PackageInfo.fromPlatform();
+    unawaited(_loadLiveActivityState());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_loadLiveActivityState());
+    }
+  }
+
+  Future<void> _loadLiveActivityState() async {
+    final caps = await PrayerLiveActivityService.instance.getCapabilities();
+    final supported = caps['supportsLiveActivity'] == true;
+    final enabled = supported
+        ? await PrayerLiveActivityService.instance.resolveEnabled()
+        : false;
+    if (!mounted) return;
+    setState(() {
+      _liveActivityEnabled = enabled;
+      _liveActivitySupported = supported;
+    });
+    if (enabled) {
+      unawaited(PrayerLiveActivityService.instance.syncFromStorage());
+    } else {
+      unawaited(PrayerLiveActivityService.instance.stop());
+    }
+  }
+
+  Future<void> _setLiveActivityEnabled(bool value) async {
+    if (!_liveActivitySupported || _liveActivityBusy) return;
+    setState(() => _liveActivityBusy = true);
+    try {
+      if (value) {
+        final notified = await PermissionService.requestNotification();
+        if (!notified) {
+          if (!mounted) return;
+          final l10n = AppLocalizations.of(context)!;
+          await AppPermissionDialog.show(
+            context,
+            title: l10n.liveActivityPermissionNeeded,
+            message: l10n.liveActivityStayUpdatedBody,
+            primaryButtonText: l10n.liveActivityPermissionButton,
+            secondaryButtonText: l10n.liveActivityPromptNotNow,
+            onPrimaryTap: () {
+              unawaited(PermissionService.openAppSettingsAsync());
+            },
+          );
+          return;
+        }
+        if (!kIsWeb && Platform.isIOS) {
+          final activitiesOn =
+              await PrayerLiveActivityService.instance.areActivitiesEnabled();
+          if (!activitiesOn) {
+            if (!mounted) return;
+            final l10n = AppLocalizations.of(context)!;
+            await AppPermissionDialog.show(
+              context,
+              title: l10n.liveActivityUnsupported,
+              message: l10n.liveActivityStayUpdatedBody,
+              primaryButtonText: l10n.liveActivityPermissionButton,
+              secondaryButtonText: l10n.liveActivityPromptNotNow,
+              onPrimaryTap: () {
+                unawaited(PermissionService.openAppSettingsAsync());
+              },
+            );
+            return;
+          }
+        }
+      }
+      await PrayerLiveActivityService.instance.setEnabled(value);
+      if (!mounted) return;
+      setState(() => _liveActivityEnabled = value);
+    } finally {
+      if (mounted) setState(() => _liveActivityBusy = false);
+    }
   }
 
   Future<void> _showSectPicker(BuildContext context) async {
@@ -522,6 +610,19 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                       ),
                     );
                   },
+                ),
+                _SettingsSubtitleSwitchRow(
+                  label: l10n.liveActivityEnableLabel,
+                  subtitle: _liveActivitySupported
+                      ? (_liveActivityEnabled
+                          ? l10n.liveActivityStatusActive
+                          : l10n.liveActivityStatusOff)
+                      : l10n.liveActivityUnsupported,
+                  value: _liveActivityEnabled,
+                  enabled: _liveActivitySupported && !_liveActivityBusy,
+                  onChanged: _liveActivitySupported && !_liveActivityBusy
+                      ? (value) => unawaited(_setLiveActivityEnabled(value))
+                      : null,
                 ),
               ],
             ),
@@ -1084,6 +1185,66 @@ class _SettingsSwitchRow extends StatelessWidget {
           const SizedBox(width: 12),
           Switch.adaptive(value: value, onChanged: onChanged),
         ],
+      ),
+    );
+  }
+}
+
+class _SettingsSubtitleSwitchRow extends StatelessWidget {
+  const _SettingsSubtitleSwitchRow({
+    required this.label,
+    required this.subtitle,
+    required this.value,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String subtitle;
+  final bool value;
+  final bool enabled;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final disabledColor = colorScheme.onSurface.withValues(alpha: 0.38);
+    return Opacity(
+      opacity: enabled ? 1 : 0.45,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: enabled ? null : disabledColor,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: enabled
+                          ? colorScheme.onSurfaceVariant
+                          : disabledColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Switch.adaptive(
+              value: value,
+              onChanged: enabled ? onChanged : null,
+            ),
+          ],
+        ),
       ),
     );
   }

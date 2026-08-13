@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "«Строго блюдите молитвы, особенно среднюю молитву.» — Коран 2:238",
   "prayerNotificationSubtitleMaghrib": "«Так прославляйте Аллаха, когда наступает вечер...» — Коран 30:17",
   "prayerNotificationSubtitleIsha": "«Совершай молитву -  до наступления ночной тьмы.» — Коран 17:78",
+  "prayerNotificationTitle": "Время для {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Спросите что-нибудь о времени молитв, Коране и исламском руководстве.",
   "homeDay": "День",
   "homeDays": "Дни",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Обновления намаза",
+  "settingsPrayerUpdatesSubtitle": "Live Activity следующего намаза на экране блокировки",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Будьте в курсе с первого взгляда",
+  "liveActivityStayUpdatedBody": "Смотрите следующий намаз и его время прямо на экране блокировки.",
+  "liveActivityEnableLabel": "Включить Live Activity",
+  "liveActivityPromptNotNow": "Не сейчас",
+  "liveActivityUnsupported": "Live Activities недоступны на этом устройстве.",
+  "liveActivityPermissionNeeded": "Разрешите уведомления, чтобы обновления намаза отображались на экране блокировки.",
+  "liveActivityPermissionButton": "Разрешить уведомления",
+  "liveActivityStatusActive": "Live Activity включена",
+  "liveActivityStatusOff": "Live Activity выключена",
+  "liveActivityNowLabel": "Сейчас",
+  "liveActivityUpdatedAt": "Обновлено в {time}",
+  "liveActivityNextAt": "{prayer} в {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Будильники намаза",
   "settingsPrayerAlarmsSubtitle": "Полноценные будильники, которые могут обойти беззвучный режим",
   "prayerAlarmsMasterLabel": "Включить будильники намаза",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Спокойствие",
   "settingsAppDemoPrayerCardSubtitle": "Приостанавливайте отвлечения во время намаза, чтобы молиться с присутствием.",
   "settingsAppDemoSleepCardSubtitle": "Защитите ночи, чтобы отдых давался легче — а Фаджр ощущался легче.",
-  "settingsAppDemoChildCardSubtitle": "Передавайте телефон спокойно: открытыми остаются только разрешённые приложения."
+  "settingsAppDemoChildCardSubtitle": "Передавайте телефон спокойно: открытыми остаются только разрешённые приложения.",
+  "widgetPrayerProgressTitle": "Ваш прогресс намаза",
+  "widgetPrayerProgressCount": "{completed} из {total}",
+  "widgetPrayersCompletedSubtitle": "намазов выполнено.",
+  "widgetPrayersLeftToday": "Продолжайте — сегодня осталось {count} намазов",
+  "widgetAllPrayersDoneToday": "Альхамдулиллах — все намазы на сегодня выполнены",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

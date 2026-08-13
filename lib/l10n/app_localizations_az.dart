@@ -951,6 +951,11 @@ class AppLocalizationsAz extends AppLocalizations {
       '“Namazı qılın - gecənin qaranlığına qədər.” — Quran 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return '$prayerName vaxtıdır';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       '7 gün pulsuz — daha yaxşı müsəlman olun ✨';
 
@@ -1602,6 +1607,26 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Namazlar və gündəlik ayə üçün Deen Focus-da yerinizi təyin edin.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Namaz irəliləyişiniz';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed / $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'namaz tamamlandı.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Davam edin — bu gün $count namaz qalıb';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Əlhəmdulillah — bu gün bütün namazlar tamamlandı';
 
   @override
   String get focusChildModeActive => 'Uşaq Rejimi Aktivdir';
@@ -2404,6 +2429,59 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Namaz yeniləmələri';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Kilid ekranında növbəti namaz üçün Live Activity';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Bir baxışda yenilənmiş qalın';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Növbəti namazı və vaxtını birbaşa kilid ekranında görün.';
+
+  @override
+  String get liveActivityEnableLabel => 'Live Activity-ni aktiv et';
+
+  @override
+  String get liveActivityPromptNotNow => 'İndi yox';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Bu cihazda Live Activities əlçatan deyil.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Kilid ekranında namaz yeniləmələri üçün bildirişlərə icazə verin.';
+
+  @override
+  String get liveActivityPermissionButton => 'Bildirişlərə icazə ver';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity açıqdır';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity bağlıdır';
+
+  @override
+  String get liveActivityNowLabel => 'İndi';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return '$time yeniləndi';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Namaz siqnalları';

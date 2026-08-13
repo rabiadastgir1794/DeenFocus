@@ -34,7 +34,26 @@ class WidgetSyncService {
     }
   }
 
+  /// Avoids [LocaleDataException] when intl locale data is not loaded yet
+  /// (e.g. unit tests, cold start before date formatting init).
+  static DateFormat _safeDateFormat(String pattern, String localeName) {
+    try {
+      return DateFormat(pattern, localeName);
+    } catch (_) {
+      return DateFormat(pattern);
+    }
+  }
+
   Future<void> syncTimeline({DateTime? fromDate}) async {
+    try {
+      await _syncTimelineBody(fromDate: fromDate);
+    } catch (_) {
+      // Best-effort: Hive/Quran/platform channel may be unavailable in tests
+      // or before native init. Never fail callers like prayer marking.
+    }
+  }
+
+  Future<void> _syncTimelineBody({DateTime? fromDate}) async {
     final seedDate = fromDate ?? DateTime.now();
     final startDate = DateTime(seedDate.year, seedDate.month, seedDate.day);
     final latitude = await StorageService.locationLatitude;
@@ -46,29 +65,44 @@ class WidgetSyncService {
       _localeFromPrefsCode(await StorageService.localeCode),
     );
     final useArabicVerse = l10n.localeName.toLowerCase().startsWith('ar');
-    final dayKeyFormat = DateFormat('yyyy-MM-dd', l10n.localeName);
-    final dateLabelFormat = DateFormat('EEE, MMM d', l10n.localeName);
-    final timeLabelFormat = DateFormat('h:mm a', l10n.localeName);
+    final dayKeyFormat = DateFormat('yyyy-MM-dd');
+    final dateLabelFormat = _safeDateFormat('EEE, MMM d', l10n.localeName);
+    final timeLabelFormat = _safeDateFormat('h:mm a', l10n.localeName);
     final prayerCache = <String, HomePrayerTimesData>{};
     final verseCache = <String, HomeDailyVerse?>{};
+    final streakState = await _loadStreakState();
 
     final ui = <String, dynamic>{
       'brandName': l10n.appTitle,
       'dailyVerseTitle': l10n.widgetDailyVerseTitle,
       'timelinePlaceholder': l10n.widgetOpenAppTimelineHint,
       'setLocationMessage': l10n.widgetSetLocationForPrayers,
+      'prayerProgressTitle': l10n.widgetPrayerProgressTitle,
+      'prayersCompletedSubtitle': l10n.widgetPrayersCompletedSubtitle,
+      'defaultProgressCountLabel': l10n.widgetPrayerProgressCount(0, 5),
     };
 
     final entries = <Map<String, dynamic>>[];
     for (var index = 0; index < _timelineDays; index++) {
       final date = startDate.add(Duration(days: index));
       final dayKey = dayKeyFormat.format(date);
-      final ref = HomeDailyVerseHelper.getDailyVerseRefForDate(date);
-      final verseKey = '${ref.surahNumber}:${ref.ayahNumber}';
-      final verse = verseCache.containsKey(verseKey)
-          ? verseCache[verseKey]
-          : await HomeDailyVerseHelper.loadDailyVerse(ref);
-      verseCache[verseKey] = verse;
+      final verseKey = '$dayKey:${useArabicVerse ? 'ar' : 'en'}';
+      HomeDailyVerse? verse;
+      if (verseCache.containsKey(verseKey)) {
+        verse = verseCache[verseKey];
+      } else {
+        try {
+          verse = await HomeDailyVerseHelper.loadDailyVerseForDate(
+            date: date,
+            useArabic: useArabicVerse,
+            // Medium widget shows at most 2 lines with no truncation.
+            maxChars: useArabicVerse ? 72 : 108,
+          );
+        } catch (_) {
+          verse = null;
+        }
+        verseCache[verseKey] = verse;
+      }
       final prayerTimes = latitude != null && longitude != null
           ? prayerCache[dayKey] ??
                 await HomePrayerTimesHelper.generatePrayerTimesForDate(
@@ -96,6 +130,11 @@ class WidgetSyncService {
                 'source':
                     '${verse.surahName} ${verse.surahNumber}:${verse.ayahNumber}',
               },
+        'progress': _progressForDay(
+          dayKey: dayKey,
+          streakState: streakState,
+          l10n: l10n,
+        ),
         'prayers':
             prayerTimes?.slots
                 .map(
@@ -117,9 +156,63 @@ class WidgetSyncService {
       'entries': entries,
     });
 
-    await _channel.invokeMethod<void>('saveWidgetTimeline', <String, dynamic>{
-      'timelineJson': payload,
-    });
+    try {
+      await _channel.invokeMethod<void>('saveWidgetTimeline', <String, dynamic>{
+        'timelineJson': payload,
+      });
+    } on MissingPluginException {
+      // Expected in unit tests / before plugin registration.
+    }
+  }
+
+  Future<HomePrayerStreakState?> _loadStreakState() async {
+    final raw = await StorageService.homePrayerStreakJson;
+    if (raw == null || raw.isEmpty) return null;
+    return HomePrayerStreakState.fromJson(raw);
+  }
+
+  /// Today's prayer completion for the large widget — same onTime/qada rules
+  /// as Home streaks, read from existing [HomePrayerStreakState] storage.
+  Map<String, dynamic> _progressForDay({
+    required String dayKey,
+    required HomePrayerStreakState? streakState,
+    required AppLocalizations l10n,
+  }) {
+    const total = 5;
+    final dayStatuses = <TrackablePrayer, PrayerMarkStatus>{
+      ...?streakState?.statusHistory[dayKey],
+    };
+    final weekDay = streakState?.weekDays
+        .where((day) => day.dateKey == dayKey)
+        .firstOrNull;
+    if (weekDay != null) {
+      for (final prayer in TrackablePrayer.values) {
+        final status = weekDay.statusFor(prayer);
+        if (status != PrayerMarkStatus.none) {
+          dayStatuses[prayer] = status;
+        }
+      }
+    }
+    final flags = <bool>[
+      for (final prayer in TrackablePrayer.values)
+        _countsAsCompleted(dayStatuses[prayer]),
+    ];
+    final completed = flags.where((done) => done).length;
+    final remaining = total - completed;
+    return <String, dynamic>{
+      'completedCount': completed,
+      'totalCount': total,
+      'flags': flags,
+      'countLabel': l10n.widgetPrayerProgressCount(completed, total),
+      'statusMessage': remaining == 0
+          ? l10n.widgetAllPrayersDoneToday
+          : l10n.widgetPrayersLeftToday(remaining),
+    };
+  }
+
+  bool _countsAsCompleted(PrayerMarkStatus? status) {
+    return status == PrayerMarkStatus.onTime ||
+        status == PrayerMarkStatus.qada;
   }
 
   String _labelForPrayer(HomePrayerId id, AppLocalizations l10n) {

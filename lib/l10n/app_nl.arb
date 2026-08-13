@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Waak strikt over de gebeden, vooral het middelste gebed.” — Koran 2:238",
   "prayerNotificationSubtitleMaghrib": "“Verheerlijk Allah dus wanneer jullie de avond bereiken...” — Koran 30:17",
   "prayerNotificationSubtitleIsha": "“Verricht het gebed -  tot de duisternis van de nacht.” — Koran 17:78",
+  "prayerNotificationTitle": "Het is tijd voor {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Vraag alles over gebedstijden, de Koran en islamitische richtlijnen.",
   "homeDay": "Dag",
   "homeDays": "Dagen",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Gebedsupdates",
+  "settingsPrayerUpdatesSubtitle": "Live Activity voor je volgende gebed op het vergrendelscherm",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "In één oogopslag bijgewerkt",
+  "liveActivityStayUpdatedBody": "Bekijk je volgende gebed en tijd direct op het vergrendelscherm.",
+  "liveActivityEnableLabel": "Live Activity inschakelen",
+  "liveActivityPromptNotNow": "Niet nu",
+  "liveActivityUnsupported": "Live Activities zijn niet beschikbaar op dit apparaat.",
+  "liveActivityPermissionNeeded": "Sta meldingen toe zodat gebedsupdates op het vergrendelscherm verschijnen.",
+  "liveActivityPermissionButton": "Meldingen toestaan",
+  "liveActivityStatusActive": "Live Activity is aan",
+  "liveActivityStatusOff": "Live Activity is uit",
+  "liveActivityNowLabel": "Nu",
+  "liveActivityUpdatedAt": "Bijgewerkt om {time}",
+  "liveActivityNextAt": "{prayer} om {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Gebedsalarmen",
   "settingsPrayerAlarmsSubtitle": "Volledige gebedsalarmen die stille modus kunnen doorbreken",
   "prayerAlarmsMasterLabel": "Gebedsalarmen inschakelen",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Gemoedsrust",
   "settingsAppDemoPrayerCardSubtitle": "Pauzeer afleidingen tijdens Salah zodat je met aanwezigheid kunt bidden.",
   "settingsAppDemoSleepCardSubtitle": "Bescherm je nachten zodat rust makkelijker komt — en Fajr lichter voelt.",
-  "settingsAppDemoChildCardSubtitle": "Geef je telefoon met vertrouwen door — alleen toegestane apps blijven open."
+  "settingsAppDemoChildCardSubtitle": "Geef je telefoon met vertrouwen door — alleen toegestane apps blijven open.",
+  "widgetPrayerProgressTitle": "Jouw gebedsvoortgang",
+  "widgetPrayerProgressCount": "{completed} van {total}",
+  "widgetPrayersCompletedSubtitle": "gebeden voltooid.",
+  "widgetPrayersLeftToday": "Ga zo door — vandaag nog {count} gebeden",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — alle gebeden vandaag voltooid",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

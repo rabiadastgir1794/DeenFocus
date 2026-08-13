@@ -282,6 +282,14 @@
   "prayerNotificationSubtitleAsr": "«حافظوا على الصلوات والصلاة الوسطى.» — القرآن 2:238",
   "prayerNotificationSubtitleMaghrib": "«فسبحان الله حين تمسون...» — القرآن 30:17",
   "prayerNotificationSubtitleIsha": "«أقم الصلاة - إلى غسق الليل.» — القرآن 17:78",
+  "prayerNotificationTitle": "حان وقت {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "اسأل أي شيء عن أوقات الصلاة والقرآن والإرشادات الإسلامية.",
   "homeDay": "يوم",
   "homeDays": "أيام",
@@ -876,6 +884,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "تحديثات الصلاة",
+  "settingsPrayerUpdatesSubtitle": "نشاط مباشر لصلاتك القادمة على شاشة القفل",
+  "liveActivitySectionTitle": "الأنشطة المباشرة",
+  "liveActivityStayUpdatedTitle": "ابق على اطلاع بنظرة",
+  "liveActivityStayUpdatedBody": "اطلع على صلاتك القادمة ووقتها مباشرة على شاشة القفل.",
+  "liveActivityEnableLabel": "تفعيل النشاط المباشر",
+  "liveActivityPromptNotNow": "ليس الآن",
+  "liveActivityUnsupported": "الأنشطة المباشرة غير متاحة على هذا الجهاز.",
+  "liveActivityPermissionNeeded": "اسمح بالإشعارات حتى تظهر تحديثات الصلاة على شاشة القفل.",
+  "liveActivityPermissionButton": "السماح بالإشعارات",
+  "liveActivityStatusActive": "النشاط المباشر قيد التشغيل",
+  "liveActivityStatusOff": "النشاط المباشر متوقف",
+  "liveActivityNowLabel": "الآن",
+  "liveActivityUpdatedAt": "تم التحديث في {time}",
+  "liveActivityNextAt": "{prayer} في {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "منبهات الصلاة",
   "settingsPrayerAlarmsSubtitle": "منبهات صلاة كاملة يمكنها تجاوز الوضع الصامت",
   "prayerAlarmsMasterLabel": "تفعيل منبهات الصلاة",
@@ -968,5 +1008,27 @@
   "appLockDemoChildCompletionTitle": "راحة البال",
   "settingsAppDemoPrayerCardSubtitle": "أوقف المشتتات وقت الصلاة لتصلّي بحضور قلب.",
   "settingsAppDemoSleepCardSubtitle": "احمِ ليلك لترتاح أفضل — ويستيقظ فجرك أخف.",
-  "settingsAppDemoChildCardSubtitle": "سلّم هاتفك مطمئنًا: فقط التطبيقات المسموحة تبقى مفتوحة."
+  "settingsAppDemoChildCardSubtitle": "سلّم هاتفك مطمئنًا: فقط التطبيقات المسموحة تبقى مفتوحة.",
+  "widgetPrayerProgressTitle": "تقدم صلواتك",
+  "widgetPrayerProgressCount": "{completed} من {total}",
+  "widgetPrayersCompletedSubtitle": "صلوات مكتملة.",
+  "widgetPrayersLeftToday": "استمر — تبقى {count} صلوات اليوم",
+  "widgetAllPrayersDoneToday": "الحمد لله — اكتملت كل الصلوات اليوم",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -74,6 +74,8 @@ abstract class StorageService {
       'prayer_alarm_snooze_minutes';
   static const String _keyNeedsPrayerNotificationReschedule =
       'needs_prayer_notification_reschedule';
+  static const String _keyPrayerLiveActivityEnabled =
+      'prayer_live_activity_enabled';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
   static Future<SharedPreferences> get _prefs async =>
@@ -357,6 +359,24 @@ abstract class StorageService {
   static Future<void> setPrayerAlarmsEnabled(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyPrayerAlarmsEnabled, value);
+  }
+
+  /// Master switch for Prayer Live Activity (iOS ActivityKit / Android ongoing).
+  /// Returns `null` when the user has never set a preference (caller may default
+  /// to ON on supported platforms).
+  static Future<bool?> get prayerLiveActivityEnabledPreference async {
+    final prefs = await _prefs;
+    if (!prefs.containsKey(_keyPrayerLiveActivityEnabled)) return null;
+    return prefs.getBool(_keyPrayerLiveActivityEnabled);
+  }
+
+  static Future<bool> get prayerLiveActivityEnabled async {
+    return (await prayerLiveActivityEnabledPreference) ?? false;
+  }
+
+  static Future<void> setPrayerLiveActivityEnabled(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyPrayerLiveActivityEnabled, value);
   }
 
   static Future<int> get prayerAlarmSnoozeMinutes async {

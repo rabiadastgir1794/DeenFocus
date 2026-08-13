@@ -13,7 +13,9 @@ import '../../../core/services/daily_refresh_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/prayer_alarm_service.dart';
+import '../../../core/services/prayer_live_activity_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/widget_sync_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
@@ -266,6 +268,7 @@ class HomeTabViewModel extends ChangeNotifier {
     await _loadAll();
     _startTicker();
     unawaited(AppReviewService.onAppResumed());
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
   }
 
   Future<void> onAppResumed() {
@@ -306,6 +309,7 @@ class HomeTabViewModel extends ChangeNotifier {
         forceReschedule: needsPrayerReschedule,
       );
     }
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
     await AppReviewService.onAppResumed();
     notifyListeners();
   }
@@ -472,6 +476,7 @@ class HomeTabViewModel extends ChangeNotifier {
       forceReschedule: true,
     );
     await _reschedulePrayerAlarmsIfPossible();
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
   }
 
   Future<void> _reschedulePrayerAlarmsIfPossible() async {
@@ -1265,6 +1270,9 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> _persistPrayerStreak() async {
     await StorageService.setHomePrayerStreakJson(_prayerStreakState.toJson());
+    // Large widget prayer progress reads this same streak JSON.
+    // ignore() keeps Hive/plugin failures from failing unit tests after completion.
+    WidgetSyncService.instance.syncTimeline().ignore();
   }
 
   void _startTicker() {
@@ -1274,6 +1282,7 @@ class HomeTabViewModel extends ChangeNotifier {
       await _loadPrayerTimes();
       await _loadPrayerStreak();
       notifyListeners();
+      unawaited(PrayerLiveActivityService.instance.syncFromStorage());
     });
   }
 

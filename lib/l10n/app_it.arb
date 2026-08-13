@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Custodite strettamente le preghiere, specialmente la preghiera di mezzo.” — Corano 2:238",
   "prayerNotificationSubtitleMaghrib": "“Glorificate dunque Allah quando giungete alla sera...” — Corano 30:17",
   "prayerNotificationSubtitleIsha": "“Stabilisci la preghiera -  fino all’oscurità della notte.” — Corano 17:78",
+  "prayerNotificationTitle": "È ora di {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Chiedi qualsiasi cosa sui tempi di preghiera, sul Corano e sulla guida islamica.",
   "homeDay": "Giorno",
   "homeDays": "Giorni",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Aggiornamenti preghiere",
+  "settingsPrayerUpdatesSubtitle": "Live Activity per la prossima preghiera sulla Lock Screen",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Resta aggiornato a colpo d’occhio",
+  "liveActivityStayUpdatedBody": "Vedi la prossima preghiera e il suo orario direttamente sulla Lock Screen.",
+  "liveActivityEnableLabel": "Attiva Live Activity",
+  "liveActivityPromptNotNow": "Non ora",
+  "liveActivityUnsupported": "Le Live Activities non sono disponibili su questo dispositivo.",
+  "liveActivityPermissionNeeded": "Consenti le notifiche per mostrare gli aggiornamenti delle preghiere sulla Lock Screen.",
+  "liveActivityPermissionButton": "Consenti notifiche",
+  "liveActivityStatusActive": "Live Activity attiva",
+  "liveActivityStatusOff": "Live Activity disattivata",
+  "liveActivityNowLabel": "Ora",
+  "liveActivityUpdatedAt": "Aggiornato alle {time}",
+  "liveActivityNextAt": "{prayer} alle {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Sveglie di preghiera",
   "settingsPrayerAlarmsSubtitle": "Sveglie complete che possono superare la modalità silenziosa",
   "prayerAlarmsMasterLabel": "Attiva sveglie di preghiera",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Tranquillità",
   "settingsAppDemoPrayerCardSubtitle": "Metti in pausa le distrazioni durante la Salah per pregare con presenza.",
   "settingsAppDemoSleepCardSubtitle": "Proteggi le tue notti per riposare meglio — e un Fajr più leggero.",
-  "settingsAppDemoChildCardSubtitle": "Consegna il telefono con serenità: restano aperte solo le app consentite."
+  "settingsAppDemoChildCardSubtitle": "Consegna il telefono con serenità: restano aperte solo le app consentite.",
+  "widgetPrayerProgressTitle": "Il tuo progresso nelle preghiere",
+  "widgetPrayerProgressCount": "{completed} di {total}",
+  "widgetPrayersCompletedSubtitle": "preghiere completate.",
+  "widgetPrayersLeftToday": "Continua così — oggi restano {count} preghiere",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — tutte le preghiere di oggi sono complete",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

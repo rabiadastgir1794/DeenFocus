@@ -947,6 +947,11 @@ class AppLocalizationsHi extends AppLocalizations {
       '“नमाज़ क़ायम करो -  रात के अंधकार तक।” — क़ुरआन 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return '$prayerName का समय हो गया है';
+  }
+
+  @override
   String get homeTrialBannerTitle => '7 दिन मुफ़्त — बेहतर मुसलमान बनें ✨';
 
   @override
@@ -1595,6 +1600,26 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'नमाज़ और दैनिक आयत लोड करने के लिए Deen Focus में अपना स्थान सेट करें।';
+
+  @override
+  String get widgetPrayerProgressTitle => 'आपकी नमाज़ प्रगति';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed में से $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'नमाज़ें पूर्ण।';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'जारी रखें — आज $count नमाज़ बाकी हैं';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'अल्हम्दुलिल्लाह — आज की सभी नमाज़ें पूरी';
 
   @override
   String get focusChildModeActive => 'चाइल्ड मोड सक्रिय';
@@ -2394,6 +2419,59 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'नमाज़ अपडेट';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'लॉक स्क्रीन पर अगली नमाज़ की लाइव गतिविधि';
+
+  @override
+  String get liveActivitySectionTitle => 'लाइव गतिविधि';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'एक नज़र में अपडेट रहें';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'लॉक स्क्रीन पर सीधे अपनी अगली नमाज़ और उसका समय देखें।';
+
+  @override
+  String get liveActivityEnableLabel => 'लाइव गतिविधि सक्षम करें';
+
+  @override
+  String get liveActivityPromptNotNow => 'अभी नहीं';
+
+  @override
+  String get liveActivityUnsupported =>
+      'इस डिवाइस पर लाइव गतिविधि उपलब्ध नहीं है।';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'लॉक स्क्रीन पर नमाज़ अपडेट दिखाने के लिए सूचनाओं की अनुमति दें।';
+
+  @override
+  String get liveActivityPermissionButton => 'सूचनाएँ अनुमति दें';
+
+  @override
+  String get liveActivityStatusActive => 'लाइव गतिविधि चालू है';
+
+  @override
+  String get liveActivityStatusOff => 'लाइव गतिविधि बंद है';
+
+  @override
+  String get liveActivityNowLabel => 'अब';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return '$time पर अपडेट किया गया';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer $time पर';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'नमाज़ अलार्म';

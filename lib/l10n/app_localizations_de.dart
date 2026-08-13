@@ -952,6 +952,11 @@ class AppLocalizationsDe extends AppLocalizations {
       '„Verrichtet das Gebet -  bis zur Dunkelheit der Nacht.“ — Qur’an 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'Es ist Zeit für $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       '7 Tage kostenlos — werde ein besserer Muslim ✨';
 
@@ -1611,6 +1616,26 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Lege in Deen Focus deinen Standort fest, um Gebete und den Tagesvers zu laden.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Dein Gebetsfortschritt';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed von $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'Gebete abgeschlossen.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Weiter so — noch $count Gebete heute';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Alhamdulillah — alle Gebete heute erledigt';
 
   @override
   String get focusChildModeActive => 'Kindermodus aktiv';
@@ -2417,6 +2442,59 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Gebets-Updates';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live-Aktivität für dein nächstes Gebet auf dem Sperrbildschirm';
+
+  @override
+  String get liveActivitySectionTitle => 'Live-Aktivitäten';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Auf einen Blick informiert';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Sieh dein nächstes Gebet und seine Zeit direkt auf dem Sperrbildschirm.';
+
+  @override
+  String get liveActivityEnableLabel => 'Live-Aktivität aktivieren';
+
+  @override
+  String get liveActivityPromptNotNow => 'Nicht jetzt';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Live-Aktivitäten sind auf diesem Gerät nicht verfügbar.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Erlaube Mitteilungen, damit Gebets-Updates auf dem Sperrbildschirm erscheinen.';
+
+  @override
+  String get liveActivityPermissionButton => 'Mitteilungen erlauben';
+
+  @override
+  String get liveActivityStatusActive => 'Live-Aktivität ist aktiv';
+
+  @override
+  String get liveActivityStatusOff => 'Live-Aktivität ist aus';
+
+  @override
+  String get liveActivityNowLabel => 'Jetzt';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Aktualisiert um $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer um $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Gebetsalarme';

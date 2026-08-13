@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Guardai rigorosamente as orações, especialmente a oração do meio.” — Alcorão 2:238",
   "prayerNotificationSubtitleMaghrib": "“Glorificai Allah quando chegardes ao entardecer...” — Alcorão 30:17",
   "prayerNotificationSubtitleIsha": "“Estabelece a oração -  até a escuridão da noite.” — Alcorão 17:78",
+  "prayerNotificationTitle": "É hora de {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Pergunte qualquer coisa sobre momentos de oração, Alcorão e orientação islâmica.",
   "homeDay": "Dia",
   "homeDays": "Dias",
@@ -892,6 +900,38 @@
       }
     }
   },
+    "settingsPrayerUpdatesTitle": "Atualizações de oração",
+  "settingsPrayerUpdatesSubtitle": "Live Activity da próxima oração na tela de bloqueio",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Fique atualizado de relance",
+  "liveActivityStayUpdatedBody": "Veja sua próxima oração e horário diretamente na tela de bloqueio.",
+  "liveActivityEnableLabel": "Ativar Live Activity",
+  "liveActivityPromptNotNow": "Agora não",
+  "liveActivityUnsupported": "Live Activities não estão disponíveis neste dispositivo.",
+  "liveActivityPermissionNeeded": "Permita notificações para mostrar atualizações de oração na tela de bloqueio.",
+  "liveActivityPermissionButton": "Permitir notificações",
+  "liveActivityStatusActive": "Live Activity ativada",
+  "liveActivityStatusOff": "Live Activity desativada",
+  "liveActivityNowLabel": "Agora",
+  "liveActivityUpdatedAt": "Atualizado às {time}",
+  "liveActivityNextAt": "{prayer} às {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Alarmes de oração",
   "settingsPrayerAlarmsSubtitle": "Alarmes completos que podem ultrapassar o modo silencioso",
   "prayerAlarmsMasterLabel": "Ativar alarmes de oração",
@@ -984,5 +1024,27 @@
   "appLockDemoChildCompletionTitle": "Tranquilidade",
   "settingsAppDemoPrayerCardSubtitle": "Pause distrações no Salah para orar com presença.",
   "settingsAppDemoSleepCardSubtitle": "Proteja suas noites para descansar melhor — e um Fajr mais leve.",
-  "settingsAppDemoChildCardSubtitle": "Entregue o telefone com confiança: só os apps permitidos ficam abertos."
+  "settingsAppDemoChildCardSubtitle": "Entregue o telefone com confiança: só os apps permitidos ficam abertos.",
+  "widgetPrayerProgressTitle": "Seu progresso de oração",
+  "widgetPrayerProgressCount": "{completed} de {total}",
+  "widgetPrayersCompletedSubtitle": "orações concluídas.",
+  "widgetPrayersLeftToday": "Continue — faltam {count} orações hoje",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — todas as orações de hoje concluídas",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

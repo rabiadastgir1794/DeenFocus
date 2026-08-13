@@ -68,6 +68,7 @@ private enum ManagedSettingsStoreHolder {
       )
 
       PrayerAlarmBridge.register(messenger: messenger)
+      PrayerLiveActivityBridge.register(messenger: messenger)
 
       focusMethodChannel.setMethodCallHandler { call, result in
         switch call.method {

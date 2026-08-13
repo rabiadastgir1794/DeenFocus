@@ -943,6 +943,11 @@ class AppLocalizationsEn extends AppLocalizations {
       '“Establish prayer -  until the darkness of the night.” — Qur’an 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'It\'s time for $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       'Free for 7 days — become a better Muslim ✨';
 
@@ -1592,6 +1597,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Set your location in Deen Focus to load prayers and the daily verse.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Your Prayer Progress';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed of $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'prayers completed.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Keep going — $count prayers left today';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Alhamdulillah — all prayers complete today';
 
   @override
   String get focusChildModeActive => 'Child Mode Active';
@@ -2390,6 +2415,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'Instagram';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'Prayer Updates';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Live Activity for your next prayer on the Lock Screen';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Stay updated at a glance';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'See your next prayer and its time directly on your Lock Screen.';
+
+  @override
+  String get liveActivityEnableLabel => 'Enable Live Activity';
+
+  @override
+  String get liveActivityPromptNotNow => 'Not now';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Live Activities are not available on this device.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Allow notifications so prayer updates can appear on your Lock Screen.';
+
+  @override
+  String get liveActivityPermissionButton => 'Allow notifications';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity is on';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity is off';
+
+  @override
+  String get liveActivityNowLabel => 'Now';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'Updated at $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer at $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'Prayer Alarms';

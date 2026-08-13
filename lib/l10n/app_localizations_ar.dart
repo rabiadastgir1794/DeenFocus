@@ -937,6 +937,11 @@ class AppLocalizationsAr extends AppLocalizations {
       '«أقم الصلاة - إلى غسق الليل.» — القرآن 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'حان وقت $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle => 'مجاناً لمدة ٧ أيام — كن مسلماً أفضل ✨';
 
   @override
@@ -1576,6 +1581,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'حدد موقعك في Deen Focus لتحميل أوقات الصلاة وآية اليوم.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'تقدم صلواتك';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed من $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'صلوات مكتملة.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'استمر — تبقى $count صلوات اليوم';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday => 'الحمد لله — اكتملت كل الصلوات اليوم';
 
   @override
   String get focusChildModeActive => 'وضع الطفل نشط';
@@ -2368,6 +2392,59 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appLockDemoAppInstagram => 'إنستغرام';
+
+  @override
+  String get settingsPrayerUpdatesTitle => 'تحديثات الصلاة';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'نشاط مباشر لصلاتك القادمة على شاشة القفل';
+
+  @override
+  String get liveActivitySectionTitle => 'الأنشطة المباشرة';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'ابق على اطلاع بنظرة';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'اطلع على صلاتك القادمة ووقتها مباشرة على شاشة القفل.';
+
+  @override
+  String get liveActivityEnableLabel => 'تفعيل النشاط المباشر';
+
+  @override
+  String get liveActivityPromptNotNow => 'ليس الآن';
+
+  @override
+  String get liveActivityUnsupported =>
+      'الأنشطة المباشرة غير متاحة على هذا الجهاز.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'اسمح بالإشعارات حتى تظهر تحديثات الصلاة على شاشة القفل.';
+
+  @override
+  String get liveActivityPermissionButton => 'السماح بالإشعارات';
+
+  @override
+  String get liveActivityStatusActive => 'النشاط المباشر قيد التشغيل';
+
+  @override
+  String get liveActivityStatusOff => 'النشاط المباشر متوقف';
+
+  @override
+  String get liveActivityNowLabel => 'الآن';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'تم التحديث في $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer في $time';
+  }
 
   @override
   String get settingsPrayerAlarmsTitle => 'منبهات الصلاة';

@@ -32,6 +32,10 @@
 		F30000000000000000000002 /* FocusShieldConfiguration.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000000000000000000010 /* FocusShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F40000000000000000000001 /* azan.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* azan.caf */; };
 		F40000000000000000000002 /* beep.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* beep.caf */; };
+		F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */; };
+		F60000000000000000000002 /* PrayerLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */; };
+		F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000012 /* PrayerLiveActivityBridge.swift */; };
+		F60000000000000000000004 /* PrayerLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000013 /* PrayerLiveActivityWidget.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +113,9 @@
 		F20000000000000000000013 /* FocusDeviceActivityMonitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusDeviceActivityMonitor.entitlements; sourceTree = "<group>"; };
 		F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusDeviceActivityScheduler.swift; sourceTree = "<group>"; };
 		F50000000000000000000011 /* PrayerAlarmBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerAlarmBridge.swift; sourceTree = "<group>"; };
+		F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityAttributes.swift; sourceTree = "<group>"; };
+		F60000000000000000000012 /* PrayerLiveActivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityBridge.swift; sourceTree = "<group>"; };
+		F60000000000000000000013 /* PrayerLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityWidget.swift; sourceTree = "<group>"; };
 		F50000000000000000000013 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F30000000000000000000010 /* FocusShieldConfiguration.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusShieldConfiguration.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusShieldConfigurationExtension.swift; sourceTree = "<group>"; };
@@ -183,6 +190,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				F60000000000000000000024 /* Shared */,
 				F10000000000000000000024 /* DeenlyWidgets */,
 				F20000000000000000000024 /* FocusDeviceActivityMonitor */,
 				F30000000000000000000024 /* FocusShieldConfiguration */,
@@ -217,6 +225,7 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */,
 				F50000000000000000000011 /* PrayerAlarmBridge.swift */,
+				F60000000000000000000012 /* PrayerLiveActivityBridge.swift */,
 				F50000000000000000000012 /* Localizable.strings */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				F40000000000000000000011 /* azan.caf */,
@@ -234,10 +243,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F60000000000000000000024 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		F10000000000000000000024 /* DeenlyWidgets */ = {
 			isa = PBXGroup;
 			children = (
 				F10000000000000000000011 /* DeenlyWidgets.swift */,
+				F60000000000000000000013 /* PrayerLiveActivityWidget.swift */,
 				F10000000000000000000012 /* Info.plist */,
 				F10000000000000000000013 /* DeenlyWidgets.entitlements */,
 				F10000000000000000000014 /* fajr.png */,
@@ -608,6 +626,8 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
 				F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */,
+				F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */,
+				F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -617,6 +637,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F10000000000000000000001 /* DeenlyWidgets.swift in Sources */,
+				F60000000000000000000004 /* PrayerLiveActivityWidget.swift in Sources */,
+				F60000000000000000000002 /* PrayerLiveActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
