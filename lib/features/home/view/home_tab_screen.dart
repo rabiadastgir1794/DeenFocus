@@ -17,6 +17,7 @@ import '../../../core/services/user_profile_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
+import '../cycle_mode_entry_intent.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../model/home_models.dart';
 import '../viewmodel/home_tab_view_model.dart';
@@ -78,14 +79,30 @@ class _HomeTabViewState extends State<_HomeTabView>
     _profileService.addListener(_onProfileChanged);
     _homeVm = context.read<HomeTabViewModel>();
     _homeVm!.addListener(_onHomeVmChanged);
+    CycleModeEntryIntent.pendingOpenSettings
+        .addListener(_onCycleModeOpenSettingsRequested);
     // Check on launch — delay 2s so profile finishes loading from storage.
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         unawaited(_checkLocationChange());
         unawaited(_consumePendingPrayerAlarmAction());
         unawaited(_checkAndShowPrayerReminder());
+        unawaited(_consumePendingCycleModeOpenSettings());
       }
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_consumePendingCycleModeOpenSettings());
+    });
+  }
+
+  void _onCycleModeOpenSettingsRequested() {
+    unawaited(_consumePendingCycleModeOpenSettings());
+  }
+
+  Future<void> _consumePendingCycleModeOpenSettings() async {
+    if (!mounted) return;
+    if (!CycleModeEntryIntent.takePendingOpenSettings()) return;
+    await showCycleModeSettingsSheet(context, enabling: false);
   }
 
   void _onHomeVmChanged() {
@@ -140,6 +157,8 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   @override
   void dispose() {
+    CycleModeEntryIntent.pendingOpenSettings
+        .removeListener(_onCycleModeOpenSettingsRequested);
     _homeVm?.removeListener(_onHomeVmChanged);
     _profileService.removeListener(_onProfileChanged);
     WidgetsBinding.instance.removeObserver(this);
@@ -159,6 +178,8 @@ class _HomeTabViewState extends State<_HomeTabView>
     await context.read<HomeTabViewModel>().onAppResumed();
     if (!mounted) return;
     await _consumePendingPrayerAlarmAction();
+    if (!mounted) return;
+    await _consumePendingCycleModeOpenSettings();
     if (!mounted) return;
     unawaited(_checkLocationChange());
     unawaited(_checkAndShowPrayerReminder());

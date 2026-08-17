@@ -3060,4 +3060,11 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Segna le preghiere rimanenti e completa la checklist prima della fine della giornata.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'La modalità ciclo è terminata';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'La modalità ciclo è ora disattivata. Puoi riprendere a pregare. Se vuoi modificare le date della modalità ciclo, tocca qui per modificarle.';
 }

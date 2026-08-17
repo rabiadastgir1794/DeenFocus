@@ -3021,4 +3021,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Mark remaining prayers and finish your Daily Checklist before the day ends.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Cycle Mode has ended';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Your Cycle Mode is now off. You can resume praying. If you want to change your Cycle Mode dates, tap here to edit them.';
 }

@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Vervollständige deine Tagescheckliste",
   "nightlyWrapUpChecklistBody": "Einige Punkte sind noch offen — schließe den Tag bewusst ab.",
   "nightlyWrapUpBothTitle": "Schließe deinen Tag ab",
-  "nightlyWrapUpBothBody": "Markiere offene Gebete und schließe deine Tagescheckliste vor Tagesende ab."
+  "nightlyWrapUpBothBody": "Markiere offene Gebete und schließe deine Tagescheckliste vor Tagesende ab.",
+  "cycleModeEndedNotificationTitle": "Zyklusmodus ist beendet",
+  "cycleModeEndedNotificationBody": "Dein Zyklusmodus ist jetzt aus. Du kannst wieder beten. Wenn du die Daten des Zyklusmodus ändern möchtest, tippe hier zum Bearbeiten."
 }

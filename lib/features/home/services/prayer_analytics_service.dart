@@ -195,7 +195,10 @@ abstract class PrayerAnalyticsService {
 ///
 /// Rules:
 /// * [PrayerMarkStatus.onTime] and [PrayerMarkStatus.qada] both count.
-/// * Missed or started-but-unmarked tip → streak 0.
+/// * Missed or started-but-unmarked tip → streak 0 — **except** when returning
+///   from a paused Cycle Mode day: started-unmarked tips on that first normal
+///   day are soft-bridged (ignored) so menstruation pause days never wipe a
+///   valid streak. Explicit [PrayerMarkStatus.missed] still tip-breaks.
 /// * Upcoming (not started, unmarked) slots are ignored — they never break
 ///   the streak.
 /// * Paused Cycle Mode days ([isCycleDay]) bridge the tip chain:
@@ -216,6 +219,13 @@ abstract class PrayerStreakCalculator {
     var foundTip = false;
     final today = DateTime(now.year, now.month, now.day);
     final order = TrackablePrayer.values;
+    // First calendar day after a paused Cycle Mode window: do not tip-break on
+    // started-but-unmarked slots. Cycle days are exempt (she does not pray), so
+    // the preserved streak must remain until she marks On Time/Qadha or Missed.
+    final softBridgeUnmarkedToday = _previousCalendarDayIsPaused(
+      today,
+      isCycleDay,
+    );
 
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
@@ -255,6 +265,10 @@ abstract class PrayerStreakCalculator {
             if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
               slots.add(status);
             }
+          } else if (softBridgeUnmarkedToday &&
+              status == PrayerMarkStatus.none) {
+            // Returning from Cycle Mode — unmarked ≠ missed.
+            continue;
           } else {
             slots.add(status);
           }
@@ -290,6 +304,14 @@ abstract class PrayerStreakCalculator {
       }
     }
     return streak;
+  }
+
+  static bool _previousCalendarDayIsPaused(
+    DateTime today,
+    bool Function(DateTime date) isCycleDay,
+  ) {
+    final yesterday = today.subtract(const Duration(days: 1));
+    return isCycleDay(yesterday);
   }
 
   /// True when walking older days (skipping paused) would find a counting tip
@@ -329,12 +351,12 @@ abstract class PrayerStreakCalculator {
         }
       }
 
-      for (var i = slots.length - 1; i >= 0; i--) {
-        if (PrayerAnalyticsService.countsForPrayerStreak(slots[i])) {
-          return true;
-        }
-        return false;
+      if (slots.isEmpty) continue;
+      // Only the tip slot matters for whether a non-paused tip exists.
+      if (PrayerAnalyticsService.countsForPrayerStreak(slots.last)) {
+        return true;
       }
+      return false;
     }
     return false;
   }

@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "完成今日清单",
   "nightlyWrapUpChecklistBody": "还有几项未完成——有意识地结束今天。",
   "nightlyWrapUpBothTitle": "结束你的一天",
-  "nightlyWrapUpBothBody": "标记剩余礼拜，并在今天结束前完成每日清单。"
+  "nightlyWrapUpBothBody": "标记剩余礼拜，并在今天结束前完成每日清单。",
+  "cycleModeEndedNotificationTitle": "周期模式已结束",
+  "cycleModeEndedNotificationBody": "您的周期模式现已关闭。您可以继续礼拜。若要更改周期模式日期，请点按此处进行编辑。"
 }

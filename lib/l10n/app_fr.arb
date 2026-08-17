@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Complétez votre liste du jour",
   "nightlyWrapUpChecklistBody": "Quelques éléments restent ouverts — concluez votre journée avec intention.",
   "nightlyWrapUpBothTitle": "Concluez votre journée",
-  "nightlyWrapUpBothBody": "Marquez les prières restantes et terminez votre liste du jour avant la fin de la journée."
+  "nightlyWrapUpBothBody": "Marquez les prières restantes et terminez votre liste du jour avant la fin de la journée.",
+  "cycleModeEndedNotificationTitle": "Le mode cycle est terminé",
+  "cycleModeEndedNotificationBody": "Votre mode cycle est maintenant désactivé. Vous pouvez reprendre la prière. Si vous voulez modifier les dates du mode cycle, appuyez ici pour les éditer."
 }

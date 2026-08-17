@@ -77,6 +77,9 @@ class LocaleService extends ChangeNotifier {
         longitude: longitude,
       ),
     );
+    unawaited(
+      AppNotificationService.instance.syncCycleModeExpiryNotification(),
+    );
   }
 
   /// Set locale from a stored code string (e.g. 'en', 'ar_SA').

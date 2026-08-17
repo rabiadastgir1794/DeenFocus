@@ -3050,4 +3050,11 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Отметьте оставшиеся молитвы и завершите ежедневный список до конца дня.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Режим цикла завершён';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Режим цикла теперь выключен. Вы можете возобновить намаз. Если хотите изменить даты режима цикла, нажмите здесь, чтобы отредактировать их.';
 }

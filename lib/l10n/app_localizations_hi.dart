@@ -3024,4 +3024,11 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'बाकी नमाज़ें मार्क करें और दिन खत्म होने से पहले चेकलिस्ट पूरी करें।';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'साइकिल मोड समाप्त हो गया';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'आपका साइकिल मोड अब बंद है। आप नमाज़ फिर से शुरू कर सकते हैं। अगर आप साइकिल मोड की तारीखें बदलना चाहते हैं, तो उन्हें संपादित करने के लिए यहाँ टैप करें।';
 }

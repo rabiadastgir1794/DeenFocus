@@ -14,6 +14,8 @@ import 'focus_enforcement_service.dart';
 import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../features/home/cycle_mode_entry_intent.dart';
+import '../../features/home/helpers/cycle_mode_expiry_notification_planner.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import '../../features/home/helpers/nightly_wrap_up_planner.dart';
 import '../../features/home/helpers/prayer_label_helper.dart';
@@ -27,6 +29,7 @@ void _onNotificationResponse(NotificationResponse response) {
       'id=${response.id} actionId=${response.actionId} payload=${response.payload} input=${response.input} type=${response.notificationResponseType.name}',
     ),
   );
+  AppNotificationService.handleNotificationPayload(response.payload);
 }
 
 class AppNotificationService {
@@ -80,6 +83,14 @@ class AppNotificationService {
     sound: RawResourceAndroidNotificationSound('beep'),
   );
 
+  static const _cycleModeChannel = AndroidNotificationChannel(
+    'cycle_mode',
+    'Cycle Mode',
+    description: 'Updates when Cycle Mode automatically ends.',
+    importance: Importance.high,
+    sound: RawResourceAndroidNotificationSound('beep'),
+  );
+
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
   static const MethodChannel _focusMethodChannel = MethodChannel(
@@ -89,9 +100,11 @@ class AppNotificationService {
   Future<void> _prayerSyncSerial = Future<void>.value();
   Future<void> _focusSyncSerial = Future<void>.value();
   Future<void> _wrapUpSyncSerial = Future<void>.value();
+  Future<void> _cycleExpirySyncSerial = Future<void>.value();
   String? _lastPrayerScheduleSignature;
   String? _lastFocusScheduleSignature;
   String? _lastWrapUpScheduleSignature;
+  String? _lastCycleExpiryScheduleSignature;
 
   /// Forces the next [syncFocusNotifications] to rebuild pending alerts.
   void invalidateFocusScheduleCache() {
@@ -146,8 +159,26 @@ class AppNotificationService {
     await androidPlugin?.createNotificationChannel(_prayerChannelMute);
     await androidPlugin?.createNotificationChannel(_focusChannel);
     await androidPlugin?.createNotificationChannel(_wrapUpChannel);
+    await androidPlugin?.createNotificationChannel(_cycleModeChannel);
 
     _initialized = true;
+
+    // Cold start from a tapped notification (e.g. Cycle Mode ended → edit).
+    try {
+      final launch = await _plugin.getNotificationAppLaunchDetails();
+      if (launch?.didNotificationLaunchApp == true) {
+        handleNotificationPayload(launch!.notificationResponse?.payload);
+      }
+    } catch (_) {
+      // Launch details unavailable on some platforms/tests — ignore.
+    }
+  }
+
+  /// Routes notification taps to in-app intents (no separate deep-link stack).
+  static void handleNotificationPayload(String? payload) {
+    if (payload == CycleModeExpiryNotificationPlanner.payload) {
+      CycleModeEntryIntent.requestOpenSettings();
+    }
   }
 
   Future<bool> _hasNotificationPermission() async {
@@ -172,6 +203,9 @@ class AppNotificationService {
   /// Nightly Daily Wrap-Up (Isha + 1h). Separate from Fajr→Isha soft reminders.
   static const int _wrapUpNotificationIdStart = 5000;
   static const int _wrapUpNotificationIdEnd = 5006;
+
+  /// Single pending Cycle Mode automatic-expiry reminder.
+  static const int _cycleExpiryNotificationId = 5100;
 
   /// Hard iOS limit for pending local notifications per app.
   static const int _iosPendingNotificationLimit = 64;
@@ -535,6 +569,108 @@ class AppNotificationService {
           presentSound: true,
           sound: 'beep.caf',
           threadIdentifier: 'deenly.daily_wrap_up',
+        ),
+      );
+
+  /// Schedules or cancels the Cycle Mode automatic-expiry notification.
+  ///
+  /// Only active cycles are scheduled. Manual disable / draft → cancel.
+  /// Deduped by signature so restart/reschedule does not create duplicates.
+  ///
+  /// Android: uses [AndroidScheduleMode.alarmClock] (same path as prayer /
+  /// wrap-up) on channel `cycle_mode`, notification id [_cycleExpiryNotificationId].
+  Future<void> syncCycleModeExpiryNotification({
+    CycleModeData? cycleMode,
+  }) async {
+    final run = _cycleExpirySyncSerial.then((_) async {
+      final l10n = await _focusNotificationsLocalizations();
+      await initialize();
+
+      final data = cycleMode ?? await StorageService.cycleModeData;
+      final when = CycleModeExpiryNotificationPlanner.scheduledFireTime(data);
+      final shouldSchedule = CycleModeExpiryNotificationPlanner.shouldSchedule(
+        data,
+      );
+
+      if (!await _hasNotificationPermission()) {
+        _lastCycleExpiryScheduleSignature = null;
+        await _plugin.cancel(_cycleExpiryNotificationId);
+        return;
+      }
+
+      await _setLocalTimezone();
+      final localeCode = await StorageService.localeCode ?? 'en';
+      final signature = CycleModeExpiryNotificationPlanner.scheduleSignature(
+        data,
+        localeCode: localeCode,
+        timeZoneName: tz.local.name,
+      );
+
+      if (_lastCycleExpiryScheduleSignature == signature) {
+        return;
+      }
+
+      await _plugin.cancel(_cycleExpiryNotificationId);
+
+      if (!shouldSchedule || when == null) {
+        _lastCycleExpiryScheduleSignature = signature;
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.cycle_expiry.sync',
+          'cancelled (enabled=${data.isEnabled})',
+        );
+        return;
+      }
+
+      // Android 12+: exact / alarmClock scheduling needs this permission.
+      await _ensureAndroidExactAlarmOrFallback();
+
+      final scheduled = await _scheduleIfFuture(
+        id: _cycleExpiryNotificationId,
+        when: when,
+        title: l10n.cycleModeEndedNotificationTitle,
+        body: l10n.cycleModeEndedNotificationBody,
+        details: _cycleModeNotificationDetails,
+        payload: CycleModeExpiryNotificationPlanner.payload,
+        // AlarmManager.setAlarmClock — survives Doze on Android (not iOS-only).
+        preferAlarmClock: true,
+        iosScheduleRole: _IosScheduleRole.focus,
+      );
+      _lastCycleExpiryScheduleSignature = signature;
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.cycle_expiry.sync',
+        'when=${when.toIso8601String()} scheduled=$scheduled '
+        'id=$_cycleExpiryNotificationId tz=${tz.local.name}',
+      );
+    });
+    // Never surface plugin/platform failures to callers (tests, resume, save).
+    final guarded = run.catchError((Object _) {});
+    _cycleExpirySyncSerial = guarded;
+    await guarded;
+  }
+
+  NotificationDetails get _cycleModeNotificationDetails => NotificationDetails(
+        android: AndroidNotificationDetails(
+          _cycleModeChannel.id,
+          _cycleModeChannel.name,
+          channelDescription: _cycleModeChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          sound: _cycleModeChannel.sound,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.cycle_mode',
+        ),
+        macOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.cycle_mode',
         ),
       );
 
@@ -1181,6 +1317,17 @@ class AppNotificationService {
   static bool isPrayerSoftNotificationId(int id) {
     return id >= _prayerNotificationIdStart && id <= _prayerNotificationIdEnd;
   }
+
+  @visibleForTesting
+  static int get cycleModeExpiryNotificationId => _cycleExpiryNotificationId;
+
+  @visibleForTesting
+  static bool isCycleModeExpiryNotificationId(int id) =>
+      id == _cycleExpiryNotificationId;
+
+  /// Android notification channel used for Cycle Mode expiry (AlarmManager path).
+  @visibleForTesting
+  static String get cycleModeAndroidChannelId => _cycleModeChannel.id;
 
   static int _slotIndexStatic(HomePrayerId id) {
     switch (id) {

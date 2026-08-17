@@ -3059,4 +3059,11 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Marchează rugăciunile rămase și termină lista zilnică înainte de sfârșitul zilei.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Modul ciclu s-a încheiat';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Modul ciclu este acum dezactivat. Poți relua rugăciunea. Dacă vrei să schimbi datele modului ciclu, apasă aici pentru a le edita.';
 }

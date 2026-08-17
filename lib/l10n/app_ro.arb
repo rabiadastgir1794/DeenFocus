@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Completează lista zilnică",
   "nightlyWrapUpChecklistBody": "Câteva elemente sunt încă deschise — încheie ziua cu intenție.",
   "nightlyWrapUpBothTitle": "Încheie-ți ziua",
-  "nightlyWrapUpBothBody": "Marchează rugăciunile rămase și termină lista zilnică înainte de sfârșitul zilei."
+  "nightlyWrapUpBothBody": "Marchează rugăciunile rămase și termină lista zilnică înainte de sfârșitul zilei.",
+  "cycleModeEndedNotificationTitle": "Modul ciclu s-a încheiat",
+  "cycleModeEndedNotificationBody": "Modul ciclu este acum dezactivat. Poți relua rugăciunea. Dacă vrei să schimbi datele modului ciclu, apasă aici pentru a le edita."
 }

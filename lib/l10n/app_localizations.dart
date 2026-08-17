@@ -5494,6 +5494,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mark remaining prayers and finish your Daily Checklist before the day ends.'**
   String get nightlyWrapUpBothBody;
+
+  /// No description provided for @cycleModeEndedNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Mode has ended'**
+  String get cycleModeEndedNotificationTitle;
+
+  /// No description provided for @cycleModeEndedNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Cycle Mode is now off. You can resume praying. If you want to change your Cycle Mode dates, tap here to edit them.'**
+  String get cycleModeEndedNotificationBody;
 }
 
 class _AppLocalizationsDelegate

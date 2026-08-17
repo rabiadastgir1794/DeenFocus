@@ -1284,5 +1284,7 @@
   "nightlyWrapUpChecklistTitle": "Complete your Daily Checklist",
   "nightlyWrapUpChecklistBody": "A few checklist items are still open — wrap up your day with intention.",
   "nightlyWrapUpBothTitle": "Wrap up your day",
-  "nightlyWrapUpBothBody": "Mark remaining prayers and finish your Daily Checklist before the day ends."
+  "nightlyWrapUpBothBody": "Mark remaining prayers and finish your Daily Checklist before the day ends.",
+  "cycleModeEndedNotificationTitle": "Cycle Mode has ended",
+  "cycleModeEndedNotificationBody": "Your Cycle Mode is now off. You can resume praying. If you want to change your Cycle Mode dates, tap here to edit them."
 }

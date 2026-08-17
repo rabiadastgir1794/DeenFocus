@@ -3051,4 +3051,11 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Marque as orações restantes e termine sua lista diária antes do fim do dia.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'O modo ciclo terminou';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Seu modo ciclo agora está desligado. Você pode retomar as orações. Se quiser alterar as datas do modo ciclo, toque aqui para editá-las.';
 }

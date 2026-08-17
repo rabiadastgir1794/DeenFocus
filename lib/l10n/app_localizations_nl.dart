@@ -3039,4 +3039,11 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Markeer openstaande gebeden en voltooi je checklist voor het einde van de dag.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Cyclusmodus is beëindigd';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Je cyclusmodus staat nu uit. Je kunt weer bidden. Als je de data van de cyclusmodus wilt wijzigen, tik hier om ze te bewerken.';
 }

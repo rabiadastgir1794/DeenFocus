@@ -313,6 +313,13 @@ class HomeTabViewModel extends ChangeNotifier {
       );
       unawaited(_syncNightlyWrapUpIfPossible());
     }
+    // Android AlarmManager + iOS pending: reconcile Cycle Mode expiry after
+    // boot / timezone / overnight without requiring location.
+    unawaited(
+      AppNotificationService.instance.syncCycleModeExpiryNotification(
+        cycleMode: _cycleMode,
+      ),
+    );
     unawaited(PrayerLiveActivityService.instance.syncFromStorage());
     await AppReviewService.onAppResumed();
     notifyListeners();
@@ -748,6 +755,11 @@ class HomeTabViewModel extends ChangeNotifier {
     await _refreshAchievements();
     notifyListeners();
     unawaited(_syncNightlyWrapUpIfPossible());
+    unawaited(
+      AppNotificationService.instance.syncCycleModeExpiryNotification(
+        cycleMode: _cycleMode,
+      ),
+    );
   }
 
   /// Disables Cycle Mode on [onDate] (defaults to today). The disable day is

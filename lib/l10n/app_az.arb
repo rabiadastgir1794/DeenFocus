@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Gündəlik yoxlama siyahınızı tamamlayın",
   "nightlyWrapUpChecklistBody": "Bir neçə siyahı elementi hələ açıqdır — günü niyyətlə yekunlaşdırın.",
   "nightlyWrapUpBothTitle": "Gününüzü yekunlaşdırın",
-  "nightlyWrapUpBothBody": "Qalan namazları işarələyin və gündəlik siyahınızı gün bitməmiş tamamlayın."
+  "nightlyWrapUpBothBody": "Qalan namazları işarələyin və gündəlik siyahınızı gün bitməmiş tamamlayın.",
+  "cycleModeEndedNotificationTitle": "Dövr rejimi bitdi",
+  "cycleModeEndedNotificationBody": "Dövr rejiminiz indi sönülüdür. Namaza davam edə bilərsiniz. Dövr rejimi tarixlərini dəyişmək istəyirsinizsə, redaktə etmək üçün bura toxunun."
 }

@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Voltooi je dagelijkse checklist",
   "nightlyWrapUpChecklistBody": "Er staan nog items open — rond je dag met intentie af.",
   "nightlyWrapUpBothTitle": "Rond je dag af",
-  "nightlyWrapUpBothBody": "Markeer openstaande gebeden en voltooi je checklist voor het einde van de dag."
+  "nightlyWrapUpBothBody": "Markeer openstaande gebeden en voltooi je checklist voor het einde van de dag.",
+  "cycleModeEndedNotificationTitle": "Cyclusmodus is beëindigd",
+  "cycleModeEndedNotificationBody": "Je cyclusmodus staat nu uit. Je kunt weer bidden. Als je de data van de cyclusmodus wilt wijzigen, tik hier om ze te bewerken."
 }

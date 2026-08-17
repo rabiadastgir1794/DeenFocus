@@ -1118,5 +1118,7 @@
   "nightlyWrapUpChecklistTitle": "أكمل قائمتك اليومية",
   "nightlyWrapUpChecklistBody": "لا تزال بعض عناصر القائمة مفتوحة — اختم يومك بنية.",
   "nightlyWrapUpBothTitle": "اختم يومك",
-  "nightlyWrapUpBothBody": "سجّل الصلوات المتبقية وأكمل قائمتك اليومية قبل نهاية اليوم."
+  "nightlyWrapUpBothBody": "سجّل الصلوات المتبقية وأكمل قائمتك اليومية قبل نهاية اليوم.",
+  "cycleModeEndedNotificationTitle": "انتهى وضع الدورة",
+  "cycleModeEndedNotificationBody": "وضع الدورة متوقف الآن. يمكنك استئناف الصلاة. إذا أردت تغيير تواريخ وضع الدورة، اضغط هنا لتعديلها."
 }

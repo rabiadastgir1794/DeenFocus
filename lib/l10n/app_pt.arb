@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Complete sua lista diária",
   "nightlyWrapUpChecklistBody": "Ainda há itens abertos — encerre o dia com intenção.",
   "nightlyWrapUpBothTitle": "Encerre o seu dia",
-  "nightlyWrapUpBothBody": "Marque as orações restantes e termine sua lista diária antes do fim do dia."
+  "nightlyWrapUpBothBody": "Marque as orações restantes e termine sua lista diária antes do fim do dia.",
+  "cycleModeEndedNotificationTitle": "O modo ciclo terminou",
+  "cycleModeEndedNotificationBody": "Seu modo ciclo agora está desligado. Você pode retomar as orações. Se quiser alterar as datas do modo ciclo, toque aqui para editá-las."
 }

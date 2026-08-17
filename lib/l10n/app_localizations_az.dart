@@ -3037,4 +3037,11 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Qalan namazları işarələyin və gündəlik siyahınızı gün bitməmiş tamamlayın.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Dövr rejimi bitdi';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Dövr rejiminiz indi sönülüdür. Namaza davam edə bilərsiniz. Dövr rejimi tarixlərini dəyişmək istəyirsinizsə, redaktə etmək üçün bura toxunun.';
 }

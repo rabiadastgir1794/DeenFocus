@@ -2863,4 +2863,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightlyWrapUpBothBody => '标记剩余礼拜，并在今天结束前完成每日清单。';
+
+  @override
+  String get cycleModeEndedNotificationTitle => '周期模式已结束';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      '您的周期模式现已关闭。您可以继续礼拜。若要更改周期模式日期，请点按此处进行编辑。';
 }

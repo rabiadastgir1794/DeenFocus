@@ -1134,5 +1134,7 @@
   "nightlyWrapUpChecklistTitle": "Completa la checklist giornaliera",
   "nightlyWrapUpChecklistBody": "Alcuni elementi sono ancora aperti — chiudi la giornata con intenzione.",
   "nightlyWrapUpBothTitle": "Chiudi la giornata",
-  "nightlyWrapUpBothBody": "Segna le preghiere rimanenti e completa la checklist prima della fine della giornata."
+  "nightlyWrapUpBothBody": "Segna le preghiere rimanenti e completa la checklist prima della fine della giornata.",
+  "cycleModeEndedNotificationTitle": "La modalità ciclo è terminata",
+  "cycleModeEndedNotificationBody": "La modalità ciclo è ora disattivata. Puoi riprendere a pregare. Se vuoi modificare le date della modalità ciclo, tocca qui per modificarle."
 }

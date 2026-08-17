@@ -2992,4 +2992,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'سجّل الصلوات المتبقية وأكمل قائمتك اليومية قبل نهاية اليوم.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'انتهى وضع الدورة';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'وضع الدورة متوقف الآن. يمكنك استئناف الصلاة. إذا أردت تغيير تواريخ وضع الدورة، اضغط هنا لتعديلها.';
 }

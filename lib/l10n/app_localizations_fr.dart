@@ -3068,4 +3068,11 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Marquez les prières restantes et terminez votre liste du jour avant la fin de la journée.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Le mode cycle est terminé';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Votre mode cycle est maintenant désactivé. Vous pouvez reprendre la prière. Si vous voulez modifier les dates du mode cycle, appuyez ici pour les éditer.';
 }

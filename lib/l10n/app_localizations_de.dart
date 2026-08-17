@@ -3053,4 +3053,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get nightlyWrapUpBothBody =>
       'Markiere offene Gebete und schließe deine Tagescheckliste vor Tagesende ab.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Zyklusmodus ist beendet';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Dein Zyklusmodus ist jetzt aus. Du kannst wieder beten. Wenn du die Daten des Zyklusmodus ändern möchtest, tippe hier zum Bearbeiten.';
 }
