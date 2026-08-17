@@ -937,6 +937,11 @@ class AppLocalizationsAr extends AppLocalizations {
       '«أقم الصلاة - إلى غسق الليل.» — القرآن 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return 'حان وقت $prayerName';
+  }
+
+  @override
   String get homeTrialBannerTitle => 'مجاناً لمدة ٧ أيام — كن مسلماً أفضل ✨';
 
   @override
@@ -1576,6 +1581,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'حدد موقعك في Deen Focus لتحميل أوقات الصلاة وآية اليوم.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'تقدم صلواتك';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed من $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'صلوات مكتملة.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'استمر — تبقى $count صلوات اليوم';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday => 'الحمد لله — اكتملت كل الصلوات اليوم';
 
   @override
   String get focusChildModeActive => 'وضع الطفل نشط';
@@ -2370,6 +2394,59 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appLockDemoAppInstagram => 'إنستغرام';
 
   @override
+  String get settingsPrayerUpdatesTitle => 'تحديثات الصلاة';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'نشاط مباشر لصلاتك القادمة على شاشة القفل';
+
+  @override
+  String get liveActivitySectionTitle => 'الأنشطة المباشرة';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'ابق على اطلاع بنظرة';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'اطلع على صلاتك القادمة ووقتها مباشرة على شاشة القفل.';
+
+  @override
+  String get liveActivityEnableLabel => 'تفعيل النشاط المباشر';
+
+  @override
+  String get liveActivityPromptNotNow => 'ليس الآن';
+
+  @override
+  String get liveActivityUnsupported =>
+      'الأنشطة المباشرة غير متاحة على هذا الجهاز.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'اسمح بالإشعارات حتى تظهر تحديثات الصلاة على شاشة القفل.';
+
+  @override
+  String get liveActivityPermissionButton => 'السماح بالإشعارات';
+
+  @override
+  String get liveActivityStatusActive => 'النشاط المباشر قيد التشغيل';
+
+  @override
+  String get liveActivityStatusOff => 'النشاط المباشر متوقف';
+
+  @override
+  String get liveActivityNowLabel => 'الآن';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return 'تم التحديث في $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer في $time';
+  }
+
+  @override
   String get settingsPrayerAlarmsTitle => 'منبهات الصلاة';
 
   @override
@@ -2611,4 +2688,315 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get settingsAppDemoChildCardSubtitle =>
       'سلّم هاتفك مطمئنًا: فقط التطبيقات المسموحة تبقى مفتوحة.';
+
+  @override
+  String get settingsAppDemoHomeFeaturesTitle => 'ابقَ على تواصل بنظرة';
+
+  @override
+  String get settingsAppDemoHomeFeaturesSubtitle =>
+      'شاهد كيف تُبقي أدوات الشاشة الرئيسية والنشاط المباشر أوقات الصلاة قريبة — دون فتح التطبيق.';
+
+  @override
+  String get settingsAppDemoWidgetsCardSubtitle =>
+      'آية اليوم وأوقات الصلاة على شاشتك الرئيسية، محدّثة دائمًا.';
+
+  @override
+  String get settingsAppDemoLiveActivityCardSubtitle =>
+      'الصلاة الحالية والتالية على شاشة القفل والجزر الديناميكي.';
+
+  @override
+  String get featureDemoContinue => 'متابعة';
+
+  @override
+  String get featureDemoSampleStatusTime => '٩:٤١';
+
+  @override
+  String get featureDemoOfferWidgetManualBody =>
+      'جهازك لا يسمح للتطبيقات بإضافة الأدوات تلقائيًا. أضف أداة DeenFocus الكبيرة من معرض أدوات الشاشة الرئيسية.';
+
+  @override
+  String get featureDemoOfferWidgetManualTitle =>
+      'أضف الأداة من الشاشة الرئيسية';
+
+  @override
+  String get featureDemoOfferNo => 'لا';
+
+  @override
+  String get featureDemoOfferYes => 'نعم';
+
+  @override
+  String get featureDemoOfferLiveActivityTitle =>
+      'هل تريد تفعيل النشاط المباشر على جهازك؟';
+
+  @override
+  String get featureDemoOfferWidgetsTitle =>
+      'هل تريد إضافة هذه الأداة إلى الشاشة الرئيسية؟';
+
+  @override
+  String get featureDemoWidgetsTitle => 'الأدوات';
+
+  @override
+  String get featureDemoWidgetsIntroTitle => 'شاهد أدوات الشاشة الرئيسية';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitle =>
+      'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsShowcaseCallout =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsDetailsTitle => 'إرشاد صلاة بنظرة واحدة';
+
+  @override
+  String get featureDemoWidgetsDetailsBody =>
+      'تعرض الأداة المتوسطة آية اليوم وأوقات الصلوات الخمس — وتُحدَّث عند فتح DeenFocus.';
+
+  @override
+  String get featureDemoWidgetsCompletionTitle => 'الأدوات جاهزة';
+
+  @override
+  String get featureDemoWidgetsCompletionSubtitle =>
+      'تذكيرات إيمانية على شاشتك الرئيسية.';
+
+  @override
+  String get featureDemoWidgetsCompletionBody =>
+      'أضف أدوات DeenFocus من معرض الأدوات بعد هذه التجربة — ثم افتح التطبيق مرة لمزامنتها.';
+
+  @override
+  String get featureDemoWidgetsHomeHint => 'الأربعاء، ١٣ أغسطس';
+
+  @override
+  String get featureDemoWidgetSampleDate => 'أربعاء، ١٣ أغسطس';
+
+  @override
+  String get featureDemoWidgetSampleVerse => 'إياك نعبد وإياك نستعين.';
+
+  @override
+  String get featureDemoWidgetSampleSource => 'سورة 1:5';
+
+  @override
+  String get featureDemoLiveActivityTitle => 'النشاط المباشر';
+
+  @override
+  String get featureDemoLiveActivityIntroTitle => 'شاهد النشاط المباشر';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitle =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityShowcaseCallout => 'Tap Prayer Calculation';
+
+  @override
+  String get featureDemoLiveActivityDetailsTitle =>
+      'تحديثات الصلاة دائمًا ظاهرة';
+
+  @override
+  String get featureDemoLiveActivityDetailsBody =>
+      'يبقي النشاط المباشر المغرب والعشاء والعدّ التنازلي قريبين على شاشة القفل — فعّله من الإعدادات في أي وقت.';
+
+  @override
+  String get featureDemoLiveActivityCompletionTitle => 'النشاط المباشر جاهز';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitle =>
+      'صلاتك التالية دائمًا قريبة.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBody =>
+      'فعّل النشاط المباشر من الإعدادات → حساب الصلاة لإظهار التحديثات على شاشة القفل.';
+
+  @override
+  String get featureDemoLiveActivityLockHint => 'الأربعاء، ١٣ أغسطس';
+
+  @override
+  String get featureDemoLiveActivitySampleTime => '٦:٤٨ م';
+
+  @override
+  String get featureDemoLiveActivitySampleNextTime => '٨:١١ م';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleIos =>
+      'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleAndroid =>
+      'Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutIos =>
+      'اضغط مطولًا على الشاشة الرئيسية لتعديل الأدوات';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutAndroid =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsAddCallout => 'اضغط + لاختيار أداة DeenFocus';
+
+  @override
+  String get featureDemoWidgetsAddSlotLabel => 'إضافة أداة';
+
+  @override
+  String get featureDemoWidgetsGalleryTitle => 'اختر أداة DeenFocus';
+
+  @override
+  String get featureDemoWidgetsGallerySubtitle =>
+      'Switch between Small, Medium, and Large — then add it to your Home Screen.';
+
+  @override
+  String get featureDemoWidgetsAddCta => 'Add Widget';
+
+  @override
+  String get featureDemoWidgetsAddCtaAndroid => 'Add widget';
+
+  @override
+  String get featureDemoWidgetsChangeCta => 'تغيير الحجم';
+
+  @override
+  String get featureDemoWidgetSizeSmall => 'صغير';
+
+  @override
+  String get featureDemoWidgetSizeMedium => 'متوسط';
+
+  @override
+  String get featureDemoWidgetSizeLarge => 'كبير';
+
+  @override
+  String get featureDemoWidgetSizeSmallSubtitle =>
+      'Compact prayer times at a glance';
+
+  @override
+  String get featureDemoWidgetSizeMediumSubtitle =>
+      'Daily verse plus all five prayers';
+
+  @override
+  String get featureDemoWidgetSizeLargeSubtitle =>
+      'Prayer progress with today’s schedule';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleIos =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleAndroid =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.';
+
+  @override
+  String get featureDemoLiveOpenPrayerCalcCallout => 'اضغط على حساب الصلاة';
+
+  @override
+  String get featureDemoLiveEnableToggleCallout =>
+      'فعّل «تفعيل النشاط المباشر»';
+
+  @override
+  String get featureDemoLiveLockScreenCallout =>
+      'Your prayer Live Activity on the Lock Screen';
+
+  @override
+  String get featureDemoLiveCompactTitle => 'Compact Dynamic Island';
+
+  @override
+  String get featureDemoLiveCompactCallout =>
+      'Current prayer stays visible at the top';
+
+  @override
+  String get featureDemoLiveExpandCta => 'Expand Dynamic Island';
+
+  @override
+  String get featureDemoLiveExpandedTitle => 'Expanded Dynamic Island';
+
+  @override
+  String get featureDemoLiveExpandedCallout =>
+      'See current time and the next prayer together';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleIos =>
+      'Lock Screen and Dynamic Island, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleAndroid =>
+      'Ongoing prayer updates, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyIos =>
+      'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyAndroid =>
+      'Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.';
+
+  @override
+  String get featureDemoAndroidStatusBarHint => 'Ongoing notification';
+
+  @override
+  String get featureDemoAndroidOngoingTitle => 'إشعار الصلاة المباشر';
+
+  @override
+  String get featureDemoAndroidOngoingCallout =>
+      'Silent ongoing update — current and next prayer';
+
+  @override
+  String get featureDemoAndroidOpenShadeCta => 'افتح ظل الإشعارات';
+
+  @override
+  String get featureDemoAndroidShadeTitle => 'ظل الإشعارات';
+
+  @override
+  String get featureDemoAndroidShadeCallout =>
+      'Expand to see the full current and next prayer status';
+
+  @override
+  String get featureDemoAndroidOngoingBadge => 'Ongoing';
+
+  @override
+  String get appLockDemoOfferPrayerTitle => 'هل أنت مستعد لتجربة وضع الصلاة؟';
+
+  @override
+  String get appLockDemoOfferSleepTitle => 'هل أنت مستعد لتجربة وضع النوم؟';
+
+  @override
+  String get appLockDemoOfferChildTitle => 'هل أنت مستعد لتجربة وضع الطفل؟';
+
+  @override
+  String get appLockDemoOfferPrayerCta => 'تفعيل وضع الصلاة';
+
+  @override
+  String get appLockDemoOfferSleepCta => 'تفعيل وضع النوم';
+
+  @override
+  String get appLockDemoOfferChildCta => 'تفعيل وضع الطفل';
+
+  @override
+  String get appLockDemoOfferNotNow => 'ليس الآن';
+
+  @override
+  String get nightlyWrapUpPrayersTitle => 'أكمل صلوات اليوم';
+
+  @override
+  String get nightlyWrapUpPrayersBody =>
+      'سجّل أي صلاة غير مكتملة أو فائتة لحماية سلسلة صلاتك.';
+
+  @override
+  String get nightlyWrapUpChecklistTitle => 'أكمل قائمتك اليومية';
+
+  @override
+  String get nightlyWrapUpChecklistBody =>
+      'لا تزال بعض عناصر القائمة مفتوحة — اختم يومك بنية.';
+
+  @override
+  String get nightlyWrapUpBothTitle => 'اختم يومك';
+
+  @override
+  String get nightlyWrapUpBothBody =>
+      'سجّل الصلوات المتبقية وأكمل قائمتك اليومية قبل نهاية اليوم.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'انتهى وضع الدورة';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'وضع الدورة متوقف الآن. يمكنك استئناف الصلاة. إذا أردت تغيير تواريخ وضع الدورة، اضغط هنا لتعديلها.';
 }

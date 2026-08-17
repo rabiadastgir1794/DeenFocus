@@ -14,6 +14,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
 import '../../../l10n/app_localizations.dart';
+import '../focus_entry_intent.dart';
 import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
 import 'focus_apps_picker_sheet.dart';
@@ -43,19 +44,57 @@ class _FocusTabScreenState extends State<FocusTabScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    FocusEntryIntent.pendingModeToEnable.addListener(_onPendingEnableRequested);
     // Idempotent: focus state is warmed from [_AppLifecycleObserver] after first
     // frame so Home stays in sync; keep this so opening Focus before that callback
     // (e.g. very fast tap) still initializes.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       unawaited(context.read<FocusController>().initialize());
+      unawaited(_consumePendingEnableRequest());
     });
   }
 
   @override
   void dispose() {
+    FocusEntryIntent.pendingModeToEnable
+        .removeListener(_onPendingEnableRequested);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _onPendingEnableRequested() {
+    unawaited(_consumePendingEnableRequest());
+  }
+
+  bool _isModeEnabled(FocusSettings settings, FocusModeType mode) {
+    return switch (mode) {
+      FocusModeType.child => settings.childModeEnabled,
+      FocusModeType.nightDiscipline => settings.nightDisciplineEnabled,
+      FocusModeType.salah => settings.salahModeEnabled,
+    };
+  }
+
+  /// App Demo handoff: open Focus and reuse the normal enable / Superwall path.
+  Future<void> _consumePendingEnableRequest() async {
+    final mode = FocusEntryIntent.takePendingMode();
+    if (mode == null || !mounted) return;
+
+    final vm = context.read<FocusController>();
+    await vm.initialize();
+    if (!mounted) return;
+
+    // Already on — land on Focus without re-running paywall / enable.
+    if (_isModeEnabled(vm.settings, mode)) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    await _runEnableModeFlow(
+      vm: vm,
+      mode: mode,
+      messenger: messenger,
+      l10n: l10n,
+    );
   }
 
   @override

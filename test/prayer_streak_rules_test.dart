@@ -556,5 +556,46 @@ void main() {
       );
       expect(s.prayerStreak, 5); // only Aug 11; broken at Aug 10
     });
+
+    test(
+      'after pause ends, started-unmarked soft-bridges; missed still breaks',
+      () {
+        final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+          key(DateTime(2026, 8, 10)): {
+            TrackablePrayer.maghrib: PrayerMarkStatus.onTime,
+            TrackablePrayer.isha: PrayerMarkStatus.onTime,
+          },
+        };
+        final ended = CycleModeData(
+          isEnabled: true,
+          startDate: DateTime(2026, 8, 11),
+          cycleLength: 2,
+          pauseStreaks: true,
+        ).expireFully();
+        final policy = CycleModePolicy(ended);
+
+        // Aug 13 is first day after sealed Aug 11–12.
+        expect(
+          snap(
+            now: atHour(DateTime(2026, 8, 13), 6),
+            history: history,
+            isPaused: policy.shouldPauseStreaks,
+          ).prayerStreak,
+          2,
+        );
+
+        history[key(DateTime(2026, 8, 13))] = {
+          TrackablePrayer.fajr: PrayerMarkStatus.missed,
+        };
+        expect(
+          snap(
+            now: atHour(DateTime(2026, 8, 13), 10),
+            history: history,
+            isPaused: policy.shouldPauseStreaks,
+          ).prayerStreak,
+          0,
+        );
+      },
+    );
   });
 }

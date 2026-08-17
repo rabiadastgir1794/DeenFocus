@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Namazları, xüsusən orta namazı ciddi qoruyun.” — Quran 2:238",
   "prayerNotificationSubtitleMaghrib": "“Axşama çatdığınızda Allahı tərifləyin...” — Quran 30:17",
   "prayerNotificationSubtitleIsha": "“Namazı qılın - gecənin qaranlığına qədər.” — Quran 17:78",
+  "prayerNotificationTitle": "{prayerName} vaxtıdır",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Namaz vaxtları, Quran və İslami rəhbər haqqında hər şeyi soruşun.",
   "homeDay": "gün",
   "homeDays": "Günlər",
@@ -892,6 +900,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "Namaz yeniləmələri",
+  "settingsPrayerUpdatesSubtitle": "Kilid ekranında növbəti namaz üçün Live Activity",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Bir baxışda yenilənmiş qalın",
+  "liveActivityStayUpdatedBody": "Növbəti namazı və vaxtını birbaşa kilid ekranında görün.",
+  "liveActivityEnableLabel": "Live Activity-ni aktiv et",
+  "liveActivityPromptNotNow": "İndi yox",
+  "liveActivityUnsupported": "Bu cihazda Live Activities əlçatan deyil.",
+  "liveActivityPermissionNeeded": "Kilid ekranında namaz yeniləmələri üçün bildirişlərə icazə verin.",
+  "liveActivityPermissionButton": "Bildirişlərə icazə ver",
+  "liveActivityStatusActive": "Live Activity açıqdır",
+  "liveActivityStatusOff": "Live Activity bağlıdır",
+  "liveActivityNowLabel": "İndi",
+  "liveActivityUpdatedAt": "{time} yeniləndi",
+  "liveActivityNextAt": "{prayer} {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Namaz siqnalları",
   "settingsPrayerAlarmsSubtitle": "Səssiz rejimi keçə bilən tam namaz siqnalları",
   "prayerAlarmsMasterLabel": "Namaz siqnallarını aktiv et",
@@ -984,5 +1024,117 @@
   "appLockDemoChildCompletionTitle": "Rahatlıq",
   "settingsAppDemoPrayerCardSubtitle": "Namaz vaxtı diqqəti yayındıranları dayandırın ki, huşu ilə namaz qılasınız.",
   "settingsAppDemoSleepCardSubtitle": "Gecələrinizi qoruyun ki, daha rahat yatın — və Fəcr daha yüngül olsun.",
-  "settingsAppDemoChildCardSubtitle": "Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır."
+  "settingsAppDemoChildCardSubtitle": "Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır.",
+  "widgetPrayerProgressTitle": "Namaz irəliləyişiniz",
+  "widgetPrayerProgressCount": "{completed} / {total}",
+  "widgetPrayersCompletedSubtitle": "namaz tamamlandı.",
+  "widgetPrayersLeftToday": "Davam edin — bu gün {count} namaz qalıb",
+  "widgetAllPrayersDoneToday": "Əlhəmdulillah — bu gün bütün namazlar tamamlandı",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppDemoHomeFeaturesTitle": "Bir baxışda bağlı qalın",
+  "settingsAppDemoHomeFeaturesSubtitle": "See how Home Screen widgets and Live Activity keep prayer times close — without opening the app.",
+  "settingsAppDemoWidgetsCardSubtitle": "Daily verse and prayer times on your Home Screen, always up to date.",
+  "settingsAppDemoLiveActivityCardSubtitle": "Current and next prayer on your Lock Screen and Dynamic Island.",
+  "featureDemoContinue": "Davam et",
+  "featureDemoSampleStatusTime": "9:41",
+  "featureDemoOfferWidgetManualBody": "Cihazınız tətbiqlərə vidjetləri avtomatik yerləşdirməyə icazə vermir. Ana Ekran vidjet qalereyasından böyük DeenFocus vidjetini əlavə edin.",
+  "featureDemoOfferWidgetManualTitle": "Vidjeti Ana Ekrandan əlavə edin",
+  "featureDemoOfferNo": "Xeyr",
+  "featureDemoOfferYes": "Bəli",
+  "featureDemoOfferLiveActivityTitle": "Cihazınızda Live Activity-ni aktivləşdirmək istəyirsiniz?",
+  "featureDemoOfferWidgetsTitle": "Bu vidjeti Ana Ekrana əlavə etmək istəyirsiniz?",
+  "featureDemoWidgetsTitle": "Vidjetlər",
+  "featureDemoWidgetsIntroTitle": "See your Home Screen widgets",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "Glanceable prayer guidance",
+  "featureDemoWidgetsDetailsBody": "Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.",
+  "featureDemoWidgetsCompletionTitle": "Widgets, ready",
+  "featureDemoWidgetsCompletionSubtitle": "Faith reminders on your Home Screen.",
+  "featureDemoWidgetsCompletionBody": "Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.",
+  "featureDemoWidgetsHomeHint": "Wednesday, 13 August",
+  "featureDemoWidgetSampleDate": "Wed, Aug 13",
+  "featureDemoWidgetSampleVerse": "It is You we worship and You we ask for help.",
+  "featureDemoWidgetSampleSource": "Surah 1:5",
+  "featureDemoLiveActivityTitle": "Canlı Fəaliyyət",
+  "featureDemoLiveActivityIntroTitle": "See Live Activity in action",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "Prayer updates, always visible",
+  "featureDemoLiveActivityDetailsBody": "Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.",
+  "featureDemoLiveActivityCompletionTitle": "Live Activity, ready",
+  "featureDemoLiveActivityCompletionSubtitle": "Next prayer, always nearby.",
+  "featureDemoLiveActivityCompletionBody": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.",
+  "featureDemoLiveActivityLockHint": "Wednesday, 13 August",
+  "featureDemoLiveActivitySampleTime": "6:48 PM",
+  "featureDemoLiveActivitySampleNextTime": "8:11 PM",
+  "featureDemoWidgetsIntroSubtitleIos": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsIntroSubtitleAndroid": "Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.",
+  "featureDemoWidgetsLongPressCalloutIos": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsLongPressCalloutAndroid": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsAddCallout": "Tap + to choose a DeenFocus widget",
+  "featureDemoWidgetsAddSlotLabel": "Add Widget",
+  "featureDemoWidgetsGalleryTitle": "Choose a DeenFocus widget",
+  "featureDemoWidgetsGallerySubtitle": "Switch between Small, Medium, and Large — then add it to your Home Screen.",
+  "featureDemoWidgetsAddCta": "Add Widget",
+  "featureDemoWidgetsAddCtaAndroid": "Add widget",
+  "featureDemoWidgetsChangeCta": "Change size",
+  "featureDemoWidgetSizeSmall": "Small",
+  "featureDemoWidgetSizeMedium": "Medium",
+  "featureDemoWidgetSizeLarge": "Large",
+  "featureDemoWidgetSizeSmallSubtitle": "Compact prayer times at a glance",
+  "featureDemoWidgetSizeMediumSubtitle": "Daily verse plus all five prayers",
+  "featureDemoWidgetSizeLargeSubtitle": "Prayer progress with today’s schedule",
+  "featureDemoLiveActivityIntroSubtitleIos": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.",
+  "featureDemoLiveOpenPrayerCalcCallout": "Tap Prayer Calculation",
+  "featureDemoLiveEnableToggleCallout": "Turn on Enable Live Activity",
+  "featureDemoLiveLockScreenCallout": "Your prayer Live Activity on the Lock Screen",
+  "featureDemoLiveCompactTitle": "Compact Dynamic Island",
+  "featureDemoLiveCompactCallout": "Current prayer stays visible at the top",
+  "featureDemoLiveExpandCta": "Expand Dynamic Island",
+  "featureDemoLiveExpandedTitle": "Expanded Dynamic Island",
+  "featureDemoLiveExpandedCallout": "See current time and the next prayer together",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "Live prayer notification",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "Open notification shade",
+  "featureDemoAndroidShadeTitle": "Notification shade",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "Ongoing",
+  "appLockDemoOfferPrayerTitle": "Namaz Rejimini sınamağa hazırsınız?",
+  "appLockDemoOfferSleepTitle": "Yuxu Rejimini sınamağa hazırsınız?",
+  "appLockDemoOfferChildTitle": "Uşaq Rejimini sınamağa hazırsınız?",
+  "appLockDemoOfferPrayerCta": "Namaz Rejimini aktiv et",
+  "appLockDemoOfferSleepCta": "Yuxu Rejimini aktiv et",
+  "appLockDemoOfferChildCta": "Uşaq Rejimini aktiv et",
+  "appLockDemoOfferNotNow": "İndi yox",
+  "nightlyWrapUpPrayersTitle": "Bugünkü namazları tamamlayın",
+  "nightlyWrapUpPrayersBody": "Namaz seriyanızı qorumaq üçün tamamlanmamış və ya buraxılmış namazları işarələyin.",
+  "nightlyWrapUpChecklistTitle": "Gündəlik yoxlama siyahınızı tamamlayın",
+  "nightlyWrapUpChecklistBody": "Bir neçə siyahı elementi hələ açıqdır — günü niyyətlə yekunlaşdırın.",
+  "nightlyWrapUpBothTitle": "Gününüzü yekunlaşdırın",
+  "nightlyWrapUpBothBody": "Qalan namazları işarələyin və gündəlik siyahınızı gün bitməmiş tamamlayın.",
+  "cycleModeEndedNotificationTitle": "Dövr rejimi bitdi",
+  "cycleModeEndedNotificationBody": "Dövr rejiminiz indi sönülüdür. Namaza davam edə bilərsiniz. Dövr rejimi tarixlərini dəyişmək istəyirsinizsə, redaktə etmək üçün bura toxunun."
 }

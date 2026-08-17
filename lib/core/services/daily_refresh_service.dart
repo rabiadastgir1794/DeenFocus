@@ -27,6 +27,11 @@ class DailyRefreshService {
   Future<void> refreshNow() async {
     await HomeDailyVerseHelper.getOrGenerateDailyVerseRef();
 
+    // Cycle Mode expiry is calendar-based — does not need location. Keep it
+    // outside the prayer-times gate so Android boot/resume still reconciles
+    // AlarmManager id 5100 when location is missing.
+    await AppNotificationService.instance.syncCycleModeExpiryNotification();
+
     final latitude = await StorageService.locationLatitude;
     final longitude = await StorageService.locationLongitude;
     if (latitude != null && longitude != null) {
@@ -45,6 +50,10 @@ class DailyRefreshService {
         latitude: latitude,
         longitude: longitude,
         forceReschedule: needsPrayerReschedule,
+      );
+      await AppNotificationService.instance.syncNightlyWrapUpReminder(
+        latitude: latitude,
+        longitude: longitude,
       );
     }
 

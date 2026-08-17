@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“你们当谨守拜功，尤其是中间的拜功。” — 古兰经 2:238",
   "prayerNotificationSubtitleMaghrib": "“故你们在傍晚当赞颂真主……” — 古兰经 30:17",
   "prayerNotificationSubtitleIsha": "“当谨守拜功 — 直到黑夜降临。” — 古兰经 17:78",
+  "prayerNotificationTitle": "{prayerName}时间到了",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "询问有关祈祷时间、古兰经和伊斯兰教指导的任何问题。",
   "homeDay": "天",
   "homeDays": "天",
@@ -892,6 +900,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "礼拜更新",
+  "settingsPrayerUpdatesSubtitle": "在锁定屏幕上查看下一场礼拜的实时活动",
+  "liveActivitySectionTitle": "实时活动",
+  "liveActivityStayUpdatedTitle": "一眼掌握最新动态",
+  "liveActivityStayUpdatedBody": "在锁定屏幕上直接查看下一场礼拜及其时间。",
+  "liveActivityEnableLabel": "启用实时活动",
+  "liveActivityPromptNotNow": "暂不",
+  "liveActivityUnsupported": "此设备不支持实时活动。",
+  "liveActivityPermissionNeeded": "请允许通知，以便在锁定屏幕上显示礼拜更新。",
+  "liveActivityPermissionButton": "允许通知",
+  "liveActivityStatusActive": "实时活动已开启",
+  "liveActivityStatusOff": "实时活动已关闭",
+  "liveActivityNowLabel": "现在",
+  "liveActivityUpdatedAt": "更新于 {time}",
+  "liveActivityNextAt": "{prayer} {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "礼拜闹钟",
   "settingsPrayerAlarmsSubtitle": "可突破静音模式的完整礼拜闹钟",
   "prayerAlarmsMasterLabel": "启用礼拜闹钟",
@@ -984,5 +1024,117 @@
   "appLockDemoChildCompletionTitle": "安心无用",
   "settingsAppDemoPrayerCardSubtitle": "在礼拜时暂停干扰，让你专心祈祷。",
   "settingsAppDemoSleepCardSubtitle": "守护夜晚，让休息更轻松——晨礼也更轻盈。",
-  "settingsAppDemoChildCardSubtitle": "安心交出手机：只有你允许的应用保持可用。"
+  "settingsAppDemoChildCardSubtitle": "安心交出手机：只有你允许的应用保持可用。",
+  "widgetPrayerProgressTitle": "你的礼拜进度",
+  "widgetPrayerProgressCount": "{completed}/{total}",
+  "widgetPrayersCompletedSubtitle": "已完成礼拜。",
+  "widgetPrayersLeftToday": "继续加油 — 今天还剩 {count} 次礼拜",
+  "widgetAllPrayersDoneToday": "艾哈姆杜利拉 — 今天所有礼拜已完成",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppDemoHomeFeaturesTitle": "一眼掌握动态",
+  "settingsAppDemoHomeFeaturesSubtitle": "看看主屏幕小组件和实时活动如何让礼拜时间近在咫尺——无需打开应用。",
+  "settingsAppDemoWidgetsCardSubtitle": "主屏幕上的每日经文与礼拜时间，始终最新。",
+  "settingsAppDemoLiveActivityCardSubtitle": "锁屏与灵动岛上的当前与下一场礼拜。",
+  "featureDemoContinue": "继续",
+  "featureDemoSampleStatusTime": "9:41",
+  "featureDemoOfferWidgetManualBody": "系统不允许应用自动添加小组件。请从主屏幕小组件图库中添加大型 DeenFocus 小组件。",
+  "featureDemoOfferWidgetManualTitle": "请从主屏幕添加小组件",
+  "featureDemoOfferNo": "否",
+  "featureDemoOfferYes": "是",
+  "featureDemoOfferLiveActivityTitle": "要在此设备上启用实时活动吗？",
+  "featureDemoOfferWidgetsTitle": "要将此小组件添加到主屏幕吗？",
+  "featureDemoWidgetsTitle": "小组件",
+  "featureDemoWidgetsIntroTitle": "查看主屏幕小组件",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "一目了然的礼拜指引",
+  "featureDemoWidgetsDetailsBody": "中号小组件显示今日经文与五番礼拜时间——打开 DeenFocus 后会刷新。",
+  "featureDemoWidgetsCompletionTitle": "小组件已就绪",
+  "featureDemoWidgetsCompletionSubtitle": "信仰提醒就在主屏幕上。",
+  "featureDemoWidgetsCompletionBody": "演示结束后从手机小组件库添加 DeenFocus 小组件，并打开应用一次以同步。",
+  "featureDemoWidgetsHomeHint": "8月13日星期三",
+  "featureDemoWidgetSampleDate": "周三，8月13日",
+  "featureDemoWidgetSampleVerse": "我们只崇拜你，只向你求助。",
+  "featureDemoWidgetSampleSource": "古兰经 1:5",
+  "featureDemoLiveActivityTitle": "实时活动",
+  "featureDemoLiveActivityIntroTitle": "体验实时活动",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "礼拜更新始终可见",
+  "featureDemoLiveActivityDetailsBody": "实时活动在锁屏上显示昏礼、宵礼与倒计时——可随时在设置中开启。",
+  "featureDemoLiveActivityCompletionTitle": "实时活动已就绪",
+  "featureDemoLiveActivityCompletionSubtitle": "下一场礼拜始终在身边。",
+  "featureDemoLiveActivityCompletionBody": "在设置 → 礼拜计算中启用实时活动，即可在锁屏显示礼拜更新。",
+  "featureDemoLiveActivityLockHint": "8月13日星期三",
+  "featureDemoLiveActivitySampleTime": "下午 6:48",
+  "featureDemoLiveActivitySampleNextTime": "晚上 8:11",
+  "featureDemoWidgetsIntroSubtitleIos": "留在 DeenFocus。长按主屏幕，添加小组件，并试用全部 3 种尺寸。",
+  "featureDemoWidgetsIntroSubtitleAndroid": "留在 DeenFocus。长按主屏幕，打开小组件选择器，试用全部 3 种尺寸。",
+  "featureDemoWidgetsLongPressCalloutIos": "长按主屏幕以编辑小组件",
+  "featureDemoWidgetsLongPressCalloutAndroid": "长按主屏幕以编辑小组件",
+  "featureDemoWidgetsAddCallout": "点击 + 选择 DeenFocus 小组件",
+  "featureDemoWidgetsAddSlotLabel": "添加小组件",
+  "featureDemoWidgetsGalleryTitle": "选择 DeenFocus 小组件",
+  "featureDemoWidgetsGallerySubtitle": "Switch between Small, Medium, and Large — then add it to your Home Screen.",
+  "featureDemoWidgetsAddCta": "Add Widget",
+  "featureDemoWidgetsAddCtaAndroid": "Add widget",
+  "featureDemoWidgetsChangeCta": "更换尺寸",
+  "featureDemoWidgetSizeSmall": "小号",
+  "featureDemoWidgetSizeMedium": "中号",
+  "featureDemoWidgetSizeLarge": "大号",
+  "featureDemoWidgetSizeSmallSubtitle": "Compact prayer times at a glance",
+  "featureDemoWidgetSizeMediumSubtitle": "Daily verse plus all five prayers",
+  "featureDemoWidgetSizeLargeSubtitle": "Prayer progress with today’s schedule",
+  "featureDemoLiveActivityIntroSubtitleIos": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.",
+  "featureDemoLiveOpenPrayerCalcCallout": "点击礼拜计算",
+  "featureDemoLiveEnableToggleCallout": "打开“启用实时活动”",
+  "featureDemoLiveLockScreenCallout": "Your prayer Live Activity on the Lock Screen",
+  "featureDemoLiveCompactTitle": "紧凑灵动岛",
+  "featureDemoLiveCompactCallout": "Current prayer stays visible at the top",
+  "featureDemoLiveExpandCta": "展开灵动岛",
+  "featureDemoLiveExpandedTitle": "展开的灵动岛",
+  "featureDemoLiveExpandedCallout": "See current time and the next prayer together",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "实时礼拜通知",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "打开通知栏",
+  "featureDemoAndroidShadeTitle": "通知栏",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "进行中",
+  "appLockDemoOfferPrayerTitle": "准备试试礼拜模式吗？",
+  "appLockDemoOfferSleepTitle": "准备试试睡眠模式吗？",
+  "appLockDemoOfferChildTitle": "准备试试儿童模式吗？",
+  "appLockDemoOfferPrayerCta": "启用礼拜模式",
+  "appLockDemoOfferSleepCta": "启用睡眠模式",
+  "appLockDemoOfferChildCta": "启用儿童模式",
+  "appLockDemoOfferNotNow": "暂时不要",
+  "nightlyWrapUpPrayersTitle": "完成今天的礼拜",
+  "nightlyWrapUpPrayersBody": "标记未完成或错过的礼拜，以保护你的礼拜连续记录。",
+  "nightlyWrapUpChecklistTitle": "完成今日清单",
+  "nightlyWrapUpChecklistBody": "还有几项未完成——有意识地结束今天。",
+  "nightlyWrapUpBothTitle": "结束你的一天",
+  "nightlyWrapUpBothBody": "标记剩余礼拜，并在今天结束前完成每日清单。",
+  "cycleModeEndedNotificationTitle": "周期模式已结束",
+  "cycleModeEndedNotificationBody": "您的周期模式现已关闭。您可以继续礼拜。若要更改周期模式日期，请点按此处进行编辑。"
 }

@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“Waak strikt over de gebeden, vooral het middelste gebed.” — Koran 2:238",
   "prayerNotificationSubtitleMaghrib": "“Verheerlijk Allah dus wanneer jullie de avond bereiken...” — Koran 30:17",
   "prayerNotificationSubtitleIsha": "“Verricht het gebed -  tot de duisternis van de nacht.” — Koran 17:78",
+  "prayerNotificationTitle": "Het is tijd voor {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Vraag alles over gebedstijden, de Koran en islamitische richtlijnen.",
   "homeDay": "Dag",
   "homeDays": "Dagen",
@@ -892,6 +900,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "Gebedsupdates",
+  "settingsPrayerUpdatesSubtitle": "Live Activity voor je volgende gebed op het vergrendelscherm",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "In één oogopslag bijgewerkt",
+  "liveActivityStayUpdatedBody": "Bekijk je volgende gebed en tijd direct op het vergrendelscherm.",
+  "liveActivityEnableLabel": "Live Activity inschakelen",
+  "liveActivityPromptNotNow": "Niet nu",
+  "liveActivityUnsupported": "Live Activities zijn niet beschikbaar op dit apparaat.",
+  "liveActivityPermissionNeeded": "Sta meldingen toe zodat gebedsupdates op het vergrendelscherm verschijnen.",
+  "liveActivityPermissionButton": "Meldingen toestaan",
+  "liveActivityStatusActive": "Live Activity is aan",
+  "liveActivityStatusOff": "Live Activity is uit",
+  "liveActivityNowLabel": "Nu",
+  "liveActivityUpdatedAt": "Bijgewerkt om {time}",
+  "liveActivityNextAt": "{prayer} om {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Gebedsalarmen",
   "settingsPrayerAlarmsSubtitle": "Volledige gebedsalarmen die stille modus kunnen doorbreken",
   "prayerAlarmsMasterLabel": "Gebedsalarmen inschakelen",
@@ -984,5 +1024,117 @@
   "appLockDemoChildCompletionTitle": "Gemoedsrust",
   "settingsAppDemoPrayerCardSubtitle": "Pauzeer afleidingen tijdens Salah zodat je met aanwezigheid kunt bidden.",
   "settingsAppDemoSleepCardSubtitle": "Bescherm je nachten zodat rust makkelijker komt — en Fajr lichter voelt.",
-  "settingsAppDemoChildCardSubtitle": "Geef je telefoon met vertrouwen door — alleen toegestane apps blijven open."
+  "settingsAppDemoChildCardSubtitle": "Geef je telefoon met vertrouwen door — alleen toegestane apps blijven open.",
+  "widgetPrayerProgressTitle": "Jouw gebedsvoortgang",
+  "widgetPrayerProgressCount": "{completed} van {total}",
+  "widgetPrayersCompletedSubtitle": "gebeden voltooid.",
+  "widgetPrayersLeftToday": "Ga zo door — vandaag nog {count} gebeden",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — alle gebeden vandaag voltooid",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppDemoHomeFeaturesTitle": "In één oogopslag verbonden",
+  "settingsAppDemoHomeFeaturesSubtitle": "Zie hoe widgets en Live Activity gebedstijden dichtbij houden — zonder de app te openen.",
+  "settingsAppDemoWidgetsCardSubtitle": "Dagvers en gebedstijden op je beginscherm, altijd bijgewerkt.",
+  "settingsAppDemoLiveActivityCardSubtitle": "Huidig en volgend gebed op het vergrendelscherm en Dynamic Island.",
+  "featureDemoContinue": "Doorgaan",
+  "featureDemoSampleStatusTime": "9:41",
+  "featureDemoOfferWidgetManualBody": "Je apparaat staat apps niet toe om widgets automatisch te plaatsen. Voeg de grote DeenFocus-widget toe via de widgetgalerij van je startscherm.",
+  "featureDemoOfferWidgetManualTitle": "Voeg de widget toe via je startscherm",
+  "featureDemoOfferNo": "Nee",
+  "featureDemoOfferYes": "Ja",
+  "featureDemoOfferLiveActivityTitle": "Wil je Live Activity op je apparaat inschakelen?",
+  "featureDemoOfferWidgetsTitle": "Wil je deze widget aan je startscherm toevoegen?",
+  "featureDemoWidgetsTitle": "Widgets",
+  "featureDemoWidgetsIntroTitle": "Bekijk je beginscherm-widgets",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "Glanceable prayer guidance",
+  "featureDemoWidgetsDetailsBody": "Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.",
+  "featureDemoWidgetsCompletionTitle": "Widgets, ready",
+  "featureDemoWidgetsCompletionSubtitle": "Faith reminders on your Home Screen.",
+  "featureDemoWidgetsCompletionBody": "Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.",
+  "featureDemoWidgetsHomeHint": "Wednesday, 13 August",
+  "featureDemoWidgetSampleDate": "Wed, Aug 13",
+  "featureDemoWidgetSampleVerse": "It is You we worship and You we ask for help.",
+  "featureDemoWidgetSampleSource": "Surah 1:5",
+  "featureDemoLiveActivityTitle": "Live Activity",
+  "featureDemoLiveActivityIntroTitle": "Bekijk Live Activity",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "Prayer updates, always visible",
+  "featureDemoLiveActivityDetailsBody": "Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.",
+  "featureDemoLiveActivityCompletionTitle": "Live Activity, ready",
+  "featureDemoLiveActivityCompletionSubtitle": "Next prayer, always nearby.",
+  "featureDemoLiveActivityCompletionBody": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.",
+  "featureDemoLiveActivityLockHint": "Wednesday, 13 August",
+  "featureDemoLiveActivitySampleTime": "6:48 PM",
+  "featureDemoLiveActivitySampleNextTime": "8:11 PM",
+  "featureDemoWidgetsIntroSubtitleIos": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsIntroSubtitleAndroid": "Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.",
+  "featureDemoWidgetsLongPressCalloutIos": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsLongPressCalloutAndroid": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsAddCallout": "Tap + to choose a DeenFocus widget",
+  "featureDemoWidgetsAddSlotLabel": "Add Widget",
+  "featureDemoWidgetsGalleryTitle": "Choose a DeenFocus widget",
+  "featureDemoWidgetsGallerySubtitle": "Switch between Small, Medium, and Large — then add it to your Home Screen.",
+  "featureDemoWidgetsAddCta": "Add Widget",
+  "featureDemoWidgetsAddCtaAndroid": "Add widget",
+  "featureDemoWidgetsChangeCta": "Change size",
+  "featureDemoWidgetSizeSmall": "Small",
+  "featureDemoWidgetSizeMedium": "Medium",
+  "featureDemoWidgetSizeLarge": "Large",
+  "featureDemoWidgetSizeSmallSubtitle": "Compact prayer times at a glance",
+  "featureDemoWidgetSizeMediumSubtitle": "Daily verse plus all five prayers",
+  "featureDemoWidgetSizeLargeSubtitle": "Prayer progress with today’s schedule",
+  "featureDemoLiveActivityIntroSubtitleIos": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.",
+  "featureDemoLiveOpenPrayerCalcCallout": "Tap Prayer Calculation",
+  "featureDemoLiveEnableToggleCallout": "Turn on Enable Live Activity",
+  "featureDemoLiveLockScreenCallout": "Your prayer Live Activity on the Lock Screen",
+  "featureDemoLiveCompactTitle": "Compact Dynamic Island",
+  "featureDemoLiveCompactCallout": "Current prayer stays visible at the top",
+  "featureDemoLiveExpandCta": "Expand Dynamic Island",
+  "featureDemoLiveExpandedTitle": "Expanded Dynamic Island",
+  "featureDemoLiveExpandedCallout": "See current time and the next prayer together",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "Live prayer notification",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "Open notification shade",
+  "featureDemoAndroidShadeTitle": "Notification shade",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "Ongoing",
+  "appLockDemoOfferPrayerTitle": "Klaar om Gebedsmodus te proberen?",
+  "appLockDemoOfferSleepTitle": "Klaar om Slaapmodus te proberen?",
+  "appLockDemoOfferChildTitle": "Klaar om Kindmodus te proberen?",
+  "appLockDemoOfferPrayerCta": "Gebedsmodus inschakelen",
+  "appLockDemoOfferSleepCta": "Slaapmodus inschakelen",
+  "appLockDemoOfferChildCta": "Kindmodus inschakelen",
+  "appLockDemoOfferNotNow": "Niet nu",
+  "nightlyWrapUpPrayersTitle": "Rond de gebeden van vandaag af",
+  "nightlyWrapUpPrayersBody": "Markeer onvoltooide of gemiste gebeden om je gebedsreeks te beschermen.",
+  "nightlyWrapUpChecklistTitle": "Voltooi je dagelijkse checklist",
+  "nightlyWrapUpChecklistBody": "Er staan nog items open — rond je dag met intentie af.",
+  "nightlyWrapUpBothTitle": "Rond je dag af",
+  "nightlyWrapUpBothBody": "Markeer openstaande gebeden en voltooi je checklist voor het einde van de dag.",
+  "cycleModeEndedNotificationTitle": "Cyclusmodus is beëindigd",
+  "cycleModeEndedNotificationBody": "Je cyclusmodus staat nu uit. Je kunt weer bidden. Als je de data van de cyclusmodus wilt wijzigen, tik hier om ze te bewerken."
 }

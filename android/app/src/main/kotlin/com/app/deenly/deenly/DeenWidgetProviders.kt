@@ -43,6 +43,14 @@ data class WidgetVerse(
     val source: String,
 )
 
+data class WidgetProgress(
+    val completedCount: Int,
+    val totalCount: Int,
+    val flags: List<Boolean>,
+    val countLabel: String,
+    val statusMessage: String,
+)
+
 data class WidgetEntry(
     val timestamp: String,
     val dayKey: String,
@@ -50,6 +58,7 @@ data class WidgetEntry(
     val timeLabel: String,
     val isDarkMode: Boolean,
     val verse: WidgetVerse?,
+    val progress: WidgetProgress?,
     val prayers: List<WidgetPrayer>,
 )
 
@@ -58,6 +67,9 @@ data class WidgetUi(
     val dailyVerseTitle: String,
     val timelinePlaceholder: String,
     val setLocationMessage: String,
+    val prayerProgressTitle: String,
+    val prayersCompletedSubtitle: String,
+    val defaultProgressCountLabel: String,
 )
 
 data class WidgetTimelineBundle(
@@ -100,6 +112,32 @@ internal object DeenWidgetStore {
             setLocationMessage = ui.optString("setLocationMessage", "").ifEmpty {
                 context.getString(R.string.widget_set_location)
             },
+            prayerProgressTitle = ui.optString("prayerProgressTitle", "").ifEmpty {
+                context.getString(R.string.widget_prayer_progress_title)
+            },
+            prayersCompletedSubtitle = ui.optString("prayersCompletedSubtitle", "").ifEmpty {
+                context.getString(R.string.widget_prayers_completed_subtitle)
+            },
+            defaultProgressCountLabel = ui.optString("defaultProgressCountLabel", "").ifEmpty {
+                "0 of 5"
+            },
+        )
+    }
+
+    private fun parseProgress(row: JSONObject): WidgetProgress? {
+        val progress = row.optJSONObject("progress") ?: return null
+        val flagsJson = progress.optJSONArray("flags") ?: JSONArray()
+        val flags = buildList {
+            for (i in 0 until flagsJson.length()) {
+                add(flagsJson.optBoolean(i, false))
+            }
+        }
+        return WidgetProgress(
+            completedCount = progress.optInt("completedCount", 0),
+            totalCount = progress.optInt("totalCount", 5),
+            flags = flags,
+            countLabel = progress.optString("countLabel"),
+            statusMessage = progress.optString("statusMessage"),
         )
     }
 
@@ -122,6 +160,7 @@ internal object DeenWidgetStore {
                                 source = it.optString("source"),
                             )
                         },
+                        progress = parseProgress(row),
                         prayers = buildList {
                             val prayerRows = row.optJSONArray("prayers") ?: JSONArray()
                             for (prayerIndex in 0 until prayerRows.length()) {
@@ -187,8 +226,25 @@ internal object DeenWidgetUpdater {
     ) {
         val bundle = DeenWidgetStore.loadTimelineBundle(context)
         for (appWidgetId in appWidgetIds) {
-            val views = buildViews(context, size, bundle.entry, bundle.ui)
-            manager.updateAppWidget(appWidgetId, views)
+            try {
+                val views = buildViews(context, size, bundle.entry, bundle.ui)
+                manager.updateAppWidget(appWidgetId, views)
+            } catch (_: Exception) {
+                // Never leave a dead/black widget tile if one layout bind fails.
+                val fallback = RemoteViews(context.packageName, R.layout.widget_small)
+                fallback.setTextViewText(
+                    R.id.appName,
+                    bundle.ui?.brandName ?: context.getString(R.string.app_name),
+                )
+                fallback.setTextViewText(
+                    R.id.currentDate,
+                    bundle.entry?.dateLabel
+                        ?: bundle.ui?.timelinePlaceholder
+                        ?: context.getString(R.string.widget_empty_verse),
+                )
+                fallback.setOnClickPendingIntent(R.id.root, launchPendingIntent(context))
+                manager.updateAppWidget(appWidgetId, fallback)
+            }
         }
     }
 
@@ -409,51 +465,16 @@ internal object DeenWidgetUpdater {
                     R.id.grid5Highlight,
                 ),
             )
-            WidgetSize.MEDIUM -> bindPrayerGrid(
-                views = views,
-                prayers = entry.prayers.take(6),
-                highlightPrayerId = findCurrentPrayerId(entry.prayers),
-                topIds = intArrayOf(
-                    R.id.grid1Top,
-                    R.id.grid2Top,
-                    R.id.grid3Top,
-                    R.id.grid4Top,
-                    R.id.grid5Top,
-                    R.id.grid6Top,
-                ),
-                bottomIds = intArrayOf(
-                    R.id.grid1Bottom,
-                    R.id.grid2Bottom,
-                    R.id.grid3Bottom,
-                    R.id.grid4Bottom,
-                    R.id.grid5Bottom,
-                    R.id.grid6Bottom,
-                ),
-                iconIds = intArrayOf(
-                    R.id.grid1Icon,
-                    R.id.grid2Icon,
-                    R.id.grid3Icon,
-                    R.id.grid4Icon,
-                    R.id.grid5Icon,
-                    R.id.grid6Icon,
-                ),
-                highlightIds = intArrayOf(
-                    R.id.grid1Highlight,
-                    R.id.grid2Highlight,
-                    R.id.grid3Highlight,
-                    R.id.grid4Highlight,
-                    R.id.grid5Highlight,
-                    R.id.grid6Highlight,
-                ),
-            )
-            WidgetSize.LARGE -> {
+            WidgetSize.MEDIUM -> {
                 views.setTextViewText(
                     R.id.heading,
                     ui?.dailyVerseTitle ?: context.getString(R.string.daily_verse),
                 )
                 views.setTextViewText(
                     R.id.dailyVerse,
-                    entry.verse?.text ?: ui?.timelinePlaceholder ?: context.getString(R.string.widget_empty_verse),
+                    entry.verse?.text
+                        ?: ui?.timelinePlaceholder
+                        ?: context.getString(R.string.widget_empty_verse),
                 )
                 views.setTextViewText(R.id.dailyVerseSource, entry.verse?.source ?: "")
                 bindPrayerGrid(
@@ -490,10 +511,111 @@ internal object DeenWidgetUpdater {
                         R.id.grid4Highlight,
                         R.id.grid5Highlight,
                     ),
+                    labelColor = 0xFFFFFFFF.toInt(),
+                )
+            }
+            WidgetSize.LARGE -> {
+                bindProgressSection(views, entry, ui, context)
+                bindPrayerGrid(
+                    views = views,
+                    prayers = entry.prayers.filterNot { it.id == "sunrise" }.take(5),
+                    highlightPrayerId = findCurrentPrayerId(
+                        entry.prayers.filterNot { it.id == "sunrise" },
+                    ),
+                    topIds = intArrayOf(
+                        R.id.grid1Top,
+                        R.id.grid2Top,
+                        R.id.grid3Top,
+                        R.id.grid4Top,
+                        R.id.grid5Top,
+                    ),
+                    bottomIds = intArrayOf(
+                        R.id.grid1Bottom,
+                        R.id.grid2Bottom,
+                        R.id.grid3Bottom,
+                        R.id.grid4Bottom,
+                        R.id.grid5Bottom,
+                    ),
+                    iconIds = intArrayOf(
+                        R.id.grid1Icon,
+                        R.id.grid2Icon,
+                        R.id.grid3Icon,
+                        R.id.grid4Icon,
+                        R.id.grid5Icon,
+                    ),
+                    highlightIds = intArrayOf(
+                        R.id.grid1Highlight,
+                        R.id.grid2Highlight,
+                        R.id.grid3Highlight,
+                        R.id.grid4Highlight,
+                        R.id.grid5Highlight,
+                    ),
+                    labelColor = 0xFFFFFFFF.toInt(),
                 )
             }
         }
         return views
+    }
+
+    private fun bindProgressSection(
+        views: RemoteViews,
+        entry: WidgetEntry,
+        ui: WidgetUi?,
+        context: Context,
+    ) {
+        val progress = entry.progress
+        views.setTextViewText(
+            R.id.progressTitle,
+            ui?.prayerProgressTitle
+                ?: context.getString(R.string.widget_prayer_progress_title),
+        )
+        views.setTextViewText(
+            R.id.progressCount,
+            progress?.countLabel
+                ?: "${progress?.completedCount ?: 0} of ${progress?.totalCount ?: 5}",
+        )
+        views.setTextViewText(
+            R.id.progressSubtitle,
+            ui?.prayersCompletedSubtitle
+                ?: context.getString(R.string.widget_prayers_completed_subtitle),
+        )
+        views.setTextViewText(
+            R.id.progressStatus,
+            progress?.statusMessage?.takeIf { it.isNotBlank() }
+                ?: ui?.prayersCompletedSubtitle
+                ?: "",
+        )
+
+        val bgIds = intArrayOf(
+            R.id.progressDot1Bg,
+            R.id.progressDot2Bg,
+            R.id.progressDot3Bg,
+            R.id.progressDot4Bg,
+            R.id.progressDot5Bg,
+        )
+        val checkIds = intArrayOf(
+            R.id.progressDot1Check,
+            R.id.progressDot2Check,
+            R.id.progressDot3Check,
+            R.id.progressDot4Check,
+            R.id.progressDot5Check,
+        )
+        for (index in bgIds.indices) {
+            val done = progress?.flags?.getOrNull(index) == true
+            views.setImageViewResource(
+                bgIds[index],
+                if (done) R.drawable.widget_progress_check_filled_on_green
+                else R.drawable.widget_progress_check_empty_on_green,
+            )
+            views.setImageViewResource(
+                checkIds[index],
+                R.drawable.widget_progress_check_mark_on_green,
+            )
+            views.setViewVisibility(
+                checkIds[index],
+                if (done) android.view.View.VISIBLE else android.view.View.GONE,
+            )
+        }
     }
 
     private fun bindPrayerGrid(
@@ -504,11 +626,14 @@ internal object DeenWidgetUpdater {
         bottomIds: IntArray,
         iconIds: IntArray,
         highlightIds: IntArray,
+        labelColor: Int = 0xFFFFFFFF.toInt(),
     ) {
         for (index in topIds.indices) {
             val prayer = prayers.getOrNull(index)
             views.setTextViewText(topIds[index], prayer?.label ?: "--")
             views.setTextViewText(bottomIds[index], prayer?.timeLabel ?: "--")
+            views.setTextColor(topIds[index], labelColor)
+            views.setTextColor(bottomIds[index], labelColor)
             views.setImageViewResource(iconIds[index], iconForPrayer(prayer?.id))
             views.setViewVisibility(
                 highlightIds[index],
@@ -520,7 +645,7 @@ internal object DeenWidgetUpdater {
 
     private fun bindEmptyState(context: Context, views: RemoteViews, size: WidgetSize, ui: WidgetUi?) {
         when (size) {
-            WidgetSize.LARGE -> {
+            WidgetSize.MEDIUM -> {
                 views.setTextViewText(
                     R.id.heading,
                     ui?.dailyVerseTitle ?: context.getString(R.string.daily_verse),
@@ -531,9 +656,27 @@ internal object DeenWidgetUpdater {
                 )
                 views.setTextViewText(R.id.dailyVerseSource, "")
             }
-            WidgetSize.SMALL,
-            WidgetSize.MEDIUM,
-            -> Unit
+            WidgetSize.LARGE -> {
+                views.setTextViewText(
+                    R.id.progressTitle,
+                    ui?.prayerProgressTitle
+                        ?: context.getString(R.string.widget_prayer_progress_title),
+                )
+                views.setTextViewText(
+                    R.id.progressCount,
+                    ui?.defaultProgressCountLabel ?: "0 of 5",
+                )
+                views.setTextViewText(
+                    R.id.progressSubtitle,
+                    ui?.prayersCompletedSubtitle
+                        ?: context.getString(R.string.widget_prayers_completed_subtitle),
+                )
+                views.setTextViewText(
+                    R.id.progressStatus,
+                    ui?.setLocationMessage ?: context.getString(R.string.widget_set_location),
+                )
+            }
+            WidgetSize.SMALL -> Unit
         }
     }
 

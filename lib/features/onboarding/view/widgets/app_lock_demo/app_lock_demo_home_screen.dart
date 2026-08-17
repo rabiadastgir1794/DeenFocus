@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../demo_guide/demo_guide_arrow.dart';
 
 /// Full-screen simulated device home screen (iOS or Android style).
 /// Only the Instagram icon is interactive.
@@ -265,18 +266,13 @@ class _AppLockDemoHomeScreenState extends State<AppLockDemoHomeScreen>
                 ),
               // Guide arrow
               if (_targetRect != null)
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      painter: _GuideArrowPainter(
-                        targetCenter: Offset(
-                          _targetRect!.center.dx,
-                          _targetRect!.top + iconSize / 2,
-                        ),
-                        color: colorScheme.primary,
-                      ),
-                    ),
+                DemoGuideArrowOverlay(
+                  targetCenter: Offset(
+                    _targetRect!.center.dx,
+                    _targetRect!.top + iconSize / 2,
                   ),
+                  color: colorScheme.primary,
+                  pulse: _pulse,
                 ),
               // Instruction
               Positioned(
@@ -677,56 +673,6 @@ class _SpotlightPainter extends CustomPainter {
       oldDelegate.hole != hole ||
       oldDelegate.dimColor != dimColor ||
       oldDelegate.cornerRadius != cornerRadius;
-}
-
-class _GuideArrowPainter extends CustomPainter {
-  _GuideArrowPainter({required this.targetCenter, required this.color});
-
-  final Offset targetCenter;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final start = Offset(size.width * 0.5, targetCenter.dy - 72);
-    final end = Offset(targetCenter.dx, targetCenter.dy - iconClearance);
-
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.2
-      ..strokeCap = StrokeCap.round;
-
-    final control = Offset(
-      (start.dx + end.dx) / 2 + 36,
-      start.dy + 10,
-    );
-
-    final path = Path()
-      ..moveTo(start.dx, start.dy)
-      ..quadraticBezierTo(control.dx, control.dy, end.dx, end.dy);
-    canvas.drawPath(path, paint);
-
-    final angle = math.atan2(end.dy - control.dy, end.dx - control.dx);
-    const head = 11.0;
-    final headPath = Path()
-      ..moveTo(end.dx, end.dy)
-      ..lineTo(
-        end.dx - head * math.cos(angle - 0.5),
-        end.dy - head * math.sin(angle - 0.5),
-      )
-      ..moveTo(end.dx, end.dy)
-      ..lineTo(
-        end.dx - head * math.cos(angle + 0.5),
-        end.dy - head * math.sin(angle + 0.5),
-      );
-    canvas.drawPath(headPath, paint);
-  }
-
-  static const iconClearance = 34.0;
-
-  @override
-  bool shouldRepaint(covariant _GuideArrowPainter oldDelegate) =>
-      oldDelegate.targetCenter != targetCenter || oldDelegate.color != color;
 }
 
 class _DemoApp {

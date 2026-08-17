@@ -54,6 +54,9 @@ private struct WidgetUiStrings: Decodable {
   let dailyVerseTitle: String?
   let timelinePlaceholder: String?
   let setLocationMessage: String?
+  let prayerProgressTitle: String?
+  let prayersCompletedSubtitle: String?
+  let defaultProgressCountLabel: String?
 }
 
 private struct WidgetPayloadEntry: Decodable {
@@ -63,12 +66,58 @@ private struct WidgetPayloadEntry: Decodable {
   let timeLabel: String
   let isDarkMode: Bool
   let verse: WidgetVerse?
+  let progress: WidgetProgress?
   let prayers: [WidgetPrayer]
+
+  private enum CodingKeys: String, CodingKey {
+    case timestamp, dayKey, dateLabel, timeLabel, isDarkMode, verse, progress, prayers
+  }
+
+  init(
+    timestamp: String,
+    dayKey: String,
+    dateLabel: String,
+    timeLabel: String,
+    isDarkMode: Bool,
+    verse: WidgetVerse?,
+    progress: WidgetProgress?,
+    prayers: [WidgetPrayer]
+  ) {
+    self.timestamp = timestamp
+    self.dayKey = dayKey
+    self.dateLabel = dateLabel
+    self.timeLabel = timeLabel
+    self.isDarkMode = isDarkMode
+    self.verse = verse
+    self.progress = progress
+    self.prayers = prayers
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    timestamp = try container.decode(String.self, forKey: .timestamp)
+    dayKey = try container.decode(String.self, forKey: .dayKey)
+    dateLabel = try container.decode(String.self, forKey: .dateLabel)
+    timeLabel = try container.decode(String.self, forKey: .timeLabel)
+    isDarkMode = try container.decodeIfPresent(Bool.self, forKey: .isDarkMode) ?? false
+    verse = try container.decodeIfPresent(WidgetVerse.self, forKey: .verse)
+    // Soft-decode progress so a single bad field cannot blank all widgets.
+    progress = try? container.decode(WidgetProgress.self, forKey: .progress)
+    prayers = try container.decodeIfPresent([WidgetPrayer].self, forKey: .prayers) ?? []
+  }
 }
 
 private struct WidgetVerse: Decodable {
   let text: String
   let source: String
+}
+
+private struct WidgetProgress: Decodable {
+  let completedCount: Int
+  let totalCount: Int
+  let flags: [Bool]
+  let countLabel: String
+  let statusMessage: String
 }
 
 private struct WidgetPrayer: Decodable {
@@ -94,6 +143,13 @@ private struct DeenlyWidgetEntry: TimelineEntry {
       verse: WidgetVerse(
         text: "Indeed, with hardship comes ease.",
         source: "Ash-Sharh 94:6"
+      ),
+      progress: WidgetProgress(
+        completedCount: 3,
+        totalCount: 5,
+        flags: [true, true, true, false, false],
+        countLabel: "3 of 5",
+        statusMessage: "Keep going — 2 prayers left today"
       ),
       prayers: [
         WidgetPrayer(id: "fajr", label: "Fajr", timeLabel: "5:12 AM", isoTime: "2026-03-28T05:12:00"),
@@ -175,7 +231,9 @@ private struct DeenlyWidgetView: View {
   let entry: DeenlyWidgetEntry
   private let fontScale: CGFloat = 1.25
   private var palette: WidgetPalette {
-    entry.payload.isDarkMode ? .dark : .light
+    // Keep the DeenFocus green surface for every size in light and dark mode.
+    // The previous dark gradient rendered nearly black on the home screen.
+    .light
   }
 
   private var prayersForHighlightNoSunrise: [WidgetPrayer] {
@@ -219,46 +277,130 @@ private struct DeenlyWidgetView: View {
   }
 
   private func mediumBody(now: Date) -> some View {
-    VStack(alignment: .leading, spacing: 4) {
-      header(fontSize: 14 * fontScale, dateSize: 10 * fontScale)
-      Divider().overlay(Color.white.opacity(0.16))
-      prayerRows(
-        prayers: visiblePrayers(limit: 6),
-        columns: 3,
-        showVerse: false,
-        now: now,
-        highlightSource: entry.payload.prayers
+    VStack(alignment: .leading, spacing: 6) {
+      HStack(alignment: .top) {
+        Text(entry.ui?.dailyVerseTitle ?? "Daily Verse")
+          .font(.system(size: 11 * fontScale, weight: .bold, design: .rounded))
+          .foregroundColor(palette.foreground)
+        Spacer(minLength: 8)
+        VStack(alignment: .trailing, spacing: 2) {
+          Text(entry.ui?.brandName ?? "Deen Focus")
+            .font(.system(size: 13 * fontScale, weight: .bold, design: .rounded))
+            .foregroundColor(palette.foreground)
+          Text(entry.payload.dateLabel)
+            .font(.system(size: 10 * fontScale, weight: .regular, design: .rounded))
+            .foregroundColor(palette.foreground.opacity(0.86))
+        }
+      }
+      Divider().overlay(Color.white.opacity(0.2))
+      Text(
+        entry.payload.verse?.text
+          ?? entry.ui?.timelinePlaceholder
+          ?? "Open Deen Focus to prepare your daily verse and prayer widget data."
       )
-    }
-    .padding(.vertical, 8)
-  }
-
-  private func largeBody(now: Date) -> some View {
-    VStack(alignment: .leading, spacing: 10) {
-      header(fontSize: 16 * fontScale, dateSize: 12 * fontScale)
-      Divider().overlay(Color.white.opacity(0.16))
-      Text(entry.ui?.dailyVerseTitle ?? "Daily Verse")
-        .font(.system(size: 9 * fontScale, weight: .medium, design: .rounded))
-        .foregroundColor(palette.foreground.opacity(0.9))
-      Text(entry.payload.verse?.text ?? entry.ui?.timelinePlaceholder ?? "Open Deenly to prepare your daily verse and prayer widget data.")
-        .font(.system(size: 11.25 * fontScale, weight: .bold, design: .rounded))
+        .font(.system(size: 13 * fontScale, weight: .semibold, design: .rounded))
         .foregroundColor(palette.foreground)
-        .lineLimit(5)
+        .lineLimit(2)
+        .minimumScaleFactor(0.85)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
       if let source = entry.payload.verse?.source, !source.isEmpty {
         Text(source)
           .font(.system(size: 9 * fontScale, weight: .regular, design: .rounded))
           .foregroundColor(palette.foreground.opacity(0.86))
       }
-      Spacer(minLength: 8)
       prayerRows(
         prayers: visiblePrayers(limit: 5),
         columns: 5,
-        showVerse: true,
+        showVerse: false,
         now: now,
-        highlightSource: prayersForHighlightNoSunrise
+        highlightSource: prayersForHighlightNoSunrise,
+        cellPalette: palette
+      )
+      .frame(maxHeight: .infinity, alignment: .bottom)
+    }
+    .padding(.vertical, 8)
+  }
+
+  private func largeBody(now: Date) -> some View {
+    let progress = entry.payload.progress
+    return VStack(alignment: .leading, spacing: 10) {
+      HStack(spacing: 8) {
+        ZStack {
+          Circle().fill(Color.white.opacity(0.18))
+          Image(systemName: "moon.stars.fill")
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundColor(.white)
+        }
+        .frame(width: 28, height: 28)
+        Text(entry.ui?.brandName ?? "Deen Focus")
+          .font(.system(size: 15 * fontScale, weight: .bold, design: .rounded))
+          .foregroundColor(palette.foreground)
+        Spacer()
+        Text(entry.payload.dateLabel)
+          .font(.system(size: 12 * fontScale, weight: .regular, design: .rounded))
+          .foregroundColor(palette.foreground.opacity(0.86))
+      }
+
+      VStack(spacing: 4) {
+        Text(entry.ui?.prayerProgressTitle ?? "Your Prayer Progress")
+          .font(.system(size: 13 * fontScale, weight: .semibold, design: .rounded))
+          .foregroundColor(palette.foreground)
+        Text(progress?.countLabel ?? entry.ui?.defaultProgressCountLabel ?? "0 of 5")
+          .font(.system(size: 28 * fontScale, weight: .bold, design: .rounded))
+          .foregroundColor(palette.foreground)
+        Text(entry.ui?.prayersCompletedSubtitle ?? "prayers completed.")
+          .font(.system(size: 12 * fontScale, weight: .regular, design: .rounded))
+          .foregroundColor(palette.foreground.opacity(0.86))
+      }
+      .frame(maxWidth: .infinity)
+
+      HStack(spacing: 12) {
+        ForEach(0..<5, id: \.self) { index in
+          let done = (progress?.flags.indices.contains(index) == true)
+            ? (progress?.flags[index] ?? false)
+            : false
+          ZStack {
+            Circle()
+              .fill(done ? Color.white.opacity(0.92) : Color.clear)
+              .overlay(
+                Circle().stroke(Color.white.opacity(0.55), lineWidth: 2)
+              )
+            if done {
+              Image(systemName: "checkmark")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundColor(Color(red: 0.24, green: 0.51, blue: 0.41))
+            }
+          }
+          .frame(width: 22, height: 22)
+        }
+      }
+      .frame(maxWidth: .infinity)
+      .padding(.top, 2)
+
+      Text(progress?.statusMessage ?? "Keep going")
+        .font(.system(size: 11 * fontScale, weight: .semibold, design: .rounded))
+        .foregroundColor(palette.foreground)
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Capsule().fill(Color.white.opacity(0.16)))
+
+      prayerRows(
+        prayers: visiblePrayers(limit: 5),
+        columns: 5,
+        showVerse: false,
+        now: now,
+        highlightSource: prayersForHighlightNoSunrise,
+        cellPalette: palette
+      )
+      .padding(10)
+      .background(
+        RoundedRectangle(cornerRadius: 14, style: .continuous)
+          .fill(Color.white.opacity(0.12))
       )
     }
-    .padding(.vertical, 14)
+    .padding(.vertical, 10)
   }
 
   private func header(fontSize: CGFloat, dateSize: CGFloat) -> some View {
@@ -280,12 +422,14 @@ private struct DeenlyWidgetView: View {
     columns: Int,
     showVerse: Bool,
     now: Date,
-    highlightSource: [WidgetPrayer]
+    highlightSource: [WidgetPrayer],
+    cellPalette: WidgetPalette? = nil
   ) -> some View {
     let rows = stride(from: 0, to: prayers.count, by: columns).map {
       Array(prayers[$0..<min($0 + columns, prayers.count)])
     }
     let currentPrayerId = findCurrentPrayerId(prayers: highlightSource, now: now)
+    let resolvedPalette = cellPalette ?? palette
 
     let rowSpacing: CGFloat = {
       if showVerse { return 4 }
@@ -299,7 +443,7 @@ private struct DeenlyWidgetView: View {
             PrayerCell(
               prayer: prayer,
               isHighlighted: prayer.id == currentPrayerId,
-              palette: palette,
+              palette: resolvedPalette,
               family: family,
               fontScale: fontScale
             )
@@ -434,7 +578,10 @@ private struct PrayerCell: View {
         .fill(isHighlighted ? Color.white.opacity(0.14) : Color.clear)
         .overlay(
           RoundedRectangle(cornerRadius: 12.8, style: .continuous)
-            .stroke(Color.white.opacity(isHighlighted ? 0.16 : 0), lineWidth: 1)
+            .stroke(
+              isHighlighted ? Color.white.opacity(0.16) : Color.clear,
+              lineWidth: 1
+            )
         )
     )
   }
@@ -530,7 +677,7 @@ struct DeenlyWidgets: Widget {
       DeenlyWidgetView(entry: entry)
     }
     .configurationDisplayName("Deen Focus — Prayer")
-    .description("Prayer times and daily verse. Open the app once to refresh language and content.")
+    .description("Prayer progress, daily verse, and prayer times. Open the app once to refresh language and content.")
     .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     .contentMarginsDisabled()
   }
@@ -540,5 +687,8 @@ struct DeenlyWidgets: Widget {
 struct DeenlyWidgetsBundle: WidgetBundle {
   var body: some Widget {
     DeenlyWidgets()
+    if #available(iOS 16.2, *) {
+      PrayerLiveActivityWidget()
+    }
   }
 }

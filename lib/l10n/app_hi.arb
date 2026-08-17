@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "“नमाज़ों की पाबंदी करो, विशेषकर मध्य नमाज़ की।” — क़ुरआन 2:238",
   "prayerNotificationSubtitleMaghrib": "“अतः जब शाम हो तो अल्लाह की तसबीह करो...” — क़ुरआन 30:17",
   "prayerNotificationSubtitleIsha": "“नमाज़ क़ायम करो -  रात के अंधकार तक।” — क़ुरआन 17:78",
+  "prayerNotificationTitle": "{prayerName} का समय हो गया है",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "प्रार्थना के समय, कुरान और इस्लामी मार्गदर्शन के बारे में कुछ भी पूछें।",
   "homeDay": "दिन",
   "homeDays": "दिन",
@@ -892,6 +900,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "नमाज़ अपडेट",
+  "settingsPrayerUpdatesSubtitle": "लॉक स्क्रीन पर अगली नमाज़ की लाइव गतिविधि",
+  "liveActivitySectionTitle": "लाइव गतिविधि",
+  "liveActivityStayUpdatedTitle": "एक नज़र में अपडेट रहें",
+  "liveActivityStayUpdatedBody": "लॉक स्क्रीन पर सीधे अपनी अगली नमाज़ और उसका समय देखें।",
+  "liveActivityEnableLabel": "लाइव गतिविधि सक्षम करें",
+  "liveActivityPromptNotNow": "अभी नहीं",
+  "liveActivityUnsupported": "इस डिवाइस पर लाइव गतिविधि उपलब्ध नहीं है।",
+  "liveActivityPermissionNeeded": "लॉक स्क्रीन पर नमाज़ अपडेट दिखाने के लिए सूचनाओं की अनुमति दें।",
+  "liveActivityPermissionButton": "सूचनाएँ अनुमति दें",
+  "liveActivityStatusActive": "लाइव गतिविधि चालू है",
+  "liveActivityStatusOff": "लाइव गतिविधि बंद है",
+  "liveActivityNowLabel": "अब",
+  "liveActivityUpdatedAt": "{time} पर अपडेट किया गया",
+  "liveActivityNextAt": "{prayer} {time} पर",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "नमाज़ अलार्म",
   "settingsPrayerAlarmsSubtitle": "पूर्ण नमाज़ अलार्म जो साइलेंट मोड को पार कर सकते हैं",
   "prayerAlarmsMasterLabel": "नमाज़ अलार्म चालू करें",
@@ -984,5 +1024,117 @@
   "appLockDemoChildCompletionTitle": "सुकून भरा मन",
   "settingsAppDemoPrayerCardSubtitle": "सलाह के समय ध्यान भटकाने वाले ऐप्स रोकें, ताकि आप पूरी मौजूदगी से नमाज़ पढ़ सकें।",
   "settingsAppDemoSleepCardSubtitle": "अपनी रातों की रक्षा करें ताकि आराम आसान हो — और फ़ज्र हल्का लगे।",
-  "settingsAppDemoChildCardSubtitle": "बेफ़िक्र होकर फ़ोन दें — केवल अनुमति वाले ऐप्स खुले रहेंगे।"
+  "settingsAppDemoChildCardSubtitle": "बेफ़िक्र होकर फ़ोन दें — केवल अनुमति वाले ऐप्स खुले रहेंगे।",
+  "widgetPrayerProgressTitle": "आपकी नमाज़ प्रगति",
+  "widgetPrayerProgressCount": "{completed} में से {total}",
+  "widgetPrayersCompletedSubtitle": "नमाज़ें पूर्ण।",
+  "widgetPrayersLeftToday": "जारी रखें — आज {count} नमाज़ बाकी हैं",
+  "widgetAllPrayersDoneToday": "अल्हम्दुलिल्लाह — आज की सभी नमाज़ें पूरी",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppDemoHomeFeaturesTitle": "एक नज़र में जुड़े रहें",
+  "settingsAppDemoHomeFeaturesSubtitle": "देखें कि विजेट और लाइव गतिविधि नमाज़ के समय को पास कैसे रखते हैं — ऐप खोले बिना।",
+  "settingsAppDemoWidgetsCardSubtitle": "Daily verse and prayer times on your Home Screen, always up to date.",
+  "settingsAppDemoLiveActivityCardSubtitle": "Current and next prayer on your Lock Screen and Dynamic Island.",
+  "featureDemoContinue": "जारी रखें",
+  "featureDemoSampleStatusTime": "9:41",
+  "featureDemoOfferWidgetManualBody": "आपका डिवाइस ऐप्स को विजेट अपने आप जोड़ने की अनुमति नहीं देता। होम स्क्रीन विजेट गैलरी से बड़ा DeenFocus विजेट जोड़ें।",
+  "featureDemoOfferWidgetManualTitle": "होम स्क्रीन से विजेट जोड़ें",
+  "featureDemoOfferNo": "नहीं",
+  "featureDemoOfferYes": "हाँ",
+  "featureDemoOfferLiveActivityTitle": "क्या आप अपने डिवाइस पर लाइव गतिविधि सक्षम करना चाहते हैं?",
+  "featureDemoOfferWidgetsTitle": "क्या आप इस विजेट को होम स्क्रीन पर जोड़ना चाहते हैं?",
+  "featureDemoWidgetsTitle": "विजेट",
+  "featureDemoWidgetsIntroTitle": "See your Home Screen widgets",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "Glanceable prayer guidance",
+  "featureDemoWidgetsDetailsBody": "Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.",
+  "featureDemoWidgetsCompletionTitle": "Widgets, ready",
+  "featureDemoWidgetsCompletionSubtitle": "Faith reminders on your Home Screen.",
+  "featureDemoWidgetsCompletionBody": "Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.",
+  "featureDemoWidgetsHomeHint": "Wednesday, 13 August",
+  "featureDemoWidgetSampleDate": "Wed, Aug 13",
+  "featureDemoWidgetSampleVerse": "It is You we worship and You we ask for help.",
+  "featureDemoWidgetSampleSource": "Surah 1:5",
+  "featureDemoLiveActivityTitle": "लाइव गतिविधि",
+  "featureDemoLiveActivityIntroTitle": "See Live Activity in action",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "Prayer updates, always visible",
+  "featureDemoLiveActivityDetailsBody": "Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.",
+  "featureDemoLiveActivityCompletionTitle": "Live Activity, ready",
+  "featureDemoLiveActivityCompletionSubtitle": "Next prayer, always nearby.",
+  "featureDemoLiveActivityCompletionBody": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.",
+  "featureDemoLiveActivityLockHint": "Wednesday, 13 August",
+  "featureDemoLiveActivitySampleTime": "6:48 PM",
+  "featureDemoLiveActivitySampleNextTime": "8:11 PM",
+  "featureDemoWidgetsIntroSubtitleIos": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsIntroSubtitleAndroid": "Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.",
+  "featureDemoWidgetsLongPressCalloutIos": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsLongPressCalloutAndroid": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsAddCallout": "Tap + to choose a DeenFocus widget",
+  "featureDemoWidgetsAddSlotLabel": "Add Widget",
+  "featureDemoWidgetsGalleryTitle": "Choose a DeenFocus widget",
+  "featureDemoWidgetsGallerySubtitle": "Switch between Small, Medium, and Large — then add it to your Home Screen.",
+  "featureDemoWidgetsAddCta": "Add Widget",
+  "featureDemoWidgetsAddCtaAndroid": "Add widget",
+  "featureDemoWidgetsChangeCta": "Change size",
+  "featureDemoWidgetSizeSmall": "Small",
+  "featureDemoWidgetSizeMedium": "Medium",
+  "featureDemoWidgetSizeLarge": "Large",
+  "featureDemoWidgetSizeSmallSubtitle": "Compact prayer times at a glance",
+  "featureDemoWidgetSizeMediumSubtitle": "Daily verse plus all five prayers",
+  "featureDemoWidgetSizeLargeSubtitle": "Prayer progress with today’s schedule",
+  "featureDemoLiveActivityIntroSubtitleIos": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.",
+  "featureDemoLiveOpenPrayerCalcCallout": "Tap Prayer Calculation",
+  "featureDemoLiveEnableToggleCallout": "Turn on Enable Live Activity",
+  "featureDemoLiveLockScreenCallout": "Your prayer Live Activity on the Lock Screen",
+  "featureDemoLiveCompactTitle": "Compact Dynamic Island",
+  "featureDemoLiveCompactCallout": "Current prayer stays visible at the top",
+  "featureDemoLiveExpandCta": "Expand Dynamic Island",
+  "featureDemoLiveExpandedTitle": "Expanded Dynamic Island",
+  "featureDemoLiveExpandedCallout": "See current time and the next prayer together",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "Live prayer notification",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "Open notification shade",
+  "featureDemoAndroidShadeTitle": "Notification shade",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "Ongoing",
+  "appLockDemoOfferPrayerTitle": "प्रार्थना मोड आज़माने के लिए तैयार हैं?",
+  "appLockDemoOfferSleepTitle": "स्लीप मोड आज़माने के लिए तैयार हैं?",
+  "appLockDemoOfferChildTitle": "चाइल्ड मोड आज़माने के लिए तैयार हैं?",
+  "appLockDemoOfferPrayerCta": "प्रार्थना मोड चालू करें",
+  "appLockDemoOfferSleepCta": "स्लीप मोड चालू करें",
+  "appLockDemoOfferChildCta": "चाइल्ड मोड चालू करें",
+  "appLockDemoOfferNotNow": "अभी नहीं",
+  "nightlyWrapUpPrayersTitle": "आज की नमाज़ें पूरी करें",
+  "nightlyWrapUpPrayersBody": "अपनी प्रार्थना स्ट्रीक बचाने के लिए अधूरी या छूटी नमाज़ें मार्क करें।",
+  "nightlyWrapUpChecklistTitle": "अपनी दैनिक चेकलिस्ट पूरी करें",
+  "nightlyWrapUpChecklistBody": "कुछ आइटम अभी बाकी हैं — इरादे के साथ दिन पूरा करें।",
+  "nightlyWrapUpBothTitle": "अपना दिन पूरा करें",
+  "nightlyWrapUpBothBody": "बाकी नमाज़ें मार्क करें और दिन खत्म होने से पहले चेकलिस्ट पूरी करें।",
+  "cycleModeEndedNotificationTitle": "साइकिल मोड समाप्त हो गया",
+  "cycleModeEndedNotificationBody": "आपका साइकिल मोड अब बंद है। आप नमाज़ फिर से शुरू कर सकते हैं। अगर आप साइकिल मोड की तारीखें बदलना चाहते हैं, तो उन्हें संपादित करने के लिए यहाँ टैप करें।"
 }

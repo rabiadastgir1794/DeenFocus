@@ -951,6 +951,11 @@ class AppLocalizationsAz extends AppLocalizations {
       '“Namazı qılın - gecənin qaranlığına qədər.” — Quran 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return '$prayerName vaxtıdır';
+  }
+
+  @override
   String get homeTrialBannerTitle =>
       '7 gün pulsuz — daha yaxşı müsəlman olun ✨';
 
@@ -1602,6 +1607,26 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get widgetSetLocationForPrayers =>
       'Namazlar və gündəlik ayə üçün Deen Focus-da yerinizi təyin edin.';
+
+  @override
+  String get widgetPrayerProgressTitle => 'Namaz irəliləyişiniz';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed / $total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => 'namaz tamamlandı.';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return 'Davam edin — bu gün $count namaz qalıb';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday =>
+      'Əlhəmdulillah — bu gün bütün namazlar tamamlandı';
 
   @override
   String get focusChildModeActive => 'Uşaq Rejimi Aktivdir';
@@ -2406,6 +2431,59 @@ class AppLocalizationsAz extends AppLocalizations {
   String get appLockDemoAppInstagram => 'Instagram';
 
   @override
+  String get settingsPrayerUpdatesTitle => 'Namaz yeniləmələri';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle =>
+      'Kilid ekranında növbəti namaz üçün Live Activity';
+
+  @override
+  String get liveActivitySectionTitle => 'Live Activities';
+
+  @override
+  String get liveActivityStayUpdatedTitle => 'Bir baxışda yenilənmiş qalın';
+
+  @override
+  String get liveActivityStayUpdatedBody =>
+      'Növbəti namazı və vaxtını birbaşa kilid ekranında görün.';
+
+  @override
+  String get liveActivityEnableLabel => 'Live Activity-ni aktiv et';
+
+  @override
+  String get liveActivityPromptNotNow => 'İndi yox';
+
+  @override
+  String get liveActivityUnsupported =>
+      'Bu cihazda Live Activities əlçatan deyil.';
+
+  @override
+  String get liveActivityPermissionNeeded =>
+      'Kilid ekranında namaz yeniləmələri üçün bildirişlərə icazə verin.';
+
+  @override
+  String get liveActivityPermissionButton => 'Bildirişlərə icazə ver';
+
+  @override
+  String get liveActivityStatusActive => 'Live Activity açıqdır';
+
+  @override
+  String get liveActivityStatusOff => 'Live Activity bağlıdır';
+
+  @override
+  String get liveActivityNowLabel => 'İndi';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return '$time yeniləndi';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer $time';
+  }
+
+  @override
   String get settingsPrayerAlarmsTitle => 'Namaz siqnalları';
 
   @override
@@ -2651,4 +2729,319 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get settingsAppDemoChildCardSubtitle =>
       'Telefonunuzu əminliklə verin: yalnız icazəli tətbiqlər açıq qalır.';
+
+  @override
+  String get settingsAppDemoHomeFeaturesTitle => 'Bir baxışda bağlı qalın';
+
+  @override
+  String get settingsAppDemoHomeFeaturesSubtitle =>
+      'See how Home Screen widgets and Live Activity keep prayer times close — without opening the app.';
+
+  @override
+  String get settingsAppDemoWidgetsCardSubtitle =>
+      'Daily verse and prayer times on your Home Screen, always up to date.';
+
+  @override
+  String get settingsAppDemoLiveActivityCardSubtitle =>
+      'Current and next prayer on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get featureDemoContinue => 'Davam et';
+
+  @override
+  String get featureDemoSampleStatusTime => '9:41';
+
+  @override
+  String get featureDemoOfferWidgetManualBody =>
+      'Cihazınız tətbiqlərə vidjetləri avtomatik yerləşdirməyə icazə vermir. Ana Ekran vidjet qalereyasından böyük DeenFocus vidjetini əlavə edin.';
+
+  @override
+  String get featureDemoOfferWidgetManualTitle =>
+      'Vidjeti Ana Ekrandan əlavə edin';
+
+  @override
+  String get featureDemoOfferNo => 'Xeyr';
+
+  @override
+  String get featureDemoOfferYes => 'Bəli';
+
+  @override
+  String get featureDemoOfferLiveActivityTitle =>
+      'Cihazınızda Live Activity-ni aktivləşdirmək istəyirsiniz?';
+
+  @override
+  String get featureDemoOfferWidgetsTitle =>
+      'Bu vidjeti Ana Ekrana əlavə etmək istəyirsiniz?';
+
+  @override
+  String get featureDemoWidgetsTitle => 'Vidjetlər';
+
+  @override
+  String get featureDemoWidgetsIntroTitle => 'See your Home Screen widgets';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitle =>
+      'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsShowcaseCallout =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsDetailsTitle => 'Glanceable prayer guidance';
+
+  @override
+  String get featureDemoWidgetsDetailsBody =>
+      'Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.';
+
+  @override
+  String get featureDemoWidgetsCompletionTitle => 'Widgets, ready';
+
+  @override
+  String get featureDemoWidgetsCompletionSubtitle =>
+      'Faith reminders on your Home Screen.';
+
+  @override
+  String get featureDemoWidgetsCompletionBody =>
+      'Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.';
+
+  @override
+  String get featureDemoWidgetsHomeHint => 'Wednesday, 13 August';
+
+  @override
+  String get featureDemoWidgetSampleDate => 'Wed, Aug 13';
+
+  @override
+  String get featureDemoWidgetSampleVerse =>
+      'It is You we worship and You we ask for help.';
+
+  @override
+  String get featureDemoWidgetSampleSource => 'Surah 1:5';
+
+  @override
+  String get featureDemoLiveActivityTitle => 'Canlı Fəaliyyət';
+
+  @override
+  String get featureDemoLiveActivityIntroTitle => 'See Live Activity in action';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitle =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityShowcaseCallout => 'Tap Prayer Calculation';
+
+  @override
+  String get featureDemoLiveActivityDetailsTitle =>
+      'Prayer updates, always visible';
+
+  @override
+  String get featureDemoLiveActivityDetailsBody =>
+      'Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.';
+
+  @override
+  String get featureDemoLiveActivityCompletionTitle => 'Live Activity, ready';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitle =>
+      'Next prayer, always nearby.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBody =>
+      'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.';
+
+  @override
+  String get featureDemoLiveActivityLockHint => 'Wednesday, 13 August';
+
+  @override
+  String get featureDemoLiveActivitySampleTime => '6:48 PM';
+
+  @override
+  String get featureDemoLiveActivitySampleNextTime => '8:11 PM';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleIos =>
+      'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleAndroid =>
+      'Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutIos =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutAndroid =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsAddCallout =>
+      'Tap + to choose a DeenFocus widget';
+
+  @override
+  String get featureDemoWidgetsAddSlotLabel => 'Add Widget';
+
+  @override
+  String get featureDemoWidgetsGalleryTitle => 'Choose a DeenFocus widget';
+
+  @override
+  String get featureDemoWidgetsGallerySubtitle =>
+      'Switch between Small, Medium, and Large — then add it to your Home Screen.';
+
+  @override
+  String get featureDemoWidgetsAddCta => 'Add Widget';
+
+  @override
+  String get featureDemoWidgetsAddCtaAndroid => 'Add widget';
+
+  @override
+  String get featureDemoWidgetsChangeCta => 'Change size';
+
+  @override
+  String get featureDemoWidgetSizeSmall => 'Small';
+
+  @override
+  String get featureDemoWidgetSizeMedium => 'Medium';
+
+  @override
+  String get featureDemoWidgetSizeLarge => 'Large';
+
+  @override
+  String get featureDemoWidgetSizeSmallSubtitle =>
+      'Compact prayer times at a glance';
+
+  @override
+  String get featureDemoWidgetSizeMediumSubtitle =>
+      'Daily verse plus all five prayers';
+
+  @override
+  String get featureDemoWidgetSizeLargeSubtitle =>
+      'Prayer progress with today’s schedule';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleIos =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleAndroid =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.';
+
+  @override
+  String get featureDemoLiveOpenPrayerCalcCallout => 'Tap Prayer Calculation';
+
+  @override
+  String get featureDemoLiveEnableToggleCallout =>
+      'Turn on Enable Live Activity';
+
+  @override
+  String get featureDemoLiveLockScreenCallout =>
+      'Your prayer Live Activity on the Lock Screen';
+
+  @override
+  String get featureDemoLiveCompactTitle => 'Compact Dynamic Island';
+
+  @override
+  String get featureDemoLiveCompactCallout =>
+      'Current prayer stays visible at the top';
+
+  @override
+  String get featureDemoLiveExpandCta => 'Expand Dynamic Island';
+
+  @override
+  String get featureDemoLiveExpandedTitle => 'Expanded Dynamic Island';
+
+  @override
+  String get featureDemoLiveExpandedCallout =>
+      'See current time and the next prayer together';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleIos =>
+      'Lock Screen and Dynamic Island, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleAndroid =>
+      'Ongoing prayer updates, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyIos =>
+      'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyAndroid =>
+      'Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.';
+
+  @override
+  String get featureDemoAndroidStatusBarHint => 'Ongoing notification';
+
+  @override
+  String get featureDemoAndroidOngoingTitle => 'Live prayer notification';
+
+  @override
+  String get featureDemoAndroidOngoingCallout =>
+      'Silent ongoing update — current and next prayer';
+
+  @override
+  String get featureDemoAndroidOpenShadeCta => 'Open notification shade';
+
+  @override
+  String get featureDemoAndroidShadeTitle => 'Notification shade';
+
+  @override
+  String get featureDemoAndroidShadeCallout =>
+      'Expand to see the full current and next prayer status';
+
+  @override
+  String get featureDemoAndroidOngoingBadge => 'Ongoing';
+
+  @override
+  String get appLockDemoOfferPrayerTitle =>
+      'Namaz Rejimini sınamağa hazırsınız?';
+
+  @override
+  String get appLockDemoOfferSleepTitle => 'Yuxu Rejimini sınamağa hazırsınız?';
+
+  @override
+  String get appLockDemoOfferChildTitle => 'Uşaq Rejimini sınamağa hazırsınız?';
+
+  @override
+  String get appLockDemoOfferPrayerCta => 'Namaz Rejimini aktiv et';
+
+  @override
+  String get appLockDemoOfferSleepCta => 'Yuxu Rejimini aktiv et';
+
+  @override
+  String get appLockDemoOfferChildCta => 'Uşaq Rejimini aktiv et';
+
+  @override
+  String get appLockDemoOfferNotNow => 'İndi yox';
+
+  @override
+  String get nightlyWrapUpPrayersTitle => 'Bugünkü namazları tamamlayın';
+
+  @override
+  String get nightlyWrapUpPrayersBody =>
+      'Namaz seriyanızı qorumaq üçün tamamlanmamış və ya buraxılmış namazları işarələyin.';
+
+  @override
+  String get nightlyWrapUpChecklistTitle =>
+      'Gündəlik yoxlama siyahınızı tamamlayın';
+
+  @override
+  String get nightlyWrapUpChecklistBody =>
+      'Bir neçə siyahı elementi hələ açıqdır — günü niyyətlə yekunlaşdırın.';
+
+  @override
+  String get nightlyWrapUpBothTitle => 'Gününüzü yekunlaşdırın';
+
+  @override
+  String get nightlyWrapUpBothBody =>
+      'Qalan namazları işarələyin və gündəlik siyahınızı gün bitməmiş tamamlayın.';
+
+  @override
+  String get cycleModeEndedNotificationTitle => 'Dövr rejimi bitdi';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      'Dövr rejiminiz indi sönülüdür. Namaza davam edə bilərsiniz. Dövr rejimi tarixlərini dəyişmək istəyirsinizsə, redaktə etmək üçün bura toxunun.';
 }

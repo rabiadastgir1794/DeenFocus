@@ -352,6 +352,14 @@
   "prayerNotificationSubtitleAsr": "“Guard strictly the prayers, especially the middle prayer.” — Qur’an 2:238",
   "prayerNotificationSubtitleMaghrib": "“So glorify Allah when you reach the evening...” — Qur’an 30:17",
   "prayerNotificationSubtitleIsha": "“Establish prayer -  until the darkness of the night.” — Qur’an 17:78",
+  "prayerNotificationTitle": "It's time for {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeTrialBannerTitle": "Free for 7 days — become a better Muslim ✨",
   "homeTrialBannerSubtitle": "Every feature unlocked. Start your journey today.",
   "homeFocusModeTitle": "Focus Mode",
@@ -658,6 +666,28 @@
   "widgetDailyVerseTitle": "Daily Verse",
   "widgetOpenAppTimelineHint": "Open Deen Focus to prepare your daily verse and prayer widget data.",
   "widgetSetLocationForPrayers": "Set your location in Deen Focus to load prayers and the daily verse.",
+  "widgetPrayerProgressTitle": "Your Prayer Progress",
+  "widgetPrayerProgressCount": "{completed} of {total}",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetPrayersCompletedSubtitle": "prayers completed.",
+  "widgetPrayersLeftToday": "Keep going — {count} prayers left today",
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetAllPrayersDoneToday": "Alhamdulillah — all prayers complete today",
   "focusChildModeActive": "Child Mode Active",
   "focusSalahAndNightModeActive": "Salah and Night Mode Active",
   "focusSalahModeActive": "Salah Mode Active",
@@ -1042,6 +1072,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "Prayer Updates",
+  "settingsPrayerUpdatesSubtitle": "Live Activity for your next prayer on the Lock Screen",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Stay updated at a glance",
+  "liveActivityStayUpdatedBody": "See your next prayer and its time directly on your Lock Screen.",
+  "liveActivityEnableLabel": "Enable Live Activity",
+  "liveActivityPromptNotNow": "Not now",
+  "liveActivityUnsupported": "Live Activities are not available on this device.",
+  "liveActivityPermissionNeeded": "Allow notifications so prayer updates can appear on your Lock Screen.",
+  "liveActivityPermissionButton": "Allow notifications",
+  "liveActivityStatusActive": "Live Activity is on",
+  "liveActivityStatusOff": "Live Activity is off",
+  "liveActivityNowLabel": "Now",
+  "liveActivityUpdatedAt": "Updated at {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "liveActivityNextAt": "{prayer} at {time}",
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Prayer Alarms",
   "settingsPrayerAlarmsSubtitle": "Full prayer alarms that can break through Silent Mode",
   "prayerAlarmsMasterLabel": "Enable Prayer Alarms",
@@ -1134,5 +1196,95 @@
   "appLockDemoChildCompletionTitle": "Peace of mind",
   "settingsAppDemoPrayerCardSubtitle": "Pause distractions at Salah so you can pray with presence.",
   "settingsAppDemoSleepCardSubtitle": "Protect your nights so rest comes easier — and Fajr feels lighter.",
-  "settingsAppDemoChildCardSubtitle": "Hand over your phone knowing only allowed apps stay open."
+  "settingsAppDemoChildCardSubtitle": "Hand over your phone knowing only allowed apps stay open.",
+  "settingsAppDemoHomeFeaturesTitle": "Stay connected at a glance",
+  "settingsAppDemoHomeFeaturesSubtitle": "See how Home Screen widgets and Live Activity keep prayer times close — without opening the app.",
+  "settingsAppDemoWidgetsCardSubtitle": "Daily verse and prayer times on your Home Screen, always up to date.",
+  "settingsAppDemoLiveActivityCardSubtitle": "Current and next prayer on your Lock Screen and Dynamic Island.",
+  "featureDemoContinue": "Continue",
+  "featureDemoSampleStatusTime": "9:41",
+  "featureDemoOfferWidgetManualBody": "Your device doesn’t allow apps to place widgets automatically. Add the Large DeenFocus widget from your Home Screen widget gallery.",
+  "featureDemoOfferWidgetManualTitle": "Add the widget from your Home Screen",
+  "featureDemoOfferNo": "No",
+  "featureDemoOfferYes": "Yes",
+  "featureDemoOfferLiveActivityTitle": "Want to enable Live Activity on your device?",
+  "featureDemoOfferWidgetsTitle": "Want to add this widget to your Home Screen?",
+  "featureDemoWidgetsTitle": "Widgets",
+  "featureDemoWidgetsIntroTitle": "See your Home Screen widgets",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "Glanceable prayer guidance",
+  "featureDemoWidgetsDetailsBody": "Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.",
+  "featureDemoWidgetsCompletionTitle": "Widgets, ready",
+  "featureDemoWidgetsCompletionSubtitle": "Faith reminders on your Home Screen.",
+  "featureDemoWidgetsCompletionBody": "Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.",
+  "featureDemoWidgetsHomeHint": "Wednesday, 13 August",
+  "featureDemoWidgetSampleDate": "Wed, Aug 13",
+  "featureDemoWidgetSampleVerse": "It is You we worship and You we ask for help.",
+  "featureDemoWidgetSampleSource": "Surah 1:5",
+  "featureDemoLiveActivityTitle": "Live Activity",
+  "featureDemoLiveActivityIntroTitle": "See Live Activity in action",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "Prayer updates, always visible",
+  "featureDemoLiveActivityDetailsBody": "Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.",
+  "featureDemoLiveActivityCompletionTitle": "Live Activity, ready",
+  "featureDemoLiveActivityCompletionSubtitle": "Next prayer, always nearby.",
+  "featureDemoLiveActivityCompletionBody": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.",
+  "featureDemoLiveActivityLockHint": "Wednesday, 13 August",
+  "featureDemoLiveActivitySampleTime": "6:48 PM",
+  "featureDemoLiveActivitySampleNextTime": "8:11 PM",
+  "featureDemoWidgetsIntroSubtitleIos": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsIntroSubtitleAndroid": "Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.",
+  "featureDemoWidgetsLongPressCalloutIos": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsLongPressCalloutAndroid": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsAddCallout": "Tap + to choose a DeenFocus widget",
+  "featureDemoWidgetsAddSlotLabel": "Add Widget",
+  "featureDemoWidgetsGalleryTitle": "Choose a DeenFocus widget",
+  "featureDemoWidgetsGallerySubtitle": "Switch between Small, Medium, and Large — then add it to your Home Screen.",
+  "featureDemoWidgetsAddCta": "Add Widget",
+  "featureDemoWidgetsAddCtaAndroid": "Add widget",
+  "featureDemoWidgetsChangeCta": "Change size",
+  "featureDemoWidgetSizeSmall": "Small",
+  "featureDemoWidgetSizeMedium": "Medium",
+  "featureDemoWidgetSizeLarge": "Large",
+  "featureDemoWidgetSizeSmallSubtitle": "Compact prayer times at a glance",
+  "featureDemoWidgetSizeMediumSubtitle": "Daily verse plus all five prayers",
+  "featureDemoWidgetSizeLargeSubtitle": "Prayer progress with today’s schedule",
+  "featureDemoLiveActivityIntroSubtitleIos": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.",
+  "featureDemoLiveOpenPrayerCalcCallout": "Tap Prayer Calculation",
+  "featureDemoLiveEnableToggleCallout": "Turn on Enable Live Activity",
+  "featureDemoLiveLockScreenCallout": "Your prayer Live Activity on the Lock Screen",
+  "featureDemoLiveCompactTitle": "Compact Dynamic Island",
+  "featureDemoLiveCompactCallout": "Current prayer stays visible at the top",
+  "featureDemoLiveExpandCta": "Expand Dynamic Island",
+  "featureDemoLiveExpandedTitle": "Expanded Dynamic Island",
+  "featureDemoLiveExpandedCallout": "See current time and the next prayer together",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "Live prayer notification",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "Open notification shade",
+  "featureDemoAndroidShadeTitle": "Notification shade",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "Ongoing",
+  "appLockDemoOfferPrayerTitle": "Ready to try Prayer Mode?",
+  "appLockDemoOfferSleepTitle": "Ready to try Sleep Mode?",
+  "appLockDemoOfferChildTitle": "Ready to try Child Mode?",
+  "appLockDemoOfferPrayerCta": "Enable Prayer Mode",
+  "appLockDemoOfferSleepCta": "Enable Sleep Mode",
+  "appLockDemoOfferChildCta": "Enable Child Mode",
+  "appLockDemoOfferNotNow": "Not now",
+  "nightlyWrapUpPrayersTitle": "Finish today's prayers",
+  "nightlyWrapUpPrayersBody": "Mark any unfinished or missed prayers to protect your Prayer Streak.",
+  "nightlyWrapUpChecklistTitle": "Complete your Daily Checklist",
+  "nightlyWrapUpChecklistBody": "A few checklist items are still open — wrap up your day with intention.",
+  "nightlyWrapUpBothTitle": "Wrap up your day",
+  "nightlyWrapUpBothBody": "Mark remaining prayers and finish your Daily Checklist before the day ends.",
+  "cycleModeEndedNotificationTitle": "Cycle Mode has ended",
+  "cycleModeEndedNotificationBody": "Your Cycle Mode is now off. You can resume praying. If you want to change your Cycle Mode dates, tap here to edit them."
 }

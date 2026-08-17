@@ -1,0 +1,1 @@
+enum FeatureDemoKind { widgets, liveActivity }

@@ -257,7 +257,8 @@ void main() {
       );
     });
 
-    group('after Cycle Mode ends — normal tip rules resume immediately', () {
+    group('after Cycle Mode ends — preserve streak; miss breaks; On Time continues',
+        () {
       Map<String, Map<TrackablePrayer, PrayerMarkStatus>> tipOnPausedDay() => {
             key(DateTime(2026, 8, 11)): {
               TrackablePrayer.fajr: PrayerMarkStatus.onTime,
@@ -280,14 +281,14 @@ void main() {
         return active.expireFully();
       }
 
-      void expectPreservedThenNormalRules({
+      void expectPreservedThroughUnmarkedThenNormalRules({
         required CycleModeData ended,
         required bool coldRestart,
       }) {
         final history = tipOnPausedDay();
         final data = coldRestart ? coldStart(ended) : ended;
 
-        // 5. Original streak of 2 preserved (before any post-cycle tip).
+        // Before any post-cycle tip — preserved.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
@@ -296,16 +297,24 @@ void main() {
           dayStreak: 0,
         );
 
-        // 7. Started but unmarked Fajr after end → breaks (not counted as valid).
+        // Started-but-unmarked after Cycle Mode must NOT wipe the streak
+        // (Cycle days are exempt — unmarked ≠ missed).
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 6),
           history: history,
           data: data,
-          prayerStreak: 0,
+          prayerStreak: 2,
+          dayStreak: 0,
+        );
+        expectStableRecalc(
+          now: DateTime(2026, 8, 15, 13),
+          history: history,
+          data: data,
+          prayerStreak: 2,
           dayStreak: 0,
         );
 
-        // 8. Missed Fajr after end → breaks.
+        // Explicit Missed after end → breaks.
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.missed,
         };
@@ -317,7 +326,7 @@ void main() {
           dayStreak: 0,
         );
 
-        // 9. On Time / Qadha after end continues the preserved tip (2 + new).
+        // On Time / Qadha after end continues the preserved tip (2 + new).
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.onTime,
           TrackablePrayer.dhuhr: PrayerMarkStatus.qada,
@@ -331,24 +340,24 @@ void main() {
         );
       }
 
-      test('manual OFF → preserve, then miss/unmarked break, On Time continues',
+      test('manual OFF → preserve through unmarked; miss breaks; On Time continues',
           () {
-        expectPreservedThenNormalRules(
+        expectPreservedThroughUnmarkedThenNormalRules(
           ended: fourDayCycleEnded(manualOff: true),
           coldRestart: false,
         );
       });
 
       test(
-          'auto-expiry → preserve, then miss/unmarked break, On Time continues',
+          'auto-expiry → preserve through unmarked; miss breaks; On Time continues',
           () {
-        expectPreservedThenNormalRules(
+        expectPreservedThroughUnmarkedThenNormalRules(
           ended: fourDayCycleEnded(manualOff: false),
           coldRestart: false,
         );
       });
 
-      test('app restart while Cycle Mode active keeps tip; unmarked after end breaks',
+      test('app restart while Cycle Mode active keeps tip; unmarked after end preserves',
           () {
         final history = tipOnPausedDay();
         var data = CycleModeData(
@@ -389,17 +398,115 @@ void main() {
           now: DateTime(2026, 8, 15, 6),
           history: history,
           data: data,
-          prayerStreak: 0,
+          prayerStreak: 2,
           dayStreak: 0,
         );
       });
 
-      test('app restart after expiry keeps tip; miss after end breaks', () {
-        expectPreservedThenNormalRules(
+      test('app restart after expiry keeps tip through unmarked; miss breaks', () {
+        expectPreservedThroughUnmarkedThenNormalRules(
           ended: fourDayCycleEnded(manualOff: false),
           coldRestart: true,
         );
       });
+
+      test(
+        'reported bug: streak 2 → 2-day Cycle → auto-expiry → stays 2 after Fajr',
+        () {
+          // Realistic tip of 2: Maghrib+Isha before Cycle Mode (trailing slots).
+          final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+            key(DateTime(2026, 8, 13)): {
+              TrackablePrayer.maghrib: PrayerMarkStatus.onTime,
+              TrackablePrayer.isha: PrayerMarkStatus.onTime,
+            },
+          };
+          var data = CycleModeData(
+            isEnabled: true,
+            startDate: DateTime(2026, 8, 14),
+            cycleLength: 2,
+            pauseStreaks: true,
+            excludeFromStatistics: true,
+          );
+
+          expectStableRecalc(
+            now: eve(DateTime(2026, 8, 13)),
+            history: history,
+            data: CycleModeData.disabled(),
+            prayerStreak: 2,
+            dayStreak: 0,
+          );
+          expectStableRecalc(
+            now: eve(DateTime(2026, 8, 14)),
+            history: history,
+            data: data,
+            prayerStreak: 2,
+            dayStreak: 0,
+          );
+          expectStableRecalc(
+            now: eve(DateTime(2026, 8, 15)),
+            history: history,
+            data: data,
+            prayerStreak: 2,
+            dayStreak: 0,
+          );
+
+          expect(data.hasExpiredOn(DateTime(2026, 8, 16)), isTrue);
+          data = data.expireFully();
+          data = coldStart(data);
+
+          // Insights: sealed cycle days excluded from weekly possible.
+          final after = calc(
+            now: DateTime(2026, 8, 16, 6),
+            history: history,
+            data: data,
+          );
+          expect(after.prayerStreak, 2);
+          expect(after.dayStreak, 0);
+          expect(
+            CycleModePolicy(data).shouldExcludeFromStatistics(
+              DateTime(2026, 8, 14),
+            ),
+            isTrue,
+          );
+          expect(
+            CycleModePolicy(data).shouldExcludeFromStatistics(
+              DateTime(2026, 8, 16),
+            ),
+            isFalse,
+          );
+
+          expectStableRecalc(
+            now: DateTime(2026, 8, 16, 4),
+            history: history,
+            data: data,
+            prayerStreak: 2,
+            dayStreak: 0,
+          );
+          expectStableRecalc(
+            now: DateTime(2026, 8, 16, 6),
+            history: history,
+            data: data,
+            prayerStreak: 2,
+            dayStreak: 0,
+          );
+          expectStableRecalc(
+            now: DateTime(2026, 8, 16, 21),
+            history: history,
+            data: data,
+            prayerStreak: 2,
+            dayStreak: 0,
+          );
+
+          // Next normal day: yesterday was unmarked (not paused) → tip-breaks.
+          expectStableRecalc(
+            now: DateTime(2026, 8, 17, 6),
+            history: history,
+            data: data,
+            prayerStreak: 0,
+            dayStreak: 0,
+          );
+        },
+      );
 
       test('multi-day Cycle Mode with zero marks never invents streak slots', () {
         final history = tipOnPausedDay();

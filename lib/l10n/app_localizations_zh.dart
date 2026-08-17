@@ -905,6 +905,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get prayerNotificationSubtitleIsha => '“当谨守拜功 — 直到黑夜降临。” — 古兰经 17:78';
 
   @override
+  String prayerNotificationTitle(String prayerName) {
+    return '$prayerName时间到了';
+  }
+
+  @override
   String get homeTrialBannerTitle => '免费 7 天 — 成为更好的穆斯林 ✨';
 
   @override
@@ -1513,6 +1518,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get widgetSetLocationForPrayers => '在 Deen Focus 中设置位置以加载礼拜和每日经文。';
+
+  @override
+  String get widgetPrayerProgressTitle => '你的礼拜进度';
+
+  @override
+  String widgetPrayerProgressCount(int completed, int total) {
+    return '$completed/$total';
+  }
+
+  @override
+  String get widgetPrayersCompletedSubtitle => '已完成礼拜。';
+
+  @override
+  String widgetPrayersLeftToday(int count) {
+    return '继续加油 — 今天还剩 $count 次礼拜';
+  }
+
+  @override
+  String get widgetAllPrayersDoneToday => '艾哈姆杜利拉 — 今天所有礼拜已完成';
 
   @override
   String get focusChildModeActive => '儿童模式激活';
@@ -2275,6 +2299,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appLockDemoAppInstagram => 'Instagram';
 
   @override
+  String get settingsPrayerUpdatesTitle => '礼拜更新';
+
+  @override
+  String get settingsPrayerUpdatesSubtitle => '在锁定屏幕上查看下一场礼拜的实时活动';
+
+  @override
+  String get liveActivitySectionTitle => '实时活动';
+
+  @override
+  String get liveActivityStayUpdatedTitle => '一眼掌握最新动态';
+
+  @override
+  String get liveActivityStayUpdatedBody => '在锁定屏幕上直接查看下一场礼拜及其时间。';
+
+  @override
+  String get liveActivityEnableLabel => '启用实时活动';
+
+  @override
+  String get liveActivityPromptNotNow => '暂不';
+
+  @override
+  String get liveActivityUnsupported => '此设备不支持实时活动。';
+
+  @override
+  String get liveActivityPermissionNeeded => '请允许通知，以便在锁定屏幕上显示礼拜更新。';
+
+  @override
+  String get liveActivityPermissionButton => '允许通知';
+
+  @override
+  String get liveActivityStatusActive => '实时活动已开启';
+
+  @override
+  String get liveActivityStatusOff => '实时活动已关闭';
+
+  @override
+  String get liveActivityNowLabel => '现在';
+
+  @override
+  String liveActivityUpdatedAt(String time) {
+    return '更新于 $time';
+  }
+
+  @override
+  String liveActivityNextAt(String prayer, String time) {
+    return '$prayer $time';
+  }
+
+  @override
   String get settingsPrayerAlarmsTitle => '礼拜闹钟';
 
   @override
@@ -2500,4 +2573,301 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAppDemoChildCardSubtitle => '安心交出手机：只有你允许的应用保持可用。';
+
+  @override
+  String get settingsAppDemoHomeFeaturesTitle => '一眼掌握动态';
+
+  @override
+  String get settingsAppDemoHomeFeaturesSubtitle =>
+      '看看主屏幕小组件和实时活动如何让礼拜时间近在咫尺——无需打开应用。';
+
+  @override
+  String get settingsAppDemoWidgetsCardSubtitle => '主屏幕上的每日经文与礼拜时间，始终最新。';
+
+  @override
+  String get settingsAppDemoLiveActivityCardSubtitle => '锁屏与灵动岛上的当前与下一场礼拜。';
+
+  @override
+  String get featureDemoContinue => '继续';
+
+  @override
+  String get featureDemoSampleStatusTime => '9:41';
+
+  @override
+  String get featureDemoOfferWidgetManualBody =>
+      '系统不允许应用自动添加小组件。请从主屏幕小组件图库中添加大型 DeenFocus 小组件。';
+
+  @override
+  String get featureDemoOfferWidgetManualTitle => '请从主屏幕添加小组件';
+
+  @override
+  String get featureDemoOfferNo => '否';
+
+  @override
+  String get featureDemoOfferYes => '是';
+
+  @override
+  String get featureDemoOfferLiveActivityTitle => '要在此设备上启用实时活动吗？';
+
+  @override
+  String get featureDemoOfferWidgetsTitle => '要将此小组件添加到主屏幕吗？';
+
+  @override
+  String get featureDemoWidgetsTitle => '小组件';
+
+  @override
+  String get featureDemoWidgetsIntroTitle => '查看主屏幕小组件';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitle =>
+      'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.';
+
+  @override
+  String get featureDemoWidgetsShowcaseCallout =>
+      'Long-press the Home Screen to edit widgets';
+
+  @override
+  String get featureDemoWidgetsDetailsTitle => '一目了然的礼拜指引';
+
+  @override
+  String get featureDemoWidgetsDetailsBody =>
+      '中号小组件显示今日经文与五番礼拜时间——打开 DeenFocus 后会刷新。';
+
+  @override
+  String get featureDemoWidgetsCompletionTitle => '小组件已就绪';
+
+  @override
+  String get featureDemoWidgetsCompletionSubtitle => '信仰提醒就在主屏幕上。';
+
+  @override
+  String get featureDemoWidgetsCompletionBody =>
+      '演示结束后从手机小组件库添加 DeenFocus 小组件，并打开应用一次以同步。';
+
+  @override
+  String get featureDemoWidgetsHomeHint => '8月13日星期三';
+
+  @override
+  String get featureDemoWidgetSampleDate => '周三，8月13日';
+
+  @override
+  String get featureDemoWidgetSampleVerse => '我们只崇拜你，只向你求助。';
+
+  @override
+  String get featureDemoWidgetSampleSource => '古兰经 1:5';
+
+  @override
+  String get featureDemoLiveActivityTitle => '实时活动';
+
+  @override
+  String get featureDemoLiveActivityIntroTitle => '体验实时活动';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitle =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityShowcaseCallout => 'Tap Prayer Calculation';
+
+  @override
+  String get featureDemoLiveActivityDetailsTitle => '礼拜更新始终可见';
+
+  @override
+  String get featureDemoLiveActivityDetailsBody =>
+      '实时活动在锁屏上显示昏礼、宵礼与倒计时——可随时在设置中开启。';
+
+  @override
+  String get featureDemoLiveActivityCompletionTitle => '实时活动已就绪';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitle => '下一场礼拜始终在身边。';
+
+  @override
+  String get featureDemoLiveActivityCompletionBody =>
+      '在设置 → 礼拜计算中启用实时活动，即可在锁屏显示礼拜更新。';
+
+  @override
+  String get featureDemoLiveActivityLockHint => '8月13日星期三';
+
+  @override
+  String get featureDemoLiveActivitySampleTime => '下午 6:48';
+
+  @override
+  String get featureDemoLiveActivitySampleNextTime => '晚上 8:11';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleIos =>
+      '留在 DeenFocus。长按主屏幕，添加小组件，并试用全部 3 种尺寸。';
+
+  @override
+  String get featureDemoWidgetsIntroSubtitleAndroid =>
+      '留在 DeenFocus。长按主屏幕，打开小组件选择器，试用全部 3 种尺寸。';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutIos => '长按主屏幕以编辑小组件';
+
+  @override
+  String get featureDemoWidgetsLongPressCalloutAndroid => '长按主屏幕以编辑小组件';
+
+  @override
+  String get featureDemoWidgetsAddCallout => '点击 + 选择 DeenFocus 小组件';
+
+  @override
+  String get featureDemoWidgetsAddSlotLabel => '添加小组件';
+
+  @override
+  String get featureDemoWidgetsGalleryTitle => '选择 DeenFocus 小组件';
+
+  @override
+  String get featureDemoWidgetsGallerySubtitle =>
+      'Switch between Small, Medium, and Large — then add it to your Home Screen.';
+
+  @override
+  String get featureDemoWidgetsAddCta => 'Add Widget';
+
+  @override
+  String get featureDemoWidgetsAddCtaAndroid => 'Add widget';
+
+  @override
+  String get featureDemoWidgetsChangeCta => '更换尺寸';
+
+  @override
+  String get featureDemoWidgetSizeSmall => '小号';
+
+  @override
+  String get featureDemoWidgetSizeMedium => '中号';
+
+  @override
+  String get featureDemoWidgetSizeLarge => '大号';
+
+  @override
+  String get featureDemoWidgetSizeSmallSubtitle =>
+      'Compact prayer times at a glance';
+
+  @override
+  String get featureDemoWidgetSizeMediumSubtitle =>
+      'Daily verse plus all five prayers';
+
+  @override
+  String get featureDemoWidgetSizeLargeSubtitle =>
+      'Prayer progress with today’s schedule';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleIos =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.';
+
+  @override
+  String get featureDemoLiveActivityIntroSubtitleAndroid =>
+      'Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.';
+
+  @override
+  String get featureDemoLiveOpenPrayerCalcCallout => '点击礼拜计算';
+
+  @override
+  String get featureDemoLiveEnableToggleCallout => '打开“启用实时活动”';
+
+  @override
+  String get featureDemoLiveLockScreenCallout =>
+      'Your prayer Live Activity on the Lock Screen';
+
+  @override
+  String get featureDemoLiveCompactTitle => '紧凑灵动岛';
+
+  @override
+  String get featureDemoLiveCompactCallout =>
+      'Current prayer stays visible at the top';
+
+  @override
+  String get featureDemoLiveExpandCta => '展开灵动岛';
+
+  @override
+  String get featureDemoLiveExpandedTitle => '展开的灵动岛';
+
+  @override
+  String get featureDemoLiveExpandedCallout =>
+      'See current time and the next prayer together';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleIos =>
+      'Lock Screen and Dynamic Island, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionSubtitleAndroid =>
+      'Ongoing prayer updates, ready.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyIos =>
+      'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get featureDemoLiveActivityCompletionBodyAndroid =>
+      'Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.';
+
+  @override
+  String get featureDemoAndroidStatusBarHint => 'Ongoing notification';
+
+  @override
+  String get featureDemoAndroidOngoingTitle => '实时礼拜通知';
+
+  @override
+  String get featureDemoAndroidOngoingCallout =>
+      'Silent ongoing update — current and next prayer';
+
+  @override
+  String get featureDemoAndroidOpenShadeCta => '打开通知栏';
+
+  @override
+  String get featureDemoAndroidShadeTitle => '通知栏';
+
+  @override
+  String get featureDemoAndroidShadeCallout =>
+      'Expand to see the full current and next prayer status';
+
+  @override
+  String get featureDemoAndroidOngoingBadge => '进行中';
+
+  @override
+  String get appLockDemoOfferPrayerTitle => '准备试试礼拜模式吗？';
+
+  @override
+  String get appLockDemoOfferSleepTitle => '准备试试睡眠模式吗？';
+
+  @override
+  String get appLockDemoOfferChildTitle => '准备试试儿童模式吗？';
+
+  @override
+  String get appLockDemoOfferPrayerCta => '启用礼拜模式';
+
+  @override
+  String get appLockDemoOfferSleepCta => '启用睡眠模式';
+
+  @override
+  String get appLockDemoOfferChildCta => '启用儿童模式';
+
+  @override
+  String get appLockDemoOfferNotNow => '暂时不要';
+
+  @override
+  String get nightlyWrapUpPrayersTitle => '完成今天的礼拜';
+
+  @override
+  String get nightlyWrapUpPrayersBody => '标记未完成或错过的礼拜，以保护你的礼拜连续记录。';
+
+  @override
+  String get nightlyWrapUpChecklistTitle => '完成今日清单';
+
+  @override
+  String get nightlyWrapUpChecklistBody => '还有几项未完成——有意识地结束今天。';
+
+  @override
+  String get nightlyWrapUpBothTitle => '结束你的一天';
+
+  @override
+  String get nightlyWrapUpBothBody => '标记剩余礼拜，并在今天结束前完成每日清单。';
+
+  @override
+  String get cycleModeEndedNotificationTitle => '周期模式已结束';
+
+  @override
+  String get cycleModeEndedNotificationBody =>
+      '您的周期模式现已关闭。您可以继续礼拜。若要更改周期模式日期，请点按此处进行编辑。';
 }

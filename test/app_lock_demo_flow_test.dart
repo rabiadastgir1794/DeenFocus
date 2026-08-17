@@ -46,6 +46,9 @@ void main() {
       c.continueFromStreak();
       expect(c.phase, AppLockDemoPhase.completion);
 
+      c.openEnableOffer();
+      expect(c.phase, AppLockDemoPhase.enableOffer);
+
       c.reset();
       expect(c.phase, AppLockDemoPhase.intro);
     });
@@ -143,6 +146,12 @@ void main() {
       expect(find.text('NIGHT STREAK'), findsNothing);
       expect(find.text('Rest well tonight'), findsOneWidget);
       expect(find.text('Done'), findsOneWidget);
+
+      await tester.tap(find.text('Done'));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Ready to try Sleep Mode?'), findsOneWidget);
+      expect(find.text('Enable Sleep Mode'), findsOneWidget);
+      expect(find.text('Not now'), findsOneWidget);
     });
 
     testWidgets('child mode skips streak and uses positive completion',
@@ -185,6 +194,53 @@ void main() {
       expect(find.text('SAFE STREAK'), findsNothing);
       expect(find.text('Peace of mind'), findsOneWidget);
       expect(find.text('Done'), findsOneWidget);
+
+      await tester.tap(find.text('Done'));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Ready to try Child Mode?'), findsOneWidget);
+      expect(find.text('Enable Child Mode'), findsOneWidget);
+    });
+
+    testWidgets('settings enable offer calls onEnableFocusMode', (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      var enableTaps = 0;
+      await tester.pumpWidget(
+        _wrap(
+          AppLockDemoFlow(
+            mode: AppLockDemoMode.prayer,
+            fromSettings: true,
+            onComplete: () {},
+            onExit: () {},
+            onEnableFocusMode: () => enableTaps++,
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('Start the demo'));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.tap(find.text('Instagram'));
+      await tester.pump();
+      await tester.pump(AppLockDemoController.openingDuration);
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.textContaining('I’ve prayed'));
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.text('Continue'));
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.text('Done'));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('Ready to try Prayer Mode?'), findsOneWidget);
+      await tester.tap(find.text('Enable Prayer Mode'));
+      await tester.pump();
+      expect(enableTaps, 1);
     });
   });
 

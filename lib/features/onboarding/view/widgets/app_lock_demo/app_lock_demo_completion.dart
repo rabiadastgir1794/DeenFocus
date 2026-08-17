@@ -2,17 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/constants/spacing.dart';
-import 'app_lock_demo_copy.dart';
 
+/// Shared demo completion chrome (App Lock + feature demos).
 class AppLockDemoCompletion extends StatelessWidget {
   const AppLockDemoCompletion({
     super.key,
-    required this.copy,
+    required this.completionTitle,
+    required this.completionSubtitle,
+    required this.completionBody,
+    required this.completionCta,
     required this.onContinue,
+    this.showCompletionHeart = false,
   });
 
-  final AppLockDemoCopy copy;
+  final String completionTitle;
+  final String completionSubtitle;
+  final String completionBody;
+  final String completionCta;
   final VoidCallback onContinue;
+  final bool showCompletionHeart;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +66,7 @@ class AppLockDemoCompletion extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  copy.completionTitle,
+                  completionTitle,
                   textAlign: TextAlign.center,
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w800,
@@ -67,7 +75,7 @@ class AppLockDemoCompletion extends StatelessWidget {
                   ),
                 ),
               ),
-              if (copy.showCompletionHeart) ...[
+              if (showCompletionHeart) ...[
                 SizedBox(width: 8.w),
                 Icon(
                   Icons.favorite_rounded,
@@ -79,7 +87,7 @@ class AppLockDemoCompletion extends StatelessWidget {
           ),
           SizedBox(height: Spacing.md.h),
           Text(
-            copy.completionSubtitle,
+            completionSubtitle,
             textAlign: TextAlign.center,
             style: textTheme.bodyLarge?.copyWith(
               color: colorScheme.onSurfaceVariant,
@@ -89,7 +97,7 @@ class AppLockDemoCompletion extends StatelessWidget {
           ),
           SizedBox(height: Spacing.sm.h),
           Text(
-            copy.completionBody,
+            completionBody,
             textAlign: TextAlign.center,
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant.withValues(alpha: 0.9),
@@ -110,7 +118,7 @@ class AppLockDemoCompletion extends StatelessWidget {
                 ),
               ),
               child: Text(
-                copy.completionCta,
+                completionCta,
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,

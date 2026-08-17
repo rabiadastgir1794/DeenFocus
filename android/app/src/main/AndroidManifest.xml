@@ -72,6 +72,15 @@
                 <action android:name="com.rnr.deenfocus.action.PRAYER_ALARM_DISMISS" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".PrayerLiveActivityReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.rnr.deenfocus.PRAYER_LIVE_ACTIVITY_REFRESH" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".FocusAccessibilityService"
             android:exported="false"

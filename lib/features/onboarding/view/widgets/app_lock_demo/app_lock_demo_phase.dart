@@ -6,4 +6,6 @@ enum AppLockDemoPhase {
   prayerLock,
   streakReward,
   completion,
+  /// Settings-only: ask to enable the real Focus Mode after the walkthrough.
+  enableOffer,
 }

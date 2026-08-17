@@ -4,33 +4,63 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/spacing.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../focus/model/focus_models.dart';
+import '../../../onboarding/view/widgets/app_demo_skip_button.dart';
 import '../../../onboarding/view/widgets/app_lock_demo/app_lock_demo_flow.dart';
 import '../../../onboarding/view/widgets/app_lock_demo/app_lock_demo_mode.dart';
+import '../../../onboarding/view/widgets/feature_demo/feature_demo_flow.dart';
+import '../../../onboarding/view/widgets/feature_demo/feature_demo_kind.dart';
 
-/// Settings entry for the interactive App Lock Demo with mode selection.
+/// Settings entry for interactive App Demo walkthroughs.
 class SettingsAppDemoScreen extends StatefulWidget {
-  const SettingsAppDemoScreen({super.key});
+  const SettingsAppDemoScreen({
+    super.key,
+    this.onRequestEnableFocusMode,
+  });
+
+  /// Opens Focus and runs the existing enable / Superwall flow for [mode].
+  final ValueChanged<FocusModeType>? onRequestEnableFocusMode;
 
   @override
   State<SettingsAppDemoScreen> createState() => _SettingsAppDemoScreenState();
 }
 
 class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
-  AppLockDemoMode? _mode;
+  AppLockDemoMode? _lockMode;
+  FeatureDemoKind? _featureKind;
   bool _immersive = false;
 
-  void _openMode(AppLockDemoMode mode) {
+  bool get _inWalkthrough => _lockMode != null || _featureKind != null;
+
+  void _openLockMode(AppLockDemoMode mode) {
     setState(() {
-      _mode = mode;
+      _lockMode = mode;
+      _featureKind = null;
+      _immersive = false;
+    });
+  }
+
+  void _openFeature(FeatureDemoKind kind) {
+    setState(() {
+      _featureKind = kind;
+      _lockMode = null;
       _immersive = false;
     });
   }
 
   void _backToPicker() {
     setState(() {
-      _mode = null;
+      _lockMode = null;
+      _featureKind = null;
       _immersive = false;
     });
+  }
+
+  void _finishWithFocusEnable(AppLockDemoMode demoMode) {
+    final mode = demoMode.focusModeType;
+    final requestEnable = widget.onRequestEnableFocusMode;
+    Navigator.of(context).pop();
+    requestEnable?.call(mode);
   }
 
   @override
@@ -38,50 +68,53 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (_mode != null) {
+    if (_inWalkthrough) {
+      final featureImmersive = _featureKind != null && _immersive;
+      final lockImmersive = _lockMode != null && _immersive;
       return Scaffold(
-        backgroundColor: _immersive ? Colors.black : colorScheme.surface,
+        backgroundColor: lockImmersive
+            ? Colors.black
+            : colorScheme.surface,
         body: SafeArea(
           top: !_immersive,
           bottom: false,
           child: Stack(
             fit: StackFit.expand,
             children: [
-              AppLockDemoFlow(
-                key: ValueKey(_mode),
-                mode: _mode!,
-                fromSettings: true,
-                isActive: true,
-                onComplete: _backToPicker,
-                onExit: _backToPicker,
-                onImmersiveChanged: (value) {
-                  if (!mounted || _immersive == value) return;
-                  setState(() => _immersive = value);
-                },
-              ),
+              if (_lockMode != null)
+                AppLockDemoFlow(
+                  key: ValueKey(_lockMode),
+                  mode: _lockMode!,
+                  fromSettings: true,
+                  isActive: true,
+                  onComplete: _backToPicker,
+                  onExit: _backToPicker,
+                  onEnableFocusMode: () => _finishWithFocusEnable(_lockMode!),
+                  onImmersiveChanged: (value) {
+                    if (!mounted || _immersive == value) return;
+                    setState(() => _immersive = value);
+                  },
+                )
+              else
+                FeatureDemoFlow(
+                  key: ValueKey(_featureKind),
+                  kind: _featureKind!,
+                  onComplete: _backToPicker,
+                  onExit: _backToPicker,
+                  onImmersiveChanged: (value) {
+                    if (!mounted || _immersive == value) return;
+                    setState(() => _immersive = value);
+                  },
+                ),
               if (_immersive)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(
-                    onPressed: _backToPicker,
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white.withValues(alpha: 0.92),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Spacing.md.w,
-                        vertical: 8.h,
-                      ),
-                    ),
-                    child: Text(
-                      l10n.skip,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        shadows: const [
-                          Shadow(blurRadius: 8, color: Colors.black54),
-                        ],
-                      ),
-                    ),
-                  ),
+                AppDemoSkipButton(
+                  onPressed: _backToPicker,
+                  label: l10n.skip,
+                  foregroundColor: (featureImmersive
+                          ? colorScheme.onSurface
+                          : Colors.white)
+                      .withValues(alpha: 0.92),
+                  showShadow: !featureImmersive,
                 ),
             ],
           ),
@@ -89,8 +122,7 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
       );
     }
 
-    final bottomPad =
-        Spacing.xl.h + MediaQuery.paddingOf(context).bottom;
+    final bottomPad = Spacing.xl.h + MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
       body: SafeArea(
@@ -131,21 +163,52 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
                     icon: Icons.mosque_rounded,
                     title: l10n.focusPrayerModeTitle,
                     subtitle: l10n.settingsAppDemoPrayerCardSubtitle,
-                    onTap: () => _openMode(AppLockDemoMode.prayer),
+                    onTap: () => _openLockMode(AppLockDemoMode.prayer),
                   ),
                   SizedBox(height: Spacing.md.h),
                   _ModeOptionCard(
                     icon: Icons.bedtime_rounded,
                     title: l10n.focusSleepModeTitle,
                     subtitle: l10n.settingsAppDemoSleepCardSubtitle,
-                    onTap: () => _openMode(AppLockDemoMode.sleep),
+                    onTap: () => _openLockMode(AppLockDemoMode.sleep),
                   ),
                   SizedBox(height: Spacing.md.h),
                   _ModeOptionCard(
                     icon: Icons.child_care_rounded,
                     title: l10n.focusChildModeTitle,
                     subtitle: l10n.settingsAppDemoChildCardSubtitle,
-                    onTap: () => _openMode(AppLockDemoMode.child),
+                    onTap: () => _openLockMode(AppLockDemoMode.child),
+                  ),
+                  SizedBox(height: Spacing.xl.h),
+                  Text(
+                    l10n.settingsAppDemoHomeFeaturesTitle,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.3,
+                          color: colorScheme.onSurface,
+                        ),
+                  ),
+                  SizedBox(height: Spacing.sm.h),
+                  Text(
+                    l10n.settingsAppDemoHomeFeaturesSubtitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          height: 1.45,
+                        ),
+                  ),
+                  SizedBox(height: Spacing.lg.h),
+                  _ModeOptionCard(
+                    icon: Icons.widgets_rounded,
+                    title: l10n.featureDemoWidgetsTitle,
+                    subtitle: l10n.settingsAppDemoWidgetsCardSubtitle,
+                    onTap: () => _openFeature(FeatureDemoKind.widgets),
+                  ),
+                  SizedBox(height: Spacing.md.h),
+                  _ModeOptionCard(
+                    icon: Icons.notifications_active_rounded,
+                    title: l10n.featureDemoLiveActivityTitle,
+                    subtitle: l10n.settingsAppDemoLiveActivityCardSubtitle,
+                    onTap: () => _openFeature(FeatureDemoKind.liveActivity),
                   ),
                 ],
               ),

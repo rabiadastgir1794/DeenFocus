@@ -1830,6 +1830,12 @@ abstract class AppLocalizations {
   /// **'“Establish prayer -  until the darkness of the night.” — Qur’an 17:78'**
   String get prayerNotificationSubtitleIsha;
 
+  /// No description provided for @prayerNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time for {prayerName}'**
+  String prayerNotificationTitle(String prayerName);
+
   /// No description provided for @homeTrialBannerTitle.
   ///
   /// In en, this message translates to:
@@ -2992,6 +2998,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set your location in Deen Focus to load prayers and the daily verse.'**
   String get widgetSetLocationForPrayers;
+
+  /// No description provided for @widgetPrayerProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Prayer Progress'**
+  String get widgetPrayerProgressTitle;
+
+  /// No description provided for @widgetPrayerProgressCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{completed} of {total}'**
+  String widgetPrayerProgressCount(int completed, int total);
+
+  /// No description provided for @widgetPrayersCompletedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'prayers completed.'**
+  String get widgetPrayersCompletedSubtitle;
+
+  /// No description provided for @widgetPrayersLeftToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going — {count} prayers left today'**
+  String widgetPrayersLeftToday(int count);
+
+  /// No description provided for @widgetAllPrayersDoneToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah — all prayers complete today'**
+  String get widgetAllPrayersDoneToday;
 
   /// No description provided for @focusChildModeActive.
   ///
@@ -4409,6 +4445,96 @@ abstract class AppLocalizations {
   /// **'Instagram'**
   String get appLockDemoAppInstagram;
 
+  /// No description provided for @settingsPrayerUpdatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Updates'**
+  String get settingsPrayerUpdatesTitle;
+
+  /// No description provided for @settingsPrayerUpdatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity for your next prayer on the Lock Screen'**
+  String get settingsPrayerUpdatesSubtitle;
+
+  /// No description provided for @liveActivitySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activities'**
+  String get liveActivitySectionTitle;
+
+  /// No description provided for @liveActivityStayUpdatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated at a glance'**
+  String get liveActivityStayUpdatedTitle;
+
+  /// No description provided for @liveActivityStayUpdatedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See your next prayer and its time directly on your Lock Screen.'**
+  String get liveActivityStayUpdatedBody;
+
+  /// No description provided for @liveActivityEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Live Activity'**
+  String get liveActivityEnableLabel;
+
+  /// No description provided for @liveActivityPromptNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get liveActivityPromptNotNow;
+
+  /// No description provided for @liveActivityUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activities are not available on this device.'**
+  String get liveActivityUnsupported;
+
+  /// No description provided for @liveActivityPermissionNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications so prayer updates can appear on your Lock Screen.'**
+  String get liveActivityPermissionNeeded;
+
+  /// No description provided for @liveActivityPermissionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get liveActivityPermissionButton;
+
+  /// No description provided for @liveActivityStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity is on'**
+  String get liveActivityStatusActive;
+
+  /// No description provided for @liveActivityStatusOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity is off'**
+  String get liveActivityStatusOff;
+
+  /// No description provided for @liveActivityNowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get liveActivityNowLabel;
+
+  /// No description provided for @liveActivityUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated at {time}'**
+  String liveActivityUpdatedAt(String time);
+
+  /// No description provided for @liveActivityNextAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayer} at {time}'**
+  String liveActivityNextAt(String prayer, String time);
+
   /// No description provided for @settingsPrayerAlarmsTitle.
   ///
   /// In en, this message translates to:
@@ -4840,6 +4966,546 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hand over your phone knowing only allowed apps stay open.'**
   String get settingsAppDemoChildCardSubtitle;
+
+  /// No description provided for @settingsAppDemoHomeFeaturesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay connected at a glance'**
+  String get settingsAppDemoHomeFeaturesTitle;
+
+  /// No description provided for @settingsAppDemoHomeFeaturesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how Home Screen widgets and Live Activity keep prayer times close — without opening the app.'**
+  String get settingsAppDemoHomeFeaturesSubtitle;
+
+  /// No description provided for @settingsAppDemoWidgetsCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily verse and prayer times on your Home Screen, always up to date.'**
+  String get settingsAppDemoWidgetsCardSubtitle;
+
+  /// No description provided for @settingsAppDemoLiveActivityCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Current and next prayer on your Lock Screen and Dynamic Island.'**
+  String get settingsAppDemoLiveActivityCardSubtitle;
+
+  /// No description provided for @featureDemoContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get featureDemoContinue;
+
+  /// No description provided for @featureDemoSampleStatusTime.
+  ///
+  /// In en, this message translates to:
+  /// **'9:41'**
+  String get featureDemoSampleStatusTime;
+
+  /// No description provided for @featureDemoOfferWidgetManualBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your device doesn’t allow apps to place widgets automatically. Add the Large DeenFocus widget from your Home Screen widget gallery.'**
+  String get featureDemoOfferWidgetManualBody;
+
+  /// No description provided for @featureDemoOfferWidgetManualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the widget from your Home Screen'**
+  String get featureDemoOfferWidgetManualTitle;
+
+  /// No description provided for @featureDemoOfferNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get featureDemoOfferNo;
+
+  /// No description provided for @featureDemoOfferYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get featureDemoOfferYes;
+
+  /// No description provided for @featureDemoOfferLiveActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to enable Live Activity on your device?'**
+  String get featureDemoOfferLiveActivityTitle;
+
+  /// No description provided for @featureDemoOfferWidgetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to add this widget to your Home Screen?'**
+  String get featureDemoOfferWidgetsTitle;
+
+  /// No description provided for @featureDemoWidgetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widgets'**
+  String get featureDemoWidgetsTitle;
+
+  /// No description provided for @featureDemoWidgetsIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See your Home Screen widgets'**
+  String get featureDemoWidgetsIntroTitle;
+
+  /// No description provided for @featureDemoWidgetsIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.'**
+  String get featureDemoWidgetsIntroSubtitle;
+
+  /// No description provided for @featureDemoWidgetsShowcaseCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press the Home Screen to edit widgets'**
+  String get featureDemoWidgetsShowcaseCallout;
+
+  /// No description provided for @featureDemoWidgetsDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Glanceable prayer guidance'**
+  String get featureDemoWidgetsDetailsTitle;
+
+  /// No description provided for @featureDemoWidgetsDetailsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.'**
+  String get featureDemoWidgetsDetailsBody;
+
+  /// No description provided for @featureDemoWidgetsCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widgets, ready'**
+  String get featureDemoWidgetsCompletionTitle;
+
+  /// No description provided for @featureDemoWidgetsCompletionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Faith reminders on your Home Screen.'**
+  String get featureDemoWidgetsCompletionSubtitle;
+
+  /// No description provided for @featureDemoWidgetsCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.'**
+  String get featureDemoWidgetsCompletionBody;
+
+  /// No description provided for @featureDemoWidgetsHomeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday, 13 August'**
+  String get featureDemoWidgetsHomeHint;
+
+  /// No description provided for @featureDemoWidgetSampleDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed, Aug 13'**
+  String get featureDemoWidgetSampleDate;
+
+  /// No description provided for @featureDemoWidgetSampleVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'It is You we worship and You we ask for help.'**
+  String get featureDemoWidgetSampleVerse;
+
+  /// No description provided for @featureDemoWidgetSampleSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Surah 1:5'**
+  String get featureDemoWidgetSampleSource;
+
+  /// No description provided for @featureDemoLiveActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity'**
+  String get featureDemoLiveActivityTitle;
+
+  /// No description provided for @featureDemoLiveActivityIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See Live Activity in action'**
+  String get featureDemoLiveActivityIntroTitle;
+
+  /// No description provided for @featureDemoLiveActivityIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.'**
+  String get featureDemoLiveActivityIntroSubtitle;
+
+  /// No description provided for @featureDemoLiveActivityShowcaseCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Prayer Calculation'**
+  String get featureDemoLiveActivityShowcaseCallout;
+
+  /// No description provided for @featureDemoLiveActivityDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer updates, always visible'**
+  String get featureDemoLiveActivityDetailsTitle;
+
+  /// No description provided for @featureDemoLiveActivityDetailsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.'**
+  String get featureDemoLiveActivityDetailsBody;
+
+  /// No description provided for @featureDemoLiveActivityCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity, ready'**
+  String get featureDemoLiveActivityCompletionTitle;
+
+  /// No description provided for @featureDemoLiveActivityCompletionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Next prayer, always nearby.'**
+  String get featureDemoLiveActivityCompletionSubtitle;
+
+  /// No description provided for @featureDemoLiveActivityCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.'**
+  String get featureDemoLiveActivityCompletionBody;
+
+  /// No description provided for @featureDemoLiveActivityLockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday, 13 August'**
+  String get featureDemoLiveActivityLockHint;
+
+  /// No description provided for @featureDemoLiveActivitySampleTime.
+  ///
+  /// In en, this message translates to:
+  /// **'6:48 PM'**
+  String get featureDemoLiveActivitySampleTime;
+
+  /// No description provided for @featureDemoLiveActivitySampleNextTime.
+  ///
+  /// In en, this message translates to:
+  /// **'8:11 PM'**
+  String get featureDemoLiveActivitySampleNextTime;
+
+  /// No description provided for @featureDemoWidgetsIntroSubtitleIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.'**
+  String get featureDemoWidgetsIntroSubtitleIos;
+
+  /// No description provided for @featureDemoWidgetsIntroSubtitleAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.'**
+  String get featureDemoWidgetsIntroSubtitleAndroid;
+
+  /// No description provided for @featureDemoWidgetsLongPressCalloutIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press the Home Screen to edit widgets'**
+  String get featureDemoWidgetsLongPressCalloutIos;
+
+  /// No description provided for @featureDemoWidgetsLongPressCalloutAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press the Home Screen to edit widgets'**
+  String get featureDemoWidgetsLongPressCalloutAndroid;
+
+  /// No description provided for @featureDemoWidgetsAddCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to choose a DeenFocus widget'**
+  String get featureDemoWidgetsAddCallout;
+
+  /// No description provided for @featureDemoWidgetsAddSlotLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Widget'**
+  String get featureDemoWidgetsAddSlotLabel;
+
+  /// No description provided for @featureDemoWidgetsGalleryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a DeenFocus widget'**
+  String get featureDemoWidgetsGalleryTitle;
+
+  /// No description provided for @featureDemoWidgetsGallerySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between Small, Medium, and Large — then add it to your Home Screen.'**
+  String get featureDemoWidgetsGallerySubtitle;
+
+  /// No description provided for @featureDemoWidgetsAddCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Widget'**
+  String get featureDemoWidgetsAddCta;
+
+  /// No description provided for @featureDemoWidgetsAddCtaAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Add widget'**
+  String get featureDemoWidgetsAddCtaAndroid;
+
+  /// No description provided for @featureDemoWidgetsChangeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Change size'**
+  String get featureDemoWidgetsChangeCta;
+
+  /// No description provided for @featureDemoWidgetSizeSmall.
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get featureDemoWidgetSizeSmall;
+
+  /// No description provided for @featureDemoWidgetSizeMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get featureDemoWidgetSizeMedium;
+
+  /// No description provided for @featureDemoWidgetSizeLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get featureDemoWidgetSizeLarge;
+
+  /// No description provided for @featureDemoWidgetSizeSmallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact prayer times at a glance'**
+  String get featureDemoWidgetSizeSmallSubtitle;
+
+  /// No description provided for @featureDemoWidgetSizeMediumSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily verse plus all five prayers'**
+  String get featureDemoWidgetSizeMediumSubtitle;
+
+  /// No description provided for @featureDemoWidgetSizeLargeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer progress with today’s schedule'**
+  String get featureDemoWidgetSizeLargeSubtitle;
+
+  /// No description provided for @featureDemoLiveActivityIntroSubtitleIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.'**
+  String get featureDemoLiveActivityIntroSubtitleIos;
+
+  /// No description provided for @featureDemoLiveActivityIntroSubtitleAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.'**
+  String get featureDemoLiveActivityIntroSubtitleAndroid;
+
+  /// No description provided for @featureDemoLiveOpenPrayerCalcCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Prayer Calculation'**
+  String get featureDemoLiveOpenPrayerCalcCallout;
+
+  /// No description provided for @featureDemoLiveEnableToggleCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Enable Live Activity'**
+  String get featureDemoLiveEnableToggleCallout;
+
+  /// No description provided for @featureDemoLiveLockScreenCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Your prayer Live Activity on the Lock Screen'**
+  String get featureDemoLiveLockScreenCallout;
+
+  /// No description provided for @featureDemoLiveCompactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact Dynamic Island'**
+  String get featureDemoLiveCompactTitle;
+
+  /// No description provided for @featureDemoLiveCompactCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Current prayer stays visible at the top'**
+  String get featureDemoLiveCompactCallout;
+
+  /// No description provided for @featureDemoLiveExpandCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand Dynamic Island'**
+  String get featureDemoLiveExpandCta;
+
+  /// No description provided for @featureDemoLiveExpandedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expanded Dynamic Island'**
+  String get featureDemoLiveExpandedTitle;
+
+  /// No description provided for @featureDemoLiveExpandedCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'See current time and the next prayer together'**
+  String get featureDemoLiveExpandedCallout;
+
+  /// No description provided for @featureDemoLiveActivityCompletionSubtitleIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Screen and Dynamic Island, ready.'**
+  String get featureDemoLiveActivityCompletionSubtitleIos;
+
+  /// No description provided for @featureDemoLiveActivityCompletionSubtitleAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing prayer updates, ready.'**
+  String get featureDemoLiveActivityCompletionSubtitleAndroid;
+
+  /// No description provided for @featureDemoLiveActivityCompletionBodyIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.'**
+  String get featureDemoLiveActivityCompletionBodyIos;
+
+  /// No description provided for @featureDemoLiveActivityCompletionBodyAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.'**
+  String get featureDemoLiveActivityCompletionBodyAndroid;
+
+  /// No description provided for @featureDemoAndroidStatusBarHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing notification'**
+  String get featureDemoAndroidStatusBarHint;
+
+  /// No description provided for @featureDemoAndroidOngoingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live prayer notification'**
+  String get featureDemoAndroidOngoingTitle;
+
+  /// No description provided for @featureDemoAndroidOngoingCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Silent ongoing update — current and next prayer'**
+  String get featureDemoAndroidOngoingCallout;
+
+  /// No description provided for @featureDemoAndroidOpenShadeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Open notification shade'**
+  String get featureDemoAndroidOpenShadeCta;
+
+  /// No description provided for @featureDemoAndroidShadeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification shade'**
+  String get featureDemoAndroidShadeTitle;
+
+  /// No description provided for @featureDemoAndroidShadeCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand to see the full current and next prayer status'**
+  String get featureDemoAndroidShadeCallout;
+
+  /// No description provided for @featureDemoAndroidOngoingBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get featureDemoAndroidOngoingBadge;
+
+  /// No description provided for @appLockDemoOfferPrayerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to try Prayer Mode?'**
+  String get appLockDemoOfferPrayerTitle;
+
+  /// No description provided for @appLockDemoOfferSleepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to try Sleep Mode?'**
+  String get appLockDemoOfferSleepTitle;
+
+  /// No description provided for @appLockDemoOfferChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to try Child Mode?'**
+  String get appLockDemoOfferChildTitle;
+
+  /// No description provided for @appLockDemoOfferPrayerCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Prayer Mode'**
+  String get appLockDemoOfferPrayerCta;
+
+  /// No description provided for @appLockDemoOfferSleepCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Sleep Mode'**
+  String get appLockDemoOfferSleepCta;
+
+  /// No description provided for @appLockDemoOfferChildCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Child Mode'**
+  String get appLockDemoOfferChildCta;
+
+  /// No description provided for @appLockDemoOfferNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get appLockDemoOfferNotNow;
+
+  /// No description provided for @nightlyWrapUpPrayersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish today\'s prayers'**
+  String get nightlyWrapUpPrayersTitle;
+
+  /// No description provided for @nightlyWrapUpPrayersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark any unfinished or missed prayers to protect your Prayer Streak.'**
+  String get nightlyWrapUpPrayersBody;
+
+  /// No description provided for @nightlyWrapUpChecklistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your Daily Checklist'**
+  String get nightlyWrapUpChecklistTitle;
+
+  /// No description provided for @nightlyWrapUpChecklistBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A few checklist items are still open — wrap up your day with intention.'**
+  String get nightlyWrapUpChecklistBody;
+
+  /// No description provided for @nightlyWrapUpBothTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrap up your day'**
+  String get nightlyWrapUpBothTitle;
+
+  /// No description provided for @nightlyWrapUpBothBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark remaining prayers and finish your Daily Checklist before the day ends.'**
+  String get nightlyWrapUpBothBody;
+
+  /// No description provided for @cycleModeEndedNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Mode has ended'**
+  String get cycleModeEndedNotificationTitle;
+
+  /// No description provided for @cycleModeEndedNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Cycle Mode is now off. You can resume praying. If you want to change your Cycle Mode dates, tap here to edit them.'**
+  String get cycleModeEndedNotificationBody;
 }
 
 class _AppLocalizationsDelegate

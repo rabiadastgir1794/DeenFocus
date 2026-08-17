@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "« Soyez assidus aux prières, surtout à la prière médiane. » — Coran 2:238",
   "prayerNotificationSubtitleMaghrib": "« Glorifiez donc Allah lorsque vous atteignez le soir... » — Coran 30:17",
   "prayerNotificationSubtitleIsha": "« Accomplis la prière -  jusqu’à l’obscurité de la nuit. » — Coran 17:78",
+  "prayerNotificationTitle": "C'est l'heure de {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Demandez n'importe quoi sur les heures de prière, le Coran et les conseils islamiques.",
   "homeDay": "Jour",
   "homeDays": "Jours",
@@ -892,6 +900,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "Mises à jour de prière",
+  "settingsPrayerUpdatesSubtitle": "Live Activity pour votre prochaine prière sur l'écran de verrouillage",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Restez informé d'un coup d'œil",
+  "liveActivityStayUpdatedBody": "Voyez votre prochaine prière et son heure directement sur l'écran de verrouillage.",
+  "liveActivityEnableLabel": "Activer la Live Activity",
+  "liveActivityPromptNotNow": "Pas maintenant",
+  "liveActivityUnsupported": "Les Live Activities ne sont pas disponibles sur cet appareil.",
+  "liveActivityPermissionNeeded": "Autorisez les notifications pour afficher les mises à jour de prière sur l'écran de verrouillage.",
+  "liveActivityPermissionButton": "Autoriser les notifications",
+  "liveActivityStatusActive": "Live Activity activée",
+  "liveActivityStatusOff": "Live Activity désactivée",
+  "liveActivityNowLabel": "Maintenant",
+  "liveActivityUpdatedAt": "Mis à jour à {time}",
+  "liveActivityNextAt": "{prayer} à {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Alarmes de prière",
   "settingsPrayerAlarmsSubtitle": "Alarmes complètes pouvant passer le mode silencieux",
   "prayerAlarmsMasterLabel": "Activer les alarmes de prière",
@@ -984,5 +1024,117 @@
   "appLockDemoChildCompletionTitle": "L’esprit tranquille",
   "settingsAppDemoPrayerCardSubtitle": "Mettez les distractions en pause pendant la Salah pour prier avec présence.",
   "settingsAppDemoSleepCardSubtitle": "Protégez vos nuits pour mieux vous reposer — et un Fajr plus léger.",
-  "settingsAppDemoChildCardSubtitle": "Confiez votre téléphone en toute sérénité : seules les apps autorisées restent ouvertes."
+  "settingsAppDemoChildCardSubtitle": "Confiez votre téléphone en toute sérénité : seules les apps autorisées restent ouvertes.",
+  "widgetPrayerProgressTitle": "Votre progression de prière",
+  "widgetPrayerProgressCount": "{completed} sur {total}",
+  "widgetPrayersCompletedSubtitle": "prières accomplies.",
+  "widgetPrayersLeftToday": "Continuez — {count} prières restantes aujourd’hui",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — toutes les prières d’aujourd’hui sont faites",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppDemoHomeFeaturesTitle": "Restez connecté d’un coup d’œil",
+  "settingsAppDemoHomeFeaturesSubtitle": "Voyez comment les widgets et l’activité en direct gardent les heures de prière proches — sans ouvrir l’app.",
+  "settingsAppDemoWidgetsCardSubtitle": "Verset du jour et horaires de prière sur l’écran d’accueil, toujours à jour.",
+  "settingsAppDemoLiveActivityCardSubtitle": "Prière actuelle et suivante sur l’écran de verrouillage et Dynamic Island.",
+  "featureDemoContinue": "Continuer",
+  "featureDemoSampleStatusTime": "09:41",
+  "featureDemoOfferWidgetManualBody": "Votre appareil n’autorise pas les apps à placer des widgets automatiquement. Ajoutez le grand widget DeenFocus depuis la galerie de widgets de l’écran d’accueil.",
+  "featureDemoOfferWidgetManualTitle": "Ajoutez le widget depuis l’écran d’accueil",
+  "featureDemoOfferNo": "Non",
+  "featureDemoOfferYes": "Oui",
+  "featureDemoOfferLiveActivityTitle": "Voulez-vous activer l’activité en direct sur votre appareil ?",
+  "featureDemoOfferWidgetsTitle": "Voulez-vous ajouter ce widget à votre écran d’accueil ?",
+  "featureDemoWidgetsTitle": "Widgets",
+  "featureDemoWidgetsIntroTitle": "Découvrez vos widgets",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "Guidance de prière d’un coup d’œil",
+  "featureDemoWidgetsDetailsBody": "Le widget moyen affiche le verset du jour et les cinq prières — mis à jour à l’ouverture de DeenFocus.",
+  "featureDemoWidgetsCompletionTitle": "Widgets prêts",
+  "featureDemoWidgetsCompletionSubtitle": "Des rappels de foi sur votre écran d’accueil.",
+  "featureDemoWidgetsCompletionBody": "Ajoutez les widgets DeenFocus depuis la galerie, puis ouvrez l’app une fois pour synchroniser.",
+  "featureDemoWidgetsHomeHint": "Mercredi 13 août",
+  "featureDemoWidgetSampleDate": "Mer. 13 août",
+  "featureDemoWidgetSampleVerse": "C’est Toi que nous adorons et c’est Toi dont nous implorons le secours.",
+  "featureDemoWidgetSampleSource": "Sourate 1:5",
+  "featureDemoLiveActivityTitle": "Activité en direct",
+  "featureDemoLiveActivityIntroTitle": "Voir l’activité en direct",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "Mises à jour de prière toujours visibles",
+  "featureDemoLiveActivityDetailsBody": "L’activité en direct garde Maghrib, Isha et le compte à rebours sur l’écran de verrouillage — activez-la dans Réglages.",
+  "featureDemoLiveActivityCompletionTitle": "Activité en direct prête",
+  "featureDemoLiveActivityCompletionSubtitle": "La prochaine prière, toujours proche.",
+  "featureDemoLiveActivityCompletionBody": "Activez l’activité en direct dans Réglages → Calcul de prière pour l’afficher sur l’écran de verrouillage.",
+  "featureDemoLiveActivityLockHint": "Mercredi 13 août",
+  "featureDemoLiveActivitySampleTime": "18:48",
+  "featureDemoLiveActivitySampleNextTime": "20:11",
+  "featureDemoWidgetsIntroSubtitleIos": "Restez dans DeenFocus. Appuyez longuement sur l’écran d’accueil, ajoutez un widget et essayez les 3 tailles.",
+  "featureDemoWidgetsIntroSubtitleAndroid": "Restez dans DeenFocus. Appuyez longuement sur l’écran d’accueil, ouvrez le sélecteur et essayez les 3 tailles.",
+  "featureDemoWidgetsLongPressCalloutIos": "Appuyez longuement sur l’écran d’accueil",
+  "featureDemoWidgetsLongPressCalloutAndroid": "Appuyez longuement sur l’écran d’accueil",
+  "featureDemoWidgetsAddCallout": "Touchez + pour choisir un widget DeenFocus",
+  "featureDemoWidgetsAddSlotLabel": "Ajouter un widget",
+  "featureDemoWidgetsGalleryTitle": "Choisissez un widget DeenFocus",
+  "featureDemoWidgetsGallerySubtitle": "Passez de Petit à Moyen à Grand — puis ajoutez-le à l’écran d’accueil.",
+  "featureDemoWidgetsAddCta": "Ajouter le widget",
+  "featureDemoWidgetsAddCtaAndroid": "Ajouter le widget",
+  "featureDemoWidgetsChangeCta": "Changer la taille",
+  "featureDemoWidgetSizeSmall": "Petit",
+  "featureDemoWidgetSizeMedium": "Moyen",
+  "featureDemoWidgetSizeLarge": "Grand",
+  "featureDemoWidgetSizeSmallSubtitle": "Horaires de prière compacts",
+  "featureDemoWidgetSizeMediumSubtitle": "Verset du jour et les cinq prières",
+  "featureDemoWidgetSizeLargeSubtitle": "Progression des prières et planning du jour",
+  "featureDemoLiveActivityIntroSubtitleIos": "Restez dans DeenFocus. Activez l’activité en direct, puis voyez l’écran de verrouillage et Dynamic Island.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Restez dans DeenFocus. Activez l’activité en direct, puis voyez la notification permanente et le panneau.",
+  "featureDemoLiveOpenPrayerCalcCallout": "Touchez Calcul de prière",
+  "featureDemoLiveEnableToggleCallout": "Activez « Activer l’activité en direct »",
+  "featureDemoLiveLockScreenCallout": "Votre activité de prière sur l’écran de verrouillage",
+  "featureDemoLiveCompactTitle": "Dynamic Island compacte",
+  "featureDemoLiveCompactCallout": "La prière actuelle reste visible en haut",
+  "featureDemoLiveExpandCta": "Agrandir Dynamic Island",
+  "featureDemoLiveExpandedTitle": "Dynamic Island agrandie",
+  "featureDemoLiveExpandedCallout": "Heure actuelle et prochaine prière ensemble",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "Notification de prière en direct",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "Ouvrir le panneau de notifications",
+  "featureDemoAndroidShadeTitle": "Panneau de notifications",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "En cours",
+  "appLockDemoOfferPrayerTitle": "Prêt à essayer le Mode Prière ?",
+  "appLockDemoOfferSleepTitle": "Prêt à essayer le Mode Sommeil ?",
+  "appLockDemoOfferChildTitle": "Prêt à essayer le Mode Enfant ?",
+  "appLockDemoOfferPrayerCta": "Activer le Mode Prière",
+  "appLockDemoOfferSleepCta": "Activer le Mode Sommeil",
+  "appLockDemoOfferChildCta": "Activer le Mode Enfant",
+  "appLockDemoOfferNotNow": "Pas maintenant",
+  "nightlyWrapUpPrayersTitle": "Terminez les prières d’aujourd’hui",
+  "nightlyWrapUpPrayersBody": "Marquez les prières incomplètes ou manquées pour protéger votre série de prières.",
+  "nightlyWrapUpChecklistTitle": "Complétez votre liste du jour",
+  "nightlyWrapUpChecklistBody": "Quelques éléments restent ouverts — concluez votre journée avec intention.",
+  "nightlyWrapUpBothTitle": "Concluez votre journée",
+  "nightlyWrapUpBothBody": "Marquez les prières restantes et terminez votre liste du jour avant la fin de la journée.",
+  "cycleModeEndedNotificationTitle": "Le mode cycle est terminé",
+  "cycleModeEndedNotificationBody": "Votre mode cycle est maintenant désactivé. Vous pouvez reprendre la prière. Si vous voulez modifier les dates du mode cycle, appuyez ici pour les éditer."
 }

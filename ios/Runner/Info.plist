@@ -61,5 +61,7 @@
     <string>This app does not use the microphone directly, but some features or third-party libraries may require access for functionality.</string>
 	<key>NSAlarmKitUsageDescription</key>
 	<string>DeenFocus schedules prayer alarms so you are gently reminded at each salah time, even in Silent Mode or Focus.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>

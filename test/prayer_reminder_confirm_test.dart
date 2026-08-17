@@ -112,6 +112,26 @@ void main() {
     );
   });
 
+  test('after Cycle Mode expires, membership no longer blocks today', () async {
+    final vm = HomeTabViewModel();
+    final start = DateTime(2026, 8, 11);
+    final afterEnd = DateTime(2026, 8, 15);
+
+    await vm.saveCycleMode(
+      CycleModeData(
+        isEnabled: true,
+        startDate: start,
+        cycleLength: 4,
+        pauseStreaks: true,
+        excludeFromStatistics: true,
+      ).expireFully(),
+    );
+
+    expect(vm.cyclePolicy.isCycleMember(start), isTrue);
+    expect(vm.cyclePolicy.isCycleMember(afterEnd), isFalse);
+    expect(vm.cyclePolicy.isTodayProtected(now: afterEnd), isFalse);
+  });
+
   test('on-time mark persists to SharedPreferences', () async {
     final now = DateTime.now();
     final tip = _tipPrayer(now);

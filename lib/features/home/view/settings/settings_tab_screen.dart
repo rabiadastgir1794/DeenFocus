@@ -14,6 +14,8 @@ import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/locale_service.dart';
+import '../../../../core/services/prayer_live_activity_service.dart';
+import '../../../../core/services/prayer_live_activity_toggle.dart';
 import '../../../../core/services/theme_service.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -22,29 +24,99 @@ import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../focus/model/focus_models.dart';
 import 'app_demo_video_settings_card.dart';
 import 'settings_app_demo_screen.dart';
 import 'settings_calculation_method_screen.dart';
+import 'settings_list_widgets.dart';
 import 'settings_prayer_alarms_screen.dart';
 
 class SettingsTabScreen extends StatefulWidget {
-  const SettingsTabScreen({super.key, this.isTabActive = false});
+  const SettingsTabScreen({
+    super.key,
+    this.isTabActive = false,
+    this.onRequestEnableFocusMode,
+  });
 
   /// True when this tab is the selected bottom-nav destination (avoids
   /// initializing the demo video while other tabs are visible).
   final bool isTabActive;
 
+  /// Handoff from Focus Mode App Demos → Focus tab enable / Superwall flow.
+  final ValueChanged<FocusModeType>? onRequestEnableFocusMode;
+
   @override
   State<SettingsTabScreen> createState() => _SettingsTabScreenState();
 }
 
-class _SettingsTabScreenState extends State<SettingsTabScreen> {
+class _SettingsTabScreenState extends State<SettingsTabScreen>
+    with WidgetsBindingObserver {
   late final Future<PackageInfo> _packageInfoFuture;
+  bool _liveActivityEnabled = false;
+  bool _liveActivitySupported = false;
+  bool _liveActivityBusy = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    PrayerLiveActivityService.instance.preferenceListenable
+        .addListener(_onLiveActivityPreferenceChanged);
     _packageInfoFuture = PackageInfo.fromPlatform();
+    unawaited(_loadLiveActivityState());
+  }
+
+  @override
+  void dispose() {
+    PrayerLiveActivityService.instance.preferenceListenable
+        .removeListener(_onLiveActivityPreferenceChanged);
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _onLiveActivityPreferenceChanged() {
+    if (!mounted) return;
+    unawaited(_loadLiveActivityState());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_loadLiveActivityState());
+    }
+  }
+
+  Future<void> _loadLiveActivityState() async {
+    final caps = await PrayerLiveActivityService.instance.getCapabilities();
+    final supported = caps['supportsLiveActivity'] == true;
+    final enabled = supported
+        ? await PrayerLiveActivityService.instance.resolveEnabled()
+        : false;
+    if (!mounted) return;
+    setState(() {
+      _liveActivityEnabled = enabled;
+      _liveActivitySupported = supported;
+    });
+    if (enabled) {
+      unawaited(PrayerLiveActivityService.instance.syncFromStorage());
+    } else {
+      unawaited(PrayerLiveActivityService.instance.stop());
+    }
+  }
+
+  Future<void> _setLiveActivityEnabled(bool value) async {
+    if (!_liveActivitySupported || _liveActivityBusy) return;
+    setState(() => _liveActivityBusy = true);
+    try {
+      final ok = await PrayerLiveActivityToggle.applyWithDialogs(
+        context,
+        enabled: value,
+      );
+      if (!mounted) return;
+      if (ok) setState(() => _liveActivityEnabled = value);
+    } finally {
+      if (mounted) setState(() => _liveActivityBusy = false);
+    }
   }
 
   Future<void> _showSectPicker(BuildContext context) async {
@@ -420,7 +492,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _SettingsCardButton(
+                    SettingsCardButton(
                       icon: Icons.workspace_premium_rounded,
                       iconBackground: const LinearGradient(
                         colors: [Color(0xFF0F766E), Color(0xFF34D399)],
@@ -438,15 +510,15 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                 );
               },
             ),
-            _SettingsGroup(
+            SettingsGroup(
               children: [
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.person_outline_rounded,
                   label: l10n.settingsUsernameLabel,
                   value: profile.userName,
                   onTap: () => unawaited(_onEditUsernameTapped(context)),
                 ),
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.language_rounded,
                   label: l10n.language,
                   value: '${currentLang.flag} ${currentLang.label}',
@@ -455,20 +527,20 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _SettingsSectionHeader(
+            SettingsSectionHeader(
               icon: Icons.public_rounded,
               label: l10n.settingsPrayerCalculationSection,
             ),
             const SizedBox(height: 8),
-            _SettingsGroup(
+            SettingsGroup(
               children: [
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.people_outline_rounded,
                   label: l10n.sectTitle,
                   value: profile.sect.label,
                   onTap: () => unawaited(_showSectPicker(context)),
                 ),
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.calculate_outlined,
                   label: l10n.settingsCalculationMethodTitle,
                   value: profile.calculationMethod.label,
@@ -480,7 +552,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                     );
                   },
                 ),
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.wb_sunny_outlined,
                   label: l10n.settingsAsrCalculationTitle,
                   value: profile.asrMethod == AsrCalculationOption.standard
@@ -498,7 +570,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                           );
                         },
                 ),
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.location_on_outlined,
                   label: l10n.settingsLocationLabel,
                   value: profile.locationLabel,
@@ -512,7 +584,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                     );
                   },
                 ),
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.alarm_rounded,
                   label: l10n.settingsPrayerAlarmsTitle,
                   onTap: () {
@@ -523,12 +595,25 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
                     );
                   },
                 ),
+                SettingsSubtitleSwitchRow(
+                  label: l10n.liveActivityEnableLabel,
+                  subtitle: _liveActivitySupported
+                      ? (_liveActivityEnabled
+                          ? l10n.liveActivityStatusActive
+                          : l10n.liveActivityStatusOff)
+                      : l10n.liveActivityUnsupported,
+                  value: _liveActivityEnabled,
+                  enabled: _liveActivitySupported && !_liveActivityBusy,
+                  onChanged: _liveActivitySupported && !_liveActivityBusy
+                      ? (value) => unawaited(_setLiveActivityEnabled(value))
+                      : null,
+                ),
               ],
             ),
             const SizedBox(height: 16),
-            _SettingsGroup(
+            SettingsGroup(
               children: [
-                _SettingsSwitchRow(
+                SettingsSwitchRow(
                   icon: themeService.isDarkModeEnabled
                       ? Icons.dark_mode_outlined
                       : Icons.light_mode_outlined,
@@ -539,14 +624,14 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _SettingsGroup(
+            SettingsGroup(
               children: [
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.info_outline_rounded,
                   label: l10n.settingsAboutTitle,
                   onTap: () => _onAboutTapped(context),
                 ),
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.email_outlined,
                   label: l10n.settingsContactUsTitle,
                   onTap: () => unawaited(_onContactUsTapped(context)),
@@ -554,15 +639,18 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _SettingsGroup(
+            SettingsGroup(
               children: [
-                _SettingsRow(
+                SettingsRow(
                   icon: Icons.play_circle_outline_rounded,
                   label: l10n.settingsAppDemoLabel,
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => const SettingsAppDemoScreen(),
+                        builder: (_) => SettingsAppDemoScreen(
+                          onRequestEnableFocusMode:
+                              widget.onRequestEnableFocusMode,
+                        ),
                       ),
                     );
                   },
@@ -819,272 +907,6 @@ class _AboutFeatureItem extends StatelessWidget {
           child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
-    );
-  }
-}
-
-class _SettingsCardButton extends StatelessWidget {
-  const _SettingsCardButton({
-    required this.icon,
-    required this.iconBackground,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final Gradient iconBackground;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Ink(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  gradient: iconBackground,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(
-                  Icons.workspace_premium_rounded,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingsGroup extends StatelessWidget {
-  const _SettingsGroup({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-        ),
-      ),
-      child: Column(children: children),
-    );
-  }
-}
-
-class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({
-    required this.icon,
-    required this.label,
-    this.value,
-    this.onTap,
-    this.disabled = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final String? value;
-  final VoidCallback? onTap;
-  final bool disabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final disabledColor = colorScheme.onSurface.withValues(alpha: 0.38);
-    return Opacity(
-      opacity: disabled ? 0.45 : 1.0,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: disabled ? null : onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Icon(
-                        icon,
-                        size: 20,
-                        color: disabled
-                            ? disabledColor
-                            : colorScheme.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          label,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: disabled ? disabledColor : null,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 170),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (value != null)
-                        Flexible(
-                          child: Text(
-                            value!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.end,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: colorScheme.onSurfaceVariant),
-                          ),
-                        ),
-                      if (value != null) const SizedBox(width: 6),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingsSectionHeader extends StatelessWidget {
-  const _SettingsSectionHeader({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: colorScheme.primary),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: colorScheme.primary,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SettingsSwitchRow extends StatelessWidget {
-  const _SettingsSwitchRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Switch.adaptive(value: value, onChanged: onChanged),
-        ],
-      ),
     );
   }
 }

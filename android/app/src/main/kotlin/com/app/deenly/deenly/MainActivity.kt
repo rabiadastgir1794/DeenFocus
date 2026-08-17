@@ -35,6 +35,7 @@ class MainActivity : FlutterActivity() {
     private val qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
     private val widgetMethodChannelName = "com.app.deenly.deenly/widgets"
     private val locationSearchChannelName = "com.app.deenly.deenly/location_search"
+    private val prayerLiveActivityChannelName = "com.app.deenly.deenly/prayer_live_activity"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -74,6 +75,13 @@ class MainActivity : FlutterActivity() {
             widgetMethodChannelName,
         ).setMethodCallHandler { call, result ->
             handleWidgetMethodCall(call, result)
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            prayerLiveActivityChannelName,
+        ).setMethodCallHandler { call, result ->
+            handlePrayerLiveActivityMethodCall(call, result)
         }
 
         MethodChannel(
@@ -350,6 +358,34 @@ class MainActivity : FlutterActivity() {
                 }
                 DeenWidgetStore.saveTimeline(applicationContext, timelineJson)
                 DeenWidgetUpdater.refreshAll(applicationContext)
+                result.success(null)
+            }
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun handlePrayerLiveActivityMethodCall(
+        call: MethodCall,
+        result: MethodChannel.Result,
+    ) {
+        when (call.method) {
+            "getCapabilities" -> {
+                result.success(PrayerLiveActivityBridge.getCapabilities(applicationContext))
+            }
+            "areActivitiesEnabled" -> {
+                result.success(PrayerLiveActivityBridge.areActivitiesEnabled(applicationContext))
+            }
+            "startOrUpdate" -> {
+                val args = call.arguments as? Map<*, *>
+                if (args == null) {
+                    result.error("INVALID_ARGS", "Expected map payload.", null)
+                    return
+                }
+                PrayerLiveActivityBridge.startOrUpdate(applicationContext, args)
+                result.success(null)
+            }
+            "stop" -> {
+                PrayerLiveActivityBridge.stop(applicationContext)
                 result.success(null)
             }
             else -> result.notImplemented()

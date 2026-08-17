@@ -13,8 +13,11 @@ import '../../../core/services/daily_refresh_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/prayer_alarm_service.dart';
+import '../../../core/services/prayer_live_activity_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/widget_sync_service.dart';
 import '../../../core/superwall/app_superwall.dart';
+import '../helpers/daily_checklist_day.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
 import '../helpers/home_prayer_times_helper.dart';
@@ -266,6 +269,7 @@ class HomeTabViewModel extends ChangeNotifier {
     await _loadAll();
     _startTicker();
     unawaited(AppReviewService.onAppResumed());
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
   }
 
   Future<void> onAppResumed() {
@@ -284,7 +288,9 @@ class HomeTabViewModel extends ChangeNotifier {
     await _syncCycleModeFromStorage();
     final expired = await _ensureCycleModeNotExpired();
     await _loadPrayerStreak();
-    if (!expired) {
+    // Calendar-day checklist must roll even when the VM survived past midnight.
+    final checklistRolled = await _ensureDailyChecklistCurrent();
+    if (!expired || checklistRolled) {
       // Streak load recomputes analytics; still refresh focus/achievements
       // so cycle restore after restart stays synchronized.
       await _computeFocusScore();
@@ -305,7 +311,16 @@ class HomeTabViewModel extends ChangeNotifier {
         longitude: longitude!,
         forceReschedule: needsPrayerReschedule,
       );
+      unawaited(_syncNightlyWrapUpIfPossible());
     }
+    // Android AlarmManager + iOS pending: reconcile Cycle Mode expiry after
+    // boot / timezone / overnight without requiring location.
+    unawaited(
+      AppNotificationService.instance.syncCycleModeExpiryNotification(
+        cycleMode: _cycleMode,
+      ),
+    );
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
     await AppReviewService.onAppResumed();
     notifyListeners();
   }
@@ -472,6 +487,16 @@ class HomeTabViewModel extends ChangeNotifier {
       forceReschedule: true,
     );
     await _reschedulePrayerAlarmsIfPossible();
+    unawaited(_syncNightlyWrapUpIfPossible());
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
+  }
+
+  Future<void> _syncNightlyWrapUpIfPossible() async {
+    if (latitude == null || longitude == null) return;
+    await AppNotificationService.instance.syncNightlyWrapUpReminder(
+      latitude: latitude!,
+      longitude: longitude!,
+    );
   }
 
   Future<void> _reschedulePrayerAlarmsIfPossible() async {
@@ -552,24 +577,31 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> _loadDailyChecklist() async {
     final now = DateTime.now();
-    final dateKey = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
     final json = await StorageService.dailyChecklistJson;
-    if (json != null && json.isNotEmpty) {
-      _dailyChecklist = DailyChecklistState.fromJson(json);
-      // Reset if it's from a different day
-      if (_dailyChecklist.dateKey != dateKey) {
-        _dailyChecklist = DailyChecklistState(
-          dateKey: dateKey,
-          completedItems: const <DailyChecklistItem>{},
-        );
-        await _persistDailyChecklist();
-      }
-    } else {
-      _dailyChecklist = DailyChecklistState(
-        dateKey: dateKey,
-        completedItems: const <DailyChecklistItem>{},
-      );
+    final stored = json != null && json.isNotEmpty
+        ? DailyChecklistState.fromJson(json)
+        : null;
+    final resolved = DailyChecklistDay.resolveForToday(
+      stored: stored,
+      now: now,
+    );
+    final rolledToNewDay =
+        stored != null && stored.dateKey.isNotEmpty && stored.dateKey != resolved.dateKey;
+    _dailyChecklist = resolved;
+    // Persist empty new-day state so cold starts / other surfaces see today.
+    if (stored == null || rolledToNewDay) {
+      await _persistDailyChecklist();
     }
+  }
+
+  /// Returns true when the checklist rolled to a new calendar day.
+  Future<bool> _ensureDailyChecklistCurrent() async {
+    final now = DateTime.now();
+    if (!DailyChecklistDay.needsReset(current: _dailyChecklist, now: now)) {
+      return false;
+    }
+    await _loadDailyChecklist();
+    return true;
   }
   
   Future<void> _persistDailyChecklist() async {
@@ -577,6 +609,7 @@ class HomeTabViewModel extends ChangeNotifier {
   }
   
   Future<void> toggleDailyChecklistItem(DailyChecklistItem item) async {
+    await _ensureDailyChecklistCurrent();
     final completed = Set<DailyChecklistItem>.from(_dailyChecklist.completedItems);
     if (completed.contains(item)) {
       completed.remove(item);
@@ -591,6 +624,7 @@ class HomeTabViewModel extends ChangeNotifier {
     await _computeFocusScore();
     await _refreshAchievements();
     notifyListeners();
+    unawaited(_syncNightlyWrapUpIfPossible());
   }
   
   Future<void> _computeFocusScore() async {
@@ -720,6 +754,12 @@ class HomeTabViewModel extends ChangeNotifier {
     await _computeFocusScore();
     await _refreshAchievements();
     notifyListeners();
+    unawaited(_syncNightlyWrapUpIfPossible());
+    unawaited(
+      AppNotificationService.instance.syncCycleModeExpiryNotification(
+        cycleMode: _cycleMode,
+      ),
+    );
   }
 
   /// Disables Cycle Mode on [onDate] (defaults to today). The disable day is
@@ -1061,6 +1101,7 @@ class HomeTabViewModel extends ChangeNotifier {
     await _computeFocusScore();
     await _refreshAchievements();
     notifyListeners();
+    unawaited(_syncNightlyWrapUpIfPossible());
 
     final celebrated = status == PrayerMarkStatus.onTime &&
         previousStatus != PrayerMarkStatus.onTime &&
@@ -1265,6 +1306,9 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> _persistPrayerStreak() async {
     await StorageService.setHomePrayerStreakJson(_prayerStreakState.toJson());
+    // Large widget prayer progress reads this same streak JSON.
+    // ignore() keeps Hive/plugin failures from failing unit tests after completion.
+    WidgetSyncService.instance.syncTimeline().ignore();
   }
 
   void _startTicker() {
@@ -1273,7 +1317,14 @@ class HomeTabViewModel extends ChangeNotifier {
       await _ensureCycleModeNotExpired();
       await _loadPrayerTimes();
       await _loadPrayerStreak();
+      final checklistRolled = await _ensureDailyChecklistCurrent();
+      if (checklistRolled) {
+        await _computeFocusScore();
+        await _refreshAchievements();
+        unawaited(_syncNightlyWrapUpIfPossible());
+      }
       notifyListeners();
+      unawaited(PrayerLiveActivityService.instance.syncFromStorage());
     });
   }
 

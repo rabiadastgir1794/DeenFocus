@@ -281,6 +281,14 @@
   "prayerNotificationSubtitleAsr": "„Păziți cu strictețe rugăciunile, mai ales rugăciunea de mijloc.” — Coran 2:238",
   "prayerNotificationSubtitleMaghrib": "„Așadar, slăviți-L pe Allah când ajungeți seara...” — Coran 30:17",
   "prayerNotificationSubtitleIsha": "„Stabilește rugăciunea -  până la întunericul nopții.” — Coran 17:78",
+  "prayerNotificationTitle": "Este timpul pentru {prayerName}",
+  "@prayerNotificationTitle": {
+    "placeholders": {
+      "prayerName": {
+        "type": "String"
+      }
+    }
+  },
   "homeAiChatDescription": "Întrebați orice despre orele de rugăciune, Coran și îndrumări islamice.",
   "homeDay": "Zi",
   "homeDays": "Zile",
@@ -892,6 +900,38 @@
       }
     }
   },
+  "settingsPrayerUpdatesTitle": "Actualizări rugăciune",
+  "settingsPrayerUpdatesSubtitle": "Live Activity pentru următoarea rugăciune pe ecranul de blocare",
+  "liveActivitySectionTitle": "Live Activities",
+  "liveActivityStayUpdatedTitle": "Rămâi la curent dintr-o privire",
+  "liveActivityStayUpdatedBody": "Vezi următoarea rugăciune și ora ei direct pe ecranul de blocare.",
+  "liveActivityEnableLabel": "Activează Live Activity",
+  "liveActivityPromptNotNow": "Nu acum",
+  "liveActivityUnsupported": "Live Activities nu sunt disponibile pe acest dispozitiv.",
+  "liveActivityPermissionNeeded": "Permite notificările pentru actualizări de rugăciune pe ecranul de blocare.",
+  "liveActivityPermissionButton": "Permite notificările",
+  "liveActivityStatusActive": "Live Activity este activă",
+  "liveActivityStatusOff": "Live Activity este dezactivată",
+  "liveActivityNowLabel": "Acum",
+  "liveActivityUpdatedAt": "Actualizat la {time}",
+  "liveActivityNextAt": "{prayer} la {time}",
+  "@liveActivityUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@liveActivityNextAt": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPrayerAlarmsTitle": "Alarme de rugăciune",
   "settingsPrayerAlarmsSubtitle": "Alarme complete care pot trece de modul silențios",
   "prayerAlarmsMasterLabel": "Activează alarmele de rugăciune",
@@ -984,5 +1024,117 @@
   "appLockDemoChildCompletionTitle": "Liniște sufletească",
   "settingsAppDemoPrayerCardSubtitle": "Pune pe pauză distragerile la Salah ca să te rogi cu prezență.",
   "settingsAppDemoSleepCardSubtitle": "Protejează-ți nopțile ca odihna să vină mai ușor — iar Fajr să fie mai ușor.",
-  "settingsAppDemoChildCardSubtitle": "Încredințează telefonul liniștit: rămân deschise doar aplicațiile permise."
+  "settingsAppDemoChildCardSubtitle": "Încredințează telefonul liniștit: rămân deschise doar aplicațiile permise.",
+  "widgetPrayerProgressTitle": "Progresul tău de rugăciune",
+  "widgetPrayerProgressCount": "{completed} din {total}",
+  "widgetPrayersCompletedSubtitle": "rugăciuni finalizate.",
+  "widgetPrayersLeftToday": "Continuă — mai ai {count} rugăciuni azi",
+  "widgetAllPrayersDoneToday": "Alhamdulillah — toate rugăciunile de azi sunt complete",
+  "@widgetPrayerProgressCount": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@widgetPrayersLeftToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppDemoHomeFeaturesTitle": "Rămâi conectat dintr-o privire",
+  "settingsAppDemoHomeFeaturesSubtitle": "Vezi cum widgeturile și Live Activity țin orele de rugăciune aproape — fără a deschide aplicația.",
+  "settingsAppDemoWidgetsCardSubtitle": "Daily verse and prayer times on your Home Screen, always up to date.",
+  "settingsAppDemoLiveActivityCardSubtitle": "Current and next prayer on your Lock Screen and Dynamic Island.",
+  "featureDemoContinue": "Continuă",
+  "featureDemoSampleStatusTime": "9:41",
+  "featureDemoOfferWidgetManualBody": "Dispozitivul nu permite aplicațiilor să plaseze widgeturi automat. Adaugă widgetul Large DeenFocus din galeria de pe ecranul principal.",
+  "featureDemoOfferWidgetManualTitle": "Adaugă widgetul din ecranul principal",
+  "featureDemoOfferNo": "Nu",
+  "featureDemoOfferYes": "Da",
+  "featureDemoOfferLiveActivityTitle": "Vrei să activezi Live Activity pe dispozitiv?",
+  "featureDemoOfferWidgetsTitle": "Vrei să adaugi acest widget pe ecranul principal?",
+  "featureDemoWidgetsTitle": "Widgeturi",
+  "featureDemoWidgetsIntroTitle": "See your Home Screen widgets",
+  "featureDemoWidgetsIntroSubtitle": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsShowcaseCallout": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsDetailsTitle": "Glanceable prayer guidance",
+  "featureDemoWidgetsDetailsBody": "Your Medium widget shows today’s verse and all five prayer times — refreshed when you open DeenFocus.",
+  "featureDemoWidgetsCompletionTitle": "Widgets, ready",
+  "featureDemoWidgetsCompletionSubtitle": "Faith reminders on your Home Screen.",
+  "featureDemoWidgetsCompletionBody": "Add DeenFocus widgets from your phone’s widget gallery after this demo — then open the app once to sync.",
+  "featureDemoWidgetsHomeHint": "Wednesday, 13 August",
+  "featureDemoWidgetSampleDate": "Wed, Aug 13",
+  "featureDemoWidgetSampleVerse": "It is You we worship and You we ask for help.",
+  "featureDemoWidgetSampleSource": "Surah 1:5",
+  "featureDemoLiveActivityTitle": "Live Activity",
+  "featureDemoLiveActivityIntroTitle": "See Live Activity in action",
+  "featureDemoLiveActivityIntroSubtitle": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityShowcaseCallout": "Tap Prayer Calculation",
+  "featureDemoLiveActivityDetailsTitle": "Prayer updates, always visible",
+  "featureDemoLiveActivityDetailsBody": "Live Activity keeps Maghrib, Isha, and the countdown close on your Lock Screen — turn it on in Settings anytime.",
+  "featureDemoLiveActivityCompletionTitle": "Live Activity, ready",
+  "featureDemoLiveActivityCompletionSubtitle": "Next prayer, always nearby.",
+  "featureDemoLiveActivityCompletionBody": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen.",
+  "featureDemoLiveActivityLockHint": "Wednesday, 13 August",
+  "featureDemoLiveActivitySampleTime": "6:48 PM",
+  "featureDemoLiveActivitySampleNextTime": "8:11 PM",
+  "featureDemoWidgetsIntroSubtitleIos": "Stay in DeenFocus. Long-press the Home Screen, add a widget, and try all three sizes.",
+  "featureDemoWidgetsIntroSubtitleAndroid": "Stay in DeenFocus. Long-press the Home Screen, open the widget picker, and try all three sizes.",
+  "featureDemoWidgetsLongPressCalloutIos": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsLongPressCalloutAndroid": "Long-press the Home Screen to edit widgets",
+  "featureDemoWidgetsAddCallout": "Tap + to choose a DeenFocus widget",
+  "featureDemoWidgetsAddSlotLabel": "Add Widget",
+  "featureDemoWidgetsGalleryTitle": "Choose a DeenFocus widget",
+  "featureDemoWidgetsGallerySubtitle": "Switch between Small, Medium, and Large — then add it to your Home Screen.",
+  "featureDemoWidgetsAddCta": "Add Widget",
+  "featureDemoWidgetsAddCtaAndroid": "Add widget",
+  "featureDemoWidgetsChangeCta": "Change size",
+  "featureDemoWidgetSizeSmall": "Small",
+  "featureDemoWidgetSizeMedium": "Medium",
+  "featureDemoWidgetSizeLarge": "Large",
+  "featureDemoWidgetSizeSmallSubtitle": "Compact prayer times at a glance",
+  "featureDemoWidgetSizeMediumSubtitle": "Daily verse plus all five prayers",
+  "featureDemoWidgetSizeLargeSubtitle": "Prayer progress with today’s schedule",
+  "featureDemoLiveActivityIntroSubtitleIos": "Stay in DeenFocus. Enable Live Activity in Settings, then see Lock Screen and Dynamic Island updates.",
+  "featureDemoLiveActivityIntroSubtitleAndroid": "Stay in DeenFocus. Enable Live Activity in Settings, then see the ongoing prayer notification and shade.",
+  "featureDemoLiveOpenPrayerCalcCallout": "Tap Prayer Calculation",
+  "featureDemoLiveEnableToggleCallout": "Turn on Enable Live Activity",
+  "featureDemoLiveLockScreenCallout": "Your prayer Live Activity on the Lock Screen",
+  "featureDemoLiveCompactTitle": "Compact Dynamic Island",
+  "featureDemoLiveCompactCallout": "Current prayer stays visible at the top",
+  "featureDemoLiveExpandCta": "Expand Dynamic Island",
+  "featureDemoLiveExpandedTitle": "Expanded Dynamic Island",
+  "featureDemoLiveExpandedCallout": "See current time and the next prayer together",
+  "featureDemoLiveActivityCompletionSubtitleIos": "Lock Screen and Dynamic Island, ready.",
+  "featureDemoLiveActivityCompletionSubtitleAndroid": "Ongoing prayer updates, ready.",
+  "featureDemoLiveActivityCompletionBodyIos": "Enable Live Activity in Settings → Prayer Calculation to show prayer updates on your Lock Screen and Dynamic Island.",
+  "featureDemoLiveActivityCompletionBodyAndroid": "Enable Live Activity in Settings → Prayer Calculation to show an ongoing prayer notification on Android.",
+  "featureDemoAndroidStatusBarHint": "Ongoing notification",
+  "featureDemoAndroidOngoingTitle": "Live prayer notification",
+  "featureDemoAndroidOngoingCallout": "Silent ongoing update — current and next prayer",
+  "featureDemoAndroidOpenShadeCta": "Open notification shade",
+  "featureDemoAndroidShadeTitle": "Notification shade",
+  "featureDemoAndroidShadeCallout": "Expand to see the full current and next prayer status",
+  "featureDemoAndroidOngoingBadge": "Ongoing",
+  "appLockDemoOfferPrayerTitle": "Ești gata să încerci Modul Rugăciune?",
+  "appLockDemoOfferSleepTitle": "Ești gata să încerci Modul Somn?",
+  "appLockDemoOfferChildTitle": "Ești gata să încerci Modul Copil?",
+  "appLockDemoOfferPrayerCta": "Activează Modul Rugăciune",
+  "appLockDemoOfferSleepCta": "Activează Modul Somn",
+  "appLockDemoOfferChildCta": "Activează Modul Copil",
+  "appLockDemoOfferNotNow": "Nu acum",
+  "nightlyWrapUpPrayersTitle": "Finalizează rugăciunile de azi",
+  "nightlyWrapUpPrayersBody": "Marchează rugăciunile neterminate sau ratate pentru a-ți proteja seria de rugăciune.",
+  "nightlyWrapUpChecklistTitle": "Completează lista zilnică",
+  "nightlyWrapUpChecklistBody": "Câteva elemente sunt încă deschise — încheie ziua cu intenție.",
+  "nightlyWrapUpBothTitle": "Încheie-ți ziua",
+  "nightlyWrapUpBothBody": "Marchează rugăciunile rămase și termină lista zilnică înainte de sfârșitul zilei.",
+  "cycleModeEndedNotificationTitle": "Modul ciclu s-a încheiat",
+  "cycleModeEndedNotificationBody": "Modul ciclu este acum dezactivat. Poți relua rugăciunea. Dacă vrei să schimbi datele modului ciclu, apasă aici pentru a le edita."
 }

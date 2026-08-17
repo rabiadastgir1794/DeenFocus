@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../features/focus/focus_entry_intent.dart';
+import '../../../features/focus/model/focus_models.dart';
 import '../../../features/focus/view/focus_tab_screen.dart';
+import '../../../features/home/cycle_mode_entry_intent.dart';
 import '../../../features/home/view/home_tab_screen.dart';
 import '../../../features/home/view/settings/settings_tab_screen.dart';
 import '../../../features/quran/view/quran_tab_screen.dart';
@@ -37,9 +40,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    CycleModeEntryIntent.pendingOpenSettings.addListener(_onCycleModeOpenRequested);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_maybePresentPostOnboardingPaywall());
+      _onCycleModeOpenRequested();
     });
+  }
+
+  @override
+  void dispose() {
+    CycleModeEntryIntent.pendingOpenSettings
+        .removeListener(_onCycleModeOpenRequested);
+    super.dispose();
+  }
+
+  void _onCycleModeOpenRequested() {
+    if (!CycleModeEntryIntent.pendingOpenSettings.value) return;
+    if (!mounted) return;
+    // Ensure Home is visible so HomeTabScreen can open the settings sheet.
+    if (_currentIndex != 0 || !_visitedIndexes.contains(0)) {
+      setState(() {
+        _currentIndex = 0;
+        _visitedIndexes.add(0);
+      });
+    }
   }
 
   /// After "Start My 7-Day Free Trial": Home first, then Superwall once
@@ -69,6 +93,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       _currentIndex = index;
       _visitedIndexes.add(index);
+    });
+  }
+
+  void _openFocusAndRequestEnable(FocusModeType mode) {
+    FocusEntryIntent.requestEnableMode(mode);
+    if (!mounted) return;
+    setState(() {
+      _currentIndex = 1;
+      _visitedIndexes.add(1);
     });
   }
 
@@ -159,7 +192,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 3:
         return const QuranTabScreen();
       case 4:
-        return SettingsTabScreen(isTabActive: _currentIndex == 4);
+        return SettingsTabScreen(
+          isTabActive: _currentIndex == 4,
+          onRequestEnableFocusMode: _openFocusAndRequestEnable,
+        );
       default:
         return const SizedBox.shrink();
     }

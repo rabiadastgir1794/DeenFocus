@@ -14,8 +14,13 @@ import 'focus_enforcement_service.dart';
 import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../../features/home/cycle_mode_entry_intent.dart';
+import '../../features/home/helpers/cycle_mode_expiry_notification_planner.dart';
 import '../../features/home/helpers/home_prayer_times_helper.dart';
+import '../../features/home/helpers/nightly_wrap_up_planner.dart';
+import '../../features/home/helpers/prayer_label_helper.dart';
 import '../../features/home/model/home_models.dart';
+import '../../features/home/services/cycle_mode_policy.dart';
 
 void _onNotificationResponse(NotificationResponse response) {
   unawaited(
@@ -24,6 +29,7 @@ void _onNotificationResponse(NotificationResponse response) {
       'id=${response.id} actionId=${response.actionId} payload=${response.payload} input=${response.input} type=${response.notificationResponseType.name}',
     ),
   );
+  AppNotificationService.handleNotificationPayload(response.payload);
 }
 
 class AppNotificationService {
@@ -67,6 +73,24 @@ class AppNotificationService {
     importance: Importance.high,
   );
 
+  /// Same visual weight as other Deenly reminders (beep tone, high importance).
+  static const _wrapUpChannel = AndroidNotificationChannel(
+    'daily_wrap_up',
+    'Daily wrap-up',
+    description:
+        'Evening reminders to finish prayers and your Daily Checklist.',
+    importance: Importance.high,
+    sound: RawResourceAndroidNotificationSound('beep'),
+  );
+
+  static const _cycleModeChannel = AndroidNotificationChannel(
+    'cycle_mode',
+    'Cycle Mode',
+    description: 'Updates when Cycle Mode automatically ends.',
+    importance: Importance.high,
+    sound: RawResourceAndroidNotificationSound('beep'),
+  );
+
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
   static const MethodChannel _focusMethodChannel = MethodChannel(
@@ -75,8 +99,12 @@ class AppNotificationService {
   bool _initialized = false;
   Future<void> _prayerSyncSerial = Future<void>.value();
   Future<void> _focusSyncSerial = Future<void>.value();
+  Future<void> _wrapUpSyncSerial = Future<void>.value();
+  Future<void> _cycleExpirySyncSerial = Future<void>.value();
   String? _lastPrayerScheduleSignature;
   String? _lastFocusScheduleSignature;
+  String? _lastWrapUpScheduleSignature;
+  String? _lastCycleExpiryScheduleSignature;
 
   /// Forces the next [syncFocusNotifications] to rebuild pending alerts.
   void invalidateFocusScheduleCache() {
@@ -130,8 +158,27 @@ class AppNotificationService {
     await androidPlugin?.createNotificationChannel(_prayerChannelBeep);
     await androidPlugin?.createNotificationChannel(_prayerChannelMute);
     await androidPlugin?.createNotificationChannel(_focusChannel);
+    await androidPlugin?.createNotificationChannel(_wrapUpChannel);
+    await androidPlugin?.createNotificationChannel(_cycleModeChannel);
 
     _initialized = true;
+
+    // Cold start from a tapped notification (e.g. Cycle Mode ended → edit).
+    try {
+      final launch = await _plugin.getNotificationAppLaunchDetails();
+      if (launch?.didNotificationLaunchApp == true) {
+        handleNotificationPayload(launch!.notificationResponse?.payload);
+      }
+    } catch (_) {
+      // Launch details unavailable on some platforms/tests — ignore.
+    }
+  }
+
+  /// Routes notification taps to in-app intents (no separate deep-link stack).
+  static void handleNotificationPayload(String? payload) {
+    if (payload == CycleModeExpiryNotificationPlanner.payload) {
+      CycleModeEntryIntent.requestOpenSettings();
+    }
   }
 
   Future<bool> _hasNotificationPermission() async {
@@ -153,6 +200,13 @@ class AppNotificationService {
   static const int _prayerNotificationIdStart = 1000;
   static const int _prayerNotificationIdEnd = 1199;
 
+  /// Nightly Daily Wrap-Up (Isha + 1h). Separate from Fajr→Isha soft reminders.
+  static const int _wrapUpNotificationIdStart = 5000;
+  static const int _wrapUpNotificationIdEnd = 5006;
+
+  /// Single pending Cycle Mode automatic-expiry reminder.
+  static const int _cycleExpiryNotificationId = 5100;
+
   /// Hard iOS limit for pending local notifications per app.
   static const int _iosPendingNotificationLimit = 64;
 
@@ -167,7 +221,6 @@ class AppNotificationService {
     int? daysAheadOverride,
   }) async {
     final run = _prayerSyncSerial.then((_) async {
-      final isSpanish = await _isSpanishLocale();
       final l10n = await _focusNotificationsLocalizations();
       await initialize();
 
@@ -270,7 +323,7 @@ class AppNotificationService {
                   dataset.dayOffset * 20 +
                   _slotIndex(slot.id),
               when: slot.time,
-              title: _prayerTimeTitle(slot.id, isSpanish: isSpanish),
+              title: _prayerTimeTitle(slot.id, l10n),
               body: _prayerTimeBody(slot.id, l10n),
               details: _prayerNotificationDetailsFor(entry.sound),
               payload: 'prayer:${slot.id.name}',
@@ -325,6 +378,301 @@ class AppNotificationService {
     _prayerSyncSerial = run.catchError((Object _) {});
     await run;
   }
+
+  /// Schedules or cancels tonight's Daily Wrap-Up reminder at Isha + 1 hour.
+  ///
+  /// Sleep / Night Discipline must never suppress this reminder. Cycle Mode
+  /// follows the existing in-app reminder rule ([CycleModePolicy.isCycleMember]).
+  Future<void> syncNightlyWrapUpReminder({
+    required double latitude,
+    required double longitude,
+  }) async {
+    final run = _wrapUpSyncSerial.then((_) async {
+      final l10n = await _focusNotificationsLocalizations();
+      await initialize();
+
+      if (!await _hasNotificationPermission()) {
+        _lastWrapUpScheduleSignature = null;
+        await _cancelRange(
+          _wrapUpNotificationIdStart,
+          _wrapUpNotificationIdEnd,
+        );
+        return;
+      }
+      await _ensureAndroidExactAlarmOrFallback();
+      await _setLocalTimezone();
+
+      final now = DateTime.now();
+      final today = NightlyWrapUpPlanner.dateKeyDate(now);
+      final dateKey = NightlyWrapUpPlanner.dateKeyFor(today);
+
+      final prayerSettingsRaw = await StorageService.prayerSettingsJson;
+      final prayerSettings = prayerSettingsRaw == null
+          ? PrayerSettingsState.defaults()
+          : PrayerSettingsState.fromJson(prayerSettingsRaw);
+      final customTimeOverrides = prayerSettings.customTimeOverrides;
+
+      final times = HomePrayerTimesHelper.applyCustomOverrides(
+        data: await HomePrayerTimesHelper.generatePrayerTimesForDate(
+          latitude: latitude,
+          longitude: longitude,
+          date: today,
+        ),
+        overridesMinutesSinceMidnight: customTimeOverrides,
+        referenceTime: DateTime(today.year, today.month, today.day, 12),
+      );
+      final isha = times.slots
+          .where((slot) => slot.id == HomePrayerId.isha)
+          .map((slot) => slot.time)
+          .firstOrNull;
+      if (isha == null) {
+        await _cancelRange(
+          _wrapUpNotificationIdStart,
+          _wrapUpNotificationIdEnd,
+        );
+        _lastWrapUpScheduleSignature = 'no-isha';
+        return;
+      }
+
+      final cyclePolicy = CycleModePolicy(await StorageService.cycleModeData);
+      // Match existing prayer-reminder suppression: cycle member days skip.
+      final skipForCycle = cyclePolicy.isCycleMember(today);
+
+      final checklistRaw = await StorageService.dailyChecklistJson;
+      final checklistState = checklistRaw == null || checklistRaw.isEmpty
+          ? null
+          : DailyChecklistState.fromJson(checklistRaw);
+      final checklistCompleted = NightlyWrapUpPlanner.checklistCompletedForDate(
+        stored: checklistState,
+        dateKey: dateKey,
+      );
+
+      final prayerStatuses = await _todayPrayerStatuses(dateKey);
+      final plan = NightlyWrapUpPlanner.planForDay(
+        ishaTime: isha,
+        prayerStatuses: prayerStatuses,
+        checklistCompleted: checklistCompleted,
+        skipForCycleMode: skipForCycle,
+      );
+
+      final localeCode = await StorageService.localeCode ?? 'en';
+      final signature = plan == null
+          ? 'skip|$dateKey|$localeCode|cycle=$skipForCycle'
+          : 'schedule|$dateKey|$localeCode|${plan.kind.name}|'
+              '${plan.when.toIso8601String()}|'
+              '${latitude.toStringAsFixed(4)}|${longitude.toStringAsFixed(4)}';
+
+      if (_lastWrapUpScheduleSignature == signature) {
+        return;
+      }
+
+      await _cancelRange(
+        _wrapUpNotificationIdStart,
+        _wrapUpNotificationIdEnd,
+      );
+
+      if (plan == null) {
+        _lastWrapUpScheduleSignature = signature;
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.wrap_up.sync',
+          'cancelled — nothing to remind (cycle=$skipForCycle)',
+        );
+        return;
+      }
+
+      final id = nightlyWrapUpNotificationIdFor(0);
+      final copy = _wrapUpCopy(plan.kind, l10n);
+      final scheduled = await _scheduleIfFuture(
+        id: id,
+        when: plan.when,
+        title: copy.title,
+        body: copy.body,
+        details: _wrapUpNotificationDetails,
+        payload: 'wrap_up:${plan.kind.name}',
+        preferAlarmClock: true,
+        iosScheduleRole: _IosScheduleRole.focus,
+      );
+      _lastWrapUpScheduleSignature = signature;
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.wrap_up.sync',
+        'kind=${plan.kind.name} when=${plan.when.toIso8601String()} '
+        'scheduled=$scheduled id=$id',
+      );
+    });
+    _wrapUpSyncSerial = run.catchError((Object _) {});
+    await run;
+  }
+
+  Future<Map<TrackablePrayer, PrayerMarkStatus>> _todayPrayerStatuses(
+    String dateKey,
+  ) async {
+    final raw = await StorageService.homePrayerStreakJson;
+    if (raw == null || raw.isEmpty) {
+      return const <TrackablePrayer, PrayerMarkStatus>{};
+    }
+    final state = HomePrayerStreakState.fromJson(raw);
+    final merged = <TrackablePrayer, PrayerMarkStatus>{
+      ...?state.statusHistory[dateKey],
+    };
+    for (final day in state.weekDays) {
+      if (day.dateKey != dateKey) continue;
+      for (final prayer in TrackablePrayer.values) {
+        final status = day.statusFor(prayer);
+        if (status != PrayerMarkStatus.none) {
+          merged[prayer] = status;
+        }
+      }
+    }
+    return merged;
+  }
+
+  ({String title, String body}) _wrapUpCopy(
+    NightlyWrapUpContentKind kind,
+    AppLocalizations l10n,
+  ) {
+    return switch (kind) {
+      NightlyWrapUpContentKind.prayers => (
+          title: l10n.nightlyWrapUpPrayersTitle,
+          body: l10n.nightlyWrapUpPrayersBody,
+        ),
+      NightlyWrapUpContentKind.checklist => (
+          title: l10n.nightlyWrapUpChecklistTitle,
+          body: l10n.nightlyWrapUpChecklistBody,
+        ),
+      NightlyWrapUpContentKind.both => (
+          title: l10n.nightlyWrapUpBothTitle,
+          body: l10n.nightlyWrapUpBothBody,
+        ),
+    };
+  }
+
+  NotificationDetails get _wrapUpNotificationDetails => NotificationDetails(
+        android: AndroidNotificationDetails(
+          _wrapUpChannel.id,
+          _wrapUpChannel.name,
+          channelDescription: _wrapUpChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          sound: _wrapUpChannel.sound,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.daily_wrap_up',
+        ),
+        macOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.daily_wrap_up',
+        ),
+      );
+
+  /// Schedules or cancels the Cycle Mode automatic-expiry notification.
+  ///
+  /// Only active cycles are scheduled. Manual disable / draft → cancel.
+  /// Deduped by signature so restart/reschedule does not create duplicates.
+  ///
+  /// Android: uses [AndroidScheduleMode.alarmClock] (same path as prayer /
+  /// wrap-up) on channel `cycle_mode`, notification id [_cycleExpiryNotificationId].
+  Future<void> syncCycleModeExpiryNotification({
+    CycleModeData? cycleMode,
+  }) async {
+    final run = _cycleExpirySyncSerial.then((_) async {
+      final l10n = await _focusNotificationsLocalizations();
+      await initialize();
+
+      final data = cycleMode ?? await StorageService.cycleModeData;
+      final when = CycleModeExpiryNotificationPlanner.scheduledFireTime(data);
+      final shouldSchedule = CycleModeExpiryNotificationPlanner.shouldSchedule(
+        data,
+      );
+
+      if (!await _hasNotificationPermission()) {
+        _lastCycleExpiryScheduleSignature = null;
+        await _plugin.cancel(_cycleExpiryNotificationId);
+        return;
+      }
+
+      await _setLocalTimezone();
+      final localeCode = await StorageService.localeCode ?? 'en';
+      final signature = CycleModeExpiryNotificationPlanner.scheduleSignature(
+        data,
+        localeCode: localeCode,
+        timeZoneName: tz.local.name,
+      );
+
+      if (_lastCycleExpiryScheduleSignature == signature) {
+        return;
+      }
+
+      await _plugin.cancel(_cycleExpiryNotificationId);
+
+      if (!shouldSchedule || when == null) {
+        _lastCycleExpiryScheduleSignature = signature;
+        await FocusEnforcementService.appendDebugLog(
+          'notifications.cycle_expiry.sync',
+          'cancelled (enabled=${data.isEnabled})',
+        );
+        return;
+      }
+
+      // Android 12+: exact / alarmClock scheduling needs this permission.
+      await _ensureAndroidExactAlarmOrFallback();
+
+      final scheduled = await _scheduleIfFuture(
+        id: _cycleExpiryNotificationId,
+        when: when,
+        title: l10n.cycleModeEndedNotificationTitle,
+        body: l10n.cycleModeEndedNotificationBody,
+        details: _cycleModeNotificationDetails,
+        payload: CycleModeExpiryNotificationPlanner.payload,
+        // AlarmManager.setAlarmClock — survives Doze on Android (not iOS-only).
+        preferAlarmClock: true,
+        iosScheduleRole: _IosScheduleRole.focus,
+      );
+      _lastCycleExpiryScheduleSignature = signature;
+      await FocusEnforcementService.appendDebugLog(
+        'notifications.cycle_expiry.sync',
+        'when=${when.toIso8601String()} scheduled=$scheduled '
+        'id=$_cycleExpiryNotificationId tz=${tz.local.name}',
+      );
+    });
+    // Never surface plugin/platform failures to callers (tests, resume, save).
+    final guarded = run.catchError((Object _) {});
+    _cycleExpirySyncSerial = guarded;
+    await guarded;
+  }
+
+  NotificationDetails get _cycleModeNotificationDetails => NotificationDetails(
+        android: AndroidNotificationDetails(
+          _cycleModeChannel.id,
+          _cycleModeChannel.name,
+          channelDescription: _cycleModeChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          sound: _cycleModeChannel.sound,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.cycle_mode',
+        ),
+        macOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'beep.caf',
+          threadIdentifier: 'deenly.cycle_mode',
+        ),
+      );
 
   /// Night discipline: one ID per upcoming lock / unlock (same horizon as prayer batch).
   static const int _nightLockNotificationIdStart = 4000;
@@ -884,41 +1232,10 @@ class AppNotificationService {
 
   int _slotIndex(HomePrayerId id) => _slotIndexStatic(id);
 
-  String _prayerLabel(HomePrayerId id, {bool isSpanish = false}) {
-    if (isSpanish) {
-      switch (id) {
-        case HomePrayerId.fajr:
-          return 'Fajr';
-        case HomePrayerId.sunrise:
-          return 'Amanecer';
-        case HomePrayerId.dhuhr:
-          return 'Dhuhr';
-        case HomePrayerId.asr:
-          return 'Asr';
-        case HomePrayerId.maghrib:
-          return 'Maghrib';
-        case HomePrayerId.isha:
-          return 'Isha';
-      }
-    }
-    switch (id) {
-      case HomePrayerId.fajr:
-        return 'Fajr';
-      case HomePrayerId.sunrise:
-        return 'Sunrise';
-      case HomePrayerId.dhuhr:
-        return 'Dhuhr';
-      case HomePrayerId.asr:
-        return 'Asr';
-      case HomePrayerId.maghrib:
-        return 'Maghrib';
-      case HomePrayerId.isha:
-        return 'Isha';
-    }
-  }
-
-  String _prayerTimeTitle(HomePrayerId id, {required bool isSpanish}) {
-    return "It's time for ${_prayerLabel(id, isSpanish: isSpanish)}";
+  String _prayerTimeTitle(HomePrayerId id, AppLocalizations l10n) {
+    final trackable = id.trackablePrayer;
+    if (trackable == null) return '';
+    return l10n.prayerNotificationTitle(trackable.label(l10n));
   }
 
   String _prayerTimeBody(HomePrayerId id, AppLocalizations l10n) {
@@ -936,11 +1253,6 @@ class AppNotificationService {
       case HomePrayerId.sunrise:
         return '';
     }
-  }
-
-  Future<bool> _isSpanishLocale() async {
-    final code = (await StorageService.localeCode)?.toLowerCase();
-    return code != null && code.startsWith('es');
   }
 
   String _buildPrayerScheduleSignature({
@@ -989,6 +1301,33 @@ class AppNotificationService {
   static int prayerNotificationIdFor(HomePrayerId id, int dayOffset) {
     return _prayerNotificationIdStart + dayOffset * 20 + _slotIndexStatic(id);
   }
+
+  /// Stable notification id for the Nightly Daily Wrap-Up (0 = today).
+  @visibleForTesting
+  static int nightlyWrapUpNotificationIdFor(int dayOffset) {
+    return _wrapUpNotificationIdStart + dayOffset;
+  }
+
+  @visibleForTesting
+  static bool isNightlyWrapUpNotificationId(int id) {
+    return id >= _wrapUpNotificationIdStart && id <= _wrapUpNotificationIdEnd;
+  }
+
+  @visibleForTesting
+  static bool isPrayerSoftNotificationId(int id) {
+    return id >= _prayerNotificationIdStart && id <= _prayerNotificationIdEnd;
+  }
+
+  @visibleForTesting
+  static int get cycleModeExpiryNotificationId => _cycleExpiryNotificationId;
+
+  @visibleForTesting
+  static bool isCycleModeExpiryNotificationId(int id) =>
+      id == _cycleExpiryNotificationId;
+
+  /// Android notification channel used for Cycle Mode expiry (AlarmManager path).
+  @visibleForTesting
+  static String get cycleModeAndroidChannelId => _cycleModeChannel.id;
 
   static int _slotIndexStatic(HomePrayerId id) {
     switch (id) {

@@ -12,6 +12,7 @@ class HomeDailyVerse {
     required this.surahNumber,
     required this.ayahNumber,
     required this.surahName,
+    required this.arabicSurahName,
     required this.arabicText,
     required this.englishText,
   });
@@ -19,6 +20,7 @@ class HomeDailyVerse {
   final int surahNumber;
   final int ayahNumber;
   final String surahName;
+  final String arabicSurahName;
   final String arabicText;
   final String englishText;
 }
