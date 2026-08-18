@@ -638,6 +638,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNextPrayerIn => 'Next prayer in';
 
   @override
+  String get homeTapPrayerToMark =>
+      'Tap a prayer to mark it prayed, qada, or missed.';
+
+  @override
+  String get homeSetLocation => 'Set location';
+
+  @override
+  String get homeEditPrayerSettings => 'Edit prayer settings';
+
+  @override
   String get homePrayerFajr => 'Fajr';
 
   @override

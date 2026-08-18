@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">منبه الصلاة</string>
+    <string name="prayer_alarm_subtitle">حان وقت الصلاة</string>
+    <string name="prayer_alarm_ive_prayed">لقد صليت</string>
+    <string name="prayer_alarm_dismiss">رفض</string>
+    <string name="prayer_alarm_snooze">تأجيل</string>
+    <string name="prayer_alarm_snooze_label">مدة التأجيل</string>
+    <string name="prayer_alarm_title_format">%1$s — حان وقت الصلاة</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d دقيقة</string>
+</resources>

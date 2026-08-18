@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "Ich habe gebetet";
+"prayer_alarm_subtitle" = "Zeit zum Beten";
+"prayer_alarm_dismiss" = "Schließen";
+"prayer_alarm_badge" = "Gebetsalarm";
+"prayer_alarm_snooze" = "Schlummern";
+"prayer_alarm_snooze_label" = "Schlummerdauer";

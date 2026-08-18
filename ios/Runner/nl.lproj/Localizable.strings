@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "Ik heb gebeden";
+"prayer_alarm_subtitle" = "Tijd om te bidden";
+"prayer_alarm_dismiss" = "Sluiten";
+"prayer_alarm_badge" = "Gebedsalarm";
+"prayer_alarm_snooze" = "Snooze";
+"prayer_alarm_snooze_label" = "Snoozeduur";

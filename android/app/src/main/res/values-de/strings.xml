@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Gebetsalarm</string>
+    <string name="prayer_alarm_subtitle">Zeit zum Beten</string>
+    <string name="prayer_alarm_ive_prayed">Ich habe gebetet</string>
+    <string name="prayer_alarm_dismiss">Schließen</string>
+    <string name="prayer_alarm_snooze">Schlummern</string>
+    <string name="prayer_alarm_snooze_label">Schlummerdauer</string>
+    <string name="prayer_alarm_title_format">%1$s — Zeit zum Beten</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d Minuten</string>
+</resources>

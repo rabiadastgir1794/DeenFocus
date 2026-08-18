@@ -2,14 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
+import '../settings/settings_tab_screen.dart';
 import 'home_mark_prayer_sheet.dart';
+import 'home_prayer_settings_sheet.dart';
 
 class HomePrayerTimesSection extends StatefulWidget {
   const HomePrayerTimesSection({
@@ -42,12 +46,26 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
     super.dispose();
   }
 
+  void _openLocationSettings() {
+    final profile = context.read<UserProfileService>();
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SettingsLocationScreen(
+          initialSelection: profile.locationSuggestion,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final prayerTimes = widget.prayerTimes;
+    final profile = context.watch<UserProfileService>();
+    final locationName = profile.locationName?.trim() ?? '';
+    final hasLocation = locationName.isNotEmpty;
 
     return Container(
       width: double.infinity,
@@ -73,23 +91,53 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
         children: [
           Row(
             children: [
-              Text(
-                l10n.homeTodaysPrayers,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  height: 1.2,
-                  color: colorScheme.onSurface,
+              Expanded(
+                child: Text(
+                  l10n.homeTodaysPrayers,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    height: 1.2,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
-              const Spacer(),
-              Text(
-                DateFormat.yMMMEd(l10n.localeName).format(DateTime.now()),
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                  color: colorScheme.onSurfaceVariant,
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: _openLocationSettings,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Iconsax.location,
+                        size: 14,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.sizeOf(context).width * 0.38,
+                        ),
+                        child: Text(
+                          hasLocation ? locationName : l10n.homeSetLocation,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.end,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -158,6 +206,22 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 ),
               ],
             ),
+          if (prayerTimes != null) ...[
+            const SizedBox(height: 6),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                l10n.homeTapPrayerToMark,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  height: 1.3,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -273,52 +337,95 @@ class HomePrayerTile extends StatelessWidget {
       boxShadow = null;
     }
 
-    final tile = Container(
+    final editOnPrimary = isCurrent;
+    final editBg = editOnPrimary
+        ? colorScheme.onPrimary.withValues(alpha: 0.22)
+        : (isDark
+              ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.9)
+              : const Color(0xFFE8E6E0));
+    final editFg = editOnPrimary
+        ? colorScheme.onPrimary
+        : colorScheme.onSurfaceVariant;
+
+    return SizedBox(
       width: width,
       height: 76,
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(12),
-        border: border,
-        boxShadow: boxShadow,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(12),
+          border: border,
+          boxShadow: boxShadow,
+        ),
+        child: Stack(
           children: [
-            Text(
-              _labelForPrayer(l10n, slot.id),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-                height: 1.2,
-                color: titleColor.withValues(alpha: 0.8),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: trackable == null
+                      ? null
+                      : () => openPrayerAction(context, trackable),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _labelForPrayer(l10n, slot.id),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            color: titleColor.withValues(alpha: 0.8),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          DateFormat.jm(l10n.localeName).format(slot.time),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                            color: timeColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              DateFormat.jm(l10n.localeName).format(slot.time),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-                color: timeColor,
+            if (trackable != null)
+              Positioned(
+                top: 5,
+                left: 5,
+                child: Material(
+                  color: editBg,
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () => showPrayerSettingsSheet(context, trackable),
+                    child: Tooltip(
+                      message: l10n.homeEditPrayerSettings,
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: Icon(Iconsax.edit_2, size: 11, color: editFg),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
-    );
-
-    if (trackable == null) return tile;
-    return InkWell(
-      onTap: () => openPrayerAction(context, trackable),
-      borderRadius: BorderRadius.circular(12),
-      child: tile,
     );
   }
 

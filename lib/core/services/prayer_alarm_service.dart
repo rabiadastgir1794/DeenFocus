@@ -197,7 +197,9 @@ class PrayerAlarmService {
   Future<bool> openExactAlarmSettings() async {
     if (!Platform.isAndroid) return false;
     try {
-      final opened = await _channel.invokeMethod<bool>('openExactAlarmSettings');
+      final opened = await _channel.invokeMethod<bool>(
+        'openExactAlarmSettings',
+      );
       return opened ?? false;
     } catch (error, stack) {
       LoggerService.instance.warning(
@@ -291,7 +293,7 @@ class PrayerAlarmService {
         LoggerService.instance.info(
           'PRAYER_ALARM',
           'native alarms unavailable; using notification fallback only '
-          '(implementation=${capabilities.implementation})',
+              '(implementation=${capabilities.implementation})',
         );
         return;
       }
@@ -364,6 +366,7 @@ class PrayerAlarmService {
               '${slot.time.year}-${slot.time.month.toString().padLeft(2, '0')}-${slot.time.day.toString().padLeft(2, '0')}';
           final alarmId = '${prayer.name}_$dayKey';
           final prayerLabel = prayer.label(l10n);
+          final snoozeOptions = StorageService.prayerAlarmSnoozeOptionMinutes;
           final payload = <String, dynamic>{
             'id': alarmId,
             'prayer': prayer.name,
@@ -375,6 +378,12 @@ class PrayerAlarmService {
             'ivePrayedLabel': l10n.prayerAlarmIvePrayed,
             'dismissLabel': l10n.prayerAlarmDismiss,
             'snoozeLabel': l10n.prayerAlarmSnooze,
+            'snoozeSectionLabel': l10n.prayerAlarmsSnoozeLabel,
+            'snoozeOptionMinutes': snoozeOptions,
+            'snoozeOptionLabels': [
+              for (final minutes in snoozeOptions)
+                l10n.prayerAlarmsSnoozeMinutes(minutes),
+            ],
             'sound': entry.sound.name,
             'snoozeMinutes': snoozeMinutes,
           };
@@ -401,7 +410,7 @@ class PrayerAlarmService {
         LoggerService.instance.info(
           'PRAYER_ALARM',
           'scheduled ${alarms.length} alarms '
-          '(implementation=${capabilities.implementation})',
+              '(implementation=${capabilities.implementation})',
         );
       } on PlatformException catch (error, stack) {
         LoggerService.instance.error(
@@ -446,7 +455,6 @@ class PrayerAlarmService {
     final primary = code.replaceAll('_', '-').split('-').first.toLowerCase();
     return Locale(primary);
   }
-
 }
 
 @visibleForTesting

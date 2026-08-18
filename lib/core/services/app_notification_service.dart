@@ -11,6 +11,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'focus_enforcement_service.dart';
+import 'prayer_alarm_service.dart';
 import 'storage_service.dart';
 import '../../features/focus/model/focus_models.dart';
 import '../../l10n/app_localizations.dart';
@@ -19,6 +20,7 @@ import '../../features/home/helpers/cycle_mode_expiry_notification_planner.dart'
 import '../../features/home/helpers/home_prayer_times_helper.dart';
 import '../../features/home/helpers/nightly_wrap_up_planner.dart';
 import '../../features/home/helpers/prayer_label_helper.dart';
+import '../../features/home/helpers/prayer_sound_ownership.dart';
 import '../../features/home/model/home_models.dart';
 import '../../features/home/services/cycle_mode_policy.dart';
 
@@ -253,10 +255,16 @@ class AppNotificationService {
       final calculationMethod = await StorageService.calculationMethod ?? '';
       final asrMethod = await StorageService.asrMethod ?? '';
       final localeCode = await StorageService.localeCode ?? 'en';
+      final prayerAlarmsMasterEnabled =
+          await StorageService.prayerAlarmsEnabled;
+      final nativeCapabilities = await PrayerAlarmService.instance
+          .getCapabilities();
+      final nativeAuth = await PrayerAlarmService.instance
+          .getAuthorizationStatus();
 
       final now = DateTime.now();
-      final daysAhead =
-          (daysAheadOverride ?? defaultPrayerScheduleDaysAhead).clamp(1, 7);
+      final daysAhead = (daysAheadOverride ?? defaultPrayerScheduleDaysAhead)
+          .clamp(1, 7);
       // Calendar-day iteration (not Duration) so DST transitions cannot skip a day.
       final today = DateTime(now.year, now.month, now.day);
       final datasets = <({int dayOffset, HomePrayerTimesData data})>[
@@ -272,7 +280,12 @@ class AppNotificationService {
                 date: DateTime(today.year, today.month, today.day + d),
               ),
               overridesMinutesSinceMidnight: customTimeOverrides,
-              referenceTime: DateTime(today.year, today.month, today.day + d, 12),
+              referenceTime: DateTime(
+                today.year,
+                today.month,
+                today.day + d,
+                12,
+              ),
             ),
           ),
       ];
@@ -287,6 +300,9 @@ class AppNotificationService {
         localeCode: localeCode,
         timeZoneName: now.timeZoneName,
         daysAhead: daysAhead,
+        prayerAlarmsMasterEnabled: prayerAlarmsMasterEnabled,
+        nativeCapabilities: nativeCapabilities,
+        nativeAuthorization: nativeAuth,
       );
       // Identical schedule → keep existing pending Fajr→Isha alarms. Never cancel
       // just because resume/daily-refresh set a dirty flag after NTP TIME_CHANGED.
@@ -297,7 +313,7 @@ class AppNotificationService {
         await FocusEnforcementService.appendDebugLog(
           'notifications.prayer.sync',
           'skipped reschedule because signature is unchanged '
-          '(force=$effectiveForce)',
+              '(force=$effectiveForce)',
         );
         return;
       }
@@ -316,6 +332,12 @@ class AppNotificationService {
               ? const PrayerSettingEntry()
               : prayerSettings.forPrayer(trackable);
           if (!entry.notificationsEnabled) continue;
+          final softSound = PrayerSoundOwnership.softEffectiveSound(
+            entry: entry,
+            prayerAlarmsMasterEnabled: prayerAlarmsMasterEnabled,
+            capabilities: nativeCapabilities,
+            authorization: nativeAuth,
+          );
           candidates.add(
             PrayerScheduleCandidate(
               id:
@@ -325,7 +347,7 @@ class AppNotificationService {
               when: slot.time,
               title: _prayerTimeTitle(slot.id, l10n),
               body: _prayerTimeBody(slot.id, l10n),
-              details: _prayerNotificationDetailsFor(entry.sound),
+              details: _prayerNotificationDetailsFor(softSound),
               payload: 'prayer:${slot.id.name}',
             ),
           );
@@ -341,7 +363,9 @@ class AppNotificationService {
           room: _iosPendingNotificationLimit,
           now: now,
         ).length;
-        final needed = iosPrayerSlotsToProtect(futureCandidateCount: futureCount);
+        final needed = iosPrayerSlotsToProtect(
+          futureCandidateCount: futureCount,
+        );
         await _ensureIosRoomForPrayers(needed: needed);
         final pending = await _plugin.pendingNotificationRequests();
         final room = (_iosPendingNotificationLimit - pending.length).clamp(
@@ -356,7 +380,7 @@ class AppNotificationService {
         await FocusEnforcementService.appendDebugLog(
           'notifications.prayer.sync',
           'ios cap needed=$needed room=$room candidates=${candidates.length} '
-          'selected=${toSchedule.length}',
+              'selected=${toSchedule.length}',
         );
       }
 
@@ -371,8 +395,8 @@ class AppNotificationService {
       await FocusEnforcementService.appendDebugLog(
         'notifications.prayer.sync',
         'scheduled soft prayer reminders daysAhead=$daysAhead '
-        'scheduledCount=${toSchedule.length} '
-        'force=$effectiveForce tz=${now.timeZoneName}',
+            'scheduledCount=${toSchedule.length} '
+            'force=$effectiveForce tz=${now.timeZoneName}',
       );
     });
     _prayerSyncSerial = run.catchError((Object _) {});
@@ -459,17 +483,14 @@ class AppNotificationService {
       final signature = plan == null
           ? 'skip|$dateKey|$localeCode|cycle=$skipForCycle'
           : 'schedule|$dateKey|$localeCode|${plan.kind.name}|'
-              '${plan.when.toIso8601String()}|'
-              '${latitude.toStringAsFixed(4)}|${longitude.toStringAsFixed(4)}';
+                '${plan.when.toIso8601String()}|'
+                '${latitude.toStringAsFixed(4)}|${longitude.toStringAsFixed(4)}';
 
       if (_lastWrapUpScheduleSignature == signature) {
         return;
       }
 
-      await _cancelRange(
-        _wrapUpNotificationIdStart,
-        _wrapUpNotificationIdEnd,
-      );
+      await _cancelRange(_wrapUpNotificationIdStart, _wrapUpNotificationIdEnd);
 
       if (plan == null) {
         _lastWrapUpScheduleSignature = signature;
@@ -496,7 +517,7 @@ class AppNotificationService {
       await FocusEnforcementService.appendDebugLog(
         'notifications.wrap_up.sync',
         'kind=${plan.kind.name} when=${plan.when.toIso8601String()} '
-        'scheduled=$scheduled id=$id',
+            'scheduled=$scheduled id=$id',
       );
     });
     _wrapUpSyncSerial = run.catchError((Object _) {});
@@ -532,45 +553,45 @@ class AppNotificationService {
   ) {
     return switch (kind) {
       NightlyWrapUpContentKind.prayers => (
-          title: l10n.nightlyWrapUpPrayersTitle,
-          body: l10n.nightlyWrapUpPrayersBody,
-        ),
+        title: l10n.nightlyWrapUpPrayersTitle,
+        body: l10n.nightlyWrapUpPrayersBody,
+      ),
       NightlyWrapUpContentKind.checklist => (
-          title: l10n.nightlyWrapUpChecklistTitle,
-          body: l10n.nightlyWrapUpChecklistBody,
-        ),
+        title: l10n.nightlyWrapUpChecklistTitle,
+        body: l10n.nightlyWrapUpChecklistBody,
+      ),
       NightlyWrapUpContentKind.both => (
-          title: l10n.nightlyWrapUpBothTitle,
-          body: l10n.nightlyWrapUpBothBody,
-        ),
+        title: l10n.nightlyWrapUpBothTitle,
+        body: l10n.nightlyWrapUpBothBody,
+      ),
     };
   }
 
   NotificationDetails get _wrapUpNotificationDetails => NotificationDetails(
-        android: AndroidNotificationDetails(
-          _wrapUpChannel.id,
-          _wrapUpChannel.name,
-          channelDescription: _wrapUpChannel.description,
-          importance: Importance.high,
-          priority: Priority.high,
-          playSound: true,
-          sound: _wrapUpChannel.sound,
-        ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          sound: 'beep.caf',
-          threadIdentifier: 'deenly.daily_wrap_up',
-        ),
-        macOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          sound: 'beep.caf',
-          threadIdentifier: 'deenly.daily_wrap_up',
-        ),
-      );
+    android: AndroidNotificationDetails(
+      _wrapUpChannel.id,
+      _wrapUpChannel.name,
+      channelDescription: _wrapUpChannel.description,
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      sound: _wrapUpChannel.sound,
+    ),
+    iOS: const DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'beep.caf',
+      threadIdentifier: 'deenly.daily_wrap_up',
+    ),
+    macOS: const DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'beep.caf',
+      threadIdentifier: 'deenly.daily_wrap_up',
+    ),
+  );
 
   /// Schedules or cancels the Cycle Mode automatic-expiry notification.
   ///
@@ -639,7 +660,7 @@ class AppNotificationService {
       await FocusEnforcementService.appendDebugLog(
         'notifications.cycle_expiry.sync',
         'when=${when.toIso8601String()} scheduled=$scheduled '
-        'id=$_cycleExpiryNotificationId tz=${tz.local.name}',
+            'id=$_cycleExpiryNotificationId tz=${tz.local.name}',
       );
     });
     // Never surface plugin/platform failures to callers (tests, resume, save).
@@ -649,30 +670,30 @@ class AppNotificationService {
   }
 
   NotificationDetails get _cycleModeNotificationDetails => NotificationDetails(
-        android: AndroidNotificationDetails(
-          _cycleModeChannel.id,
-          _cycleModeChannel.name,
-          channelDescription: _cycleModeChannel.description,
-          importance: Importance.high,
-          priority: Priority.high,
-          playSound: true,
-          sound: _cycleModeChannel.sound,
-        ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          sound: 'beep.caf',
-          threadIdentifier: 'deenly.cycle_mode',
-        ),
-        macOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          sound: 'beep.caf',
-          threadIdentifier: 'deenly.cycle_mode',
-        ),
-      );
+    android: AndroidNotificationDetails(
+      _cycleModeChannel.id,
+      _cycleModeChannel.name,
+      channelDescription: _cycleModeChannel.description,
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      sound: _cycleModeChannel.sound,
+    ),
+    iOS: const DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'beep.caf',
+      threadIdentifier: 'deenly.cycle_mode',
+    ),
+    macOS: const DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'beep.caf',
+      threadIdentifier: 'deenly.cycle_mode',
+    ),
+  );
 
   /// Night discipline: one ID per upcoming lock / unlock (same horizon as prayer batch).
   static const int _nightLockNotificationIdStart = 4000;
@@ -991,7 +1012,9 @@ class AppNotificationService {
     );
   }
 
-  Future<void> _schedulePrayerCandidate(PrayerScheduleCandidate candidate) async {
+  Future<void> _schedulePrayerCandidate(
+    PrayerScheduleCandidate candidate,
+  ) async {
     await _scheduleIfFuture(
       id: candidate.id,
       when: candidate.when,
@@ -1034,7 +1057,7 @@ class AppNotificationService {
       await FocusEnforcementService.appendDebugLog(
         'notifications.skip',
         'id=$id title=$safeTitle scheduledAt=${scheduledMinute.toIso8601String()} '
-        'reason=past',
+            'reason=past',
       );
       return false;
     }
@@ -1060,8 +1083,8 @@ class AppNotificationService {
         await FocusEnforcementService.appendDebugLog(
           'notifications.skip',
           'id=$id title=$safeTitle reason=ios_pending_cap '
-          'role=${iosScheduleRole.name} pending=${pending.length} '
-          'prayerPending=$prayerPending nonPrayerPending=$nonPrayerPending',
+              'role=${iosScheduleRole.name} pending=${pending.length} '
+              'prayerPending=$prayerPending nonPrayerPending=$nonPrayerPending',
         );
         return false;
       }
@@ -1070,7 +1093,7 @@ class AppNotificationService {
     await FocusEnforcementService.appendDebugLog(
       'notifications.schedule',
       'id=$id title=$safeTitle scheduledAt=${scheduledMinute.toIso8601String()} '
-      'payload=$payload',
+          'payload=$payload',
     );
 
     // Build TZDateTime from wall-clock components in tz.local so the OS trigger
@@ -1265,6 +1288,9 @@ class AppNotificationService {
     required String localeCode,
     required String timeZoneName,
     required int daysAhead,
+    required bool prayerAlarmsMasterEnabled,
+    required PrayerAlarmCapabilities nativeCapabilities,
+    required PrayerAlarmAuthorizationStatus nativeAuthorization,
   }) {
     final prayerParts = <String>[
       latitude.toStringAsFixed(4),
@@ -1274,11 +1300,22 @@ class AppNotificationService {
       localeCode,
       timeZoneName,
       'days=$daysAhead',
+      'alarmsMaster=$prayerAlarmsMasterEnabled',
+      'native=${nativeCapabilities.implementation}:'
+          '${nativeAuthorization.name}',
     ];
     for (final prayer in TrackablePrayer.values) {
       final entry = prayerSettings.forPrayer(prayer);
+      final softSound = PrayerSoundOwnership.softEffectiveSound(
+        entry: entry,
+        prayerAlarmsMasterEnabled: prayerAlarmsMasterEnabled,
+        capabilities: nativeCapabilities,
+        authorization: nativeAuthorization,
+      );
       prayerParts.add(
-        '${prayer.name}:en=${entry.notificationsEnabled}:snd=${entry.sound.name}',
+        '${prayer.name}:en=${entry.notificationsEnabled}:'
+        'alarm=${entry.alarmEnabled}:pref=${entry.sound.name}:'
+        'soft=${softSound.name}',
       );
     }
     for (final dataset in datasets) {
@@ -1372,19 +1409,23 @@ class AppNotificationService {
     required DateTime now,
   }) {
     if (room <= 0) return const <PrayerScheduleCandidate>[];
-    final future = candidates.where((candidate) {
-      final local = candidate.when.isUtc
-          ? candidate.when.toLocal()
-          : candidate.when;
-      final minute = DateTime(
-        local.year,
-        local.month,
-        local.day,
-        local.hour,
-        local.minute,
-      );
-      return minute.isAfter(now);
-    }).toList(growable: false)..sort((a, b) => a.when.compareTo(b.when));
+    final future =
+        candidates
+            .where((candidate) {
+              final local = candidate.when.isUtc
+                  ? candidate.when.toLocal()
+                  : candidate.when;
+              final minute = DateTime(
+                local.year,
+                local.month,
+                local.day,
+                local.hour,
+                local.minute,
+              );
+              return minute.isAfter(now);
+            })
+            .toList(growable: false)
+          ..sort((a, b) => a.when.compareTo(b.when));
     if (future.length <= room) return future;
     return future.sublist(0, room);
   }

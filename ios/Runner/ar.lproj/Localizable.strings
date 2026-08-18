@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "لقد صليت";
+"prayer_alarm_subtitle" = "حان وقت الصلاة";
+"prayer_alarm_dismiss" = "رفض";
+"prayer_alarm_badge" = "منبه الصلاة";
+"prayer_alarm_snooze" = "تأجيل";
+"prayer_alarm_snooze_label" = "مدة التأجيل";

@@ -45,18 +45,22 @@ class AppCenteredNavHeader extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w800,
+            // Keep long titles from colliding with the back control (sheets).
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 88),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             if (trailing != null)
-              Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: trailing,
-              ),
+              Align(alignment: AlignmentDirectional.centerEnd, child: trailing),
           ],
         ),
       ),

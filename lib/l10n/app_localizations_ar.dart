@@ -636,6 +636,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeNextPrayerIn => 'الصلاة القادمة في';
 
   @override
+  String get homeTapPrayerToMark =>
+      'اضغط على صلاة لتحديدها كمؤداة أو قضاء أو فائتة.';
+
+  @override
+  String get homeSetLocation => 'تعيين الموقع';
+
+  @override
+  String get homeEditPrayerSettings => 'تعديل إعدادات الصلاة';
+
+  @override
   String get homePrayerFajr => 'الفجر';
 
   @override
@@ -737,7 +747,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calendarUpcomingEvents => 'الأحداث الإسلامية القادمة';
 
   @override
-  String get calendarUpcomingThisYear => 'قادم هذا العام';
+  String get calendarUpcomingThisYear => 'القادمة هذا العام';
 
   @override
   String get calendarThisWeekObservances => 'هذا الأسبوع';
@@ -747,7 +757,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String calendarMoonIlluminated(int percent) {
-    return '$percent% مضاء';
+    return '$percent% مضاءة';
   }
 
   @override
@@ -784,13 +794,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calendarEventLaylatAlQadr => 'ليلة القدر';
 
   @override
-  String get calendarEventLaylatAlQadrDesc => 'ليلة القدر المباركة';
+  String get calendarEventLaylatAlQadrDesc => 'ليلة القدر';
 
   @override
   String get calendarEventEidAlFitr => 'عيد الفطر';
 
   @override
-  String get calendarEventEidAlFitrDesc => 'عيد الفطر المبارك';
+  String get calendarEventEidAlFitrDesc => 'عيد الإفطار';
 
   @override
   String get calendarEventDayOfArafah => 'يوم عرفة';
@@ -802,7 +812,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calendarEventEidAlAdha => 'عيد الأضحى';
 
   @override
-  String get calendarEventEidAlAdhaDesc => 'عيد التضحية';
+  String get calendarEventEidAlAdhaDesc => 'عيد الأضحية';
 
   @override
   String get calendarEventIslamicNewYear => 'رأس السنة الهجرية';
@@ -814,7 +824,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calendarEventMawlid => 'المولد النبوي';
 
   @override
-  String get calendarEventMawlidDesc => 'مولد النبي ﷺ';
+  String get calendarEventMawlidDesc => 'مولد النبي';
 
   @override
   String get calendarEventAshura => 'عاشوراء';
@@ -826,13 +836,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calendarEventJumuah => 'الجمعة';
 
   @override
-  String get calendarEventJumuahDesc => 'صلاة الجمعة';
+  String get calendarEventJumuahDesc => 'صلاة الجمعة جماعة';
 
   @override
   String get calendarEventWhiteDays => 'الأيام البيض';
 
   @override
-  String get calendarEventWhiteDaysDesc => 'من ١٣ إلى ١٥ من كل شهر';
+  String get calendarEventWhiteDaysDesc => 'أيام صيام مستحبة';
 
   @override
   String get cycleModeActiveTitle =>
@@ -1466,7 +1476,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get save => 'يحفظ';
 
   @override
-  String get tasbihBack => 'خلف';
+  String get tasbihBack => 'رجوع';
 
   @override
   String get tasbihTabTitle => 'التسبيح';

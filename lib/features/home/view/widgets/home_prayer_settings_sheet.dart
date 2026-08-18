@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/constants/spacing.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
@@ -13,7 +14,6 @@ import '../../viewmodel/home_tab_view_model.dart';
 import 'home_about_prayer_screen.dart';
 import 'home_edit_prayer_time_sheet.dart';
 import 'home_prayer_notification_sheet.dart';
-import 'prayer_sheet_back_button.dart';
 
 /// Second-level sheet opened from the settings icon on the Mark Prayer sheet.
 /// Shows per-prayer time, notification, and info as three scannable cards.
@@ -62,91 +62,89 @@ class _PrayerSettingsSheetContent extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 32.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SheetBackButton(onTap: () => Navigator.of(context).pop()),
-                SizedBox(width: Spacing.sm.w),
-                Expanded(
-                  child: Text(
-                    l10n.homePrayerSettingsTitle(prayerLabel),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Spacing.lg.h),
-            _SettingsCard(
-              icon: Iconsax.clock,
-              title: l10n.homePrayerSettingsPrayerTime,
-              subtitle: timeLabel,
-              // Push on top rather than popping first, so this sheet stays on
-              // the stack and its own back button reveals it again.
-              onTap: () => showEditPrayerTimeSheet(context, prayer),
-            ),
-            SizedBox(height: Spacing.md.h),
-            _SettingsCard(
-              icon: settings.notificationsEnabled
-                  ? Iconsax.notification
-                  : Iconsax.notification_bing,
-              title: l10n.homePrayerSettingsNotification,
-              subtitle: settings.notificationsEnabled
-                  ? soundLabel
-                  : l10n.homeNotificationSoundMute,
-              onTap: () => showPrayerNotificationSheet(context, prayer),
-            ),
-            SizedBox(height: Spacing.md.h),
-            _SettingsCard(
-              icon: Iconsax.info_circle,
-              title: l10n.homeAboutPrayerTitle(prayerLabel),
-              subtitle: l10n.homePrayerSettingsAboutSubtitle,
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => HomeAboutPrayerScreen(prayer: prayer),
-                ),
-              ),
-            ),
-            SizedBox(height: Spacing.md.h),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(Spacing.md.w),
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withValues(
-                  alpha: isDark ? 0.28 : 0.4,
-                ),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppCenteredNavHeader(
+            title: l10n.homePrayerSettingsTitle(prayerLabel),
+            backLabel: l10n.calendarBack,
+            onBack: () => Navigator.of(context).pop(),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 32.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Iconsax.info_circle,
-                    size: 18.sp,
-                    color: colorScheme.onPrimaryContainer,
+                  SizedBox(height: Spacing.md.h),
+                  _SettingsCard(
+                    icon: Iconsax.clock,
+                    title: l10n.homePrayerSettingsPrayerTime,
+                    subtitle: timeLabel,
+                    // Push on top rather than popping first, so this sheet stays on
+                    // the stack and its own back button reveals it again.
+                    onTap: () => showEditPrayerTimeSheet(context, prayer),
                   ),
-                  SizedBox(width: Spacing.sm.w),
-                  Expanded(
-                    child: Text(
-                      l10n.homePrayerSettingsInfoBanner(prayerLabel),
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        height: 1.35,
-                        color: colorScheme.onPrimaryContainer,
+                  SizedBox(height: Spacing.md.h),
+                  _SettingsCard(
+                    icon: settings.notificationsEnabled
+                        ? Iconsax.notification
+                        : Iconsax.notification_bing,
+                    title: l10n.homePrayerSettingsNotification,
+                    subtitle: settings.notificationsEnabled
+                        ? soundLabel
+                        : l10n.homeNotificationSoundMute,
+                    onTap: () => showPrayerNotificationSheet(context, prayer),
+                  ),
+                  SizedBox(height: Spacing.md.h),
+                  _SettingsCard(
+                    icon: Iconsax.info_circle,
+                    title: l10n.homeAboutPrayerTitle(prayerLabel),
+                    subtitle: l10n.homePrayerSettingsAboutSubtitle,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => HomeAboutPrayerScreen(prayer: prayer),
                       ),
+                    ),
+                  ),
+                  SizedBox(height: Spacing.md.h),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(Spacing.md.w),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: isDark ? 0.28 : 0.4,
+                      ),
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Iconsax.info_circle,
+                          size: 18.sp,
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                        SizedBox(width: Spacing.sm.w),
+                        Expanded(
+                          child: Text(
+                            l10n.homePrayerSettingsInfoBanner(prayerLabel),
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              height: 1.35,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

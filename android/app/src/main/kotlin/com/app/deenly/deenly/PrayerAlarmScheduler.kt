@@ -26,9 +26,15 @@ object PrayerAlarmScheduler {
     const val EXTRA_IVE_PRAYED = "ivePrayedLabel"
     const val EXTRA_DISMISS = "dismissLabel"
     const val EXTRA_SNOOZE = "snoozeLabel"
+    const val EXTRA_SNOOZE_SECTION = "snoozeSectionLabel"
+    const val EXTRA_SNOOZE_OPTION_MINUTES = "snoozeOptionMinutes"
+    const val EXTRA_SNOOZE_OPTION_LABELS = "snoozeOptionLabels"
     const val EXTRA_SOUND = "sound"
     const val EXTRA_SNOOZE_MINUTES = "snoozeMinutes"
     const val EXTRA_FIRE_AT_MS = "fireAtMs"
+
+    /** Same options as Flutter [StorageService.prayerAlarmSnoozeOptionMinutes]. */
+    val DEFAULT_SNOOZE_OPTIONS = intArrayOf(5, 10, 15)
 
     private const val CHANNEL_ADHAN = "prayer_alarm_adhan"
     private const val CHANNEL_BEEP = "prayer_alarm_beep"
@@ -105,10 +111,17 @@ object PrayerAlarmScheduler {
             "ivePrayedLabel" to extras.getStringExtra(EXTRA_IVE_PRAYED),
             "dismissLabel" to extras.getStringExtra(EXTRA_DISMISS),
             "snoozeLabel" to extras.getStringExtra(EXTRA_SNOOZE),
+            "snoozeSectionLabel" to extras.getStringExtra(EXTRA_SNOOZE_SECTION),
             "sound" to extras.getStringExtra(EXTRA_SOUND),
             "snoozeMinutes" to snoozeMinutes,
             "fireAtMs" to fireAt,
         )
+        extras.getIntArrayExtra(EXTRA_SNOOZE_OPTION_MINUTES)?.let {
+            alarm["snoozeOptionMinutes"] = it.toList()
+        }
+        extras.getStringArrayExtra(EXTRA_SNOOZE_OPTION_LABELS)?.let {
+            alarm["snoozeOptionLabels"] = it.toList()
+        }
         val existing = PrayerAlarmStore.loadAlarms(context).filterNot { it["id"] == alarm["id"] }
         PrayerAlarmStore.saveAlarms(context, existing + alarm)
         scheduleOne(context, alarm, fireAt)
@@ -214,6 +227,7 @@ object PrayerAlarmScheduler {
             putExtra(EXTRA_IVE_PRAYED, alarm["ivePrayedLabel"] as? String)
             putExtra(EXTRA_DISMISS, alarm["dismissLabel"] as? String)
             putExtra(EXTRA_SNOOZE, alarm["snoozeLabel"] as? String)
+            putExtra(EXTRA_SNOOZE_SECTION, alarm["snoozeSectionLabel"] as? String)
             putExtra(EXTRA_SOUND, alarm["sound"] as? String)
             putExtra(
                 EXTRA_SNOOZE_MINUTES,
@@ -223,6 +237,7 @@ object PrayerAlarmScheduler {
                 EXTRA_FIRE_AT_MS,
                 ((alarm["fireAtMs"] as? Number)?.toLong() ?: 0L),
             )
+            putSnoozeOptions(this, alarm)
         }
         return PendingIntent.getBroadcast(
             context,
@@ -239,6 +254,27 @@ object PrayerAlarmScheduler {
 
     fun notificationIdFor(alarmId: String): Int {
         return NOTIFICATION_BASE + (alarmId.hashCode() and 0x3FFF_FFFF)
+    }
+
+    private fun putSnoozeOptions(intent: Intent, alarm: Map<String, Any?>) {
+        val minutes = intListFrom(alarm["snoozeOptionMinutes"]) ?: DEFAULT_SNOOZE_OPTIONS.toList()
+        intent.putExtra(EXTRA_SNOOZE_OPTION_MINUTES, minutes.toIntArray())
+        val labels = stringListFrom(alarm["snoozeOptionLabels"])
+        if (!labels.isNullOrEmpty() && labels.size == minutes.size) {
+            intent.putExtra(EXTRA_SNOOZE_OPTION_LABELS, labels.toTypedArray())
+        }
+    }
+
+    private fun intListFrom(raw: Any?): List<Int>? {
+        val list = raw as? List<*> ?: return null
+        val parsed = list.mapNotNull { (it as? Number)?.toInt() }
+        return parsed.takeIf { it.isNotEmpty() }
+    }
+
+    private fun stringListFrom(raw: Any?): List<String>? {
+        val list = raw as? List<*> ?: return null
+        val parsed = list.mapNotNull { it?.toString() }
+        return parsed.takeIf { it.isNotEmpty() }
     }
 
     private fun channelFor(sound: String): String {

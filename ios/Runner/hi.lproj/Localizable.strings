@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "मैंने नमाज़ पढ़ी";
+"prayer_alarm_subtitle" = "नमाज़ का समय";
+"prayer_alarm_dismiss" = "खारिज करें";
+"prayer_alarm_badge" = "नमाज़ अलार्म";
+"prayer_alarm_snooze" = "स्नूज़";
+"prayer_alarm_snooze_label" = "स्नूज़ अवधि";

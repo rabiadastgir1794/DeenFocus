@@ -607,6 +607,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeNextPrayerIn => '下一个祷告在';
 
   @override
+  String get homeTapPrayerToMark => '点按礼拜以标记为已礼、补礼或错过。';
+
+  @override
+  String get homeSetLocation => '设置位置';
+
+  @override
+  String get homeEditPrayerSettings => '编辑礼拜设置';
+
+  @override
   String get homePrayerFajr => '晨曦';
 
   @override
@@ -679,132 +688,131 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hijriMonthDhuAlHijjah => '都尔·黑哲月';
 
   @override
-  String get calendarTitle => 'Islamic Calendar';
+  String get calendarTitle => '伊斯兰日历';
 
   @override
-  String get calendarBack => 'Back';
+  String get calendarBack => '返回';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => '今天';
 
   @override
-  String get calendarTomorrow => 'Tomorrow';
+  String get calendarTomorrow => '明天';
 
   @override
   String calendarDaysAway(int days) {
-    return '$days days';
+    return '$days 天';
   }
 
   @override
-  String get calendarNoEventsThisWeek => 'No Islamic events this week.';
+  String get calendarNoEventsThisWeek => '本周没有伊斯兰节日。';
 
   @override
-  String get calendarNoEventsBlessing =>
-      'May Allah bless your week with peace and goodness.';
+  String get calendarNoEventsBlessing => '愿真主以平安与美好祝福你的一周。';
 
   @override
-  String get calendarNoUpcomingEvents => 'No upcoming Islamic events found.';
+  String get calendarNoUpcomingEvents => '未找到即将到来的伊斯兰节日。';
 
   @override
-  String get calendarUpcomingEvents => 'Upcoming Islamic Events';
+  String get calendarUpcomingEvents => '即将到来的伊斯兰节日';
 
   @override
-  String get calendarUpcomingThisYear => 'Upcoming This Year';
+  String get calendarUpcomingThisYear => '今年即将到来';
 
   @override
-  String get calendarThisWeekObservances => 'This Week';
+  String get calendarThisWeekObservances => '本周';
 
   @override
-  String get calendarLegendCycleDays => 'Cycle days (streak protected)';
+  String get calendarLegendCycleDays => '经期日（连续记录受保护）';
 
   @override
   String calendarMoonIlluminated(int percent) {
-    return '$percent% illuminated';
+    return '亮度 $percent%';
   }
 
   @override
-  String get calendarMoonNew => 'New Moon';
+  String get calendarMoonNew => '新月';
 
   @override
-  String get calendarMoonWaxingCrescent => 'Waxing Crescent';
+  String get calendarMoonWaxingCrescent => '蛾眉月（盈）';
 
   @override
-  String get calendarMoonFirstQuarter => 'First Quarter';
+  String get calendarMoonFirstQuarter => '上弦月';
 
   @override
-  String get calendarMoonWaxingGibbous => 'Waxing Gibbous';
+  String get calendarMoonWaxingGibbous => '盈凸月';
 
   @override
-  String get calendarMoonFull => 'Full Moon';
+  String get calendarMoonFull => '满月';
 
   @override
-  String get calendarMoonWaningGibbous => 'Waning Gibbous';
+  String get calendarMoonWaningGibbous => '亏凸月';
 
   @override
-  String get calendarMoonLastQuarter => 'Last Quarter';
+  String get calendarMoonLastQuarter => '下弦月';
 
   @override
-  String get calendarMoonWaningCrescent => 'Waning Crescent';
+  String get calendarMoonWaningCrescent => '残月';
 
   @override
-  String get calendarEventRamadanBegins => 'Ramadan Begins';
+  String get calendarEventRamadanBegins => '斋月开始';
 
   @override
-  String get calendarEventRamadanBeginsDesc => 'Month of fasting';
+  String get calendarEventRamadanBeginsDesc => '斋戒之月';
 
   @override
-  String get calendarEventLaylatAlQadr => 'Laylat al-Qadr';
+  String get calendarEventLaylatAlQadr => '盖德尔夜';
 
   @override
-  String get calendarEventLaylatAlQadrDesc => 'Night of Power';
+  String get calendarEventLaylatAlQadrDesc => '高贵之夜';
 
   @override
-  String get calendarEventEidAlFitr => 'Eid al-Fitr';
+  String get calendarEventEidAlFitr => '开斋节';
 
   @override
-  String get calendarEventEidAlFitrDesc => 'Festival of Breaking the Fast';
+  String get calendarEventEidAlFitrDesc => '开斋的节日';
 
   @override
-  String get calendarEventDayOfArafah => 'Day of Arafah';
+  String get calendarEventDayOfArafah => '阿拉法日';
 
   @override
-  String get calendarEventDayOfArafahDesc => 'Day of standing at Arafah';
+  String get calendarEventDayOfArafahDesc => '驻阿拉法特之日';
 
   @override
-  String get calendarEventEidAlAdha => 'Eid al-Adha';
+  String get calendarEventEidAlAdha => '宰牲节';
 
   @override
-  String get calendarEventEidAlAdhaDesc => 'Festival of Sacrifice';
+  String get calendarEventEidAlAdhaDesc => '献祭的节日';
 
   @override
-  String get calendarEventIslamicNewYear => 'Islamic New Year';
+  String get calendarEventIslamicNewYear => '伊斯兰新年';
 
   @override
-  String get calendarEventIslamicNewYearDesc => '1st of Muharram';
+  String get calendarEventIslamicNewYearDesc => '穆哈兰姆月1日';
 
   @override
-  String get calendarEventMawlid => 'Mawlid an-Nabi';
+  String get calendarEventMawlid => '圣纪';
 
   @override
-  String get calendarEventMawlidDesc => 'Birth of the Prophet';
+  String get calendarEventMawlidDesc => '先知诞辰';
 
   @override
-  String get calendarEventAshura => 'Ashura';
+  String get calendarEventAshura => '阿舒拉';
 
   @override
-  String get calendarEventAshuraDesc => '10th of Muharram';
+  String get calendarEventAshuraDesc => '穆哈兰姆月10日';
 
   @override
   String get calendarEventJumuah => '主麻';
 
   @override
-  String get calendarEventJumuahDesc => '主麻聚礼';
+  String get calendarEventJumuahDesc => '周五集体礼拜';
 
   @override
-  String get calendarEventWhiteDays => '白日';
+  String get calendarEventWhiteDays => '白昼日';
 
   @override
-  String get calendarEventWhiteDaysDesc => '每月十三至十五日';
+  String get calendarEventWhiteDaysDesc => '推荐封斋日';
 
   @override
   String get cycleModeActiveTitle => '“真主欲你们便利，不要你们困难。” — 古兰经 2:185';
@@ -1408,7 +1416,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get save => '节省';
 
   @override
-  String get tasbihBack => '后退';
+  String get tasbihBack => '返回';
 
   @override
   String get tasbihTabTitle => '塔斯比赫';

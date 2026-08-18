@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/spacing.dart';
+import '../../../../core/services/app_notification_service.dart';
 import '../../../../core/services/permission_service.dart';
 import '../../../../core/services/prayer_alarm_service.dart';
 import '../../../../core/services/storage_service.dart';
@@ -15,6 +16,7 @@ import '../../../../core/widgets/app_permission_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
+import '../../services/prayer_settings_service.dart';
 
 /// Global Prayer Alarms settings (master switch, snooze, per-prayer toggles).
 ///
@@ -35,14 +37,12 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
   bool _enabled = false;
   bool _awaitingPermissionResult = false;
   int _snoozeMinutes = StorageService.defaultPrayerAlarmSnoozeMinutes;
-  PrayerSettingsState _prayerSettings = PrayerSettingsState.defaults();
   PrayerAlarmCapabilities? _capabilities;
   PrayerAlarmAuthorizationStatus _auth =
       PrayerAlarmAuthorizationStatus.unavailable;
   bool? _canUseFsi;
 
-  bool get _nativeSupported =>
-      _capabilities?.supportsNativeAlarm == true;
+  bool get _nativeSupported => _capabilities?.supportsNativeAlarm == true;
 
   bool get _schedulingAuthorized =>
       _auth == PrayerAlarmAuthorizationStatus.authorized;
@@ -76,14 +76,14 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
   }
 
   Future<void> _load() async {
+    final prayerSettings = context.read<PrayerSettingsService>();
     final enabled = await StorageService.prayerAlarmsEnabled;
     final snooze = await StorageService.prayerAlarmSnoozeMinutes;
-    final raw = await StorageService.prayerSettingsJson;
-    final settings = raw == null
-        ? PrayerSettingsState.defaults()
-        : PrayerSettingsState.fromJson(raw);
-    final capabilities =
-        await PrayerAlarmService.instance.getCapabilities(forceRefresh: true);
+    // Same in-memory + disk cache as Home prayer sheets.
+    await prayerSettings.reload();
+    final capabilities = await PrayerAlarmService.instance.getCapabilities(
+      forceRefresh: true,
+    );
     final auth = await PrayerAlarmService.instance.getAuthorizationStatus();
     final fsi = Platform.isAndroid
         ? await PrayerAlarmService.instance.canUseFullScreenIntent()
@@ -103,7 +103,6 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     setState(() {
       _enabled = effectiveEnabled;
       _snoozeMinutes = snooze;
-      _prayerSettings = settings;
       _capabilities = capabilities;
       _auth = auth;
       _canUseFsi = fsi;
@@ -112,8 +111,9 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
   }
 
   Future<void> _refreshPermissionState({bool rescheduleIfReady = false}) async {
-    final capabilities =
-        await PrayerAlarmService.instance.getCapabilities(forceRefresh: true);
+    final capabilities = await PrayerAlarmService.instance.getCapabilities(
+      forceRefresh: true,
+    );
     final auth = await PrayerAlarmService.instance.getAuthorizationStatus();
     final fsi = Platform.isAndroid
         ? await PrayerAlarmService.instance.canUseFullScreenIntent()
@@ -155,22 +155,36 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     }
   }
 
+  Future<void> _rescheduleSoftOnly() async {
+    final profile = context.read<UserProfileService>();
+    final lat = profile.latitude;
+    final lng = profile.longitude;
+    if (lat == null || lng == null) return;
+    await AppNotificationService.instance.reschedulePrayerNotifications(
+      latitude: lat,
+      longitude: lng,
+      forceReschedule: true,
+    );
+  }
+
   Future<void> _reschedule() async {
     final profile = context.read<UserProfileService>();
     final lat = profile.latitude;
     final lng = profile.longitude;
     if (lat == null || lng == null) return;
     final l10n = AppLocalizations.of(context);
+    // Soft first so Adhan ownership (mute when native owns sound) is current.
+    await AppNotificationService.instance.reschedulePrayerNotifications(
+      latitude: lat,
+      longitude: lng,
+      forceReschedule: true,
+    );
     await PrayerAlarmService.instance.rescheduleAlarms(
       latitude: lat,
       longitude: lng,
       forceReschedule: true,
       localizations: l10n,
     );
-  }
-
-  Future<void> _persistSettings() async {
-    await StorageService.setPrayerSettingsJson(_prayerSettings.toJson());
   }
 
   Future<void> _setEnabled(bool value) async {
@@ -184,6 +198,8 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
         });
         await StorageService.setPrayerAlarmsEnabled(false);
         await PrayerAlarmService.instance.cancelAll();
+        // Restore soft Adhan/beep now that native no longer owns sound.
+        await _rescheduleSoftOnly();
         return;
       }
 
@@ -203,8 +219,9 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
       // Persist intent so returning from Settings can complete enablement.
       await StorageService.setPrayerAlarmsEnabled(true);
 
-      final capabilities =
-          await PrayerAlarmService.instance.getCapabilities(forceRefresh: true);
+      final capabilities = await PrayerAlarmService.instance.getCapabilities(
+        forceRefresh: true,
+      );
       if (!capabilities.supportsNativeAlarm) {
         setState(() {
           _enabled = true;
@@ -284,8 +301,7 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
       onPrimaryTap: () {
         unawaited(() async {
           if (Platform.isAndroid) {
-            final notificationsOk =
-                await PermissionService.checkNotification();
+            final notificationsOk = await PermissionService.checkNotification();
             if (!notificationsOk) {
               await PermissionService.openAppSettingsAsync();
             } else {
@@ -335,8 +351,8 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     setState(() => _busy = true);
     try {
       await StorageService.setPrayerAlarmsEnabled(true);
-      final requested =
-          await PrayerAlarmService.instance.requestAuthorization();
+      final requested = await PrayerAlarmService.instance
+          .requestAuthorization();
       var auth = await PrayerAlarmService.instance.getAuthorizationStatus();
       if (requested == PrayerAlarmAuthorizationStatus.authorized) {
         auth = PrayerAlarmAuthorizationStatus.authorized;
@@ -378,13 +394,15 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
   }
 
   Future<void> _setPrayerAlarm(TrackablePrayer prayer, bool enabled) async {
-    final entry =
-        _prayerSettings.forPrayer(prayer).copyWith(alarmEnabled: enabled);
-    setState(() {
-      _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
-    });
-    await _persistSettings();
-    if (_switchValue) await _reschedule();
+    final prayerSettings = context.read<PrayerSettingsService>();
+    await prayerSettings.setAlertingEnabled(prayer, enabled);
+    // Soft always: mirrors home sheet and keeps Adhan ownership correct.
+    // Native only when master switch can schedule.
+    if (_switchValue) {
+      await _reschedule();
+    } else {
+      await _rescheduleSoftOnly();
+    }
   }
 
   String _statusText(AppLocalizations l10n) {
@@ -409,6 +427,7 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     final borderColor = isDark
         ? colorScheme.outlineVariant.withValues(alpha: 0.35)
         : AppColors.outlineVariantLight.withValues(alpha: 0.35);
+    final prayerSettings = context.watch<PrayerSettingsService>();
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -424,152 +443,158 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
               child: _loading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView(
-              padding: EdgeInsets.fromLTRB(
-                Spacing.md.toDouble(),
-                Spacing.sm.toDouble() + 4,
-                Spacing.md.toDouble(),
-                Spacing.xl.toDouble(),
-              ),
-              children: [
-                Text(
-                  l10n.settingsPrayerAlarmsSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                    height: 1.4,
-                  ),
-                ),
-                SizedBox(height: Spacing.md.toDouble()),
-                _StatusChip(
-                  text: _statusText(l10n),
-                  ok: _switchValue &&
-                      (_canUseFsi != false || !Platform.isAndroid),
-                ),
-                SizedBox(height: Spacing.md.toDouble()),
-                _SettingsCard(
-                  borderColor: borderColor,
-                  child: SwitchListTile.adaptive(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
-                    title: Text(
-                      l10n.prayerAlarmsMasterLabel,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
+                      padding: EdgeInsets.fromLTRB(
+                        Spacing.md.toDouble(),
+                        Spacing.sm.toDouble() + 4,
+                        Spacing.md.toDouble(),
+                        Spacing.xl.toDouble(),
                       ),
-                    ),
-                    subtitle: Text(l10n.prayerAlarmsMasterSubtitle),
-                    value: _switchValue,
-                    onChanged: _busy
-                        ? null
-                        : (value) => unawaited(_setEnabled(value)),
-                  ),
-                ),
-                if (_capabilities?.usesNotificationFallback == true) ...[
-                  SizedBox(height: Spacing.sm.toDouble() + 4),
-                  _InfoBanner(
-                    text: Platform.isIOS
-                        ? l10n.prayerAlarmsIosFallback
-                        : l10n.prayerAlarmsUnsupported,
-                  ),
-                ],
-                if (_nativeSupported &&
-                    !_schedulingAuthorized) ...[
-                  SizedBox(height: Spacing.sm.toDouble() + 4),
-                  _InfoBanner(
-                    text: l10n.prayerAlarmsPermissionNeeded,
-                    actionLabel: l10n.prayerAlarmsPermissionButton,
-                    onAction: _requestAlarmPermissionAgain,
-                  ),
-                ],
-                if (_switchValue &&
-                    Platform.isAndroid &&
-                    _canUseFsi == false) ...[
-                  SizedBox(height: Spacing.sm.toDouble() + 4),
-                  _InfoBanner(
-                    text: l10n.prayerAlarmsFsiNeeded,
-                    actionLabel: l10n.prayerAlarmsFsiButton,
-                    onAction: () async {
-                      await PrayerAlarmService.instance
-                          .openFullScreenIntentSettings();
-                    },
-                  ),
-                ],
-                SizedBox(height: Spacing.lg.toDouble()),
-                Text(
-                  l10n.prayerAlarmsSnoozeLabel,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(height: Spacing.sm.toDouble()),
-                _SettingsCard(
-                  borderColor: borderColor,
-                  child: Column(
-                    children: [
-                      for (final minutes in const [5, 10, 15])
-                        ListTile(
-                          enabled: _switchValue && !_busy,
-                          title: Text(l10n.prayerAlarmsSnoozeMinutes(minutes)),
-                          trailing: Icon(
-                            _snoozeMinutes == minutes
-                                ? Icons.check_circle_rounded
-                                : Icons.circle_outlined,
-                            color: _snoozeMinutes == minutes
-                                ? colorScheme.primary
-                                : colorScheme.outline,
-                          ),
-                          onTap: !_switchValue || _busy
-                              ? null
-                              : () => unawaited(_setSnooze(minutes)),
+                      children: [
+                        Text(
+                          l10n.settingsPrayerAlarmsSubtitle,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                                height: 1.4,
+                              ),
                         ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: Spacing.lg.toDouble()),
-                Text(
-                  l10n.prayerAlarmsPerPrayerSection,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(height: Spacing.sm.toDouble()),
-                _SettingsCard(
-                  borderColor: borderColor,
-                  child: Column(
-                    children: [
-                      for (final prayer in TrackablePrayer.values) ...[
-                        SwitchListTile.adaptive(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 2,
-                          ),
-                          title: Text(prayer.label(l10n)),
-                          subtitle: Text(
-                            l10n.homePrayerAlarmEnableSubtitle(
-                              prayer.label(l10n),
+                        SizedBox(height: Spacing.md.toDouble()),
+                        _StatusChip(
+                          text: _statusText(l10n),
+                          ok:
+                              _switchValue &&
+                              (_canUseFsi != false || !Platform.isAndroid),
+                        ),
+                        SizedBox(height: Spacing.md.toDouble()),
+                        _SettingsCard(
+                          borderColor: borderColor,
+                          child: SwitchListTile.adaptive(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
                             ),
+                            title: Text(
+                              l10n.prayerAlarmsMasterLabel,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            subtitle: Text(l10n.prayerAlarmsMasterSubtitle),
+                            value: _switchValue,
+                            onChanged: _busy
+                                ? null
+                                : (value) => unawaited(_setEnabled(value)),
                           ),
-                          value: _prayerSettings.forPrayer(prayer).alarmEnabled,
-                          onChanged: !_switchValue || _busy
-                              ? null
-                              : (value) =>
-                                    unawaited(_setPrayerAlarm(prayer, value)),
                         ),
-                        if (prayer != TrackablePrayer.isha)
-                          Divider(
-                            height: 1,
-                            indent: 16,
-                            endIndent: 16,
-                            color: colorScheme.outlineVariant
-                                .withValues(alpha: 0.35),
+                        if (_capabilities?.usesNotificationFallback ==
+                            true) ...[
+                          SizedBox(height: Spacing.sm.toDouble() + 4),
+                          _InfoBanner(
+                            text: Platform.isIOS
+                                ? l10n.prayerAlarmsIosFallback
+                                : l10n.prayerAlarmsUnsupported,
                           ),
+                        ],
+                        if (_nativeSupported && !_schedulingAuthorized) ...[
+                          SizedBox(height: Spacing.sm.toDouble() + 4),
+                          _InfoBanner(
+                            text: l10n.prayerAlarmsPermissionNeeded,
+                            actionLabel: l10n.prayerAlarmsPermissionButton,
+                            onAction: _requestAlarmPermissionAgain,
+                          ),
+                        ],
+                        if (_switchValue &&
+                            Platform.isAndroid &&
+                            _canUseFsi == false) ...[
+                          SizedBox(height: Spacing.sm.toDouble() + 4),
+                          _InfoBanner(
+                            text: l10n.prayerAlarmsFsiNeeded,
+                            actionLabel: l10n.prayerAlarmsFsiButton,
+                            onAction: () async {
+                              await PrayerAlarmService.instance
+                                  .openFullScreenIntentSettings();
+                            },
+                          ),
+                        ],
+                        SizedBox(height: Spacing.lg.toDouble()),
+                        Text(
+                          l10n.prayerAlarmsSnoozeLabel,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(height: Spacing.sm.toDouble()),
+                        _SettingsCard(
+                          borderColor: borderColor,
+                          child: Column(
+                            children: [
+                              for (final minutes
+                                  in StorageService
+                                      .prayerAlarmSnoozeOptionMinutes)
+                                ListTile(
+                                  enabled: _switchValue && !_busy,
+                                  title: Text(
+                                    l10n.prayerAlarmsSnoozeMinutes(minutes),
+                                  ),
+                                  trailing: Icon(
+                                    _snoozeMinutes == minutes
+                                        ? Icons.check_circle_rounded
+                                        : Icons.circle_outlined,
+                                    color: _snoozeMinutes == minutes
+                                        ? colorScheme.primary
+                                        : colorScheme.outline,
+                                  ),
+                                  onTap: !_switchValue || _busy
+                                      ? null
+                                      : () => unawaited(_setSnooze(minutes)),
+                                ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: Spacing.lg.toDouble()),
+                        Text(
+                          l10n.prayerAlarmsPerPrayerSection,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(height: Spacing.sm.toDouble()),
+                        _SettingsCard(
+                          borderColor: borderColor,
+                          child: Column(
+                            children: [
+                              for (final prayer in TrackablePrayer.values) ...[
+                                SwitchListTile.adaptive(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 2,
+                                  ),
+                                  title: Text(prayer.label(l10n)),
+                                  subtitle: Text(
+                                    l10n.homePrayerAlarmEnableSubtitle(
+                                      prayer.label(l10n),
+                                    ),
+                                  ),
+                                  value: prayerSettings
+                                      .forPrayer(prayer)
+                                      .alarmEnabled,
+                                  onChanged: !_switchValue || _busy
+                                      ? null
+                                      : (value) => unawaited(
+                                          _setPrayerAlarm(prayer, value),
+                                        ),
+                                ),
+                                if (prayer != TrackablePrayer.isha)
+                                  Divider(
+                                    height: 1,
+                                    indent: 16,
+                                    endIndent: 16,
+                                    color: colorScheme.outlineVariant
+                                        .withValues(alpha: 0.35),
+                                  ),
+                              ],
+                            ],
+                          ),
+                        ),
                       ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                    ),
             ),
           ],
         ),
@@ -644,11 +669,7 @@ class _StatusChip extends StatelessWidget {
 }
 
 class _InfoBanner extends StatelessWidget {
-  const _InfoBanner({
-    required this.text,
-    this.actionLabel,
-    this.onAction,
-  });
+  const _InfoBanner({required this.text, this.actionLabel, this.onAction});
 
   final String text;
   final String? actionLabel;

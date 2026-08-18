@@ -650,6 +650,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get homeNextPrayerIn => 'Prochaine prière à';
 
   @override
+  String get homeTapPrayerToMark =>
+      'Appuyez sur une prière pour la marquer comme accomplie, qada ou manquée.';
+
+  @override
+  String get homeSetLocation => 'Définir l\'emplacement';
+
+  @override
+  String get homeEditPrayerSettings => 'Modifier les paramètres de prière';
+
+  @override
   String get homePrayerFajr => 'Fajr';
 
   @override
@@ -722,132 +732,133 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hijriMonthDhuAlHijjah => 'Dhou al-Hijja';
 
   @override
-  String get calendarTitle => 'Islamic Calendar';
+  String get calendarTitle => 'Calendrier islamique';
 
   @override
-  String get calendarBack => 'Back';
+  String get calendarBack => 'Retour';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => 'Aujourd\'hui';
 
   @override
-  String get calendarTomorrow => 'Tomorrow';
+  String get calendarTomorrow => 'Demain';
 
   @override
   String calendarDaysAway(int days) {
-    return '$days days';
+    return '$days jours';
   }
 
   @override
-  String get calendarNoEventsThisWeek => 'No Islamic events this week.';
+  String get calendarNoEventsThisWeek =>
+      'Aucun événement islamique cette semaine.';
 
   @override
   String get calendarNoEventsBlessing =>
-      'May Allah bless your week with peace and goodness.';
+      'Qu\'Allah bénisse votre semaine de paix et de bien.';
 
   @override
-  String get calendarNoUpcomingEvents => 'No upcoming Islamic events found.';
+  String get calendarNoUpcomingEvents => 'Aucun événement islamique à venir.';
 
   @override
-  String get calendarUpcomingEvents => 'Upcoming Islamic Events';
+  String get calendarUpcomingEvents => 'Événements islamiques à venir';
 
   @override
-  String get calendarUpcomingThisYear => 'Upcoming This Year';
+  String get calendarUpcomingThisYear => 'À venir cette année';
 
   @override
-  String get calendarThisWeekObservances => 'This Week';
+  String get calendarThisWeekObservances => 'Cette semaine';
 
   @override
-  String get calendarLegendCycleDays => 'Cycle days (streak protected)';
+  String get calendarLegendCycleDays => 'Jours de cycle (série protégée)';
 
   @override
   String calendarMoonIlluminated(int percent) {
-    return '$percent% illuminated';
+    return '$percent % illuminée';
   }
 
   @override
-  String get calendarMoonNew => 'New Moon';
+  String get calendarMoonNew => 'Nouvelle lune';
 
   @override
-  String get calendarMoonWaxingCrescent => 'Waxing Crescent';
+  String get calendarMoonWaxingCrescent => 'Croissant ascendant';
 
   @override
-  String get calendarMoonFirstQuarter => 'First Quarter';
+  String get calendarMoonFirstQuarter => 'Premier quartier';
 
   @override
-  String get calendarMoonWaxingGibbous => 'Waxing Gibbous';
+  String get calendarMoonWaxingGibbous => 'Gibbeuse croissante';
 
   @override
-  String get calendarMoonFull => 'Full Moon';
+  String get calendarMoonFull => 'Pleine lune';
 
   @override
-  String get calendarMoonWaningGibbous => 'Waning Gibbous';
+  String get calendarMoonWaningGibbous => 'Gibbeuse décroissante';
 
   @override
-  String get calendarMoonLastQuarter => 'Last Quarter';
+  String get calendarMoonLastQuarter => 'Dernier quartier';
 
   @override
-  String get calendarMoonWaningCrescent => 'Waning Crescent';
+  String get calendarMoonWaningCrescent => 'Croissant descendant';
 
   @override
-  String get calendarEventRamadanBegins => 'Ramadan Begins';
+  String get calendarEventRamadanBegins => 'Début du Ramadan';
 
   @override
-  String get calendarEventRamadanBeginsDesc => 'Month of fasting';
+  String get calendarEventRamadanBeginsDesc => 'Mois du jeûne';
 
   @override
   String get calendarEventLaylatAlQadr => 'Laylat al-Qadr';
 
   @override
-  String get calendarEventLaylatAlQadrDesc => 'Night of Power';
+  String get calendarEventLaylatAlQadrDesc => 'Nuit du Destin';
 
   @override
-  String get calendarEventEidAlFitr => 'Eid al-Fitr';
+  String get calendarEventEidAlFitr => 'Aïd al-Fitr';
 
   @override
-  String get calendarEventEidAlFitrDesc => 'Festival of Breaking the Fast';
+  String get calendarEventEidAlFitrDesc => 'Fête de la rupture du jeûne';
 
   @override
-  String get calendarEventDayOfArafah => 'Day of Arafah';
+  String get calendarEventDayOfArafah => 'Jour d\'Arafah';
 
   @override
-  String get calendarEventDayOfArafahDesc => 'Day of standing at Arafah';
+  String get calendarEventDayOfArafahDesc => 'Jour de la station à Arafah';
 
   @override
-  String get calendarEventEidAlAdha => 'Eid al-Adha';
+  String get calendarEventEidAlAdha => 'Aïd al-Adha';
 
   @override
-  String get calendarEventEidAlAdhaDesc => 'Festival of Sacrifice';
+  String get calendarEventEidAlAdhaDesc => 'Fête du sacrifice';
 
   @override
-  String get calendarEventIslamicNewYear => 'Islamic New Year';
+  String get calendarEventIslamicNewYear => 'Nouvel An islamique';
 
   @override
-  String get calendarEventIslamicNewYearDesc => '1st of Muharram';
+  String get calendarEventIslamicNewYearDesc => '1er muharram';
 
   @override
   String get calendarEventMawlid => 'Mawlid an-Nabi';
 
   @override
-  String get calendarEventMawlidDesc => 'Birth of the Prophet';
+  String get calendarEventMawlidDesc => 'Naissance du Prophète';
 
   @override
-  String get calendarEventAshura => 'Ashura';
+  String get calendarEventAshura => 'Achoura';
 
   @override
-  String get calendarEventAshuraDesc => '10th of Muharram';
+  String get calendarEventAshuraDesc => '10 muharram';
 
   @override
   String get calendarEventJumuah => 'Jumu\'ah';
 
   @override
-  String get calendarEventJumuahDesc => 'Prière du vendredi';
+  String get calendarEventJumuahDesc => 'Prière du vendredi en congrégation';
 
   @override
   String get calendarEventWhiteDays => 'Jours blancs';
 
   @override
-  String get calendarEventWhiteDaysDesc => 'Du 13 au 15 de chaque mois';
+  String get calendarEventWhiteDaysDesc => 'Jours de jeûne recommandés';
 
   @override
   String get cycleModeActiveTitle =>
@@ -1502,7 +1513,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get save => 'Sauvegarder';
 
   @override
-  String get tasbihBack => 'Dos';
+  String get tasbihBack => 'Retour';
 
   @override
   String get tasbihTabTitle => 'Tasbih';

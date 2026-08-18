@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "Namaz qıldım";
+"prayer_alarm_subtitle" = "Namaz vaxtıdır";
+"prayer_alarm_dismiss" = "Bağla";
+"prayer_alarm_badge" = "Namaz siqnalı";
+"prayer_alarm_snooze" = "Təxirə sal";
+"prayer_alarm_snooze_label" = "Təxirə salma müddəti";

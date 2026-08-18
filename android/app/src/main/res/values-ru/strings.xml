@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Будильник намаза</string>
+    <string name="prayer_alarm_subtitle">Время намаза</string>
+    <string name="prayer_alarm_ive_prayed">Я совершил намаз</string>
+    <string name="prayer_alarm_dismiss">Закрыть</string>
+    <string name="prayer_alarm_snooze">Отложить</string>
+    <string name="prayer_alarm_snooze_label">Длительность отложения</string>
+    <string name="prayer_alarm_title_format">%1$s — Время намаза</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d мин.</string>
+</resources>
