@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Alarme de prière</string>
+    <string name="prayer_alarm_subtitle">Il est temps de prier</string>
+    <string name="prayer_alarm_ive_prayed">J\'ai prié</string>
+    <string name="prayer_alarm_dismiss">Ignorer</string>
+    <string name="prayer_alarm_snooze">Reporter</string>
+    <string name="prayer_alarm_snooze_label">Durée du report</string>
+    <string name="prayer_alarm_title_format">%1$s — Il est temps de prier</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d minutes</string>
+</resources>

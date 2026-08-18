@@ -652,6 +652,16 @@ class AppLocalizationsRo extends AppLocalizations {
   String get homeNextPrayerIn => 'Următoarea rugăciune în';
 
   @override
+  String get homeTapPrayerToMark =>
+      'Atinge o rugăciune pentru a o marca ca făcută, qada sau ratată.';
+
+  @override
+  String get homeSetLocation => 'Setează locația';
+
+  @override
+  String get homeEditPrayerSettings => 'Editează setările rugăciunii';
+
+  @override
   String get homePrayerFajr => 'Fajr';
 
   @override
@@ -724,133 +734,134 @@ class AppLocalizationsRo extends AppLocalizations {
   String get hijriMonthDhuAlHijjah => 'Dhu al-Hijjah';
 
   @override
-  String get calendarTitle => 'Islamic Calendar';
+  String get calendarTitle => 'Calendar islamic';
 
   @override
-  String get calendarBack => 'Back';
+  String get calendarBack => 'Înapoi';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => 'Astăzi';
 
   @override
-  String get calendarTomorrow => 'Tomorrow';
+  String get calendarTomorrow => 'Mâine';
 
   @override
   String calendarDaysAway(int days) {
-    return '$days days';
+    return '$days zile';
   }
 
   @override
-  String get calendarNoEventsThisWeek => 'No Islamic events this week.';
+  String get calendarNoEventsThisWeek =>
+      'Niciun eveniment islamic săptămâna aceasta.';
 
   @override
   String get calendarNoEventsBlessing =>
-      'May Allah bless your week with peace and goodness.';
+      'Fie ca Allah să binecuvânteze săptămâna ta cu pace și bunătate.';
 
   @override
-  String get calendarNoUpcomingEvents => 'No upcoming Islamic events found.';
+  String get calendarNoUpcomingEvents =>
+      'Nu s-au găsit evenimente islamice viitoare.';
 
   @override
-  String get calendarUpcomingEvents => 'Upcoming Islamic Events';
+  String get calendarUpcomingEvents => 'Evenimente islamice viitoare';
 
   @override
-  String get calendarUpcomingThisYear => 'Upcoming This Year';
+  String get calendarUpcomingThisYear => 'Viitoare în acest an';
 
   @override
-  String get calendarThisWeekObservances => 'This Week';
+  String get calendarThisWeekObservances => 'Săptămâna aceasta';
 
   @override
-  String get calendarLegendCycleDays => 'Cycle days (streak protected)';
+  String get calendarLegendCycleDays => 'Zile de ciclu (serie protejată)';
 
   @override
   String calendarMoonIlluminated(int percent) {
-    return '$percent% illuminated';
+    return '$percent% iluminată';
   }
 
   @override
-  String get calendarMoonNew => 'New Moon';
+  String get calendarMoonNew => 'Lună nouă';
 
   @override
-  String get calendarMoonWaxingCrescent => 'Waxing Crescent';
+  String get calendarMoonWaxingCrescent => 'Semilună crescătoare';
 
   @override
-  String get calendarMoonFirstQuarter => 'First Quarter';
+  String get calendarMoonFirstQuarter => 'Primul pătrar';
 
   @override
-  String get calendarMoonWaxingGibbous => 'Waxing Gibbous';
+  String get calendarMoonWaxingGibbous => 'Gibosă crescătoare';
 
   @override
-  String get calendarMoonFull => 'Full Moon';
+  String get calendarMoonFull => 'Lună plină';
 
   @override
-  String get calendarMoonWaningGibbous => 'Waning Gibbous';
+  String get calendarMoonWaningGibbous => 'Gibosă descrescătoare';
 
   @override
-  String get calendarMoonLastQuarter => 'Last Quarter';
+  String get calendarMoonLastQuarter => 'Ultimul pătrar';
 
   @override
-  String get calendarMoonWaningCrescent => 'Waning Crescent';
+  String get calendarMoonWaningCrescent => 'Semilună descrescătoare';
 
   @override
-  String get calendarEventRamadanBegins => 'Ramadan Begins';
+  String get calendarEventRamadanBegins => 'Începe Ramadanul';
 
   @override
-  String get calendarEventRamadanBeginsDesc => 'Month of fasting';
+  String get calendarEventRamadanBeginsDesc => 'Luna postului';
 
   @override
   String get calendarEventLaylatAlQadr => 'Laylat al-Qadr';
 
   @override
-  String get calendarEventLaylatAlQadrDesc => 'Night of Power';
+  String get calendarEventLaylatAlQadrDesc => 'Noaptea Puterii';
 
   @override
   String get calendarEventEidAlFitr => 'Eid al-Fitr';
 
   @override
-  String get calendarEventEidAlFitrDesc => 'Festival of Breaking the Fast';
+  String get calendarEventEidAlFitrDesc => 'Sărbătoarea întreruperii postului';
 
   @override
-  String get calendarEventDayOfArafah => 'Day of Arafah';
+  String get calendarEventDayOfArafah => 'Ziua Arafah';
 
   @override
-  String get calendarEventDayOfArafahDesc => 'Day of standing at Arafah';
+  String get calendarEventDayOfArafahDesc => 'Ziua staționării la Arafah';
 
   @override
   String get calendarEventEidAlAdha => 'Eid al-Adha';
 
   @override
-  String get calendarEventEidAlAdhaDesc => 'Festival of Sacrifice';
+  String get calendarEventEidAlAdhaDesc => 'Sărbătoarea Sacrificiului';
 
   @override
-  String get calendarEventIslamicNewYear => 'Islamic New Year';
+  String get calendarEventIslamicNewYear => 'Anul Nou islamic';
 
   @override
-  String get calendarEventIslamicNewYearDesc => '1st of Muharram';
+  String get calendarEventIslamicNewYearDesc => '1 Muharram';
 
   @override
   String get calendarEventMawlid => 'Mawlid an-Nabi';
 
   @override
-  String get calendarEventMawlidDesc => 'Birth of the Prophet';
+  String get calendarEventMawlidDesc => 'Nașterea Profetului';
 
   @override
   String get calendarEventAshura => 'Ashura';
 
   @override
-  String get calendarEventAshuraDesc => '10th of Muharram';
+  String get calendarEventAshuraDesc => '10 Muharram';
 
   @override
   String get calendarEventJumuah => 'Jumu\'ah';
 
   @override
-  String get calendarEventJumuahDesc => 'Rugăciunea de vineri';
+  String get calendarEventJumuahDesc => 'Rugăciunea de vineri în congregație';
 
   @override
   String get calendarEventWhiteDays => 'Zilele albe';
 
   @override
-  String get calendarEventWhiteDaysDesc =>
-      'Din 13 până în 15 ale fiecărei luni';
+  String get calendarEventWhiteDaysDesc => 'Zile de post recomandate';
 
   @override
   String get cycleModeActiveTitle =>
@@ -1499,7 +1510,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get save => 'Salva';
 
   @override
-  String get tasbihBack => 'Spate';
+  String get tasbihBack => 'Înapoi';
 
   @override
   String get tasbihTabTitle => 'Tasbih';

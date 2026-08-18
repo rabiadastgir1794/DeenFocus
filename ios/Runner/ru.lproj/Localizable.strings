@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "Я совершил намаз";
+"prayer_alarm_subtitle" = "Время намаза";
+"prayer_alarm_dismiss" = "Закрыть";
+"prayer_alarm_badge" = "Будильник намаза";
+"prayer_alarm_snooze" = "Отложить";
+"prayer_alarm_snooze_label" = "Длительность отложения";

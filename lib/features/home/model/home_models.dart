@@ -130,7 +130,9 @@ class HomePrayerChecklistDay {
         final status = PrayerMarkStatus.values
             .where((value) => value.name == entry.value)
             .firstOrNull;
-        if (prayer != null && status != null && status != PrayerMarkStatus.none) {
+        if (prayer != null &&
+            status != null &&
+            status != PrayerMarkStatus.none) {
           prayerStatuses[prayer] = status;
         }
       }
@@ -205,7 +207,8 @@ class PrayerSettingEntry {
       notificationsEnabled: map['notificationsEnabled'] as bool? ?? true,
       // Default true so enabling the master Prayer Alarms switch covers all five.
       alarmEnabled: map['alarmEnabled'] as bool? ?? true,
-      sound: PrayerNotificationSound.values
+      sound:
+          PrayerNotificationSound.values
               .where((value) => value.name == map['sound'])
               .firstOrNull ??
           PrayerNotificationSound.fullAdhan,
@@ -240,6 +243,16 @@ class PrayerSettingEntry {
           ? null
           : (customTimeMinutes ?? this.customTimeMinutes),
     );
+  }
+
+  /// Soft notification + native alarm stay in lockstep for each prayer.
+  PrayerSettingEntry withAlertingEnabled(bool enabled) =>
+      copyWith(notificationsEnabled: enabled, alarmEnabled: enabled);
+
+  /// Repair legacy desync: keep alerting if either flag was on.
+  PrayerSettingEntry normalizeAlertingSync() {
+    if (notificationsEnabled == alarmEnabled) return this;
+    return withAlertingEnabled(notificationsEnabled || alarmEnabled);
   }
 
   Map<String, dynamic> toMap() {
@@ -285,6 +298,10 @@ class PrayerSettingsState {
   PrayerSettingEntry forPrayer(TrackablePrayer prayer) =>
       entries[prayer] ?? const PrayerSettingEntry();
 
+  /// Soft notification and native alarm flags stay equal for each prayer.
+  bool isAlertingEnabled(TrackablePrayer prayer) =>
+      forPrayer(prayer).notificationsEnabled;
+
   /// Only prayers with an explicit custom time, for schedule recomputation.
   Map<TrackablePrayer, int> get customTimeOverrides {
     return <TrackablePrayer, int>{
@@ -303,6 +320,22 @@ class PrayerSettingsState {
     return PrayerSettingsState(entries: updated);
   }
 
+  /// Repair legacy prefs where soft and native flags drifted apart.
+  PrayerSettingsState normalizeAlertingSync() {
+    var changed = false;
+    final updated = <TrackablePrayer, PrayerSettingEntry>{};
+    for (final entry in entries.entries) {
+      final normalized = entry.value.normalizeAlertingSync();
+      if (normalized.notificationsEnabled != entry.value.notificationsEnabled ||
+          normalized.alarmEnabled != entry.value.alarmEnabled) {
+        changed = true;
+      }
+      updated[entry.key] = normalized;
+    }
+    if (!changed) return this;
+    return PrayerSettingsState(entries: updated);
+  }
+
   String toJson() {
     return jsonEncode(
       entries.map((prayer, entry) => MapEntry(prayer.name, entry.toMap())),
@@ -315,7 +348,8 @@ class HomePrayerStreakState {
     required this.weekStartDateKey,
     required this.weekDays,
     required this.completedDateKeys,
-    this.statusHistory = const <String, Map<TrackablePrayer, PrayerMarkStatus>>{},
+    this.statusHistory =
+        const <String, Map<TrackablePrayer, PrayerMarkStatus>>{},
     this.bestPrayerStreak = 0,
     this.bestDayStreak = 0,
   });
@@ -442,8 +476,7 @@ class HomePrayerStreakState {
   String toJson() {
     Map<String, dynamic> encodeDay(
       Map<TrackablePrayer, PrayerMarkStatus> day,
-    ) =>
-        day.map((prayer, status) => MapEntry(prayer.name, status.name));
+    ) => day.map((prayer, status) => MapEntry(prayer.name, status.name));
 
     return jsonEncode(<String, dynamic>{
       'weekStartDateKey': weekStartDateKey,
@@ -550,8 +583,9 @@ class CycleModeInterval {
 
   CycleModeInterval mergeWith(CycleModeInterval other) {
     assert(samePolicyAs(other));
-    final start =
-        startDate.isBefore(other.startDate) ? startDate : other.startDate;
+    final start = startDate.isBefore(other.startDate)
+        ? startDate
+        : other.startDate;
     final end = endDate.isAfter(other.endDate) ? endDate : other.endDate;
     return CycleModeInterval(
       startDate: start,
@@ -562,11 +596,11 @@ class CycleModeInterval {
   }
 
   Map<String, dynamic> toJsonMap() => <String, dynamic>{
-        'startDateMs': startDate.millisecondsSinceEpoch,
-        'endDateMs': endDate.millisecondsSinceEpoch,
-        'pauseStreaks': pauseStreaks,
-        'excludeFromStatistics': excludeFromStatistics,
-      };
+    'startDateMs': startDate.millisecondsSinceEpoch,
+    'endDateMs': endDate.millisecondsSinceEpoch,
+    'pauseStreaks': pauseStreaks,
+    'excludeFromStatistics': excludeFromStatistics,
+  };
 
   @override
   bool operator ==(Object other) {
@@ -688,8 +722,7 @@ class CycleModeData {
   static List<CycleModeInterval> mergeHistories(
     Iterable<CycleModeInterval> a,
     Iterable<CycleModeInterval> b,
-  ) =>
-      normalizeHistory(<CycleModeInterval>[...a, ...b]);
+  ) => normalizeHistory(<CycleModeInterval>[...a, ...b]);
 
   final bool isEnabled;
   final DateTime startDate;
@@ -828,10 +861,7 @@ class CycleModeData {
 
     // Disable before the window starts — nothing to seal.
     if (day.isBefore(start)) {
-      return copyWith(
-        isEnabled: false,
-        history: normalizeHistory(history),
-      );
+      return copyWith(isEnabled: false, history: normalizeHistory(history));
     }
 
     final DateTime end;
@@ -844,10 +874,7 @@ class CycleModeData {
     }
 
     if (end.isBefore(start)) {
-      return copyWith(
-        isEnabled: false,
-        history: normalizeHistory(history),
-      );
+      return copyWith(isEnabled: false, history: normalizeHistory(history));
     }
 
     final sealed = CycleModeInterval(
@@ -930,8 +957,10 @@ class CycleModeData {
     DateTime? now,
   }) {
     final start = dateOnly(startDate ?? this.startDate);
-    var length = (cycleLength ?? this.cycleLength)
-        .clamp(minCycleLength, maxCycleLength);
+    var length = (cycleLength ?? this.cycleLength).clamp(
+      minCycleLength,
+      maxCycleLength,
+    );
     final today = dateOnly(now ?? DateTime.now());
     final elapsed = today.difference(start).inDays;
     if (elapsed >= 0) {
@@ -961,8 +990,10 @@ class CycleModeData {
     return CycleModeData(
       isEnabled: isEnabled ?? this.isEnabled,
       startDate: startDate != null ? dateOnly(startDate) : this.startDate,
-      cycleLength: (cycleLength ?? this.cycleLength)
-          .clamp(minCycleLength, maxCycleLength),
+      cycleLength: (cycleLength ?? this.cycleLength).clamp(
+        minCycleLength,
+        maxCycleLength,
+      ),
       pauseStreaks: pauseStreaks ?? this.pauseStreaks,
       excludeFromStatistics:
           excludeFromStatistics ?? this.excludeFromStatistics,
@@ -971,15 +1002,13 @@ class CycleModeData {
   }
 
   Map<String, dynamic> toJsonMap() => <String, dynamic>{
-        'isEnabled': isEnabled,
-        'startDateMs': dateOnly(startDate).millisecondsSinceEpoch,
-        'cycleLength': cycleLength,
-        'pauseStreaks': pauseStreaks,
-        'excludeFromStatistics': excludeFromStatistics,
-        'history': [
-          for (final interval in history) interval.toJsonMap(),
-        ],
-      };
+    'isEnabled': isEnabled,
+    'startDateMs': dateOnly(startDate).millisecondsSinceEpoch,
+    'cycleLength': cycleLength,
+    'pauseStreaks': pauseStreaks,
+    'excludeFromStatistics': excludeFromStatistics,
+    'history': [for (final interval in history) interval.toJsonMap()],
+  };
 
   String toJson() => jsonEncode(toJsonMap());
 }

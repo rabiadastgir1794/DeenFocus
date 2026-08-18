@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/spacing.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
-import 'prayer_sheet_back_button.dart';
 
 /// Lets the user pick a notification sound (or mute) and enable/disable
 /// notifications independently for [prayer].
@@ -54,179 +54,190 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 32.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SheetBackButton(onTap: () => Navigator.of(context).pop()),
-                SizedBox(width: Spacing.sm.w),
-                Expanded(
-                  child: Text(
-                    l10n.homeNotificationForPrayer(prayerLabel),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Spacing.lg.h),
-            Text(
-              l10n.homeNotificationSoundLabel,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: Spacing.sm.h),
-            Container(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: borderColor),
-              ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppCenteredNavHeader(
+            title: l10n.homeNotificationForPrayer(prayerLabel),
+            backLabel: l10n.calendarBack,
+            onBack: () => Navigator.of(context).pop(),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 32.h),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _SoundTile(
-                    icon: Iconsax.volume_high,
-                    title: l10n.homeNotificationSoundFullAdhan,
-                    subtitle: l10n.homeNotificationSoundFullAdhanSubtitle,
-                    selected:
-                        settings.sound == PrayerNotificationSound.fullAdhan,
-                    onTap: () => vm.setPrayerNotificationSound(
-                      prayer,
-                      PrayerNotificationSound.fullAdhan,
+                  SizedBox(height: Spacing.md.h),
+                  Text(
+                    l10n.homeNotificationSoundLabel,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: 16,
-                    endIndent: 16,
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                  ),
-                  _SoundTile(
-                    icon: Iconsax.notification,
-                    title: l10n.homeNotificationSoundBeep,
-                    subtitle: l10n.homeNotificationSoundBeepSubtitle,
-                    selected: settings.sound == PrayerNotificationSound.beep,
-                    onTap: () => vm.setPrayerNotificationSound(
-                      prayer,
-                      PrayerNotificationSound.beep,
+                  SizedBox(height: Spacing.sm.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(color: borderColor),
                     ),
-                  ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: 16,
-                    endIndent: 16,
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                  ),
-                  _SoundTile(
-                    icon: Iconsax.volume_slash,
-                    title: l10n.homeNotificationSoundMute,
-                    subtitle: l10n.homeNotificationSoundMuteSubtitle,
-                    selected: settings.sound == PrayerNotificationSound.mute,
-                    onTap: () => vm.setPrayerNotificationSound(
-                      prayer,
-                      PrayerNotificationSound.mute,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: Spacing.md.h),
-            Container(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: borderColor),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Spacing.md.w,
-                vertical: Spacing.sm.h + 2.h,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          l10n.homeNotificationEnableLabel,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w600),
+                        _SoundTile(
+                          icon: Iconsax.volume_high,
+                          title: l10n.homeNotificationSoundFullAdhan,
+                          subtitle: l10n.homeNotificationSoundFullAdhanSubtitle,
+                          selected:
+                              settings.sound ==
+                              PrayerNotificationSound.fullAdhan,
+                          onTap: () => vm.setPrayerNotificationSound(
+                            prayer,
+                            PrayerNotificationSound.fullAdhan,
+                          ),
                         ),
-                        SizedBox(height: 2.h),
-                        Text(
-                          l10n.homeNotificationEnableSubtitle(prayerLabel),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          indent: 16,
+                          endIndent: 16,
+                          color: colorScheme.outlineVariant.withValues(
+                            alpha: 0.3,
+                          ),
+                        ),
+                        _SoundTile(
+                          icon: Iconsax.notification,
+                          title: l10n.homeNotificationSoundBeep,
+                          subtitle: l10n.homeNotificationSoundBeepSubtitle,
+                          selected:
+                              settings.sound == PrayerNotificationSound.beep,
+                          onTap: () => vm.setPrayerNotificationSound(
+                            prayer,
+                            PrayerNotificationSound.beep,
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          indent: 16,
+                          endIndent: 16,
+                          color: colorScheme.outlineVariant.withValues(
+                            alpha: 0.3,
+                          ),
+                        ),
+                        _SoundTile(
+                          icon: Iconsax.volume_slash,
+                          title: l10n.homeNotificationSoundMute,
+                          subtitle: l10n.homeNotificationSoundMuteSubtitle,
+                          selected:
+                              settings.sound == PrayerNotificationSound.mute,
+                          onTap: () => vm.setPrayerNotificationSound(
+                            prayer,
+                            PrayerNotificationSound.mute,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
-                    value: settings.notificationsEnabled,
-                    onChanged: (value) =>
-                        vm.setPrayerNotificationEnabled(prayer, value),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: Spacing.md.h),
-            Container(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: borderColor),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Spacing.md.w,
-                vertical: Spacing.sm.h + 2.h,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(height: Spacing.md.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(color: borderColor),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Spacing.md.w,
+                      vertical: Spacing.sm.h + 2.h,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          l10n.homePrayerAlarmEnableLabel,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w600),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.homeNotificationEnableLabel,
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(height: 2.h),
+                              Text(
+                                l10n.homeNotificationEnableSubtitle(
+                                  prayerLabel,
+                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(height: 2.h),
-                        Text(
-                          l10n.homePrayerAlarmEnableSubtitle(prayerLabel),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                        Switch.adaptive(
+                          value: settings.notificationsEnabled,
+                          onChanged: (value) =>
+                              vm.setPrayerAlertingEnabled(prayer, value),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
-                    value: settings.alarmEnabled,
-                    onChanged: (value) =>
-                        vm.setPrayerAlarmEnabled(prayer, value),
+                  SizedBox(height: Spacing.md.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(color: borderColor),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Spacing.md.w,
+                      vertical: Spacing.sm.h + 2.h,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.homePrayerAlarmEnableLabel,
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(height: 2.h),
+                              Text(
+                                l10n.homePrayerAlarmEnableSubtitle(prayerLabel),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch.adaptive(
+                          value: settings.alarmEnabled,
+                          onChanged: (value) =>
+                              vm.setPrayerAlertingEnabled(prayer, value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: Spacing.lg.h),
+                  AppButton(
+                    label: l10n.save,
+                    showTrailingIcon: false,
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: Spacing.lg.h),
-            AppButton(
-              label: l10n.save,
-              showTrailingIcon: false,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

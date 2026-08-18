@@ -14,6 +14,8 @@
     <string name="prayer_alarm_ive_prayed">I\'ve Prayed</string>
     <string name="prayer_alarm_dismiss">Dismiss</string>
     <string name="prayer_alarm_snooze">Snooze</string>
+    <string name="prayer_alarm_snooze_label">Snooze duration</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d minutes</string>
     <string name="prayer_alarm_title_format">%1$s — Time to Pray</string>
     <string name="prayer_alarm_channel_adhan">Prayer alarms (Adhan)</string>
     <string name="prayer_alarm_channel_beep">Prayer alarms (Beep)</string>

@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "He orado";
+"prayer_alarm_subtitle" = "Hora de orar";
+"prayer_alarm_dismiss" = "Descartar";
+"prayer_alarm_badge" = "Alarma de oración";
+"prayer_alarm_snooze" = "Posponer";
+"prayer_alarm_snooze_label" = "Duración de la repetición";

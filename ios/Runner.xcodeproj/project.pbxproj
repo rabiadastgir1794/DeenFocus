@@ -26,12 +26,12 @@
 		F20000000000000000000001 /* FocusDeviceActivityMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000011 /* FocusDeviceActivityMonitor.swift */; };
 		F20000000000000000000002 /* FocusDeviceActivityMonitor.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F20000000000000000000010 /* FocusDeviceActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */; };
-		F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000011 /* PrayerAlarmBridge.swift */; };
-		F50000000000000000000002 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000012 /* Localizable.strings */; };
 		F30000000000000000000001 /* FocusShieldConfigurationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */; };
 		F30000000000000000000002 /* FocusShieldConfiguration.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000000000000000000010 /* FocusShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F40000000000000000000001 /* azan.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* azan.caf */; };
 		F40000000000000000000002 /* beep.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* beep.caf */; };
+		F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000011 /* PrayerAlarmBridge.swift */; };
+		F50000000000000000000002 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000012 /* Localizable.strings */; };
 		F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */; };
 		F60000000000000000000002 /* PrayerLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */; };
 		F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000012 /* PrayerLiveActivityBridge.swift */; };
@@ -112,17 +112,29 @@
 		F20000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F20000000000000000000013 /* FocusDeviceActivityMonitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusDeviceActivityMonitor.entitlements; sourceTree = "<group>"; };
 		F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusDeviceActivityScheduler.swift; sourceTree = "<group>"; };
-		F50000000000000000000011 /* PrayerAlarmBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerAlarmBridge.swift; sourceTree = "<group>"; };
-		F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityAttributes.swift; sourceTree = "<group>"; };
-		F60000000000000000000012 /* PrayerLiveActivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityBridge.swift; sourceTree = "<group>"; };
-		F60000000000000000000013 /* PrayerLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityWidget.swift; sourceTree = "<group>"; };
-		F50000000000000000000013 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F30000000000000000000010 /* FocusShieldConfiguration.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusShieldConfiguration.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusShieldConfigurationExtension.swift; sourceTree = "<group>"; };
 		F30000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F30000000000000000000013 /* FocusShieldConfiguration.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusShieldConfiguration.entitlements; sourceTree = "<group>"; };
 		F40000000000000000000011 /* azan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = azan.caf; sourceTree = "<group>"; };
 		F40000000000000000000012 /* beep.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = beep.caf; sourceTree = "<group>"; };
+		F50000000000000000000011 /* PrayerAlarmBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerAlarmBridge.swift; sourceTree = "<group>"; };
+		F50000000000000000000013 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000100 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000101 /* az */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = az; path = az.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000102 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000104 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000105 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000106 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000107 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000108 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000109 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000110 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000111 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F50000000000000000000112 /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityAttributes.swift; sourceTree = "<group>"; };
+		F60000000000000000000012 /* PrayerLiveActivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityBridge.swift; sourceTree = "<group>"; };
+		F60000000000000000000013 /* PrayerLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityWidget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,14 +255,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F60000000000000000000024 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
 		F10000000000000000000024 /* DeenlyWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -285,6 +289,14 @@
 				F30000000000000000000013 /* FocusShieldConfiguration.entitlements */,
 			);
 			path = FocusShieldConfiguration;
+			sourceTree = "<group>";
+		};
+		F60000000000000000000024 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		F812DC4A6941AE1B3EF60E52 /* Pods */ = {
@@ -433,6 +445,18 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
+				az,
+				de,
+				es,
+				fr,
+				hi,
+				it,
+				nl,
+				pt,
+				ro,
+				ru,
+				zh,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -688,7 +712,19 @@
 		F50000000000000000000012 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
+				F50000000000000000000100 /* ar */,
+				F50000000000000000000101 /* az */,
+				F50000000000000000000102 /* de */,
 				F50000000000000000000013 /* en */,
+				F50000000000000000000104 /* es */,
+				F50000000000000000000105 /* fr */,
+				F50000000000000000000106 /* hi */,
+				F50000000000000000000107 /* it */,
+				F50000000000000000000108 /* nl */,
+				F50000000000000000000109 /* pt */,
+				F50000000000000000000110 /* ro */,
+				F50000000000000000000111 /* ru */,
+				F50000000000000000000112 /* zh */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

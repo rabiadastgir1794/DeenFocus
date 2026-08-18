@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "Ho pregato";
+"prayer_alarm_subtitle" = "È ora di pregare";
+"prayer_alarm_dismiss" = "Ignora";
+"prayer_alarm_badge" = "Sveglia di preghiera";
+"prayer_alarm_snooze" = "Posticipa";
+"prayer_alarm_snooze_label" = "Durata snooze";

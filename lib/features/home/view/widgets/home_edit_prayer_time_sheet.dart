@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/spacing.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
-import 'prayer_sheet_back_button.dart';
 
 /// Lets the user override the calculated time for a single prayer, e.g. to
 /// match their local masjid. The override applies only to [prayer].
@@ -75,119 +75,118 @@ class _EditPrayerTimeSheetContentState
 
     return SafeArea(
       top: false,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 32.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SheetBackButton(onTap: () => Navigator.of(context).pop()),
-                SizedBox(width: Spacing.sm.w),
-                Expanded(
-                  child: Text(
-                    l10n.homeEditPrayerTimeTitle(prayerLabel),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Spacing.lg.h),
-            Text(
-              l10n.homeEditPrayerTimeCurrent,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: Spacing.sm.h),
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Spacing.md.w,
-                vertical: Spacing.sm.h + 2.h,
-              ),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(color: borderColor),
-              ),
-              child: Text(
-                DateFormat.jm(l10n.localeName).format(_selectedTime),
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ),
-            SizedBox(height: Spacing.lg.h),
-            Text(
-              l10n.homeEditPrayerTimeSelectNew,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: Spacing.sm.h),
-            Container(
-              height: 180.h,
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: borderColor),
-              ),
-              child: CupertinoTheme(
-                data: CupertinoThemeData(
-                  textTheme: CupertinoTextThemeData(
-                    dateTimePickerTextStyle: TextStyle(
-                      fontSize: 18.sp,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppCenteredNavHeader(
+            title: l10n.homeEditPrayerTimeTitle(prayerLabel),
+            backLabel: l10n.calendarBack,
+            onBack: () => Navigator.of(context).pop(),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 32.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: Spacing.md.h),
+                  Text(
+                    l10n.homeEditPrayerTimeCurrent,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
                     ),
                   ),
-                ),
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  use24hFormat: false,
-                  initialDateTime: _selectedTime,
-                  onDateTimeChanged: (value) =>
-                      setState(() => _selectedTime = value),
-                ),
+                  SizedBox(height: Spacing.sm.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Spacing.md.w,
+                      vertical: Spacing.sm.h + 2.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: Text(
+                      DateFormat.jm(l10n.localeName).format(_selectedTime),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Spacing.lg.h),
+                  Text(
+                    l10n.homeEditPrayerTimeSelectNew,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: Spacing.sm.h),
+                  Container(
+                    height: 180.h,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: CupertinoTheme(
+                      data: CupertinoThemeData(
+                        textTheme: CupertinoTextThemeData(
+                          dateTimePickerTextStyle: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.time,
+                        use24hFormat: false,
+                        initialDateTime: _selectedTime,
+                        onDateTimeChanged: (value) =>
+                            setState(() => _selectedTime = value),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Spacing.md.h),
+                  Text(
+                    l10n.homeEditPrayerTimeNote(prayerLabel),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  SizedBox(height: Spacing.lg.h),
+                  AppButton(
+                    label: l10n.homeEditPrayerTimeSave,
+                    showTrailingIcon: false,
+                    onPressed: () async {
+                      final minutes =
+                          _selectedTime.hour * 60 + _selectedTime.minute;
+                      await vm.setPrayerCustomTime(widget.prayer, minutes);
+                      if (context.mounted) Navigator.of(context).pop();
+                    },
+                  ),
+                  if (hasCustomTime) ...[
+                    SizedBox(height: Spacing.sm.h),
+                    Center(
+                      child: TextButton(
+                        onPressed: () async {
+                          await vm.setPrayerCustomTime(widget.prayer, null);
+                          if (context.mounted) Navigator.of(context).pop();
+                        },
+                        child: Text(l10n.homeEditPrayerTimeReset),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            SizedBox(height: Spacing.md.h),
-            Text(
-              l10n.homeEditPrayerTimeNote(prayerLabel),
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            SizedBox(height: Spacing.lg.h),
-            AppButton(
-              label: l10n.homeEditPrayerTimeSave,
-              showTrailingIcon: false,
-              onPressed: () async {
-                final minutes = _selectedTime.hour * 60 + _selectedTime.minute;
-                await vm.setPrayerCustomTime(widget.prayer, minutes);
-                if (context.mounted) Navigator.of(context).pop();
-              },
-            ),
-            if (hasCustomTime) ...[
-              SizedBox(height: Spacing.sm.h),
-              Center(
-                child: TextButton(
-                  onPressed: () async {
-                    await vm.setPrayerCustomTime(widget.prayer, null);
-                    if (context.mounted) Navigator.of(context).pop();
-                  },
-                  child: Text(l10n.homeEditPrayerTimeReset),
-                ),
-              ),
-            ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

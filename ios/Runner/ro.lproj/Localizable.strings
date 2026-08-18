@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "M-am rugat";
+"prayer_alarm_subtitle" = "Este timpul să te rogi";
+"prayer_alarm_dismiss" = "Închide";
+"prayer_alarm_badge" = "Alarmă de rugăciune";
+"prayer_alarm_snooze" = "Amână";
+"prayer_alarm_snooze_label" = "Durata amânării";

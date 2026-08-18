@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Sveglia di preghiera</string>
+    <string name="prayer_alarm_subtitle">È ora di pregare</string>
+    <string name="prayer_alarm_ive_prayed">Ho pregato</string>
+    <string name="prayer_alarm_dismiss">Ignora</string>
+    <string name="prayer_alarm_snooze">Posticipa</string>
+    <string name="prayer_alarm_snooze_label">Durata snooze</string>
+    <string name="prayer_alarm_title_format">%1$s — È ora di pregare</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d minuti</string>
+</resources>

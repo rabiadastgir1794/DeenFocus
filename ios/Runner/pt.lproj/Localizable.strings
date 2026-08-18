@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "Eu orei";
+"prayer_alarm_subtitle" = "Hora de orar";
+"prayer_alarm_dismiss" = "Dispensar";
+"prayer_alarm_badge" = "Alarme de oração";
+"prayer_alarm_snooze" = "Soneca";
+"prayer_alarm_snooze_label" = "Duração da soneca";

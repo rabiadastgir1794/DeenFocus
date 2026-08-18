@@ -25,8 +25,16 @@ import '../model/home_models.dart';
 import '../services/achievements_service.dart';
 import '../services/cycle_mode_policy.dart';
 import '../services/prayer_analytics_service.dart';
+import '../services/prayer_settings_service.dart';
 
 class HomeTabViewModel extends ChangeNotifier {
+  HomeTabViewModel({PrayerSettingsService? prayerSettings})
+    : _prayerSettingsService = prayerSettings ?? PrayerSettingsService() {
+    _prayerSettingsService.addListener(_onPrayerSettingsChanged);
+  }
+
+  final PrayerSettingsService _prayerSettingsService;
+
   String userName = 'User';
   String? locationName;
   String? locationSubtitle;
@@ -55,6 +63,7 @@ class HomeTabViewModel extends ChangeNotifier {
   DateTime weeklyVisibleWeekStart = HomeTabViewModel._startOfWeekFor(
     DateTime.now(),
   );
+
   /// Week/month toggle for legacy home calendar section. Full Calendar screen
   /// always navigates by Gregorian month via [goToNextMonth]/[goToPreviousMonth].
   bool weeklyCalendar = false;
@@ -64,17 +73,16 @@ class HomeTabViewModel extends ChangeNotifier {
     weekDays: <HomePrayerChecklistDay>[],
     completedDateKeys: <String>{},
   );
-  PrayerSettingsState _prayerSettings = PrayerSettingsState.defaults();
 
   // Cycle Mode state
   CycleModeData _cycleMode = CycleModeData.disabled();
-  
+
   // Daily Checklist state
   DailyChecklistState _dailyChecklist = const DailyChecklistState(
     dateKey: '',
     completedItems: <DailyChecklistItem>{},
   );
-  
+
   // Focus Score state (placeholder values - can be connected to actual tracking)
   int _todayFocusScore = 0;
   int _todayPrayerPercent = 0;
@@ -100,14 +108,12 @@ class HomeTabViewModel extends ChangeNotifier {
 
   /// All streak / completion numbers — always from [PrayerAnalyticsService].
   int get prayerRatePercent => analytics.prayerRatePercent;
-  int get bestPrayerStreak =>
-      _prayerStreakState.bestPrayerStreak > prayerStreak
-          ? _prayerStreakState.bestPrayerStreak
-          : prayerStreak;
-  int get bestDayStreak =>
-      _prayerStreakState.bestDayStreak > streakDays
-          ? _prayerStreakState.bestDayStreak
-          : streakDays;
+  int get bestPrayerStreak => _prayerStreakState.bestPrayerStreak > prayerStreak
+      ? _prayerStreakState.bestPrayerStreak
+      : prayerStreak;
+  int get bestDayStreak => _prayerStreakState.bestDayStreak > streakDays
+      ? _prayerStreakState.bestDayStreak
+      : streakDays;
   int get bestStreakDays => bestDayStreak;
   int get cycleProtectedDaysAvailable => cycleModeDaysRemaining;
   List<bool> get weekCycleHighlights {
@@ -122,11 +128,11 @@ class HomeTabViewModel extends ChangeNotifier {
 
   /// Bumps when cycle settings change so calendar grids rebuild highlights.
   int get cycleHighlightRevision => Object.hash(
-        _cycleMode.isEnabled,
-        _cycleMode.startDate,
-        _cycleMode.cycleLength,
-        Object.hashAll(_cycleMode.history),
-      );
+    _cycleMode.isEnabled,
+    _cycleMode.startDate,
+    _cycleMode.cycleLength,
+    Object.hashAll(_cycleMode.history),
+  );
   bool get isTodayCycleProtected => cyclePolicy.isTodayProtected();
   List<DateTime> get insightsWeekDates =>
       WeeklyCalculator.insightsWeekDates(DateTime.now());
@@ -158,7 +164,8 @@ class HomeTabViewModel extends ChangeNotifier {
   /// (within 24h), then recalculate everything. Multiple restores allowed.
   Future<bool> restoreStreakLast7Days() async {
     final now = DateTime.now();
-    final target = analytics.restoreTarget ??
+    final target =
+        analytics.restoreTarget ??
         RestoreCalculator.findTarget(
           now: now,
           statusHistory: _mergedStatusHistory(),
@@ -172,19 +179,26 @@ class HomeTabViewModel extends ChangeNotifier {
       target: target,
     );
 
-    final weekDays = _prayerStreakState.weekDays.map((day) {
-      if (day.dateKey != target.dateKey) return day;
-      final statuses = history[target.dateKey] ?? day.prayerStatuses;
-      final selected = <TrackablePrayer>{
-        for (final e in statuses.entries)
-          if (e.value == PrayerMarkStatus.onTime ||
-              e.value == PrayerMarkStatus.qada)
-            e.key,
-      };
-      return day.copyWith(selectedPrayers: selected, prayerStatuses: statuses);
-    }).toList(growable: false);
+    final weekDays = _prayerStreakState.weekDays
+        .map((day) {
+          if (day.dateKey != target.dateKey) return day;
+          final statuses = history[target.dateKey] ?? day.prayerStatuses;
+          final selected = <TrackablePrayer>{
+            for (final e in statuses.entries)
+              if (e.value == PrayerMarkStatus.onTime ||
+                  e.value == PrayerMarkStatus.qada)
+                e.key,
+          };
+          return day.copyWith(
+            selectedPrayers: selected,
+            prayerStatuses: statuses,
+          );
+        })
+        .toList(growable: false);
 
-    final completedDates = Set<String>.from(_prayerStreakState.completedDateKeys);
+    final completedDates = Set<String>.from(
+      _prayerStreakState.completedDateKeys,
+    );
     final dayStatuses = history[target.dateKey];
     if (dayStatuses != null &&
         TrackablePrayer.values.every(
@@ -213,8 +227,9 @@ class HomeTabViewModel extends ChangeNotifier {
   CycleModePolicy get cyclePolicy => CycleModePolicy(_cycleMode);
 
   // Daily Checklist getters
-  Set<DailyChecklistItem> get dailyChecklistCompletedItems => _dailyChecklist.completedItems;
-  
+  Set<DailyChecklistItem> get dailyChecklistCompletedItems =>
+      _dailyChecklist.completedItems;
+
   // Focus Score getters
   int get todayFocusScore => _todayFocusScore;
   int get todayPrayerPercent => _todayPrayerPercent;
@@ -241,7 +256,9 @@ class HomeTabViewModel extends ChangeNotifier {
   List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
 
   PrayerSettingEntry settingsFor(TrackablePrayer prayer) =>
-      _prayerSettings.forPrayer(prayer);
+      _prayerSettingsService.forPrayer(prayer);
+
+  void _onPrayerSettingsChanged() => notifyListeners();
 
   String? get qiblaInfo {
     if (latitude == null || longitude == null) return null;
@@ -382,8 +399,7 @@ class HomeTabViewModel extends ChangeNotifier {
 
     _prayerStreakState = _ensureWeekDays(state, weekStart);
     // Sync weekDays into persistent status history (single source of truth).
-    final history =
-        Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
+    final history = Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
       _prayerStreakState.statusHistory.map(
         (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
       ),
@@ -463,20 +479,13 @@ class HomeTabViewModel extends ChangeNotifier {
     );
     prayerTimes = HomePrayerTimesHelper.applyCustomOverrides(
       data: calculated,
-      overridesMinutesSinceMidnight: _prayerSettings.customTimeOverrides,
+      overridesMinutesSinceMidnight: _prayerSettingsService.customTimeOverrides,
       referenceTime: DateTime.now(),
     );
   }
 
   Future<void> _loadPrayerSettings() async {
-    final raw = await StorageService.prayerSettingsJson;
-    _prayerSettings = raw == null
-        ? PrayerSettingsState.defaults()
-        : PrayerSettingsState.fromJson(raw);
-  }
-
-  Future<void> _persistPrayerSettings() async {
-    await StorageService.setPrayerSettingsJson(_prayerSettings.toJson());
+    await _prayerSettingsService.reload();
   }
 
   Future<void> _rescheduleNotificationsIfPossible() async {
@@ -515,12 +524,7 @@ class HomeTabViewModel extends ChangeNotifier {
     TrackablePrayer prayer,
     int? minutesSinceMidnight,
   ) async {
-    final entry = _prayerSettings.forPrayer(prayer).copyWith(
-      customTimeMinutes: minutesSinceMidnight,
-      clearCustomTime: minutesSinceMidnight == null,
-    );
-    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
-    await _persistPrayerSettings();
+    await _prayerSettingsService.setCustomTime(prayer, minutesSinceMidnight);
     await _loadPrayerTimes();
     notifyListeners();
     unawaited(_rescheduleNotificationsIfPossible());
@@ -530,37 +534,29 @@ class HomeTabViewModel extends ChangeNotifier {
     TrackablePrayer prayer,
     PrayerNotificationSound sound,
   ) async {
-    final entry = _prayerSettings.forPrayer(prayer).copyWith(sound: sound);
-    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
-    await _persistPrayerSettings();
+    await _prayerSettingsService.setSound(prayer, sound);
     notifyListeners();
+    unawaited(_rescheduleNotificationsIfPossible());
+  }
+
+  /// Single source of truth: soft notification and native alarm stay in sync.
+  Future<void> setPrayerAlertingEnabled(
+    TrackablePrayer prayer,
+    bool enabled,
+  ) async {
+    await _prayerSettingsService.setAlertingEnabled(prayer, enabled);
+    notifyListeners();
+    // Soft + native: ownership (Adhan ↔ mute) and cancel/schedule stay aligned.
     unawaited(_rescheduleNotificationsIfPossible());
   }
 
   Future<void> setPrayerNotificationEnabled(
     TrackablePrayer prayer,
     bool enabled,
-  ) async {
-    final entry = _prayerSettings
-        .forPrayer(prayer)
-        .copyWith(notificationsEnabled: enabled);
-    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
-    await _persistPrayerSettings();
-    notifyListeners();
-    unawaited(_rescheduleNotificationsIfPossible());
-  }
+  ) => setPrayerAlertingEnabled(prayer, enabled);
 
-  Future<void> setPrayerAlarmEnabled(
-    TrackablePrayer prayer,
-    bool enabled,
-  ) async {
-    final entry =
-        _prayerSettings.forPrayer(prayer).copyWith(alarmEnabled: enabled);
-    _prayerSettings = _prayerSettings.copyWithEntry(prayer, entry);
-    await _persistPrayerSettings();
-    notifyListeners();
-    unawaited(_reschedulePrayerAlarmsIfPossible());
-  }
+  Future<void> setPrayerAlarmEnabled(TrackablePrayer prayer, bool enabled) =>
+      setPrayerAlertingEnabled(prayer, enabled);
 
   // Cycle Mode methods
   /// Loads prefs, applies one-time history purge, and auto-expires if needed.
@@ -586,7 +582,9 @@ class HomeTabViewModel extends ChangeNotifier {
       now: now,
     );
     final rolledToNewDay =
-        stored != null && stored.dateKey.isNotEmpty && stored.dateKey != resolved.dateKey;
+        stored != null &&
+        stored.dateKey.isNotEmpty &&
+        stored.dateKey != resolved.dateKey;
     _dailyChecklist = resolved;
     // Persist empty new-day state so cold starts / other surfaces see today.
     if (stored == null || rolledToNewDay) {
@@ -603,22 +601,25 @@ class HomeTabViewModel extends ChangeNotifier {
     await _loadDailyChecklist();
     return true;
   }
-  
+
   Future<void> _persistDailyChecklist() async {
     await StorageService.setDailyChecklistJson(_dailyChecklist.toJson());
   }
-  
+
   Future<void> toggleDailyChecklistItem(DailyChecklistItem item) async {
     await _ensureDailyChecklistCurrent();
-    final completed = Set<DailyChecklistItem>.from(_dailyChecklist.completedItems);
+    final completed = Set<DailyChecklistItem>.from(
+      _dailyChecklist.completedItems,
+    );
     if (completed.contains(item)) {
       completed.remove(item);
     } else {
       completed.add(item);
     }
     _dailyChecklist = _dailyChecklist.copyWith(completedItems: completed);
-    _checklistHistory[_dailyChecklist.dateKey] =
-        Set<DailyChecklistItem>.from(completed);
+    _checklistHistory[_dailyChecklist.dateKey] = Set<DailyChecklistItem>.from(
+      completed,
+    );
     await _persistDailyChecklist();
     await _persistChecklistHistory();
     await _computeFocusScore();
@@ -626,7 +627,7 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
     unawaited(_syncNightlyWrapUpIfPossible());
   }
-  
+
   Future<void> _computeFocusScore() async {
     final completed = _dailyChecklist.completedItems;
 
@@ -675,12 +676,11 @@ class HomeTabViewModel extends ChangeNotifier {
       DailyChecklistItem.familyCall,
     ];
     final bonusDone = bonusItems.where(completed.contains).length;
-    final coreAverage = (
-          _todayPrayerPercent +
-          _todayQuranPercent +
-          _todayDhikrPercent +
-          undistractedPercent
-        ) /
+    final coreAverage =
+        (_todayPrayerPercent +
+            _todayQuranPercent +
+            _todayDhikrPercent +
+            undistractedPercent) /
         4;
     final allChecklistDone =
         completed.length == DailyChecklistItem.values.length;
@@ -693,8 +693,7 @@ class HomeTabViewModel extends ChangeNotifier {
       _todayDistractionPercent = 0;
       _todayFocusScore = 100;
     } else {
-      final bonusBoost =
-          (bonusDone / bonusItems.length) * 5; // up to +5 points
+      final bonusBoost = (bonusDone / bonusItems.length) * 5; // up to +5 points
       _todayFocusScore = (coreAverage + bonusBoost).round().clamp(0, 100);
     }
   }
@@ -707,19 +706,23 @@ class HomeTabViewModel extends ChangeNotifier {
     final done = items.where(completed.contains).length;
     return ((done / items.length) * 100).round();
   }
-  
+
   int _getPrayerCompletionPercent() {
     // Calculate prayer completion percentage for today
     final now = DateTime.now();
-    final today = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final dayData = _prayerStreakState.weekDays.where((day) => day.dateKey == today).firstOrNull;
+    final today =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final dayData = _prayerStreakState.weekDays
+        .where((day) => day.dateKey == today)
+        .firstOrNull;
     if (dayData == null) return 0;
-    
+
     final total = TrackablePrayer.values.length;
     int completed = 0;
     for (final prayer in TrackablePrayer.values) {
       final status = dayData.statusFor(prayer);
-      if (status == PrayerMarkStatus.onTime || status == PrayerMarkStatus.qada) {
+      if (status == PrayerMarkStatus.onTime ||
+          status == PrayerMarkStatus.qada) {
         completed++;
       }
     }
@@ -1077,8 +1080,7 @@ class HomeTabViewModel extends ChangeNotifier {
       completedDates.remove(dateKey);
     }
 
-    final history =
-        Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
+    final history = Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
       _prayerStreakState.statusHistory.map(
         (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
       ),
@@ -1103,7 +1105,8 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
     unawaited(_syncNightlyWrapUpIfPossible());
 
-    final celebrated = status == PrayerMarkStatus.onTime &&
+    final celebrated =
+        status == PrayerMarkStatus.onTime &&
         previousStatus != PrayerMarkStatus.onTime &&
         prayerStreak > previousPrayerStreak;
     return PrayerMarkResult(
@@ -1255,10 +1258,7 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> _persistChecklistHistory() async {
     final encoded = _checklistHistory.map(
-      (key, items) => MapEntry(
-        key,
-        items.map((e) => e.name).toList()..sort(),
-      ),
+      (key, items) => MapEntry(key, items.map((e) => e.name).toList()..sort()),
     );
     await StorageService.setString(
       'checklist_history_json',
@@ -1330,6 +1330,7 @@ class HomeTabViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _prayerSettingsService.removeListener(_onPrayerSettingsChanged);
     _ticker?.cancel();
     super.dispose();
   }

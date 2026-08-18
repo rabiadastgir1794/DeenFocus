@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "我已礼拜";
+"prayer_alarm_subtitle" = "礼拜时间到了";
+"prayer_alarm_dismiss" = "关闭";
+"prayer_alarm_badge" = "礼拜闹钟";
+"prayer_alarm_snooze" = "稍后提醒";
+"prayer_alarm_snooze_label" = "贪睡时长";

@@ -4,7 +4,7 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import '../../../../core/constants/spacing.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
@@ -80,64 +80,71 @@ class HomeAboutPrayerScreen extends StatelessWidget {
         : AppColors.outlineVariantLight.withValues(alpha: 0.35);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.homeAboutPrayerTitle(prayerLabel),
-        onBack: () => Navigator.of(context).pop(),
-      ),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
-        top: false,
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 24.h),
+        child: Column(
           children: [
-            Center(
-              child: Container(
-                width: 96.r,
-                height: 96.r,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colorScheme.primaryContainer,
-                ),
-                child: Icon(
-                  Iconsax.moon,
-                  size: 40.sp,
-                  color: colorScheme.primary,
-                ),
-              ),
+            AppCenteredNavHeader(
+              title: l10n.homeAboutPrayerTitle(prayerLabel),
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).pop(),
             ),
-            SizedBox(height: Spacing.lg.h),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: Spacing.md.h,
-              crossAxisSpacing: Spacing.md.w,
-              childAspectRatio: 0.92,
-              children: [
-                _InfoCard(
-                  icon: Iconsax.clock,
-                  label: l10n.homeAboutPrayerTimeLabel,
-                  body: info.timing,
-                  borderColor: borderColor,
-                ),
-                _InfoCard(
-                  icon: Iconsax.people,
-                  label: l10n.homeAboutPrayerRakatLabel,
-                  body: info.rakat,
-                  borderColor: borderColor,
-                ),
-                _InfoCard(
-                  icon: Iconsax.star,
-                  label: l10n.homeAboutPrayerVirtuesLabel,
-                  body: info.virtue,
-                  borderColor: borderColor,
-                ),
-                _InfoCard(
-                  icon: Iconsax.book_1,
-                  label: l10n.homeAboutPrayerReferenceLabel,
-                  body: info.reference,
-                  borderColor: borderColor,
-                ),
-              ],
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 24.h),
+                children: [
+                  Center(
+                    child: Container(
+                      width: 96.r,
+                      height: 96.r,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colorScheme.primaryContainer,
+                      ),
+                      child: Icon(
+                        Iconsax.moon,
+                        size: 40.sp,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Spacing.lg.h),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: Spacing.md.h,
+                    crossAxisSpacing: Spacing.md.w,
+                    childAspectRatio: 0.92,
+                    children: [
+                      _InfoCard(
+                        icon: Iconsax.clock,
+                        label: l10n.homeAboutPrayerTimeLabel,
+                        body: info.timing,
+                        borderColor: borderColor,
+                      ),
+                      _InfoCard(
+                        icon: Iconsax.people,
+                        label: l10n.homeAboutPrayerRakatLabel,
+                        body: info.rakat,
+                        borderColor: borderColor,
+                      ),
+                      _InfoCard(
+                        icon: Iconsax.star,
+                        label: l10n.homeAboutPrayerVirtuesLabel,
+                        body: info.virtue,
+                        borderColor: borderColor,
+                      ),
+                      _InfoCard(
+                        icon: Iconsax.book_1,
+                        label: l10n.homeAboutPrayerReferenceLabel,
+                        body: info.reference,
+                        borderColor: borderColor,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

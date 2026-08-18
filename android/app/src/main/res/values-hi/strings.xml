@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">नमाज़ अलार्म</string>
+    <string name="prayer_alarm_subtitle">नमाज़ का समय</string>
+    <string name="prayer_alarm_ive_prayed">मैंने नमाज़ पढ़ी</string>
+    <string name="prayer_alarm_dismiss">खारिज करें</string>
+    <string name="prayer_alarm_snooze">स्नूज़</string>
+    <string name="prayer_alarm_snooze_label">स्नूज़ अवधि</string>
+    <string name="prayer_alarm_title_format">%1$s — नमाज़ का समय</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d मिनट</string>
+</resources>

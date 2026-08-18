@@ -1,0 +1,7 @@
+/* AlarmKit App Intent + native fallbacks */
+"prayer_alarm_ive_prayed" = "J'ai prié";
+"prayer_alarm_subtitle" = "Il est temps de prier";
+"prayer_alarm_dismiss" = "Ignorer";
+"prayer_alarm_badge" = "Alarme de prière";
+"prayer_alarm_snooze" = "Reporter";
+"prayer_alarm_snooze_label" = "Durée du report";

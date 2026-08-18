@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Gebedsalarm</string>
+    <string name="prayer_alarm_subtitle">Tijd om te bidden</string>
+    <string name="prayer_alarm_ive_prayed">Ik heb gebeden</string>
+    <string name="prayer_alarm_dismiss">Sluiten</string>
+    <string name="prayer_alarm_snooze">Snooze</string>
+    <string name="prayer_alarm_snooze_label">Snoozeduur</string>
+    <string name="prayer_alarm_title_format">%1$s — Tijd om te bidden</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d minuten</string>
+</resources>

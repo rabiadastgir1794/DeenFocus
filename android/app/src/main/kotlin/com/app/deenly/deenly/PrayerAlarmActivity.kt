@@ -37,6 +37,8 @@ class PrayerAlarmActivity : Activity() {
         val buttonEnd: Int,
         val buttonText: Int,
         val secondaryButtonText: Int,
+        val chipBackground: Int,
+        val chipBorder: Int,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,9 +91,14 @@ class PrayerAlarmActivity : Activity() {
             ?: getString(R.string.prayer_alarm_ive_prayed)
         val dismiss = intent.getStringExtra(PrayerAlarmScheduler.EXTRA_DISMISS)
             ?: getString(R.string.prayer_alarm_dismiss)
-        val snooze = intent.getStringExtra(PrayerAlarmScheduler.EXTRA_SNOOZE)
-            ?: getString(R.string.prayer_alarm_snooze)
-        val snoozeMinutes = intent.getIntExtra(PrayerAlarmScheduler.EXTRA_SNOOZE_MINUTES, 10)
+        val snoozeSection = intent.getStringExtra(PrayerAlarmScheduler.EXTRA_SNOOZE_SECTION)
+            ?: getString(R.string.prayer_alarm_snooze_label)
+        val snoozeMinutesOptions = intent.getIntArrayExtra(
+            PrayerAlarmScheduler.EXTRA_SNOOZE_OPTION_MINUTES,
+        ) ?: PrayerAlarmScheduler.DEFAULT_SNOOZE_OPTIONS
+        val snoozeOptionLabels = intent.getStringArrayExtra(
+            PrayerAlarmScheduler.EXTRA_SNOOZE_OPTION_LABELS,
+        )
 
         if (alarmId.isNotBlank()) {
             NotificationManagerCompat.from(this)
@@ -161,10 +168,11 @@ class PrayerAlarmActivity : Activity() {
         val prayerName = TextView(this).apply {
             text = prayerLabel
             setTextColor(palette.titleText)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 34f)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 32f)
             gravity = Gravity.CENTER
             setTypeface(typeface, Typeface.BOLD)
             setPadding(0, dp(4), 0, dp(12))
+            maxLines = 2
         }
 
         val info = TextView(this).apply {
@@ -179,14 +187,15 @@ class PrayerAlarmActivity : Activity() {
         val prayedButton = Button(this).apply {
             text = ivePrayed
             setTextColor(palette.buttonText)
-            textSize = 16f
+            textSize = 15f
             typeface = Typeface.DEFAULT_BOLD
             isAllCaps = false
-            minHeight = dp(56)
+            minHeight = dp(48)
+            maxLines = 2
             background = GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 intArrayOf(palette.buttonStart, palette.buttonEnd),
-            ).apply { cornerRadius = dpF(18) }
+            ).apply { cornerRadius = dpF(14) }
             setOnClickListener {
                 PrayerAlarmStore.setPendingPrayed(this@PrayerAlarmActivity, prayer)
                 if (alarmId.isNotBlank()) {
@@ -204,29 +213,65 @@ class PrayerAlarmActivity : Activity() {
             }
         }
 
-        val snoozeButton = TextView(this).apply {
-            text = "$snooze ($snoozeMinutes)"
-            setTextColor(palette.secondaryButtonText)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+        val snoozeHeader = TextView(this).apply {
+            text = snoozeSection
+            setTextColor(palette.bodyText)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
             gravity = Gravity.CENTER
             setTypeface(typeface, Typeface.BOLD)
-            setPadding(0, dp(18), 0, dp(10))
-            setOnClickListener {
-                val snoozeIntent = Intent(this@PrayerAlarmActivity, PrayerAlarmReceiver::class.java).apply {
-                    action = PrayerAlarmScheduler.ACTION_SNOOZE
-                    putExtras(intent)
+            setPadding(0, dp(4), 0, dp(10))
+            maxLines = 2
+        }
+
+        val snoozeRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            weightSum = snoozeMinutesOptions.size.toFloat().coerceAtLeast(1f)
+        }
+        snoozeMinutesOptions.forEachIndexed { index, minutes ->
+            val label = snoozeOptionLabels?.getOrNull(index)
+                ?: getString(R.string.prayer_alarm_snooze_minutes, minutes)
+            val chip = TextView(this).apply {
+                text = label
+                setTextColor(palette.secondaryButtonText)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                gravity = Gravity.CENTER
+                setTypeface(typeface, Typeface.BOLD)
+                maxLines = 2
+                setPadding(dp(8), dp(12), dp(8), dp(12))
+                background = GradientDrawable().apply {
+                    cornerRadius = dpF(12)
+                    setColor(palette.chipBackground)
+                    setStroke(dp(1), palette.chipBorder)
                 }
-                sendBroadcast(snoozeIntent)
-                finish()
+                setOnClickListener {
+                    val snoozeIntent = Intent(
+                        this@PrayerAlarmActivity,
+                        PrayerAlarmReceiver::class.java,
+                    ).apply {
+                        action = PrayerAlarmScheduler.ACTION_SNOOZE
+                        putExtras(intent)
+                        putExtra(PrayerAlarmScheduler.EXTRA_SNOOZE_MINUTES, minutes)
+                    }
+                    sendBroadcast(snoozeIntent)
+                    finish()
+                }
             }
+            snoozeRow.addView(
+                chip,
+                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    if (index > 0) marginStart = dp(8)
+                },
+            )
         }
 
         val dismissButton = TextView(this).apply {
             text = dismiss
             setTextColor(palette.bodyText)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
             gravity = Gravity.CENTER
-            setPadding(0, dp(8), 0, dp(4))
+            setPadding(0, dp(14), 0, dp(4))
+            maxLines = 2
             setOnClickListener {
                 if (alarmId.isNotBlank()) {
                     PrayerAlarmScheduler.cancelOne(this@PrayerAlarmActivity, alarmId)
@@ -239,7 +284,7 @@ class PrayerAlarmActivity : Activity() {
         card.addView(title)
         card.addView(prayerName)
         card.addView(info)
-        card.addView(space(22))
+        card.addView(space(18))
         card.addView(
             prayedButton,
             LinearLayout.LayoutParams(
@@ -247,7 +292,15 @@ class PrayerAlarmActivity : Activity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
             ),
         )
-        card.addView(snoozeButton)
+        card.addView(space(16))
+        card.addView(snoozeHeader)
+        card.addView(
+            snoozeRow,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ),
+        )
         card.addView(dismissButton)
 
         root.addView(iconStack)
@@ -285,6 +338,8 @@ class PrayerAlarmActivity : Activity() {
                 buttonEnd = Color.parseColor("#4E9A7C"),
                 buttonText = Color.parseColor("#1B3D2E"),
                 secondaryButtonText = Color.parseColor("#8ED4B4"),
+                chipBackground = Color.parseColor("#232E26"),
+                chipBorder = Color.parseColor("#4A4539"),
             )
         } else {
             ThemePalette(
@@ -299,6 +354,8 @@ class PrayerAlarmActivity : Activity() {
                 buttonEnd = Color.parseColor("#2E6B52"),
                 buttonText = Color.parseColor("#FFFFFF"),
                 secondaryButtonText = Color.parseColor("#4E9A7C"),
+                chipBackground = Color.parseColor("#F0E6D6"),
+                chipBorder = Color.parseColor("#CFC6B4"),
             )
         }
     }

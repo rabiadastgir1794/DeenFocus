@@ -1290,6 +1290,24 @@ abstract class AppLocalizations {
   /// **'Next prayer in'**
   String get homeNextPrayerIn;
 
+  /// No description provided for @homeTapPrayerToMark.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a prayer to mark it prayed, qada, or missed.'**
+  String get homeTapPrayerToMark;
+
+  /// No description provided for @homeSetLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Set location'**
+  String get homeSetLocation;
+
+  /// No description provided for @homeEditPrayerSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit prayer settings'**
+  String get homeEditPrayerSettings;
+
   /// No description provided for @homePrayerFajr.
   ///
   /// In en, this message translates to:

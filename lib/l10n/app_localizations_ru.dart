@@ -649,6 +649,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeNextPrayerIn => 'Следующая молитва в';
 
   @override
+  String get homeTapPrayerToMark =>
+      'Нажмите на молитву, чтобы отметить её как совершённую, када или пропущенную.';
+
+  @override
+  String get homeSetLocation => 'Указать местоположение';
+
+  @override
+  String get homeEditPrayerSettings => 'Изменить настройки молитвы';
+
+  @override
   String get homePrayerFajr => 'Фаджр';
 
   @override
@@ -721,132 +731,134 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hijriMonthDhuAlHijjah => 'Зуль-хиджа';
 
   @override
-  String get calendarTitle => 'Islamic Calendar';
+  String get calendarTitle => 'Исламский календарь';
 
   @override
-  String get calendarBack => 'Back';
+  String get calendarBack => 'Назад';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => 'Сегодня';
 
   @override
-  String get calendarTomorrow => 'Tomorrow';
+  String get calendarTomorrow => 'Завтра';
 
   @override
   String calendarDaysAway(int days) {
-    return '$days days';
+    return '$days дн.';
   }
 
   @override
-  String get calendarNoEventsThisWeek => 'No Islamic events this week.';
+  String get calendarNoEventsThisWeek =>
+      'На этой неделе нет исламских событий.';
 
   @override
   String get calendarNoEventsBlessing =>
-      'May Allah bless your week with peace and goodness.';
+      'Да благословит Аллах вашу неделю миром и добром.';
 
   @override
-  String get calendarNoUpcomingEvents => 'No upcoming Islamic events found.';
+  String get calendarNoUpcomingEvents =>
+      'Предстоящие исламские события не найдены.';
 
   @override
-  String get calendarUpcomingEvents => 'Upcoming Islamic Events';
+  String get calendarUpcomingEvents => 'Предстоящие исламские события';
 
   @override
-  String get calendarUpcomingThisYear => 'Upcoming This Year';
+  String get calendarUpcomingThisYear => 'В этом году';
 
   @override
-  String get calendarThisWeekObservances => 'This Week';
+  String get calendarThisWeekObservances => 'На этой неделе';
 
   @override
-  String get calendarLegendCycleDays => 'Cycle days (streak protected)';
+  String get calendarLegendCycleDays => 'Дни цикла (серия защищена)';
 
   @override
   String calendarMoonIlluminated(int percent) {
-    return '$percent% illuminated';
+    return '$percent% освещённости';
   }
 
   @override
-  String get calendarMoonNew => 'New Moon';
+  String get calendarMoonNew => 'Новолуние';
 
   @override
-  String get calendarMoonWaxingCrescent => 'Waxing Crescent';
+  String get calendarMoonWaxingCrescent => 'Растущий серп';
 
   @override
-  String get calendarMoonFirstQuarter => 'First Quarter';
+  String get calendarMoonFirstQuarter => 'Первая четверть';
 
   @override
-  String get calendarMoonWaxingGibbous => 'Waxing Gibbous';
+  String get calendarMoonWaxingGibbous => 'Растущая луна';
 
   @override
-  String get calendarMoonFull => 'Full Moon';
+  String get calendarMoonFull => 'Полнолуние';
 
   @override
-  String get calendarMoonWaningGibbous => 'Waning Gibbous';
+  String get calendarMoonWaningGibbous => 'Убывающая луна';
 
   @override
-  String get calendarMoonLastQuarter => 'Last Quarter';
+  String get calendarMoonLastQuarter => 'Последняя четверть';
 
   @override
-  String get calendarMoonWaningCrescent => 'Waning Crescent';
+  String get calendarMoonWaningCrescent => 'Убывающий серп';
 
   @override
-  String get calendarEventRamadanBegins => 'Ramadan Begins';
+  String get calendarEventRamadanBegins => 'Начало Рамадана';
 
   @override
-  String get calendarEventRamadanBeginsDesc => 'Month of fasting';
+  String get calendarEventRamadanBeginsDesc => 'Месяц поста';
 
   @override
-  String get calendarEventLaylatAlQadr => 'Laylat al-Qadr';
+  String get calendarEventLaylatAlQadr => 'Ляйлят аль-Кадр';
 
   @override
-  String get calendarEventLaylatAlQadrDesc => 'Night of Power';
+  String get calendarEventLaylatAlQadrDesc => 'Ночь предопределения';
 
   @override
-  String get calendarEventEidAlFitr => 'Eid al-Fitr';
+  String get calendarEventEidAlFitr => 'Ид аль-Фитр';
 
   @override
-  String get calendarEventEidAlFitrDesc => 'Festival of Breaking the Fast';
+  String get calendarEventEidAlFitrDesc => 'Праздник разговения';
 
   @override
-  String get calendarEventDayOfArafah => 'Day of Arafah';
+  String get calendarEventDayOfArafah => 'День Арафа';
 
   @override
-  String get calendarEventDayOfArafahDesc => 'Day of standing at Arafah';
+  String get calendarEventDayOfArafahDesc => 'День стояния на Арафате';
 
   @override
-  String get calendarEventEidAlAdha => 'Eid al-Adha';
+  String get calendarEventEidAlAdha => 'Ид аль-Адха';
 
   @override
-  String get calendarEventEidAlAdhaDesc => 'Festival of Sacrifice';
+  String get calendarEventEidAlAdhaDesc => 'Праздник жертвоприношения';
 
   @override
-  String get calendarEventIslamicNewYear => 'Islamic New Year';
+  String get calendarEventIslamicNewYear => 'Исламский Новый год';
 
   @override
-  String get calendarEventIslamicNewYearDesc => '1st of Muharram';
+  String get calendarEventIslamicNewYearDesc => '1 мухаррама';
 
   @override
-  String get calendarEventMawlid => 'Mawlid an-Nabi';
+  String get calendarEventMawlid => 'Мавлид ан-Наби';
 
   @override
-  String get calendarEventMawlidDesc => 'Birth of the Prophet';
+  String get calendarEventMawlidDesc => 'Рождение Пророка';
 
   @override
-  String get calendarEventAshura => 'Ashura';
+  String get calendarEventAshura => 'Ашура';
 
   @override
-  String get calendarEventAshuraDesc => '10th of Muharram';
+  String get calendarEventAshuraDesc => '10 мухаррама';
 
   @override
   String get calendarEventJumuah => 'Джума';
 
   @override
-  String get calendarEventJumuahDesc => 'Пятничная молитва';
+  String get calendarEventJumuahDesc => 'Пятничная коллективная молитва';
 
   @override
   String get calendarEventWhiteDays => 'Белые дни';
 
   @override
-  String get calendarEventWhiteDaysDesc => 'С 13 по 15 число каждого месяца';
+  String get calendarEventWhiteDaysDesc => 'Рекомендуемые дни поста';
 
   @override
   String get cycleModeActiveTitle =>

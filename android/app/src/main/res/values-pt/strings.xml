@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Alarme de oração</string>
+    <string name="prayer_alarm_subtitle">Hora de orar</string>
+    <string name="prayer_alarm_ive_prayed">Eu orei</string>
+    <string name="prayer_alarm_dismiss">Dispensar</string>
+    <string name="prayer_alarm_snooze">Soneca</string>
+    <string name="prayer_alarm_snooze_label">Duração da soneca</string>
+    <string name="prayer_alarm_title_format">%1$s — Hora de orar</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d minutos</string>
+</resources>

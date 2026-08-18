@@ -19,7 +19,9 @@ import '../../focus/viewmodel/focus_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../cycle_mode_entry_intent.dart';
 import '../helpers/home_daily_verse_helper.dart';
+import '../helpers/prayer_reminder_prompt_keys.dart';
 import '../model/home_models.dart';
+import '../services/prayer_settings_service.dart';
 import '../viewmodel/home_tab_view_model.dart';
 import 'widgets/home_calendar_screen.dart';
 import 'widgets/home_circle_icon_button.dart';
@@ -47,7 +49,9 @@ class HomeTabScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeTabViewModel>(
-      create: (_) => HomeTabViewModel()..initialize(),
+      create: (context) => HomeTabViewModel(
+        prayerSettings: context.read<PrayerSettingsService>(),
+      )..initialize(),
       child: _HomeTabView(onOpenFocusTab: onOpenFocusTab),
     );
   }
@@ -67,6 +71,7 @@ class _HomeTabViewState extends State<_HomeTabView>
   String? _lastSyncedSect;
   late UserProfileService _profileService;
   bool _locationCheckDoneThisSession = false;
+
   /// Prevents overlapping reminder dialogs; cleared after each attempt.
   bool _prayerReminderCheckInFlight = false;
   HomeTabViewModel? _homeVm;
@@ -79,16 +84,19 @@ class _HomeTabViewState extends State<_HomeTabView>
     _profileService.addListener(_onProfileChanged);
     _homeVm = context.read<HomeTabViewModel>();
     _homeVm!.addListener(_onHomeVmChanged);
-    CycleModeEntryIntent.pendingOpenSettings
-        .addListener(_onCycleModeOpenSettingsRequested);
+    CycleModeEntryIntent.pendingOpenSettings.addListener(
+      _onCycleModeOpenSettingsRequested,
+    );
     // Check on launch — delay 2s so profile finishes loading from storage.
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        unawaited(_checkLocationChange());
-        unawaited(_consumePendingPrayerAlarmAction());
-        unawaited(_checkAndShowPrayerReminder());
-        unawaited(_consumePendingCycleModeOpenSettings());
-      }
+    // Serialize I've Prayed before the "Did you pray?" reminder so the alarm
+    // confirm path never races a duplicate prompt.
+    Future.delayed(const Duration(seconds: 2), () async {
+      if (!mounted) return;
+      await _consumePendingPrayerAlarmAction();
+      if (!mounted) return;
+      unawaited(_checkLocationChange());
+      unawaited(_checkAndShowPrayerReminder());
+      unawaited(_consumePendingCycleModeOpenSettings());
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_consumePendingCycleModeOpenSettings());
@@ -157,8 +165,9 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   @override
   void dispose() {
-    CycleModeEntryIntent.pendingOpenSettings
-        .removeListener(_onCycleModeOpenSettingsRequested);
+    CycleModeEntryIntent.pendingOpenSettings.removeListener(
+      _onCycleModeOpenSettingsRequested,
+    );
     _homeVm?.removeListener(_onHomeVmChanged);
     _profileService.removeListener(_onProfileChanged);
     WidgetsBinding.instance.removeObserver(this);
@@ -187,10 +196,15 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   /// Handles "I've Prayed" from native Prayer Alarm (AlarmKit / FSI activity).
   Future<void> _consumePendingPrayerAlarmAction() async {
-    final prayer =
-        await PrayerAlarmService.instance.consumePendingPrayedAction();
+    final prayer = await PrayerAlarmService.instance
+        .consumePendingPrayedAction();
     if (!mounted || prayer == null) return;
     await _confirmReminderPrayerOnTime(prayer);
+    if (!mounted) return;
+    // Suppress the soft "Did you pray?" popup for this prayer today.
+    await StorageService.markPrayerReminderPrompted(
+      PrayerReminderPromptKeys.forPrayer(prayer),
+    );
   }
 
   Future<void> _checkLocationChange() async {
@@ -213,9 +227,14 @@ class _HomeTabViewState extends State<_HomeTabView>
     }
 
     final double distanceKm = LocationService.distanceBetweenKm(
-      savedLat, savedLng, newLocation.latitude!, newLocation.longitude!,
+      savedLat,
+      savedLng,
+      newLocation.latitude!,
+      newLocation.longitude!,
     );
-    if (distanceKm < 50) { return; }
+    if (distanceKm < 50) {
+      return;
+    }
 
     final cityLabel = newLocation.title.isNotEmpty
         ? newLocation.title
@@ -336,7 +355,10 @@ class _HomeTabViewState extends State<_HomeTabView>
       final todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
       // v2: earlier builds claimed the key before showing, which could suppress
       // Maghrib for the rest of the day if the dialog never appeared.
-      final promptKey = 'v2:$todayKey:${target.name}';
+      final promptKey = PrayerReminderPromptKeys.forPrayer(
+        target,
+        dayKey: todayKey,
+      );
       final alreadyPrompted = await StorageService.prayerReminderPromptedKeys;
       if (alreadyPrompted.contains(promptKey)) return;
 
@@ -380,8 +402,9 @@ class _HomeTabViewState extends State<_HomeTabView>
     );
     if (!mounted || result == null || !result.celebrated) return;
 
-    final remaining =
-        vm.prayerTimes?.nextPrayerTime?.difference(DateTime.now());
+    final remaining = vm.prayerTimes?.nextPrayerTime?.difference(
+      DateTime.now(),
+    );
     await showPrayerCompletionPopup(
       context,
       result: result,
@@ -615,9 +638,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     }
     if (!context.mounted) return;
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const HomeNearbyMosquesScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (_) => const HomeNearbyMosquesScreen()),
     );
   }
 
@@ -642,10 +663,7 @@ class _HomeTabViewState extends State<_HomeTabView>
     await showCycleModeSettingsSheet(context, enabling: false);
   }
 
-  Future<void> _openInsights(
-    BuildContext context,
-    HomeTabViewModel vm,
-  ) async {
+  Future<void> _openInsights(BuildContext context, HomeTabViewModel vm) async {
     await PremiumGate.presentIfNeeded(
       context: context,
       onAccess: () {
@@ -715,7 +733,11 @@ class _QuickActionsCard extends StatelessWidget {
 
     final items = <({String title, IconData icon, VoidCallback onTap})>[
       (title: qiblaTitle, icon: Icons.near_me_outlined, onTap: onOpenQibla),
-      (title: masjidTitle, icon: Icons.location_on_outlined, onTap: onOpenMasjid),
+      (
+        title: masjidTitle,
+        icon: Icons.location_on_outlined,
+        onTap: onOpenMasjid,
+      ),
       (
         title: calendarTitle,
         icon: Icons.calendar_month_outlined,
@@ -769,8 +791,9 @@ class _QuickActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        colorScheme.surfaceContainerHighest.withValues(alpha: 0.20);
+    final backgroundColor = colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.20,
+    );
 
     return Material(
       color: backgroundColor,
@@ -1010,8 +1033,9 @@ class _CycleModeToggleCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cycleModeColor =
-        isDark ? const Color(0xFFE59DB7) : const Color(0xFFFF9EC5);
+    final cycleModeColor = isDark
+        ? const Color(0xFFE59DB7)
+        : const Color(0xFFFF9EC5);
     final cycleModeBackground = isDark
         ? cycleModeColor.withValues(alpha: 0.15)
         : cycleModeColor.withValues(alpha: 0.12);
@@ -1068,7 +1092,10 @@ class _CycleModeToggleCard extends StatelessWidget {
               onPressed: onEdit,
               style: TextButton.styleFrom(
                 foregroundColor: cycleModeColor,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,

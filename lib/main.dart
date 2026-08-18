@@ -24,58 +24,56 @@ import 'core/services/widget_sync_service.dart';
 import 'core/superwall/app_superwall.dart';
 import 'core/theme/app_theme.dart';
 import 'features/focus/viewmodel/focus_controller.dart';
+import 'features/home/services/prayer_settings_service.dart';
 import 'features/home/view/settings/app_demo_video_manager.dart';
 import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
-  runZonedGuarded(
-    () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      MediaKit.ensureInitialized();
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    MediaKit.ensureInitialized();
 
-      final startupWatch = Stopwatch()..start();
-      await LoggerService.instance.initialize();
-      AppLogging.installFrameworkHooks();
-      LoggerService.instance.info(
+    final startupWatch = Stopwatch()..start();
+    await LoggerService.instance.initialize();
+    AppLogging.installFrameworkHooks();
+    LoggerService.instance.info(
+      'STARTUP',
+      'binding + logger hooks installed ${startupWatch.elapsedMilliseconds}ms',
+    );
+
+    await TraceHelpers.traceDatabase(
+      'hive_init',
+      () => Hive.initFlutter(),
+      logSuccess: true,
+    );
+    LoggerService.instance.info(
+      'STARTUP',
+      'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
+    );
+
+    // Pre-warm subscription notifier from local cache so premium gates can
+    // open immediately on cold start without showing the loader.
+    unawaited(AppSuperwall.loadCachedState());
+
+    /// Configure Superwall ONCE in the background. Splash must not block on it —
+    /// premium gates will wait for [AppSuperwall.configure] when first invoked.
+    unawaited(
+      TraceHelpers.traceAsync(
         'STARTUP',
-        'binding + logger hooks installed ${startupWatch.elapsedMilliseconds}ms',
-      );
-
-      await TraceHelpers.traceDatabase(
-        'hive_init',
-        () => Hive.initFlutter(),
+        'AppSuperwall.configure (background)',
+        AppSuperwall.configure,
         logSuccess: true,
-      );
-      LoggerService.instance.info(
-        'STARTUP',
-        'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
-      );
+      ),
+    );
 
-      // Pre-warm subscription notifier from local cache so premium gates can
-      // open immediately on cold start without showing the loader.
-      unawaited(AppSuperwall.loadCachedState());
-
-      /// Configure Superwall ONCE in the background. Splash must not block on it —
-      /// premium gates will wait for [AppSuperwall.configure] when first invoked.
-      unawaited(
-        TraceHelpers.traceAsync(
-          'STARTUP',
-          'AppSuperwall.configure (background)',
-          AppSuperwall.configure,
-          logSuccess: true,
-        ),
-      );
-
-      runApp(const DeenlyApp());
-      LoggerService.instance.info(
-        'STARTUP',
-        'runApp scheduled ${startupWatch.elapsedMilliseconds}ms',
-      );
-      unawaited(_initializeServices());
-    },
-    AppLogging.recordZoneError,
-  );
+    runApp(const DeenlyApp());
+    LoggerService.instance.info(
+      'STARTUP',
+      'runApp scheduled ${startupWatch.elapsedMilliseconds}ms',
+    );
+    unawaited(_initializeServices());
+  }, AppLogging.recordZoneError);
 }
 
 Future<void> _initializeServices() async {
@@ -102,30 +100,25 @@ class _DeenlyAppState extends State<DeenlyApp> {
         ChangeNotifierProvider(create: (_) => LocaleService()),
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
+        ChangeNotifierProvider(create: (_) => PrayerSettingsService()),
         ChangeNotifierProvider(create: (_) => FocusController()),
         ChangeNotifierProvider(create: (_) => AppDemoVideoManager()),
       ],
-      child: _AppLifecycleObserver(
-        child: _DeenlyMaterialApp(router: _router),
-      ),
+      child: _AppLifecycleObserver(child: _DeenlyMaterialApp(router: _router)),
     );
   }
 }
 
 class _AppLifecycleObserver extends StatefulWidget {
-  const _AppLifecycleObserver({
-    required this.child,
-  });
+  const _AppLifecycleObserver({required this.child});
   //
   final Widget child;
 
   @override
-  State<_AppLifecycleObserver> createState() =>
-      _AppLifecycleObserverState();
+  State<_AppLifecycleObserver> createState() => _AppLifecycleObserverState();
 }
 
-class _AppLifecycleObserverState
-    extends State<_AppLifecycleObserver>
+class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -220,9 +213,7 @@ class _AppLifecycleObserverState
 }
 
 class _DeenlyMaterialApp extends StatelessWidget {
-  const _DeenlyMaterialApp({
-    required this.router,
-  });
+  const _DeenlyMaterialApp({required this.router});
 
   final GoRouter router;
 
@@ -234,11 +225,11 @@ class _DeenlyMaterialApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         final locale = context.select<LocaleService, Locale?>(
-              (service) => service.locale,
+          (service) => service.locale,
         );
 
         final themeMode = context.select<ThemeService, ThemeMode>(
-              (service) => service.themeMode,
+          (service) => service.themeMode,
         );
 
         return MaterialApp.router(
@@ -248,8 +239,7 @@ class _DeenlyMaterialApp extends StatelessWidget {
           darkTheme: AppTheme.dark,
           themeMode: themeMode,
           locale: locale,
-          localizationsDelegates:
-          AppLocalizations.localizationsDelegates,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: kSupportedLocales,
           routerConfig: router,
         );

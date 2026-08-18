@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">Alarmă de rugăciune</string>
+    <string name="prayer_alarm_subtitle">Este timpul să te rogi</string>
+    <string name="prayer_alarm_ive_prayed">M-am rugat</string>
+    <string name="prayer_alarm_dismiss">Închide</string>
+    <string name="prayer_alarm_snooze">Amână</string>
+    <string name="prayer_alarm_snooze_label">Durata amânării</string>
+    <string name="prayer_alarm_title_format">%1$s — Este timpul să te rogi</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d minute</string>
+</resources>

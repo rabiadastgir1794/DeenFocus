@@ -3,3 +3,5 @@
 "prayer_alarm_subtitle" = "Time to Pray";
 "prayer_alarm_dismiss" = "Dismiss";
 "prayer_alarm_badge" = "Prayer Alarm";
+"prayer_alarm_snooze" = "Snooze";
+"prayer_alarm_snooze_label" = "Snooze duration";

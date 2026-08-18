@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_alarm_badge">礼拜闹钟</string>
+    <string name="prayer_alarm_subtitle">礼拜时间到了</string>
+    <string name="prayer_alarm_ive_prayed">我已礼拜</string>
+    <string name="prayer_alarm_dismiss">关闭</string>
+    <string name="prayer_alarm_snooze">稍后提醒</string>
+    <string name="prayer_alarm_snooze_label">贪睡时长</string>
+    <string name="prayer_alarm_title_format">%1$s — 礼拜时间到了</string>
+    <string name="prayer_alarm_snooze_minutes">%1$d 分钟</string>
+</resources>

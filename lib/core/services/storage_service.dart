@@ -78,6 +78,9 @@ abstract class StorageService {
       'prayer_live_activity_enabled';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
+  /// Snooze durations offered in settings and on the full-screen alarm UI.
+  static const List<int> prayerAlarmSnoozeOptionMinutes = <int>[5, 10, 15];
+
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
 
