@@ -220,16 +220,17 @@ class PrayerLiveActivityService {
       'currentPrayerLabel': _label(featured.id, l10n),
       'currentPrayerTimeLabel': timeFormat.format(featured.time),
       'currentPrayerIso': featured.time.toIso8601String(),
-      'nextPrayerId': next?.id.name,
-      'nextPrayerLabel': next == null ? null : _label(next.id, l10n),
+      // Prefer empty strings over null — iOS UserDefaults rejects NSNull.
+      'nextPrayerId': next?.id.name ?? '',
+      'nextPrayerLabel': next == null ? '' : _label(next.id, l10n),
       'nextPrayerTimeLabel':
-          next == null ? null : timeFormat.format(next.time),
+          next == null ? '' : timeFormat.format(next.time),
       // Before Fajr, schedule refresh at Fajr so the label can flip to "Now".
       'nextPrayerIso': beforeFirstPrayer
           ? featured.time.toIso8601String()
-          : next?.time.toIso8601String(),
+          : (next?.time.toIso8601String() ?? ''),
       'nextPrayerLine': beforeFirstPrayer || next == null
-          ? null
+          ? ''
           : l10n.liveActivityNextAt(
               _label(next.id, l10n),
               timeFormat.format(next.time),

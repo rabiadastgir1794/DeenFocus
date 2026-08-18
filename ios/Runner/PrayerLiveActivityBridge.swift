@@ -69,7 +69,9 @@ enum PrayerLiveActivityBridge {
       return
     }
 
-    UserDefaults(suiteName: appGroup)?.set(args, forKey: payloadKey)
+    // Flutter nulls arrive as NSNull, which UserDefaults cannot store.
+    let payload = propertyListObject(args) as? [String: Any] ?? [:]
+    UserDefaults(suiteName: appGroup)?.set(payload, forKey: payloadKey)
 
     let brand = (args["brandName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
     let attributes = PrayerLiveActivityAttributes(
@@ -160,5 +162,35 @@ enum PrayerLiveActivityBridge {
     if let date = local.date(from: value) { return date }
     local.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
     return local.date(from: value)
+  }
+
+  /// Converts Flutter channel args into UserDefaults-safe property-list values.
+  /// Drops `NSNull` / unsupported types (they crash `setObject:forKey:`).
+  private static func propertyListObject(_ value: Any) -> Any? {
+    switch value {
+    case is NSNull:
+      return nil
+    case let string as String:
+      return string
+    case let number as NSNumber:
+      return number
+    case let date as Date:
+      return date
+    case let data as Data:
+      return data
+    case let dict as [String: Any]:
+      var out: [String: Any] = [:]
+      out.reserveCapacity(dict.count)
+      for (key, nested) in dict {
+        if let cleaned = propertyListObject(nested) {
+          out[key] = cleaned
+        }
+      }
+      return out
+    case let array as [Any]:
+      return array.compactMap(propertyListObject)
+    default:
+      return nil
+    }
   }
 }
