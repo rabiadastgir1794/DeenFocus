@@ -202,7 +202,7 @@
   "homeQiblaSubtitleGuiding": "Sizi qibləyə doğru yönəldir",
   "homeToMakkah": "Məkkəyə",
   "homeFindMasjid": "Mənə Yaxın Məscidi tapın",
-  "homeSearchNearbyMosques": "Yaxınlıqdakı məscidləri axtarın.",
+  "homeSearchNearbyMosques": "Yaxınlıqdakı məscidləri OpenStreetMap-dən tapın.",
   "homePrayerStreak": "Namaz xətləri",
   "homePrayersInARow": "{count} prayers in a row",
   "@homePrayersInARow": {
@@ -352,7 +352,7 @@
   "tabHome": "Ev",
   "tabFocus": "Fokus",
   "tabTasbih": "Təsbih",
-  "tabQuran": "Quran",
+  "tabQuran": "Öyrən",
   "quranLoadFailed": "Quran datasını yükləmək alınmadı",
   "quranTabSubtitle": "Qurani-Kərimi oxuyun və araşdırın",
   "quranSearchHint": "surə axtar...",
@@ -467,16 +467,26 @@
   "qiblaSouthShort": "S",
   "qiblaEastShort": "E",
   "qiblaWestShort": "W",
-  "nearbyMosquesTitle": "Yaxınlıqda Məscidlər",
+  "nearbyMosquesTitle": "Yaxınlıqdakı məscidlər",
   "nearbyMosquesTryAgain": "Yenidən cəhd edin",
   "nearbyMosquesOpenGoogle": "Google Xəritədə açın",
   "nearbyMosquesOpenApple": "Apple Xəritələrində açın",
   "nearbyMosquesNoMosquesFoundWithin": "İçərisində heç bir məscid tapılmadı",
-  "nearbyMosquesSearchRadius": "Axtarış radiusu: 5 km",
+  "nearbyMosquesSearchRadius": "Axtarış radiusu: {radiusKm} km",
+  "@nearbyMosquesSearchRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesMapPreviewUnavailable": "Xəritənin önizləməsi hazırda əlçatan deyil.",
   "nearbyMosquesWaitingForLocation": "Məkanınızı gözləyirik.",
   "nearbyMosquesAppearAfterLoad": "Nəticələr yükləndikdən sonra yaxınlıqdakı məscidlər burada görünəcək.",
-  "nearbyMosquesNoneWithinRadius": "5 km məsafədə heç bir məscid tapılmadı",
+  "nearbyMosquesNoneWithinRadius": "{radiusKm} km məsafədə heç bir məscid tapılmadı",
+  "@nearbyMosquesNoneWithinRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesLocationRequired": "Yaxınlıqdakı məscidləri tapmaq üçün məkana giriş tələb olunur.",
   "nearbyMosquesPermissionOff": "Məkan icazəsi söndürülüb. Yaxınlıqdakı məscidləri görmək üçün onu parametrlərdə aktiv edin.",
   "nearbyMosquesLocationUnavailable": "Hazırda mövcud yerinizi oxuya bilmədik.",
@@ -489,15 +499,32 @@
   "nearbyMosquesFormatError": "Hazırda məscid siyahısını oxuya bilmirdik. Lütfən, sonra yenidən cəhd edin.",
   "nearbyMosquesPlatformError": "Biz bu addımı tamamlaya bilmədik. Bağlantınızı yoxlayın və yenidən cəhd edin.",
   "nearbyMosquesSomethingWentWrong": "Nəsə xəta baş verdi. Yenidən cəhd edin.",
-  "nearbyMosquesEmptyHint": "Bu yer üçün OpenStreetMap-da 5 km məsafədə heç nə qeyd edilməyib. Daha sonra yenidən cəhd edin və ya xəritəni köçürün.",
-  "nearbyMosquesFoundWithin": "{count} məscidlər 5 km məsafədə tapıldı",
-  "@nearbyMosquesFoundWithin": {
+  "nearbyMosquesEmptyHint": "Bu yer üçün OpenStreetMap-da {radiusKm} km məsafədə heç nə qeyd edilməyib. Daha sonra yenidən cəhd edin və ya ərazini genişləndirin.",
+  "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "radiusKm": { "type": "int" }
     }
   },
+  "nearbyMosquesFoundWithin": "{count} məscid {radiusKm} km məsafədə tapıldı",
+  "@nearbyMosquesFoundWithin": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesCountNearby": "Yaxınlıqdakı {count} məscid",
+  "@nearbyMosquesCountNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nearbyMosquesResultsMeta": "{radiusKm} km daxilində · Məsafəyə görə sıralanıb",
+  "@nearbyMosquesResultsMeta": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesDirections": "Marşrut",
   "tasbihDeleteDhikrTitle": "Zikr silinsin?",
   "tasbihDelete": "Sil",
   "focusAndroidBlockingNotReady": "Android tətbiq bloklaması hələ hazırlanır. Əlçatanlığı aktiv saxlayın və qoşulana qədər bir az gözləyin.",
@@ -1139,5 +1166,95 @@
   "nightlyWrapUpBothTitle": "Gününüzü yekunlaşdırın",
   "nightlyWrapUpBothBody": "Qalan namazları işarələyin və gündəlik siyahınızı gün bitməmiş tamamlayın.",
   "cycleModeEndedNotificationTitle": "Dövr rejimi bitdi",
-  "cycleModeEndedNotificationBody": "Dövr rejiminiz indi sönülüdür. Namaza davam edə bilərsiniz. Dövr rejimi tarixlərini dəyişmək istəyirsinizsə, redaktə etmək üçün bura toxunun."
+  "cycleModeEndedNotificationBody": "Dövr rejiminiz indi sönülüdür. Namaza davam edə bilərsiniz. Dövr rejimi tarixlərini dəyişmək istəyirsinizsə, redaktə etmək üçün bura toxunun.",
+  "libraryHomeTitle": "İslam kitabxanası",
+  "libraryHomeSubtitle": "Hədis, dualar, 99 ad və daha çoxunu öyrənin",
+  "libraryHubTitle": "İslam kitabxanası",
+  "libraryModuleQuran": "Quran",
+  "libraryModuleQuranSub": "Oxuyun, dinləyin və təcvid məşq edin",
+  "libraryModuleHadith": "Hədis",
+  "libraryModuleHadithSub": "Etibarlı mənbələrdən kolleksiyalar",
+  "libraryModuleDuas": "Dualar və zikrlər",
+  "libraryModuleDuasSub": "Səhər, axşam və gündəlik zikr",
+  "libraryModulePrayerMethods": "Namaz və İslam üsulları",
+  "libraryModulePrayerMethodsSub": "Dəstəmaz, namaz, həcc və daha çoxu",
+  "libraryModuleFiqh": "Fiqh və ənənələr",
+  "libraryModuleFiqhSub": "Əhli-sünnə, şiə, məzhəblər, Əhli-hədis və daha çoxu",
+  "libraryModuleNames": "Allahın 99 adı",
+  "libraryModuleNamesSub": "Əsmaul-Hüsna öyrənin və düşünün",
+  "libraryModulePillarsIslam": "İslamın sütunları",
+  "libraryModulePillarsIslamSub": "İmanın və əməlin beş əsası",
+  "libraryModulePillarsIman": "İmanın sütunları",
+  "libraryModulePillarsImanSub": "İmanın altı əsası",
+  "libraryModuleProphets": "Peyğəmbər Məhəmməd",
+  "libraryModuleProphetsSub": "Həyatı, risaləti və əbədi dərsləri",
+  "libraryModuleOccasions": "İslam bayramları",
+  "libraryModuleOccasionsSub": "Ramazan, bayram, həcc və müqəddəs günlər",
+  "libraryKeyLesson": "Əsas dərs",
+  "libraryCardProgress": "{current} / {total}",
+  "libraryPrevious": "Əvvəlki",
+  "libraryNext": "Növbəti",
+  "libraryCopy": "Kopyala",
+  "libraryShare": "Paylaş",
+  "libraryCopied": "Buferə kopyalandı",
+  "libraryShareCopiedHint": "Kopyalandı — paylaşmaq üçün yapışdırın",
+  "libraryBookmarkSaved": "Əlfəcin yadda saxlanıldı",
+  "libraryBookmarkRemoved": "Əlfəcin silindi",
+  "libraryTranslation": "Tərcümə",
+  "libraryTransliteration": "Transliterasiya",
+  "libraryMeaning": "Məna",
+  "libraryBookmark": "Əlfəcin",
+  "libraryBookmarksTitle": "Saxlanmış öyrənmə elementləri",
+  "libraryBookmarksSubtitle": "Hədis, dualar, adlar, fiqh və daha çoxu",
+  "libraryBookmarksEmpty": "Hələ saxlanmış element yoxdur. Burada saxlamaq üçün istənilən öyrənmə elementində Əlfəcinə toxunun.",
+  "libraryMarkCompleted": "Tamamlandı kimi qeyd et",
+  "librarySectionCompleted": "Tamamlandı",
+  "libraryReflection": "Düşüncə",
+  "libraryComingSoonTitle": "Tezliklə",
+  "libraryComingSoonBody": "Bu modul hazırlanır. Növbəti yeniləmədə yenidən yoxlayın.",
+  "librarySearchHint": "Axtar…",
+  "librarySearchEmpty": "Uyğun nəticə yoxdur",
+  "libraryItemCount": "{count} element",
+  "librarySearchResultCount": "{shown} / {total}",
+  "libraryContinueFrom": "Davam · {number}",
+  "libraryInProgress": "Davam edir",
+  "libraryReference": "Mənbə: {source}",
+  "libraryDuaCount": "{count} dua",
+  "libraryDuaCategoryMorning": "Səhər",
+  "libraryDuaCategoryEvening": "Axşam",
+  "libraryDuaCategoryDailyLife": "Gündəlik həyat",
+  "libraryDuaCategorySleep": "Yuxu",
+  "libraryDuaCategoryFood": "Yemək",
+  "libraryDuaCategoryTravel": "Səyahət",
+  "libraryDuaCategoryIllness": "Xəstəlik",
+  "libraryDuaCategoryProtection": "Qorunma",
+  "libraryDuaCategoryForgiveness": "Bağışlanma",
+  "libraryDuaCategoryParents": "Valideynlər",
+  "libraryHadithCount": "{count} hədis",
+  "libraryHadithNarrator": "Ravi:",
+  "libraryHadithSource": "Mənbə:",
+  "libraryHadithCollectionBukhari": "Səhih əl-Buxari",
+  "libraryHadithCollectionMuslim": "Səhih Muslim",
+  "libraryHadithCollectionRiyad": "Riyazüs-salihin",
+  "libraryHadithCollectionNawawi": "40 Hədis Nəvəvi",
+  "libraryHadithCollectionHisnul": "Hisnul Muslim",
+  "libraryGuideStepCount": "{count} addım",
+  "libraryGuideStepLabel": "Addım {current} / {total}",
+  "libraryGuideWudu": "Dəstəmaz",
+  "libraryGuideSalah": "Namaz",
+  "libraryGuideGhusl": "Qüsl",
+  "libraryGuideTayammum": "Təyəmmüm",
+  "libraryGuideJanazah": "Cənazə namazı",
+  "libraryGuideUmrah": "Ümrə",
+  "libraryGuideHajj": "Həcc",
+  "libraryGuideFasting": "Oruc",
+  "libraryGuideZakat": "Zəkat",
+  "libraryGuideTawbah": "Tövbə",
+  "libraryOccasionImportance": "Əhəmiyyət",
+  "libraryOccasionVirtues": "Fəzilətlər",
+  "libraryOccasionRecommendedActs": "Tövsiyə olunan əməllər",
+  "libraryFiqhOverview": "Ümumi baxış",
+  "libraryFiqhKeyPoints": "Əsas məqamlar",
+  "libraryFiqhDifferences": "Nəzərəçarpan fərqlər",
+  "libraryFiqhCommonGround": "Ortaq məqamlar"
 }

@@ -1,0 +1,17 @@
+{
+  "packId": "quran-translation-ro",
+  "kind": "translation_pack",
+  "displayName": "Romanian (Grigore)",
+  "language": "ro",
+  "translator": "George Grigore",
+  "latestVersion": "1.0.0",
+  "minimumAppVersion": "1.0.0",
+  "manifestUrl": {
+    "ios": "https://pub-470cb85af0ad4c5f92edb5094b8a7dbb.r2.dev/translations/ro-grigore/1.0.0/manifest.json",
+    "android": "https://pub-470cb85af0ad4c5f92edb5094b8a7dbb.r2.dev/translations/ro-grigore/1.0.0/manifest.json"
+  },
+  "approxSizeBytes": {
+    "ios": 992808,
+    "android": 992808
+  }
+}

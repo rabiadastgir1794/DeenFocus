@@ -14,6 +14,11 @@ class _HomeVerseMarqueeState extends State<HomeVerseMarquee>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
+  double _cachedTextWidth = 0;
+  String? _layoutText;
+  TextStyle? _layoutStyle;
+  TextDirection? _layoutDirection;
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +34,28 @@ class _HomeVerseMarqueeState extends State<HomeVerseMarquee>
     super.dispose();
   }
 
+  void _ensureTextWidth({
+    required String text,
+    required TextStyle? style,
+    required TextDirection direction,
+  }) {
+    if (_layoutText == text &&
+        _layoutStyle == style &&
+        _layoutDirection == direction &&
+        _cachedTextWidth > 0) {
+      return;
+    }
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: direction,
+      maxLines: 1,
+    )..layout();
+    _cachedTextWidth = painter.width;
+    _layoutText = text;
+    _layoutStyle = style;
+    _layoutDirection = direction;
+  }
+
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -36,51 +63,45 @@ class _HomeVerseMarqueeState extends State<HomeVerseMarquee>
       fontWeight: FontWeight.w600,
       fontStyle: FontStyle.italic,
     );
+    final direction = Directionality.of(context);
 
     return SizedBox(
       height: 20,
       child: ClipRect(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                final width = constraints.maxWidth;
-                final painter = TextPainter(
-                  text: TextSpan(text: widget.text, style: textStyle),
-                  textDirection: Directionality.of(context),
-                  maxLines: 1,
-                )..layout();
-                final textWidth = painter.width;
-                final gap = 40.0;
-                final trackWidth = textWidth + gap;
-                final travel = trackWidth + width;
-                final firstLeft = width - (_controller.value * travel);
-                final secondLeft = firstLeft + trackWidth;
+            _ensureTextWidth(
+              text: widget.text,
+              style: textStyle,
+              direction: direction,
+            );
+            final width = constraints.maxWidth;
+            final textWidth = _cachedTextWidth;
+            const gap = 40.0;
+            final trackWidth = textWidth + gap;
+            final travel = trackWidth + width;
 
-                return Stack(
-                  children: [
-                    Positioned(
-                      left: firstLeft,
-                      child: Text(
-                        widget.text,
-                        style: textStyle,
-                        maxLines: 1,
-                        softWrap: false,
-                      ),
-                    ),
-                    Positioned(
-                      left: secondLeft,
-                      child: Text(
-                        widget.text,
-                        style: textStyle,
-                        maxLines: 1,
-                        softWrap: false,
-                      ),
-                    ),
-                  ],
-                );
-              },
+            return RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  final firstLeft = width - (_controller.value * travel);
+                  final secondLeft = firstLeft + trackWidth;
+
+                  return Stack(
+                    children: [
+                      Positioned(left: firstLeft, child: child!),
+                      Positioned(left: secondLeft, child: child),
+                    ],
+                  );
+                },
+                child: Text(
+                  widget.text,
+                  style: textStyle,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+              ),
             );
           },
         ),

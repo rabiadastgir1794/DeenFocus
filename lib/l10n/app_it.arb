@@ -202,7 +202,7 @@
   "homeQiblaSubtitleGuiding": "Guidandoti verso la Qibla",
   "homeToMakkah": "alla Mecca",
   "homeFindMasjid": "Trova Moschea vicino a me",
-  "homeSearchNearbyMosques": "Cerca moschee vicine.",
+  "homeSearchNearbyMosques": "Trova moschee vicine da OpenStreetMap.",
   "homePrayerStreak": "Strisce di preghiera",
   "homePrayersInARow": "{count} prayers in a row",
   "@homePrayersInARow": {
@@ -352,7 +352,7 @@
   "tabHome": "Casa",
   "tabFocus": "Messa a fuoco",
   "tabTasbih": "Tasbih",
-  "tabQuran": "Corano",
+  "tabQuran": "Impara",
   "quranLoadFailed": "Impossibile caricare i dati del Corano",
   "quranTabSubtitle": "Leggere ed esplorare il Sacro Corano",
   "quranSearchHint": "Cerca sura...",
@@ -467,16 +467,26 @@
   "qiblaSouthShort": "S",
   "qiblaEastShort": "E",
   "qiblaWestShort": "W",
-  "nearbyMosquesTitle": "Moschee vicine",
+  "nearbyMosquesTitle": "Moschee trovate nelle vicinanze",
   "nearbyMosquesTryAgain": "Riprova",
   "nearbyMosquesOpenGoogle": "Apri in Google Maps",
   "nearbyMosquesOpenApple": "Apri in Mappe di Apple",
   "nearbyMosquesNoMosquesFoundWithin": "Nessuna moschea trovata all'interno",
-  "nearbyMosquesSearchRadius": "Raggio di ricerca: 5 km",
+  "nearbyMosquesSearchRadius": "Raggio di ricerca: {radiusKm} km",
+  "@nearbyMosquesSearchRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesMapPreviewUnavailable": "Anteprima della mappa non disponibile al momento.",
   "nearbyMosquesWaitingForLocation": "In attesa della tua posizione.",
   "nearbyMosquesAppearAfterLoad": "Le moschee vicine appariranno qui una volta caricati i risultati.",
-  "nearbyMosquesNoneWithinRadius": "Nessuna moschea trovata nel raggio di 5 km",
+  "nearbyMosquesNoneWithinRadius": "Nessuna moschea trovata nel raggio di {radiusKm} km",
+  "@nearbyMosquesNoneWithinRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesLocationRequired": "Per trovare le moschee vicine è necessario l'accesso alla posizione.",
   "nearbyMosquesPermissionOff": "L'autorizzazione alla posizione è disattivata. Abilitalo nelle impostazioni per vedere le moschee vicine.",
   "nearbyMosquesLocationUnavailable": "Non è stato possibile leggere la tua posizione attuale in questo momento.",
@@ -489,15 +499,32 @@
   "nearbyMosquesFormatError": "Non siamo riusciti a leggere l'elenco delle moschee in questo momento. Per favore riprova più tardi.",
   "nearbyMosquesPlatformError": "Non è stato possibile completare questo passaggio. Controlla la connessione e riprova.",
   "nearbyMosquesSomethingWentWrong": "Qualcosa è andato storto. Per favore riprova.",
-  "nearbyMosquesEmptyHint": "Non è elencato nulla nel raggio di 5 km su OpenStreetMap per questo luogo. Riprova più tardi o sposta la mappa.",
-  "nearbyMosquesFoundWithin": "{count} moschee trovate nel raggio di 5 km",
-  "@nearbyMosquesFoundWithin": {
+  "nearbyMosquesEmptyHint": "Non è elencato nulla nel raggio di {radiusKm} km su OpenStreetMap per questo luogo. Riprova più tardi o amplia l’area.",
+  "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "radiusKm": { "type": "int" }
     }
   },
+  "nearbyMosquesFoundWithin": "{count} moschee trovate nel raggio di {radiusKm} km",
+  "@nearbyMosquesFoundWithin": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesCountNearby": "{count} moschee nelle vicinanze",
+  "@nearbyMosquesCountNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nearbyMosquesResultsMeta": "Entro {radiusKm} km · Ordinate per distanza",
+  "@nearbyMosquesResultsMeta": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesDirections": "Indicazioni",
   "tasbihDeleteDhikrTitle": "Eliminare dhikr?",
   "tasbihDelete": "Eliminare",
   "focusAndroidBlockingNotReady": "Il blocco app su Android non è ancora pronto. Tieni l’accessibilità attiva e attendi un attimo la connessione.",
@@ -1139,5 +1166,95 @@
   "nightlyWrapUpBothTitle": "Chiudi la giornata",
   "nightlyWrapUpBothBody": "Segna le preghiere rimanenti e completa la checklist prima della fine della giornata.",
   "cycleModeEndedNotificationTitle": "La modalità ciclo è terminata",
-  "cycleModeEndedNotificationBody": "La modalità ciclo è ora disattivata. Puoi riprendere a pregare. Se vuoi modificare le date della modalità ciclo, tocca qui per modificarle."
+  "cycleModeEndedNotificationBody": "La modalità ciclo è ora disattivata. Puoi riprendere a pregare. Se vuoi modificare le date della modalità ciclo, tocca qui per modificarle.",
+  "libraryHomeTitle": "Biblioteca islamica",
+  "libraryHomeSubtitle": "Impara hadith, dua, i 99 Nomi e altro",
+  "libraryHubTitle": "Biblioteca islamica",
+  "libraryModuleQuran": "Corano",
+  "libraryModuleQuranSub": "Leggi, ascolta e pratica il tajwid",
+  "libraryModuleHadith": "Hadith",
+  "libraryModuleHadithSub": "Raccolte da fonti autentiche",
+  "libraryModuleDuas": "Dua e adhkar",
+  "libraryModuleDuasSub": "Ricordo del mattino, della sera e quotidiano",
+  "libraryModulePrayerMethods": "Preghiera e metodi islamici",
+  "libraryModulePrayerMethodsSub": "Wudu, salah, hajj e altro",
+  "libraryModuleFiqh": "Fiqh e tradizioni",
+  "libraryModuleFiqhSub": "Sunni, sciiti, madhhab, Ahl-e Hadith e altro",
+  "libraryModuleNames": "99 Nomi di Allah",
+  "libraryModuleNamesSub": "Impara e rifletti su Asma ul-Husna",
+  "libraryModulePillarsIslam": "Pilastri dell’Islam",
+  "libraryModulePillarsIslamSub": "I cinque fondamenti della fede in azione",
+  "libraryModulePillarsIman": "Pilastri della fede",
+  "libraryModulePillarsImanSub": "I sei articoli della credenza",
+  "libraryModuleProphets": "Profeta Muhammad",
+  "libraryModuleProphetsSub": "La sua vita, missione e lezioni senza tempo",
+  "libraryModuleOccasions": "Occasioni islamiche",
+  "libraryModuleOccasionsSub": "Ramadan, Eid, Hajj e giorni sacri",
+  "libraryKeyLesson": "Lezione chiave",
+  "libraryCardProgress": "{current} di {total}",
+  "libraryPrevious": "Precedente",
+  "libraryNext": "Successivo",
+  "libraryCopy": "Copia",
+  "libraryShare": "Condividi",
+  "libraryCopied": "Copiato negli appunti",
+  "libraryShareCopiedHint": "Copiato — incolla per condividere",
+  "libraryBookmarkSaved": "Segnalibro salvato",
+  "libraryBookmarkRemoved": "Segnalibro rimosso",
+  "libraryTranslation": "Traduzione",
+  "libraryTransliteration": "Traslitterazione",
+  "libraryMeaning": "Significato",
+  "libraryBookmark": "Segnalibro",
+  "libraryBookmarksTitle": "Elementi di apprendimento salvati",
+  "libraryBookmarksSubtitle": "Hadith, dua, nomi, fiqh e altro",
+  "libraryBookmarksEmpty": "Nessun elemento salvato. Tocca Segnalibro su un elemento di apprendimento per salvarlo qui.",
+  "libraryMarkCompleted": "Segna come completato",
+  "librarySectionCompleted": "Completato",
+  "libraryReflection": "Riflessione",
+  "libraryComingSoonTitle": "Prossimamente",
+  "libraryComingSoonBody": "Questo modulo è in preparazione. Controlla in un aggiornamento futuro.",
+  "librarySearchHint": "Cerca…",
+  "librarySearchEmpty": "Nessun risultato",
+  "libraryItemCount": "{count} elementi",
+  "librarySearchResultCount": "{shown} di {total}",
+  "libraryContinueFrom": "Continua · {number}",
+  "libraryInProgress": "In corso",
+  "libraryReference": "Riferimento: {source}",
+  "libraryDuaCount": "{count} dua",
+  "libraryDuaCategoryMorning": "Mattina",
+  "libraryDuaCategoryEvening": "Sera",
+  "libraryDuaCategoryDailyLife": "Vita quotidiana",
+  "libraryDuaCategorySleep": "Sonno",
+  "libraryDuaCategoryFood": "Cibo",
+  "libraryDuaCategoryTravel": "Viaggio",
+  "libraryDuaCategoryIllness": "Malattia",
+  "libraryDuaCategoryProtection": "Protezione",
+  "libraryDuaCategoryForgiveness": "Perdono",
+  "libraryDuaCategoryParents": "Genitori",
+  "libraryHadithCount": "{count} hadith",
+  "libraryHadithNarrator": "Narratore:",
+  "libraryHadithSource": "Fonte:",
+  "libraryHadithCollectionBukhari": "Sahih al-Bukhari",
+  "libraryHadithCollectionMuslim": "Sahih Muslim",
+  "libraryHadithCollectionRiyad": "Riyad us-Saliheen",
+  "libraryHadithCollectionNawawi": "40 Hadith Nawawi",
+  "libraryHadithCollectionHisnul": "Hisnul Muslim",
+  "libraryGuideStepCount": "{count} passi",
+  "libraryGuideStepLabel": "Passo {current} di {total}",
+  "libraryGuideWudu": "Wudu",
+  "libraryGuideSalah": "Salah",
+  "libraryGuideGhusl": "Ghusl",
+  "libraryGuideTayammum": "Tayammum",
+  "libraryGuideJanazah": "Preghiera funebre",
+  "libraryGuideUmrah": "Umrah",
+  "libraryGuideHajj": "Hajj",
+  "libraryGuideFasting": "Digiuno",
+  "libraryGuideZakat": "Zakat",
+  "libraryGuideTawbah": "Tawba",
+  "libraryOccasionImportance": "Importanza",
+  "libraryOccasionVirtues": "Virtù",
+  "libraryOccasionRecommendedActs": "Azioni raccomandate",
+  "libraryFiqhOverview": "Panoramica",
+  "libraryFiqhKeyPoints": "Punti chiave",
+  "libraryFiqhDifferences": "Differenze importanti",
+  "libraryFiqhCommonGround": "Punti in comune"
 }

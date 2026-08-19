@@ -11,6 +11,7 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.rnr.deenfocus.tajweed.TajweedChannelHandler
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
@@ -36,6 +37,12 @@ class MainActivity : FlutterActivity() {
     private val widgetMethodChannelName = "com.app.deenly.deenly/widgets"
     private val locationSearchChannelName = "com.app.deenly.deenly/location_search"
     private val prayerLiveActivityChannelName = "com.app.deenly.deenly/prayer_live_activity"
+    private val tajweedMethodChannelName = "com.app.deenly.deenly/tajweed"
+    private val tajweedEventChannelName = "com.app.deenly.deenly/tajweed_events"
+    private val quranTranslationMethodChannelName = "com.app.deenly.deenly/quran_translations"
+    private val quranTranslationEventChannelName = "com.app.deenly.deenly/quran_translation_events"
+    private var tajweedChannelHandler: TajweedChannelHandler? = null
+    private var quranTranslationChannelHandler: com.rnr.deenfocus.qurantranslation.QuranTranslationChannelHandler? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -97,6 +104,37 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        val tajweedHandler = tajweedChannelHandler ?: TajweedChannelHandler(applicationContext).also {
+            tajweedChannelHandler = it
+        }
+        tajweedHandler.attach(
+            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, tajweedMethodChannelName),
+            EventChannel(flutterEngine.dartExecutor.binaryMessenger, tajweedEventChannelName),
+        )
+
+        val translationHandler = quranTranslationChannelHandler
+            ?: com.rnr.deenfocus.qurantranslation.QuranTranslationChannelHandler(applicationContext).also {
+                quranTranslationChannelHandler = it
+            }
+        translationHandler.attach(
+            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, quranTranslationMethodChannelName),
+            EventChannel(flutterEngine.dartExecutor.binaryMessenger, quranTranslationEventChannelName),
+        )
+    }
+
+    /** Mirrors iOS `didReceiveMemoryWarningNotification` -> unload native model sessions. */
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) {
+            tajweedChannelHandler?.onMemoryTrim()
+        }
+    }
+
+    /** Mirrors iOS `didEnterBackgroundNotification` -> cancel an in-flight recording. */
+    override fun onPause() {
+        super.onPause()
+        tajweedChannelHandler?.onAppBackground()
     }
 
     private fun handlePrayerAlarmMethodCall(

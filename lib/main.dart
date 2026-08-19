@@ -6,18 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:media_kit/media_kit.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
 import 'core/logger/app_logging.dart';
 import 'core/logger/logger_service.dart';
+import 'core/logger/startup_probe.dart';
 import 'core/logger/trace_helpers.dart';
 import 'core/services/app_notification_service.dart';
 import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
 import 'core/services/prayer_alarm_service.dart';
+import 'core/services/quran_translation_service.dart';
 import 'core/services/theme_service.dart';
 import 'core/services/user_profile_service.dart';
 import 'core/services/widget_sync_service.dart';
@@ -25,62 +27,68 @@ import 'core/superwall/app_superwall.dart';
 import 'core/theme/app_theme.dart';
 import 'features/focus/viewmodel/focus_controller.dart';
 import 'features/home/services/prayer_settings_service.dart';
-import 'features/home/view/settings/app_demo_video_manager.dart';
 import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
+    StartupProbe.start();
     WidgetsFlutterBinding.ensureInitialized();
-    MediaKit.ensureInitialized();
+    StartupProbe.mark('1_WidgetsFlutterBinding.ensureInitialized');
 
-    final startupWatch = Stopwatch()..start();
-    await LoggerService.instance.initialize();
+    // Logger file I/O must not block first frame (see LoggerService.initialize).
+    unawaited(LoggerService.instance.initialize());
     AppLogging.installFrameworkHooks();
-    LoggerService.instance.info(
-      'STARTUP',
-      'binding + logger hooks installed ${startupWatch.elapsedMilliseconds}ms',
-    );
+    StartupProbe.mark('2_logger hooks installed');
 
-    await TraceHelpers.traceDatabase(
-      'hive_init',
-      () => Hive.initFlutter(),
-      logSuccess: true,
-    );
-    LoggerService.instance.info(
-      'STARTUP',
-      'Hive.initFlutter done ${startupWatch.elapsedMilliseconds}ms',
-    );
+    try {
+      StartupProbe.detail(
+        'Hive: probing path_provider.getApplicationDocumentsDirectory',
+      );
+      final docs = await getApplicationDocumentsDirectory();
+      StartupProbe.detail('Hive: path_provider OK path=${docs.path}');
+      await Hive.initFlutter();
+      StartupProbe.mark('3_Hive.initFlutter done');
+    } catch (e, st) {
+      debugPrint('[STARTUP] Hive.initFlutter / path_provider FAILED: $e');
+      debugPrint('[STARTUP] stack:\n$st');
+      rethrow;
+    }
 
     // Pre-warm subscription notifier from local cache so premium gates can
     // open immediately on cold start without showing the loader.
     unawaited(AppSuperwall.loadCachedState());
 
-    /// Configure Superwall ONCE in the background. Splash must not block on it —
-    /// premium gates will wait for [AppSuperwall.configure] when first invoked.
-    unawaited(
-      TraceHelpers.traceAsync(
-        'STARTUP',
-        'AppSuperwall.configure (background)',
-        AppSuperwall.configure,
-        logSuccess: true,
-      ),
-    );
-
     runApp(const DeenlyApp());
-    LoggerService.instance.info(
-      'STARTUP',
-      'runApp scheduled ${startupWatch.elapsedMilliseconds}ms',
-    );
-    unawaited(_initializeServices());
+    StartupProbe.mark('4_runApp');
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      StartupProbe.mark('5_first Flutter frame');
+      StartupProbe.dumpSummary();
+      // Superwall + translation packs start after first paint so they cannot
+      // starve the splash isolate / compete with first-frame raster.
+      unawaited(
+        TraceHelpers.traceAsync(
+          'STARTUP',
+          'AppSuperwall.configure (background)',
+          AppSuperwall.configure,
+          logSuccess: true,
+        ),
+      );
+      unawaited(_initializeServices());
+    });
   }, AppLogging.recordZoneError);
 }
 
 Future<void> _initializeServices() async {
+  StartupProbe.detail('_initializeServices: begin');
   unawaited(TasbihLocalRepository.instance.ensureInitialized());
   unawaited(DailyRefreshService.instance.initialize());
   unawaited(AppNotificationService.instance.initialize());
   unawaited(PrayerAlarmService.instance.initialize());
+  QuranTranslationService.attachLifecycleRetry();
+  unawaited(QuranTranslationService.ensureDefaultTranslationInBackground());
+  StartupProbe.detail('_initializeServices: scheduled');
 }
 
 class DeenlyApp extends StatefulWidget {
@@ -91,21 +99,31 @@ class DeenlyApp extends StatefulWidget {
 }
 
 class _DeenlyAppState extends State<DeenlyApp> {
-  late final GoRouter _router = createAppRouter();
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    StartupProbe.mark('DeenlyApp.initState begin');
+    _router = StartupProbe.timeSync('createAppRouter()', createAppRouter);
+    StartupProbe.mark('DeenlyApp.initState end');
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    StartupProbe.mark('DeenlyApp.build begin');
+    final tree = MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LocaleService()),
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
         ChangeNotifierProvider(create: (_) => PrayerSettingsService()),
         ChangeNotifierProvider(create: (_) => FocusController()),
-        ChangeNotifierProvider(create: (_) => AppDemoVideoManager()),
       ],
       child: _AppLifecycleObserver(child: _DeenlyMaterialApp(router: _router)),
     );
+    StartupProbe.mark('DeenlyApp.build end');
+    return tree;
   }
 }
 
@@ -122,6 +140,7 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
     with WidgetsBindingObserver {
   @override
   void initState() {
+    StartupProbe.mark('_AppLifecycleObserver.initState begin');
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     AppSuperwall.subscriptionActiveNotifier.addListener(
@@ -133,10 +152,14 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
     // lock/unlock card — warm it once after first frame so UI matches storage
     // without blocking the initial build (heavy work stays async in the controller).
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      StartupProbe.detail(
+        '_AppLifecycleObserver post-frame FocusController.initialize',
+      );
       if (!mounted) return;
       unawaited(context.read<FocusController>().initialize());
       unawaited(_syncSubscriptionAndDisableFocusModesIfNeeded());
     });
+    StartupProbe.mark('_AppLifecycleObserver.initState end');
   }
 
   @override
@@ -208,6 +231,7 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
 
   @override
   Widget build(BuildContext context) {
+    StartupProbe.markOnce('_AppLifecycleObserver.build');
     return widget.child;
   }
 }
@@ -219,6 +243,7 @@ class _DeenlyMaterialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    StartupProbe.mark('_DeenlyMaterialApp.build begin');
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,

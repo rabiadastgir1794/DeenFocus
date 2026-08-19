@@ -76,7 +76,17 @@ class AppSuperwall {
         },
       );
 
-      await completer.future;
+      await completer.future.timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          _log('Superwall.configure timed out after 8s — continuing');
+        },
+      );
+
+      if (!_enabled) {
+        _log('Superwall not marked enabled after configure attempt');
+        return;
+      }
 
       Superwall.shared.setDelegate(_delegate);
       _log('Superwall delegate registered for custom paywall actions');

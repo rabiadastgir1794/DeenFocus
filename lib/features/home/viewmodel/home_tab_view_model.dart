@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/services/app_notification_service.dart';
@@ -246,6 +247,7 @@ class HomeTabViewModel extends ChangeNotifier {
   int get cycleModeLength => _cycleMode.cycleLength;
 
   Timer? _ticker;
+  bool _tabActive = true;
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
 
   /// When Superwall is enabled, bearing/distance subtitle is shown only for active subscribers.
@@ -257,7 +259,24 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void>? _resumeInFlight;
 
-  bool get isFriday => DateTime.now().weekday == DateTime.friday;
+  String? _cachedQiblaInfo;
+  double? _qiblaCacheLat;
+  double? _qiblaCacheLng;
+  String? _lastPersistedStreakJson;
+  DateTime? _fridayCacheDay;
+  bool? _fridayCacheValue;
+
+  bool get isFriday {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    if (_fridayCacheDay == day && _fridayCacheValue != null) {
+      return _fridayCacheValue!;
+    }
+    _fridayCacheDay = day;
+    _fridayCacheValue = now.weekday == DateTime.friday;
+    return _fridayCacheValue!;
+  }
+
   HomePrayerStreakState get prayerStreakState => _prayerStreakState;
   List<DateTime> get currentWeekDates => _currentWeekDates(DateTime.now());
 
@@ -267,7 +286,17 @@ class HomeTabViewModel extends ChangeNotifier {
   void _onPrayerSettingsChanged() => notifyListeners();
 
   String? get qiblaInfo {
-    if (latitude == null || longitude == null) return null;
+    if (latitude == null || longitude == null) {
+      _cachedQiblaInfo = null;
+      _qiblaCacheLat = null;
+      _qiblaCacheLng = null;
+      return null;
+    }
+    if (_cachedQiblaInfo != null &&
+        _qiblaCacheLat == latitude &&
+        _qiblaCacheLng == longitude) {
+      return _cachedQiblaInfo;
+    }
     final coordinates = Coordinates(latitude!, longitude!);
     final qibla = Qibla.qibla(coordinates);
     final distanceMeters = Geolocator.distanceBetween(
@@ -277,7 +306,11 @@ class HomeTabViewModel extends ChangeNotifier {
       Qibla.makkah.longitude,
     );
     final distanceKm = distanceMeters / 1000;
-    return '${qibla.toStringAsFixed(0)}° • ${distanceKm.toStringAsFixed(0)} km';
+    _qiblaCacheLat = latitude;
+    _qiblaCacheLng = longitude;
+    _cachedQiblaInfo =
+        '${qibla.toStringAsFixed(0)}° • ${distanceKm.toStringAsFixed(0)} km';
+    return _cachedQiblaInfo;
   }
 
   bool get showQiblaBearingDetails {
@@ -291,6 +324,25 @@ class HomeTabViewModel extends ChangeNotifier {
     await _syncCycleModeFromStorage();
     await _loadAll();
     _startTicker();
+    // Review / Live Activity after first home frame — not on the critical path.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      unawaited(_loadDeferredAfterFirstFrame());
+    });
+  }
+
+  /// Pause/resume the minute ticker when the Home tab is not visible.
+  void setTabActive(bool active) {
+    if (_tabActive == active) return;
+    _tabActive = active;
+    if (active) {
+      _startTicker();
+    } else {
+      _ticker?.cancel();
+      _ticker = null;
+    }
+  }
+
+  Future<void> _loadDeferredAfterFirstFrame() async {
     unawaited(_recordAndMaybeRequestAppReview());
     unawaited(PrayerLiveActivityService.instance.syncFromStorage());
   }
@@ -353,13 +405,21 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      userName = await StorageService.userName ?? 'User';
-      locationName = await StorageService.locationName;
-      locationSubtitle = await StorageService.locationSubtitle;
-      latitude = await StorageService.locationLatitude;
-      longitude = await StorageService.locationLongitude;
-      _lastAppliedSect = await StorageService.sect;
-      await _loadVerse();
+      final profile = await Future.wait<Object?>([
+        StorageService.userName,
+        StorageService.locationName,
+        StorageService.locationSubtitle,
+        StorageService.locationLatitude,
+        StorageService.locationLongitude,
+        StorageService.sect,
+      ]);
+      userName = (profile[0] as String?) ?? 'User';
+      locationName = profile[1] as String?;
+      locationSubtitle = profile[2] as String?;
+      latitude = profile[3] as double?;
+      longitude = profile[4] as double?;
+      _lastAppliedSect = profile[5] as String?;
+
       await _loadSubscriptionStatus();
       await _loadPrayerSettings();
       await _loadPrayerTimes();
@@ -381,6 +441,14 @@ class HomeTabViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+
+    try {
+      // Daily verse can seed the full Quran Hive store on first launch.
+      // Load after Home has painted prayer times so seed CPU does not freeze
+      // the first home frame.
+      await _loadVerse();
+      notifyListeners();
+    } catch (_) {}
   }
 
   Future<void> _loadSubscriptionStatus() async {
@@ -1367,7 +1435,10 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _persistPrayerStreak() async {
-    await StorageService.setHomePrayerStreakJson(_prayerStreakState.toJson());
+    final json = _prayerStreakState.toJson();
+    if (json == _lastPersistedStreakJson) return;
+    _lastPersistedStreakJson = json;
+    await StorageService.setHomePrayerStreakJson(json);
     // Large widget prayer progress reads this same streak JSON.
     // ignore() keeps Hive/plugin failures from failing unit tests after completion.
     WidgetSyncService.instance.syncTimeline().ignore();
@@ -1375,6 +1446,7 @@ class HomeTabViewModel extends ChangeNotifier {
 
   void _startTicker() {
     _ticker?.cancel();
+    if (!_tabActive) return;
     _ticker = Timer.periodic(const Duration(minutes: 1), (_) async {
       await _ensureCycleModeNotExpired();
       await _loadPrayerTimes();

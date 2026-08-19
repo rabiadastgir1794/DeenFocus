@@ -33,14 +33,37 @@ private enum ManagedSettingsStoreHolder {
   // Prayer alarms use PrayerAlarmBridge (`com.app.deenly.deenly/prayer_alarm`).
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
   private let widgetAppGroup = "group.com.rnr.deenfocus"
+  private let tajweedChannelHandler = TajweedChannelHandler()
+  private let quranTranslationChannelHandler = QuranTranslationChannelHandler()
 
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
+    let launchT0 = CFAbsoluteTimeGetCurrent()
+    func logPhase(_ name: String, since: CFAbsoluteTime = launchT0) {
+      let deltaMs = (CFAbsoluteTimeGetCurrent() - since) * 1000
+      let absMs = (CFAbsoluteTimeGetCurrent() - launchT0) * 1000
+      // Use interpolation — NSLog("%s", swiftString) crashes (expects C string).
+      NSLog("[DeenFocus][Startup] \(name) +\(String(format: "%.1f", deltaMs)) ms (abs \(String(format: "%.1f", absMs)) ms)")
+    }
 
-    if let registrar = self.registrar(forPlugin: "QiblaCompassPlugin") {
+    NSLog("[DeenFocus][Startup] didFinishLaunching begin")
+
+    // CRITICAL: plugins MUST register before any Dart code that uses
+    // SharedPreferences / path_provider / etc. Commenting this out leaves the
+    // process on the white LaunchScreen while MethodChannels hang.
+    let pluginsT0 = CFAbsoluteTimeGetCurrent()
+    #if DEBUG
+    TimedPluginRegistrant.register(with: self)
+    #else
+    GeneratedPluginRegistrant.register(with: self)
+    #endif
+    logPhase("1_GeneratedPluginRegistrant done", since: pluginsT0)
+
+    // Use a dedicated registrar key for app channels (not a real plugin class).
+    let channelsT0 = CFAbsoluteTimeGetCurrent()
+    if let registrar = self.registrar(forPlugin: "DeenFocusAppChannels") {
       let messenger = registrar.messenger()
       let focusMethodChannel = FlutterMethodChannel(
         name: focusMethodChannelName,
@@ -146,15 +169,30 @@ private enum ManagedSettingsStoreHolder {
       }
 
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
+      tajweedChannelHandler.register(messenger: messenger)
+      quranTranslationChannelHandler.register(messenger: messenger)
+      logPhase("2_app method channels registered", since: channelsT0)
+    } else {
+      NSLog("[DeenFocus][Startup] ERROR: could not obtain Flutter registrar")
     }
 
     UNUserNotificationCenter.current().delegate = self
-    FocusIOSDebugLogger.append(
-      "ios.app.launch",
-      "app launched exportedLogPath=\(FocusIOSDebugLogger.path() ?? "nil")"
-    )
+    // File I/O for debug log must not block first frame — defer.
+    DispatchQueue.global(qos: .utility).async {
+      FocusIOSDebugLogger.append(
+        "ios.app.launch",
+        "app launched exportedLogPath=\(FocusIOSDebugLogger.path() ?? "nil")"
+      )
+    }
 
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    // FlutterAppDelegate creates/attaches the FlutterEngine and runs the Dart
+    // entrypoint (main). Dart-side [STARTUP] markers continue from there.
+    logPhase("3_calling super.application (FlutterEngine + entrypoint)")
+    let engineT0 = CFAbsoluteTimeGetCurrent()
+    let ok = super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    logPhase("4_FlutterEngine+entrypoint returned", since: engineT0)
+    logPhase("5_didFinishLaunching complete")
+    return ok
   }
 
   private func appendFocusDebugLog(call: FlutterMethodCall, result: @escaping FlutterResult) {

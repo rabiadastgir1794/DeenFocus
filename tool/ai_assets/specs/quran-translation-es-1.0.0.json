@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "packId": "quran-translation-es",
+  "kind": "translation_pack",
+  "minimumAppVersion": "1.0.0",
+  "artifactBaseUrl": "https://pub-470cb85af0ad4c5f92edb5094b8a7dbb.r2.dev/translations/es-cortes/1.0.0/",
+  "filesDir": "../staging/quran-translation-es/1.0.0",
+  "files": {
+    "translation": "translation.json"
+  },
+  "extra": {
+    "language": "es",
+    "displayName": "Spanish (Cortes)"
+  }
+}

@@ -1,0 +1,787 @@
+{
+  "version": 2,
+  "collections": [
+    {
+      "id": "bukhari",
+      "itemCount": 15,
+      "items": [
+        {
+          "index": 1,
+          "title": "Actions are by intentions",
+          "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
+          "translation": "Actions are judged by intentions, and every person will get only what they intended.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "Sahih al-Bukhari 1"
+        },
+        {
+          "index": 2,
+          "title": "The five pillars of Islam",
+          "arabic": "بُنِيَ الإِسْلَامُ عَلَى خَمْسٍ",
+          "translation": "Islam is built upon five: testimony of faith, establishing prayer, paying zakat, fasting Ramadan, and performing Hajj for whoever is able.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bukhari 8"
+        },
+        {
+          "index": 3,
+          "title": "Halal and haram are clear",
+          "arabic": "إِنَّ الْحَلَالَ بَيِّنٌ وَإِنَّ الْحَرَامَ بَيِّنٌ",
+          "translation": "The lawful is clear and the unlawful is clear, and between them are doubtful matters. Whoever avoids doubtful matters clears himself regarding his religion and honor.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih al-Bukhari 52"
+        },
+        {
+          "index": 4,
+          "title": "Leave what doubts you",
+          "arabic": "دَعْ مَا يَرِيبُكَ إِلَى مَا لَا يَرِيبُكَ",
+          "translation": "Leave what makes you doubt for what does not make you doubt.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "Sahih al-Bukhari 52; Jami' at-Tirmidhi 2518"
+        },
+        {
+          "index": 5,
+          "title": "Faith has seventy-odd branches",
+          "arabic": "الإِيمَانُ بِضْعٌ وَسَبْعُونَ شُعْبَةً",
+          "translation": "Faith has seventy-odd branches. The highest is saying 'La ilaha illallah' and the lowest is removing harm from the road. Modesty is a branch of faith.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 9; Sahih Muslim 35"
+        },
+        {
+          "index": 6,
+          "title": "The rights of a Muslim over another",
+          "arabic": "حَقُّ الْمُسْلِمِ عَلَى الْمُسْلِمِ خَمْسٌ",
+          "translation": "A Muslim has five rights over another Muslim: return the greeting, visit the sick, follow the funeral, accept an invitation, and say 'Yarhamuk Allah' when he sneezes.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 1240"
+        },
+        {
+          "index": 7,
+          "title": "Whoever believes in Allah and the Last Day",
+          "arabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
+          "translation": "Whoever believes in Allah and the Last Day should speak good or remain silent.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6018; Sahih Muslim 47"
+        },
+        {
+          "index": 8,
+          "title": "Do not envy one another",
+          "arabic": "لَا تَحَاسَدُوا وَلَا تَنَاجَشُوا وَلَا تَبَاغَضُوا",
+          "translation": "Do not envy one another, do not inflate prices against one another, do not hate one another, and do not turn away from one another. Be servants of Allah as brothers.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6066; Sahih Muslim 2564"
+        },
+        {
+          "index": 9,
+          "title": "The best of people",
+          "arabic": "خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ",
+          "translation": "The best of people are those most beneficial to people.",
+          "narrator": "Jabir ibn Abdullah (RA)",
+          "source": "Sahih al-Bukhari (al-Adab al-Mufrad); authenticated"
+        },
+        {
+          "index": 10,
+          "title": "Allah is beautiful and loves beauty",
+          "arabic": "إِنَّ اللَّهَ جَمِيلٌ يُحِبُّ الْجَمَالَ",
+          "translation": "Allah is Beautiful and loves beauty.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "Sahih Muslim 91"
+        },
+        {
+          "index": 11,
+          "title": "Make things easy, not difficult",
+          "arabic": "يَسِّرُوا وَلَا تُعَسِّرُوا",
+          "translation": "Make things easy and do not make them difficult; give glad tidings and do not repel people.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bukhari 69; Sahih Muslim 1734"
+        },
+        {
+          "index": 12,
+          "title": "The strong is not the one who overcomes",
+          "arabic": "لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ",
+          "translation": "The strong person is not the one who overcomes others in wrestling; the strong person is the one who controls himself when angry.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6114; Sahih Muslim 2609"
+        },
+        {
+          "index": 13,
+          "title": "None of you truly believes until he loves for his brother",
+          "arabic": "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+          "translation": "None of you truly believes until he loves for his brother what he loves for himself.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bukhari 13; Sahih Muslim 45"
+        },
+        {
+          "index": 14,
+          "title": "The world is a prison for the believer",
+          "arabic": "الدُّنْيَا سِجْنُ الْمُؤْمِنِ وَجَنَّةُ الْكَافِرِ",
+          "translation": "The world is a prison for the believer and a paradise for the disbeliever.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2956"
+        },
+        {
+          "index": 15,
+          "title": "Be in this world as a stranger",
+          "arabic": "كُنْ فِي الدُّنْيَا كَأَنَّكَ غَرِيبٌ أَوْ عَابِرُ سَبِيلٍ",
+          "translation": "Be in this world as if you were a stranger or a traveler.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bukhari 6416"
+        }
+      ]
+    },
+    {
+      "id": "muslim",
+      "itemCount": 15,
+      "items": [
+        {
+          "index": 1,
+          "title": "Brotherhood in faith",
+          "arabic": "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+          "translation": "None of you truly believes until he loves for his brother what he loves for himself.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih Muslim 45"
+        },
+        {
+          "index": 2,
+          "title": "Kind speech is charity",
+          "arabic": "وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+          "translation": "A good word is charity.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 1009"
+        },
+        {
+          "index": 3,
+          "title": "Smiling is charity",
+          "arabic": "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
+          "translation": "Your smiling in the face of your brother is charity for you.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "Sahih Muslim (Tirmidhi 1956)"
+        },
+        {
+          "index": 4,
+          "title": "Whoever relieves a believer",
+          "arabic": "مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً",
+          "translation": "Whoever relieves a believer of distress in this world, Allah will relieve him of distress on the Day of Resurrection.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2580"
+        },
+        {
+          "index": 5,
+          "title": "Cleanliness is half of faith",
+          "arabic": "الطُّهُورُ شَطْرُ الإِيمَانِ",
+          "translation": "Cleanliness is half of faith.",
+          "narrator": "Abu Malik al-Ash'ari (RA)",
+          "source": "Sahih Muslim 223"
+        },
+        {
+          "index": 6,
+          "title": "Seeking knowledge is obligatory",
+          "arabic": "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ",
+          "translation": "Seeking knowledge is an obligation upon every Muslim.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Ibn Majah 224; authenticated"
+        },
+        {
+          "index": 7,
+          "title": "The best charity",
+          "arabic": "أَفْضَلُ الصَّدَقَةِ أَنْ تَصَدَّقَ وَأَنْتَ صَحِيحٌ شَحِيحٌ",
+          "translation": "The best charity is that which you give while you are healthy and eager for wealth, fearing poverty and hoping to become rich.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 1419; Sahih Muslim 1031"
+        },
+        {
+          "index": 8,
+          "title": "Allah does not look at your bodies",
+          "arabic": "إِنَّ اللَّهَ لاَ يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ",
+          "translation": "Allah does not look at your bodies or your wealth, but He looks at your hearts and your deeds.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2564"
+        },
+        {
+          "index": 9,
+          "title": "The believer to the believer",
+          "arabic": "مَثَلُ الْمُؤْمِنِينَ فِي تَوَادِّهِمْ وَتَرَاحُمِهِمْ",
+          "translation": "The believers in their mutual kindness, compassion, and sympathy are like one body—when one limb suffers, the whole body responds with sleeplessness and fever.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih Muslim 2586"
+        },
+        {
+          "index": 10,
+          "title": "Whoever removes a worldly hardship",
+          "arabic": "مَنْ يَسَّرَ عَلَى مُعْسِرٍ",
+          "translation": "Whoever eases hardship for someone in this world, Allah will ease hardship for him on the Day of Resurrection.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2699"
+        },
+        {
+          "index": 11,
+          "title": "The five daily prayers",
+          "arabic": "مَنْ حَافَظَ عَلَيْهِنَّ كَانَ لَهُ عِنْدَ اللَّهِ عَهْدٌ",
+          "translation": "Whoever performs ablution well and prays the five daily prayers, Allah has a covenant with him to enter Paradise.",
+          "narrator": "Uthman ibn Affan (RA)",
+          "source": "Sahih Muslim 228"
+        },
+        {
+          "index": 12,
+          "title": "The best of you are best to their families",
+          "arabic": "خَيْرُكُمْ خَيْرُكُمْ لِأَهْلِهِ",
+          "translation": "The best of you are those who are best to their families, and I am the best of you to my family.",
+          "narrator": "Aisha (RA)",
+          "source": "Jami' at-Tirmidhi 3895; Sahih"
+        },
+        {
+          "index": 13,
+          "title": "Modesty brings nothing but good",
+          "arabic": "الْحَيَاءُ لاَ يَأْتِي إِلاَّ بِخَيْرٍ",
+          "translation": "Modesty brings nothing but good.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6117; Sahih Muslim 37"
+        },
+        {
+          "index": 14,
+          "title": "Allah is kind and loves kindness",
+          "arabic": "إِنَّ اللَّهَ رَفِيقٌ يُحِبُّ الرِّفْقَ",
+          "translation": "Allah is Kind and loves kindness in all matters.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "index": 15,
+          "title": "Paradise lies at the feet of mothers",
+          "arabic": "الْجَنَّةُ تَحْتَ أَقْدَامِ الأُمَّهَاتِ",
+          "translation": "Paradise lies at the feet of mothers.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sunan an-Nasa'i 3104; authenticated"
+        }
+      ]
+    },
+    {
+      "id": "riyad_us_saliheen",
+      "itemCount": 12,
+      "items": [
+        {
+          "index": 1,
+          "title": "Allah is kind and loves kindness",
+          "arabic": "إِنَّ اللَّهَ رَفِيقٌ يُحِبُّ الرِّفْقَ",
+          "translation": "Allah is Kind and loves kindness in all matters.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "index": 2,
+          "title": "Gentleness beautifies",
+          "arabic": "إِنَّ الرِّفْقَ لَا يَكُونُ فِي شَيْءٍ إِلَّا زَانَهُ",
+          "translation": "Gentleness is not in anything except that it beautifies it.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2594"
+        },
+        {
+          "index": 3,
+          "title": "The strong believer",
+          "arabic": "الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ",
+          "translation": "The strong believer is better and more beloved to Allah than the weak believer, though there is good in both.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2664"
+        },
+        {
+          "index": 4,
+          "title": "Do not get angry",
+          "arabic": "لاَ تَغْضَبْ",
+          "translation": "Do not get angry.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6116"
+        },
+        {
+          "index": 5,
+          "title": "The most beloved deeds to Allah",
+          "arabic": "أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ",
+          "translation": "The most beloved deeds to Allah are those done consistently, even if they are small.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih al-Bukhari 6464; Sahih Muslim 782"
+        },
+        {
+          "index": 6,
+          "title": "Whoever does not show mercy",
+          "arabic": "مَنْ لاَ يَرْحَمْ لاَ يُرْحَمْ",
+          "translation": "Whoever does not show mercy will not be shown mercy.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 5997; Sahih Muslim 2318"
+        },
+        {
+          "index": 7,
+          "title": "The best of you in character",
+          "arabic": "إِنَّ مِنْ خِيَارِكُمْ أَحْسَنَكُمْ أَخْلَاقًا",
+          "translation": "The best among you are those who have the best character.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 3559"
+        },
+        {
+          "index": 8,
+          "title": "Exchange gifts and you will love one another",
+          "arabic": "تَهَادَوْا تَحَابُّوا",
+          "translation": "Exchange gifts and you will love one another.",
+          "narrator": "Aisha (RA)",
+          "source": "Al-Adab al-Mufrad; authenticated"
+        },
+        {
+          "index": 9,
+          "title": "The tongue can lead to Hellfire",
+          "arabic": "أَكْثَرُ مَا يُدْخِلُ النَّاسَ الْجَنَّةَ تَقْوَى اللَّهِ وَحُسْنُ الْخُلُقِ",
+          "translation": "The things that most lead people to Paradise are consciousness of Allah and good character.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Jami' at-Tirmidhi 2004"
+        },
+        {
+          "index": 10,
+          "title": "Visit the sick",
+          "arabic": "مَا مِنْ مُسْلِمٍ يَعُودُ مُسْلِمًا",
+          "translation": "No Muslim visits a sick Muslim in the morning except that seventy thousand angels send blessings upon him until evening.",
+          "narrator": "Ali ibn Abi Talib (RA)",
+          "source": "Sahih Muslim 2569"
+        },
+        {
+          "index": 11,
+          "title": "The rights of neighbors",
+          "arabic": "مَا زَالَ جِبْرِيلُ يُوصِينِي بِالْجَارِ",
+          "translation": "Jibril kept advising me about the neighbor until I thought he would make him an heir.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih al-Bukhari 6014; Sahih Muslim 2624"
+        },
+        {
+          "index": 12,
+          "title": "Backbiting is worse than adultery",
+          "arabic": "أَتَدْرُونَ مَا الْغِيبَةُ",
+          "translation": "Do you know what backbiting is? It is mentioning your brother in a manner that he dislikes.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sunan Abu Dawud 4877; authenticated"
+        }
+      ]
+    },
+    {
+      "id": "nawawi_40",
+      "itemCount": 40,
+      "items": [
+        {
+          "index": 1,
+          "title": "Actions are by intentions",
+          "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+          "translation": "Actions are judged by intentions, and every person will have only what they intended.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadith Nawawi, #1"
+        },
+        {
+          "index": 2,
+          "title": "The five pillars",
+          "arabic": "بُنِيَ الإِسْلَامُ عَلَى خَمْسٍ",
+          "translation": "Islam is built upon five: testimony of faith, prayer, zakat, fasting Ramadan, and Hajj.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadith Nawawi, #2"
+        },
+        {
+          "index": 3,
+          "title": "The pillars of faith",
+          "arabic": "أَخْبَرَنِي جِبْرِيلُ",
+          "translation": "Faith is to believe in Allah, His angels, His books, His messengers, the Last Day, and divine decree—its good and its bad.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadith Nawawi, #3"
+        },
+        {
+          "index": 4,
+          "title": "Creation in the womb",
+          "arabic": "إِنَّ أَحَدَكُمْ يُجْمَعُ خَلْقُهُ",
+          "translation": "Each of you is gathered in the womb for forty days as a drop, then a clot, then a lump of flesh. Then an angel breathes the soul and writes four matters.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "40 Hadith Nawawi, #4"
+        },
+        {
+          "index": 5,
+          "title": "Rejecting evil",
+          "arabic": "مَنْ رَأَى مِنْكُمْ مُنْكَرًا",
+          "translation": "Whoever sees an evil, let him change it with his hand. If he cannot, then with his tongue. If he cannot, then with his heart—and that is the weakest of faith.",
+          "narrator": "Abu Sa'id al-Khudri (RA)",
+          "source": "40 Hadith Nawawi, #5"
+        },
+        {
+          "index": 6,
+          "title": "Halal, haram, and doubtful matters",
+          "arabic": "إِنَّ الْحَلَالَ بَيِّنٌ",
+          "translation": "The lawful is clear and the unlawful is clear. Between them are doubtful matters that many people do not know.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #6"
+        },
+        {
+          "index": 7,
+          "title": "Religion is sincere advice",
+          "arabic": "الدِّينُ النَّصِيحَةُ",
+          "translation": "Religion is sincere advice. We said: To whom? He said: To Allah, His Book, His Messenger, the leaders of the Muslims, and their common people.",
+          "narrator": "Tamim ad-Dari (RA)",
+          "source": "40 Hadith Nawawi, #7"
+        },
+        {
+          "index": 8,
+          "title": "Forbidden blood, wealth, and honor",
+          "arabic": "إِنَّ اللَّهَ حَرَّمَ عَلَيْكُمْ",
+          "translation": "Allah has forbidden you blood, unlawful wealth, and acting dishonorably toward your mothers.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #8"
+        },
+        {
+          "index": 9,
+          "title": "Avoid what you are ordered to avoid",
+          "arabic": "مَا نَهَيْتُكُمْ عَنْهُ فَاجْتَنِبُوهُ",
+          "translation": "What I have forbidden for you, avoid. What I have ordered you to do, do as much of it as you can.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #9"
+        },
+        {
+          "index": 10,
+          "title": "Allah is pure and accepts only what is pure",
+          "arabic": "إِنَّ اللَّهَ طَيِّبٌ",
+          "translation": "Allah is Pure and accepts only what is pure. He has commanded the believers what He commanded the messengers.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #10"
+        },
+        {
+          "index": 11,
+          "title": "Leave what does not concern you",
+          "arabic": "مِنْ حُسْنِ إِسْلاَمِ الْمَرْءِ",
+          "translation": "Part of a person's excellence in Islam is leaving what does not concern him.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #11"
+        },
+        {
+          "index": 12,
+          "title": "The excellence of gathering for Quran and dhikr",
+          "arabic": "مَا اجْتَمَعَ قَوْمٌ",
+          "translation": "No people gather in one of the houses of Allah reciting the Book of Allah and studying it together except that tranquility descends upon them.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #12"
+        },
+        {
+          "index": 13,
+          "title": "Love for your brother what you love for yourself",
+          "arabic": "لاَ يُؤْمِنُ أَحَدُكُمْ",
+          "translation": "None of you truly believes until he loves for his brother what he loves for himself.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "40 Hadith Nawawi, #13"
+        },
+        {
+          "index": 14,
+          "title": "The sanctity of a Muslim",
+          "arabic": "لاَ تَحَقَّرَنَّ صَغِيرَةً",
+          "translation": "Do not belittle any good deed, even meeting your brother with a cheerful face.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #14"
+        },
+        {
+          "index": 15,
+          "title": "Speak good or remain silent",
+          "arabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ",
+          "translation": "Whoever believes in Allah and the Last Day should speak good or remain silent.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #15"
+        },
+        {
+          "index": 16,
+          "title": "Do not become angry",
+          "arabic": "لاَ تَغْضَبْ",
+          "translation": "A man asked the Prophet for advice and he said: Do not become angry. The man repeated his request several times and he replied: Do not become angry.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #16"
+        },
+        {
+          "index": 17,
+          "title": "Allah has prescribed excellence in everything",
+          "arabic": "إِنَّ اللَّهَ كَتَبَ الإِحْسَانَ",
+          "translation": "Allah has prescribed excellence (ihsan) in all things. So when you kill, kill well; and when you slaughter, slaughter well.",
+          "narrator": "Shaddad ibn Aws (RA)",
+          "source": "40 Hadith Nawawi, #17"
+        },
+        {
+          "index": 18,
+          "title": "Fear Allah wherever you are",
+          "arabic": "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ",
+          "translation": "Fear Allah wherever you are, follow a bad deed with a good deed to erase it, and treat people with good character.",
+          "narrator": "Abu Dharr and Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #18"
+        },
+        {
+          "index": 19,
+          "title": "Hold fast to the Sunnah",
+          "arabic": "يَا أَيُّهَا النَّاسُ",
+          "translation": "I urge you to adhere to my Sunnah and the way of the rightly guided caliphs. Beware of newly invented matters, for every innovation is misguidance.",
+          "narrator": "Irbad ibn Sariyah (RA)",
+          "source": "40 Hadith Nawawi, #19"
+        },
+        {
+          "index": 20,
+          "title": "Every person's joints owe charity each day",
+          "arabic": "عَلَى كُلِّ سُلاَمَى",
+          "translation": "Every joint of a person must perform charity each day: justice between two people is charity; helping a person with his animal is charity.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #20"
+        },
+        {
+          "index": 21,
+          "title": "Ask Allah for forgiveness and well-being",
+          "arabic": "سَلُوا اللَّهَ الْعَafِيَةَ",
+          "translation": "Ask Allah for forgiveness and well-being, for no one is given anything after certainty better than well-being.",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #21"
+        },
+        {
+          "index": 22,
+          "title": "The signs of a hypocrite",
+          "arabic": "آيَةُ الْمُنَافِقِ",
+          "translation": "The signs of a hypocrite are three: when he speaks he lies, when he promises he breaks it, and when he is entrusted he betrays.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #22"
+        },
+        {
+          "index": 23,
+          "title": "The pure heart",
+          "arabic": "أَلاَ وَإِنَّ فِي الْجَسَدِ مُضْغَةً",
+          "translation": "There is a piece of flesh in the body—if it is sound, the whole body is sound; if it is corrupt, the whole body is corrupt. It is the heart.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #23"
+        },
+        {
+          "index": 24,
+          "title": "Rights of Allah and rights of people",
+          "arabic": "إِنَّ حَقَّ اللَّهِ",
+          "translation": "The right of Allah over His servants is that they worship Him and associate nothing with Him. The right of servants over Allah is that He not punish those who do not associate partners with Him.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #24"
+        },
+        {
+          "index": 25,
+          "title": "The lawful and the unlawful are clear",
+          "arabic": "الْحَلاَلُ بَيِّنٌ",
+          "translation": "The lawful is clear and the unlawful is clear. Between them are doubtful matters that many do not know.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #25"
+        },
+        {
+          "index": 26,
+          "title": "The virtue of good character",
+          "arabic": "إِنَّ مِنْ أَحَبِّكُمْ إِلَيَّ",
+          "translation": "The most beloved of you to me and the nearest to me on the Day of Resurrection are those with the best character.",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "source": "40 Hadith Nawawi, #26"
+        },
+        {
+          "index": 27,
+          "title": "Allah's right over His servants",
+          "arabic": "يَا عِبَادِي",
+          "translation": "O My servants, I have forbidden injustice for Myself and made it forbidden among you, so do not wrong one another.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "40 Hadith Nawawi, #27"
+        },
+        {
+          "index": 28,
+          "title": "The world is the prison of the believer",
+          "arabic": "الدُّنْيَا سِجْنُ الْمُؤْمِنِ",
+          "translation": "The world is a prison for the believer and a paradise for the disbeliever.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #28"
+        },
+        {
+          "index": 29,
+          "title": "Allah's shade on the Day of Judgment",
+          "arabic": "سَبْعَةٌ يُظِلُّهُمُ اللَّهُ",
+          "translation": "Seven will be shaded by Allah on the Day when there is no shade but His: a just ruler, a youth who grew up worshipping Allah, and others.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #29"
+        },
+        {
+          "index": 30,
+          "title": "The condition of the heart",
+          "arabic": "أَلاَ إِنَّ فِي الْجَسَدِ مُضْغَةً",
+          "translation": "If the heart is sound, the whole body is sound; if the heart is corrupt, the whole body is corrupt.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #30"
+        },
+        {
+          "index": 31,
+          "title": "Avoid doubtful matters",
+          "arabic": "دَعْ مَا يَرِيبُكَ",
+          "translation": "Leave what makes you doubt for what does not make you doubt.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "40 Hadith Nawawi, #31"
+        },
+        {
+          "index": 32,
+          "title": "No harm and no reciprocating harm",
+          "arabic": "لاَ ضَرَرَ وَلاَ ضِرَارَ",
+          "translation": "There should be neither harm nor reciprocating harm.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #32"
+        },
+        {
+          "index": 33,
+          "title": "The world is cursed except dhikr and knowledge",
+          "arabic": "الدُّنْيَا مَلْعُونَةٌ",
+          "translation": "The world is cursed and what is in it is cursed, except the remembrance of Allah, what helps it, the scholar, and the student.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #33"
+        },
+        {
+          "index": 34,
+          "title": "Allah is good and accepts only good",
+          "arabic": "إِنَّ اللَّهَ طَيِّبٌ",
+          "translation": "Allah is Good and accepts only what is good.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #34"
+        },
+        {
+          "index": 35,
+          "title": "Allah loves those who repent",
+          "arabic": "إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ",
+          "translation": "Allah loves those who repent and loves those who purify themselves.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #35"
+        },
+        {
+          "index": 36,
+          "title": "Be in the world as a stranger",
+          "arabic": "كُنْ فِي الدُّنْيَا",
+          "translation": "Be in this world as if you were a stranger or a traveler.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadith Nawawi, #36"
+        },
+        {
+          "index": 37,
+          "title": "The rights of Allah upon His servants",
+          "arabic": "إِنَّ اللَّهَ حَقَّ",
+          "translation": "Allah's right upon His servants is that they worship Him alone and associate nothing with Him.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #37"
+        },
+        {
+          "index": 38,
+          "title": "Call upon Allah with certainty",
+          "arabic": "ادْعُوا اللَّهَ وَأَنْتُمْ مُوقِنُونَ",
+          "translation": "Call upon Allah while being certain of the response, and know that Allah does not answer a supplication from a heedless, distracted heart.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #38"
+        },
+        {
+          "index": 39,
+          "title": "Allah has pardoned my ummah for mistakes",
+          "arabic": "إِنَّ اللَّهَ تَجَاوَزَ",
+          "translation": "Allah has pardoned my ummah for their mistakes, forgetfulness, and what they are forced to do.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #39"
+        },
+        {
+          "index": 40,
+          "title": "Be mindful of Allah and He will protect you",
+          "arabic": "احْفَظِ اللَّهَ يَحْفَظْكَ",
+          "translation": "Be mindful of Allah and He will protect you. Be mindful of Allah and you will find Him before you.",
+          "narrator": "Abu Abbas Abdullah (RA)",
+          "source": "40 Hadith Nawawi, #40"
+        }
+      ]
+    },
+    {
+      "id": "hisnul_muslim",
+      "itemCount": 12,
+      "items": [
+        {
+          "index": 1,
+          "title": "Before sleeping",
+          "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+          "translation": "In Your name, O Allah, I die and I live.",
+          "narrator": "Al-Bara' ibn Azib (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 6324"
+        },
+        {
+          "index": 2,
+          "title": "Upon waking",
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا",
+          "translation": "All praise is for Allah who gave us life after having taken it from us, and to Him is the resurrection.",
+          "narrator": "Hudhayfah ibn al-Yaman (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 6312"
+        },
+        {
+          "index": 3,
+          "title": "Entering the home",
+          "arabic": "بِسْمِ اللَّهِ وَلَجْنَا",
+          "translation": "In the name of Allah we enter, in the name of Allah we leave, and upon our Lord we rely.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5096"
+        },
+        {
+          "index": 4,
+          "title": "Leaving the home",
+          "arabic": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ",
+          "translation": "In the name of Allah, I place my trust in Allah.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5095"
+        },
+        {
+          "index": 5,
+          "title": "Before eating",
+          "arabic": "بِسْمِ اللَّهِ",
+          "translation": "In the name of Allah.",
+          "narrator": "Umar ibn Abi Salama (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 5376"
+        },
+        {
+          "index": 6,
+          "title": "After eating",
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي",
+          "translation": "All praise is for Allah who fed me this and provided it for me without any power or strength from me.",
+          "narrator": "Muadh ibn Anas (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 4023"
+        },
+        {
+          "index": 7,
+          "title": "Entering the masjid",
+          "arabic": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+          "translation": "O Allah, open for me the doors of Your mercy.",
+          "narrator": "Abu Usayd as-Sa'idi (RA)",
+          "source": "Hisnul Muslim; Sahih Muslim 713"
+        },
+        {
+          "index": 8,
+          "title": "Leaving the masjid",
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+          "translation": "O Allah, I ask You from Your bounty.",
+          "narrator": "Abu Humaid or Abu Usayd (RA)",
+          "source": "Hisnul Muslim; Sahih Muslim 713"
+        },
+        {
+          "index": 9,
+          "title": "When distressed",
+          "arabic": "لاَ إِلَهَ إِلاَّ اللَّهُ الْعَظِيمُ الْحَلِيمُ",
+          "translation": "There is no god but Allah, the Magnificent, the Forbearing. There is no god but Allah, Lord of the magnificent Throne.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 6345"
+        },
+        {
+          "index": 10,
+          "title": "For forgiveness",
+          "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ",
+          "translation": "My Lord, forgive me and accept my repentance, for You are the Ever-Relenting, the Most Merciful.",
+          "narrator": "Al-Agharr al-Muzani (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 1517"
+        },
+        {
+          "index": 11,
+          "title": "When it rains",
+          "arabic": "اللَّهُمَّ صَيِّبًا نَافِعًا",
+          "translation": "O Allah, let it be a beneficial downpour.",
+          "narrator": "Aisha (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 1032"
+        },
+        {
+          "index": 12,
+          "title": "When hearing thunder",
+          "arabic": "سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ",
+          "translation": "Glory be to Him whom the thunder glorifies with His praise, and the angels out of fear of Him.",
+          "narrator": "Abdullah ibn az-Zubayr (RA)",
+          "source": "Hisnul Muslim; Al-Muwatta"
+        }
+      ]
+    }
+  ]
+}

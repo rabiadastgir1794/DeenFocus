@@ -178,6 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     switch (index) {
       case 0:
         return HomeTabScreen(
+          isTabActive: _currentIndex == 0,
           onOpenFocusTab: () {
             setState(() {
               _currentIndex = 1;
@@ -193,7 +194,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return const QuranTabScreen();
       case 4:
         return SettingsTabScreen(
-          isTabActive: _currentIndex == 4,
           onRequestEnableFocusMode: _openFocusAndRequestEnable,
         );
       default:

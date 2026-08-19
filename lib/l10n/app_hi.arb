@@ -202,7 +202,7 @@
   "homeQiblaSubtitleGuiding": "क़िबला की ओर आपका मार्गदर्शन करना",
   "homeToMakkah": "मक्का के लिए",
   "homeFindMasjid": "मेरे निकट मस्जिद खोजें",
-  "homeSearchNearbyMosques": "आस-पास की मस्जिदें खोजें।",
+  "homeSearchNearbyMosques": "OpenStreetMap से पास की मस्जिदें खोजें।",
   "homePrayerStreak": "प्रार्थना की धारियाँ",
   "homePrayersInARow": "{count} prayers in a row",
   "@homePrayersInARow": {
@@ -352,7 +352,7 @@
   "tabHome": "घर",
   "tabFocus": "केंद्र",
   "tabTasbih": "Tasbih",
-  "tabQuran": "कुरान",
+  "tabQuran": "सीखें",
   "quranLoadFailed": "कुरान डेटा लोड करने में विफल",
   "quranTabSubtitle": "पवित्र कुरान पढ़ें और अन्वेषण करें",
   "quranSearchHint": "सुरा खोजें...",
@@ -467,16 +467,26 @@
   "qiblaSouthShort": "एस",
   "qiblaEastShort": "ई",
   "qiblaWestShort": "डब्ल्यू",
-  "nearbyMosquesTitle": "आसपास की मस्जिदें",
+  "nearbyMosquesTitle": "पास की मस्जिदें मिलीं",
   "nearbyMosquesTryAgain": "पुनः प्रयास करें",
   "nearbyMosquesOpenGoogle": "Google मानचित्र में खोलें",
   "nearbyMosquesOpenApple": "एप्पल मैप्स में खोलें",
   "nearbyMosquesNoMosquesFoundWithin": "भीतर कोई मस्जिद नहीं मिली",
-  "nearbyMosquesSearchRadius": "खोज का दायरा: 5 किमी",
+  "nearbyMosquesSearchRadius": "खोज का दायरा: {radiusKm} किमी",
+  "@nearbyMosquesSearchRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesMapPreviewUnavailable": "मानचित्र पूर्वावलोकन अभी उपलब्ध नहीं है.",
   "nearbyMosquesWaitingForLocation": "आपके स्थान की प्रतीक्षा की जा रही है.",
   "nearbyMosquesAppearAfterLoad": "परिणाम लोड होते ही आसपास की मस्जिदें यहां दिखाई देंगी।",
-  "nearbyMosquesNoneWithinRadius": "5 किमी के अंदर कोई मस्जिद नहीं मिली",
+  "nearbyMosquesNoneWithinRadius": "{radiusKm} किमी के अंदर कोई मस्जिद नहीं मिली",
+  "@nearbyMosquesNoneWithinRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesLocationRequired": "आस-पास की मस्जिदों को खोजने के लिए स्थान की पहुंच आवश्यक है।",
   "nearbyMosquesPermissionOff": "स्थान अनुमति बंद है. आस-पास की मस्जिदों को देखने के लिए इसे सेटिंग्स में सक्षम करें।",
   "nearbyMosquesLocationUnavailable": "हम अभी आपका वर्तमान स्थान नहीं पढ़ सके।",
@@ -489,15 +499,32 @@
   "nearbyMosquesFormatError": "हम अभी मस्जिद की सूची नहीं पढ़ सके। कृपया बाद में पुन: प्रयास करें।",
   "nearbyMosquesPlatformError": "हम वह चरण पूरा नहीं कर सके. अपना कनेक्शन जांचें और पुनः प्रयास करें।",
   "nearbyMosquesSomethingWentWrong": "कुछ गलत हो गया। कृपया पुन: प्रयास करें।",
-  "nearbyMosquesEmptyHint": "इस स्थान के लिए OpenStreetMap पर 5 किमी के भीतर कुछ भी सूचीबद्ध नहीं है। बाद में पुनः प्रयास करें या मानचित्र को स्थानांतरित करें।",
-  "nearbyMosquesFoundWithin": "{count} मस्जिदें 5 किमी के भीतर पाई गईं",
-  "@nearbyMosquesFoundWithin": {
+  "nearbyMosquesEmptyHint": "इस स्थान के लिए OpenStreetMap पर {radiusKm} किमी के भीतर कुछ भी सूचीबद्ध नहीं है। बाद में पुनः प्रयास करें या क्षेत्र बढ़ाएँ।",
+  "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "radiusKm": { "type": "int" }
     }
   },
+  "nearbyMosquesFoundWithin": "{count} मस्जिदें {radiusKm} किमी के भीतर पाई गईं",
+  "@nearbyMosquesFoundWithin": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesCountNearby": "पास में {count} मस्जिदें",
+  "@nearbyMosquesCountNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nearbyMosquesResultsMeta": "{radiusKm} किमी के भीतर · दूरी के अनुसार क्रमबद्ध",
+  "@nearbyMosquesResultsMeta": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesDirections": "दिशा-निर्देश",
   "tasbihDeleteDhikrTitle": "धिक्कार हटाओ?",
   "tasbihDelete": "मिटाना",
   "focusAndroidBlockingNotReady": "Android ऐप ब्लॉकिंग अभी तैयार हो रही है। एक्सेसिबिलिटी चालू रखें और कनेक्ट होने तक थोड़ा इंतज़ार करें।",
@@ -1139,5 +1166,95 @@
   "nightlyWrapUpBothTitle": "अपना दिन पूरा करें",
   "nightlyWrapUpBothBody": "बाकी नमाज़ें मार्क करें और दिन खत्म होने से पहले चेकलिस्ट पूरी करें।",
   "cycleModeEndedNotificationTitle": "साइकिल मोड समाप्त हो गया",
-  "cycleModeEndedNotificationBody": "आपका साइकिल मोड अब बंद है। आप नमाज़ फिर से शुरू कर सकते हैं। अगर आप साइकिल मोड की तारीखें बदलना चाहते हैं, तो उन्हें संपादित करने के लिए यहाँ टैप करें।"
+  "cycleModeEndedNotificationBody": "आपका साइकिल मोड अब बंद है। आप नमाज़ फिर से शुरू कर सकते हैं। अगर आप साइकिल मोड की तारीखें बदलना चाहते हैं, तो उन्हें संपादित करने के लिए यहाँ टैप करें।",
+  "libraryHomeTitle": "इस्लामी पुस्तकालय",
+  "libraryHomeSubtitle": "हदीस, दुआएँ, ९९ नाम और अधिक सीखें",
+  "libraryHubTitle": "इस्लामी पुस्तकालय",
+  "libraryModuleQuran": "क़ुरान",
+  "libraryModuleQuranSub": "पढ़ें, सुनें और तजवीद का अभ्यास करें",
+  "libraryModuleHadith": "हदीस",
+  "libraryModuleHadithSub": "प्रामाणिक स्रोतों से संग्रह",
+  "libraryModuleDuas": "दुआएँ और अज़्कार",
+  "libraryModuleDuasSub": "सुबह, शाम और दैनिक याद",
+  "libraryModulePrayerMethods": "नमाज़ और इस्लामी तरीके",
+  "libraryModulePrayerMethodsSub": "वुज़ू, नमाज़, हज और अधिक",
+  "libraryModuleFiqh": "फ़िक़्ह और परंपराएँ",
+  "libraryModuleFiqhSub": "सुन्नी, शिया, मज़हब, अहले हदीस और अधिक",
+  "libraryModuleNames": "अल्लाह के ९९ नाम",
+  "libraryModuleNamesSub": "अस्मा उल-हुस्ना सीखें और सोचें",
+  "libraryModulePillarsIslam": "इस्लाम के स्तंभ",
+  "libraryModulePillarsIslamSub": "ईमान के पाँच व्यावहारिक आधार",
+  "libraryModulePillarsIman": "ईमान के स्तंभ",
+  "libraryModulePillarsImanSub": "आस्था के छह सिद्धांत",
+  "libraryModuleProphets": "पैग़ंबर मुहम्मद",
+  "libraryModuleProphetsSub": "उनका जीवन, संदेश और शाश्वत शिक्षाएँ",
+  "libraryModuleOccasions": "इस्लामी अवसर",
+  "libraryModuleOccasionsSub": "रमज़ान, ईद, हज और पवित्र दिन",
+  "libraryKeyLesson": "मुख्य शिक्षा",
+  "libraryCardProgress": "{current} / {total}",
+  "libraryPrevious": "पिछला",
+  "libraryNext": "अगला",
+  "libraryCopy": "कॉपी",
+  "libraryShare": "शेयर",
+  "libraryCopied": "क्लिपबोर्ड पर कॉपी किया गया",
+  "libraryShareCopiedHint": "कॉपी किया गया — शेयर करने के लिए पेस्ट करें",
+  "libraryBookmarkSaved": "बुकमार्क सहेजा गया",
+  "libraryBookmarkRemoved": "बुकमार्क हटाया गया",
+  "libraryTranslation": "अनुवाद",
+  "libraryTransliteration": "लिप्यंतरण",
+  "libraryMeaning": "अर्थ",
+  "libraryBookmark": "बुकमार्क",
+  "libraryBookmarksTitle": "सहेजे गए शिक्षण आइटम",
+  "libraryBookmarksSubtitle": "हदीस, दुआएँ, नाम, फ़िक़्ह और अधिक",
+  "libraryBookmarksEmpty": "अभी कोई सहेजा आइटम नहीं। किसी भी शिक्षण आइटम पर बुकमार्क टैप करके यहाँ सहेजें।",
+  "libraryMarkCompleted": "पूर्ण चिह्नित करें",
+  "librarySectionCompleted": "पूर्ण",
+  "libraryReflection": "चिंतन",
+  "libraryComingSoonTitle": "जल्द आ रहा है",
+  "libraryComingSoonBody": "यह मॉड्यूल तैयार हो रहा है। बाद के अपडेट में फिर देखें।",
+  "librarySearchHint": "खोजें…",
+  "librarySearchEmpty": "कोई परिणाम नहीं",
+  "libraryItemCount": "{count} आइटम",
+  "librarySearchResultCount": "{shown} / {total}",
+  "libraryContinueFrom": "जारी रखें · {number}",
+  "libraryInProgress": "प्रगति पर",
+  "libraryReference": "संदर्भ: {source}",
+  "libraryDuaCount": "{count} दुआएँ",
+  "libraryDuaCategoryMorning": "सुबह",
+  "libraryDuaCategoryEvening": "शाम",
+  "libraryDuaCategoryDailyLife": "दैनिक जीवन",
+  "libraryDuaCategorySleep": "नींद",
+  "libraryDuaCategoryFood": "भोजन",
+  "libraryDuaCategoryTravel": "यात्रा",
+  "libraryDuaCategoryIllness": "बीमारी",
+  "libraryDuaCategoryProtection": "सुरक्षा",
+  "libraryDuaCategoryForgiveness": "माफ़ी",
+  "libraryDuaCategoryParents": "माता-पिता",
+  "libraryHadithCount": "{count} हदीस",
+  "libraryHadithNarrator": "रावी:",
+  "libraryHadithSource": "स्रोत:",
+  "libraryHadithCollectionBukhari": "सहीह अल-बुख़ारी",
+  "libraryHadithCollectionMuslim": "सहीह मुस्लिम",
+  "libraryHadithCollectionRiyad": "रियाद उस-सालिहीन",
+  "libraryHadithCollectionNawawi": "४० हदीस नवावी",
+  "libraryHadithCollectionHisnul": "हिसनुल मुस्लिम",
+  "libraryGuideStepCount": "{count} चरण",
+  "libraryGuideStepLabel": "चरण {current} / {total}",
+  "libraryGuideWudu": "वुज़ू",
+  "libraryGuideSalah": "नमाज़",
+  "libraryGuideGhusl": "ग़ुस्ल",
+  "libraryGuideTayammum": "तयम्मुम",
+  "libraryGuideJanazah": "जनाज़ा नमाज़",
+  "libraryGuideUmrah": "उमराह",
+  "libraryGuideHajj": "हज",
+  "libraryGuideFasting": "रोज़ा",
+  "libraryGuideZakat": "ज़कात",
+  "libraryGuideTawbah": "तौबा",
+  "libraryOccasionImportance": "महत्व",
+  "libraryOccasionVirtues": "फ़ज़ीलतें",
+  "libraryOccasionRecommendedActs": "अनुशंसित अमल",
+  "libraryFiqhOverview": "सारांश",
+  "libraryFiqhKeyPoints": "मुख्य बिंदु",
+  "libraryFiqhDifferences": "मुख्य अंतर",
+  "libraryFiqhCommonGround": "साझा आधार"
 }

@@ -122,6 +122,7 @@ class AppDemoVideoManager extends ChangeNotifier {
       unawaited(() async {
         Player? player;
         try {
+          MediaKit.ensureInitialized();
           final enableHardwareAcceleration =
               defaultTargetPlatform != TargetPlatform.android;
           LoggerService.instance.info(

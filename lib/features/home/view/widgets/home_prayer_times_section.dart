@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/light_theme.dart' show kAppFontFamily;
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/home_prayer_times_helper.dart';
 import '../../model/home_models.dart';
@@ -16,38 +16,21 @@ import '../settings/settings_tab_screen.dart';
 import 'home_mark_prayer_sheet.dart';
 import 'home_prayer_settings_sheet.dart';
 
-class HomePrayerTimesSection extends StatefulWidget {
+class HomePrayerTimesSection extends StatelessWidget {
   const HomePrayerTimesSection({
     super.key,
     required this.prayerTimes,
     required this.backgroundColor,
+    this.isActive = true,
   });
 
   final HomePrayerTimesData? prayerTimes;
   final Color backgroundColor;
 
-  @override
-  State<HomePrayerTimesSection> createState() => _HomePrayerTimesSectionState();
-}
+  /// When false (e.g. another bottom tab visible), skip the 1 Hz countdown ticker.
+  final bool isActive;
 
-class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
-  Timer? _ticker;
-
-  @override
-  void initState() {
-    super.initState();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _ticker?.cancel();
-    super.dispose();
-  }
-
-  void _openLocationSettings() {
+  void _openLocationSettings(BuildContext context) {
     final profile = context.read<UserProfileService>();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -63,7 +46,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final prayerTimes = widget.prayerTimes;
+    final prayerTimes = this.prayerTimes;
     final profile = context.watch<UserProfileService>();
     final locationName = profile.locationName?.trim() ?? '';
     final hasLocation = locationName.isNotEmpty;
@@ -71,7 +54,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: widget.backgroundColor,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
@@ -97,7 +80,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                   l10n.homeTodaysPrayers,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: TextStyle(
+                    fontFamily: kAppFontFamily,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     height: 1.2,
@@ -107,7 +91,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               ),
               const SizedBox(width: 8),
               InkWell(
-                onTap: _openLocationSettings,
+                onTap: () => _openLocationSettings(context),
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
@@ -129,7 +113,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.end,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: TextStyle(
+                    fontFamily: kAppFontFamily,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             height: 1.2,
@@ -147,7 +132,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
           if (prayerTimes == null)
             Text(
               l10n.homePrayerTimesUnavailable,
-              style: GoogleFonts.plusJakartaSans(
+              style: TextStyle(
+                    fontFamily: kAppFontFamily,
                 fontSize: 14,
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -183,31 +169,10 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               },
             ),
           const SizedBox(height: 12),
-          if (_dynamicRemaining(prayerTimes) case final remaining?)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  l10n.homeNextPrayerIn,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    height: 1.2,
-                    fontWeight: FontWeight.w500,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  _formatRemaining(l10n, remaining),
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    height: 1.15,
-                    letterSpacing: 0.2,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ],
+          if (prayerTimes != null)
+            _NextPrayerCountdown(
+              prayerTimes: prayerTimes,
+              isActive: isActive,
             ),
           if (prayerTimes != null) ...[
             const SizedBox(height: 6),
@@ -216,7 +181,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
               child: Text(
                 l10n.homeTapPrayerToMark,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(
+                    fontFamily: kAppFontFamily,
                   fontSize: 11,
                   height: 1.3,
                   fontWeight: FontWeight.w500,
@@ -229,6 +195,90 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
       ),
     );
   }
+}
+
+/// Isolates the 1 Hz rebuild to the countdown row only.
+class _NextPrayerCountdown extends StatefulWidget {
+  const _NextPrayerCountdown({
+    required this.prayerTimes,
+    required this.isActive,
+  });
+
+  final HomePrayerTimesData prayerTimes;
+  final bool isActive;
+
+  @override
+  State<_NextPrayerCountdown> createState() => _NextPrayerCountdownState();
+}
+
+class _NextPrayerCountdownState extends State<_NextPrayerCountdown> {
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncTicker();
+  }
+
+  @override
+  void didUpdateWidget(covariant _NextPrayerCountdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isActive != widget.isActive) {
+      _syncTicker();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  void _syncTicker() {
+    _ticker?.cancel();
+    _ticker = null;
+    if (!widget.isActive) return;
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final remaining = _dynamicRemaining(widget.prayerTimes);
+    if (remaining == null) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          l10n.homeNextPrayerIn,
+          style: TextStyle(
+                    fontFamily: kAppFontFamily,
+            fontSize: 13,
+            height: 1.2,
+            fontWeight: FontWeight.w500,
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          _formatRemaining(l10n, remaining),
+          style: TextStyle(
+                    fontFamily: kAppFontFamily,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            height: 1.15,
+            letterSpacing: 0.2,
+            color: colorScheme.primary,
+          ),
+        ),
+      ],
+    );
+  }
 
   String _formatRemaining(AppLocalizations l10n, Duration value) {
     final hours = value.inHours;
@@ -237,8 +287,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
     return l10n.homeCountdownHms(hours, minutes, seconds);
   }
 
-  Duration? _dynamicRemaining(HomePrayerTimesData? prayerTimes) {
-    if (prayerTimes == null || prayerTimes.nextPrayer == null) return null;
+  Duration? _dynamicRemaining(HomePrayerTimesData prayerTimes) {
+    if (prayerTimes.nextPrayer == null) return null;
     final nextPrayerTime = prayerTimes.nextPrayerTime;
     if (nextPrayerTime != null) {
       final remaining = nextPrayerTime.difference(DateTime.now());
@@ -398,7 +448,8 @@ class HomePrayerTile extends StatelessWidget {
                         Text(
                           _labelForPrayer(l10n, slot.id),
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: TextStyle(
+                    fontFamily: kAppFontFamily,
                             fontSize: 10,
                             fontWeight: isCurrent
                                 ? FontWeight.w600
@@ -413,7 +464,8 @@ class HomePrayerTile extends StatelessWidget {
                         Text(
                           DateFormat.jm(l10n.localeName).format(slot.time),
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: TextStyle(
+                    fontFamily: kAppFontFamily,
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             height: 1.15,

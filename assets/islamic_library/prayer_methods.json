@@ -1,0 +1,310 @@
+{
+  "version": 1,
+  "guides": [
+    {
+      "id": "wudu",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Intention (niyyah)",
+          "description": "Make a sincere intention in your heart to perform wudu for the sake of Allah."
+        },
+        {
+          "index": 2,
+          "title": "Say Bismillah",
+          "description": "Begin by saying: Bismillah (In the name of Allah)."
+        },
+        {
+          "index": 3,
+          "title": "Wash hands & mouth",
+          "description": "Wash both hands three times, rinse the mouth three times, and sniff water into the nose and blow it out three times."
+        },
+        {
+          "index": 4,
+          "title": "Wash face & arms",
+          "description": "Wash the entire face three times, then the right arm to the elbow three times, then the left arm."
+        },
+        {
+          "index": 5,
+          "title": "Wipe head & wash feet",
+          "description": "Wipe the head once, wipe the ears, and wash the right foot then the left foot up to the ankles three times each."
+        }
+      ]
+    },
+    {
+      "id": "salah",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Preparation",
+          "description": "Ensure you have wudu, dress modestly, and face the Qibla on a clean prayer space."
+        },
+        {
+          "index": 2,
+          "title": "Takbir & standing",
+          "description": "Raise your hands and say Allahu Akbar to begin. Stand with humility and focus."
+        },
+        {
+          "index": 3,
+          "title": "Recite Al-Fatiha",
+          "description": "Recite Surah Al-Fatiha in every rak'ah, followed by a short surah or verses in the first two rak'ahs of Fard prayers where applicable."
+        },
+        {
+          "index": 4,
+          "title": "Ruku & Sujud",
+          "description": "Bow saying Subhana Rabbiyal Adheem, then prostrate saying Subhana Rabbiyal A'la with calmness and stillness."
+        },
+        {
+          "index": 5,
+          "title": "Tashahhud & Salam",
+          "description": "Sit for the final tashahhud, send salawat upon the Prophet ﷺ, then end by turning right and left with salam."
+        }
+      ]
+    },
+    {
+      "id": "ghusl",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Intention",
+          "description": "Intend in your heart to perform ghusl to remove major impurity for the sake of Allah."
+        },
+        {
+          "index": 2,
+          "title": "Wash hands & private area",
+          "description": "Wash both hands, then wash any impurity from the body."
+        },
+        {
+          "index": 3,
+          "title": "Perform wudu",
+          "description": "Complete wudu as you normally would before the final washing of the body."
+        },
+        {
+          "index": 4,
+          "title": "Pour water over the body",
+          "description": "Pour water over the head three times, ensuring it reaches the roots of the hair."
+        },
+        {
+          "index": 5,
+          "title": "Complete full-body wash",
+          "description": "Wash the entire body, beginning with the right side, making sure no dry spot remains."
+        }
+      ]
+    },
+    {
+      "id": "tayammum",
+      "itemCount": 4,
+      "items": [
+        {
+          "index": 1,
+          "title": "When permitted",
+          "description": "Tayammum is allowed when water is unavailable, harmful to use, or cannot be reached in time for prayer."
+        },
+        {
+          "index": 2,
+          "title": "Intention & strike the earth",
+          "description": "Make intention, then strike clean earth once with both palms."
+        },
+        {
+          "index": 3,
+          "title": "Wipe the face",
+          "description": "Wipe the entire face once with both hands."
+        },
+        {
+          "index": 4,
+          "title": "Wipe the arms",
+          "description": "Wipe the right arm up to the elbow with the left hand, then the left arm with the right hand."
+        }
+      ]
+    },
+    {
+      "id": "janazah",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Purpose",
+          "description": "The Janazah prayer is a communal obligation to seek mercy and forgiveness for the deceased Muslim."
+        },
+        {
+          "index": 2,
+          "title": "Stand in rows",
+          "description": "Stand facing the Qibla without ruku or sujud. The body is placed in front of the imam."
+        },
+        {
+          "index": 3,
+          "title": "Four takbirs",
+          "description": "Say Allahu Akbar four times. After the first, recite Al-Fatiha silently; after others, send salawat and make du'a for the deceased."
+        },
+        {
+          "index": 4,
+          "title": "Make du'a",
+          "description": "Ask Allah to forgive the deceased, grant them steadfastness, and replace their home with a better one in Paradise."
+        },
+        {
+          "index": 5,
+          "title": "Finish",
+          "description": "After the final takbir, give salam once to the right as in regular prayer."
+        }
+      ]
+    },
+    {
+      "id": "umrah",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Ihram",
+          "description": "Enter ihram at the miqat with intention for Umrah, avoiding the prohibitions of ihram."
+        },
+        {
+          "index": 2,
+          "title": "Tawaf",
+          "description": "Circumambulate the Ka'bah seven times, beginning and ending at the Black Stone if possible, with du'a and dhikr."
+        },
+        {
+          "index": 3,
+          "title": "Two rak'ahs",
+          "description": "Pray two rak'ahs behind Maqam Ibrahim if possible."
+        },
+        {
+          "index": 4,
+          "title": "Sa'i",
+          "description": "Walk seven times between Safa and Marwah, remembering the trust of Hajar (AS) in Allah."
+        },
+        {
+          "index": 5,
+          "title": "Shaving or trimming",
+          "description": "Men shave or trim the hair; women cut a fingertip-length from their hair to complete Umrah."
+        }
+      ]
+    },
+    {
+      "id": "hajj",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Days of Hajj",
+          "description": "Hajj occurs in Dhul Hijjah. Key rites include ihram, standing at Arafah, Muzdalifah, and stoning the Jamarat."
+        },
+        {
+          "index": 2,
+          "title": "Tawaf al-Ifadah",
+          "description": "Perform tawaf around the Ka'bah after the day of Arafah as a pillar of Hajj."
+        },
+        {
+          "index": 3,
+          "title": "Sa'i of Hajj",
+          "description": "Complete sa'i between Safa and Marwah if not already done in Umrah."
+        },
+        {
+          "index": 4,
+          "title": "Stay at Mina",
+          "description": "Spend nights at Mina and stone the Jamarat on the days of tashriq with patience and dhikr."
+        },
+        {
+          "index": 5,
+          "title": "Farewell Tawaf",
+          "description": "Before leaving Makkah, perform the farewell tawaf (Tawaf al-Wada') as the final rite."
+        }
+      ]
+    },
+    {
+      "id": "fasting",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Intention",
+          "description": "Intend to fast each day of Ramadan from before Fajr for the sake of Allah."
+        },
+        {
+          "index": 2,
+          "title": "Suhoor",
+          "description": "Eat a pre-dawn meal (suhoor)—there is blessing in it—even if it is small."
+        },
+        {
+          "index": 3,
+          "title": "Avoid invalidators",
+          "description": "Refrain from food, drink, and intimacy from Fajr until Maghrib. Guard the tongue and actions."
+        },
+        {
+          "index": 4,
+          "title": "Iftar with gratitude",
+          "description": "Break the fast at Maghrib with dates and water if available, saying the du'a of the fasting person."
+        },
+        {
+          "index": 5,
+          "title": "Night worship",
+          "description": "Increase Quran, du'a, and optional prayers in Ramadan, especially in the last ten nights."
+        }
+      ]
+    },
+    {
+      "id": "zakat",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Who must pay",
+          "description": "Zakat is due on qualifying wealth held for one lunar year when it reaches the nisab threshold."
+        },
+        {
+          "index": 2,
+          "title": "Rate",
+          "description": "The common rate on cash, gold, and silver is 2.5% of qualifying surplus wealth."
+        },
+        {
+          "index": 3,
+          "title": "Eligible recipients",
+          "description": "Give to the eight categories mentioned in the Quran, prioritizing local need where possible."
+        },
+        {
+          "index": 4,
+          "title": "Intention & timing",
+          "description": "Make intention that the payment is zakat. It may be paid anytime after it becomes due, many pay in Ramadan."
+        },
+        {
+          "index": 5,
+          "title": "Impact",
+          "description": "Zakat purifies wealth, reduces greed, and strengthens the community's most vulnerable members."
+        }
+      ]
+    },
+    {
+      "id": "tawbah",
+      "itemCount": 5,
+      "items": [
+        {
+          "index": 1,
+          "title": "Stop the sin",
+          "description": "Sincere repentance begins with immediately leaving the sin and resolving not to return to it."
+        },
+        {
+          "index": 2,
+          "title": "Regret",
+          "description": "Feel genuine remorse in the heart for disobeying Allah."
+        },
+        {
+          "index": 3,
+          "title": "Resolve not to repeat",
+          "description": "Make a firm intention to avoid the sin going forward, and change conditions that lead to it."
+        },
+        {
+          "index": 4,
+          "title": "Seek forgiveness",
+          "description": "Say Astaghfirullah, make du'a, and if the sin involved others' rights, restore those rights."
+        },
+        {
+          "index": 5,
+          "title": "Allah's mercy",
+          "description": "Allah loves those who repent. No sin is too great if repentance is sincere and before death."
+        }
+      ]
+    }
+  ]
+}

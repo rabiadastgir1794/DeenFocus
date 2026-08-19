@@ -10,6 +10,7 @@ class HomeActionContainer extends StatelessWidget {
     required this.iconBackground,
     required this.onTap,
     this.showOuterDecoration = true,
+    this.leading,
     this.trailing,
   });
 
@@ -20,6 +21,7 @@ class HomeActionContainer extends StatelessWidget {
   final Color iconBackground;
   final VoidCallback onTap;
   final bool showOuterDecoration;
+  final Widget? leading;
   final Widget? trailing;
 
   @override
@@ -51,15 +53,16 @@ class HomeActionContainer extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: iconBackground,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: colorScheme.primary),
-            ),
+            leading ??
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: iconBackground,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: colorScheme.primary),
+                ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -69,6 +72,8 @@ class HomeActionContainer extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),

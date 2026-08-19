@@ -24,6 +24,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
@@ -36,16 +43,21 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Release signing requires keystore properties in local.properties. Guard so that
+    // debug builds (and CI/collaborators without a release keystore) don't crash at
+    // Gradle configuration time — this ran unconditionally before and broke every
+    // Gradle invocation, including `assembleDebug`, on a fresh checkout.
+    val hasReleaseSigning = keystoreProperties.containsKey("storeFile")
     signingConfigs {
         // Only configure release signing when keystore props are present in
         // local.properties. Debug builds (and CI without a keystore) must not
         // fail just because release credentials are absent.
-        val storeFilePath = keystoreProperties["storeFile"] as String?
-        if (storeFilePath != null) {
+        if (hasReleaseSigning) {
             create("release") {
-                storeFile = file(storeFilePath)
+                storeFile = file(keystoreProperties["storeFile"] as String)
                 storePassword = keystoreProperties["storePassword"] as String
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
@@ -55,7 +67,9 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfigs.findByName("release")?.let { signingConfig = it }
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = false
             isShrinkResources = false
         }
@@ -65,6 +79,14 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    // Tajweed (ADR-006/007): on-device ASR + pronunciation-head inference.
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.19.2")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.test:core:1.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
 }
 
 flutter {

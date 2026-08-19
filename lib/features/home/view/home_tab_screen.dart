@@ -42,9 +42,17 @@ import 'widgets/home_qibla_screen.dart';
 import 'widgets/home_verse_marquee.dart';
 
 class HomeTabScreen extends StatelessWidget {
-  const HomeTabScreen({super.key, required this.onOpenFocusTab});
+  const HomeTabScreen({
+    super.key,
+    required this.onOpenFocusTab,
+    this.isTabActive = true,
+  });
 
   final VoidCallback onOpenFocusTab;
+
+  /// False when another bottom-nav tab is selected (Home stays mounted in
+  /// [IndexedStack]). Used to pause non-critical timers.
+  final bool isTabActive;
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +60,22 @@ class HomeTabScreen extends StatelessWidget {
       create: (context) => HomeTabViewModel(
         prayerSettings: context.read<PrayerSettingsService>(),
       )..initialize(),
-      child: _HomeTabView(onOpenFocusTab: onOpenFocusTab),
+      child: _HomeTabView(
+        onOpenFocusTab: onOpenFocusTab,
+        isTabActive: isTabActive,
+      ),
     );
   }
 }
 
 class _HomeTabView extends StatefulWidget {
-  const _HomeTabView({required this.onOpenFocusTab});
+  const _HomeTabView({
+    required this.onOpenFocusTab,
+    required this.isTabActive,
+  });
 
   final VoidCallback onOpenFocusTab;
+  final bool isTabActive;
 
   @override
   State<_HomeTabView> createState() => _HomeTabViewState();
@@ -100,7 +115,17 @@ class _HomeTabViewState extends State<_HomeTabView>
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_consumePendingCycleModeOpenSettings());
+      if (!mounted) return;
+      context.read<HomeTabViewModel>().setTabActive(widget.isTabActive);
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeTabView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isTabActive != widget.isTabActive) {
+      context.read<HomeTabViewModel>().setTabActive(widget.isTabActive);
+    }
   }
 
   void _onCycleModeOpenSettingsRequested() {
@@ -506,6 +531,7 @@ class _HomeTabViewState extends State<_HomeTabView>
             HomePrayerTimesSection(
               prayerTimes: vm.prayerTimes,
               backgroundColor: softCardColor,
+              isActive: widget.isTabActive,
             ),
             const SizedBox(height: 12),
             _FocusModeCard(onTap: widget.onOpenFocusTab),

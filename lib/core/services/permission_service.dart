@@ -42,6 +42,16 @@ abstract class PermissionService {
     return Permission.notification.status;
   }
 
+  static Future<bool> requestMicrophone() async {
+    final status = await Permission.microphone.request();
+    return status.isGranted;
+  }
+
+  static Future<bool> checkMicrophone() async {
+    final status = await Permission.microphone.status;
+    return status.isGranted;
+  }
+
   static Future<bool> openAppSettingsAsync() async {
     return await openAppSettings();
   }

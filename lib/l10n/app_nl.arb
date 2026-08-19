@@ -202,7 +202,7 @@
   "homeQiblaSubtitleGuiding": "Ik begeleid je naar de Qibla",
   "homeToMakkah": "naar Mekka",
   "homeFindMasjid": "Vind moskee bij mij in de buurt",
-  "homeSearchNearbyMosques": "Zoek nabijgelegen moskeeën.",
+  "homeSearchNearbyMosques": "Vind moskeeën in de buurt via OpenStreetMap.",
   "homePrayerStreak": "Gebedsreeksen",
   "homePrayersInARow": "{count} prayers in a row",
   "@homePrayersInARow": {
@@ -352,7 +352,7 @@
   "tabHome": "Thuis",
   "tabFocus": "Focus",
   "tabTasbih": "Tasbih",
-  "tabQuran": "Koran",
+  "tabQuran": "Leren",
   "quranLoadFailed": "Kan Korangegevens niet laden",
   "quranTabSubtitle": "Lees en verken de Heilige Koran",
   "quranSearchHint": "Zoek soera...",
@@ -467,16 +467,26 @@
   "qiblaSouthShort": "S",
   "qiblaEastShort": "E",
   "qiblaWestShort": "W",
-  "nearbyMosquesTitle": "Nabijgelegen moskeeën",
+  "nearbyMosquesTitle": "Moskeeën in de buurt gevonden",
   "nearbyMosquesTryAgain": "Probeer het opnieuw",
   "nearbyMosquesOpenGoogle": "Openen in Google Maps",
   "nearbyMosquesOpenApple": "Openen in Apple Maps",
   "nearbyMosquesNoMosquesFoundWithin": "Geen moskeeën gevonden binnen",
-  "nearbyMosquesSearchRadius": "Zoekradius: 5 km",
+  "nearbyMosquesSearchRadius": "Zoekradius: {radiusKm} km",
+  "@nearbyMosquesSearchRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesMapPreviewUnavailable": "Kaartvoorbeeld momenteel niet beschikbaar.",
   "nearbyMosquesWaitingForLocation": "Wachten op uw locatie.",
   "nearbyMosquesAppearAfterLoad": "Moskeeën in de buurt verschijnen hier zodra de resultaten zijn geladen.",
-  "nearbyMosquesNoneWithinRadius": "Geen moskeeën gevonden binnen 5 km",
+  "nearbyMosquesNoneWithinRadius": "Geen moskeeën gevonden binnen {radiusKm} km",
+  "@nearbyMosquesNoneWithinRadius": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
   "nearbyMosquesLocationRequired": "Locatietoegang is vereist om nabijgelegen moskeeën te vinden.",
   "nearbyMosquesPermissionOff": "Locatietoestemming is uitgeschakeld. Schakel het in de instellingen in om nabijgelegen moskeeën te zien.",
   "nearbyMosquesLocationUnavailable": "We kunnen uw huidige locatie momenteel niet lezen.",
@@ -489,15 +499,32 @@
   "nearbyMosquesFormatError": "We konden de moskeelijst momenteel niet lezen. Probeer het later opnieuw.",
   "nearbyMosquesPlatformError": "Die stap konden we niet voltooien. Controleer uw verbinding en probeer het opnieuw.",
   "nearbyMosquesSomethingWentWrong": "Er is iets misgegaan. Probeer het opnieuw.",
-  "nearbyMosquesEmptyHint": "Niets vermeld binnen een straal van 5 km op OpenStreetMap voor deze plek. Probeer het later opnieuw of verplaats de kaart.",
-  "nearbyMosquesFoundWithin": "{count} moskeeën gevonden binnen een straal van 5 km",
-  "@nearbyMosquesFoundWithin": {
+  "nearbyMosquesEmptyHint": "Niets vermeld binnen een straal van {radiusKm} km op OpenStreetMap voor deze plek. Probeer later opnieuw of vergroot het gebied.",
+  "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "radiusKm": { "type": "int" }
     }
   },
+  "nearbyMosquesFoundWithin": "{count} moskeeën gevonden binnen een straal van {radiusKm} km",
+  "@nearbyMosquesFoundWithin": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesCountNearby": "{count} moskeeën in de buurt",
+  "@nearbyMosquesCountNearby": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nearbyMosquesResultsMeta": "Binnen {radiusKm} km · Gesorteerd op afstand",
+  "@nearbyMosquesResultsMeta": {
+    "placeholders": {
+      "radiusKm": { "type": "int" }
+    }
+  },
+  "nearbyMosquesDirections": "Route",
   "tasbihDeleteDhikrTitle": "Dikr verwijderen?",
   "tasbihDelete": "Verwijderen",
   "focusAndroidBlockingNotReady": "Android-appblokkering is nog niet klaar. Houd toegankelijkheid aan en wacht even op de verbinding.",
@@ -1139,5 +1166,95 @@
   "nightlyWrapUpBothTitle": "Rond je dag af",
   "nightlyWrapUpBothBody": "Markeer openstaande gebeden en voltooi je checklist voor het einde van de dag.",
   "cycleModeEndedNotificationTitle": "Cyclusmodus is beëindigd",
-  "cycleModeEndedNotificationBody": "Je cyclusmodus staat nu uit. Je kunt weer bidden. Als je de data van de cyclusmodus wilt wijzigen, tik hier om ze te bewerken."
+  "cycleModeEndedNotificationBody": "Je cyclusmodus staat nu uit. Je kunt weer bidden. Als je de data van de cyclusmodus wilt wijzigen, tik hier om ze te bewerken.",
+  "libraryHomeTitle": "Islamitische bibliotheek",
+  "libraryHomeSubtitle": "Leer hadith, dua’s, de 99 Namen en meer",
+  "libraryHubTitle": "Islamitische bibliotheek",
+  "libraryModuleQuran": "Koran",
+  "libraryModuleQuranSub": "Lees, luister en oefen tajweed",
+  "libraryModuleHadith": "Hadith",
+  "libraryModuleHadithSub": "Verzamelingen uit authentieke bronnen",
+  "libraryModuleDuas": "Dua’s & adhkar",
+  "libraryModuleDuasSub": "Ochtend-, avond- en dagelijkse herinnering",
+  "libraryModulePrayerMethods": "Gebed & islamitische methoden",
+  "libraryModulePrayerMethodsSub": "Wudu, salah, hadj en meer",
+  "libraryModuleFiqh": "Fiqh & tradities",
+  "libraryModuleFiqhSub": "Soennieten, sjiieten, madhhabs, Ahl-e Hadith en meer",
+  "libraryModuleNames": "99 Namen van Allah",
+  "libraryModuleNamesSub": "Leer en reflecteer op Asma ul-Husna",
+  "libraryModulePillarsIslam": "Zuilen van de islam",
+  "libraryModulePillarsIslamSub": "De vijf fundamenten van geloof in actie",
+  "libraryModulePillarsIman": "Zuilen van het geloof",
+  "libraryModulePillarsImanSub": "De zes geloofsartikelen",
+  "libraryModuleProphets": "Profeet Mohammed",
+  "libraryModuleProphetsSub": "Zijn leven, missie en tijdloze lessen",
+  "libraryModuleOccasions": "Islamitische gelegenheden",
+  "libraryModuleOccasionsSub": "Ramadan, Eid, hadj en heilige dagen",
+  "libraryKeyLesson": "Belangrijke les",
+  "libraryCardProgress": "{current} van {total}",
+  "libraryPrevious": "Vorige",
+  "libraryNext": "Volgende",
+  "libraryCopy": "Kopiëren",
+  "libraryShare": "Delen",
+  "libraryCopied": "Gekopieerd naar klembord",
+  "libraryShareCopiedHint": "Gekopieerd — plakken om te delen",
+  "libraryBookmarkSaved": "Bladwijzer opgeslagen",
+  "libraryBookmarkRemoved": "Bladwijzer verwijderd",
+  "libraryTranslation": "Vertaling",
+  "libraryTransliteration": "Transliteratie",
+  "libraryMeaning": "Betekenis",
+  "libraryBookmark": "Bladwijzer",
+  "libraryBookmarksTitle": "Opgeslagen leeritems",
+  "libraryBookmarksSubtitle": "Hadith, dua’s, namen, fiqh en meer",
+  "libraryBookmarksEmpty": "Nog geen opgeslagen items. Tik op Bladwijzer bij een leeritem om het hier op te slaan.",
+  "libraryMarkCompleted": "Markeer als voltooid",
+  "librarySectionCompleted": "Voltooid",
+  "libraryReflection": "Reflectie",
+  "libraryComingSoonTitle": "Binnenkort",
+  "libraryComingSoonBody": "Deze module wordt voorbereid. Kom terug in een latere update.",
+  "librarySearchHint": "Zoeken…",
+  "librarySearchEmpty": "Geen resultaten",
+  "libraryItemCount": "{count} items",
+  "librarySearchResultCount": "{shown} van {total}",
+  "libraryContinueFrom": "Doorgaan · {number}",
+  "libraryInProgress": "Bezig",
+  "libraryReference": "Bron: {source}",
+  "libraryDuaCount": "{count} dua’s",
+  "libraryDuaCategoryMorning": "Ochtend",
+  "libraryDuaCategoryEvening": "Avond",
+  "libraryDuaCategoryDailyLife": "Dagelijks leven",
+  "libraryDuaCategorySleep": "Slaap",
+  "libraryDuaCategoryFood": "Eten",
+  "libraryDuaCategoryTravel": "Reizen",
+  "libraryDuaCategoryIllness": "Ziekte",
+  "libraryDuaCategoryProtection": "Bescherming",
+  "libraryDuaCategoryForgiveness": "Vergeving",
+  "libraryDuaCategoryParents": "Ouders",
+  "libraryHadithCount": "{count} hadith",
+  "libraryHadithNarrator": "Overleveraar:",
+  "libraryHadithSource": "Bron:",
+  "libraryHadithCollectionBukhari": "Sahih al-Bukhari",
+  "libraryHadithCollectionMuslim": "Sahih Muslim",
+  "libraryHadithCollectionRiyad": "Riyad us-Saliheen",
+  "libraryHadithCollectionNawawi": "40 Hadith Nawawi",
+  "libraryHadithCollectionHisnul": "Hisnul Muslim",
+  "libraryGuideStepCount": "{count} stappen",
+  "libraryGuideStepLabel": "Stap {current} van {total}",
+  "libraryGuideWudu": "Wudu",
+  "libraryGuideSalah": "Salah",
+  "libraryGuideGhusl": "Ghusl",
+  "libraryGuideTayammum": "Tayammum",
+  "libraryGuideJanazah": "Janaza-gebed",
+  "libraryGuideUmrah": "Umrah",
+  "libraryGuideHajj": "Hadj",
+  "libraryGuideFasting": "Vasten",
+  "libraryGuideZakat": "Zakat",
+  "libraryGuideTawbah": "Tawba",
+  "libraryOccasionImportance": "Belang",
+  "libraryOccasionVirtues": "Deugden",
+  "libraryOccasionRecommendedActs": "Aanbevolen daden",
+  "libraryFiqhOverview": "Overzicht",
+  "libraryFiqhKeyPoints": "Belangrijke punten",
+  "libraryFiqhDifferences": "Belangrijke verschillen",
+  "libraryFiqhCommonGround": "Gemeenschappelijke grond"
 }

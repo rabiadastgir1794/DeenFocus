@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,9 +24,10 @@ import '../../../../features/onboarding/model/asr_calculation_option.dart';
 import '../../../../features/onboarding/model/location_suggestion.dart';
 import '../../../../features/onboarding/model/sect_option.dart';
 import '../../../../features/onboarding/view/onboarding_location_page.dart';
+import '../../../../features/tajweed/view/tajweed_asset_debug_screen.dart'
+    deferred as tajweed_asset_debug;
 import '../../../../l10n/app_localizations.dart';
 import '../../../focus/model/focus_models.dart';
-import 'app_demo_video_settings_card.dart';
 import 'settings_app_demo_screen.dart';
 import 'settings_calculation_method_screen.dart';
 import 'settings_list_widgets.dart';
@@ -35,13 +36,8 @@ import 'settings_prayer_alarms_screen.dart';
 class SettingsTabScreen extends StatefulWidget {
   const SettingsTabScreen({
     super.key,
-    this.isTabActive = false,
     this.onRequestEnableFocusMode,
   });
-
-  /// True when this tab is the selected bottom-nav destination (avoids
-  /// initializing the demo video while other tabs are visible).
-  final bool isTabActive;
 
   /// Handoff from Focus Mode App Demos → Focus tab enable / Superwall flow.
   final ValueChanged<FocusModeType>? onRequestEnableFocusMode;
@@ -176,6 +172,16 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
           ),
         );
       },
+    );
+  }
+
+  Future<void> _openTajweedAssetDebug(BuildContext context) async {
+    await tajweed_asset_debug.loadLibrary();
+    if (!context.mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => tajweed_asset_debug.TajweedAssetDebugScreen(),
+      ),
     );
   }
 
@@ -363,8 +369,10 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
   }
 
   Future<void> _onContactUsTapped(BuildContext context) async {
-    // final l10n = AppLocalizations.of(context)!;
-    final uri = Uri(scheme: 'mailto', path: 'rnr1710678@gmail.com');
+    final uri = Uri(
+      scheme: 'mailto',
+      path: 'rnr1710678@gmail.com',
+    );
     try {
       final launched = await launchUrl(
         uri,
@@ -663,8 +671,20 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            AppDemoVideoSettingsCard(isTabActive: widget.isTabActive),
+            // Debug harness only — production Tajweed toggle lives in
+            // Reading Settings (on by default).
+            if (kDebugMode && !kIsWeb && Platform.isAndroid) ...[
+              const SizedBox(height: 16),
+              SettingsGroup(
+                children: [
+                  SettingsRow(
+                    icon: Icons.bug_report_outlined,
+                    label: 'Tajweed Asset Debug',
+                    onTap: () => unawaited(_openTajweedAssetDebug(context)),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             _AppVersionText(packageInfoFuture: _packageInfoFuture),
           ],

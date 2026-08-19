@@ -11,6 +11,7 @@
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -30,6 +31,52 @@
 		F30000000000000000000002 /* FocusShieldConfiguration.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000000000000000000010 /* FocusShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F40000000000000000000001 /* azan.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* azan.caf */; };
 		F40000000000000000000002 /* beep.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* beep.caf */; };
+		F4A1B00100000000000000001 /* TajweedErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00100000000000000001 /* TajweedErrors.swift */; };
+		F4A1B00200000000000000001 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00200000000000000001 /* AudioRecorder.swift */; };
+		F4A1B00300000000000000001 /* MelFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00300000000000000001 /* MelFrontend.swift */; };
+		F4A1B00400000000000000001 /* SentencePieceTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00400000000000000001 /* SentencePieceTokenizer.swift */; };
+		F4A1B00500000000000000001 /* CtcDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00500000000000000001 /* CtcDecoder.swift */; };
+		F4A1B00600000000000000001 /* CtcAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00600000000000000001 /* CtcAligner.swift */; };
+		F4A1B00700000000000000001 /* OfflineAsrModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00700000000000000001 /* OfflineAsrModel.swift */; };
+		F4A1B00800000000000000001 /* PronunciationHeadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00800000000000000001 /* PronunciationHeadModel.swift */; };
+		F4A1B00900000000000000001 /* ModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00900000000000000001 /* ModelStore.swift */; };
+		F4A1B01000000000000000001 /* TajweedEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01000000000000000001 /* TajweedEngine.swift */; };
+		F4A1B01100000000000000001 /* TajweedChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01100000000000000001 /* TajweedChannelHandler.swift */; };
+		F4A1B01200000000000000001 /* TajweedDebugRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01200000000000000001 /* TajweedDebugRunner.swift */; };
+		F4A1B01300000000000000001 /* TajweedAssetDistributionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */; };
+		F4A1B01400000000000000001 /* TajweedAssetSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01400000000000000001 /* TajweedAssetSync.swift */; };
+		F4A1B01500000000000000001 /* TajweedLexicalScoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */; };
+		F4A1B01600000000000000001 /* TajweedLiveCaptureDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01600000000000000001 /* TajweedLiveCaptureDump.swift */; };
+		F4A1B01700000000000000001 /* TajweedDevModelOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01700000000000000001 /* TajweedDevModelOverride.swift */; };
+		F4A1B01800000000000000001 /* CanonicalStage2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01800000000000000001 /* CanonicalStage2.swift */; };
+		F4A1B01900000000000000001 /* CanonicalLexiconStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01900000000000000001 /* CanonicalLexiconStore.swift */; };
+		F4A1B01A00000000000000001 /* CanonicalLexicalShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01A00000000000000001 /* CanonicalLexicalShadow.swift */; };
+		F4A1B01B00000000000000001 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = F4A1F01B00000000000000001 /* manifest.json */; };
+		F4A1B01C00000000000000001 /* ayahs.ndjson in Resources */ = {isa = PBXBuildFile; fileRef = F4A1F01C00000000000000001 /* ayahs.ndjson */; };
+		F4A1B01D00000000000000001 /* CanonicalLexicalAuthority.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01D00000000000000001 /* CanonicalLexicalAuthority.swift */; };
+		F4A1B01E00000000000000001 /* CanonicalLexicalEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01E00000000000000001 /* CanonicalLexicalEvaluator.swift */; };
+		F4A1B01F00000000000000001 /* TimedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */; };
+		F4A1B02100000000000000001 /* MLMultiArrayFloatCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F02100000000000000001 /* MLMultiArrayFloatCopy.swift */; };
+		F4A1B02200000000000000001 /* TajweedEngineFailover.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F02200000000000000001 /* TajweedEngineFailover.swift */; };
+		F4A2B00100000000000000001 /* AssetDownloadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00100000000000000001 /* AssetDownloadError.swift */; };
+		F4A2B00200000000000000001 /* AssetCatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00200000000000000001 /* AssetCatalogModels.swift */; };
+		F4A2B00300000000000000001 /* AssetTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00300000000000000001 /* AssetTransport.swift */; };
+		F4A2B00400000000000000001 /* AssetManifestFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00400000000000000001 /* AssetManifestFetcher.swift */; };
+		F4A2B00500000000000000001 /* AssetDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00500000000000000001 /* AssetDownloadManager.swift */; };
+		F4A2B00600000000000000001 /* AssetIntegrityVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00600000000000000001 /* AssetIntegrityVerifier.swift */; };
+		F4A2B00700000000000000001 /* AssetRollbackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00700000000000000001 /* AssetRollbackManager.swift */; };
+		F4A2B00800000000000000001 /* AssetAtomicInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00800000000000000001 /* AssetAtomicInstaller.swift */; };
+		F4A2B00900000000000000001 /* AssetProgressNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F00900000000000000001 /* AssetProgressNotifier.swift */; };
+		F4A2B01000000000000000001 /* AIAssetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F01000000000000000001 /* AIAssetPlugin.swift */; };
+		F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A2F01100000000000000001 /* AIAssetManager.swift */; };
+		F4A3B00100000000000000001 /* FakeAssetTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00100000000000000001 /* FakeAssetTransport.swift */; };
+		F4A3B00200000000000000001 /* AssetDownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00200000000000000001 /* AssetDownloadManagerTests.swift */; };
+		F4A3B00300000000000000001 /* TajweedAssetSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00300000000000000001 /* TajweedAssetSyncTests.swift */; };
+		F4A3B00400000000000000001 /* AIAssetManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A3F00400000000000000001 /* AIAssetManagerTests.swift */; };
+		F4B1B00100000000000000001 /* TranslationCatalogCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00100000000000000001 /* TranslationCatalogCache.swift */; };
+		F4B1B00200000000000000001 /* TranslationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00200000000000000001 /* TranslationStore.swift */; };
+		F4B1B00300000000000000001 /* TranslationAssetSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00300000000000000001 /* TranslationAssetSync.swift */; };
+		F4B1B00400000000000000001 /* QuranTranslationChannelHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1F00400000000000000001 /* QuranTranslationChannelHandler.swift */; };
 		F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000011 /* PrayerAlarmBridge.swift */; };
 		F50000000000000000000002 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F50000000000000000000012 /* Localizable.strings */; };
 		F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */; };
@@ -84,6 +131,7 @@
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		88DBFFD8138635B65160449E /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -118,6 +166,53 @@
 		F30000000000000000000013 /* FocusShieldConfiguration.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusShieldConfiguration.entitlements; sourceTree = "<group>"; };
 		F40000000000000000000011 /* azan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = azan.caf; sourceTree = "<group>"; };
 		F40000000000000000000012 /* beep.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = beep.caf; sourceTree = "<group>"; };
+		F4A1F00100000000000000001 /* TajweedErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedErrors.swift; sourceTree = "<group>"; };
+		F4A1F00200000000000000001 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		F4A1F00300000000000000001 /* MelFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MelFrontend.swift; sourceTree = "<group>"; };
+		F4A1F00400000000000000001 /* SentencePieceTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentencePieceTokenizer.swift; sourceTree = "<group>"; };
+		F4A1F00500000000000000001 /* CtcDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtcDecoder.swift; sourceTree = "<group>"; };
+		F4A1F00600000000000000001 /* CtcAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CtcAligner.swift; sourceTree = "<group>"; };
+		F4A1F00700000000000000001 /* OfflineAsrModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsrModel.swift; sourceTree = "<group>"; };
+		F4A1F00800000000000000001 /* PronunciationHeadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationHeadModel.swift; sourceTree = "<group>"; };
+		F4A1F00900000000000000001 /* ModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStore.swift; sourceTree = "<group>"; };
+		F4A1F01000000000000000001 /* TajweedEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedEngine.swift; sourceTree = "<group>"; };
+		F4A1F01100000000000000001 /* TajweedChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedChannelHandler.swift; sourceTree = "<group>"; };
+		F4A1F01200000000000000001 /* TajweedDebugRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedDebugRunner.swift; sourceTree = "<group>"; };
+		F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetDistributionConfig.swift; sourceTree = "<group>"; };
+		F4A1F01400000000000000001 /* TajweedAssetSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetSync.swift; sourceTree = "<group>"; };
+		F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedLexicalScoring.swift; sourceTree = "<group>"; };
+		F4A1F01600000000000000001 /* TajweedLiveCaptureDump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedLiveCaptureDump.swift; sourceTree = "<group>"; };
+		F4A1F01700000000000000001 /* TajweedDevModelOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedDevModelOverride.swift; sourceTree = "<group>"; };
+		F4A1F01800000000000000001 /* CanonicalStage2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalStage2.swift; sourceTree = "<group>"; };
+		F4A1F01900000000000000001 /* CanonicalLexiconStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexiconStore.swift; sourceTree = "<group>"; };
+		F4A1F01A00000000000000001 /* CanonicalLexicalShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexicalShadow.swift; sourceTree = "<group>"; };
+		F4A1F01B00000000000000001 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
+		F4A1F01C00000000000000001 /* ayahs.ndjson */ = {isa = PBXFileReference; lastKnownFileType = text; path = ayahs.ndjson; sourceTree = "<group>"; };
+		F4A1F01D00000000000000001 /* CanonicalLexicalAuthority.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexicalAuthority.swift; sourceTree = "<group>"; };
+		F4A1F01E00000000000000001 /* CanonicalLexicalEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanonicalLexicalEvaluator.swift; sourceTree = "<group>"; };
+		F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimedPluginRegistrant.m; sourceTree = "<group>"; };
+		F4A1F02000000000000000001 /* TimedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimedPluginRegistrant.h; sourceTree = "<group>"; };
+		F4A1F02100000000000000001 /* MLMultiArrayFloatCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLMultiArrayFloatCopy.swift; sourceTree = "<group>"; };
+		F4A1F02200000000000000001 /* TajweedEngineFailover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedEngineFailover.swift; sourceTree = "<group>"; };
+		F4A2F00100000000000000001 /* AssetDownloadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadError.swift; sourceTree = "<group>"; };
+		F4A2F00200000000000000001 /* AssetCatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetCatalogModels.swift; sourceTree = "<group>"; };
+		F4A2F00300000000000000001 /* AssetTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetTransport.swift; sourceTree = "<group>"; };
+		F4A2F00400000000000000001 /* AssetManifestFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetManifestFetcher.swift; sourceTree = "<group>"; };
+		F4A2F00500000000000000001 /* AssetDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadManager.swift; sourceTree = "<group>"; };
+		F4A2F00600000000000000001 /* AssetIntegrityVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetIntegrityVerifier.swift; sourceTree = "<group>"; };
+		F4A2F00700000000000000001 /* AssetRollbackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetRollbackManager.swift; sourceTree = "<group>"; };
+		F4A2F00800000000000000001 /* AssetAtomicInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetAtomicInstaller.swift; sourceTree = "<group>"; };
+		F4A2F00900000000000000001 /* AssetProgressNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetProgressNotifier.swift; sourceTree = "<group>"; };
+		F4A2F01000000000000000001 /* AIAssetPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssetPlugin.swift; sourceTree = "<group>"; };
+		F4A2F01100000000000000001 /* AIAssetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssetManager.swift; sourceTree = "<group>"; };
+		F4A3F00100000000000000001 /* FakeAssetTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeAssetTransport.swift; sourceTree = "<group>"; };
+		F4A3F00200000000000000001 /* AssetDownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDownloadManagerTests.swift; sourceTree = "<group>"; };
+		F4A3F00300000000000000001 /* TajweedAssetSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedAssetSyncTests.swift; sourceTree = "<group>"; };
+		F4A3F00400000000000000001 /* AIAssetManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssetManagerTests.swift; sourceTree = "<group>"; };
+		F4B1F00100000000000000001 /* TranslationCatalogCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationCatalogCache.swift; sourceTree = "<group>"; };
+		F4B1F00200000000000000001 /* TranslationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationStore.swift; sourceTree = "<group>"; };
+		F4B1F00300000000000000001 /* TranslationAssetSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationAssetSync.swift; sourceTree = "<group>"; };
+		F4B1F00400000000000000001 /* QuranTranslationChannelHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTranslationChannelHandler.swift; sourceTree = "<group>"; };
 		F50000000000000000000011 /* PrayerAlarmBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerAlarmBridge.swift; sourceTree = "<group>"; };
 		F50000000000000000000013 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F50000000000000000000100 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -150,6 +245,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				CA277777AE680AD19FA04D03 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -182,6 +278,10 @@
 			isa = PBXGroup;
 			children = (
 				331C807B294A618700263BE5 /* RunnerTests.swift */,
+				F4A3F00100000000000000001 /* FakeAssetTransport.swift */,
+				F4A3F00200000000000000001 /* AssetDownloadManagerTests.swift */,
+				F4A3F00300000000000000001 /* TajweedAssetSyncTests.swift */,
+				F4A3F00400000000000000001 /* AIAssetManagerTests.swift */,
 			);
 			path = RunnerTests;
 			sourceTree = "<group>";
@@ -189,6 +289,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -234,7 +335,12 @@
 				97C147021CF9000F007C117D /* Info.plist */,
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
+				F4A1F02000000000000000001 /* TimedPluginRegistrant.h */,
+				F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				F4A1GTJW0000000000000001 /* Tajweed */,
+				F4B1GRP0000000000000001 /* QuranTranslation */,
+				F4A2GRP00000000000000001 /* AssetDownload */,
 				F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */,
 				F50000000000000000000011 /* PrayerAlarmBridge.swift */,
 				F60000000000000000000012 /* PrayerLiveActivityBridge.swift */,
@@ -289,6 +395,84 @@
 				F30000000000000000000013 /* FocusShieldConfiguration.entitlements */,
 			);
 			path = FocusShieldConfiguration;
+			sourceTree = "<group>";
+		};
+		F4A1GCLX0000000000000001 /* canonical_lexicon */ = {
+			isa = PBXGroup;
+			children = (
+				F4A1F01B00000000000000001 /* manifest.json */,
+				F4A1F01C00000000000000001 /* ayahs.ndjson */,
+			);
+			path = canonical_lexicon;
+			sourceTree = "<group>";
+		};
+		F4A1GDBG0000000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				F4A1F01200000000000000001 /* TajweedDebugRunner.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
+		F4A1GTJW0000000000000001 /* Tajweed */ = {
+			isa = PBXGroup;
+			children = (
+				F4A1F00100000000000000001 /* TajweedErrors.swift */,
+				F4A1F00200000000000000001 /* AudioRecorder.swift */,
+				F4A1F00300000000000000001 /* MelFrontend.swift */,
+				F4A1F00400000000000000001 /* SentencePieceTokenizer.swift */,
+				F4A1F00500000000000000001 /* CtcDecoder.swift */,
+				F4A1F00600000000000000001 /* CtcAligner.swift */,
+				F4A1F00700000000000000001 /* OfflineAsrModel.swift */,
+				F4A1F02100000000000000001 /* MLMultiArrayFloatCopy.swift */,
+				F4A1F00800000000000000001 /* PronunciationHeadModel.swift */,
+				F4A1F00900000000000000001 /* ModelStore.swift */,
+				F4A1F01000000000000000001 /* TajweedEngine.swift */,
+				F4A1F01100000000000000001 /* TajweedChannelHandler.swift */,
+				F4A1F01300000000000000001 /* TajweedAssetDistributionConfig.swift */,
+				F4A1F01400000000000000001 /* TajweedAssetSync.swift */,
+				F4A1F01500000000000000001 /* TajweedLexicalScoring.swift */,
+				F4A1F01600000000000000001 /* TajweedLiveCaptureDump.swift */,
+				F4A1F01700000000000000001 /* TajweedDevModelOverride.swift */,
+				F4A1F02200000000000000001 /* TajweedEngineFailover.swift */,
+				F4A1F01800000000000000001 /* CanonicalStage2.swift */,
+				F4A1F01900000000000000001 /* CanonicalLexiconStore.swift */,
+				F4A1F01A00000000000000001 /* CanonicalLexicalShadow.swift */,
+				F4A1F01D00000000000000001 /* CanonicalLexicalAuthority.swift */,
+				F4A1F01E00000000000000001 /* CanonicalLexicalEvaluator.swift */,
+				F4A1GCLX0000000000000001 /* canonical_lexicon */,
+				F4A1GDBG0000000000000001 /* Debug */,
+			);
+			path = Tajweed;
+			sourceTree = "<group>";
+		};
+		F4A2GRP00000000000000001 /* AssetDownload */ = {
+			isa = PBXGroup;
+			children = (
+				F4A2F00100000000000000001 /* AssetDownloadError.swift */,
+				F4A2F00200000000000000001 /* AssetCatalogModels.swift */,
+				F4A2F00300000000000000001 /* AssetTransport.swift */,
+				F4A2F00400000000000000001 /* AssetManifestFetcher.swift */,
+				F4A2F00500000000000000001 /* AssetDownloadManager.swift */,
+				F4A2F00600000000000000001 /* AssetIntegrityVerifier.swift */,
+				F4A2F00700000000000000001 /* AssetRollbackManager.swift */,
+				F4A2F00800000000000000001 /* AssetAtomicInstaller.swift */,
+				F4A2F00900000000000000001 /* AssetProgressNotifier.swift */,
+				F4A2F01000000000000000001 /* AIAssetPlugin.swift */,
+				F4A2F01100000000000000001 /* AIAssetManager.swift */,
+			);
+			path = AssetDownload;
+			sourceTree = "<group>";
+		};
+		F4B1GRP0000000000000001 /* QuranTranslation */ = {
+			isa = PBXGroup;
+			children = (
+				F4B1F00100000000000000001 /* TranslationCatalogCache.swift */,
+				F4B1F00200000000000000001 /* TranslationStore.swift */,
+				F4B1F00300000000000000001 /* TranslationAssetSync.swift */,
+				F4B1F00400000000000000001 /* QuranTranslationChannelHandler.swift */,
+			);
+			path = QuranTranslation;
 			sourceTree = "<group>";
 		};
 		F60000000000000000000024 /* Shared */ = {
@@ -354,6 +538,9 @@
 			dependencies = (
 			);
 			name = Runner;
+			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -459,6 +646,9 @@
 				zh,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -491,6 +681,8 @@
 				F40000000000000000000001 /* azan.caf in Resources */,
 				F40000000000000000000002 /* beep.caf in Resources */,
 				F50000000000000000000002 /* Localizable.strings in Resources */,
+				F4A1B01B00000000000000001 /* manifest.json in Resources */,
+				F4A1B01C00000000000000001 /* ayahs.ndjson in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,6 +832,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */,
+				F4A3B00100000000000000001 /* FakeAssetTransport.swift in Sources */,
+				F4A3B00200000000000000001 /* AssetDownloadManagerTests.swift in Sources */,
+				F4A3B00300000000000000001 /* TajweedAssetSyncTests.swift in Sources */,
+				F4A3B00400000000000000001 /* AIAssetManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -648,11 +844,51 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				F4A1B00100000000000000001 /* TajweedErrors.swift in Sources */,
+				F4A1B00200000000000000001 /* AudioRecorder.swift in Sources */,
+				F4A1B00300000000000000001 /* MelFrontend.swift in Sources */,
+				F4A1B00400000000000000001 /* SentencePieceTokenizer.swift in Sources */,
+				F4A1B00500000000000000001 /* CtcDecoder.swift in Sources */,
+				F4A1B00600000000000000001 /* CtcAligner.swift in Sources */,
+				F4A1B00700000000000000001 /* OfflineAsrModel.swift in Sources */,
+				F4A1B02100000000000000001 /* MLMultiArrayFloatCopy.swift in Sources */,
+				F4A1B00800000000000000001 /* PronunciationHeadModel.swift in Sources */,
+				F4A1B00900000000000000001 /* ModelStore.swift in Sources */,
+				F4A1B01000000000000000001 /* TajweedEngine.swift in Sources */,
+				F4A1B01100000000000000001 /* TajweedChannelHandler.swift in Sources */,
+				F4A1B01200000000000000001 /* TajweedDebugRunner.swift in Sources */,
+				F4A1B01300000000000000001 /* TajweedAssetDistributionConfig.swift in Sources */,
+				F4A1B01400000000000000001 /* TajweedAssetSync.swift in Sources */,
+				F4A1B01500000000000000001 /* TajweedLexicalScoring.swift in Sources */,
+				F4A1B01600000000000000001 /* TajweedLiveCaptureDump.swift in Sources */,
+				F4A1B01700000000000000001 /* TajweedDevModelOverride.swift in Sources */,
+				F4A1B02200000000000000001 /* TajweedEngineFailover.swift in Sources */,
+				F4A1B01800000000000000001 /* CanonicalStage2.swift in Sources */,
+				F4A1B01900000000000000001 /* CanonicalLexiconStore.swift in Sources */,
+				F4A1B01A00000000000000001 /* CanonicalLexicalShadow.swift in Sources */,
+				F4A1B01D00000000000000001 /* CanonicalLexicalAuthority.swift in Sources */,
+				F4A1B01E00000000000000001 /* CanonicalLexicalEvaluator.swift in Sources */,
+				F4B1B00100000000000000001 /* TranslationCatalogCache.swift in Sources */,
+				F4B1B00200000000000000001 /* TranslationStore.swift in Sources */,
+				F4B1B00300000000000000001 /* TranslationAssetSync.swift in Sources */,
+				F4B1B00400000000000000001 /* QuranTranslationChannelHandler.swift in Sources */,
+				F4A2B00100000000000000001 /* AssetDownloadError.swift in Sources */,
+				F4A2B00200000000000000001 /* AssetCatalogModels.swift in Sources */,
+				F4A2B00300000000000000001 /* AssetTransport.swift in Sources */,
+				F4A2B00400000000000000001 /* AssetManifestFetcher.swift in Sources */,
+				F4A2B00500000000000000001 /* AssetDownloadManager.swift in Sources */,
+				F4A2B00600000000000000001 /* AssetIntegrityVerifier.swift in Sources */,
+				F4A2B00700000000000000001 /* AssetRollbackManager.swift in Sources */,
+				F4A2B00800000000000000001 /* AssetAtomicInstaller.swift in Sources */,
+				F4A2B00900000000000000001 /* AssetProgressNotifier.swift in Sources */,
+				F4A2B01000000000000000001 /* AIAssetPlugin.swift in Sources */,
+				F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
 				F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */,
 				F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */,
 				F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				F4A1B01F00000000000000001 /* TimedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -778,7 +1014,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -972,7 +1207,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1003,6 +1237,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rnr.deenfocus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1349,6 +1584,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "title": "Shahadah",
+      "subtitle": "Declaration of faith",
+      "arabic": "أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ",
+      "body": "The Shahadah is the testimony that there is no god worthy of worship except Allah, and that Muhammad ﷺ is His Messenger. It is the foundation of Islam and the key to entering the faith.",
+      "reference": "Quran 3:18",
+      "index": 1
+    },
+    {
+      "title": "Salah",
+      "subtitle": "Prayer",
+      "arabic": "الصَّلَاةُ",
+      "body": "Salah is the five daily prayers performed at prescribed times. It connects the believer with Allah, disciplines the soul, and is the second pillar of Islam.",
+      "reference": "Quran 2:238",
+      "index": 2
+    },
+    {
+      "title": "Zakat",
+      "subtitle": "Obligatory charity",
+      "arabic": "الزَّكَاةُ",
+      "body": "Zakat is the annual giving of a fixed portion of qualifying wealth to those in need. It purifies wealth, supports the community, and expresses gratitude to Allah.",
+      "reference": "Quran 2:177",
+      "index": 3
+    },
+    {
+      "title": "Sawm",
+      "subtitle": "Fasting",
+      "arabic": "الصِّيَامُ",
+      "body": "Sawm is fasting during the month of Ramadan from dawn until sunset. It builds taqwa, empathy for the needy, and self-restraint.",
+      "reference": "Quran 2:183",
+      "index": 4
+    },
+    {
+      "title": "Hajj",
+      "subtitle": "Pilgrimage",
+      "arabic": "الْحَجُّ",
+      "body": "Hajj is the pilgrimage to Makkah once in a lifetime for those who are able. It unites the Ummah and commemorates the legacy of Ibrahim (AS) and his family.",
+      "reference": "Quran 3:97",
+      "index": 5
+    }
+  ]
+}

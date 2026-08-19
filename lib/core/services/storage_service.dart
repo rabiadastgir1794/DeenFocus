@@ -17,8 +17,13 @@ abstract class StorageService {
   static const String _keyLocationLongitude = 'user_location_longitude';
   static const String _keyQuranSeedVersion = 'quran_seed_version';
   static const String _keyQuranShowEnglish = 'quran_show_english';
+  static const String _keyQuranTranslationLanguage = 'quran_translation_language';
+  static const String _keyQuranShowTransliteration = 'quran_show_transliteration';
+  static const String _keyQuranLayoutTheme = 'quran_layout_theme';
+  static const String _keyQuranReadingColorTheme = 'quran_reading_color_theme';
   static const String _keyQuranArabicFontSp = 'quran_arabic_font_sp';
   static const String _keyQuranEnglishFontSp = 'quran_english_font_sp';
+  static const String _keyQuranArabicFont = 'quran_arabic_font';
   static const String _keyTasbihSeedVersion = 'tasbih_seed_version';
   static const String _keyHomeDailyVerseDate = 'home_daily_verse_date';
   static const String _keyHomeDailyVerseSurah = 'home_daily_verse_surah';
@@ -86,6 +91,42 @@ abstract class StorageService {
 
   /// Snooze durations offered in settings and on the full-screen alarm UI.
   static const List<int> prayerAlarmSnoozeOptionMinutes = <int>[5, 10, 15];
+
+  // --- Quran Reading Engine (Phase 1: Surah / Juz / Page modes) ---
+  static const String _keyQuranLastMode = 'quran_last_mode';
+  static const String _keyQuranLastSurah = 'quran_last_surah';
+  static const String _keyQuranLastAyah = 'quran_last_ayah';
+  static const String _keyQuranLastPage = 'quran_last_page';
+  static const String _keyQuranLastJuz = 'quran_last_juz';
+  static const String _keyQuranLastReadAtMs = 'quran_last_read_at_ms';
+  static const String _keyQuranTotalAyahsRead = 'quran_total_ayahs_read';
+  static const String _keyQuranTotalPagesRead = 'quran_total_pages_read';
+  static const String _keyQuranTotalReadingDurationMs =
+      'quran_total_reading_duration_ms';
+  static const String _keyQuranLastSessionAtMs = 'quran_last_session_at_ms';
+  static const String _keyQuranLineSpacing = 'quran_line_spacing';
+  static const String _keyQuranDefaultReadingMode =
+      'quran_default_reading_mode';
+  static const String _keyQuranRememberLastPosition =
+      'quran_remember_last_position';
+  static const String _keyQuranScript = 'quran_script';
+  static const String _keyQuranPlaybackSpeed = 'quran_playback_speed';
+  static const String _keyQuranPlaybackVolume = 'quran_playback_volume';
+  static const String _keyQuranRepeatMode = 'quran_repeat_mode';
+  static const String _keyQuranHighestPageCompleted =
+      'quran_highest_page_completed';
+  static const String _keyQuranBookmarksJson = 'quran_bookmarks_json';
+  static const String _keyQuranLastListenedSurah = 'quran_last_listened_surah';
+  static const String _keyQuranLastListenedSurahName =
+      'quran_last_listened_surah_name';
+  static const String _keyQuranLastListenedAyah = 'quran_last_listened_ayah';
+  static const String _keyLastTajweedSurah = 'last_tajweed_surah';
+  static const String _keyLastTajweedAyah = 'last_tajweed_ayah';
+  static const String _keyLastTajweedSurahName = 'last_tajweed_surah_name';
+
+  // --- Tajweed (AI practice) ---
+  static const String _keyTajweedEnabled = 'tajweed_enabled';
+  static const String _keyLibraryProgressJson = 'library_progress_json';
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -210,6 +251,46 @@ abstract class StorageService {
   static Future<void> setQuranShowEnglish(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyQuranShowEnglish, value);
+  }
+
+  static Future<String> get quranTranslationLanguage async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranTranslationLanguage) ?? 'en';
+  }
+
+  static Future<void> setQuranTranslationLanguage(String languageCode) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranTranslationLanguage, languageCode);
+  }
+
+  static Future<bool> get quranShowTransliteration async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyQuranShowTransliteration) ?? true;
+  }
+
+  static Future<void> setQuranShowTransliteration(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyQuranShowTransliteration, value);
+  }
+
+  static Future<String> get quranLayoutTheme async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranLayoutTheme) ?? 'classic';
+  }
+
+  static Future<void> setQuranLayoutTheme(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranLayoutTheme, value);
+  }
+
+  static Future<String> get quranReadingColorTheme async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranReadingColorTheme) ?? 'emerald';
+  }
+
+  static Future<void> setQuranReadingColorTheme(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranReadingColorTheme, value);
   }
 
   static Future<double> get quranArabicFontSp async {
@@ -782,5 +863,310 @@ abstract class StorageService {
   static Future<void> remove(String key) async {
     final prefs = await _prefs;
     await prefs.remove(key);
+  }
+
+  // --- Continue Reading (last surah/ayah/page/juz across all modes) ---
+
+  static Future<String?> get quranLastMode async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranLastMode);
+  }
+
+  static Future<int?> get quranLastSurah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastSurah);
+  }
+
+  static Future<int?> get quranLastAyah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastAyah);
+  }
+
+  static Future<int?> get quranLastPage async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastPage);
+  }
+
+  static Future<int?> get quranLastJuz async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastJuz);
+  }
+
+  static Future<int?> get quranLastReadAtMs async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastReadAtMs);
+  }
+
+  static Future<void> setQuranContinueReading({
+    required String mode,
+    required int surah,
+    required int ayah,
+    required int page,
+    required int juz,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranLastMode, mode);
+    await prefs.setInt(_keyQuranLastSurah, surah);
+    await prefs.setInt(_keyQuranLastAyah, ayah);
+    await prefs.setInt(_keyQuranLastPage, page);
+    await prefs.setInt(_keyQuranLastJuz, juz);
+    await prefs.setInt(
+      _keyQuranLastReadAtMs,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  // --- Reading Progress (cumulative counters, no streaks/achievements) ---
+
+  static Future<int> get quranTotalAyahsRead async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranTotalAyahsRead) ?? 0;
+  }
+
+  static Future<int> get quranTotalPagesRead async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranTotalPagesRead) ?? 0;
+  }
+
+  static Future<int> get quranTotalReadingDurationMs async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranTotalReadingDurationMs) ?? 0;
+  }
+
+  static Future<int?> get quranLastSessionAtMs async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastSessionAtMs);
+  }
+
+  static Future<void> addQuranReadingProgress({
+    required int ayahsRead,
+    required int pagesRead,
+    required Duration duration,
+  }) async {
+    if (ayahsRead <= 0 && pagesRead <= 0 && duration <= Duration.zero) return;
+    final prefs = await _prefs;
+    final totalAyahs = (prefs.getInt(_keyQuranTotalAyahsRead) ?? 0) + ayahsRead;
+    final totalPages = (prefs.getInt(_keyQuranTotalPagesRead) ?? 0) + pagesRead;
+    final totalDurationMs =
+        (prefs.getInt(_keyQuranTotalReadingDurationMs) ?? 0) +
+        duration.inMilliseconds;
+    await prefs.setInt(_keyQuranTotalAyahsRead, totalAyahs);
+    await prefs.setInt(_keyQuranTotalPagesRead, totalPages);
+    await prefs.setInt(_keyQuranTotalReadingDurationMs, totalDurationMs);
+    await prefs.setInt(
+      _keyQuranLastSessionAtMs,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  /// Highest Mushaf page marked read (cumulative: pages 1..N are complete).
+  static Future<int> get quranHighestPageCompleted async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranHighestPageCompleted) ?? 0;
+  }
+
+  static Future<void> markQuranPageCompleted(int page) async {
+    if (page < 1) return;
+    final prefs = await _prefs;
+    final current = prefs.getInt(_keyQuranHighestPageCompleted) ?? 0;
+    if (page > current) {
+      await prefs.setInt(_keyQuranHighestPageCompleted, page);
+    }
+  }
+
+  /// Clears continue reading, page progress, stats, bookmarks, and quick-action
+  /// shortcuts. Display preferences (fonts, layout, translations) are kept.
+  static Future<void> clearQuranReadingHistory() async {
+    final prefs = await _prefs;
+    await prefs.remove(_keyQuranLastMode);
+    await prefs.remove(_keyQuranLastSurah);
+    await prefs.remove(_keyQuranLastAyah);
+    await prefs.remove(_keyQuranLastPage);
+    await prefs.remove(_keyQuranLastJuz);
+    await prefs.remove(_keyQuranLastReadAtMs);
+    await prefs.remove(_keyQuranTotalAyahsRead);
+    await prefs.remove(_keyQuranTotalPagesRead);
+    await prefs.remove(_keyQuranTotalReadingDurationMs);
+    await prefs.remove(_keyQuranLastSessionAtMs);
+    await prefs.remove(_keyQuranHighestPageCompleted);
+    await prefs.remove(_keyQuranBookmarksJson);
+    await prefs.remove(_keyQuranLastListenedSurah);
+    await prefs.remove(_keyQuranLastListenedSurahName);
+    await prefs.remove(_keyQuranLastListenedAyah);
+    await prefs.remove(_keyLastTajweedSurah);
+    await prefs.remove(_keyLastTajweedAyah);
+    await prefs.remove(_keyLastTajweedSurahName);
+  }
+
+  static Future<String?> get quranBookmarksJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranBookmarksJson);
+  }
+
+  static Future<void> setQuranBookmarksJson(String json) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranBookmarksJson, json);
+  }
+
+  static Future<int?> get quranLastListenedSurah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastListenedSurah);
+  }
+
+  static Future<String?> get quranLastListenedSurahName async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranLastListenedSurahName);
+  }
+
+  static Future<int?> get quranLastListenedAyah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyQuranLastListenedAyah);
+  }
+
+  static Future<void> setQuranLastListened({
+    required int surahNumber,
+    required int ayahNumber,
+    required String surahName,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyQuranLastListenedSurah, surahNumber);
+    await prefs.setInt(_keyQuranLastListenedAyah, ayahNumber);
+    await prefs.setString(_keyQuranLastListenedSurahName, surahName);
+  }
+
+  static Future<int?> get lastTajweedSurah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyLastTajweedSurah);
+  }
+
+  static Future<int?> get lastTajweedAyah async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyLastTajweedAyah);
+  }
+
+  static Future<String?> get lastTajweedSurahName async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyLastTajweedSurahName);
+  }
+
+  static Future<void> setLastTajweedPractice({
+    required int surah,
+    required int ayah,
+    required String surahName,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyLastTajweedSurah, surah);
+    await prefs.setInt(_keyLastTajweedAyah, ayah);
+    await prefs.setString(_keyLastTajweedSurahName, surahName);
+  }
+
+  // --- Reading Preferences ---
+
+  static Future<double> get quranLineSpacing async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyQuranLineSpacing) ?? 1.8;
+  }
+
+  static Future<void> setQuranLineSpacing(double value) async {
+    final prefs = await _prefs;
+    await prefs.setDouble(_keyQuranLineSpacing, value);
+  }
+
+  /// One of 'surah' | 'juz' | 'page' — see `ReadingMode`.
+  static Future<String> get quranDefaultReadingMode async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranDefaultReadingMode) ?? 'surah';
+  }
+
+  static Future<void> setQuranDefaultReadingMode(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranDefaultReadingMode, value);
+  }
+
+  static Future<bool> get quranRememberLastPosition async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyQuranRememberLastPosition) ?? true;
+  }
+
+  static Future<void> setQuranRememberLastPosition(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyQuranRememberLastPosition, value);
+  }
+
+  /// One of 'uthmani' | 'indopak' — see `QuranScript`.
+  static Future<String> get quranScript async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranScript) ?? 'uthmani';
+  }
+
+  static Future<void> setQuranScript(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranScript, value);
+  }
+
+  /// One of 'uthmanicHafs' | 'nooreHuda' | 'system' — see `QuranArabicFont`.
+  /// Empty/missing means follow the selected script's default font.
+  static Future<String?> get quranArabicFont async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranArabicFont);
+  }
+
+  static Future<void> setQuranArabicFont(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranArabicFont, value);
+  }
+
+  // --- Audio Preferences ---
+
+  static Future<double> get quranPlaybackSpeed async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyQuranPlaybackSpeed) ?? 1.0;
+  }
+
+  static Future<void> setQuranPlaybackSpeed(double value) async {
+    final prefs = await _prefs;
+    await prefs.setDouble(_keyQuranPlaybackSpeed, value);
+  }
+
+  static Future<double> get quranPlaybackVolume async {
+    final prefs = await _prefs;
+    return prefs.getDouble(_keyQuranPlaybackVolume) ?? 1.0;
+  }
+
+  static Future<void> setQuranPlaybackVolume(double value) async {
+    final prefs = await _prefs;
+    await prefs.setDouble(_keyQuranPlaybackVolume, value);
+  }
+
+  /// One of 'off' | 'ayah' | 'surah' — see `QuranRepeatMode`.
+  static Future<String> get quranRepeatMode async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyQuranRepeatMode) ?? 'off';
+  }
+
+  static Future<void> setQuranRepeatMode(String value) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyQuranRepeatMode, value);
+  }
+
+  /// Controlled rollout flag for AI Tajweed. Default false.
+  static Future<bool> get tajweedEnabled async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyTajweedEnabled) ?? true;
+  }
+
+  static Future<void> setTajweedEnabled(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyTajweedEnabled, value);
+  }
+
+  static Future<String?> get libraryProgressJson async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyLibraryProgressJson);
+  }
+
+  static Future<void> setLibraryProgressJson(String json) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyLibraryProgressJson, json);
   }
 }

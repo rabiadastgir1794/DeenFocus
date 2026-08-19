@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "packId": "hafs-en-v1",
+  "kind": "tajweed_model",
+  "minimumAppVersion": "1.0.0",
+  "artifactBaseUrl": "https://assets.deenfocus.app/tajweed/packs/hafs-en-v1/1.0.0/android/",
+  "filesDir": "./staging/hafs-en-v1/1.0.0/android",
+  "files": {
+    "encoder": "model_with_encoder.onnx",
+    "pronunciationHead": "pronunciation_head.onnx",
+    "tokenizer": "tokenizer.model",
+    "tokens": "tokens.txt"
+  },
+  "extra": {
+    "language": "en",
+    "riwayah": "Hafs"
+  }
+}

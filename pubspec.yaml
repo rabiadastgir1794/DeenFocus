@@ -106,12 +106,42 @@ flutter:
   uses-material-design: true
   assets:
     - assets/raw/quran_paak.json
-    - assets/raw/english_translation.json
+    - assets/quran/uthmani.json
+    - assets/quran/text/uthmani.json
+    - assets/quran/text/indopak.json
     - assets/video/about_deen_focus.mp4
     - assets/video/video_thumbnail.png
     - assets/ai_chat_icon.png
     - assets/app_icon.png
     - assets/support/
+    - assets/islamic_library/names_of_allah.json
+    - assets/islamic_library/duas_adhkar.json
+    - assets/islamic_library/pillars_of_islam.json
+    - assets/islamic_library/pillars_of_iman.json
+    - assets/islamic_library/hadith.json
+    - assets/islamic_library/prophet_muhammad.json
+    - assets/islamic_library/prayer_methods.json
+    - assets/islamic_library/islamic_occasions.json
+    - assets/islamic_library/fiqh_differences.json
+    - assets/islamic_library/covers/
+
+  fonts:
+    - family: UthmanicHafs
+      fonts:
+        - asset: assets/fonts/UthmanicHafs.otf
+    - family: NooreHuda
+      fonts:
+        - asset: assets/fonts/NooreHuda.ttf
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

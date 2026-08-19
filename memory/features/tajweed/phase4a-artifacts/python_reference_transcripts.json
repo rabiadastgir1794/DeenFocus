@@ -1,0 +1,23 @@
+{
+  "encoder_load_ms": 0.00095367431640625,
+  "samples": [
+    {
+      "sample": "01_alafasy_fatihah.wav",
+      "transcript": "مَالِكِ يَوْمِ الدِّينِ",
+      "audio_duration_s": 4.6759375,
+      "inference_ms": 1069.6640014648438
+    },
+    {
+      "sample": "02_basfar_ikhlas.wav",
+      "transcript": "قُلْ هُوَ اللَّهُ أَحَدٌ",
+      "audio_duration_s": 3.657125,
+      "inference_ms": 137.678861618042
+    },
+    {
+      "sample": "03_alafasy_naba.wav",
+      "transcript": "قُلْ هُوَ نَبَأٌ عَظِيمٌ",
+      "audio_duration_s": 4.7549375,
+      "inference_ms": 108.35814476013184
+    }
+  ]
+}

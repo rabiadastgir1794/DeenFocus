@@ -1,0 +1,357 @@
+{
+  "cold_encoder_load_ms": 889.8708820343018,
+  "cold_head_load_ms": 7.544755935668945,
+  "recreate_encoder_session_ms": 685.8401298522949,
+  "samples": [
+    {
+      "sample": "01_alafasy_fatihah.wav",
+      "inference_ms": 77.86011695861816,
+      "score": {
+        "ref": "1:4",
+        "expected": "مَالِكِ يَوْمِ الدِّينِ",
+        "hypothesis": "مَالِكِ يَوْمِ الدِّينِ",
+        "durationSec": 4.6759375,
+        "wordAccuracy": 1.0,
+        "exactMatch": true,
+        "tokens": [
+          {
+            "text": "مَا",
+            "status": "ok",
+            "prob": 0.9999971389770508,
+            "startSec": 0.24,
+            "endSec": 0.32
+          },
+          {
+            "text": "ل",
+            "status": "minor",
+            "prob": 0.8155233860015869,
+            "startSec": 0.48,
+            "endSec": 0.56
+          },
+          {
+            "text": "ِ",
+            "status": "ok",
+            "prob": 0.9907492399215698,
+            "startSec": 0.56,
+            "endSec": 0.64
+          },
+          {
+            "text": "ك",
+            "status": "ok",
+            "prob": 0.9996250867843628,
+            "startSec": 0.72,
+            "endSec": 0.8
+          },
+          {
+            "text": "ِ",
+            "status": "ok",
+            "prob": 0.9999037981033325,
+            "startSec": 0.8,
+            "endSec": 0.96
+          },
+          {
+            "text": "يَ",
+            "status": "ok",
+            "prob": 0.9998793601989746,
+            "startSec": 0.96,
+            "endSec": 1.04
+          },
+          {
+            "text": "و",
+            "status": "ok",
+            "prob": 0.999945342540741,
+            "startSec": 1.12,
+            "endSec": 1.2
+          },
+          {
+            "text": "ْمِ",
+            "status": "ok",
+            "prob": 0.9999074935913086,
+            "startSec": 1.28,
+            "endSec": 1.44
+          },
+          {
+            "text": "الد",
+            "status": "ok",
+            "prob": 0.989625096321106,
+            "startSec": 1.6,
+            "endSec": 1.76
+          },
+          {
+            "text": "ِ",
+            "status": "ok",
+            "prob": 0.9977982044219971,
+            "startSec": 1.84,
+            "endSec": 1.92
+          },
+          {
+            "text": "ّ",
+            "status": "ok",
+            "prob": 0.9921480417251587,
+            "startSec": 1.92,
+            "endSec": 2.0
+          },
+          {
+            "text": "ين",
+            "status": "ok",
+            "prob": 0.9989928007125854,
+            "startSec": 2.0,
+            "endSec": 2.08
+          },
+          {
+            "text": "ِ",
+            "status": "ok",
+            "prob": 0.9993980526924133,
+            "startSec": 4.64,
+            "endSec": 4.72
+          }
+        ]
+      }
+    },
+    {
+      "sample": "02_basfar_ikhlas.wav",
+      "inference_ms": 50.8420467376709,
+      "score": {
+        "ref": "112:1",
+        "expected": "قُلْ هُوَ اللَّهُ أَحَدٌ",
+        "hypothesis": "قُلْ هُوَ اللَّهُ أَحَدٌ",
+        "durationSec": 3.657125,
+        "wordAccuracy": 1.0,
+        "exactMatch": true,
+        "tokens": [
+          {
+            "text": "ق",
+            "status": "ok",
+            "prob": 0.9999347925186157,
+            "startSec": 0.56,
+            "endSec": 0.64
+          },
+          {
+            "text": "ُ",
+            "status": "ok",
+            "prob": 0.9997461438179016,
+            "startSec": 0.64,
+            "endSec": 0.72
+          },
+          {
+            "text": "ل",
+            "status": "ok",
+            "prob": 0.9997344017028809,
+            "startSec": 0.72,
+            "endSec": 0.88
+          },
+          {
+            "text": "ْ",
+            "status": "ok",
+            "prob": 0.9995076060295105,
+            "startSec": 0.88,
+            "endSec": 0.96
+          },
+          {
+            "text": "ه",
+            "status": "ok",
+            "prob": 0.9999626278877258,
+            "startSec": 0.96,
+            "endSec": 1.12
+          },
+          {
+            "text": "ُو",
+            "status": "ok",
+            "prob": 0.9947384595870972,
+            "startSec": 1.12,
+            "endSec": 1.28
+          },
+          {
+            "text": "َ",
+            "status": "ok",
+            "prob": 0.9994794726371765,
+            "startSec": 1.28,
+            "endSec": 1.44
+          },
+          {
+            "text": "الل",
+            "status": "ok",
+            "prob": 0.9979170560836792,
+            "startSec": 1.6,
+            "endSec": 1.68
+          },
+          {
+            "text": "َّ",
+            "status": "major",
+            "prob": 0.0867432951927185,
+            "startSec": 1.68,
+            "endSec": 1.76
+          },
+          {
+            "text": "هُ",
+            "status": "ok",
+            "prob": 0.8886476755142212,
+            "startSec": 1.76,
+            "endSec": 1.84
+          },
+          {
+            "text": "أَ",
+            "status": "ok",
+            "prob": 0.9999514818191528,
+            "startSec": 2.24,
+            "endSec": 2.32
+          },
+          {
+            "text": "ح",
+            "status": "ok",
+            "prob": 0.9972928762435913,
+            "startSec": 2.4,
+            "endSec": 2.48
+          },
+          {
+            "text": "َ",
+            "status": "ok",
+            "prob": 0.9999697208404541,
+            "startSec": 2.48,
+            "endSec": 2.56
+          },
+          {
+            "text": "د",
+            "status": "ok",
+            "prob": 0.9998599290847778,
+            "startSec": 2.64,
+            "endSec": 2.72
+          },
+          {
+            "text": "ٌ",
+            "status": "ok",
+            "prob": 0.9999077916145325,
+            "startSec": 3.6,
+            "endSec": 3.68
+          }
+        ]
+      }
+    },
+    {
+      "sample": "03_alafasy_naba.wav",
+      "inference_ms": 63.57216835021973,
+      "score": {
+        "ref": "38:67",
+        "expected": "قُلْ هُوَ نَبَأٌ عَظِيمٌ",
+        "hypothesis": "قُلْ هُوَ نَبَأٌ عَظِيمٌ",
+        "durationSec": 4.7549375,
+        "wordAccuracy": 1.0,
+        "exactMatch": true,
+        "tokens": [
+          {
+            "text": "ق",
+            "status": "ok",
+            "prob": 0.9997039437294006,
+            "startSec": 0.08,
+            "endSec": 0.16
+          },
+          {
+            "text": "ُ",
+            "status": "ok",
+            "prob": 0.9998847842216492,
+            "startSec": 0.24,
+            "endSec": 0.32
+          },
+          {
+            "text": "ل",
+            "status": "ok",
+            "prob": 0.9998635053634644,
+            "startSec": 0.32,
+            "endSec": 0.4
+          },
+          {
+            "text": "ْ",
+            "status": "ok",
+            "prob": 0.9996678829193115,
+            "startSec": 0.4,
+            "endSec": 0.56
+          },
+          {
+            "text": "ه",
+            "status": "ok",
+            "prob": 0.9998008608818054,
+            "startSec": 0.56,
+            "endSec": 0.64
+          },
+          {
+            "text": "ُو",
+            "status": "ok",
+            "prob": 0.9891876578330994,
+            "startSec": 0.64,
+            "endSec": 0.8
+          },
+          {
+            "text": "َ",
+            "status": "ok",
+            "prob": 0.9991573095321655,
+            "startSec": 0.8,
+            "endSec": 0.88
+          },
+          {
+            "text": "ن",
+            "status": "ok",
+            "prob": 0.9999343156814575,
+            "startSec": 0.88,
+            "endSec": 0.96
+          },
+          {
+            "text": "َبَ",
+            "status": "ok",
+            "prob": 0.997428297996521,
+            "startSec": 1.12,
+            "endSec": 1.2
+          },
+          {
+            "text": "أ",
+            "status": "ok",
+            "prob": 0.9999655485153198,
+            "startSec": 1.36,
+            "endSec": 1.44
+          },
+          {
+            "text": "ٌ",
+            "status": "ok",
+            "prob": 0.9998167157173157,
+            "startSec": 1.52,
+            "endSec": 1.6
+          },
+          {
+            "text": "عَ",
+            "status": "ok",
+            "prob": 0.995800256729126,
+            "startSec": 1.76,
+            "endSec": 1.84
+          },
+          {
+            "text": "ظ",
+            "status": "ok",
+            "prob": 0.9999417066574097,
+            "startSec": 1.92,
+            "endSec": 2.08
+          },
+          {
+            "text": "ِي",
+            "status": "ok",
+            "prob": 0.9997423887252808,
+            "startSec": 2.08,
+            "endSec": 2.24
+          },
+          {
+            "text": "م",
+            "status": "ok",
+            "prob": 0.9988926649093628,
+            "startSec": 2.24,
+            "endSec": 2.32
+          },
+          {
+            "text": "ٌ",
+            "status": "ok",
+            "prob": 0.9999229907989502,
+            "startSec": 4.72,
+            "endSec": 4.8
+          }
+        ]
+      }
+    }
+  ]
+}
