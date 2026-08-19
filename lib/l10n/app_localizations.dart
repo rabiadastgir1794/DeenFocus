@@ -3299,6 +3299,12 @@ abstract class AppLocalizations {
   /// **'About Deen Focus'**
   String get settingsAboutTitle;
 
+  /// No description provided for @settingsRateDeenFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate DeenFocus ⭐'**
+  String get settingsRateDeenFocus;
+
   /// No description provided for @settingsContactUsTitle.
   ///
   /// In en, this message translates to:
@@ -4043,6 +4049,144 @@ abstract class AppLocalizations {
   /// **'Achieved'**
   String get insightsAchieved;
 
+  /// No description provided for @insightsMyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'My progress'**
+  String get insightsMyProgress;
+
+  /// No description provided for @insightsLevelNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}'**
+  String insightsLevelNumber(int level);
+
+  /// No description provided for @insightsXpProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {next} XP'**
+  String insightsXpProgress(String current, String next);
+
+  /// No description provided for @insightsXpTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{xp} XP'**
+  String insightsXpTotal(String xp);
+
+  /// No description provided for @insightsXpToNext.
+  ///
+  /// In en, this message translates to:
+  /// **'{xp} XP to Level {level}'**
+  String insightsXpToNext(String xp, int level);
+
+  /// No description provided for @insightsMaxLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'MAX LEVEL'**
+  String get insightsMaxLevel;
+
+  /// No description provided for @insightsAchievementsUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'{unlocked} / {total} unlocked'**
+  String insightsAchievementsUnlocked(int unlocked, int total);
+
+  /// No description provided for @insightsAchievementUnlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievement Unlocked'**
+  String get insightsAchievementUnlockedTitle;
+
+  /// No description provided for @insightsLevelUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LEVEL UP'**
+  String get insightsLevelUpTitle;
+
+  /// No description provided for @achievementFirstPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'First Prayer'**
+  String get achievementFirstPrayer;
+
+  /// No description provided for @achievementFajrChampion.
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr Champion'**
+  String get achievementFajrChampion;
+
+  /// No description provided for @achievementFiveADay.
+  ///
+  /// In en, this message translates to:
+  /// **'Five-a-Day'**
+  String get achievementFiveADay;
+
+  /// No description provided for @achievementPerfectWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect Week'**
+  String get achievementPerfectWeek;
+
+  /// No description provided for @achievementPerfectMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect Month'**
+  String get achievementPerfectMonth;
+
+  /// No description provided for @achievementQuranDevotee.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran Devotee'**
+  String get achievementQuranDevotee;
+
+  /// No description provided for @achievementDhikrStarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhikr Starter'**
+  String get achievementDhikrStarter;
+
+  /// No description provided for @achievementNightWorshipper.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Worshipper'**
+  String get achievementNightWorshipper;
+
+  /// No description provided for @achievementMasjidCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Masjid Companion'**
+  String get achievementMasjidCompanion;
+
+  /// No description provided for @achievementDistractionDefender.
+  ///
+  /// In en, this message translates to:
+  /// **'Distraction Defender'**
+  String get achievementDistractionDefender;
+
+  /// No description provided for @achievementCycleGuardian.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Guardian'**
+  String get achievementCycleGuardian;
+
+  /// No description provided for @achievementProtectedMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected Month'**
+  String get achievementProtectedMonth;
+
+  /// No description provided for @achievementSixMonthJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Six-Month Journey'**
+  String get achievementSixMonthJourney;
+
+  /// No description provided for @achievementDeenFocusMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus Master'**
+  String get achievementDeenFocusMaster;
+
   /// No description provided for @insightsCycleModeFooter.
   ///
   /// In en, this message translates to:
@@ -4058,7 +4202,7 @@ abstract class AppLocalizations {
   /// No description provided for @achievementFirstPrayerStreak.
   ///
   /// In en, this message translates to:
-  /// **'First Prayer Streak'**
+  /// **'First Prayer'**
   String get achievementFirstPrayerStreak;
 
   /// No description provided for @achievementSevenPrayerStreak.

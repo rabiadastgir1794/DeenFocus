@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/services/app_review_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../services/achievements_service.dart';
+import '../../services/level_service.dart';
 import '../../viewmodel/home_tab_view_model.dart';
 import 'home_calendar_screen.dart';
 
@@ -21,6 +25,64 @@ class HomeInsightsScreen extends StatefulWidget {
 
 class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
   bool _weekly = true;
+  bool _showingCelebration = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_playPendingCelebrations());
+    });
+  }
+
+  Future<void> _playPendingCelebrations() async {
+    if (!mounted || _showingCelebration) return;
+    final vm = context.read<HomeTabViewModel>();
+    final unlocks = vm.pendingUnlockAchievements;
+    final levelUp = vm.pendingLevelUp;
+    if (unlocks.isEmpty && levelUp == null) return;
+
+    _showingCelebration = true;
+    AppReviewService.setCelebrationsBlocking(true);
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    for (final id in unlocks) {
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => _ProgressionCelebrationDialog(
+          title: l10n.insightsAchievementUnlockedTitle,
+          subtitle: AchievementsService.title(l10n, id),
+          icon: _achievementIcon(id),
+          colorScheme: colorScheme,
+        ),
+      );
+    }
+
+    if (levelUp != null && mounted) {
+      final level = vm.levelProgress;
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => _ProgressionCelebrationDialog(
+          title: l10n.insightsLevelUpTitle,
+          subtitle: '${l10n.insightsLevelNumber(levelUp)}\n${level.name}',
+          icon: Icons.emoji_events_rounded,
+          colorScheme: colorScheme,
+        ),
+      );
+    }
+
+    if (mounted) {
+      await vm.acknowledgeProgressionCelebrations();
+      _showingCelebration = false;
+      AppReviewService.setCelebrationsBlocking(false);
+      unawaited(vm.maybeRequestAppReview());
+    } else {
+      AppReviewService.setCelebrationsBlocking(false);
+      _showingCelebration = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +93,13 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
 
     return Consumer<HomeTabViewModel>(
       builder: (context, vm, _) {
+        if (!_showingCelebration &&
+            (vm.pendingUnlockAchievements.isNotEmpty ||
+                vm.pendingLevelUp != null)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            unawaited(_playPendingCelebrations());
+          });
+        }
         final done = _weekly
             ? vm.weeklyCompletionDone
             : vm.monthlyCompletionDone;
@@ -105,6 +174,15 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
                       const SizedBox(height: 16),
                       _StreakDetailsRow(
                         vm: vm,
+                        l10n: l10n,
+                        colorScheme: colorScheme,
+                        isDark: isDark,
+                      ),
+                      const SizedBox(height: 16),
+                      _ProgressionCard(
+                        level: vm.levelProgress,
+                        unlockedCount: vm.unlockedAchievementCount,
+                        totalCount: AchievementsService.totalCount,
                         l10n: l10n,
                         colorScheme: colorScheme,
                         isDark: isDark,
@@ -1036,6 +1114,110 @@ class _StreakDetailsRow extends StatelessWidget {
   }
 }
 
+class _ProgressionCard extends StatelessWidget {
+  const _ProgressionCard({
+    required this.level,
+    required this.unlockedCount,
+    required this.totalCount,
+    required this.l10n,
+    required this.colorScheme,
+    required this.isDark,
+  });
+
+  final LevelProgress level;
+  final int unlockedCount;
+  final int totalCount;
+  final AppLocalizations l10n;
+  final ColorScheme colorScheme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final xpFormat = NumberFormat.decimalPattern(l10n.localeName);
+    final next = level.nextLevelXP;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: _cardDecoration(colorScheme, isDark),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.insightsMyProgress.toUpperCase(),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.insightsLevelNumber(level.currentLevel),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          Text(
+            level.name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: colorScheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            level.isMaxLevel || next == null
+                ? l10n.insightsXpTotal(xpFormat.format(level.totalXP))
+                : l10n.insightsXpProgress(
+                    xpFormat.format(level.totalXP),
+                    xpFormat.format(next),
+                  ),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: level.progressPercentage,
+              minHeight: 8,
+              color: colorScheme.primary,
+              backgroundColor: colorScheme.outlineVariant.withValues(alpha: 0.3),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            level.isMaxLevel
+                ? l10n.insightsMaxLevel
+                : l10n.insightsXpToNext(
+                    xpFormat.format(level.xpToNext),
+                    level.currentLevel + 1,
+                  ),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.insightsAchievements,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          Text(
+            l10n.insightsAchievementsUnlocked(unlockedCount, totalCount),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: colorScheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _AchievementsSection extends StatelessWidget {
   const _AchievementsSection({
     required this.achievements,
@@ -1066,24 +1248,25 @@ class _AchievementsSection extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: achievements.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: 2,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
-            childAspectRatio: 0.85,
+            childAspectRatio: 1.15,
           ),
           itemBuilder: (context, index) {
             final item = achievements[index];
+            final unlocked = item.isUnlocked;
             return Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
               decoration: _cardDecoration(colorScheme, isDark),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    _icon(item.id),
-                    color: item.isUnlocked
+                    _achievementIcon(item.id),
+                    color: unlocked
                         ? colorScheme.primary
-                        : colorScheme.outlineVariant,
+                        : const Color(0xFFC4B8A5),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -1093,30 +1276,41 @@ class _AchievementsSection extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      fontSize: 10,
+                      fontSize: 11,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  if (item.isUnlocked)
-                    Text(
-                      l10n.insightsAchieved,
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  if (unlocked)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 12,
+                          color: colorScheme.primary,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          l10n.insightsAchieved,
+                          style: TextStyle(
+                            color: colorScheme.primary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     )
                   else ...[
                     Text(
-                      '${item.current}/${item.target}',
+                      '${item.current} / ${item.target}',
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 4),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(3),
                       child: LinearProgressIndicator(
                         value: item.fraction,
-                        minHeight: 3,
+                        minHeight: 4,
                         color: colorScheme.primary,
                         backgroundColor:
                             colorScheme.outlineVariant.withValues(alpha: 0.3),
@@ -1131,24 +1325,95 @@ class _AchievementsSection extends StatelessWidget {
       ],
     );
   }
+}
 
-  IconData _icon(AchievementId id) {
-    switch (id) {
-      case AchievementId.firstPrayerStreak:
-        return Icons.star_rounded;
-      case AchievementId.sevenPrayerStreak:
-        return Icons.filter_7_rounded;
-      case AchievementId.thirtyPrayerStreak:
-        return Icons.workspace_premium_rounded;
-      case AchievementId.fajrWarrior:
-        return Icons.wb_twilight_rounded;
-      case AchievementId.quranReader:
-        return Icons.menu_book_rounded;
-      case AchievementId.dhikrMaster:
-        return Icons.spa_rounded;
-      case AchievementId.consistencyChampion:
-        return Icons.emoji_events_rounded;
-    }
+class _ProgressionCelebrationDialog extends StatelessWidget {
+  const _ProgressionCelebrationDialog({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.colorScheme,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 40, color: colorScheme.primary),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(AppLocalizations.of(context)!.ok),
+        ),
+      ],
+    );
+  }
+}
+
+IconData _achievementIcon(AchievementId id) {
+  switch (id) {
+    case AchievementId.firstPrayer:
+      return Icons.star_rounded;
+    case AchievementId.sevenPrayerStreak:
+      return Icons.calendar_view_week_rounded;
+    case AchievementId.thirtyPrayerStreak:
+      return Icons.workspace_premium_rounded;
+    case AchievementId.fajrWarrior:
+    case AchievementId.fajrChampion:
+      return Icons.wb_twilight_rounded;
+    case AchievementId.fiveADay:
+      return Icons.mosque_rounded;
+    case AchievementId.perfectWeek:
+      return Icons.calendar_month_rounded;
+    case AchievementId.perfectMonth:
+      return Icons.event_available_rounded;
+    case AchievementId.quranReader:
+    case AchievementId.quranDevotee:
+      return Icons.menu_book_rounded;
+    case AchievementId.dhikrStarter:
+    case AchievementId.dhikrMaster:
+      return Icons.spa_rounded;
+    case AchievementId.nightWorshipper:
+      return Icons.nights_stay_rounded;
+    case AchievementId.masjidCompanion:
+      return Icons.location_on_rounded;
+    case AchievementId.distractionDefender:
+    case AchievementId.cycleGuardian:
+    case AchievementId.protectedMonth:
+      return Icons.shield_rounded;
+    case AchievementId.consistencyChampion:
+      return Icons.emoji_events_rounded;
+    case AchievementId.sixMonthJourney:
+      return Icons.flag_rounded;
+    case AchievementId.deenfocusMaster:
+      return Icons.military_tech_rounded;
   }
 }
 

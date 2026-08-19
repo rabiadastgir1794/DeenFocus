@@ -13,6 +13,7 @@ import '../../../../core/constants/app_languages.dart';
 import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
+import '../../../../core/services/app_review_service.dart';
 import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/prayer_live_activity_service.dart';
 import '../../../../core/services/prayer_live_activity_toggle.dart';
@@ -630,6 +631,11 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                   icon: Icons.info_outline_rounded,
                   label: l10n.settingsAboutTitle,
                   onTap: () => _onAboutTapped(context),
+                ),
+                SettingsRow(
+                  icon: Icons.star_rounded,
+                  label: l10n.settingsRateDeenFocus,
+                  onTap: () => unawaited(AppReviewService.requestReviewManually()),
                 ),
                 SettingsRow(
                   icon: Icons.email_outlined,

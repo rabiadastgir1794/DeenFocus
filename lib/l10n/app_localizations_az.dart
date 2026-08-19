@@ -1777,6 +1777,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get settingsAboutTitle => 'Deen Focus haqqında';
 
   @override
+  String get settingsRateDeenFocus => 'Rate DeenFocus ⭐';
+
+  @override
   String get settingsContactUsTitle => 'Bizimlə Əlaqə';
 
   @override
@@ -2189,6 +2192,85 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get insightsAchieved => 'Əldə edilib';
+
+  @override
+  String get insightsMyProgress => 'My progress';
+
+  @override
+  String insightsLevelNumber(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String insightsXpProgress(String current, String next) {
+    return '$current / $next XP';
+  }
+
+  @override
+  String insightsXpTotal(String xp) {
+    return '$xp XP';
+  }
+
+  @override
+  String insightsXpToNext(String xp, int level) {
+    return '$xp XP to Level $level';
+  }
+
+  @override
+  String get insightsMaxLevel => 'MAX LEVEL';
+
+  @override
+  String insightsAchievementsUnlocked(int unlocked, int total) {
+    return '$unlocked / $total unlocked';
+  }
+
+  @override
+  String get insightsAchievementUnlockedTitle => 'Achievement Unlocked';
+
+  @override
+  String get insightsLevelUpTitle => 'LEVEL UP';
+
+  @override
+  String get achievementFirstPrayer => 'First Prayer';
+
+  @override
+  String get achievementFajrChampion => 'Fajr Champion';
+
+  @override
+  String get achievementFiveADay => 'Five-a-Day';
+
+  @override
+  String get achievementPerfectWeek => 'Perfect Week';
+
+  @override
+  String get achievementPerfectMonth => 'Perfect Month';
+
+  @override
+  String get achievementQuranDevotee => 'Quran Devotee';
+
+  @override
+  String get achievementDhikrStarter => 'Dhikr Starter';
+
+  @override
+  String get achievementNightWorshipper => 'Night Worshipper';
+
+  @override
+  String get achievementMasjidCompanion => 'Masjid Companion';
+
+  @override
+  String get achievementDistractionDefender => 'Distraction Defender';
+
+  @override
+  String get achievementCycleGuardian => 'Cycle Guardian';
+
+  @override
+  String get achievementProtectedMonth => 'Protected Month';
+
+  @override
+  String get achievementSixMonthJourney => 'Six-Month Journey';
+
+  @override
+  String get achievementDeenFocusMaster => 'DeenFocus Master';
 
   @override
   String insightsCycleModeFooter(int days) {

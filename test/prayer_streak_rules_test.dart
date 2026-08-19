@@ -137,14 +137,66 @@ void main() {
       expect(s.dayStreak, 1); // today incomplete does not break day streak
     });
 
-    test('started but unmarked tip breaks the streak', () {
+    test('catch-up: first marked prayer counts 1 while later slot is unmarked',
+        () {
       final day = DateTime(2026, 8, 10);
-      final history = {
+      final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
         key(DateTime(2026, 8, 9)): allFive(),
         key(day): onTime([TrackablePrayer.fajr]),
       };
       // 13:00 — Dhuhr has started (fallback hour 12) but is unmarked.
-      expect(snap(now: atHour(day, 13), history: history).prayerStreak, 0);
+      // Fajr is already logged, so the streak must show 6, not stay at 0.
+      expect(snap(now: atHour(day, 13), history: history).prayerStreak, 6);
+
+      history[key(day)] = onTime([
+        TrackablePrayer.fajr,
+        TrackablePrayer.dhuhr,
+      ]);
+      expect(snap(now: atHour(day, 13), history: history).prayerStreak, 7);
+    });
+
+    test('first On Time or Qada of the day is streak 1, second is 2', () {
+      final day = DateTime(2026, 8, 10);
+      final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+        key(day): onTime([TrackablePrayer.fajr]),
+      };
+      expect(snap(now: atHour(day, 13), history: history).prayerStreak, 1);
+
+      history[key(day)] = {
+        TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+        TrackablePrayer.dhuhr: PrayerMarkStatus.qada,
+      };
+      expect(snap(now: atHour(day, 13), history: history).prayerStreak, 2);
+    });
+
+    test('stale past date on later prayer does not zero the first mark', () {
+      final day = DateTime(2026, 8, 10);
+      DateTime? startOf(TrackablePrayer prayer) {
+        switch (prayer) {
+          case TrackablePrayer.fajr:
+            return DateTime(2026, 8, 10, 5, 10);
+          case TrackablePrayer.dhuhr:
+            // Wrong calendar date (yesterday) with Dhuhr's clock time.
+            return DateTime(2026, 8, 9, 12, 30);
+          case TrackablePrayer.asr:
+            return DateTime(2026, 8, 9, 15, 45);
+          case TrackablePrayer.maghrib:
+            return DateTime(2026, 8, 9, 19, 10);
+          case TrackablePrayer.isha:
+            return DateTime(2026, 8, 9, 20, 40);
+        }
+      }
+
+      final snapAtFajr = PrayerAnalyticsService.calculate(
+        now: atHour(day, 6, 30),
+        statusHistory: {
+          key(day): onTime([TrackablePrayer.fajr]),
+        },
+        isPausedStreakDay: neverPause,
+        isExcludedStatsDay: neverPause,
+        prayerStartTime: startOf,
+      );
+      expect(snapAtFajr.prayerStreak, 1);
     });
 
     test('midnight / day boundary: before Fajr tip is yesterday Isha', () {
@@ -160,14 +212,14 @@ void main() {
         10,
       );
 
-      // After Fajr starts unmarked → tip is today's Fajr → 0.
+      // After Fajr starts unmarked — prior Isha still counts until Missed.
       expect(
         snap(now: atHour(today, 5, 30), history: history).prayerStreak,
-        0,
+        10,
       );
     });
 
-    test('unmarking tip zeroes prayer streak', () {
+    test('unmarking current prayer keeps earlier consecutive marks', () {
       final day = DateTime(2026, 8, 10);
       final history = {
         key(DateTime(2026, 8, 9)): allFive(),
@@ -179,11 +231,18 @@ void main() {
       };
       expect(snap(now: atHour(day, 16), history: history).prayerStreak, 8);
 
-      // Unmark Asr (tip).
+      // Unmark Asr (current tip) — catch-up, not a miss.
       history[key(day)] = onTime([
         TrackablePrayer.fajr,
         TrackablePrayer.dhuhr,
       ]);
+      expect(snap(now: atHour(day, 16), history: history).prayerStreak, 7);
+
+      history[key(day)] = {
+        TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+        TrackablePrayer.dhuhr: PrayerMarkStatus.onTime,
+        TrackablePrayer.asr: PrayerMarkStatus.missed,
+      };
       expect(snap(now: atHour(day, 16), history: history).prayerStreak, 0);
     });
 

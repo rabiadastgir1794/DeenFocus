@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Shared thick green open-indicator used on tappable Home cards.
+/// Shared thick open-indicator used on tappable Home cards.
 class HomeCardOpenArrow extends StatelessWidget {
-  const HomeCardOpenArrow({super.key});
+  const HomeCardOpenArrow({super.key, this.color});
+
+  /// Defaults to [ColorScheme.primary] when null.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +13,7 @@ class HomeCardOpenArrow extends StatelessWidget {
     return Icon(
       Icons.arrow_forward_rounded,
       size: 26,
-      color: colorScheme.primary,
+      color: color ?? colorScheme.primary,
     );
   }
 }

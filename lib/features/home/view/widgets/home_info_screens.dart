@@ -232,7 +232,11 @@ class _HomeAiChatScreenState extends State<HomeAiChatScreen> {
             'model': AppConfig.groqChatModel,
             'messages': requestMessages,
             'temperature': 0.7,
-            'max_tokens': AppConfig.groqChatMaxTokens,
+            // gpt-oss-120b is a reasoning model: max_tokens is deprecated and
+            // a too-small budget is consumed by reasoning, leaving empty content.
+            'max_completion_tokens': AppConfig.groqChatMaxTokens,
+            'reasoning_effort': 'low',
+            'include_reasoning': false,
           }),
         )
         .timeout(const Duration(seconds: 40));

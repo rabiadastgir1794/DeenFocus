@@ -10,7 +10,36 @@ import '../model/home_models.dart';
 
 abstract class HomePrayerTimesHelper {
   static final DateFormat _dayKeyFormat = DateFormat('yyyy-MM-dd');
-  static const String _cacheVersion = 'v3';
+  // v4: always anchor slot clock times to the prayer calendar day so a bad
+  // cached date component cannot make Dhuhr–Isha look "upcoming" forever.
+  static const String _cacheVersion = 'v4';
+
+  /// True when [scheduled]'s clock time has been reached on [now]'s calendar day.
+  ///
+  /// Uses hour:minute only (matches what the Home tiles display) so a wrong
+  /// date component on [scheduled] cannot block Mark Prayer for later prayers.
+  static bool hasStartedOnDay(DateTime scheduled, DateTime now) {
+    final start = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      scheduled.hour,
+      scheduled.minute,
+    );
+    return !now.isBefore(start);
+  }
+
+  /// Wall-clock time on [day]'s calendar date (year/month/day from [day]).
+  static DateTime atDay(DateTime day, DateTime clock) {
+    final local = clock.isUtc ? clock.toLocal() : clock;
+    return DateTime(
+      day.year,
+      day.month,
+      day.day,
+      local.hour,
+      local.minute,
+    );
+  }
 
   static Future<HomePrayerTimesData> generatePrayerTimesForDate({
     required double latitude,
@@ -100,18 +129,26 @@ abstract class HomePrayerTimesHelper {
     required Map<TrackablePrayer, int> overridesMinutesSinceMidnight,
     required DateTime referenceTime,
   }) {
-    if (overridesMinutesSinceMidnight.isEmpty) return data;
-
+    final day = DateTime(
+      referenceTime.year,
+      referenceTime.month,
+      referenceTime.day,
+    );
     final updatedSlots = data.slots.map((slot) {
       final trackable = slot.id.trackablePrayer;
       final overrideMinutes = trackable == null
           ? null
           : overridesMinutesSinceMidnight[trackable];
-      if (overrideMinutes == null) return slot;
-      final day = DateTime(slot.time.year, slot.time.month, slot.time.day);
+      if (overrideMinutes != null) {
+        return HomePrayerSlot(
+          id: slot.id,
+          time: day.add(Duration(minutes: overrideMinutes)),
+        );
+      }
+      // Keep calculated slots on the reference calendar day.
       return HomePrayerSlot(
         id: slot.id,
-        time: day.add(Duration(minutes: overrideMinutes)),
+        time: atDay(referenceTime, slot.time),
       );
     }).toList(growable: false);
 
@@ -150,8 +187,8 @@ abstract class HomePrayerTimesHelper {
     );
 
     DateTime normalizeToMinute(DateTime value) {
-      final local = value.toLocal();
-      return DateTime(local.year, local.month, local.day, local.hour, local.minute);
+      // Always pin to [currentTime]'s calendar day so every tile is "today".
+      return atDay(currentTime, value.toLocal());
     }
 
     return <HomePrayerSlot>[
@@ -185,8 +222,9 @@ abstract class HomePrayerTimesHelper {
             final id = HomePrayerId.values.firstWhere(
               (value) => value.name == row['id'],
             );
-            final time = DateTime.parse(row['time'] as String).toLocal();
-            return HomePrayerSlot(id: id, time: time);
+            final parsed = DateTime.parse(row['time'] as String).toLocal();
+            // Re-anchor to [now]'s day so stale/wrong dates cannot leak in.
+            return HomePrayerSlot(id: id, time: atDay(now, parsed));
           })
           .toList(growable: false);
       return _buildData(slots, now);

@@ -77,7 +77,7 @@ class HomePrayerStreakSection extends StatelessWidget {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.fromLTRB(14, 11, 12, 11),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -88,6 +88,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                       l10n.homePrayerStreak,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -106,21 +107,22 @@ class HomePrayerStreakSection extends StatelessWidget {
                             l10n.homeInsights,
                             style: Theme.of(context)
                                 .textTheme
-                                .labelLarge
+                                .labelMedium
                                 ?.copyWith(
                                   color: isCycleThemeActive
                                       ? cycleColor
                                       : colorScheme.primary
-                                          .withValues(alpha: 0.85),
+                                          .withValues(alpha: 0.8),
                                   fontWeight: FontWeight.w600,
+                                  fontSize: 12.5,
                                 ),
                           ),
                           Icon(
                             Icons.chevron_right_rounded,
-                            size: 18,
+                            size: 15,
                             color: isCycleThemeActive
                                 ? cycleColor
-                                : colorScheme.primary.withValues(alpha: 0.85),
+                                : colorScheme.primary.withValues(alpha: 0.8),
                           ),
                         ],
                       ),
@@ -128,7 +130,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -145,9 +147,9 @@ class HomePrayerStreakSection extends StatelessWidget {
                   ),
                   Container(
                     width: 1,
-                    height: 52,
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+                    height: 46,
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.28),
                   ),
                   Expanded(
                     child: _StreakMetric(
@@ -162,7 +164,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -183,7 +185,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                               colorScheme: colorScheme,
                               isDark: isDark,
                             ),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 3),
                             Text(
                               [
                                 l10n.weekdayLetterMon,
@@ -198,16 +200,17 @@ class HomePrayerStreakSection extends StatelessWidget {
                                   .textTheme
                                   .labelSmall
                                   ?.copyWith(
+                                    fontSize: 9.5,
                                     color: weekCycleModeDays.length > index &&
                                             weekCycleModeDays[index]
-                                        ? cycleColor
+                                        ? cycleColor.withValues(alpha: 0.85)
                                         : colorScheme.onSurfaceVariant
-                                            .withValues(alpha: 0.55),
+                                            .withValues(alpha: 0.45),
                                     fontWeight:
                                         weekCycleModeDays.length > index &&
                                                 weekCycleModeDays[index]
-                                            ? FontWeight.w700
-                                            : null,
+                                            ? FontWeight.w600
+                                            : FontWeight.w500,
                                   ),
                             ),
                           ],
@@ -217,7 +220,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                 ],
               ),
               if (canRestoreStreak && onRestoreStreak != null) ...[
-                const SizedBox(height: 14),
+                const SizedBox(height: 10),
                 Material(
                   color: restoreChipColor,
                   borderRadius: BorderRadius.circular(24),
@@ -226,14 +229,14 @@ class HomePrayerStreakSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 11,
+                        horizontal: 12,
+                        vertical: 8,
                       ),
                       child: Row(
                         children: [
                           Icon(
                             Icons.refresh_rounded,
-                            size: 18,
+                            size: 16,
                             color: accent,
                           ),
                           const SizedBox(width: 8),
@@ -246,6 +249,7 @@ class HomePrayerStreakSection extends StatelessWidget {
                                   ?.copyWith(
                                     color: accent,
                                     fontWeight: FontWeight.w600,
+                                    fontSize: 13,
                                   ),
                             ),
                           ),
@@ -293,8 +297,8 @@ class _StreakMetric extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, color: accentColor, size: 16),
-            const SizedBox(width: 5),
+            Icon(icon, color: accentColor, size: 14),
+            const SizedBox(width: 4),
             Expanded(
               child: Text(
                 title,
@@ -303,28 +307,31 @@ class _StreakMetric extends StatelessWidget {
                 style: textTheme.labelMedium?.copyWith(
                   color: titleColor,
                   fontWeight: FontWeight.w600,
+                  fontSize: 12,
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         Text(
           value,
-          style: textTheme.headlineSmall?.copyWith(
+          style: textTheme.headlineMedium?.copyWith(
             color: accentColor,
             fontWeight: FontWeight.w800,
-            height: 1.05,
+            height: 1.0,
+            fontSize: 24,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 1),
         Text(
           subtitle,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
+            fontSize: 11,
           ),
         ),
       ],
@@ -360,14 +367,14 @@ class _DayBar extends StatelessWidget {
     final cycleBar = cycleColor;
 
     return SizedBox(
-      height: 36,
+      height: 22,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          height: 28,
+          height: 17,
           decoration: BoxDecoration(
             color: isCycleDay ? cycleTrack : trackColor,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(6),
           ),
           alignment: Alignment.bottomCenter,
           child: fill <= 0
@@ -378,7 +385,7 @@ class _DayBar extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: cycleBar,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                       ),
                     )
@@ -389,7 +396,7 @@ class _DayBar extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: isCycleDay ? cycleBar : fillColor,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                 ),

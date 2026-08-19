@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/services/user_profile_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../helpers/home_prayer_times_helper.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
 import '../settings/settings_tab_screen.dart';
@@ -74,18 +75,18 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? colorScheme.outlineVariant.withValues(alpha: 0.35)
-              : AppColors.outlineVariantLight.withValues(alpha: 0.35),
+              ? colorScheme.outlineVariant.withValues(alpha: 0.30)
+              : AppColors.outlineVariantLight.withValues(alpha: 0.28),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.035),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 22),
+      padding: const EdgeInsets.fromLTRB(14, 16, 14, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -97,8 +98,8 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                     height: 1.2,
                     color: colorScheme.onSurface,
                   ),
@@ -115,7 +116,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                     children: [
                       Icon(
                         Iconsax.location,
-                        size: 14,
+                        size: 13,
                         color: colorScheme.primary,
                       ),
                       const SizedBox(width: 4),
@@ -181,7 +182,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 );
               },
             ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           if (_dynamicRemaining(prayerTimes) case final remaining?)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -189,8 +190,9 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 Text(
                   l10n.homeNextPrayerIn,
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
+                    fontSize: 13,
                     height: 1.2,
+                    fontWeight: FontWeight.w500,
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -198,9 +200,10 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                 Text(
                   _formatRemaining(l10n, remaining),
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    height: 1.2,
+                    height: 1.15,
+                    letterSpacing: 0.2,
                     color: colorScheme.primary,
                   ),
                 ),
@@ -217,7 +220,7 @@ class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
                   fontSize: 11,
                   height: 1.3,
                   fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurfaceVariant,
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
                 ),
               ),
             ),
@@ -269,7 +272,9 @@ class HomePrayerTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
-    final isPassed = !slot.time.isAfter(now);
+    // Match the clock time shown on the tile (hour:minute today), not a possibly
+    // wrong date component on [slot.time] — that bug made only Fajr markable.
+    final isPassed = HomePrayerTimesHelper.hasStartedOnDay(slot.time, now);
     final isCurrent = prayerTimes.nextPrayer == slot.id;
     final isPast = isPassed && !isCurrent;
     final trackable = slot.id.trackablePrayer;
@@ -306,9 +311,13 @@ class HomePrayerTile extends StatelessWidget {
       border = null;
       boxShadow = null;
     } else if (isPast && status == PrayerMarkStatus.qada) {
-      background = colorScheme.secondaryContainer.withValues(alpha: 0.55);
-      titleColor = colorScheme.secondary;
-      timeColor = colorScheme.secondary;
+      background = (isDark
+              ? AppColors.prayerQadaContainerDark
+              : AppColors.prayerQadaContainerLight)
+          .withValues(alpha: 0.85);
+      titleColor =
+          isDark ? AppColors.prayerQadaOnDark : AppColors.prayerQadaOnLight;
+      timeColor = titleColor;
       border = null;
       boxShadow = null;
     } else if (isPast && status == PrayerMarkStatus.onTime) {
@@ -337,6 +346,10 @@ class HomePrayerTile extends StatelessWidget {
       boxShadow = null;
     }
 
+    // Edit affordance only for upcoming prayers (tap → settings). Once the
+    // prayer time has started/passed, the whole tile opens Mark Prayer;
+    // settings stay reachable from that sheet's gear.
+    final showSettingsAffordance = trackable != null && !isPassed;
     final editOnPrimary = isCurrent;
     final editBg = editOnPrimary
         ? colorScheme.onPrimary.withValues(alpha: 0.22)
@@ -349,11 +362,11 @@ class HomePrayerTile extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      height: 76,
+      height: 72,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           border: border,
           boxShadow: boxShadow,
         ),
@@ -365,12 +378,19 @@ class HomePrayerTile extends StatelessWidget {
                 child: InkWell(
                   onTap: trackable == null
                       ? null
-                      : () => openPrayerAction(context, trackable),
-                  borderRadius: BorderRadius.circular(12),
+                      : () {
+                          final prayer = trackable;
+                          if (isPassed) {
+                            showMarkPrayerSheet(context, prayer);
+                          } else {
+                            showPrayerSettingsSheet(context, prayer);
+                          }
+                        },
+                  borderRadius: BorderRadius.circular(14),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
-                      vertical: 10,
+                      vertical: 8,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -380,9 +400,13 @@ class HomePrayerTile extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 10,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: isCurrent
+                                ? FontWeight.w600
+                                : FontWeight.w500,
                             height: 1.2,
-                            color: titleColor.withValues(alpha: 0.8),
+                            color: titleColor.withValues(
+                              alpha: isCurrent ? 0.92 : 0.8,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -392,7 +416,7 @@ class HomePrayerTile extends StatelessWidget {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            height: 1.2,
+                            height: 1.15,
                             color: timeColor,
                           ),
                         ),
@@ -402,7 +426,7 @@ class HomePrayerTile extends StatelessWidget {
                 ),
               ),
             ),
-            if (trackable != null)
+            if (showSettingsAffordance)
               Positioned(
                 top: 5,
                 left: 5,
@@ -415,9 +439,9 @@ class HomePrayerTile extends StatelessWidget {
                     child: Tooltip(
                       message: l10n.homeEditPrayerSettings,
                       child: SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: Icon(Iconsax.edit_2, size: 11, color: editFg),
+                        width: 20,
+                        height: 20,
+                        child: Icon(Iconsax.edit_2, size: 10, color: editFg),
                       ),
                     ),
                   ),

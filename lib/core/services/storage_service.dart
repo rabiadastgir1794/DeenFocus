@@ -47,6 +47,12 @@ abstract class StorageService {
   static const String _keyAppFirstOpenMs = 'app_first_open_ms';
   static const String _keyAppReviewPromptCompleted =
       'app_review_prompt_completed';
+  static const String _keyAppReviewSessionCount = 'app_review_session_count';
+  static const String _keyAppReviewLastSessionMs = 'app_review_last_session_ms';
+  static const String _keyAppReviewLastAutomaticMs =
+      'app_review_last_automatic_ms';
+  static const String _keyAppReviewAutomaticHistoryJson =
+      'app_review_automatic_history_json';
   static const String _keyFocusAccessibilityDisclosureAccepted =
       'focus_accessibility_disclosure_accepted';
   static const String _keyHasEverSubscribed = 'has_ever_subscribed';
@@ -491,20 +497,77 @@ abstract class StorageService {
     }
   }
 
-  static Future<bool> get shouldShowAppReviewPrompt async {
+  static Future<int> get appReviewSessionCount async {
     final prefs = await _prefs;
-    if (prefs.getBool(_keyAppReviewPromptCompleted) ?? false) {
-      return false;
-    }
-    final firstMs = prefs.getInt(_keyAppFirstOpenMs);
-    if (firstMs == null) return false;
-    final elapsed = DateTime.now().millisecondsSinceEpoch - firstMs;
-    return elapsed >= Duration.zero.inMilliseconds;
+    return prefs.getInt(_keyAppReviewSessionCount) ?? 0;
   }
 
-  static Future<void> setAppReviewPromptCompleted() async {
+  static Future<DateTime?> get appReviewLastSessionAt async {
     final prefs = await _prefs;
+    final ms = prefs.getInt(_keyAppReviewLastSessionMs);
+    if (ms == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(ms);
+  }
+
+  static Future<void> setAppReviewSession({
+    required int count,
+    required DateTime at,
+  }) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyAppReviewSessionCount, count);
+    await prefs.setInt(_keyAppReviewLastSessionMs, at.millisecondsSinceEpoch);
+  }
+
+  static Future<DateTime?> get appReviewLastAutomaticAt async {
+    final prefs = await _prefs;
+    final ms = prefs.getInt(_keyAppReviewLastAutomaticMs);
+    if (ms == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(ms);
+  }
+
+  static Future<List<DateTime>> get appReviewAutomaticHistory async {
+    final prefs = await _prefs;
+    final raw = prefs.getString(_keyAppReviewAutomaticHistoryJson);
+    if (raw == null || raw.isEmpty) return const <DateTime>[];
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      return [
+        for (final item in list)
+          DateTime.fromMillisecondsSinceEpoch((item as num).toInt()),
+      ];
+    } catch (_) {
+      return const <DateTime>[];
+    }
+  }
+
+  static Future<void> recordAppReviewAutomaticPrompt(DateTime at) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyAppReviewLastAutomaticMs, at.millisecondsSinceEpoch);
+    final previous = await appReviewAutomaticHistory;
+    final next = <int>[
+      for (final stamp in previous) stamp.millisecondsSinceEpoch,
+      at.millisecondsSinceEpoch,
+    ];
+    await prefs.setString(_keyAppReviewAutomaticHistoryJson, jsonEncode(next));
     await prefs.setBool(_keyAppReviewPromptCompleted, true);
+  }
+
+  /// One-time: users who already saw the old one-shot prompt start a cooldown.
+  static Future<void> migrateLegacyAppReviewPromptIfNeeded({
+    DateTime? now,
+  }) async {
+    final prefs = await _prefs;
+    if (prefs.containsKey(_keyAppReviewLastAutomaticMs)) return;
+    if (!(prefs.getBool(_keyAppReviewPromptCompleted) ?? false)) return;
+    final stamp = now ?? DateTime.now();
+    await prefs.setInt(
+      _keyAppReviewLastAutomaticMs,
+      stamp.millisecondsSinceEpoch,
+    );
+    await prefs.setString(
+      _keyAppReviewAutomaticHistoryJson,
+      jsonEncode(<int>[stamp.millisecondsSinceEpoch]),
+    );
   }
 
   static Future<bool> get focusAccessibilityDisclosureAccepted async {

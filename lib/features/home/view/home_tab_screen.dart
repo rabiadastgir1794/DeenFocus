@@ -435,7 +435,7 @@ class _HomeTabViewState extends State<_HomeTabView>
 
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -485,31 +485,31 @@ class _HomeTabViewState extends State<_HomeTabView>
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 8),
             HomeVerseMarquee(
               text: _verseText(l10n, vm.dailyVerse),
               color: colorScheme.primary,
             ),
             if (showHomeFocusLockCard) ...[
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               _FocusLockCard(focusVm: focusVm),
             ],
             // Banner = activeCycle only (same gate as highlight's activeCycle term).
             if (vm.cycleModeEnabled) ...[
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               HomeCycleModeActiveBanner(
                 daysRemaining: vm.cycleModeDaysRemaining,
                 onTap: () => unawaited(_openCycleModeSettings(context, vm)),
               ),
             ],
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             HomePrayerTimesSection(
               prayerTimes: vm.prayerTimes,
               backgroundColor: softCardColor,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             _FocusModeCard(onTap: widget.onOpenFocusTab),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             HomePrayerStreakSection(
               prayerStreak: vm.prayerStreak,
               dayStreak: vm.streakDays,
@@ -522,13 +522,13 @@ class _HomeTabViewState extends State<_HomeTabView>
               onInsightsTap: () => unawaited(_openInsights(context, vm)),
               onRestoreStreak: () => unawaited(vm.restoreStreakLast7Days()),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
             _CycleModeToggleCard(
               isEnabled: vm.cycleModeEnabled,
               onToggle: () => unawaited(_onCycleModeToggle(context, vm)),
               onEdit: () => unawaited(_openCycleModeSettings(context, vm)),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
             _QuickActionsCard(
               qiblaTitle: l10n.homeQiblaDirection,
               masjidTitle: l10n.quickActionsMasjidFinder,
@@ -539,13 +539,13 @@ class _HomeTabViewState extends State<_HomeTabView>
               onOpenCalendar: () => _openCalendarScreen(context, vm),
               onOpenSupportUs: () => _openSupportUs(context),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             HomeDailyChecklistSection(
               backgroundColor: softCardColor,
               completedItems: vm.dailyChecklistCompletedItems,
               onOpen: () => unawaited(showDailyChecklistSheet(context)),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
             HomeFocusScoreSection(
               backgroundColor: softCardColor,
               score: vm.todayFocusScore,
@@ -556,7 +556,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               onTap: () => unawaited(_openInsights(context, vm)),
             ),
             if (vm.isFriday) ...[
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -725,7 +725,7 @@ class _QuickActionsCard extends StatelessWidget {
   final VoidCallback onOpenCalendar;
   final VoidCallback onOpenSupportUs;
 
-  static const double _gap = 12;
+  static const double _gap = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -750,6 +750,7 @@ class _QuickActionsCard extends StatelessWidget {
       ),
     ];
 
+    // Flat 2×2 — no outer shell, so tiles don't feel nested.
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -758,7 +759,7 @@ class _QuickActionsCard extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: _gap,
         crossAxisSpacing: _gap,
-        childAspectRatio: 1.15,
+        mainAxisExtent: 76,
       ),
       itemBuilder: (context, index) {
         final item = items[index];
@@ -773,7 +774,7 @@ class _QuickActionsCard extends StatelessWidget {
   }
 }
 
-/// Equal quick-action tile: icon + label only (matches reference).
+/// Compact quick-action tile — soft fill, no border layering.
 class _QuickActionItem extends StatelessWidget {
   const _QuickActionItem({
     required this.title,
@@ -791,47 +792,31 @@ class _QuickActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = colorScheme.surfaceContainerHighest.withValues(
-      alpha: 0.20,
-    );
+    final backgroundColor = isDark
+        ? colorScheme.primary.withValues(alpha: 0.12)
+        : colorScheme.primary.withValues(alpha: 0.07);
 
     return Material(
       color: backgroundColor,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(16),
       elevation: 0,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: isDark ? 0.22 : 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 22, color: iconColor),
-              ),
-              const SizedBox(height: 10),
+              Icon(icon, size: 22, color: iconColor),
+              const SizedBox(height: 6),
               Text(
                 title,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  fontSize: 13,
+                  fontSize: 12,
+                  height: 1.15,
+                  color: colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -951,30 +936,23 @@ class _FocusModeCard extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              colorScheme.primary,
-              colorScheme.primary.withValues(alpha: 0.85),
-            ],
-          ),
+          color: colorScheme.primary,
           boxShadow: [
             BoxShadow(
-              color: colorScheme.primary.withValues(alpha: 0.25),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              color: colorScheme.primary.withValues(alpha: 0.22),
+              blurRadius: 14,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.22),
+                color: Colors.white.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Icon(
@@ -983,7 +961,7 @@ class _FocusModeCard extends StatelessWidget {
                 size: 22,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -993,21 +971,24 @@ class _FocusModeCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
+                      letterSpacing: 0.1,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     l10n.homeFocusModeSubtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: Colors.white.withValues(alpha: 0.88),
+                      height: 1.25,
                     ),
                   ),
                 ],
               ),
             ),
             Icon(
-              Icons.chevron_right_rounded,
+              Icons.arrow_forward_rounded,
               color: Colors.white.withValues(alpha: 0.95),
+              size: 22,
             ),
           ],
         ),
@@ -1016,7 +997,7 @@ class _FocusModeCard extends StatelessWidget {
   }
 }
 
-/// Cycle Mode row: edit settings (left of switch) + enable/disable toggle.
+/// Cycle Mode row: quieter secondary control so Focus Mode stays primary.
 class _CycleModeToggleCard extends StatelessWidget {
   const _CycleModeToggleCard({
     required this.isEnabled,
@@ -1037,27 +1018,27 @@ class _CycleModeToggleCard extends StatelessWidget {
         ? const Color(0xFFE59DB7)
         : const Color(0xFFFF9EC5);
     final cycleModeBackground = isDark
-        ? cycleModeColor.withValues(alpha: 0.15)
-        : cycleModeColor.withValues(alpha: 0.12);
+        ? cycleModeColor.withValues(alpha: 0.10)
+        : cycleModeColor.withValues(alpha: 0.08);
 
     return Material(
       color: cycleModeBackground,
       borderRadius: BorderRadius.circular(14),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 8, 10),
+        padding: const EdgeInsets.fromLTRB(10, 8, 6, 8),
         child: Row(
           children: [
             Container(
-              width: 28,
-              height: 28,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
-                color: cycleModeColor.withValues(alpha: 0.22),
+                color: cycleModeColor.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 Icons.water_drop_outlined,
                 color: cycleModeColor,
-                size: 15,
+                size: 14,
               ),
             ),
             const SizedBox(width: 8),
@@ -1069,19 +1050,21 @@ class _CycleModeToggleCard extends StatelessWidget {
                   Text(
                     l10n.cycleModeTitle,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12.5,
                       height: 1.15,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 1),
                   Text(
                     l10n.cycleModeSubtitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      fontSize: 10.5,
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.8,
+                      ),
+                      fontSize: 10,
                       height: 1.25,
                     ),
                   ),
@@ -1093,8 +1076,8 @@ class _CycleModeToggleCard extends StatelessWidget {
               style: TextButton.styleFrom(
                 foregroundColor: cycleModeColor,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
+                  horizontal: 8,
+                  vertical: 4,
                 ),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1103,13 +1086,13 @@ class _CycleModeToggleCard extends StatelessWidget {
               child: Text(
                 l10n.cycleModeEditButton,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
                 ),
               ),
             ),
             Transform.scale(
-              scale: 0.82,
+              scale: 0.78,
               child: Switch.adaptive(
                 value: isEnabled,
                 onChanged: (_) => onToggle(),

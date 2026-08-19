@@ -733,6 +733,7 @@
   "settingsLocationLabel": "Location",
   "settingsDarkModeLabel": "Dark Mode",
   "settingsAboutTitle": "About Deen Focus",
+  "settingsRateDeenFocus": "Rate DeenFocus ⭐",
   "settingsContactUsTitle": "Contact Us",
   "settingsSavingLocation": "Saving...",
   "settingsSaveLocation": "Save Location",
@@ -898,6 +899,73 @@
   "insightsCycleProtectedDays": "Cycle protected days",
   "insightsAchievements": "Achievements",
   "insightsAchieved": "Achieved",
+  "insightsMyProgress": "My progress",
+  "insightsLevelNumber": "Level {level}",
+  "@insightsLevelNumber": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsXpProgress": "{current} / {next} XP",
+  "@insightsXpProgress": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "next": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsXpTotal": "{xp} XP",
+  "@insightsXpTotal": {
+    "placeholders": {
+      "xp": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsXpToNext": "{xp} XP to Level {level}",
+  "@insightsXpToNext": {
+    "placeholders": {
+      "xp": {
+        "type": "String"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsMaxLevel": "MAX LEVEL",
+  "insightsAchievementsUnlocked": "{unlocked} / {total} unlocked",
+  "@insightsAchievementsUnlocked": {
+    "placeholders": {
+      "unlocked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsAchievementUnlockedTitle": "Achievement Unlocked",
+  "insightsLevelUpTitle": "LEVEL UP",
+  "achievementFirstPrayer": "First Prayer",
+  "achievementFajrChampion": "Fajr Champion",
+  "achievementFiveADay": "Five-a-Day",
+  "achievementPerfectWeek": "Perfect Week",
+  "achievementPerfectMonth": "Perfect Month",
+  "achievementQuranDevotee": "Quran Devotee",
+  "achievementDhikrStarter": "Dhikr Starter",
+  "achievementNightWorshipper": "Night Worshipper",
+  "achievementMasjidCompanion": "Masjid Companion",
+  "achievementDistractionDefender": "Distraction Defender",
+  "achievementCycleGuardian": "Cycle Guardian",
+  "achievementProtectedMonth": "Protected Month",
+  "achievementSixMonthJourney": "Six-Month Journey",
+  "achievementDeenFocusMaster": "DeenFocus Master",
   "insightsCycleModeFooter": "Cycle Mode days are protected and not counted as streak breaks. You have {days} protected day(s) available.",
   "@insightsCycleModeFooter": {
     "placeholders": {
@@ -907,7 +975,7 @@
     }
   },
   "insightsCycleModeFooterOff": "Enable Cycle Mode to protect your streak during rest days.",
-  "achievementFirstPrayerStreak": "First Prayer Streak",
+  "achievementFirstPrayerStreak": "First Prayer",
   "achievementSevenPrayerStreak": "Seven Prayer Streak",
   "achievementThirtyPrayerStreak": "Thirty Prayer Streak",
   "achievementFajrWarrior": "Fajr Warrior",

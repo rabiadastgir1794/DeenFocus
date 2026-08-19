@@ -24,8 +24,11 @@ import '../helpers/home_prayer_times_helper.dart';
 import '../model/home_models.dart';
 import '../services/achievements_service.dart';
 import '../services/cycle_mode_policy.dart';
+import '../services/level_service.dart';
 import '../services/prayer_analytics_service.dart';
 import '../services/prayer_settings_service.dart';
+import '../services/progression_service.dart';
+import '../services/xp_service.dart';
 
 class HomeTabViewModel extends ChangeNotifier {
   HomeTabViewModel({PrayerSettingsService? prayerSettings})
@@ -103,6 +106,9 @@ class HomeTabViewModel extends ChangeNotifier {
     monthWeekBuckets: <({String label, int completed, int possible})>[],
   );
   List<AchievementProgress> achievements = AchievementsService.defaults();
+  UserProgress userProgress = UserProgress.initial();
+  LevelProgress levelProgress = LevelService.getLevelFromXP(0);
+  List<XpEvent> _xpEvents = const <XpEvent>[];
   Map<String, Set<DailyChecklistItem>> _checklistHistory =
       <String, Set<DailyChecklistItem>>{};
 
@@ -285,7 +291,7 @@ class HomeTabViewModel extends ChangeNotifier {
     await _syncCycleModeFromStorage();
     await _loadAll();
     _startTicker();
-    unawaited(AppReviewService.onAppResumed());
+    unawaited(_recordAndMaybeRequestAppReview());
     unawaited(PrayerLiveActivityService.instance.syncFromStorage());
   }
 
@@ -338,7 +344,7 @@ class HomeTabViewModel extends ChangeNotifier {
       ),
     );
     unawaited(PrayerLiveActivityService.instance.syncFromStorage());
-    await AppReviewService.onAppResumed();
+    await _recordAndMaybeRequestAppReview();
     notifyListeners();
   }
 
@@ -362,6 +368,8 @@ class HomeTabViewModel extends ChangeNotifier {
       await _loadDailyChecklist();
       await _loadChecklistHistory();
       achievements = await AchievementsService.load();
+      userProgress = await ProgressionService.loadProgress();
+      _xpEvents = await ProgressionService.loadEvents();
       await _computeFocusScore();
       await _refreshAchievements();
       _loadEvents();
@@ -415,6 +423,7 @@ class HomeTabViewModel extends ChangeNotifier {
     }
 
     _prayerStreakState = _prayerStreakState.copyWith(statusHistory: history);
+    _prayerStreakState = _hydrateWeekDaysFromHistory(_prayerStreakState);
     _recomputeAnalytics(now);
     await _persistPrayerStreak();
   }
@@ -801,12 +810,12 @@ class HomeTabViewModel extends ChangeNotifier {
     return null;
   }
 
-  /// True when [prayer] has started or already passed (`now >= prayerStart`).
+  /// True when [prayer] has started or already passed on today's clock.
   /// Upcoming prayers must not be marked yet.
   bool hasPrayerStarted(TrackablePrayer prayer, {DateTime? now}) {
     final start = prayerDateTimeFor(prayer);
     if (start == null) return false;
-    return !(now ?? DateTime.now()).isBefore(start);
+    return HomePrayerTimesHelper.hasStartedOnDay(start, now ?? DateTime.now());
   }
 
   /// Most recent prayer that has started today (by schedule). Never falls back
@@ -1036,15 +1045,19 @@ class HomeTabViewModel extends ChangeNotifier {
     final previousPrayerStreak = prayerStreak;
     final dateKey = _dayKeyFormat.format(date);
     final current = dayFor(date);
-    final wasCompleted = current.isCompleted;
-    final previousStatus = current.statusFor(prayer);
+    final historySeed = _mergedStatusHistory()[dateKey];
+    PrayerMarkStatus statusOf(TrackablePrayer p) =>
+        historySeed?[p] ?? current.statusFor(p);
+    final wasCompleted = TrackablePrayer.values.every(
+      (p) => PrayerAnalyticsService.countsForPrayerStreak(statusOf(p)),
+    );
+    final previousStatus = statusOf(prayer);
 
-    // Seed from statusFor so legacy selectedPrayers-only rows keep siblings
-    // when one prayer is unmarked.
+    // Seed from merged history + weekDays so a stale empty week row cannot
+    // drop sibling marks when one prayer is logged.
     final updatedStatuses = <TrackablePrayer, PrayerMarkStatus>{
       for (final p in TrackablePrayer.values)
-        if (current.statusFor(p) != PrayerMarkStatus.none)
-          p: current.statusFor(p),
+        if (statusOf(p) != PrayerMarkStatus.none) p: statusOf(p),
     };
     if (status == PrayerMarkStatus.none) {
       updatedStatuses.remove(prayer);
@@ -1099,16 +1112,20 @@ class HomeTabViewModel extends ChangeNotifier {
       statusHistory: history,
     );
     _recomputeAnalytics(DateTime.now());
+    final newlyCounts =
+        PrayerAnalyticsService.countsForPrayerStreak(status) &&
+        !PrayerAnalyticsService.countsForPrayerStreak(previousStatus);
+    if (newlyCounts && prayerStreak < previousPrayerStreak + 1) {
+      prayerStreak = previousPrayerStreak + 1;
+    }
+    notifyListeners();
     await _persistPrayerStreak();
     await _computeFocusScore();
     await _refreshAchievements();
     notifyListeners();
     unawaited(_syncNightlyWrapUpIfPossible());
 
-    final celebrated =
-        status == PrayerMarkStatus.onTime &&
-        previousStatus != PrayerMarkStatus.onTime &&
-        prayerStreak > previousPrayerStreak;
+    final celebrated = newlyCounts;
     return PrayerMarkResult(
       prayer: prayer,
       status: status,
@@ -1171,69 +1188,93 @@ class HomeTabViewModel extends ChangeNotifier {
     }
   }
 
+  int get unlockedAchievementCount =>
+      AchievementsService.unlockedCount(achievements);
+
+  List<AchievementId> get pendingUnlockAchievements {
+    return userProgress.pendingUnlockIds
+        .map(AchievementIdX.parse)
+        .whereType<AchievementId>()
+        .toList(growable: false);
+  }
+
+  int? get pendingLevelUp => userProgress.pendingLevelUp;
+
+  Future<void> acknowledgeProgressionCelebrations() async {
+    userProgress = await ProgressionService.acknowledgeCelebrations(
+      userProgress,
+    );
+    notifyListeners();
+  }
+
   Future<void> _refreshAchievements() async {
     final now = DateTime.now();
-    final inputs = AchievementCalculator.calculate(
+    final snapshot = await ProgressionService.evaluateAndPersist(
+      previousProgress: userProgress,
+      previousEvents: _xpEvents,
+      previousAchievements: achievements,
       now: now,
-      statusHistory: _mergedStatusHistory(),
-      isPausedStreakDay: cyclePolicy.shouldPauseStreaks,
-      prayerStartTime: prayerDateTimeFor,
+      activityFor: (currentLevel) {
+        final history = _mergedStatusHistory();
+        final checklist = _checklistForProgression(now);
+        final protected = AchievementsService.protectedDaysUntilToday(
+          policy: cyclePolicy,
+          now: now,
+        );
+        return AchievementActivitySnapshot(
+          now: now,
+          prayerStreak: prayerStreak,
+          bestPrayerStreak: bestPrayerStreak,
+          statusHistory: history,
+          checklistHistory: checklist,
+          cycleProtectedDays: protected,
+          currentLevel: currentLevel,
+          journeyStartDate: userProgress.journeyStartDate,
+        );
+      },
     );
-    final quranDays = _habitConsecutiveDays(DailyChecklistItem.quran);
-    final dhikrDays = _habitConsecutiveDaysAny(const [
-      DailyChecklistItem.morningAdhkar,
-      DailyChecklistItem.eveningAdhkar,
-      DailyChecklistItem.dhikr,
-    ]);
-    achievements = AchievementsService.evaluate(
-      previous: achievements,
-      prayerStreak: inputs.prayerStreak,
-      dayStreak: inputs.dayStreak,
-      fajrOnTimeStreak: inputs.fajrOnTimeStreak,
-      quranConsecutiveDays: quranDays,
-      dhikrConsecutiveDays: dhikrDays,
-    );
-    await AchievementsService.save(achievements);
+    achievements = snapshot.achievements;
+    userProgress = snapshot.progress;
+    levelProgress = snapshot.level;
+    _xpEvents = snapshot.events;
+    if (snapshot.newlyUnlocked.isNotEmpty) {
+      unawaited(_maybeRequestAppReview());
+    }
   }
 
-  int _habitConsecutiveDays(DailyChecklistItem item) {
+  int _completedPrayerCount() {
     var count = 0;
-    final now = DateTime.now();
-    for (var i = 0; i < 120; i++) {
-      final date = DateTime(now.year, now.month, now.day - i);
-      final key = _dayKeyFormat.format(date);
-      final items = i == 0
-          ? _dailyChecklist.completedItems
-          : (_checklistHistory[key] ?? const <DailyChecklistItem>{});
-      if (items.contains(item)) {
-        count += 1;
-      } else if (i == 0) {
-        continue;
-      } else {
-        break;
+    for (final day in _mergedStatusHistory().values) {
+      for (final status in day.values) {
+        if (PrayerAnalyticsService.countsForPrayerStreak(status)) count += 1;
       }
     }
     return count;
   }
 
-  int _habitConsecutiveDaysAny(List<DailyChecklistItem> anyOf) {
-    var count = 0;
-    final now = DateTime.now();
-    for (var i = 0; i < 120; i++) {
-      final date = DateTime(now.year, now.month, now.day - i);
-      final key = _dayKeyFormat.format(date);
-      final items = i == 0
-          ? _dailyChecklist.completedItems
-          : (_checklistHistory[key] ?? const <DailyChecklistItem>{});
-      if (anyOf.any(items.contains)) {
-        count += 1;
-      } else if (i == 0) {
-        continue;
-      } else {
-        break;
-      }
-    }
-    return count;
+  Future<void> _recordAndMaybeRequestAppReview() async {
+    await AppReviewService.recordMeaningfulSession();
+    await _maybeRequestAppReview();
+  }
+
+  Future<void> maybeRequestAppReview() => _maybeRequestAppReview();
+
+  Future<void> _maybeRequestAppReview() async {
+    await AppReviewService.maybeShowAutomatic(
+      completedPrayers: _completedPrayerCount(),
+      hasUnlockedAchievement: unlockedAchievementCount > 0,
+    );
+  }
+
+  Map<String, Set<DailyChecklistItem>> _checklistForProgression(DateTime now) {
+    final merged = <String, Set<DailyChecklistItem>>{
+      for (final entry in _checklistHistory.entries)
+        entry.key: Set<DailyChecklistItem>.from(entry.value),
+    };
+    merged[_dayKeyFormat.format(now)] = Set<DailyChecklistItem>.from(
+      _dailyChecklist.completedItems,
+    );
+    return merged;
   }
 
   Future<void> _loadChecklistHistory() async {
@@ -1289,6 +1330,27 @@ class HomeTabViewModel extends ChangeNotifier {
         .toList(growable: false);
 
     return state.copyWith(weekDays: normalizedWeekDays);
+  }
+
+  /// Keep Home tiles in sync with [statusHistory] when a week row is empty.
+  HomePrayerStreakState _hydrateWeekDaysFromHistory(
+    HomePrayerStreakState state,
+  ) {
+    final history = state.statusHistory;
+    if (history.isEmpty) return state;
+    final hydrated = state.weekDays.map((day) {
+      final hist = history[day.dateKey];
+      if (hist == null || hist.isEmpty) return day;
+      final selected = <TrackablePrayer>{
+        for (final e in hist.entries)
+          if (PrayerAnalyticsService.countsForPrayerStreak(e.value)) e.key,
+      };
+      return day.copyWith(
+        selectedPrayers: selected,
+        prayerStatuses: Map<TrackablePrayer, PrayerMarkStatus>.from(hist),
+      );
+    }).toList(growable: false);
+    return state.copyWith(weekDays: hydrated);
   }
 
   List<DateTime> _currentWeekDates(DateTime anchor) {

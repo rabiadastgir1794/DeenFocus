@@ -6,7 +6,9 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/spacing.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../helpers/home_prayer_times_helper.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
@@ -14,11 +16,22 @@ import 'home_prayer_completion_popup.dart';
 import 'home_prayer_settings_sheet.dart';
 
 /// Generic prayer tap handler for all five prayers:
-/// - upcoming (`now < start`) → settings sheet
+/// - upcoming (clock time not reached today) → settings sheet
 /// - started / passed → mark-as status sheet
-Future<void> openPrayerAction(BuildContext context, TrackablePrayer prayer) {
+///
+/// Pass [prayerStart] from the visible tile when available so the decision
+/// matches the time shown on that tile.
+Future<void> openPrayerAction(
+  BuildContext context,
+  TrackablePrayer prayer, {
+  DateTime? prayerStart,
+}) {
   final vm = context.read<HomeTabViewModel>();
-  if (!vm.hasPrayerStarted(prayer)) {
+  final now = DateTime.now();
+  final started = prayerStart != null
+      ? HomePrayerTimesHelper.hasStartedOnDay(prayerStart, now)
+      : vm.hasPrayerStarted(prayer, now: now);
+  if (!started) {
     return showPrayerSettingsSheet(context, prayer);
   }
   return showMarkPrayerSheet(context, prayer);
@@ -54,6 +67,7 @@ class _MarkPrayerSheetContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final vm = context.watch<HomeTabViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final status = vm.statusForToday(prayer);
     final prayerLabel = prayer.label(l10n);
 
@@ -112,8 +126,12 @@ class _MarkPrayerSheetContent extends StatelessWidget {
             _MarkStatusButton(
               icon: Iconsax.timer_1,
               label: l10n.homeMarkPrayerQada,
-              backgroundColor: colorScheme.secondaryContainer,
-              foregroundColor: colorScheme.onSecondaryContainer,
+              backgroundColor: isDark
+                  ? AppColors.prayerQadaContainerDark
+                  : AppColors.prayerQadaContainerLight,
+              foregroundColor: isDark
+                  ? AppColors.prayerQadaOnDark
+                  : AppColors.prayerQadaOnLight,
               selected: status == PrayerMarkStatus.qada,
               onTap: () => _mark(context, PrayerMarkStatus.qada),
             ),
@@ -121,8 +139,12 @@ class _MarkPrayerSheetContent extends StatelessWidget {
             _MarkStatusButton(
               icon: Iconsax.close_circle,
               label: l10n.homeMarkPrayerMissed,
-              backgroundColor: colorScheme.errorContainer,
-              foregroundColor: colorScheme.onErrorContainer,
+              backgroundColor: isDark
+                  ? AppColors.prayerMissedContainerDark
+                  : AppColors.prayerMissedContainerLight,
+              foregroundColor: isDark
+                  ? AppColors.prayerMissedOnDark
+                  : AppColors.prayerMissedOnLight,
               selected: status == PrayerMarkStatus.missed,
               onTap: () => _mark(context, PrayerMarkStatus.missed),
             ),

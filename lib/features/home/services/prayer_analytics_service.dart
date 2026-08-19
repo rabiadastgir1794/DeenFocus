@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 
+import '../helpers/home_prayer_times_helper.dart';
 import '../model/home_models.dart';
 
 /// Immutable analytics snapshot — Home, Insights, popups, and achievements
@@ -159,7 +160,10 @@ abstract class PrayerAnalyticsService {
   }) {
     for (final prayer in TrackablePrayer.values.reversed) {
       final start = prayerStartTime(prayer);
-      if (start != null && !now.isBefore(start)) return prayer;
+      if (start != null &&
+          HomePrayerTimesHelper.hasStartedOnDay(start, now)) {
+        return prayer;
+      }
     }
     return null;
   }
@@ -173,7 +177,10 @@ abstract class PrayerAnalyticsService {
     final today = DateTime(now.year, now.month, now.day);
     final normalized = DateTime(day.year, day.month, day.day);
     if (normalized == today && prayerStartTime != null) {
-      return prayerStartTime(prayer);
+      final start = prayerStartTime(prayer);
+      if (start != null) {
+        return HomePrayerTimesHelper.atDay(today, start);
+      }
     }
     final index = TrackablePrayer.values.indexOf(prayer);
     const hours = [5, 12, 15, 18, 20];
@@ -195,10 +202,10 @@ abstract class PrayerAnalyticsService {
 ///
 /// Rules:
 /// * [PrayerMarkStatus.onTime] and [PrayerMarkStatus.qada] both count.
-/// * Missed or started-but-unmarked tip → streak 0 — **except** when returning
-///   from a paused Cycle Mode day: started-unmarked tips on that first normal
-///   day are soft-bridged (ignored) so menstruation pause days never wipe a
-///   valid streak. Explicit [PrayerMarkStatus.missed] still tip-breaks.
+/// * Explicit [PrayerMarkStatus.missed] at the tip → streak 0.
+/// * Unmarked slots are not a miss: skip them until a logged prayer or an
+///   explicit Missed. So the first On Time/Qada always adds 1, even when a
+///   later prayer has already started (home sheet, popup, or alarm).
 /// * Upcoming (not started, unmarked) slots are ignored — they never break
 ///   the streak.
 /// * Paused Cycle Mode days ([isCycleDay]) bridge the tip chain:
@@ -273,6 +280,7 @@ abstract class PrayerStreakCalculator {
             slots.add(status);
           }
         }
+        _dropTrailingUnmarkedCatchUp(slots);
       } else if (paused) {
         for (final prayer in order) {
           final status = statuses[prayer] ?? PrayerMarkStatus.none;
@@ -293,6 +301,10 @@ abstract class PrayerStreakCalculator {
           if (counts) {
             foundTip = true;
             streak = 1;
+          } else if (status == PrayerMarkStatus.none) {
+            // Not logged yet — keep walking older slots. Marking Fajr first
+            // must count even if Dhuhr/Asr have already started.
+            continue;
           } else {
             return 0;
           }
@@ -345,6 +357,7 @@ abstract class PrayerStreakCalculator {
           if (!started && status == PrayerMarkStatus.none) break;
           slots.add(status);
         }
+        _dropTrailingUnmarkedCatchUp(slots);
       } else {
         for (final prayer in order) {
           slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
@@ -352,13 +365,26 @@ abstract class PrayerStreakCalculator {
       }
 
       if (slots.isEmpty) continue;
-      // Only the tip slot matters for whether a non-paused tip exists.
-      if (PrayerAnalyticsService.countsForPrayerStreak(slots.last)) {
-        return true;
+      for (var i = slots.length - 1; i >= 0; i--) {
+        final status = slots[i];
+        if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
+          return true;
+        }
+        if (status != PrayerMarkStatus.none) {
+          return false;
+        }
       }
-      return false;
     }
     return false;
+  }
+
+  /// After the user has logged On Time/Qada today, later started-but-unmarked
+  /// slots are catch-up — trim them so they are not treated as a breaking tip.
+  static void _dropTrailingUnmarkedCatchUp(List<PrayerMarkStatus> slots) {
+    if (!slots.any(PrayerAnalyticsService.countsForPrayerStreak)) return;
+    while (slots.isNotEmpty && slots.last == PrayerMarkStatus.none) {
+      slots.removeLast();
+    }
   }
 
   static bool _hasStarted({
@@ -368,7 +394,9 @@ abstract class PrayerStreakCalculator {
     required int slotIndex,
   }) {
     final start = prayerStartTime?.call(prayer);
-    if (start != null) return !now.isBefore(start);
+    if (start != null) {
+      return HomePrayerTimesHelper.hasStartedOnDay(start, now);
+    }
     const hours = [5, 12, 15, 18, 20];
     return now.hour >= hours[slotIndex];
   }

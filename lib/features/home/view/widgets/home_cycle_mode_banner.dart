@@ -27,31 +27,24 @@ class HomeCycleModeActiveBanner extends StatelessWidget {
         : const Color(0xFFFF9EC5); // Pink for light mode
 
     final cycleModeContainerColor = isDark
-        ? cycleModeColor.withValues(alpha: 0.15)
-        : cycleModeColor.withValues(alpha: 0.12);
+        ? cycleModeColor.withValues(alpha: 0.10)
+        : cycleModeColor.withValues(alpha: 0.08);
 
-    final cycleModeBorderColor = cycleModeColor.withValues(alpha: 0.3);
+    final cycleModeBorderColor = cycleModeColor.withValues(alpha: 0.22);
 
     return Material(
       color: cycleModeContainerColor,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: cycleModeBorderColor, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 14,
-                offset: const Offset(0, 6),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: cycleModeBorderColor, width: 1),
           ),
-          padding: EdgeInsets.all(Spacing.md),
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -59,19 +52,19 @@ class HomeCycleModeActiveBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 44,
-                    height: 44,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
-                      color: cycleModeColor.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(14),
+                      color: cycleModeColor.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(11),
                     ),
                     child: Icon(
                       Icons.shield_moon_rounded,
                       color: cycleModeColor,
-                      size: 24,
+                      size: 18,
                     ),
                   ),
-                  SizedBox(width: Spacing.md),
+                  SizedBox(width: Spacing.sm + 2),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,25 +74,28 @@ class HomeCycleModeActiveBanner extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                             fontWeight: FontWeight.w600,
-                            height: 1.5,
+                            height: 1.35,
+                            fontSize: 13.5,
                           ),
                         ),
-                        SizedBox(height: Spacing.sm),
+                        const SizedBox(height: 4),
                         Text(
                           l10n.cycleModeActiveSubtitle,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                             color: colorScheme.onSurfaceVariant,
-                            height: 1.5,
+                            height: 1.35,
+                            fontSize: 12,
                           ),
                         ),
-                        SizedBox(height: Spacing.sm),
+                        const SizedBox(height: 4),
                         Text(
                           l10n.cycleModeAutoEndInfo(daysRemaining),
                           style: Theme.of(context).textTheme.labelMedium
                               ?.copyWith(
                             color: cycleModeColor,
                             fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
                         ),
                       ],

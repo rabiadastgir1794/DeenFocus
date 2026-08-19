@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'home_card_open_arrow.dart';
 
-/// Today's Focus Score — score, stars, and category percentages stay in sync.
-///
-/// Pass [detailed] for Insights progress bars; Home uses the compact breakdown.
-/// When [onTap] is set, the card is tappable and shows [HomeCardOpenArrow].
+/// Today's Focus Score — large score first; stars/breakdown secondary.
 class HomeFocusScoreSection extends StatelessWidget {
   const HomeFocusScoreSection({
     super.key,
@@ -40,14 +37,32 @@ class HomeFocusScoreSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark
-        ? colorScheme.outlineVariant.withValues(alpha: 0.35)
-        : colorScheme.outlineVariant.withValues(alpha: 0.25);
     final filledStars = _filledStars;
     final isTappable = onTap != null;
 
+    final borderColor = colorScheme.outlineVariant.withValues(
+      alpha: isDark ? 0.28 : 0.22,
+    );
+
+    final stars = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List<Widget>.generate(5, (index) {
+        final isFilled = index < filledStars;
+        return Padding(
+          padding: EdgeInsets.only(left: index == 0 ? 0 : 1),
+          child: Icon(
+            isFilled ? Icons.star_rounded : Icons.star_outline_rounded,
+            color: isFilled
+                ? colorScheme.primary.withValues(alpha: 0.8)
+                : colorScheme.outlineVariant.withValues(alpha: 0.5),
+            size: 13,
+          ),
+        );
+      }),
+    );
+
     final content = Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, isTappable ? 14 : 16, 16),
+      padding: EdgeInsets.fromLTRB(14, 12, isTappable ? 10 : 14, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -55,73 +70,64 @@ class HomeFocusScoreSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  l10n.focusScoreTitle,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(
-                      child: Text(
-                        l10n.focusScoreTitle,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                    Text(
+                      '$score',
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: colorScheme.primary,
+                        height: 0.95,
+                        fontSize: 42,
                       ),
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List<Widget>.generate(5, (index) {
-                        final isFilled = index < filledStars;
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 2),
-                          child: Icon(
-                            isFilled
-                                ? Icons.star_rounded
-                                : Icons.star_outline_rounded,
-                            color: isFilled
-                                ? colorScheme.primary
-                                : colorScheme.outlineVariant,
-                            size: 18,
-                          ),
-                        );
-                      }),
+                    const SizedBox(width: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: stars,
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  '$score',
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.primary,
-                    height: 1,
-                    fontSize: 48,
-                  ),
-                ),
                 if (detailed) ...[
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   _FocusProgressRow(
                     label: l10n.focusScorePrayer,
                     percent: prayerPercent,
-                    colorScheme: colorScheme,
+                    accent: colorScheme.primary,
+                    labelColor: colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   _FocusProgressRow(
                     label: l10n.focusScoreQuran,
                     percent: quranPercent,
-                    colorScheme: colorScheme,
+                    accent: colorScheme.primary,
+                    labelColor: colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   _FocusProgressRow(
                     label: l10n.focusScoreDhikr,
                     percent: dhikrPercent,
-                    colorScheme: colorScheme,
+                    accent: colorScheme.primary,
+                    labelColor: colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   _FocusProgressRow(
                     label: l10n.focusScoreDistraction,
                     percent: distractionPercent,
-                    colorScheme: colorScheme,
+                    accent: colorScheme.primary,
+                    labelColor: colorScheme.onSurface,
                   ),
                 ] else ...[
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
                   Text(
                     l10n.focusScoreBreakdown(
                       prayerPercent,
@@ -130,7 +136,11 @@ class HomeFocusScoreSection extends StatelessWidget {
                       distractionPercent,
                     ),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.85,
+                      ),
+                      fontSize: 11.5,
+                      height: 1.3,
                     ),
                   ),
                 ],
@@ -138,28 +148,32 @@ class HomeFocusScoreSection extends StatelessWidget {
             ),
           ),
           if (isTappable) ...[
-            const SizedBox(width: 8),
-            const HomeCardOpenArrow(),
+            const SizedBox(width: 4),
+            HomeCardOpenArrow(
+              color: colorScheme.primary.withValues(alpha: 0.7),
+            ),
           ],
         ],
       ),
     );
 
+    final decoration = BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: borderColor, width: 1),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.025),
+          blurRadius: 10,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    );
+
     if (!isTappable) {
       return Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: borderColor, width: 1.1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.07),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
+        decoration: decoration,
         child: content,
       );
     }
@@ -168,21 +182,10 @@ class HomeFocusScoreSection extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         child: Ink(
           width: double.infinity,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: borderColor, width: 1.1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.07),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
+          decoration: decoration,
           child: content,
         ),
       ),
@@ -194,12 +197,14 @@ class _FocusProgressRow extends StatelessWidget {
   const _FocusProgressRow({
     required this.label,
     required this.percent,
-    required this.colorScheme,
+    required this.accent,
+    required this.labelColor,
   });
 
   final String label;
   final int percent;
-  final ColorScheme colorScheme;
+  final Color accent;
+  final Color labelColor;
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +218,7 @@ class _FocusProgressRow extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurface,
+                  color: labelColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -221,13 +226,13 @@ class _FocusProgressRow extends StatelessWidget {
             Text(
               '$percent%',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+                color: labelColor.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w600,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 5),
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: TweenAnimationBuilder<double>(
@@ -237,10 +242,9 @@ class _FocusProgressRow extends StatelessWidget {
             builder: (context, value, _) {
               return LinearProgressIndicator(
                 value: value,
-                minHeight: 5,
-                backgroundColor:
-                    colorScheme.outlineVariant.withValues(alpha: 0.35),
-                color: colorScheme.primary,
+                minHeight: 4,
+                backgroundColor: accent.withValues(alpha: 0.12),
+                color: accent,
               );
             },
           ),

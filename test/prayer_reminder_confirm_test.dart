@@ -42,6 +42,7 @@ void main() {
     expect(first.celebrated, isTrue);
     expect(first.prayerStreak, greaterThan(before));
     expect(vm.statusForToday(tip), PrayerMarkStatus.onTime);
+    expect(vm.prayerStreak, first.prayerStreak);
 
     // Re-marking the same prayer on-time must not re-celebrate / double-count.
     final second = await vm.markPrayerStatus(
@@ -55,12 +56,13 @@ void main() {
     expect(vm.statusForToday(tip), PrayerMarkStatus.onTime);
   });
 
-  test('Qada increases counting status but never celebrates', () async {
+  test('Qada increases prayer streak and celebrates when it grows', () async {
     final now = DateTime.now();
     final tip = _tipPrayer(now);
     if (tip == null) return;
 
     final vm = HomeTabViewModel();
+    final before = vm.prayerStreak;
     final result = await vm.markPrayerStatus(
       now,
       tip,
@@ -69,8 +71,10 @@ void main() {
 
     expect(result, isNotNull);
     expect(result!.status, PrayerMarkStatus.qada);
-    expect(result.celebrated, isFalse);
+    expect(result.celebrated, isTrue);
+    expect(result.prayerStreak, greaterThan(before));
     expect(vm.statusForToday(tip), PrayerMarkStatus.qada);
+    expect(vm.prayerStreak, result.prayerStreak);
   });
 
   test('Missed never celebrates', () async {
@@ -146,5 +150,32 @@ void main() {
     expect(raw, isNotNull);
     expect(raw!, contains(tip.name));
     expect(raw, contains('onTime'));
+  });
+
+  test('marking first then next prayer grows streak 1 then 2', () async {
+    final now = DateTime.now();
+    // Need Dhuhr started so both Fajr and Dhuhr are markable via fallback hours.
+    if (now.hour < 12) return;
+
+    final vm = HomeTabViewModel();
+    final first = await vm.markPrayerStatus(
+      now,
+      TrackablePrayer.fajr,
+      PrayerMarkStatus.onTime,
+    );
+    expect(first, isNotNull);
+    expect(first!.celebrated, isTrue);
+    expect(first.prayerStreak, 1);
+    expect(vm.prayerStreak, 1);
+
+    final second = await vm.markPrayerStatus(
+      now,
+      TrackablePrayer.dhuhr,
+      PrayerMarkStatus.qada,
+    );
+    expect(second, isNotNull);
+    expect(second!.celebrated, isTrue);
+    expect(second.prayerStreak, 2);
+    expect(vm.prayerStreak, 2);
   });
 }

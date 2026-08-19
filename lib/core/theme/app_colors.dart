@@ -122,4 +122,17 @@ abstract class AppColors {
 
   /// Upcoming prayer tile fill (light theme).
   static const Color prayerUpcomingTileLight = warmBg;
+
+  // —— Prayer mark status (Home tiles + Mark Prayer sheet) ——
+  /// Amber — distinct from on-time green and unmarked sand.
+  static const Color prayerQadaContainerLight = Color(0xFFFFE4B8);
+  static const Color prayerQadaOnLight = Color(0xFF8A4B00);
+  static const Color prayerQadaContainerDark = Color(0xFF5C3A0A);
+  static const Color prayerQadaOnDark = Color(0xFFFFD08A);
+
+  /// Stronger rose than default errorContainer so Missed reads clearly on the sheet.
+  static const Color prayerMissedContainerLight = Color(0xFFFFCFC9);
+  static const Color prayerMissedOnLight = Color(0xFF9B1C1C);
+  static const Color prayerMissedContainerDark = Color(0xFF7A1212);
+  static const Color prayerMissedOnDark = Color(0xFFFFB4AB);
 }

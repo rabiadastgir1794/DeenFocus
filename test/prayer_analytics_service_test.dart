@@ -685,6 +685,18 @@ void main() {
         ),
         5,
       );
+      // Unmarked started slots no longer reset a prior chain (only Missed does).
+      expect(
+        PrayerStreakCalculator.calculate(
+          now: now,
+          statusHistory: history,
+          isCycleDay: neverCycle,
+        ),
+        5,
+      );
+      history[PrayerAnalyticsService.dayKey(today)] = {
+        TrackablePrayer.fajr: PrayerMarkStatus.missed,
+      };
       expect(
         PrayerStreakCalculator.calculate(
           now: now,

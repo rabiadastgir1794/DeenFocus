@@ -51,75 +51,77 @@ class _HomeIslamicDateHeaderState extends State<HomeIslamicDateHeader> {
     final hijriDateStr =
         '${_hijriDate['day']} ${localizedHijriMonth(l10n, month ?? 0)} ${_hijriDate['year']} ${l10n.hijriYear}';
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: Spacing.xs),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: widget.onTapCalendar,
-              borderRadius: BorderRadius.circular(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: 16,
-                        color: colorScheme.primary,
-                      ),
-                      SizedBox(width: Spacing.sm),
-                      Flexible(
-                        child: Text(
-                          hijriDateStr,
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: widget.onTapCalendar,
+            borderRadius: BorderRadius.circular(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        hijriDateStr,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.1,
                         ),
                       ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        size: 18,
-                        color: colorScheme.primary,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Spacing.xs),
-                  Text(
-                    gregorianDate,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                  SizedBox(height: Spacing.md),
-                  Text(
-                    l10n.homeSalam,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 16,
+                      color: colorScheme.primary.withValues(alpha: 0.75),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  gregorianDate,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+                    fontSize: 12,
+                    height: 1.25,
                   ),
-                  SizedBox(height: Spacing.xs),
-                  Text(
-                    widget.userName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  l10n.homeSalam,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    height: 1.2,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  widget.userName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+              ],
             ),
           ),
-          if (widget.trailing != null) ...[
-            SizedBox(width: Spacing.sm),
-            widget.trailing!,
-          ],
+        ),
+        if (widget.trailing != null) ...[
+          SizedBox(width: Spacing.sm),
+          widget.trailing!,
         ],
-      ),
+      ],
     );
   }
 }

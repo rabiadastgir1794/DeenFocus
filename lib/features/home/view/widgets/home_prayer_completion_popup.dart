@@ -190,6 +190,7 @@ class _PrayerCompletionCard extends StatelessWidget {
                           child: _StatColumn(
                             icon: Icons.local_fire_department_rounded,
                             value: '${result.prayerStreak}',
+                            fromValue: result.previousPrayerStreak,
                             label: l10n.insightsPrayerStreak,
                             colorScheme: colorScheme,
                           ),
@@ -269,21 +270,24 @@ class _StatColumn extends StatelessWidget {
     required this.value,
     required this.label,
     required this.colorScheme,
+    this.fromValue = 0,
   });
 
   final IconData icon;
   final String value;
   final String label;
   final ColorScheme colorScheme;
+  final int fromValue;
 
   @override
   Widget build(BuildContext context) {
+    final end = double.tryParse(value) ?? 0;
     return Column(
       children: [
         Icon(icon, color: colorScheme.primary, size: 18),
         const SizedBox(height: 4),
         TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: double.tryParse(value) ?? 0),
+          tween: Tween(begin: fromValue.toDouble(), end: end),
           duration: const Duration(milliseconds: 700),
           curve: Curves.easeOutCubic,
           builder: (context, animated, _) {

@@ -497,12 +497,12 @@ void main() {
             dayStreak: 0,
           );
 
-          // Next normal day: yesterday was unmarked (not paused) → tip-breaks.
+          // Next normal day: unmarked Aug 16 is skipped; Maghrib+Isha still count.
           expectStableRecalc(
             now: DateTime(2026, 8, 17, 6),
             history: history,
             data: data,
-            prayerStreak: 0,
+            prayerStreak: 2,
             dayStreak: 0,
           );
         },

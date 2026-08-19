@@ -19,8 +19,11 @@ abstract class AppConfig {
   static const String groqApiKey = String.fromEnvironment('GROQ_API_KEY');
   static const String groqChatCompletionsUrl =
       'https://api.groq.com/openai/v1/chat/completions';
-  static const String groqChatModel = 'llama-3.3-70b-versatile';
-  static const int groqChatMaxTokens = 200;
+  static const String groqChatModel = 'openai/gpt-oss-120b';
+  /// Completion budget for Groq `openai/gpt-oss-120b`. Reasoning models spend
+  /// tokens thinking before they write `message.content`; 200 often yields an
+  /// empty reply (`finish_reason: length`).
+  static const int groqChatMaxTokens = 1024;
   static const String appDemoVideoUrl = String.fromEnvironment('APP_DEMO_URL');
 
   static bool get hasGoogleMapsApiKey => googleMapsApiKey.trim().isNotEmpty;
