@@ -50,6 +50,8 @@ private enum ManagedSettingsStoreHolder {
 
     NSLog("[DeenFocus][Startup] didFinishLaunching begin")
 
+    PrayerLiveActivityBridge.registerBackgroundTasks()
+
     // CRITICAL: plugins MUST register before any Dart code that uses
     // SharedPreferences / path_provider / etc. Commenting this out leaves the
     // process on the white LaunchScreen while MethodChannels hang.
@@ -193,6 +195,16 @@ private enum ManagedSettingsStoreHolder {
     logPhase("4_FlutterEngine+entrypoint returned", since: engineT0)
     logPhase("5_didFinishLaunching complete")
     return ok
+  }
+
+  override func applicationDidBecomeActive(_ application: UIApplication) {
+    super.applicationDidBecomeActive(application)
+    PrayerLiveActivityBridge.refreshFromStorage()
+  }
+
+  override func applicationDidEnterBackground(_ application: UIApplication) {
+    super.applicationDidEnterBackground(application)
+    PrayerLiveActivityBridge.scheduleBackgroundRefresh()
   }
 
   private func appendFocusDebugLog(call: FlutterMethodCall, result: @escaping FlutterResult) {

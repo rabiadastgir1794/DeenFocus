@@ -23,6 +23,7 @@ object PrayerLiveActivityBridge {
     private const val payloadKey = "payload_json"
     private const val enabledKey = "enabled"
     private const val alarmRequestCode = 7602
+    private const val alarmCount = 8
 
     fun getCapabilities(context: Context): Map<String, Any?> {
         return mapOf(
@@ -166,11 +167,17 @@ object PrayerLiveActivityBridge {
                 isoTime = next.optString("isoTime"),
             )
         } else {
-            // After today's last slot, Flutter may already have stored tomorrow's
-            // Fajr outside the same-day `prayers` array — keep it if still future.
-            val existingNextIso = payload.optString("nextPrayerIso", "")
-            val existingNextMillis = parseIsoMillis(existingNextIso)
-            if (existingNextMillis == null || existingNextMillis <= now) {
+            val tomorrowIso = payload.optString("tomorrowFajrIso", "")
+            val tomorrowMillis = parseIsoMillis(tomorrowIso)
+            if (tomorrowMillis != null && tomorrowMillis > now) {
+                applyNextPrayer(
+                    payload,
+                    id = "fajr",
+                    label = payload.optString("tomorrowFajrLabel", "Fajr"),
+                    timeLabel = payload.optString("tomorrowFajrTimeLabel", ""),
+                    isoTime = tomorrowIso,
+                )
+            } else {
                 payload.put("nextPrayerId", JSONObject.NULL)
                 payload.put("nextPrayerLabel", "")
                 payload.put("nextPrayerTimeLabel", "")
@@ -203,30 +210,74 @@ object PrayerLiveActivityBridge {
     }
 
     private fun scheduleNextRefresh(context: Context, payload: JSONObject) {
-        val nextIso = payload.optString("nextPrayerIso", "")
-        val triggerAt = parseIsoMillis(nextIso) ?: return
-        if (triggerAt <= System.currentTimeMillis() + 5_000L) return
+        cancelRefreshAlarm(context)
+        val now = System.currentTimeMillis()
+        val times = mutableListOf<Long>()
+        val prayers = payload.optJSONArray("prayers")
+        if (prayers != null) {
+            for (i in 0 until prayers.length()) {
+                parseIsoMillis(prayers.getJSONObject(i).optString("isoTime"))?.let(times::add)
+            }
+        }
+        parseIsoMillis(payload.optString("tomorrowFajrIso", ""))?.let(times::add)
+        parseIsoMillis(payload.optString("nextPrayerIso", ""))?.let(times::add)
+        val upcoming = times.filter { it > now + 5_000L }.distinct().sorted().take(alarmCount)
+        if (upcoming.isEmpty()) return
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pending = refreshPendingIntent(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending)
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pending)
+        upcoming.forEachIndexed { index, triggerAt ->
+            setRefreshAlarm(alarmManager, triggerAt, refreshPendingIntent(context, index))
+        }
+    }
+
+    private fun setRefreshAlarm(
+        alarmManager: AlarmManager,
+        triggerAt: Long,
+        pending: PendingIntent,
+    ) {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                alarmManager.canScheduleExactAlarms() -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAt,
+                    pending,
+                )
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAt,
+                    pending,
+                )
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAt,
+                    pending,
+                )
+            }
+            else -> {
+                @Suppress("DEPRECATION")
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pending)
+            }
         }
     }
 
     private fun cancelRefreshAlarm(context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(refreshPendingIntent(context))
+        repeat(alarmCount) { index ->
+            alarmManager.cancel(refreshPendingIntent(context, index))
+        }
     }
 
-    private fun refreshPendingIntent(context: Context): PendingIntent {
+    private fun refreshPendingIntent(context: Context, index: Int): PendingIntent {
         val intent = Intent(context, PrayerLiveActivityReceiver::class.java).apply {
             action = PrayerLiveActivityReceiver.ACTION_REFRESH
         }
         return PendingIntent.getBroadcast(
             context,
-            alarmRequestCode,
+            alarmRequestCode + index,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )

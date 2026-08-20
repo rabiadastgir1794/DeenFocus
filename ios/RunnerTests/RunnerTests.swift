@@ -958,3 +958,92 @@ class RunnerTests: XCTestCase {
     XCTAssertEqual(flutterError.message, "too quiet")
   }
 }
+
+@available(iOS 16.2, *)
+final class PrayerLiveActivityPresentationTests: XCTestCase {
+  func testBeforeFajrShowsUpNextAndHidesNextLine() {
+    let fajr = slot("fajr", "Fajr", "5:00 AM", hour: 5)
+    let dhuhr = slot("dhuhr", "Dhuhr", "1:00 PM", hour: 13)
+    let state = sampleState(prayers: [fajr, dhuhr], nowLabel: "Now", upNextLabel: "Next prayer in")
+    let now = date(hour: 4)
+    let presentation = PrayerLiveActivityPresentation.resolve(state: state, at: now)
+    XCTAssertEqual(presentation.phaseLabel, "Next prayer in")
+    XCTAssertEqual(presentation.currentPrayerLabel, "Fajr")
+    XCTAssertEqual(presentation.nextPrayerLine, "")
+  }
+
+  func testAfterFajrShowsNowAndNextDhuhr() {
+    let fajr = slot("fajr", "Fajr", "5:00 AM", hour: 5)
+    let dhuhr = slot("dhuhr", "Dhuhr", "1:00 PM", hour: 13)
+    let state = sampleState(
+      prayers: [fajr, dhuhr],
+      nowLabel: "Now",
+      upNextLabel: "Next prayer in",
+      template: "{prayer} at {time}"
+    )
+    let presentation = PrayerLiveActivityPresentation.resolve(state: state, at: date(hour: 5, minute: 1))
+    XCTAssertEqual(presentation.phaseLabel, "Now")
+    XCTAssertEqual(presentation.currentPrayerLabel, "Fajr")
+    XCTAssertEqual(presentation.nextPrayerLine, "Dhuhr at 1:00 PM")
+  }
+
+  func testAfterIshaUsesTomorrowFajr() {
+    let isha = slot("isha", "Isha", "8:30 PM", hour: 20, minute: 30)
+    let tomorrowFajr = slot("fajr", "Fajr", "5:12 AM", hour: 5, dayOffset: 1)
+    let state = sampleState(
+      prayers: [isha],
+      tomorrowFajr: tomorrowFajr,
+      nowLabel: "Now",
+      template: "{prayer} at {time}"
+    )
+    let presentation = PrayerLiveActivityPresentation.resolve(state: state, at: date(hour: 21))
+    XCTAssertEqual(presentation.phaseLabel, "Now")
+    XCTAssertEqual(presentation.currentPrayerLabel, "Isha")
+    XCTAssertEqual(presentation.nextPrayerLine, "Fajr at 5:12 AM")
+  }
+
+  private func sampleState(
+    prayers: [PrayerLiveActivitySlot],
+    tomorrowFajr: PrayerLiveActivitySlot? = nil,
+    nowLabel: String = "Now",
+    upNextLabel: String = "",
+    template: String = ""
+  ) -> PrayerLiveActivityAttributes.ContentState {
+    PrayerLiveActivityAttributes.ContentState(
+      currentPrayerId: "fajr",
+      currentPrayerLabel: "Fajr",
+      currentPrayerTimeLabel: "5:00 AM",
+      nextPrayerLine: "stale next line",
+      locationName: "",
+      updatedAtLabel: "",
+      nowLabel: nowLabel,
+      upNextLabel: upNextLabel,
+      nextPrayerLineTemplate: template,
+      prayerProgress: 0,
+      prayers: prayers,
+      tomorrowFajr: tomorrowFajr
+    )
+  }
+
+  private func slot(
+    _ id: String,
+    _ label: String,
+    _ timeLabel: String,
+    hour: Int,
+    minute: Int = 0,
+    dayOffset: Int = 0
+  ) -> PrayerLiveActivitySlot {
+    PrayerLiveActivitySlot(
+      id: id,
+      label: label,
+      timeLabel: timeLabel,
+      time: date(hour: hour, minute: minute, dayOffset: dayOffset)
+    )
+  }
+
+  private func date(hour: Int, minute: Int = 0, dayOffset: Int = 0) -> Date {
+    Calendar.current.date(
+      from: DateComponents(year: 2026, month: 8, day: 20 + dayOffset, hour: hour, minute: minute)
+    )!
+  }
+}

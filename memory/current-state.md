@@ -1,6 +1,23 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-19 — splash uses app icon + staged animation.
+> Last updated: 2026-08-20 — Live Activity advances at prayer time.
+
+## Status: Live Activity stuck on Fajr (2026-08-20)
+Lock-screen Live Activity kept showing "Next prayer Fajr" after Fajr because iOS
+stored a frozen snapshot and never recomputed current/next salah in the background.
+Android used inexact alarms, so the ongoing notification could also miss the
+transition.
+
+Fix:
+- iOS widget resolves current/next from stored prayer times at render time
+  (`TimelineView` at each salah + `staleDate` + background app-refresh).
+- Payload always includes tomorrow's Fajr so Isha → Fajr overnight still works.
+- Android schedules exact alarms at every remaining salah (and timezone/date
+  changes), matching home-screen widgets.
+
+**Verify:** Enable Live Activity before Fajr, leave the app, wait until Fajr
+passes — lock screen should show **Now · Fajr** and the next salah (Dhuhr), not
+"Next prayer Fajr".
 
 ## Status: Splash branding (2026-08-19)
 Flutter splash now shows `assets/app_icon.png` (same mark as onboarding) with

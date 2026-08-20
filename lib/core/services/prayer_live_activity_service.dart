@@ -196,15 +196,18 @@ class PrayerLiveActivityService {
 
     final timeFormat = _safeTimeFormat(l10n.localeName);
     final current = _currentPrayer(prayers, now);
-    final tomorrowFajr = times.nextPrayerTime == null
-        ? null
-        : HomePrayerSlot(
-            id: HomePrayerId.fajr,
-            time: times.nextPrayerTime!,
-          );
+    final fajrSlot = prayers.firstWhere(
+      (slot) => slot.id == HomePrayerId.fajr,
+      orElse: () => prayers.first,
+    );
+    final tomorrowFajrTime = fajrSlot.time.add(const Duration(days: 1));
+    final tomorrowFajr = HomePrayerSlot(
+      id: HomePrayerId.fajr,
+      time: tomorrowFajrTime,
+    );
 
     // Before Fajr, feature the upcoming prayer with an "up next" label.
-    // Android background refresh flips to [nowLabel] once the first slot starts.
+    // Native background refresh flips to [nowLabel] once the first slot starts.
     final featured = current ??
         prayers.firstWhere(
           (slot) => slot.time.isAfter(now),
@@ -221,21 +224,20 @@ class PrayerLiveActivityService {
       'currentPrayerTimeLabel': timeFormat.format(featured.time),
       'currentPrayerIso': featured.time.toIso8601String(),
       // Prefer empty strings over null — iOS UserDefaults rejects NSNull.
-      'nextPrayerId': next?.id.name ?? '',
-      'nextPrayerLabel': next == null ? '' : _label(next.id, l10n),
-      'nextPrayerTimeLabel':
-          next == null ? '' : timeFormat.format(next.time),
+      'nextPrayerId': next.id.name,
+      'nextPrayerLabel': _label(next.id, l10n),
+      'nextPrayerTimeLabel': timeFormat.format(next.time),
       // Before Fajr, schedule refresh at Fajr so the label can flip to "Now".
       'nextPrayerIso': beforeFirstPrayer
           ? featured.time.toIso8601String()
-          : (next?.time.toIso8601String() ?? ''),
-      'nextPrayerLine': beforeFirstPrayer || next == null
+          : next.time.toIso8601String(),
+      'nextPrayerLine': beforeFirstPrayer
           ? ''
           : l10n.liveActivityNextAt(
               _label(next.id, l10n),
               timeFormat.format(next.time),
             ),
-      // Localized template so Android background refresh keeps language.
+      // Localized template so native background refresh keeps language.
       'nextPrayerLineTemplate': l10n.liveActivityNextAt('{prayer}', '{time}'),
       'locationName': locationName ?? '',
       'updatedAtLabel': l10n.liveActivityUpdatedAt(timeFormat.format(now)),
@@ -243,6 +245,9 @@ class PrayerLiveActivityService {
       'upNextLabel': l10n.homeNextPrayerIn,
       'beforeFirstPrayer': beforeFirstPrayer,
       'brandName': l10n.appTitle,
+      'tomorrowFajrIso': tomorrowFajrTime.toIso8601String(),
+      'tomorrowFajrLabel': _label(HomePrayerId.fajr, l10n),
+      'tomorrowFajrTimeLabel': timeFormat.format(tomorrowFajrTime),
       'prayers': [
         for (final slot in prayers)
           <String, dynamic>{

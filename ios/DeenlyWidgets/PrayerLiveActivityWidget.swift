@@ -6,24 +6,35 @@ import WidgetKit
 struct PrayerLiveActivityWidget: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: PrayerLiveActivityAttributes.self) { context in
-      PrayerLiveActivityLockScreenView(
-        attributes: context.attributes,
-        state: context.state
-      )
+      TimelineView(PrayerLiveActivitySchedule(state: context.state)) { timeline in
+        let presentation = PrayerLiveActivityPresentation.resolve(
+          state: context.state,
+          at: timeline.date
+        )
+        PrayerLiveActivityLockScreenView(
+          attributes: context.attributes,
+          state: context.state,
+          presentation: presentation
+        )
+      }
     } dynamicIsland: { context in
+      let presentation = PrayerLiveActivityPresentation.resolve(
+        state: context.state,
+        at: Date()
+      )
       // Expanded DI top band (leading/trailing/center) is only as tall as the
       // camera row. Multi-line stacks there get clipped by the system — put
       // secondary copy in `.bottom`, which owns the space under the cutout.
-      DynamicIsland {
+      return DynamicIsland {
         DynamicIslandExpandedRegion(.leading) {
-          Text(context.state.currentPrayerLabel)
+          Text(presentation.currentPrayerLabel)
             .font(.headline.weight(.bold))
             .lineLimit(1)
             .minimumScaleFactor(0.8)
             .truncationMode(.tail)
         }
         DynamicIslandExpandedRegion(.trailing) {
-          Text(context.state.currentPrayerTimeLabel)
+          Text(presentation.currentPrayerTimeLabel)
             .font(.title3.weight(.bold))
             .monospacedDigit()
             .lineLimit(1)
@@ -32,13 +43,13 @@ struct PrayerLiveActivityWidget: Widget {
         DynamicIslandExpandedRegion(.bottom) {
           HStack(alignment: .top, spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
-              Text(context.state.nowLabel)
+              Text(presentation.phaseLabel)
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
                 .truncationMode(.tail)
-              Text(context.state.nextPrayerLine)
+              Text(presentation.nextPrayerLine)
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
@@ -55,12 +66,12 @@ struct PrayerLiveActivityWidget: Widget {
           }
         }
       } compactLeading: {
-        Text(context.state.currentPrayerLabel)
+        Text(presentation.currentPrayerLabel)
           .font(.caption2.weight(.bold))
           .lineLimit(1)
           .minimumScaleFactor(0.8)
       } compactTrailing: {
-        Text(context.state.currentPrayerTimeLabel)
+        Text(presentation.currentPrayerTimeLabel)
           .font(.caption2.weight(.semibold))
           .monospacedDigit()
           .lineLimit(1)
@@ -73,19 +84,33 @@ struct PrayerLiveActivityWidget: Widget {
 }
 
 @available(iOS 16.2, *)
+private struct PrayerLiveActivitySchedule: TimelineSchedule {
+  let dates: [Date]
+
+  init(state: PrayerLiveActivityAttributes.ContentState) {
+    dates = PrayerLiveActivityPresentation.transitionDates(from: state)
+  }
+
+  func entries(from startDate: Date, mode: TimelineScheduleMode) -> [Date] {
+    [startDate] + dates.filter { $0 > startDate }
+  }
+}
+
+@available(iOS 16.2, *)
 private struct PrayerLiveActivityLockScreenView: View {
   let attributes: PrayerLiveActivityAttributes
   let state: PrayerLiveActivityAttributes.ContentState
+  let presentation: PrayerLiveActivityPresentation
 
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       HStack(spacing: 8) {
-        Text(state.nowLabel.uppercased())
+        Text(presentation.phaseLabel.uppercased())
           .font(.caption2.weight(.bold))
           .padding(.horizontal, 8)
           .padding(.vertical, 3)
           .background(Capsule().fill(Color.white.opacity(0.14)))
-        Text(state.currentPrayerLabel)
+        Text(presentation.currentPrayerLabel)
           .font(.subheadline.weight(.semibold))
         Spacer()
         Text(state.updatedAtLabel)
@@ -95,7 +120,7 @@ private struct PrayerLiveActivityLockScreenView: View {
 
       HStack(alignment: .bottom, spacing: 12) {
         VStack(alignment: .leading, spacing: 4) {
-          Text(state.currentPrayerTimeLabel)
+          Text(presentation.currentPrayerTimeLabel)
             .font(.system(size: 34, weight: .bold, design: .rounded))
             .monospacedDigit()
           if !state.locationName.isEmpty {
@@ -105,12 +130,12 @@ private struct PrayerLiveActivityLockScreenView: View {
           }
         }
         Spacer(minLength: 8)
-        PrayerProgressCurve(progress: state.prayerProgress)
+        PrayerProgressCurve(progress: presentation.prayerProgress)
           .frame(width: 120, height: 44)
       }
 
       HStack {
-        Text(state.nextPrayerLine)
+        Text(presentation.nextPrayerLine)
           .font(.caption)
           .foregroundStyle(.white.opacity(0.8))
           .lineLimit(1)
@@ -166,7 +191,6 @@ private struct PrayerProgressCurve: View {
   }
 
   private func pointOnCurve(t: Double, width: CGFloat, height: CGFloat) -> CGPoint {
-    // Approximate quadratic Bezier: P = (1-t)^2 P0 + 2(1-t)t P1 + t^2 P2
     let p0 = CGPoint(x: 0, y: height * 0.75)
     let p1 = CGPoint(x: width * 0.5, y: height * 0.05)
     let p2 = CGPoint(x: width, y: height * 0.75)

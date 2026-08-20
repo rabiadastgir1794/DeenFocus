@@ -19,6 +19,7 @@ import 'core/services/app_notification_service.dart';
 import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
 import 'core/services/prayer_alarm_service.dart';
+import 'core/services/prayer_live_activity_service.dart';
 import 'core/services/quran_translation_service.dart';
 import 'core/services/theme_service.dart';
 import 'core/services/user_profile_service.dart';
@@ -212,6 +213,7 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
 
     unawaited(context.read<FocusController>().refresh());
     unawaited(WidgetSyncService.instance.syncTimeline());
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage());
   }
 
   Future<void> _syncSubscriptionAndDisableFocusModesIfNeeded() async {

@@ -63,6 +63,14 @@
 	<string>DeenFocus schedules prayer alarms so you are gently reminded at each salah time, even in Silent Mode or Focus.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.rnr.deenfocus.prayer-live-activity-refresh</string>
+	</array>
 	<!-- Required for Flutter debug attach / hot reload on a physical device. -->
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Allow Flutter tools on your computer to connect and debug your application. This prompt will not appear for release builds.</string>
