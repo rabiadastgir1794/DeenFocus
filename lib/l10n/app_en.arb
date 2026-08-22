@@ -29,7 +29,8 @@
   "locationTitle": "Find Your Qibla",
   "locationSubtitle": "Enable location for accurate Qibla, prayer times and nearby masjids.",
   "locationButton": "Allow Location Access",
-  "locationManualEntry": "Or enter your city",
+  "locationManualEntry": "Enter your city manually",
+  "locationOrDivider": "or",
   "locationPrivacyNote": "Stays on your device",
   "locationFeaturePrayerTimesTitle": "Prayer times",
   "locationFeatureQiblaTitle": "Qibla",
@@ -37,18 +38,19 @@
   "notificationsTitle": "Never Miss a Prayer",
   "notificationsSubtitle": "Adhan alerts, focus reminders and daily dhikr — delivered right when you need them.",
   "notificationsButton": "Enable Notifications",
+  "notificationsMaybeLater": "Maybe Later",
   "notificationsEnabled": "Notifications are enabled",
   "notificationsPreviewDate": "Friday, 10 July",
   "notificationsPreviewTime": "6:42",
   "notificationsPreviewNow": "now",
-  "notificationsPreviewMinutesAgo": "2m",
-  "notificationsPreviewHourAgo": "1h",
+  "notificationsPreviewMinutesAgo": "2m ago",
+  "notificationsPreviewHourAgo": "1h ago",
   "notificationsPreviewAdhanTitle": "Maghrib Adhan",
-  "notificationsPreviewAdhanBody": "It's time to pray. Apps are paused.",
-  "notificationsPreviewDhikrTitle": "DAILY DHIKR",
-  "notificationsPreviewDhikrBody": "SubhanAllah — take a minute to remember.",
-  "notificationsPreviewStreakTitle": "STREAK",
-  "notificationsPreviewStreakBody": "7 days of complete prayers. Keep going!",
+  "notificationsPreviewAdhanBody": "It's time to pray.",
+  "notificationsPreviewDhikrTitle": "Daily Dhikr",
+  "notificationsPreviewDhikrBody": "SubhanAllah — take a moment.",
+  "notificationsPreviewStreakTitle": "Streak",
+  "notificationsPreviewStreakBody": "7 days of complete prayers.",
   "screenTimeTitle": "Enable Screen Time",
   "screenTimeSubtitle": "This is what lets Deen Focus pause distracting apps during Salah, sleep time and child mode.",
   "screenTimeButton": "Allow Screen Time Access",
@@ -58,6 +60,8 @@
   "onboardingSelectAppsSubtitle": "Select the apps you want to lock when it's time to pray.",
   "onboardingSelectAppsButton": "Select Apps",
   "onboardingSelectAppsSkipForNow": "Skip for Now",
+  "onboardingSelectAppsPrivacyTitle": "You're in control",
+  "onboardingSelectAppsPrivacyBody": "We never read your data. We only lock the apps you choose.",
   "onboardingSelectAppsMockAllApps": "All Apps & Categories",
   "onboardingSelectAppsMockPhotos": "Photos",
   "onboardingSelectAppsMockNotes": "Notes",
@@ -160,6 +164,7 @@
   "investSubtitle": "The best investment isn't in things that fade — it's in what draws you closer to Allah. Try everything free for 7 days.",
   "investPremiumUnlocked": "PREMIUM UNLOCKED",
   "investTrialPill": "✨ 7 days free — cancel anytime before it ends",
+  "investNoCommitment": "No commitment. Cancel anytime.",
   "investFeatureAiTitle": "AI Islamic Assistant",
   "investFeatureAiBody": "Ask anything about your Deen — answers rooted in authentic sources.",
   "investFeaturePrayerModeTitle": "Full-Screen Prayer Mode",
@@ -367,6 +372,27 @@
   "homeTrialBannerSubtitle": "Every feature unlocked. Start your journey today.",
   "homeFocusModeTitle": "Focus Mode",
   "homeFocusModeSubtitle": "Block distracting apps during Salah",
+  "focusModeShortSalah": "Salah",
+  "focusModeShortNight": "Night",
+  "focusModeShortChild": "Child",
+  "focusModeLabelSalah": "Salah mode",
+  "focusModeLabelNight": "Night mode",
+  "focusModeLabelChild": "Child mode",
+  "homeFocusModeNamesTwo": "{first} and {second} Modes are enabled",
+  "@homeFocusModeNamesTwo": {
+    "placeholders": {
+      "first": { "type": "String" },
+      "second": { "type": "String" }
+    }
+  },
+  "homeFocusModeNamesThree": "{first}, {second}, and {third} Modes are enabled",
+  "@homeFocusModeNamesThree": {
+    "placeholders": {
+      "first": { "type": "String" },
+      "second": { "type": "String" },
+      "third": { "type": "String" }
+    }
+  },
   "cycleModeTitle": "Cycle Mode",
   "cycleModeSubtitle": "For menstruation — pause prayers, keep your streak",
   "dailyChecklistTitle": "Daily Checklist",
@@ -385,7 +411,7 @@
   "dailyChecklistSectionPrayer": "Prayer",
   "dailyChecklistSectionQuranDhikr": "Quran & Dhikr",
   "dailyChecklistSectionGoodDeeds": "Good deeds",
-  "dailyChecklistSectionDistraction": "Distraction control",
+  "dailyChecklistSectionDistraction": "Personal discipline",
   "dailyChecklistFajr": "Fajr",
   "dailyChecklistTahajjud": "Tahajjud",
   "dailyChecklistQuran": "Quran",
@@ -1044,8 +1070,15 @@
   },
   "insightsPrayersInARow": "Prayers in a row",
   "insightsDaysInARow": "Days in a row",
-  "insightsChipUpToday": "↑ +1",
-  "insightsChipDayUp": "↑ +1 today",
+  "insightsChipUpToday": "↑ {count}",
+  "@insightsChipUpToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsChipDayUp": "↑ 1 today",
   "insightsWeeklyCompletion": "Weekly completion",
   "insightsMonthlyCompletion": "Monthly completion",
   "insightsThisWeek": "This week",
@@ -1057,7 +1090,7 @@
   "insightsRateStart": "Keep going",
   "insightsPrayersCompletedWeekly": "Prayers completed (weekly)",
   "insightsPrayersCompletedMonthly": "Prayers completed (monthly)",
-  "insightsCompletionSummary": "You completed {done} out of {possible} prayers. Alhamdulillah — keep going!",
+  "insightsCompletionSummary": "You completed {done} out of {possible} prayers.\nAlhamdulillah — keep going!",
   "@insightsCompletionSummary": {
     "placeholders": {
       "done": {
@@ -1453,6 +1486,35 @@
   "settingsAppDemoHomeFeaturesSubtitle": "See how Home Screen widgets and Live Activity keep prayer times close — without opening the app.",
   "settingsAppDemoWidgetsCardSubtitle": "Daily verse and prayer times on your Home Screen, always up to date.",
   "settingsAppDemoLiveActivityCardSubtitle": "Current and next prayer on your Lock Screen and Dynamic Island.",
+  "settingsAppDemoTajweedCardSubtitle": "Recite an ayah and get instant tajweed feedback.",
+  "featureDemoTajweedTitle": "Tajweed",
+  "featureDemoTajweedIntroTitle": "See how Tajweed practice works",
+  "featureDemoTajweedIntroSubtitle": "Stay in DeenFocus. Open Tajweed drill, recite an ayah, and see word-by-word feedback.",
+  "featureDemoTajweedQuranCallout": "Tap Tajweed drill to start",
+  "featureDemoTajweedLegendCallout": "Color highlights show tajweed rules as you read",
+  "featureDemoTajweedReciteCallout": "Tap Recite & check tajweed",
+  "featureDemoTajweedDownloadCallout": "One-time download so practice works offline",
+  "featureDemoTajweedMicCallout": "Tap the mic and start reciting",
+  "featureDemoTajweedResultCallout": "See which words were correct, missed, or need work",
+  "featureDemoTajweedCompletionTitle": "Tajweed, ready",
+  "featureDemoTajweedCompletionSubtitle": "Recite with confidence, anytime.",
+  "featureDemoTajweedCompletionBody": "Open Quran → Tajweed drill to practice any ayah with on-device scoring — fully offline after the first download.",
+  "featureDemoTajweedSurahName": "Al-Fatihah",
+  "featureDemoTajweedBaqarahName": "Al-Baqarah",
+  "featureDemoTajweedSurahListSubtitle": "7 verses • Meccan",
+  "featureDemoTajweedBaqarahSubtitle": "286 verses • Medinan",
+  "featureDemoTajweedSurahHeaderSubtitle": "Al-Fatihah • 7 verses",
+  "featureDemoTajweedSurahMeta": "SURAH 1 • MECCAN",
+  "featureDemoTajweedAyahTranslation": "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
+  "featureDemoTajweedPracticeTitle": "Al-Fatihah · 1:1",
+  "featureDemoTajweedPreparingTitle": "Preparing AI model",
+  "featureDemoTajweedPreparingBody": "One-time download so Tajweed practice works fully offline afterwards. This only happens once.",
+  "featureDemoTajweedResultEncouragement": "Keep practicing — listen to the reference and try again.",
+  "featureDemoTajweedStatCorrect": "Correct",
+  "featureDemoTajweedStatPronunciation": "Pronunciation",
+  "featureDemoTajweedStatWrong": "Wrong word",
+  "featureDemoTajweedStatMissed": "Missed",
+  "featureDemoTajweedStatExtra": "Extra",
   "featureDemoContinue": "Continue",
   "featureDemoSampleStatusTime": "9:41",
   "featureDemoOfferWidgetManualBody": "Your device doesn’t allow apps to place widgets automatically. Add the Large DeenFocus widget from your Home Screen widget gallery.",
@@ -1676,5 +1738,192 @@
   "libraryFiqhOverview": "Overview",
   "libraryFiqhKeyPoints": "Key points",
   "libraryFiqhDifferences": "Notable differences",
-  "libraryFiqhCommonGround": "Common ground"
+  "libraryFiqhCommonGround": "Common ground",
+  "insightsCompleted": "Completed",
+  "insightsInProgress": "In Progress",
+  "insightsKeepGoingTitle": "Keep going!",
+  "insightsKeepGoingBody": "You're making great progress. Every prayer counts.",
+  "insightsAchievementsUnlockedLabel": "Achievements Unlocked",
+  "insightsAchievementsCount": "{unlocked} / {total}",
+  "@insightsAchievementsCount": {
+    "placeholders": {
+      "unlocked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementDescFirstPrayer": "Prayed your first prayer.",
+  "achievementDescSevenPrayerStreak": "Complete 7 prayers in a row.",
+  "achievementDescThirtyPrayerStreak": "Complete 30 prayers in a row.",
+  "achievementDescFajrWarrior": "Pray Fajr on 14 days.",
+  "achievementDescFajrChampion": "Pray Fajr on 30 days.",
+  "achievementDescFiveADay": "Complete all five prayers in one day.",
+  "achievementDescPerfectWeek": "Complete every prayer for 7 days in a row.",
+  "achievementDescPerfectMonth": "Complete every prayer for 30 days in a row.",
+  "achievementDescQuranReader": "Read Quran on 7 days.",
+  "achievementDescQuranDevotee": "Read Quran on 30 days.",
+  "achievementDescDhikrStarter": "Complete dhikr on 7 days.",
+  "achievementDescDhikrMaster": "Complete dhikr on 30 days.",
+  "achievementDescNightWorshipper": "Pray Tahajjud on 7 days.",
+  "achievementDescMasjidCompanion": "Visit the masjid 7 times.",
+  "achievementDescDistractionDefender": "Stay distraction-free for 7 days.",
+  "achievementDescCycleGuardian": "Protect your streak with Cycle Mode for 7 days.",
+  "achievementDescProtectedMonth": "Protect your streak with Cycle Mode for 30 days.",
+  "achievementDescConsistencyChampion": "Stay consistent for 100 days.",
+  "achievementDescSixMonthJourney": "Keep going for 180 days.",
+  "achievementDescDeenFocusMaster": "Reach DeenFocus Master (Level 15).",
+  "dailyChecklistOptional": "Optional",
+  "dailyChecklistIstighfar": "Istighfar",
+  "dailyChecklistSalawat": "Salawat / Durood",
+  "dailyChecklistControlAngerSpeakKindly": "Control anger / Speak kindly",
+  "digitalBalanceTitle": "Digital Balance",
+  "digitalBalanceSubtitle": "See where your time is going",
+  "digitalBalanceViewCta": "View Digital Balance →",
+  "digitalBalanceTodayLabel": "Today",
+  "digitalBalanceDeenFocus": "DeenFocus",
+  "digitalBalanceOtherApps": "Other apps",
+  "digitalBalanceTodayPhoneTime": "Today's Phone Time",
+  "digitalBalanceWhereTimeGoes": "Where Your Time Goes",
+  "digitalBalanceViewAllApps": "View All Apps",
+  "digitalBalanceAllAppsTitle": "All Apps",
+  "digitalBalanceNoApps": "No app usage recorded for today yet.",
+  "digitalBalanceDeenVsDigital": "Deen vs. Digital Time",
+  "digitalBalanceYourWeek": "Your Week",
+  "digitalBalanceThisWeek": "This week",
+  "digitalBalancePhoneUsageLegend": "Phone usage",
+  "digitalBalanceDailyInsight": "Daily Insight",
+  "digitalBalanceInsightKeepGoing": "Every minute spent strengthening your Deen matters.",
+  "digitalBalanceInsightWeekHigher": "Your DeenFocus time is higher this week than last week. MashaAllah!",
+  "digitalBalanceInsightQuietDay": "A quiet day so far. Time in DeenFocus will appear here.",
+  "digitalBalanceGoalTitle": "Your Deen Time Goal",
+  "digitalBalanceAdjustGoal": "Adjust Goal",
+  "digitalBalanceGoalReached": "You reached today's Deen time goal. MashaAllah!",
+  "digitalBalanceGoalSheetTitle": "Daily Deen time",
+  "digitalBalanceGoalCustomHint": "Minutes per day",
+  "digitalBalanceGoalSave": "Save",
+  "digitalBalanceGoal15": "15 min",
+  "digitalBalanceGoal30": "30 min",
+  "digitalBalanceGoal45": "45 min",
+  "digitalBalanceGoal60": "1 hour",
+  "digitalBalancePermissionTitle": "Understand Your Digital Habits",
+  "digitalBalancePermissionBody": "Allow DeenFocus to access your app usage information so you can see where your time goes and how much time you're giving to your Deen.",
+  "digitalBalanceEnableUsage": "Enable App Usage",
+  "digitalBalanceMaybeLater": "Maybe Later",
+  "digitalBalanceUnavailableTitle": "App usage isn't available here",
+  "digitalBalanceUnavailableBody": "Apple does not let DeenFocus read other apps' Screen Time on this iPhone, so Digital Balance cannot show usage totals yet. Your prayers, streaks, Focus blocking, and DeenFocus insights still work as usual.",
+  "digitalBalanceInfoTitle": "About Digital Balance",
+  "digitalBalanceInfoBody": "Digital Balance helps you see where your time is going and how much of it you're giving to your Deen. Usage stays on your device.",
+  "digitalBalanceDurationMinutes": "{minutes}m",
+  "@digitalBalanceDurationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalanceDurationHours": "{hours}h",
+  "@digitalBalanceDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalanceDurationHoursMinutes": "{hours}h {minutes}m",
+  "@digitalBalanceDurationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalancePercentShort": "DeenFocus · {percent}% of phone time",
+  "@digitalBalancePercentShort": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalancePercentOfPhoneTime": "DeenFocus = {percent}% of your phone time",
+  "@digitalBalancePercentOfPhoneTime": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalancePercentToday": "{percent}% of today's phone time",
+  "@digitalBalancePercentToday": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalanceRingLabel": "{percent}%\nDeenFocus",
+  "@digitalBalanceRingLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalanceWeekMoreDeen": "↑ {percent}% more DeenFocus time than last week",
+  "@digitalBalanceWeekMoreDeen": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalanceInsightTimeToday": "You spent {duration} in DeenFocus today. Keep building the habit.",
+  "@digitalBalanceInsightTimeToday": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "digitalBalanceInsightIncreasedYesterday": "Your DeenFocus time increased by {percent}% compared with yesterday.",
+  "@digitalBalanceInsightIncreasedYesterday": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalBalanceGoalPerDay": "{goal} / day",
+  "@digitalBalanceGoalPerDay": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "digitalBalanceGoalProgress": "{current} / {goal}",
+  "@digitalBalanceGoalProgress": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "digitalBalanceMinutesToGoal": "{minutes} minutes to reach today's goal",
+  "@digitalBalanceMinutesToGoal": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:just_audio/just_audio.dart';
 
 import '../../../core/services/storage_service.dart';
 import '../data/quran_local_repository.dart';
+import 'quran_audio_handler.dart';
 import 'quran_recitation.dart';
 import 'quran_repeat_mode.dart';
 
@@ -34,6 +35,20 @@ class QuranAudioController {
   }
 
   Future<void> setPlaylist(List<AyahRecord> ayahs) async {
+    final names = <int, String>{};
+    for (final number in ayahs.map((ayah) => ayah.surahNumber).toSet()) {
+      final surah = await QuranLocalRepository.instance.getSurah(number);
+      names[number] = surah?.name ?? 'Surah $number';
+    }
+    final items = ayahs
+        .map(
+          (ayah) => QuranAudioHandler.mediaItemFor(
+            surahNumber: ayah.surahNumber,
+            ayahNumber: ayah.ayahNumber,
+            surahName: names[ayah.surahNumber]!,
+          ),
+        )
+        .toList(growable: false);
     final source = ConcatenatingAudioSource(
       children: ayahs
           .map(
@@ -46,6 +61,7 @@ class QuranAudioController {
           .toList(growable: false),
     );
     await player.setAudioSource(source, preload: true);
+    await QuranAudioHandler.instance.attach(player: player, items: items);
   }
 
   Future<void> setSpeed(double speed) async {
@@ -74,5 +90,8 @@ class QuranAudioController {
     }
   }
 
-  Future<void> dispose() => player.dispose();
+  Future<void> dispose() async {
+    QuranAudioHandler.instance.detach(player);
+    await player.dispose();
+  }
 }

@@ -297,7 +297,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                 Text(
                   l10n.tasbihSwipeHint,
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 14.sp,
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -336,7 +336,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                           ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 14.sp,
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -345,7 +345,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                           Text(
                             '${l10n.tasbihGrandTotalLabel}: ${_item.totalCount}',
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                               color: AppColors.primary,
                             ),
@@ -525,7 +525,7 @@ class _DhikrCard extends StatelessWidget {
             Text(
               item.meaning,
               style: TextStyle(
-                fontSize: 13.sp,
+                fontSize: 14.sp,
                 color: colorScheme.onSurfaceVariant,
               ),
             ),

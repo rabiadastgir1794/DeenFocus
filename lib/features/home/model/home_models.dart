@@ -511,22 +511,51 @@ class PrayerMarkResult {
 }
 
 /// Daily Checklist items that users can track each day.
+///
+/// [fajr] remains for existing saves. The five obligatory prayers are shown
+/// from [TrackablePrayer] marks so Home and the checklist stay in sync.
 enum DailyChecklistItem {
-  // Prayer
   fajr,
   tahajjud,
-  // Quran & Dhikr
   quran,
   morningAdhkar,
   eveningAdhkar,
   dhikr,
-  // Good deeds
+  istighfar,
+  salawat,
   charity,
   smileAtSomeone,
   familyCall,
-  // Distraction control
   noMusicToday,
   noSocialMediaBeforeIsha,
+  controlAngerSpeakKindly,
+}
+
+extension DailyChecklistItemX on DailyChecklistItem {
+  /// Habits stored only on the checklist. Obligatory Fajr is not listed here.
+  static Iterable<DailyChecklistItem> get storedHabits =>
+      DailyChecklistItem.values.where((e) => e != DailyChecklistItem.fajr);
+
+  bool get isOptionalHabit {
+    switch (this) {
+      case DailyChecklistItem.tahajjud:
+      case DailyChecklistItem.charity:
+      case DailyChecklistItem.smileAtSomeone:
+      case DailyChecklistItem.familyCall:
+      case DailyChecklistItem.noMusicToday:
+      case DailyChecklistItem.noSocialMediaBeforeIsha:
+      case DailyChecklistItem.controlAngerSpeakKindly:
+        return true;
+      case DailyChecklistItem.fajr:
+      case DailyChecklistItem.quran:
+      case DailyChecklistItem.morningAdhkar:
+      case DailyChecklistItem.eveningAdhkar:
+      case DailyChecklistItem.dhikr:
+      case DailyChecklistItem.istighfar:
+      case DailyChecklistItem.salawat:
+        return false;
+    }
+  }
 }
 
 /// Inclusive calendar range for one Cycle Mode period (active or completed).

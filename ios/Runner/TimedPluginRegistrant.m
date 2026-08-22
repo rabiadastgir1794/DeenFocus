@@ -8,6 +8,12 @@
 #import "TimedPluginRegistrant.h"
 #import <CoreFoundation/CoreFoundation.h>
 
+#if __has_include(<audio_service/AudioServicePlugin.h>)
+#import <audio_service/AudioServicePlugin.h>
+#else
+@import audio_service;
+#endif
+
 #if __has_include(<audio_session/AudioSessionPlugin.h>)
 #import <audio_session/AudioSessionPlugin.h>
 #else
@@ -92,6 +98,12 @@
 @import shared_preferences_foundation;
 #endif
 
+#if __has_include(<sqflite_darwin/SqflitePlugin.h>)
+#import <sqflite_darwin/SqflitePlugin.h>
+#else
+@import sqflite_darwin;
+#endif
+
 #if __has_include(<superwallkit_flutter/SuperwallkitFlutterPlugin.h>)
 #import <superwallkit_flutter/SuperwallkitFlutterPlugin.h>
 #else
@@ -128,6 +140,9 @@ static void DeenFocusTimePlugin(NSString *name, void (^block)(void)) {
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry> *)registry {
   CFAbsoluteTime all0 = CFAbsoluteTimeGetCurrent();
 
+  DeenFocusTimePlugin(@"AudioServicePlugin", ^{
+    [AudioServicePlugin registerWithRegistrar:[registry registrarForPlugin:@"AudioServicePlugin"]];
+  });
   DeenFocusTimePlugin(@"AudioSessionPlugin", ^{
     [AudioSessionPlugin registerWithRegistrar:[registry registrarForPlugin:@"AudioSessionPlugin"]];
   });
@@ -174,6 +189,9 @@ static void DeenFocusTimePlugin(NSString *name, void (^block)(void)) {
   DeenFocusTimePlugin(@"SharedPreferencesPlugin", ^{
     [SharedPreferencesPlugin
         registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];
+  });
+  DeenFocusTimePlugin(@"SqflitePlugin", ^{
+    [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
   });
   DeenFocusTimePlugin(@"SuperwallkitFlutterPlugin", ^{
     [SuperwallkitFlutterPlugin

@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
 
@@ -33,6 +36,18 @@ class _DailyChecklistSheetContent extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final vm = context.watch<HomeTabViewModel>();
     final completedItems = vm.dailyChecklistCompletedItems;
+
+    Widget habit({
+      required DailyChecklistItem item,
+      required String title,
+    }) {
+      return _ChecklistItem(
+        title: title,
+        isCompleted: completedItems.contains(item),
+        isOptional: item.isOptionalHabit,
+        onTap: () => unawaited(vm.toggleDailyChecklistItem(item)),
+      );
+    }
 
     return SafeArea(
       child: ConstrainedBox(
@@ -70,103 +85,74 @@ class _DailyChecklistSheetContent extends StatelessWidget {
                     _ChecklistSectionHeader(
                       title: l10n.dailyChecklistSectionPrayer,
                     ),
-                    _ChecklistItem(
-                      title: l10n.dailyChecklistFajr,
-                      isCompleted:
-                          completedItems.contains(DailyChecklistItem.fajr),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.fajr,
+                    for (final prayer in TrackablePrayer.values)
+                      _ChecklistItem(
+                        title: prayer.label(l10n),
+                        isCompleted: vm.isChecklistPrayerCompleted(prayer),
+                        onTap: () => unawaited(
+                          vm.toggleChecklistTrackedPrayer(prayer),
+                        ),
                       ),
-                    ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.tahajjud,
                       title: l10n.dailyChecklistTahajjud,
-                      isCompleted:
-                          completedItems.contains(DailyChecklistItem.tahajjud),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.tahajjud,
-                      ),
                     ),
                     _ChecklistSectionHeader(
                       title: l10n.dailyChecklistSectionQuranDhikr,
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.quran,
                       title: l10n.dailyChecklistQuran,
-                      isCompleted:
-                          completedItems.contains(DailyChecklistItem.quran),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.quran,
-                      ),
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.morningAdhkar,
                       title: l10n.dailyChecklistMorningAdhkar,
-                      isCompleted: completedItems
-                          .contains(DailyChecklistItem.morningAdhkar),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.morningAdhkar,
-                      ),
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.eveningAdhkar,
                       title: l10n.dailyChecklistEveningAdhkar,
-                      isCompleted: completedItems
-                          .contains(DailyChecklistItem.eveningAdhkar),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.eveningAdhkar,
-                      ),
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.dhikr,
                       title: l10n.dailyChecklistDhikr,
-                      isCompleted:
-                          completedItems.contains(DailyChecklistItem.dhikr),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.dhikr,
-                      ),
+                    ),
+                    habit(
+                      item: DailyChecklistItem.istighfar,
+                      title: l10n.dailyChecklistIstighfar,
+                    ),
+                    habit(
+                      item: DailyChecklistItem.salawat,
+                      title: l10n.dailyChecklistSalawat,
                     ),
                     _ChecklistSectionHeader(
                       title: l10n.dailyChecklistSectionGoodDeeds,
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.charity,
                       title: l10n.dailyChecklistCharity,
-                      isCompleted:
-                          completedItems.contains(DailyChecklistItem.charity),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.charity,
-                      ),
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.smileAtSomeone,
                       title: l10n.dailyChecklistSmileAtSomeone,
-                      isCompleted: completedItems
-                          .contains(DailyChecklistItem.smileAtSomeone),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.smileAtSomeone,
-                      ),
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.familyCall,
                       title: l10n.dailyChecklistFamilyCall,
-                      isCompleted: completedItems
-                          .contains(DailyChecklistItem.familyCall),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.familyCall,
-                      ),
                     ),
                     _ChecklistSectionHeader(
                       title: l10n.dailyChecklistSectionDistraction,
                     ),
-                    _ChecklistItem(
-                      title: l10n.dailyChecklistNoMusicToday,
-                      isCompleted: completedItems
-                          .contains(DailyChecklistItem.noMusicToday),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.noMusicToday,
-                      ),
+                    habit(
+                      item: DailyChecklistItem.controlAngerSpeakKindly,
+                      title: l10n.dailyChecklistControlAngerSpeakKindly,
                     ),
-                    _ChecklistItem(
+                    habit(
+                      item: DailyChecklistItem.noSocialMediaBeforeIsha,
                       title: l10n.dailyChecklistNoSocialMediaBeforeIsha,
-                      isCompleted: completedItems.contains(
-                        DailyChecklistItem.noSocialMediaBeforeIsha,
-                      ),
-                      onTap: () => vm.toggleDailyChecklistItem(
-                        DailyChecklistItem.noSocialMediaBeforeIsha,
-                      ),
+                    ),
+                    habit(
+                      item: DailyChecklistItem.noMusicToday,
+                      title: l10n.dailyChecklistNoMusicToday,
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -189,7 +175,7 @@ class _ChecklistSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 4),
+      padding: const EdgeInsets.only(top: 8, bottom: 2),
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -207,21 +193,24 @@ class _ChecklistItem extends StatelessWidget {
     required this.title,
     required this.isCompleted,
     required this.onTap,
+    this.isOptional = false,
   });
 
   final String title;
   final bool isCompleted;
+  final bool isOptional;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
             Container(
@@ -259,6 +248,15 @@ class _ChecklistItem extends StatelessWidget {
                 ),
               ),
             ),
+            if (isOptional) ...[
+              SizedBox(width: Spacing.sm),
+              Text(
+                l10n.dailyChecklistOptional,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -114,7 +114,6 @@ class HomePrayerStreakSection extends StatelessWidget {
                                       : colorScheme.primary
                                           .withValues(alpha: 0.8),
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 12.5,
                                 ),
                           ),
                           Icon(
@@ -307,7 +306,6 @@ class _StreakMetric extends StatelessWidget {
                 style: textTheme.labelMedium?.copyWith(
                   color: titleColor,
                   fontWeight: FontWeight.w600,
-                  fontSize: 12,
                 ),
               ),
             ),
@@ -329,9 +327,8 @@ class _StreakMetric extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+            color: colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
-            fontSize: 11,
           ),
         ),
       ],

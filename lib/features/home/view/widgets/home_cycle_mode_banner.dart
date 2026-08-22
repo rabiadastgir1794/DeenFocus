@@ -75,7 +75,6 @@ class HomeCycleModeActiveBanner extends StatelessWidget {
                               ?.copyWith(
                             fontWeight: FontWeight.w600,
                             height: 1.35,
-                            fontSize: 13.5,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -85,7 +84,6 @@ class HomeCycleModeActiveBanner extends StatelessWidget {
                               ?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                             height: 1.35,
-                            fontSize: 12,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -95,7 +93,6 @@ class HomeCycleModeActiveBanner extends StatelessWidget {
                               ?.copyWith(
                             color: cycleModeColor,
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
                           ),
                         ),
                       ],

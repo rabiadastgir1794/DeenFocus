@@ -100,7 +100,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationButton => 'Allow Location Access';
 
   @override
-  String get locationManualEntry => 'Or enter your city';
+  String get locationManualEntry => 'Enter your city manually';
+
+  @override
+  String get locationOrDivider => 'or';
 
   @override
   String get locationPrivacyNote => 'Stays on your device';
@@ -125,6 +128,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsButton => 'Enable Notifications';
 
   @override
+  String get notificationsMaybeLater => 'Maybe Later';
+
+  @override
   String get notificationsEnabled => 'Notifications are enabled';
 
   @override
@@ -137,31 +143,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsPreviewNow => 'now';
 
   @override
-  String get notificationsPreviewMinutesAgo => '2m';
+  String get notificationsPreviewMinutesAgo => '2m ago';
 
   @override
-  String get notificationsPreviewHourAgo => '1h';
+  String get notificationsPreviewHourAgo => '1h ago';
 
   @override
   String get notificationsPreviewAdhanTitle => 'Maghrib Adhan';
 
   @override
-  String get notificationsPreviewAdhanBody =>
-      'It\'s time to pray. Apps are paused.';
+  String get notificationsPreviewAdhanBody => 'It\'s time to pray.';
 
   @override
-  String get notificationsPreviewDhikrTitle => 'DAILY DHIKR';
+  String get notificationsPreviewDhikrTitle => 'Daily Dhikr';
 
   @override
-  String get notificationsPreviewDhikrBody =>
-      'SubhanAllah — take a minute to remember.';
+  String get notificationsPreviewDhikrBody => 'SubhanAllah — take a moment.';
 
   @override
-  String get notificationsPreviewStreakTitle => 'STREAK';
+  String get notificationsPreviewStreakTitle => 'Streak';
 
   @override
-  String get notificationsPreviewStreakBody =>
-      '7 days of complete prayers. Keep going!';
+  String get notificationsPreviewStreakBody => '7 days of complete prayers.';
 
   @override
   String get screenTimeTitle => 'Enable Screen Time';
@@ -192,6 +195,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingSelectAppsSkipForNow => 'Skip for Now';
+
+  @override
+  String get onboardingSelectAppsPrivacyTitle => 'You\'re in control';
+
+  @override
+  String get onboardingSelectAppsPrivacyBody =>
+      'We never read your data. We only lock the apps you choose.';
 
   @override
   String get onboardingSelectAppsMockAllApps => 'All Apps & Categories';
@@ -463,6 +473,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get investTrialPill => '✨ 7 days free — cancel anytime before it ends';
+
+  @override
+  String get investNoCommitment => 'No commitment. Cancel anytime.';
 
   @override
   String get investFeatureAiTitle => 'AI Islamic Assistant';
@@ -972,6 +985,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeFocusModeSubtitle => 'Block distracting apps during Salah';
 
   @override
+  String get focusModeShortSalah => 'Salah';
+
+  @override
+  String get focusModeShortNight => 'Night';
+
+  @override
+  String get focusModeShortChild => 'Child';
+
+  @override
+  String get focusModeLabelSalah => 'Salah mode';
+
+  @override
+  String get focusModeLabelNight => 'Night mode';
+
+  @override
+  String get focusModeLabelChild => 'Child mode';
+
+  @override
+  String homeFocusModeNamesTwo(String first, String second) {
+    return '$first and $second Modes are enabled';
+  }
+
+  @override
+  String homeFocusModeNamesThree(String first, String second, String third) {
+    return '$first, $second, and $third Modes are enabled';
+  }
+
+  @override
   String get cycleModeTitle => 'Cycle Mode';
 
   @override
@@ -999,7 +1040,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyChecklistSectionGoodDeeds => 'Good deeds';
 
   @override
-  String get dailyChecklistSectionDistraction => 'Distraction control';
+  String get dailyChecklistSectionDistraction => 'Personal discipline';
 
   @override
   String get dailyChecklistFajr => 'Fajr';
@@ -2515,10 +2556,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insightsDaysInARow => 'Days in a row';
 
   @override
-  String get insightsChipUpToday => '↑ +1';
+  String insightsChipUpToday(int count) {
+    return '↑ $count';
+  }
 
   @override
-  String get insightsChipDayUp => '↑ +1 today';
+  String get insightsChipDayUp => '↑ 1 today';
 
   @override
   String get insightsWeeklyCompletion => 'Weekly completion';
@@ -2555,7 +2598,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers. Alhamdulillah — keep going!';
+    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
   }
 
   @override
@@ -3239,6 +3282,103 @@ class AppLocalizationsEn extends AppLocalizations {
       'Current and next prayer on your Lock Screen and Dynamic Island.';
 
   @override
+  String get settingsAppDemoTajweedCardSubtitle =>
+      'Recite an ayah and get instant tajweed feedback.';
+
+  @override
+  String get featureDemoTajweedTitle => 'Tajweed';
+
+  @override
+  String get featureDemoTajweedIntroTitle => 'See how Tajweed practice works';
+
+  @override
+  String get featureDemoTajweedIntroSubtitle =>
+      'Stay in DeenFocus. Open Tajweed drill, recite an ayah, and see word-by-word feedback.';
+
+  @override
+  String get featureDemoTajweedQuranCallout => 'Tap Tajweed drill to start';
+
+  @override
+  String get featureDemoTajweedLegendCallout =>
+      'Color highlights show tajweed rules as you read';
+
+  @override
+  String get featureDemoTajweedReciteCallout => 'Tap Recite & check tajweed';
+
+  @override
+  String get featureDemoTajweedDownloadCallout =>
+      'One-time download so practice works offline';
+
+  @override
+  String get featureDemoTajweedMicCallout => 'Tap the mic and start reciting';
+
+  @override
+  String get featureDemoTajweedResultCallout =>
+      'See which words were correct, missed, or need work';
+
+  @override
+  String get featureDemoTajweedCompletionTitle => 'Tajweed, ready';
+
+  @override
+  String get featureDemoTajweedCompletionSubtitle =>
+      'Recite with confidence, anytime.';
+
+  @override
+  String get featureDemoTajweedCompletionBody =>
+      'Open Quran → Tajweed drill to practice any ayah with on-device scoring — fully offline after the first download.';
+
+  @override
+  String get featureDemoTajweedSurahName => 'Al-Fatihah';
+
+  @override
+  String get featureDemoTajweedBaqarahName => 'Al-Baqarah';
+
+  @override
+  String get featureDemoTajweedSurahListSubtitle => '7 verses • Meccan';
+
+  @override
+  String get featureDemoTajweedBaqarahSubtitle => '286 verses • Medinan';
+
+  @override
+  String get featureDemoTajweedSurahHeaderSubtitle => 'Al-Fatihah • 7 verses';
+
+  @override
+  String get featureDemoTajweedSurahMeta => 'SURAH 1 • MECCAN';
+
+  @override
+  String get featureDemoTajweedAyahTranslation =>
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+
+  @override
+  String get featureDemoTajweedPracticeTitle => 'Al-Fatihah · 1:1';
+
+  @override
+  String get featureDemoTajweedPreparingTitle => 'Preparing AI model';
+
+  @override
+  String get featureDemoTajweedPreparingBody =>
+      'One-time download so Tajweed practice works fully offline afterwards. This only happens once.';
+
+  @override
+  String get featureDemoTajweedResultEncouragement =>
+      'Keep practicing — listen to the reference and try again.';
+
+  @override
+  String get featureDemoTajweedStatCorrect => 'Correct';
+
+  @override
+  String get featureDemoTajweedStatPronunciation => 'Pronunciation';
+
+  @override
+  String get featureDemoTajweedStatWrong => 'Wrong word';
+
+  @override
+  String get featureDemoTajweedStatMissed => 'Missed';
+
+  @override
+  String get featureDemoTajweedStatExtra => 'Extra';
+
+  @override
   String get featureDemoContinue => 'Continue';
 
   @override
@@ -3829,4 +3969,290 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryFiqhCommonGround => 'Common ground';
+
+  @override
+  String get insightsCompleted => 'Completed';
+
+  @override
+  String get insightsInProgress => 'In Progress';
+
+  @override
+  String get insightsKeepGoingTitle => 'Keep going!';
+
+  @override
+  String get insightsKeepGoingBody =>
+      'You\'re making great progress. Every prayer counts.';
+
+  @override
+  String get insightsAchievementsUnlockedLabel => 'Achievements Unlocked';
+
+  @override
+  String insightsAchievementsCount(int unlocked, int total) {
+    return '$unlocked / $total';
+  }
+
+  @override
+  String get achievementDescFirstPrayer => 'Prayed your first prayer.';
+
+  @override
+  String get achievementDescSevenPrayerStreak => 'Complete 7 prayers in a row.';
+
+  @override
+  String get achievementDescThirtyPrayerStreak =>
+      'Complete 30 prayers in a row.';
+
+  @override
+  String get achievementDescFajrWarrior => 'Pray Fajr on 14 days.';
+
+  @override
+  String get achievementDescFajrChampion => 'Pray Fajr on 30 days.';
+
+  @override
+  String get achievementDescFiveADay => 'Complete all five prayers in one day.';
+
+  @override
+  String get achievementDescPerfectWeek =>
+      'Complete every prayer for 7 days in a row.';
+
+  @override
+  String get achievementDescPerfectMonth =>
+      'Complete every prayer for 30 days in a row.';
+
+  @override
+  String get achievementDescQuranReader => 'Read Quran on 7 days.';
+
+  @override
+  String get achievementDescQuranDevotee => 'Read Quran on 30 days.';
+
+  @override
+  String get achievementDescDhikrStarter => 'Complete dhikr on 7 days.';
+
+  @override
+  String get achievementDescDhikrMaster => 'Complete dhikr on 30 days.';
+
+  @override
+  String get achievementDescNightWorshipper => 'Pray Tahajjud on 7 days.';
+
+  @override
+  String get achievementDescMasjidCompanion => 'Visit the masjid 7 times.';
+
+  @override
+  String get achievementDescDistractionDefender =>
+      'Stay distraction-free for 7 days.';
+
+  @override
+  String get achievementDescCycleGuardian =>
+      'Protect your streak with Cycle Mode for 7 days.';
+
+  @override
+  String get achievementDescProtectedMonth =>
+      'Protect your streak with Cycle Mode for 30 days.';
+
+  @override
+  String get achievementDescConsistencyChampion =>
+      'Stay consistent for 100 days.';
+
+  @override
+  String get achievementDescSixMonthJourney => 'Keep going for 180 days.';
+
+  @override
+  String get achievementDescDeenFocusMaster =>
+      'Reach DeenFocus Master (Level 15).';
+
+  @override
+  String get dailyChecklistOptional => 'Optional';
+
+  @override
+  String get dailyChecklistIstighfar => 'Istighfar';
+
+  @override
+  String get dailyChecklistSalawat => 'Salawat / Durood';
+
+  @override
+  String get dailyChecklistControlAngerSpeakKindly =>
+      'Control anger / Speak kindly';
+
+  @override
+  String get digitalBalanceTitle => 'Digital Balance';
+
+  @override
+  String get digitalBalanceSubtitle => 'See where your time is going';
+
+  @override
+  String get digitalBalanceViewCta => 'View Digital Balance →';
+
+  @override
+  String get digitalBalanceTodayLabel => 'Today';
+
+  @override
+  String get digitalBalanceDeenFocus => 'DeenFocus';
+
+  @override
+  String get digitalBalanceOtherApps => 'Other apps';
+
+  @override
+  String get digitalBalanceTodayPhoneTime => 'Today\'s Phone Time';
+
+  @override
+  String get digitalBalanceWhereTimeGoes => 'Where Your Time Goes';
+
+  @override
+  String get digitalBalanceViewAllApps => 'View All Apps';
+
+  @override
+  String get digitalBalanceAllAppsTitle => 'All Apps';
+
+  @override
+  String get digitalBalanceNoApps => 'No app usage recorded for today yet.';
+
+  @override
+  String get digitalBalanceDeenVsDigital => 'Deen vs. Digital Time';
+
+  @override
+  String get digitalBalanceYourWeek => 'Your Week';
+
+  @override
+  String get digitalBalanceThisWeek => 'This week';
+
+  @override
+  String get digitalBalancePhoneUsageLegend => 'Phone usage';
+
+  @override
+  String get digitalBalanceDailyInsight => 'Daily Insight';
+
+  @override
+  String get digitalBalanceInsightKeepGoing =>
+      'Every minute spent strengthening your Deen matters.';
+
+  @override
+  String get digitalBalanceInsightWeekHigher =>
+      'Your DeenFocus time is higher this week than last week. MashaAllah!';
+
+  @override
+  String get digitalBalanceInsightQuietDay =>
+      'A quiet day so far. Time in DeenFocus will appear here.';
+
+  @override
+  String get digitalBalanceGoalTitle => 'Your Deen Time Goal';
+
+  @override
+  String get digitalBalanceAdjustGoal => 'Adjust Goal';
+
+  @override
+  String get digitalBalanceGoalReached =>
+      'You reached today\'s Deen time goal. MashaAllah!';
+
+  @override
+  String get digitalBalanceGoalSheetTitle => 'Daily Deen time';
+
+  @override
+  String get digitalBalanceGoalCustomHint => 'Minutes per day';
+
+  @override
+  String get digitalBalanceGoalSave => 'Save';
+
+  @override
+  String get digitalBalanceGoal15 => '15 min';
+
+  @override
+  String get digitalBalanceGoal30 => '30 min';
+
+  @override
+  String get digitalBalanceGoal45 => '45 min';
+
+  @override
+  String get digitalBalanceGoal60 => '1 hour';
+
+  @override
+  String get digitalBalancePermissionTitle => 'Understand Your Digital Habits';
+
+  @override
+  String get digitalBalancePermissionBody =>
+      'Allow DeenFocus to access your app usage information so you can see where your time goes and how much time you\'re giving to your Deen.';
+
+  @override
+  String get digitalBalanceEnableUsage => 'Enable App Usage';
+
+  @override
+  String get digitalBalanceMaybeLater => 'Maybe Later';
+
+  @override
+  String get digitalBalanceUnavailableTitle =>
+      'App usage isn\'t available here';
+
+  @override
+  String get digitalBalanceUnavailableBody =>
+      'Apple does not let DeenFocus read other apps\' Screen Time on this iPhone, so Digital Balance cannot show usage totals yet. Your prayers, streaks, Focus blocking, and DeenFocus insights still work as usual.';
+
+  @override
+  String get digitalBalanceInfoTitle => 'About Digital Balance';
+
+  @override
+  String get digitalBalanceInfoBody =>
+      'Digital Balance helps you see where your time is going and how much of it you\'re giving to your Deen. Usage stays on your device.';
+
+  @override
+  String digitalBalanceDurationMinutes(int minutes) {
+    return '${minutes}m';
+  }
+
+  @override
+  String digitalBalanceDurationHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String digitalBalanceDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String digitalBalancePercentShort(int percent) {
+    return 'DeenFocus · $percent% of phone time';
+  }
+
+  @override
+  String digitalBalancePercentOfPhoneTime(int percent) {
+    return 'DeenFocus = $percent% of your phone time';
+  }
+
+  @override
+  String digitalBalancePercentToday(int percent) {
+    return '$percent% of today\'s phone time';
+  }
+
+  @override
+  String digitalBalanceRingLabel(int percent) {
+    return '$percent%\nDeenFocus';
+  }
+
+  @override
+  String digitalBalanceWeekMoreDeen(int percent) {
+    return '↑ $percent% more DeenFocus time than last week';
+  }
+
+  @override
+  String digitalBalanceInsightTimeToday(String duration) {
+    return 'You spent $duration in DeenFocus today. Keep building the habit.';
+  }
+
+  @override
+  String digitalBalanceInsightIncreasedYesterday(int percent) {
+    return 'Your DeenFocus time increased by $percent% compared with yesterday.';
+  }
+
+  @override
+  String digitalBalanceGoalPerDay(String goal) {
+    return '$goal / day';
+  }
+
+  @override
+  String digitalBalanceGoalProgress(String current, String goal) {
+    return '$current / $goal';
+  }
+
+  @override
+  String digitalBalanceMinutesToGoal(int minutes) {
+    return '$minutes minutes to reach today\'s goal';
+  }
 }

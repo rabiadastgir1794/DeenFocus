@@ -93,7 +93,6 @@ class AppPermissionDialog extends StatelessWidget {
       content: Text(
         message,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontSize: 14.sp,
           height: 1.55,
           color: colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.w500,

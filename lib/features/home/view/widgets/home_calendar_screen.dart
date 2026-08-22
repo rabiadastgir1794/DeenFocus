@@ -655,7 +655,6 @@ class _MonthGrid extends StatelessWidget {
                       hijri == null ? '' : '${hijri.hijriDay}',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: hijriColor,
-                        fontSize: 10,
                         height: 1.1,
                       ),
                     ),

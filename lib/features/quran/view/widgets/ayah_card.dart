@@ -148,7 +148,7 @@ class _SurahDetailAyahCard extends StatelessWidget {
               Text(
                 '${ayah.ayahNumber}',
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
                   color: mutedColor,
                 ),
@@ -165,7 +165,7 @@ class _SurahDetailAyahCard extends StatelessWidget {
                 child: Text(
                   '${ayah.ayahNumber}',
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
                     color: colorScheme.secondary,
                   ),
@@ -442,7 +442,7 @@ class _ClassicAyahCard extends StatelessWidget {
                         Text(
                           '${ayah.ayahNumber}',
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.2,
                             color: mutedColor,
@@ -463,7 +463,7 @@ class _ClassicAyahCard extends StatelessWidget {
                           child: Text(
                             ayah.ayahNumber.toString(),
                             style: TextStyle(
-                              fontSize: 11.sp,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w700,
                               color: colorScheme.primary,
                             ),

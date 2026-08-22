@@ -29,17 +29,21 @@ class DemoGuideArrowPainter extends CustomPainter {
     required this.color,
     this.clearance = 34,
     this.bend = 36,
+    this.stem = 56,
+    this.startXFactor = 0.5,
   });
 
   final Offset targetCenter;
   final Color color;
   final double clearance;
   final double bend;
+  final double stem;
+  final double startXFactor;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final start = Offset(size.width * 0.5, targetCenter.dy - 72);
     final end = Offset(targetCenter.dx, targetCenter.dy - clearance);
+    final start = Offset(size.width * startXFactor, end.dy - stem);
 
     final paint = Paint()
       ..color = color
@@ -47,10 +51,7 @@ class DemoGuideArrowPainter extends CustomPainter {
       ..strokeWidth = 3.2
       ..strokeCap = StrokeCap.round;
 
-    final control = Offset(
-      (start.dx + end.dx) / 2 + bend,
-      start.dy + 10,
-    );
+    final control = Offset((start.dx + end.dx) / 2 + bend, start.dy + 10);
 
     final path = Path()
       ..moveTo(start.dx, start.dy)
@@ -78,7 +79,9 @@ class DemoGuideArrowPainter extends CustomPainter {
       oldDelegate.targetCenter != targetCenter ||
       oldDelegate.color != color ||
       oldDelegate.clearance != clearance ||
-      oldDelegate.bend != bend;
+      oldDelegate.bend != bend ||
+      oldDelegate.stem != stem ||
+      oldDelegate.startXFactor != startXFactor;
 }
 
 /// Ignore-pointer overlay that paints a pulsing curved arrow at [targetCenter].
@@ -90,6 +93,8 @@ class DemoGuideArrowOverlay extends StatelessWidget {
     this.pulse,
     this.clearance = 34,
     this.bend = 36,
+    this.stem = 56,
+    this.startXFactor = 0.5,
   });
 
   final Offset targetCenter;
@@ -97,6 +102,8 @@ class DemoGuideArrowOverlay extends StatelessWidget {
   final Animation<double>? pulse;
   final double clearance;
   final double bend;
+  final double stem;
+  final double startXFactor;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +113,8 @@ class DemoGuideArrowOverlay extends StatelessWidget {
         color: color,
         clearance: clearance,
         bend: bend,
+        stem: stem,
+        startXFactor: startXFactor,
       ),
     );
 
@@ -113,17 +122,12 @@ class DemoGuideArrowOverlay extends StatelessWidget {
       paint = AnimatedBuilder(
         animation: pulse!,
         builder: (context, child) {
-          return Opacity(
-            opacity: 0.72 + (pulse!.value * 0.28),
-            child: child,
-          );
+          return Opacity(opacity: 0.72 + (pulse!.value * 0.28), child: child);
         },
         child: paint,
       );
     }
 
-    return Positioned.fill(
-      child: IgnorePointer(child: paint),
-    );
+    return Positioned.fill(child: IgnorePointer(child: paint));
   }
 }

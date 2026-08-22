@@ -852,7 +852,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
                     child: Text(
                       surah.number.toString(),
                       style: TextStyle(
-                        fontSize: 11.sp,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                         color: colorScheme.primary,
                       ),
@@ -875,7 +875,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
                         Text(
                           '${surah.verses} ${l10n.quranVersesLabel} • ${surah.revelationType}',
                           style: TextStyle(
-                            fontSize: 11.sp,
+                            fontSize: 12.sp,
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -996,7 +996,7 @@ class _QuickActionTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
                 ),
@@ -1006,7 +1006,7 @@ class _QuickActionTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 10.sp,
+                  fontSize: 11.sp,
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),

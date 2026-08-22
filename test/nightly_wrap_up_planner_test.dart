@@ -107,6 +107,16 @@ void main() {
       expect(plan, isNull);
     });
 
+    test('stored habits without Fajr still complete the checklist reminder', () {
+      final plan = NightlyWrapUpPlanner.planForDay(
+        ishaTime: isha,
+        prayerStatuses: allHandled(),
+        checklistCompleted: DailyChecklistItemX.storedHabits.toSet(),
+        skipForCycleMode: false,
+      );
+      expect(plan, isNull);
+    });
+
     test('completing everything cancels plan (null)', () {
       // Before: both open.
       expect(

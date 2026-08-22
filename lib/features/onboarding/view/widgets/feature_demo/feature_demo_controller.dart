@@ -3,9 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'feature_demo_kind.dart';
 import 'feature_demo_phase.dart';
 
-/// Local state machine for interactive Widgets / Live Activity demos.
+/// Local state machine for interactive App Demo walkthroughs.
 class FeatureDemoController extends ChangeNotifier {
-  FeatureDemoController({required this.kind, required this.isCupertinoPlatform});
+  FeatureDemoController({
+    required this.kind,
+    required this.isCupertinoPlatform,
+  });
 
   final FeatureDemoKind kind;
   final bool isCupertinoPlatform;
@@ -26,11 +29,71 @@ class FeatureDemoController extends ChangeNotifier {
 
   void startDemo() {
     switch (kind) {
+      case FeatureDemoKind.tajweed:
+        _goTo(FeatureDemoPhase.tajweedQuran);
       case FeatureDemoKind.widgets:
         _goTo(FeatureDemoPhase.widgetsHome);
       case FeatureDemoKind.liveActivity:
         _liveActivityEnabled = false;
         _goTo(FeatureDemoPhase.liveSettings);
+    }
+  }
+
+  // —— Tajweed ——
+
+  void tapTajweedDrill() {
+    if (_phase != FeatureDemoPhase.tajweedQuran) return;
+    _goTo(FeatureDemoPhase.tajweedSurahRecite);
+  }
+
+  void tapTajweedLegend() {
+    if (_phase != FeatureDemoPhase.tajweedSurahLegend) return;
+    _goTo(FeatureDemoPhase.tajweedSurahRecite);
+  }
+
+  void tapTajweedRecite() {
+    if (_phase != FeatureDemoPhase.tajweedSurahLegend &&
+        _phase != FeatureDemoPhase.tajweedSurahRecite) {
+      return;
+    }
+    _goTo(FeatureDemoPhase.tajweedDownload);
+  }
+
+  void finishTajweedDownload() {
+    if (_phase != FeatureDemoPhase.tajweedDownload) return;
+    _goTo(FeatureDemoPhase.tajweedPractice);
+  }
+
+  void tapTajweedMic() {
+    if (_phase != FeatureDemoPhase.tajweedPractice) return;
+    _goTo(FeatureDemoPhase.tajweedResult);
+  }
+
+  void finishTajweedDemo() {
+    if (_phase != FeatureDemoPhase.tajweedResult) return;
+    _goTo(FeatureDemoPhase.completion);
+  }
+
+  void retryTajweedPractice() {
+    if (_phase != FeatureDemoPhase.tajweedResult) return;
+    _goTo(FeatureDemoPhase.tajweedPractice);
+  }
+
+  void goBack() {
+    switch (_phase) {
+      case FeatureDemoPhase.tajweedQuran:
+        reset();
+      case FeatureDemoPhase.tajweedSurahLegend:
+      case FeatureDemoPhase.tajweedSurahRecite:
+        _goTo(FeatureDemoPhase.tajweedQuran);
+      case FeatureDemoPhase.tajweedDownload:
+        _goTo(FeatureDemoPhase.tajweedSurahRecite);
+      case FeatureDemoPhase.tajweedPractice:
+        _goTo(FeatureDemoPhase.tajweedDownload);
+      case FeatureDemoPhase.tajweedResult:
+        _goTo(FeatureDemoPhase.tajweedPractice);
+      default:
+        break;
     }
   }
 

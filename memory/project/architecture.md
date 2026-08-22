@@ -50,6 +50,7 @@ pattern `com.app.deenly.deenly/<feature>`:
 | --- | --- |
 | `.../focus` | `FocusEnforcementService`, `AppNotificationService` |
 | `.../screen_time` | `PermissionService` |
+| `.../app_usage` | `AppUsageService` (Android UsageStats + Insights UI; iOS Family Controls bridge kept, Insights card hidden) |
 | `.../qibla_compass_method` (+ `_events`) | `QiblaCompassService` |
 | `.../widgets` | `WidgetSyncService` |
 | `.../location_search` | `NativeLocationSearchService` |

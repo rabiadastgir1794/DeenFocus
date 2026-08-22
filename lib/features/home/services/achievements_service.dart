@@ -190,10 +190,8 @@ class UserProgress {
     this.updatedAt,
   });
 
-  factory UserProgress.initial() => const UserProgress(
-    totalXP: 0,
-    currentLevel: 1,
-  );
+  factory UserProgress.initial() =>
+      const UserProgress(totalXP: 0, currentLevel: 1);
 
   final int totalXP;
   final int currentLevel;
@@ -284,17 +282,13 @@ abstract class AchievementsService {
     DailyChecklistItem.morningAdhkar,
     DailyChecklistItem.eveningAdhkar,
     DailyChecklistItem.dhikr,
+    DailyChecklistItem.istighfar,
+    DailyChecklistItem.salawat,
   ];
 
   static List<AchievementProgress> defaults() {
     return AchievementId.values
-        .map(
-          (id) => AchievementProgress(
-            id: id,
-            current: 0,
-            target: id.target,
-          ),
-        )
+        .map((id) => AchievementProgress(id: id, current: 0, target: id.target))
         .toList(growable: false);
   }
 
@@ -337,21 +331,27 @@ abstract class AchievementsService {
     final byId = <AchievementId, AchievementProgress>{
       for (final item in previous) item.id: item,
     };
-    return AchievementId.values.map((id) {
-      final previousItem = byId[id] ??
-          AchievementProgress(id: id, current: 0, target: id.target);
-      final current = progressFor(id, activity).clamp(0, id.target);
-      final unlockedAt = previousItem.unlockedAt ??
-          (current >= id.target ? now : null);
-      return previousItem.copyWith(
-        current: current,
-        target: id.target,
-        unlockedAt: unlockedAt,
-      );
-    }).toList(growable: false);
+    return AchievementId.values
+        .map((id) {
+          final previousItem =
+              byId[id] ??
+              AchievementProgress(id: id, current: 0, target: id.target);
+          final current = progressFor(id, activity).clamp(0, id.target);
+          final unlockedAt =
+              previousItem.unlockedAt ?? (current >= id.target ? now : null);
+          return previousItem.copyWith(
+            current: current,
+            target: id.target,
+            unlockedAt: unlockedAt,
+          );
+        })
+        .toList(growable: false);
   }
 
-  static int progressFor(AchievementId id, AchievementActivitySnapshot activity) {
+  static int progressFor(
+    AchievementId id,
+    AchievementActivitySnapshot activity,
+  ) {
     switch (id) {
       case AchievementId.firstPrayer:
         return _hasAnyCountedPrayer(activity.statusHistory) ? 1 : 0;
@@ -403,6 +403,7 @@ abstract class AchievementsService {
           const <DailyChecklistItem>[
             DailyChecklistItem.noMusicToday,
             DailyChecklistItem.noSocialMediaBeforeIsha,
+            DailyChecklistItem.controlAngerSpeakKindly,
           ],
         ).clamp(0, 7);
       case AchievementId.cycleGuardian:
@@ -503,7 +504,9 @@ abstract class AchievementsService {
     return count;
   }
 
-  static Set<String> uniqueQualifyingDays(AchievementActivitySnapshot activity) {
+  static Set<String> uniqueQualifyingDays(
+    AchievementActivitySnapshot activity,
+  ) {
     final days = <String>{};
     for (final entry in activity.statusHistory.entries) {
       final counted = entry.value.values.any(
@@ -522,7 +525,9 @@ abstract class AchievementsService {
     return days;
   }
 
-  static DateTime? earliestQualifyingDate(AchievementActivitySnapshot activity) {
+  static DateTime? earliestQualifyingDate(
+    AchievementActivitySnapshot activity,
+  ) {
     DateTime? earliest;
     for (final key in uniqueQualifyingDays(activity)) {
       final parsed = DateTime.tryParse(key);
@@ -611,6 +616,51 @@ abstract class AchievementsService {
         return l10n.achievementSixMonthJourney;
       case AchievementId.deenfocusMaster:
         return l10n.achievementDeenFocusMaster;
+    }
+  }
+
+  static String description(AppLocalizations l10n, AchievementId id) {
+    switch (id) {
+      case AchievementId.firstPrayer:
+        return l10n.achievementDescFirstPrayer;
+      case AchievementId.sevenPrayerStreak:
+        return l10n.achievementDescSevenPrayerStreak;
+      case AchievementId.thirtyPrayerStreak:
+        return l10n.achievementDescThirtyPrayerStreak;
+      case AchievementId.fajrWarrior:
+        return l10n.achievementDescFajrWarrior;
+      case AchievementId.fajrChampion:
+        return l10n.achievementDescFajrChampion;
+      case AchievementId.fiveADay:
+        return l10n.achievementDescFiveADay;
+      case AchievementId.perfectWeek:
+        return l10n.achievementDescPerfectWeek;
+      case AchievementId.perfectMonth:
+        return l10n.achievementDescPerfectMonth;
+      case AchievementId.quranReader:
+        return l10n.achievementDescQuranReader;
+      case AchievementId.quranDevotee:
+        return l10n.achievementDescQuranDevotee;
+      case AchievementId.dhikrStarter:
+        return l10n.achievementDescDhikrStarter;
+      case AchievementId.dhikrMaster:
+        return l10n.achievementDescDhikrMaster;
+      case AchievementId.nightWorshipper:
+        return l10n.achievementDescNightWorshipper;
+      case AchievementId.masjidCompanion:
+        return l10n.achievementDescMasjidCompanion;
+      case AchievementId.distractionDefender:
+        return l10n.achievementDescDistractionDefender;
+      case AchievementId.cycleGuardian:
+        return l10n.achievementDescCycleGuardian;
+      case AchievementId.protectedMonth:
+        return l10n.achievementDescProtectedMonth;
+      case AchievementId.consistencyChampion:
+        return l10n.achievementDescConsistencyChampion;
+      case AchievementId.sixMonthJourney:
+        return l10n.achievementDescSixMonthJourney;
+      case AchievementId.deenfocusMaster:
+        return l10n.achievementDescDeenFocusMaster;
     }
   }
 }

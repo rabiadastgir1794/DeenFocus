@@ -4,7 +4,7 @@ import '../../../../../l10n/app_localizations.dart';
 import 'feature_demo_kind.dart';
 import 'feature_demo_phase.dart';
 
-/// Copy for Widgets / Live Activity demos (platform-aware callouts).
+/// Copy for App Demo feature walkthroughs (Tajweed, Widgets, Live Activity).
 class FeatureDemoCopy {
   const FeatureDemoCopy({
     required this.kind,
@@ -36,6 +36,19 @@ class FeatureDemoCopy {
     required bool isCupertinoPlatform,
   }) {
     switch (kind) {
+      case FeatureDemoKind.tajweed:
+        return FeatureDemoCopy(
+          kind: kind,
+          navTitle: l10n.featureDemoTajweedTitle,
+          introTitle: l10n.featureDemoTajweedIntroTitle,
+          introSubtitle: l10n.featureDemoTajweedIntroSubtitle,
+          completionTitle: l10n.featureDemoTajweedCompletionTitle,
+          completionSubtitle: l10n.featureDemoTajweedCompletionSubtitle,
+          completionBody: l10n.featureDemoTajweedCompletionBody,
+          completionCta: l10n.appLockDemoDone,
+          icon: Icons.mic_rounded,
+          isCupertinoPlatform: isCupertinoPlatform,
+        );
       case FeatureDemoKind.widgets:
         return FeatureDemoCopy(
           kind: kind,
@@ -75,15 +88,23 @@ class FeatureDemoCopy {
 
   String calloutFor(FeatureDemoPhase phase, AppLocalizations l10n) {
     return switch (phase) {
-      FeatureDemoPhase.widgetsHome => isCupertinoPlatform
-          ? l10n.featureDemoWidgetsLongPressCalloutIos
-          : l10n.featureDemoWidgetsLongPressCalloutAndroid,
+      FeatureDemoPhase.tajweedQuran => l10n.featureDemoTajweedQuranCallout,
+      FeatureDemoPhase.tajweedSurahLegend =>
+        l10n.featureDemoTajweedReciteCallout,
+      FeatureDemoPhase.tajweedSurahRecite =>
+        l10n.featureDemoTajweedReciteCallout,
+      FeatureDemoPhase.tajweedDownload =>
+        l10n.featureDemoTajweedDownloadCallout,
+      FeatureDemoPhase.tajweedPractice => l10n.featureDemoTajweedMicCallout,
+      FeatureDemoPhase.tajweedResult => l10n.featureDemoTajweedResultCallout,
+      FeatureDemoPhase.widgetsHome =>
+        isCupertinoPlatform
+            ? l10n.featureDemoWidgetsLongPressCalloutIos
+            : l10n.featureDemoWidgetsLongPressCalloutAndroid,
       FeatureDemoPhase.widgetsEditMode => l10n.featureDemoWidgetsAddCallout,
-      FeatureDemoPhase.liveSettings =>
-        l10n.featureDemoLiveEnableToggleCallout,
+      FeatureDemoPhase.liveSettings => l10n.featureDemoLiveEnableToggleCallout,
       FeatureDemoPhase.liveLockScreen => l10n.featureDemoLiveLockScreenCallout,
-      FeatureDemoPhase.liveCompactIsland =>
-        l10n.featureDemoLiveCompactCallout,
+      FeatureDemoPhase.liveCompactIsland => l10n.featureDemoLiveCompactCallout,
       FeatureDemoPhase.liveExpandedIsland =>
         l10n.featureDemoLiveExpandedCallout,
       FeatureDemoPhase.liveOngoingNotification =>

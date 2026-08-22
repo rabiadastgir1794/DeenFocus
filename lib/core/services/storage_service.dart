@@ -127,6 +127,9 @@ abstract class StorageService {
   // --- Tajweed (AI practice) ---
   static const String _keyTajweedEnabled = 'tajweed_enabled';
   static const String _keyLibraryProgressJson = 'library_progress_json';
+  static const String _keyDigitalBalanceGoalMinutes =
+      'digital_balance_goal_minutes';
+  static const int defaultDigitalBalanceGoalMinutes = 60;
 
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
@@ -1168,5 +1171,16 @@ abstract class StorageService {
   static Future<void> setLibraryProgressJson(String json) async {
     final prefs = await _prefs;
     await prefs.setString(_keyLibraryProgressJson, json);
+  }
+
+  static Future<int> get digitalBalanceGoalMinutes async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyDigitalBalanceGoalMinutes) ??
+        defaultDigitalBalanceGoalMinutes;
+  }
+
+  static Future<void> setDigitalBalanceGoalMinutes(int minutes) async {
+    final prefs = await _prefs;
+    await prefs.setInt(_keyDigitalBalanceGoalMinutes, minutes);
   }
 }

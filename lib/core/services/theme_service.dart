@@ -28,7 +28,6 @@ class ThemeService extends ChangeNotifier {
       _themeMode = saved ? ThemeMode.dark : ThemeMode.light;
     }
     notifyListeners();
-    await WidgetSyncService.instance.syncTimeline();
     if (Platform.isIOS) {
       await FocusEnforcementService.persistIosShieldTheme(
         isDark: _themeMode == ThemeMode.dark,

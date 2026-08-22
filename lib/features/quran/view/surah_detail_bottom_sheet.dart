@@ -11,6 +11,7 @@ import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tajweed/tajweed_entry_point.dart';
 import '../data/quran_local_repository.dart';
+import '../reading_engine/quran_audio_handler.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
 import '../reading_engine/quran_recitation.dart';
@@ -27,7 +28,11 @@ import 'widgets/tajweed_legend_row.dart';
 import 'quran_reading_settings_launcher.dart';
 
 class SurahDetailBottomSheet extends StatefulWidget {
-  const SurahDetailBottomSheet({super.key, required this.surah, this.initialAyah});
+  const SurahDetailBottomSheet({
+    super.key,
+    required this.surah,
+    this.initialAyah,
+  });
 
   final SurahSummary surah;
   final int? initialAyah;
@@ -86,6 +91,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     _positionSub?.cancel();
     _durationSub?.cancel();
     _listController.dispose();
+    QuranAudioHandler.instance.detach(_player);
     _player.dispose();
     _engine.dispose();
     super.dispose();
@@ -201,16 +207,15 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         onBookmarkTap: () => unawaited(_toggleBookmarkAyah(ayah)),
         onPracticeTap: _tajweedEnabled
             ? () => TajweedEntryPoint.open(
-                  context,
-                  surah: ayah.surahNumber,
-                  ayah: ayah.ayahNumber,
-                  arabicText: ayah.arabicText,
-                  surahName: widget.surah.name,
-                  translation:
-                      _showEnglish && ayah.englishText.trim().isNotEmpty
-                      ? ayah.englishText
-                      : null,
-                )
+                context,
+                surah: ayah.surahNumber,
+                ayah: ayah.ayahNumber,
+                arabicText: ayah.arabicText,
+                surahName: widget.surah.name,
+                translation: _showEnglish && ayah.englishText.trim().isNotEmpty
+                    ? ayah.englishText
+                    : null,
+              )
             : null,
       ),
     );
@@ -322,6 +327,18 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
           .toList(growable: false),
     );
     await _player.setAudioSource(source, preload: true);
+    await QuranAudioHandler.instance.attach(
+      player: _player,
+      items: _ayahs
+          .map(
+            (ayah) => QuranAudioHandler.mediaItemFor(
+              surahNumber: ayah.surahNumber,
+              ayahNumber: ayah.ayahNumber,
+              surahName: widget.surah.name,
+            ),
+          )
+          .toList(growable: false),
+    );
   }
 
   Future<void> _onAyahTap(int position) async {
@@ -482,97 +499,100 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     return QuranReaderThemeScope(
       palette: palette,
       child: PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) async {
-        if (didPop) return;
-        await _engine.flush();
-        if (mounted) Navigator.of(context).pop();
-      },
-      child: Scaffold(
-      backgroundColor: palette.background,
-      appBar: CustomAppBar(
-        title: widget.surah.name,
-        subtitle: subtitle,
-        onBack: () => unawaited(_leaveScreen()),
-        actions: [
-          QuranReadingSettingsLauncher.appBarAction(
-            context,
-            onReturn: () => unawaited(_reloadDisplayPrefs()),
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) async {
+          if (didPop) return;
+          await _engine.flush();
+          if (mounted) Navigator.of(context).pop();
+        },
+        child: Scaffold(
+          backgroundColor: palette.background,
+          appBar: CustomAppBar(
+            title: widget.surah.name,
+            subtitle: subtitle,
+            onBack: () => unawaited(_leaveScreen()),
+            actions: [
+              QuranReadingSettingsLauncher.appBarAction(
+                context,
+                onReturn: () => unawaited(_reloadDisplayPrefs()),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SafeArea(
-        top: false,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+          body: SafeArea(
+            top: false,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.bottomCenter,
               children: [
-                Expanded(
-                  child: _loadingAyahs
-                      ? const Center(child: CircularProgressIndicator())
-                      : ListView(
-                          controller: _listController,
-                          padding: EdgeInsets.fromLTRB(
-                            16.w,
-                            12.h,
-                            16.w,
-                            16.h + (showAudioBar ? 200.h : 0),
-                          ),
-                          children: [
-                            SurahHeaderCard(
-                              surah: widget.surah,
-                              layoutTheme: _layoutTheme,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: _loadingAyahs
+                          ? const Center(child: CircularProgressIndicator())
+                          : ListView(
+                              controller: _listController,
+                              padding: EdgeInsets.fromLTRB(
+                                16.w,
+                                12.h,
+                                16.w,
+                                16.h + (showAudioBar ? 200.h : 0),
+                              ),
+                              children: [
+                                SurahHeaderCard(
+                                  surah: widget.surah,
+                                  layoutTheme: _layoutTheme,
+                                ),
+                                SizedBox(height: 12.h),
+                                const TajweedLegendRow(),
+                                SizedBox(height: 14.h),
+                                ...List.generate(_ayahs.length, (index) {
+                                  return _buildAyahCard(index);
+                                }),
+                              ],
                             ),
-                            SizedBox(height: 12.h),
-                            const TajweedLegendRow(),
-                            SizedBox(height: 14.h),
-                            ...List.generate(_ayahs.length, (index) {
-                              return _buildAyahCard(index);
-                            }),
-                          ],
-                        ),
+                    ),
+                  ],
                 ),
+                if (showAudioBar)
+                  QuranAudioBar(
+                    label:
+                        '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
+                    position: _currentPosition,
+                    duration: _currentDuration,
+                    isPlaying: _player.playing,
+                    isLoading: _isAudioLoading,
+                    speed: _playbackSpeed,
+                    volume: _playbackVolume,
+                    repeatMode: _repeatMode,
+                    onTogglePlayPause: _togglePlayPause,
+                    onClose: () => unawaited(_closeAudioBar()),
+                    onSeekStart: () => _isUserSeeking = true,
+                    onSeekChanged: (value) {
+                      if (_sliderDurationMs <= 0) return;
+                      final ms = (_sliderDurationMs * value).toInt();
+                      setState(
+                        () => _currentPosition = Duration(milliseconds: ms),
+                      );
+                    },
+                    onSeekEnd: (value) async {
+                      _isUserSeeking = false;
+                      if (_sliderDurationMs <= 0) return;
+                      final ms = (_sliderDurationMs * value).toInt();
+                      await _player.seek(Duration(milliseconds: ms));
+                    },
+                    onSpeedChanged: (value) =>
+                        unawaited(_setPlaybackSpeed(value)),
+                    onVolumeChanged: (value) =>
+                        unawaited(_setPlaybackVolume(value)),
+                    onRepeatModeChanged: (value) =>
+                        unawaited(_setRepeatMode(value)),
+                  ),
               ],
             ),
-            if (showAudioBar)
-              QuranAudioBar(
-                label:
-                    '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
-                position: _currentPosition,
-                duration: _currentDuration,
-                isPlaying: _player.playing,
-                isLoading: _isAudioLoading,
-                speed: _playbackSpeed,
-                volume: _playbackVolume,
-                repeatMode: _repeatMode,
-                onTogglePlayPause: _togglePlayPause,
-                onClose: () => unawaited(_closeAudioBar()),
-                onSeekStart: () => _isUserSeeking = true,
-                onSeekChanged: (value) {
-                  if (_sliderDurationMs <= 0) return;
-                  final ms = (_sliderDurationMs * value).toInt();
-                  setState(
-                    () => _currentPosition = Duration(milliseconds: ms),
-                  );
-                },
-                onSeekEnd: (value) async {
-                  _isUserSeeking = false;
-                  if (_sliderDurationMs <= 0) return;
-                  final ms = (_sliderDurationMs * value).toInt();
-                  await _player.seek(Duration(milliseconds: ms));
-                },
-                onSpeedChanged: (value) => unawaited(_setPlaybackSpeed(value)),
-                onVolumeChanged: (value) => unawaited(_setPlaybackVolume(value)),
-                onRepeatModeChanged: (value) => unawaited(_setRepeatMode(value)),
-              ),
-          ],
+          ),
         ),
       ),
-      ),
-    ),
     );
   }
 }

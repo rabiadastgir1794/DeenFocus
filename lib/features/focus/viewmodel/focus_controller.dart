@@ -703,6 +703,32 @@ class FocusController extends ChangeNotifier {
     }
   }
 
+  /// Home Focus Mode CTA subtitle: default copy, or the enabled mode names.
+  String homeFocusModeCardSubtitle(AppLocalizations l10n) {
+    final names = <String>[];
+    final labels = <String>[];
+    if (_settings.salahModeEnabled) {
+      names.add(l10n.focusModeShortSalah);
+      labels.add(l10n.focusModeLabelSalah);
+    }
+    if (_settings.nightDisciplineEnabled) {
+      names.add(l10n.focusModeShortNight);
+      labels.add(l10n.focusModeLabelNight);
+    }
+    if (_settings.childModeEnabled) {
+      names.add(l10n.focusModeShortChild);
+      labels.add(l10n.focusModeLabelChild);
+    }
+    if (names.isEmpty) return l10n.homeFocusModeSubtitle;
+    if (names.length == 1) {
+      return l10n.focusHomeModeEnabled(labels.first);
+    }
+    if (names.length == 2) {
+      return l10n.homeFocusModeNamesTwo(names[0], names[1]);
+    }
+    return l10n.homeFocusModeNamesThree(names[0], names[1], names[2]);
+  }
+
   String homeCardTitle(AppLocalizations l10n) {
     if (_lockState.isLocked) return l10n.homeAppsLocked;
     if (isAnyModeEnabled) return l10n.focusModeActivated;

@@ -9,18 +9,21 @@ class FocusAppIcon extends StatelessWidget {
     this.iconBytes,
     this.size = 22,
     this.radius = 8,
+    this.isLocked = false,
   });
 
   final String label;
   final Uint8List? iconBytes;
   final double size;
   final double radius;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
     final bytes = iconBytes;
+    final Widget icon;
     if (bytes != null && bytes.isNotEmpty) {
-      return ClipRRect(
+      icon = ClipRRect(
         borderRadius: BorderRadius.circular(radius),
         child: Image.memory(
           bytes,
@@ -34,9 +37,47 @@ class FocusAppIcon extends StatelessWidget {
           errorBuilder: (_, _, _) => _FallbackEmoji(label: label, size: size),
         ),
       );
+    } else {
+      icon = _FallbackEmoji(label: label, size: size);
     }
 
-    return _FallbackEmoji(label: label, size: size);
+    if (!isLocked) return icon;
+
+    final colorScheme = Theme.of(context).colorScheme;
+    final badgeSize = (size * 0.48).clamp(11.0, 15.0);
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          icon,
+          PositionedDirectional(
+            end: 0,
+            bottom: 0,
+            child: Container(
+              width: badgeSize,
+              height: badgeSize,
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.shadow.withValues(alpha: 0.18),
+                    blurRadius: 2,
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.lock_rounded,
+                size: badgeSize * 0.72,
+                color: colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

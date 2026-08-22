@@ -90,7 +90,7 @@ class QuranReaderInfoBar extends StatelessWidget {
                       Text(
                         '$pct%',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w800,
                           color: palette.primary,
                         ),
@@ -138,7 +138,7 @@ class _InfoChip extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 11.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
               color: palette.textSecondary,
             ),
@@ -147,7 +147,7 @@ class _InfoChip extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w800,
               color: palette.textPrimary,
             ),

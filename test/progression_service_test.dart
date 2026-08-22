@@ -24,6 +24,7 @@ void main() {
       expect(progress.currentLevelXP, 450);
       expect(progress.nextLevelXP, 700);
       expect(progress.progressXP, 230);
+      expect(progress.xpSpan, 250);
       expect(progress.xpToNext, 20);
       expect(progress.isMaxLevel, isFalse);
     });

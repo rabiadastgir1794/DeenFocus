@@ -297,8 +297,14 @@ abstract class AppLocalizations {
   /// No description provided for @locationManualEntry.
   ///
   /// In en, this message translates to:
-  /// **'Or enter your city'**
+  /// **'Enter your city manually'**
   String get locationManualEntry;
+
+  /// No description provided for @locationOrDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get locationOrDivider;
 
   /// No description provided for @locationPrivacyNote.
   ///
@@ -342,6 +348,12 @@ abstract class AppLocalizations {
   /// **'Enable Notifications'**
   String get notificationsButton;
 
+  /// No description provided for @notificationsMaybeLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe Later'**
+  String get notificationsMaybeLater;
+
   /// No description provided for @notificationsEnabled.
   ///
   /// In en, this message translates to:
@@ -369,13 +381,13 @@ abstract class AppLocalizations {
   /// No description provided for @notificationsPreviewMinutesAgo.
   ///
   /// In en, this message translates to:
-  /// **'2m'**
+  /// **'2m ago'**
   String get notificationsPreviewMinutesAgo;
 
   /// No description provided for @notificationsPreviewHourAgo.
   ///
   /// In en, this message translates to:
-  /// **'1h'**
+  /// **'1h ago'**
   String get notificationsPreviewHourAgo;
 
   /// No description provided for @notificationsPreviewAdhanTitle.
@@ -387,31 +399,31 @@ abstract class AppLocalizations {
   /// No description provided for @notificationsPreviewAdhanBody.
   ///
   /// In en, this message translates to:
-  /// **'It\'s time to pray. Apps are paused.'**
+  /// **'It\'s time to pray.'**
   String get notificationsPreviewAdhanBody;
 
   /// No description provided for @notificationsPreviewDhikrTitle.
   ///
   /// In en, this message translates to:
-  /// **'DAILY DHIKR'**
+  /// **'Daily Dhikr'**
   String get notificationsPreviewDhikrTitle;
 
   /// No description provided for @notificationsPreviewDhikrBody.
   ///
   /// In en, this message translates to:
-  /// **'SubhanAllah — take a minute to remember.'**
+  /// **'SubhanAllah — take a moment.'**
   String get notificationsPreviewDhikrBody;
 
   /// No description provided for @notificationsPreviewStreakTitle.
   ///
   /// In en, this message translates to:
-  /// **'STREAK'**
+  /// **'Streak'**
   String get notificationsPreviewStreakTitle;
 
   /// No description provided for @notificationsPreviewStreakBody.
   ///
   /// In en, this message translates to:
-  /// **'7 days of complete prayers. Keep going!'**
+  /// **'7 days of complete prayers.'**
   String get notificationsPreviewStreakBody;
 
   /// No description provided for @screenTimeTitle.
@@ -467,6 +479,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip for Now'**
   String get onboardingSelectAppsSkipForNow;
+
+  /// No description provided for @onboardingSelectAppsPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re in control'**
+  String get onboardingSelectAppsPrivacyTitle;
+
+  /// No description provided for @onboardingSelectAppsPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We never read your data. We only lock the apps you choose.'**
+  String get onboardingSelectAppsPrivacyBody;
 
   /// No description provided for @onboardingSelectAppsMockAllApps.
   ///
@@ -971,6 +995,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'✨ 7 days free — cancel anytime before it ends'**
   String get investTrialPill;
+
+  /// No description provided for @investNoCommitment.
+  ///
+  /// In en, this message translates to:
+  /// **'No commitment. Cancel anytime.'**
+  String get investNoCommitment;
 
   /// No description provided for @investFeatureAiTitle.
   ///
@@ -1878,6 +1908,54 @@ abstract class AppLocalizations {
   /// **'Block distracting apps during Salah'**
   String get homeFocusModeSubtitle;
 
+  /// No description provided for @focusModeShortSalah.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah'**
+  String get focusModeShortSalah;
+
+  /// No description provided for @focusModeShortNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night'**
+  String get focusModeShortNight;
+
+  /// No description provided for @focusModeShortChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get focusModeShortChild;
+
+  /// No description provided for @focusModeLabelSalah.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah mode'**
+  String get focusModeLabelSalah;
+
+  /// No description provided for @focusModeLabelNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode'**
+  String get focusModeLabelNight;
+
+  /// No description provided for @focusModeLabelChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child mode'**
+  String get focusModeLabelChild;
+
+  /// No description provided for @homeFocusModeNamesTwo.
+  ///
+  /// In en, this message translates to:
+  /// **'{first} and {second} Modes are enabled'**
+  String homeFocusModeNamesTwo(String first, String second);
+
+  /// No description provided for @homeFocusModeNamesThree.
+  ///
+  /// In en, this message translates to:
+  /// **'{first}, {second}, and {third} Modes are enabled'**
+  String homeFocusModeNamesThree(String first, String second, String third);
+
   /// No description provided for @cycleModeTitle.
   ///
   /// In en, this message translates to:
@@ -1929,7 +2007,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyChecklistSectionDistraction.
   ///
   /// In en, this message translates to:
-  /// **'Distraction control'**
+  /// **'Personal discipline'**
   String get dailyChecklistSectionDistraction;
 
   /// No description provided for @dailyChecklistFajr.
@@ -4670,13 +4748,13 @@ abstract class AppLocalizations {
   /// No description provided for @insightsChipUpToday.
   ///
   /// In en, this message translates to:
-  /// **'↑ +1'**
-  String get insightsChipUpToday;
+  /// **'↑ {count}'**
+  String insightsChipUpToday(int count);
 
   /// No description provided for @insightsChipDayUp.
   ///
   /// In en, this message translates to:
-  /// **'↑ +1 today'**
+  /// **'↑ 1 today'**
   String get insightsChipDayUp;
 
   /// No description provided for @insightsWeeklyCompletion.
@@ -4748,7 +4826,7 @@ abstract class AppLocalizations {
   /// No description provided for @insightsCompletionSummary.
   ///
   /// In en, this message translates to:
-  /// **'You completed {done} out of {possible} prayers. Alhamdulillah — keep going!'**
+  /// **'You completed {done} out of {possible} prayers.\nAlhamdulillah — keep going!'**
   String insightsCompletionSummary(int done, int possible);
 
   /// No description provided for @insightsFocusExcellent.
@@ -5927,6 +6005,180 @@ abstract class AppLocalizations {
   /// **'Current and next prayer on your Lock Screen and Dynamic Island.'**
   String get settingsAppDemoLiveActivityCardSubtitle;
 
+  /// No description provided for @settingsAppDemoTajweedCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite an ayah and get instant tajweed feedback.'**
+  String get settingsAppDemoTajweedCardSubtitle;
+
+  /// No description provided for @featureDemoTajweedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tajweed'**
+  String get featureDemoTajweedTitle;
+
+  /// No description provided for @featureDemoTajweedIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how Tajweed practice works'**
+  String get featureDemoTajweedIntroTitle;
+
+  /// No description provided for @featureDemoTajweedIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in DeenFocus. Open Tajweed drill, recite an ayah, and see word-by-word feedback.'**
+  String get featureDemoTajweedIntroSubtitle;
+
+  /// No description provided for @featureDemoTajweedQuranCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Tajweed drill to start'**
+  String get featureDemoTajweedQuranCallout;
+
+  /// No description provided for @featureDemoTajweedLegendCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Color highlights show tajweed rules as you read'**
+  String get featureDemoTajweedLegendCallout;
+
+  /// No description provided for @featureDemoTajweedReciteCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Recite & check tajweed'**
+  String get featureDemoTajweedReciteCallout;
+
+  /// No description provided for @featureDemoTajweedDownloadCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time download so practice works offline'**
+  String get featureDemoTajweedDownloadCallout;
+
+  /// No description provided for @featureDemoTajweedMicCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the mic and start reciting'**
+  String get featureDemoTajweedMicCallout;
+
+  /// No description provided for @featureDemoTajweedResultCallout.
+  ///
+  /// In en, this message translates to:
+  /// **'See which words were correct, missed, or need work'**
+  String get featureDemoTajweedResultCallout;
+
+  /// No description provided for @featureDemoTajweedCompletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tajweed, ready'**
+  String get featureDemoTajweedCompletionTitle;
+
+  /// No description provided for @featureDemoTajweedCompletionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite with confidence, anytime.'**
+  String get featureDemoTajweedCompletionSubtitle;
+
+  /// No description provided for @featureDemoTajweedCompletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Quran → Tajweed drill to practice any ayah with on-device scoring — fully offline after the first download.'**
+  String get featureDemoTajweedCompletionBody;
+
+  /// No description provided for @featureDemoTajweedSurahName.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Fatihah'**
+  String get featureDemoTajweedSurahName;
+
+  /// No description provided for @featureDemoTajweedBaqarahName.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Baqarah'**
+  String get featureDemoTajweedBaqarahName;
+
+  /// No description provided for @featureDemoTajweedSurahListSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'7 verses • Meccan'**
+  String get featureDemoTajweedSurahListSubtitle;
+
+  /// No description provided for @featureDemoTajweedBaqarahSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'286 verses • Medinan'**
+  String get featureDemoTajweedBaqarahSubtitle;
+
+  /// No description provided for @featureDemoTajweedSurahHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Fatihah • 7 verses'**
+  String get featureDemoTajweedSurahHeaderSubtitle;
+
+  /// No description provided for @featureDemoTajweedSurahMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'SURAH 1 • MECCAN'**
+  String get featureDemoTajweedSurahMeta;
+
+  /// No description provided for @featureDemoTajweedAyahTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'In the name of Allah, the Entirely Merciful, the Especially Merciful.'**
+  String get featureDemoTajweedAyahTranslation;
+
+  /// No description provided for @featureDemoTajweedPracticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Fatihah · 1:1'**
+  String get featureDemoTajweedPracticeTitle;
+
+  /// No description provided for @featureDemoTajweedPreparingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing AI model'**
+  String get featureDemoTajweedPreparingTitle;
+
+  /// No description provided for @featureDemoTajweedPreparingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time download so Tajweed practice works fully offline afterwards. This only happens once.'**
+  String get featureDemoTajweedPreparingBody;
+
+  /// No description provided for @featureDemoTajweedResultEncouragement.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep practicing — listen to the reference and try again.'**
+  String get featureDemoTajweedResultEncouragement;
+
+  /// No description provided for @featureDemoTajweedStatCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get featureDemoTajweedStatCorrect;
+
+  /// No description provided for @featureDemoTajweedStatPronunciation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pronunciation'**
+  String get featureDemoTajweedStatPronunciation;
+
+  /// No description provided for @featureDemoTajweedStatWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong word'**
+  String get featureDemoTajweedStatWrong;
+
+  /// No description provided for @featureDemoTajweedStatMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get featureDemoTajweedStatMissed;
+
+  /// No description provided for @featureDemoTajweedStatExtra.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra'**
+  String get featureDemoTajweedStatExtra;
+
   /// No description provided for @featureDemoContinue.
   ///
   /// In en, this message translates to:
@@ -6982,6 +7234,486 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Common ground'**
   String get libraryFiqhCommonGround;
+
+  /// No description provided for @insightsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get insightsCompleted;
+
+  /// No description provided for @insightsInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get insightsInProgress;
+
+  /// No description provided for @insightsKeepGoingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going!'**
+  String get insightsKeepGoingTitle;
+
+  /// No description provided for @insightsKeepGoingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re making great progress. Every prayer counts.'**
+  String get insightsKeepGoingBody;
+
+  /// No description provided for @insightsAchievementsUnlockedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements Unlocked'**
+  String get insightsAchievementsUnlockedLabel;
+
+  /// No description provided for @insightsAchievementsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{unlocked} / {total}'**
+  String insightsAchievementsCount(int unlocked, int total);
+
+  /// No description provided for @achievementDescFirstPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayed your first prayer.'**
+  String get achievementDescFirstPrayer;
+
+  /// No description provided for @achievementDescSevenPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 7 prayers in a row.'**
+  String get achievementDescSevenPrayerStreak;
+
+  /// No description provided for @achievementDescThirtyPrayerStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 30 prayers in a row.'**
+  String get achievementDescThirtyPrayerStreak;
+
+  /// No description provided for @achievementDescFajrWarrior.
+  ///
+  /// In en, this message translates to:
+  /// **'Pray Fajr on 14 days.'**
+  String get achievementDescFajrWarrior;
+
+  /// No description provided for @achievementDescFajrChampion.
+  ///
+  /// In en, this message translates to:
+  /// **'Pray Fajr on 30 days.'**
+  String get achievementDescFajrChampion;
+
+  /// No description provided for @achievementDescFiveADay.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete all five prayers in one day.'**
+  String get achievementDescFiveADay;
+
+  /// No description provided for @achievementDescPerfectWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete every prayer for 7 days in a row.'**
+  String get achievementDescPerfectWeek;
+
+  /// No description provided for @achievementDescPerfectMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete every prayer for 30 days in a row.'**
+  String get achievementDescPerfectMonth;
+
+  /// No description provided for @achievementDescQuranReader.
+  ///
+  /// In en, this message translates to:
+  /// **'Read Quran on 7 days.'**
+  String get achievementDescQuranReader;
+
+  /// No description provided for @achievementDescQuranDevotee.
+  ///
+  /// In en, this message translates to:
+  /// **'Read Quran on 30 days.'**
+  String get achievementDescQuranDevotee;
+
+  /// No description provided for @achievementDescDhikrStarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete dhikr on 7 days.'**
+  String get achievementDescDhikrStarter;
+
+  /// No description provided for @achievementDescDhikrMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete dhikr on 30 days.'**
+  String get achievementDescDhikrMaster;
+
+  /// No description provided for @achievementDescNightWorshipper.
+  ///
+  /// In en, this message translates to:
+  /// **'Pray Tahajjud on 7 days.'**
+  String get achievementDescNightWorshipper;
+
+  /// No description provided for @achievementDescMasjidCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit the masjid 7 times.'**
+  String get achievementDescMasjidCompanion;
+
+  /// No description provided for @achievementDescDistractionDefender.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay distraction-free for 7 days.'**
+  String get achievementDescDistractionDefender;
+
+  /// No description provided for @achievementDescCycleGuardian.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your streak with Cycle Mode for 7 days.'**
+  String get achievementDescCycleGuardian;
+
+  /// No description provided for @achievementDescProtectedMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your streak with Cycle Mode for 30 days.'**
+  String get achievementDescProtectedMonth;
+
+  /// No description provided for @achievementDescConsistencyChampion.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay consistent for 100 days.'**
+  String get achievementDescConsistencyChampion;
+
+  /// No description provided for @achievementDescSixMonthJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going for 180 days.'**
+  String get achievementDescSixMonthJourney;
+
+  /// No description provided for @achievementDescDeenFocusMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach DeenFocus Master (Level 15).'**
+  String get achievementDescDeenFocusMaster;
+
+  /// No description provided for @dailyChecklistOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get dailyChecklistOptional;
+
+  /// No description provided for @dailyChecklistIstighfar.
+  ///
+  /// In en, this message translates to:
+  /// **'Istighfar'**
+  String get dailyChecklistIstighfar;
+
+  /// No description provided for @dailyChecklistSalawat.
+  ///
+  /// In en, this message translates to:
+  /// **'Salawat / Durood'**
+  String get dailyChecklistSalawat;
+
+  /// No description provided for @dailyChecklistControlAngerSpeakKindly.
+  ///
+  /// In en, this message translates to:
+  /// **'Control anger / Speak kindly'**
+  String get dailyChecklistControlAngerSpeakKindly;
+
+  /// No description provided for @digitalBalanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Balance'**
+  String get digitalBalanceTitle;
+
+  /// No description provided for @digitalBalanceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See where your time is going'**
+  String get digitalBalanceSubtitle;
+
+  /// No description provided for @digitalBalanceViewCta.
+  ///
+  /// In en, this message translates to:
+  /// **'View Digital Balance →'**
+  String get digitalBalanceViewCta;
+
+  /// No description provided for @digitalBalanceTodayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get digitalBalanceTodayLabel;
+
+  /// No description provided for @digitalBalanceDeenFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus'**
+  String get digitalBalanceDeenFocus;
+
+  /// No description provided for @digitalBalanceOtherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Other apps'**
+  String get digitalBalanceOtherApps;
+
+  /// No description provided for @digitalBalanceTodayPhoneTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Phone Time'**
+  String get digitalBalanceTodayPhoneTime;
+
+  /// No description provided for @digitalBalanceWhereTimeGoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Where Your Time Goes'**
+  String get digitalBalanceWhereTimeGoes;
+
+  /// No description provided for @digitalBalanceViewAllApps.
+  ///
+  /// In en, this message translates to:
+  /// **'View All Apps'**
+  String get digitalBalanceViewAllApps;
+
+  /// No description provided for @digitalBalanceAllAppsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All Apps'**
+  String get digitalBalanceAllAppsTitle;
+
+  /// No description provided for @digitalBalanceNoApps.
+  ///
+  /// In en, this message translates to:
+  /// **'No app usage recorded for today yet.'**
+  String get digitalBalanceNoApps;
+
+  /// No description provided for @digitalBalanceDeenVsDigital.
+  ///
+  /// In en, this message translates to:
+  /// **'Deen vs. Digital Time'**
+  String get digitalBalanceDeenVsDigital;
+
+  /// No description provided for @digitalBalanceYourWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Week'**
+  String get digitalBalanceYourWeek;
+
+  /// No description provided for @digitalBalanceThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get digitalBalanceThisWeek;
+
+  /// No description provided for @digitalBalancePhoneUsageLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone usage'**
+  String get digitalBalancePhoneUsageLegend;
+
+  /// No description provided for @digitalBalanceDailyInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Insight'**
+  String get digitalBalanceDailyInsight;
+
+  /// No description provided for @digitalBalanceInsightKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Every minute spent strengthening your Deen matters.'**
+  String get digitalBalanceInsightKeepGoing;
+
+  /// No description provided for @digitalBalanceInsightWeekHigher.
+  ///
+  /// In en, this message translates to:
+  /// **'Your DeenFocus time is higher this week than last week. MashaAllah!'**
+  String get digitalBalanceInsightWeekHigher;
+
+  /// No description provided for @digitalBalanceInsightQuietDay.
+  ///
+  /// In en, this message translates to:
+  /// **'A quiet day so far. Time in DeenFocus will appear here.'**
+  String get digitalBalanceInsightQuietDay;
+
+  /// No description provided for @digitalBalanceGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Deen Time Goal'**
+  String get digitalBalanceGoalTitle;
+
+  /// No description provided for @digitalBalanceAdjustGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust Goal'**
+  String get digitalBalanceAdjustGoal;
+
+  /// No description provided for @digitalBalanceGoalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You reached today\'s Deen time goal. MashaAllah!'**
+  String get digitalBalanceGoalReached;
+
+  /// No description provided for @digitalBalanceGoalSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Deen time'**
+  String get digitalBalanceGoalSheetTitle;
+
+  /// No description provided for @digitalBalanceGoalCustomHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes per day'**
+  String get digitalBalanceGoalCustomHint;
+
+  /// No description provided for @digitalBalanceGoalSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get digitalBalanceGoalSave;
+
+  /// No description provided for @digitalBalanceGoal15.
+  ///
+  /// In en, this message translates to:
+  /// **'15 min'**
+  String get digitalBalanceGoal15;
+
+  /// No description provided for @digitalBalanceGoal30.
+  ///
+  /// In en, this message translates to:
+  /// **'30 min'**
+  String get digitalBalanceGoal30;
+
+  /// No description provided for @digitalBalanceGoal45.
+  ///
+  /// In en, this message translates to:
+  /// **'45 min'**
+  String get digitalBalanceGoal45;
+
+  /// No description provided for @digitalBalanceGoal60.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get digitalBalanceGoal60;
+
+  /// No description provided for @digitalBalancePermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand Your Digital Habits'**
+  String get digitalBalancePermissionTitle;
+
+  /// No description provided for @digitalBalancePermissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow DeenFocus to access your app usage information so you can see where your time goes and how much time you\'re giving to your Deen.'**
+  String get digitalBalancePermissionBody;
+
+  /// No description provided for @digitalBalanceEnableUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable App Usage'**
+  String get digitalBalanceEnableUsage;
+
+  /// No description provided for @digitalBalanceMaybeLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe Later'**
+  String get digitalBalanceMaybeLater;
+
+  /// No description provided for @digitalBalanceUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App usage isn\'t available here'**
+  String get digitalBalanceUnavailableTitle;
+
+  /// No description provided for @digitalBalanceUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple does not let DeenFocus read other apps\' Screen Time on this iPhone, so Digital Balance cannot show usage totals yet. Your prayers, streaks, Focus blocking, and DeenFocus insights still work as usual.'**
+  String get digitalBalanceUnavailableBody;
+
+  /// No description provided for @digitalBalanceInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About Digital Balance'**
+  String get digitalBalanceInfoTitle;
+
+  /// No description provided for @digitalBalanceInfoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Balance helps you see where your time is going and how much of it you\'re giving to your Deen. Usage stays on your device.'**
+  String get digitalBalanceInfoBody;
+
+  /// No description provided for @digitalBalanceDurationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m'**
+  String digitalBalanceDurationMinutes(int minutes);
+
+  /// No description provided for @digitalBalanceDurationHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h'**
+  String digitalBalanceDurationHours(int hours);
+
+  /// No description provided for @digitalBalanceDurationHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String digitalBalanceDurationHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @digitalBalancePercentShort.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus · {percent}% of phone time'**
+  String digitalBalancePercentShort(int percent);
+
+  /// No description provided for @digitalBalancePercentOfPhoneTime.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus = {percent}% of your phone time'**
+  String digitalBalancePercentOfPhoneTime(int percent);
+
+  /// No description provided for @digitalBalancePercentToday.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of today\'s phone time'**
+  String digitalBalancePercentToday(int percent);
+
+  /// No description provided for @digitalBalanceRingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%\nDeenFocus'**
+  String digitalBalanceRingLabel(int percent);
+
+  /// No description provided for @digitalBalanceWeekMoreDeen.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ {percent}% more DeenFocus time than last week'**
+  String digitalBalanceWeekMoreDeen(int percent);
+
+  /// No description provided for @digitalBalanceInsightTimeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'You spent {duration} in DeenFocus today. Keep building the habit.'**
+  String digitalBalanceInsightTimeToday(String duration);
+
+  /// No description provided for @digitalBalanceInsightIncreasedYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Your DeenFocus time increased by {percent}% compared with yesterday.'**
+  String digitalBalanceInsightIncreasedYesterday(int percent);
+
+  /// No description provided for @digitalBalanceGoalPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{goal} / day'**
+  String digitalBalanceGoalPerDay(String goal);
+
+  /// No description provided for @digitalBalanceGoalProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {goal}'**
+  String digitalBalanceGoalProgress(String current, String goal);
+
+  /// No description provided for @digitalBalanceMinutesToGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes to reach today\'s goal'**
+  String digitalBalanceMinutesToGoal(int minutes);
 }
 
 class _AppLocalizationsDelegate

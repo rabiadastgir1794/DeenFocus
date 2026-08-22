@@ -37,11 +37,11 @@ class AppButton extends StatelessWidget {
 
     final backgroundColor = effectiveVariant == AppButtonVariant.primary
         ? colorScheme.primary
-        : colorScheme.surfaceContainerHighest;
+        : colorScheme.primary.withValues(alpha: 0.14);
 
     final foregroundColor = effectiveVariant == AppButtonVariant.primary
         ? colorScheme.onPrimary
-        : colorScheme.onSurfaceVariant;
+        : colorScheme.primary;
 
     return SizedBox(
       width: double.infinity,

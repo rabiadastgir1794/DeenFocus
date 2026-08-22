@@ -117,7 +117,7 @@ class _FeatureDemoLiveSettingsState extends State<FeatureDemoLiveSettings>
   }
 }
 
-/// Partial Prayer Calculation block using real Settings list widgets.
+/// Partial Settings block: Prayer Calculation, then Live Activity, then Dark Mode.
 class _CroppedPrayerSettingsCard extends StatelessWidget {
   const _CroppedPrayerSettingsCard({
     required this.controller,
@@ -178,9 +178,15 @@ class _CroppedPrayerSettingsCard extends StatelessWidget {
               icon: Icons.alarm_rounded,
               label: l10n.settingsPrayerAlarmsTitle,
             ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SettingsGroup(
+          children: [
             KeyedSubtree(
               key: toggleKey,
               child: SettingsSubtitleSwitchRow(
+                icon: Icons.notifications_active_outlined,
                 label: l10n.liveActivityEnableLabel,
                 subtitle: controller.liveActivityEnabled
                     ? l10n.liveActivityStatusActive

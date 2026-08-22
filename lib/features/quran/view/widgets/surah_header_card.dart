@@ -46,7 +46,7 @@ class SurahHeaderCard extends StatelessWidget {
               '${surah.name}  ·  ${surah.verses} ayahs',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -86,7 +86,7 @@ class SurahHeaderCard extends StatelessWidget {
             'SURAH ${surah.number} • ${surah.revelationType.toUpperCase()}',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 11.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,
               color: colorScheme.onSurfaceVariant,

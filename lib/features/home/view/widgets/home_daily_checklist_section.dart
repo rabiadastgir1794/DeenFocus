@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/spacing.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../model/home_models.dart';
 import 'home_card_open_arrow.dart';
 
 /// Compact Daily Checklist entry card for Home — actionable, cream-family.
@@ -10,12 +9,14 @@ class HomeDailyChecklistSection extends StatelessWidget {
   const HomeDailyChecklistSection({
     super.key,
     required this.backgroundColor,
-    required this.completedItems,
+    required this.completedCount,
+    required this.totalCount,
     required this.onOpen,
   });
 
   final Color backgroundColor;
-  final Set<DailyChecklistItem> completedItems;
+  final int completedCount;
+  final int totalCount;
   final VoidCallback onOpen;
 
   @override
@@ -29,9 +30,9 @@ class HomeDailyChecklistSection extends StatelessWidget {
     );
     final accent = colorScheme.primary;
 
-    final total = DailyChecklistItem.values.length;
-    final completed = completedItems.length.clamp(0, total);
-    final progress = total == 0 ? 0.0 : completed / total;
+    final total = totalCount < 1 ? 1 : totalCount;
+    final completed = completedCount.clamp(0, total);
+    final progress = completed / total;
 
     return Material(
       color: Colors.transparent,
@@ -79,7 +80,6 @@ class HomeDailyChecklistSection extends StatelessWidget {
                       l10n.dailyChecklistProgress(completed, total),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
-                        fontSize: 12.5,
                       ),
                     ),
                   ],
@@ -131,12 +131,17 @@ class _ChecklistProgressRing extends StatelessWidget {
               color: accent,
             ),
           ),
-          Text(
-            '$completed/$total',
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: labelColor,
-              fontSize: 11,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '$completed/$total',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: labelColor,
+                ),
+              ),
             ),
           ),
         ],

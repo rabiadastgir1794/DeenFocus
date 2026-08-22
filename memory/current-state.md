@@ -1,6 +1,169 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-20 — Live Activity advances at prayer time.
+> Last updated: 2026-08-22 — Android startup: audio_service engine + deferred Quran audio.
+
+## Status: Android startup (2026-08-22)
+Second FlutterEngine / `audio_service` Activity error is fixed
+(`AudioServiceActivity`). Follow-up: splash still waits 2200ms. Superwall, DailyRefresh/alarms,
+and FocusController wait until **Home's first painted frame**, not
+`context.go()` — starting them at handoff starved `HomeRouteGate.loadLibrary`.
+Gate now logs loadLibrary begin/end and first Dashboard frame.
+Detail: `memory/features/android-startup-audio-service-2026-08-22.md`.
+
+## Status: Digital Balance (2026-08-22)
+My Insights has a compact **Digital Balance** card after Focus/Prayers and
+before My Progress. Tapping it opens `HomeDigitalBalanceScreen` (same
+Navigator stack as Achievements/Calendar — Insights itself is not a
+go_router route).
+
+UI reads a normalized snapshot from `DigitalBalanceViewModel` →
+`AppUsageService` (`com.app.deenly.deenly/app_usage`). **Android** uses
+UsageStatsManager when usage access is granted (already in the manifest)
+and still shows the Insights card + detail screen. **iOS** hides the card
+and does not open Digital Balance — Apple still cannot export per-app
+durations on iPhoneOS 26.2. The unused iOS Family Controls bridge,
+`AppUsageService`, and ViewModel stay in the tree for a later SDK. Daily
+Deen time goal (15/30/45/60/custom minutes) is isolated in
+`StorageService`, default 1h.
+
+Insight copy is generated from real totals only (today / vs yesterday /
+vs last week). Week-over-week % is hidden when last week is zero.
+
+## Status: Daily Checklist (2026-08-20)
+The Home Daily Checklist still uses `DailyChecklistItem` + `DailyChecklistState`
+JSON (name-based, additive). New habits are `istighfar`, `salawat`, and
+`controlAngerSpeakKindly`. Existing ticks are kept; new rows start unchecked.
+
+The five obligatory prayers are **not** a second tracker. The sheet reads
+`statusForToday` / `markPrayerStatus` (same as Home prayer cards). Legacy
+`DailyChecklistItem.fajr` stays in the enum for old saves and is mirrored when
+Fajr is marked, but it is not shown as its own row. Tahajjud remains a
+checklist habit marked **Optional**.
+
+Progress ring = 5 salah + stored habits (excluding mirrored Fajr). Section
+heading is Personal discipline. Optional rows (Tahajjud, good deeds, personal
+discipline) show a muted trailing Optional label.
+
+## Status: Achievements page (2026-08-20)
+My Insights no longer embeds the 2-column achievements grid. The My Progress card has a header icon + title, then two columns split by a
+vertical divider: **Level/XP** (badge, name, in-level `n / span` bar) on the
+left, a tappable **Achievements** column (trophy, unlocked count, chevron) on
+the right that opens `HomeAchievementsScreen` (dark green level hero,
+unlocked count, Completed / In Progress lists, and a Keep going footer).
+Insights is one screen: streak summary (4 columns + dividers, labels, chips),
+weekly chart + prayer rate, focus/prayers, then My Progress — no second
+streak row or cycle footer. Empty week bars are grey; filled bars are green;
+Cycle days stay pink. Streak `↑` chips only appear when today actually grew
+the streak. Cycle protected days is the count of protected calendar days
+(not days remaining). XP `n / span` matches the in-level bar, including after
+Level 1.
+
+## Status: App typography (2026-08-20)
+Readable type scale lives in `lib/core/theme/app_text_theme.dart` and is
+applied by light/dark themes. Body/label/titleSmall are +1–2pt with slightly
+stronger weight; display/headline/hero numbers stay at Material 2021 sizes.
+Home, Focus, Tasbih, Quran chrome, and bottom nav no longer shrink those
+roles back to 10–11px. Quran Arabic faces (`UthmanicHafs` / `NooreHuda`) and
+large counters are unchanged. TextTheme still respects Dynamic Type;
+ScreenUtil `.sp` chrome was bumped only on small UI labels.
+
+## Status: Azan audio (2026-08-20)
+Prayer Adhan sound is the new clip from `~/Desktop/azan1.mp3`. Android
+`res/raw/azan.mp3` is the full ~2:13 file. iOS `Runner/azan.caf` is the first
+28s as CAF/IMA4 so notification/AlarmKit sounds stay under Apple’s 30s limit.
+Beep is `~/Downloads/beep1.mp3` (~3s) as `res/raw/beep.mp3` and `Runner/beep.caf`.
+Needs a **full rebuild** (not hot reload) to pick up native resources.
+
+## Status: Quran lock-screen Now Playing (2026-08-20)
+Debug iOS builds use `TimedPluginRegistrant`, which had not registered
+`audio_service` (or `sqflite`) after those pods were added — Lock Screen /
+Control Center stayed empty while recitation still played. Registrant is
+synced with `GeneratedPluginRegistrant`, AppDelegate calls
+`beginReceivingRemoteControlEvents()`, and the handler no longer reports
+`idle` between ayahs (that was clearing Now Playing). Now Playing artwork is
+the bundled `assets/app_icon.png` (copied to a temp file for
+`MPMediaItemArtwork`). Calls / Siri / alarms pause via `just_audio`'s
+interruption handling and resume only when iOS sets `shouldResume`; headphone
+unplug pauses and stays paused. Needs a **full iOS rebuild** for native
+plugin changes; artwork can hot-restart.
+
+## Status: Live Activity settings card (2026-08-20)
+Enable Live Activity is its own Settings card (icon + subtitle + switch),
+matching Dark Mode chrome — not inside Prayer Calculation. Order: Premium →
+profile → Prayer Calculation → Live Activity → Dark Mode → About → App Demo.
+
+## Status: Tajweed App Demo walkthrough (2026-08-20)
+Tajweed is the first card in App Demo **home features** (before Widgets and
+Live Activity). Interactive walkthrough: Quran drill (arrows on Tajweed drill
+and the surah list) → surah (arrow on Recite & check tajweed) → model prep
+(arrow on Continue) → mic (full-length arrow above the circle) → word review
+(arrow on Done). Walkthrough app bars reserve Skip space so it does not sit
+on a settings icon. Callouts and on-screen strings are localized.
+
+## Status: Focus Mode home card names + lock (2026-08-20)
+Home Focus Mode subtitle lists enabled short names as a full sentence, e.g.
+**Salah and Night Modes are enabled** (localized in every arb). A lock button
+appears on the card when any mode is on
+(`onPrimary` chip, same as the shield). Tap unlocks / relocks when apps are
+locked; otherwise it opens the Focus tab. Dark-mode text still uses
+`colorScheme.onPrimary`.
+
+## Status: Focus Mode home card + locked apps (2026-08-20)
+Home Focus Mode card uses `colorScheme.onPrimary` (readable in dark mode on the
+light mint primary). Subtitle follows enabled modes: default Salah copy, one
+mode name via `focusHomeModeEnabled`, or **Multiple modes enabled**. Selected
+apps show a lock badge + error-container chip when `isAppsLocked`.
+
+## Status: Onboarding App Lock demo intro (2026-08-20)
+"See how App Lock works" no longer shows the top-left back chevron. Skip,
+title, Start the demo, and page dots stay. Settings / feature-demo still use
+the calendar-style Back + title header (`showCenteredNavHeader`).
+
+## Status: Onboarding subscription CTA (2026-08-20)
+Shield divider + "No commitment. Cancel anytime." is back. Feature card uses
+remaining space (`Expanded` + scale-down) so it no longer overflows. Trial pill,
+Start Trial, and Maybe later stay visible above the page dots.
+
+## Status: Onboarding sect selected state (2026-08-20)
+Choose Your Sect selected option uses light green (`primaryContainer`) with dark
+green text instead of solid primary fill. Continue stays the filled green CTA.
+
+## Status: Onboarding subscription CTA (2026-08-20)
+Invest in Deen no longer shows "Join 10,000+". The trial cluster matches the
+mock: free-trial pill, shield divider, "No commitment. Cancel anytime.", filled
+**Start My 7-Day Free Trial** pill, then the compact text link **Maybe later —
+explore the app first** (outlined second pill was clipping off-screen). Footer
+on this step is dots only.
+
+## Status: Onboarding select apps layout (2026-08-20)
+Select Apps to Lock now follows the mock stack: lock icon, title, subtitle, app
+card (icon + name + trailing square checkbox), privacy banner, Select Apps,
+Skip for Now with dividers, then outlined Maybe Later. Footer on this step is
+dots only so the actions sit together instead of leaving a gap.
+
+## Status: Onboarding select apps icons (2026-08-20)
+Select Apps to Lock mock list now shows Instagram, TikTok, and YouTube brand
+icons (with All Apps, Safari, and Podcasts unchanged). Footer Continue on this
+step is the same outlined **Maybe Later** pill as Screen Time.
+
+## Status: Onboarding screen time icons (2026-08-20)
+Enable Screen Time app-list preview uses brand-style Instagram, TikTok, YouTube,
+and Games icons. Footer Continue on this step is an outlined **Maybe Later** pill.
+Allow Screen Time, privacy note, and the rest of the step are unchanged.
+
+## Status: Onboarding notifications lock-screen (2026-08-20)
+Never Miss a Prayer now matches the lock-screen mock: black iPhone bezel, green/tan
+wallpaper, white iOS banners (crescent / heart / flame), and two pill CTAs —
+filled **Enable Notifications** plus outlined **Maybe Later**. The flow Continue
+button is hidden on this step until permission is granted. Preview copy shortened
+to match the mock (e.g. "It's time to pray.", "Daily Dhikr", "2m ago").
+
+## Status: Onboarding location actions (2026-08-20)
+Find Your Qibla browse actions now match the filled + "or" + outlined layout:
+Allow Location Access, an "or" divider, then outlined **Enter your city manually**
+with a city icon. Search-field placeholder stays "Type your city name..".
+Dial is ~176pt with standard sm/md/lg gaps so Enter city still fits without
+scrolling. Feature chips and disabled Continue use light green instead of beige.
 
 ## Status: Live Activity stuck on Fajr (2026-08-20)
 Lock-screen Live Activity kept showing "Next prayer Fajr" after Fajr because iOS

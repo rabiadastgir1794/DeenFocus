@@ -68,7 +68,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: colorScheme.onSurfaceVariant,
                         ),

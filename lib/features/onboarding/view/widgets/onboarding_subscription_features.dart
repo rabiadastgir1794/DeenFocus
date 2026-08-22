@@ -76,45 +76,55 @@ class OnboardingSubscriptionFeatureContent extends StatelessWidget {
     final primary = theme.colorScheme.primary;
     final onSurface = theme.colorScheme.onSurface;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 48.w,
-          height: 48.w,
-          decoration: BoxDecoration(
-            color: primary.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(14.r),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 44.w,
+                  height: 44.w,
+                  decoration: BoxDecoration(
+                    color: primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Icon(feature.icon, color: primary, size: 22.sp),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  feature.title,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: onSurface,
+                    fontSize: 16.sp,
+                    height: 1.2,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  feature.body,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: onSurface.withValues(alpha: 0.62),
+                    fontSize: 13.sp,
+                    height: 1.3,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: Icon(feature.icon, color: primary, size: 24.sp),
-        ),
-        SizedBox(height: 14.h),
-        Text(
-          feature.title,
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: onSurface,
-            fontSize: 17.sp,
-            height: 1.2,
-          ),
-        ),
-        SizedBox(height: 6.h),
-        Text(
-          feature.body,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: onSurface.withValues(alpha: 0.62),
-            fontSize: 13.5.sp,
-            height: 1.35,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
@@ -126,14 +136,12 @@ class OnboardingSubscriptionFeatureCarousel extends StatelessWidget {
     required this.features,
     required this.index,
     required this.onPageChanged,
-    required this.height,
   });
 
   final PageController controller;
   final List<OnboardingSubscriptionFeature> features;
   final int index;
   final ValueChanged<int> onPageChanged;
-  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +150,7 @@ class OnboardingSubscriptionFeatureCarousel extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: height,
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 14.h),
+      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 10.h),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(20.r),
@@ -172,7 +179,7 @@ class OnboardingSubscriptionFeatureCarousel extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 8.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(features.length, (i) {

@@ -321,7 +321,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
   Widget _buildBrowseMode(BuildContext context, AppLocalizations l10n) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final compact = MediaQuery.sizeOf(context).height < 700;
+    final compact = MediaQuery.sizeOf(context).height < 780;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
@@ -333,7 +333,6 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: compact ? Spacing.sm.h : Spacing.md.h),
             Text(
               l10n.locationTitle,
               textAlign: TextAlign.center,
@@ -351,23 +350,23 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
               textAlign: TextAlign.center,
               style: textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurfaceVariant,
-                height: 1.45,
+                height: 1.35,
                 fontSize: compact ? 13.sp : 14.sp,
                 fontWeight: FontWeight.w400,
               ),
             ),
-            SizedBox(height: compact ? Spacing.lg.h : Spacing.xl.h),
+            SizedBox(height: Spacing.md.h),
             Center(
               child: RepaintBoundary(
                 child: OnboardingLocationQiblaHero(
                   compact: compact,
-                  size: compact ? 188.r : 220.r,
+                  size: compact ? 156.r : 176.r,
                 ),
               ),
             ),
-            SizedBox(height: compact ? Spacing.lg.h : Spacing.xl.h),
+            SizedBox(height: Spacing.md.h),
             _LocationBenefitChips(compact: compact),
-            SizedBox(height: compact ? Spacing.lg.h : Spacing.xl.h),
+            SizedBox(height: Spacing.lg.h),
             _LocationActionButton(
               label: l10n.locationButton,
               onPressed: _isResolvingLocation ? null : _onAllowLocationTap,
@@ -375,15 +374,18 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
               primary: true,
               icon: CupertinoIcons.location_solid,
             ),
-            SizedBox(height: Spacing.sm.h),
+            SizedBox(height: Spacing.md.h),
+            _OrDivider(label: l10n.locationOrDivider),
+            SizedBox(height: Spacing.md.h),
             _LocationActionButton(
               label: l10n.locationManualEntry,
               onPressed: _activateManualEntry,
               primary: false,
+              icon: CupertinoIcons.building_2_fill,
             ),
             SizedBox(height: Spacing.md.h),
             _PrivacyNote(label: l10n.locationPrivacyNote),
-            SizedBox(height: Spacing.xl.h),
+            SizedBox(height: Spacing.md.h),
           ],
         ),
       ),
@@ -448,7 +450,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
                 return _ManualCityField(
                   controller: _cityController,
                   focusNode: _cityFocusNode,
-                  placeholder: l10n.locationManualEntry,
+                  placeholder: l10n.onboardingTypeCityName,
                   showClear: showClear,
                   onChanged: _onQueryChanged,
                   onClear: _clearCityQuery,
@@ -761,7 +763,7 @@ class _LocationBenefitChip extends StatelessWidget {
         vertical: compact ? 8.h : 10.h,
       ),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.7),
+        color: colorScheme.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -779,6 +781,34 @@ class _LocationBenefitChip extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _OrDivider extends StatelessWidget {
+  const _OrDivider({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final lineColor = colorScheme.outlineVariant.withValues(alpha: 0.9);
+    final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      color: colorScheme.onSurfaceVariant,
+      fontSize: 13.sp,
+      fontWeight: FontWeight.w500,
+    );
+
+    return Row(
+      children: [
+        Expanded(child: Divider(height: 1, color: lineColor)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: Spacing.md.w),
+          child: Text(label, style: textStyle),
+        ),
+        Expanded(child: Divider(height: 1, color: lineColor)),
+      ],
     );
   }
 }
@@ -803,59 +833,72 @@ class _LocationActionButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final backgroundColor = primary
         ? colorScheme.primary
-        : colorScheme.surfaceContainerHighest;
+        : Colors.transparent;
     final foregroundColor = primary
         ? colorScheme.onPrimary
-        : colorScheme.onSurfaceVariant;
+        : colorScheme.primary;
+    final radius = BorderRadius.circular(999);
+
+    final labelRow = loading
+        ? SizedBox(
+            height: 22.h,
+            width: 22.w,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+            ),
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18.sp, color: foregroundColor),
+                SizedBox(width: Spacing.sm.w),
+              ],
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          );
 
     return SizedBox(
       width: double.infinity,
       height: _kLocationActionHeight.h,
-      child: ElevatedButton(
-        onPressed: loading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
-          disabledBackgroundColor: backgroundColor.withValues(alpha: 0.7),
-          disabledForegroundColor: foregroundColor.withValues(alpha: 0.7),
-          elevation: primary ? 1 : 0,
-          shadowColor: Colors.black.withValues(alpha: 0.08),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
-        ),
-        child: loading
-            ? SizedBox(
-                height: 22.h,
-                width: 22.w,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 18.sp, color: foregroundColor),
-                    SizedBox(width: Spacing.sm.w),
-                  ],
-                  Flexible(
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
+      child: primary
+          ? ElevatedButton(
+              onPressed: loading ? null : onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: backgroundColor,
+                foregroundColor: foregroundColor,
+                disabledBackgroundColor: backgroundColor.withValues(alpha: 0.7),
+                disabledForegroundColor: foregroundColor.withValues(alpha: 0.7),
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(borderRadius: radius),
+                padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
               ),
-      ),
+              child: labelRow,
+            )
+          : OutlinedButton(
+              onPressed: loading ? null : onPressed,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: foregroundColor,
+                backgroundColor: backgroundColor,
+                side: BorderSide(color: colorScheme.primary, width: 1.5),
+                shape: RoundedRectangleBorder(borderRadius: radius),
+                padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
+              ),
+              child: labelRow,
+            ),
     );
   }
 }

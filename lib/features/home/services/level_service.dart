@@ -79,6 +79,7 @@ abstract class LevelService {
       progressPercentage: progressPercentage,
       isMaxLevel: isMaxLevel,
       xpToNext: isMaxLevel ? 0 : (nextLevelXP! - xp).clamp(0, span),
+      xpSpan: isMaxLevel ? 0 : span,
       name: englishNames[level - 1],
     );
   }
@@ -94,6 +95,7 @@ class LevelProgress {
     required this.progressPercentage,
     required this.isMaxLevel,
     required this.xpToNext,
+    required this.xpSpan,
     required this.name,
   });
 
@@ -105,5 +107,7 @@ class LevelProgress {
   final double progressPercentage;
   final bool isMaxLevel;
   final int xpToNext;
+  /// XP needed to finish the current level (next threshold − this level's start).
+  final int xpSpan;
   final String name;
 }

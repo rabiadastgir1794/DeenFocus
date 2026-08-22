@@ -57,8 +57,9 @@ class _FocusTabScreenState extends State<FocusTabScreen>
 
   @override
   void dispose() {
-    FocusEntryIntent.pendingModeToEnable
-        .removeListener(_onPendingEnableRequested);
+    FocusEntryIntent.pendingModeToEnable.removeListener(
+      _onPendingEnableRequested,
+    );
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -703,7 +704,6 @@ class _ActiveModeBanner extends StatelessWidget {
                 Text(
                   detail,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 11,
                     color: colorScheme.onSurfaceVariant,
                     height: 1.35,
                   ),
@@ -786,7 +786,10 @@ class _SelectedAppsSection extends StatelessWidget {
               if (data.isIosSelection) {
                 return Padding(
                   padding: const EdgeInsets.only(top: 12),
-                  child: _IosSelectedAppsBanner(summary: data.iosSummary),
+                  child: _IosSelectedAppsBanner(
+                    summary: data.iosSummary,
+                    isLocked: data.isLocked,
+                  ),
                 );
               }
               if (data.globalApps.isEmpty) {
@@ -797,6 +800,7 @@ class _SelectedAppsSection extends StatelessWidget {
                 child: _SelectedAppsList(
                   apps: data.globalApps,
                   iconBytesByPackage: data.iconBytesByPackage,
+                  isLocked: data.isLocked,
                   onRemoveSelectedApp: onRemoveSelectedApp,
                 ),
               );
@@ -856,7 +860,6 @@ class _SelectedAppsHeader extends StatelessWidget {
               Text(
                 l10n.focusAppliesAllModes,
                 style: textTheme.bodySmall?.copyWith(
-                  fontSize: 12,
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -888,9 +891,10 @@ class _SelectedAppsHeader extends StatelessWidget {
 }
 
 class _IosSelectedAppsBanner extends StatelessWidget {
-  const _IosSelectedAppsBanner({required this.summary});
+  const _IosSelectedAppsBanner({required this.summary, required this.isLocked});
 
   final String summary;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -900,12 +904,20 @@ class _IosSelectedAppsBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.1),
+        color: isLocked
+            ? colorScheme.errorContainer.withValues(alpha: 0.32)
+            : colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14),
+        border: isLocked
+            ? Border.all(color: colorScheme.error.withValues(alpha: 0.3))
+            : null,
       ),
       child: Row(
         children: [
-          const Text('📱', style: TextStyle(fontSize: 16)),
+          if (isLocked)
+            Icon(Icons.lock_rounded, size: 16, color: colorScheme.error)
+          else
+            const Text('📱', style: TextStyle(fontSize: 16)),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -927,11 +939,13 @@ class _SelectedAppsList extends StatelessWidget {
   const _SelectedAppsList({
     required this.apps,
     required this.iconBytesByPackage,
+    required this.isLocked,
     required this.onRemoveSelectedApp,
   });
 
   final List<_SelectedAppChipData> apps;
   final Map<String, Uint8List?> iconBytesByPackage;
+  final bool isLocked;
   final ValueChanged<_SelectedAppChipData> onRemoveSelectedApp;
 
   @override
@@ -948,6 +962,7 @@ class _SelectedAppsList extends StatelessWidget {
             key: ValueKey<String>('selected-${app.packageName}'),
             app: app,
             iconBytes: iconBytesByPackage[app.packageName],
+            isLocked: isLocked,
             onRemove: onRemoveSelectedApp,
           );
         },
@@ -961,11 +976,13 @@ class _SelectedAppChip extends StatelessWidget {
     super.key,
     required this.app,
     required this.iconBytes,
+    required this.isLocked,
     required this.onRemove,
   });
 
   final _SelectedAppChipData app;
   final Uint8List? iconBytes;
+  final bool isLocked;
   final ValueChanged<_SelectedAppChipData> onRemove;
 
   @override
@@ -975,8 +992,13 @@ class _SelectedAppChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.1),
+        color: isLocked
+            ? colorScheme.errorContainer.withValues(alpha: 0.32)
+            : colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14),
+        border: isLocked
+            ? Border.all(color: colorScheme.error.withValues(alpha: 0.3))
+            : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -986,6 +1008,7 @@ class _SelectedAppChip extends StatelessWidget {
             iconBytes: iconBytes,
             size: 18,
             radius: 6,
+            isLocked: isLocked,
           ),
           const SizedBox(width: 8),
           Text(
@@ -1293,7 +1316,6 @@ class _ModeCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12,
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -1354,7 +1376,6 @@ class _ModeStatusBanner extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          fontSize: 11,
           color: color,
           fontWeight: FontWeight.w600,
         ),
@@ -1390,7 +1411,6 @@ class _NightTimePill extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontSize: 10,
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -1434,6 +1454,7 @@ class _SelectedAppsData {
     required this.iconBytesByPackage,
     required this.isIosSelection,
     required this.iosSummary,
+    required this.isLocked,
   });
 
   factory _SelectedAppsData.fromVm(FocusController vm) {
@@ -1460,6 +1481,7 @@ class _SelectedAppsData {
       iconBytesByPackage: iconBytesByPackage,
       isIosSelection: isIosSelection,
       iosSummary: vm.selectedAppsSummary(),
+      isLocked: vm.isAppsLocked,
     );
   }
 
@@ -1467,6 +1489,7 @@ class _SelectedAppsData {
   final Map<String, Uint8List?> iconBytesByPackage;
   final bool isIosSelection;
   final String iosSummary;
+  final bool isLocked;
 
   @override
   bool operator ==(Object other) {
@@ -1475,7 +1498,8 @@ class _SelectedAppsData {
         listEquals(other.globalApps, globalApps) &&
         mapEquals(other.iconBytesByPackage, iconBytesByPackage) &&
         other.isIosSelection == isIosSelection &&
-        other.iosSummary == iosSummary;
+        other.iosSummary == iosSummary &&
+        other.isLocked == isLocked;
   }
 
   @override
@@ -1484,6 +1508,7 @@ class _SelectedAppsData {
     Object.hashAll(iconBytesByPackage.entries),
     isIosSelection,
     iosSummary,
+    isLocked,
   );
 }
 

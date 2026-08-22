@@ -166,7 +166,7 @@ class _JuzTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11.sp,
+                        fontSize: 12.sp,
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),

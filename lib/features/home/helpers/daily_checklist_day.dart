@@ -29,4 +29,29 @@ abstract final class DailyChecklistDay {
   }) {
     return current.dateKey != dateKeyFor(now);
   }
+
+  /// Checklist completeness for wrap-up / progress, excluding mirrored Fajr.
+  static bool isHabitIncomplete(Set<DailyChecklistItem> completed) {
+    for (final item in DailyChecklistItemX.storedHabits) {
+      if (!completed.contains(item)) return true;
+    }
+    return false;
+  }
+
+  static int habitTotalCount() => DailyChecklistItemX.storedHabits.length;
+
+  static int habitCompletedCount(Set<DailyChecklistItem> completed) {
+    return DailyChecklistItemX.storedHabits.where(completed.contains).length;
+  }
+
+  static int progressTotalCount() =>
+      TrackablePrayer.values.length + habitTotalCount();
+
+  static int progressCompletedCount({
+    required Set<DailyChecklistItem> checklist,
+    required int obligatoryPrayersDone,
+  }) {
+    return obligatoryPrayersDone.clamp(0, TrackablePrayer.values.length) +
+        habitCompletedCount(checklist);
+  }
 }

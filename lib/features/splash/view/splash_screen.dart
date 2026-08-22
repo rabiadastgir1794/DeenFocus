@@ -93,22 +93,25 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateNext() async {
     await TraceHelpers.traceScreen('SplashScreen', () async {
+      final destination = _resolveDestination();
       await Future<void>.delayed(const Duration(milliseconds: 2200));
-      var completed = false;
-      try {
-        completed = await StorageService.onboardingCompleted.timeout(
-          const Duration(seconds: 2),
-        );
-      } catch (e) {
-        debugPrint('[Splash] onboardingCompleted timed out/failed: $e');
-      }
+      final path = await destination;
       if (!mounted) return;
-      if (completed) {
-        context.go(RouteNames.home);
-      } else {
-        context.go(RouteNames.onboarding);
-      }
+      StartupProbe.mark('SplashScreen context.go($path)');
+      context.go(path);
     });
+  }
+
+  Future<String> _resolveDestination() async {
+    var completed = false;
+    try {
+      completed = await StorageService.onboardingCompleted.timeout(
+        const Duration(seconds: 2),
+      );
+    } catch (e) {
+      debugPrint('[Splash] onboardingCompleted timed out/failed: $e');
+    }
+    return completed ? RouteNames.home : RouteNames.onboarding;
   }
 
   @override

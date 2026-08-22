@@ -27,6 +27,7 @@
 		F20000000000000000000001 /* FocusDeviceActivityMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000011 /* FocusDeviceActivityMonitor.swift */; };
 		F20000000000000000000002 /* FocusDeviceActivityMonitor.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F20000000000000000000010 /* FocusDeviceActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */; };
+		F21000000000000000000001 /* IosAppUsageBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21000000000000000000011 /* IosAppUsageBridge.swift */; };
 		F30000000000000000000001 /* FocusShieldConfigurationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */; };
 		F30000000000000000000002 /* FocusShieldConfiguration.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000000000000000000010 /* FocusShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F40000000000000000000001 /* azan.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* azan.caf */; };
@@ -160,6 +161,7 @@
 		F20000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F20000000000000000000013 /* FocusDeviceActivityMonitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusDeviceActivityMonitor.entitlements; sourceTree = "<group>"; };
 		F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusDeviceActivityScheduler.swift; sourceTree = "<group>"; };
+		F21000000000000000000011 /* IosAppUsageBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosAppUsageBridge.swift; sourceTree = "<group>"; };
 		F30000000000000000000010 /* FocusShieldConfiguration.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusShieldConfiguration.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusShieldConfigurationExtension.swift; sourceTree = "<group>"; };
 		F30000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -342,6 +344,7 @@
 				F4B1GRP0000000000000001 /* QuranTranslation */,
 				F4A2GRP00000000000000001 /* AssetDownload */,
 				F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */,
+				F21000000000000000000011 /* IosAppUsageBridge.swift */,
 				F50000000000000000000011 /* PrayerAlarmBridge.swift */,
 				F60000000000000000000012 /* PrayerLiveActivityBridge.swift */,
 				F50000000000000000000012 /* Localizable.strings */,
@@ -884,6 +887,7 @@
 				F4A2B01000000000000000001 /* AIAssetPlugin.swift in Sources */,
 				F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
+				F21000000000000000000001 /* IosAppUsageBridge.swift in Sources */,
 				F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */,
 				F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */,
 				F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */,

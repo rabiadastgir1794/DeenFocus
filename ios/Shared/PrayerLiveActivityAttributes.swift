@@ -44,8 +44,8 @@ public struct PrayerLiveActivityPresentation: Equatable {
       )
     }
 
-    let current = timeline.last { !$0.time.isAfter(now) }
-    let next = timeline.first { $0.time.isAfter(now) }
+    let current = timeline.last { $0.time <= now }
+    let next = timeline.first { $0.time > now }
     let beforeFirst = current == nil
     let featured = current ?? next ?? timeline[0]
     let phaseLabel: String

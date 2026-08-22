@@ -407,6 +407,13 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     );
   }
 
+  Future<void> _onStartTrial(OnboardingViewModel vm) async {
+    if (!AppSuperwall.subscriptionActiveNotifier.value) {
+      await StorageService.setPendingPostOnboardingPaywall(true);
+    }
+    vm.goNext();
+  }
+
   Future<void> _onSkipPressed(OnboardingViewModel vm) async {
     if (vm.isLocationStep ||
         vm.isNotificationStep ||
@@ -600,6 +607,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                         OnboardingNotificationsPage(
                           onEnableTap: () =>
                               _onNotificationEnableTap(context, vm),
+                          onMaybeLater: () => _goToNextPage(vm),
                           isLoading: vm.notificationRequesting,
                           showEnableButton: !vm.notificationGranted,
                         ),
@@ -612,6 +620,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                           onSelectAppsTap: () =>
                               _onSelectAppsTap(context, vm),
                           onSkipForNowTap: () => _goToNextPage(vm),
+                          onMaybeLater: () => _goToNextPage(vm),
                           isLoading: vm.selectAppsLoading,
                           isAutoAdvancing: _selectAppsAutoAdvancing,
                         ),
@@ -635,6 +644,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                         OnboardingSubscriptionPage(
                           selectedPlan: vm.selectedPlan,
                           onPlanSelected: vm.setSelectedPlan,
+                          onStartTrial: () => _onStartTrial(vm),
+                          onMaybeLater: vm.goNext,
                         ),
                       ],
                     ),
@@ -692,75 +703,25 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                   currentIndex: vm.currentIndex,
                 ),
               ] else if (vm.currentIndex == vm.totalSteps - 1) ...[
-                SizedBox(
-                  width: double.infinity,
-                  height: 56.h,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // Complete onboarding → Home first. Superwall is presented
-                      // once from Dashboard for non-subscribers only.
-                      if (!AppSuperwall.subscriptionActiveNotifier.value) {
-                        await StorageService.setPendingPostOnboardingPaywall(
-                          true,
-                        );
-                      }
-                      vm.goNext();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.getStarted,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 6.w),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          size: 22.sp,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
                 ),
-                SizedBox(height: 12.h),
-                TextButton(
-                  onPressed: vm.goNext,
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
-                    ),
-                    foregroundColor: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.72),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.continueForFree,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+              ] else if (vm.isNotificationStep && !vm.notificationGranted) ...[
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
+                ),
+              ] else if (vm.isSelectAppsStep) ...[
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
+                ),
+              ] else if (vm.isScreenTimeStep) ...[
+                _OnboardingMaybeLaterButton(
+                  label: AppLocalizations.of(context)!.notificationsMaybeLater,
+                  enabled: !(isBusyScreenTimeStep || isBusySelectAppsStep),
+                  onPressed: () => _goToNextPage(vm),
                 ),
                 SizedBox(height: Spacing.md.h),
                 AppProgressIndicator(
@@ -783,6 +744,50 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                 ),
               ],
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingMaybeLaterButton extends StatelessWidget {
+  const _OnboardingMaybeLaterButton({
+    required this.label,
+    required this.onPressed,
+    this.enabled = true,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SizedBox(
+      width: double.infinity,
+      height: 52.h,
+      child: OutlinedButton(
+        onPressed: enabled ? onPressed : null,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colorScheme.primary,
+          disabledForegroundColor: colorScheme.primary.withValues(alpha: 0.45),
+          side: BorderSide(color: colorScheme.primary, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
+        ),
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

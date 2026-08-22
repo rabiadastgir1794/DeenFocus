@@ -98,7 +98,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get locationButton => '允许位置访问';
 
   @override
-  String get locationManualEntry => '或输入你的城市';
+  String get locationManualEntry => '手动输入你的城市';
+
+  @override
+  String get locationOrDivider => '或';
 
   @override
   String get locationPrivacyNote => '仅保存在你的设备上';
@@ -122,6 +125,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationsButton => '启用通知';
 
   @override
+  String get notificationsMaybeLater => '稍后再说';
+
+  @override
   String get notificationsEnabled => '通知已启用';
 
   @override
@@ -143,19 +149,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationsPreviewAdhanTitle => '昏礼唤礼';
 
   @override
-  String get notificationsPreviewAdhanBody => '礼拜时间到了。应用已暂停。';
+  String get notificationsPreviewAdhanBody => '礼拜时间到了。';
 
   @override
   String get notificationsPreviewDhikrTitle => '每日记主';
 
   @override
-  String get notificationsPreviewDhikrBody => 'سبحان الله — 花一分钟记念真主。';
+  String get notificationsPreviewDhikrBody => 'سبحان الله — 静心片刻。';
 
   @override
   String get notificationsPreviewStreakTitle => '连续记录';
 
   @override
-  String get notificationsPreviewStreakBody => '已连续完整礼拜 7 天。继续加油！';
+  String get notificationsPreviewStreakBody => '已连续完整礼拜 7 天。';
 
   @override
   String get screenTimeTitle => '启用屏幕使用时间';
@@ -183,6 +189,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get onboardingSelectAppsSkipForNow => '暂时跳过';
+
+  @override
+  String get onboardingSelectAppsPrivacyTitle => '由你掌控';
+
+  @override
+  String get onboardingSelectAppsPrivacyBody => '我们从不读取你的数据。只会锁定你选择的应用。';
 
   @override
   String get onboardingSelectAppsMockAllApps => '所有应用和类别';
@@ -442,6 +454,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get investTrialPill => '✨ 7天免费 — 结束前可随时取消';
+
+  @override
+  String get investNoCommitment => '无承诺。随时取消。';
 
   @override
   String get investFeatureAiTitle => 'AI伊斯兰助手';
@@ -930,6 +945,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeFocusModeSubtitle => '礼拜期间屏蔽分心应用';
 
   @override
+  String get focusModeShortSalah => '礼拜';
+
+  @override
+  String get focusModeShortNight => '夜间';
+
+  @override
+  String get focusModeShortChild => '儿童';
+
+  @override
+  String get focusModeLabelSalah => '礼拜模式';
+
+  @override
+  String get focusModeLabelNight => '夜间模式';
+
+  @override
+  String get focusModeLabelChild => '儿童模式';
+
+  @override
+  String homeFocusModeNamesTwo(String first, String second) {
+    return '$first和$second模式已开启';
+  }
+
+  @override
+  String homeFocusModeNamesThree(String first, String second, String third) {
+    return '$first、$second和$third模式已开启';
+  }
+
+  @override
   String get cycleModeTitle => '生理期模式';
 
   @override
@@ -956,7 +999,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dailyChecklistSectionGoodDeeds => '善行';
 
   @override
-  String get dailyChecklistSectionDistraction => '分心控制';
+  String get dailyChecklistSectionDistraction => '个人自律';
 
   @override
   String get dailyChecklistFajr => '晨礼';
@@ -1381,7 +1424,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quranSearchHint => '搜索古兰经...';
 
   @override
-  String get quranSearchHintExtended => 'Search surah or meaning...';
+  String get quranSearchHintExtended => '搜索章节或含义...';
 
   @override
   String get quranNoResults => 'No results found';
@@ -1423,13 +1466,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quranSurahLabel => '古兰经';
 
   @override
-  String get quranModeSurah => 'Surah';
+  String get quranModeSurah => '章';
 
   @override
-  String get quranModeJuz => 'Juz';
+  String get quranModeJuz => '卷';
 
   @override
-  String get quranModePage => 'Page';
+  String get quranModePage => '页';
 
   @override
   String get quranJuzLabel => 'Juz';
@@ -1438,7 +1481,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quranPageLabel => 'Page';
 
   @override
-  String get quranContinueReading => 'Continue Reading';
+  String get quranContinueReading => '继续阅读';
 
   @override
   String get quranPreviousAyah => 'Previous ayah';
@@ -1478,11 +1521,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String quranJuzProgressLabel(int percent, int juz) {
-    return '$percent% of Juz $juz';
+    return '第 $juz 卷的 $percent%';
   }
 
   @override
-  String get quranBookmarksTitle => 'Bookmarks';
+  String get quranBookmarksTitle => '书签';
 
   @override
   String get quranBookmarksEmpty => 'No bookmarks yet';
@@ -1498,20 +1541,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String quranBookmarkCount(int count) {
-    return '$count saved';
+    return '已保存 $count 个';
   }
 
   @override
-  String get quranQuickTajweed => 'Tajweed drill';
+  String get quranQuickTajweed => '读经练习';
 
   @override
-  String get quranQuickTajweedSub => 'Recite & score';
+  String get quranQuickTajweedSub => '诵读并评分';
 
   @override
-  String get quranLastListened => 'Last listened';
+  String get quranLastListened => '上次收听';
 
   @override
-  String get quranNoneYet => 'None yet';
+  String get quranNoneYet => '暂无';
 
   @override
   String get quranOpenPage => 'Open page';
@@ -1592,7 +1635,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quranRepeatSurah => 'Surah';
 
   @override
-  String get readingSettingsTitle => 'Reading Settings';
+  String get readingSettingsTitle => '阅读设置';
 
   @override
   String get readingSettingsArabicFontSize => 'Arabic font size';
@@ -1717,7 +1760,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tajweedListenToAyah => 'Listen to ayah';
 
   @override
-  String get tajweedStartReciting => 'Start reciting';
+  String get tajweedStartReciting => '开始诵读';
 
   @override
   String get tajweedTapToStop => 'Tap to stop';
@@ -1729,47 +1772,47 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tajweedStopAnalyse => 'Stop & analyse';
 
   @override
-  String get tajweedWordAccuracyLabel => 'WORD ACCURACY';
+  String get tajweedWordAccuracyLabel => '词语准确度';
 
   @override
-  String get tajweedWordReviewLabel => 'WORD REVIEW';
+  String get tajweedWordReviewLabel => '词语回顾';
 
   @override
   String get tajweedResultEncouragement =>
       'Beautiful effort — keep practicing your tajweed.';
 
   @override
-  String get quranReciteCheckTajweed => 'Recite & check tajweed';
+  String get quranReciteCheckTajweed => '诵读并检查读经';
 
   @override
   String get quranTajweedLegendGhunnah => 'Ghunnah';
 
   @override
-  String get quranTajweedLegendGhunnahDesc => 'Nasal hold, 2 counts';
+  String get quranTajweedLegendGhunnahDesc => '鼻音，两拍';
 
   @override
   String get quranTajweedLegendQalqalah => 'Qalqalah';
 
   @override
-  String get quranTajweedLegendQalqalahDesc => 'Echo bounce';
+  String get quranTajweedLegendQalqalahDesc => '回弹音';
 
   @override
   String get quranTajweedLegendMadd => 'Madd';
 
   @override
-  String get quranTajweedLegendMaddDesc => 'Prolong the vowel';
+  String get quranTajweedLegendMaddDesc => '延长元音';
 
   @override
   String get quranTajweedLegendIdgham => 'Idgham';
 
   @override
-  String get quranTajweedLegendIdghamDesc => 'Merge letters';
+  String get quranTajweedLegendIdghamDesc => '合并字母';
 
   @override
   String get quranTajweedLegendIkhfa => 'Ikhfa';
 
   @override
-  String get quranTajweedLegendIkhfaDesc => 'Hide the noon';
+  String get quranTajweedLegendIkhfaDesc => '隐藏努恩';
 
   @override
   String get save => '节省';
@@ -2405,10 +2448,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get insightsDaysInARow => '连续天数';
 
   @override
-  String get insightsChipUpToday => '↑ +1';
+  String insightsChipUpToday(int count) {
+    return '↑ $count';
+  }
 
   @override
-  String get insightsChipDayUp => '↑ +1 today';
+  String get insightsChipDayUp => '↑ 1 today';
 
   @override
   String get insightsWeeklyCompletion => 'Weekly completion';
@@ -2445,7 +2490,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers. Alhamdulillah — keep going!';
+    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
   }
 
   @override
@@ -3093,6 +3138,95 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAppDemoLiveActivityCardSubtitle => '锁屏与灵动岛上的当前与下一场礼拜。';
 
   @override
+  String get settingsAppDemoTajweedCardSubtitle => '诵读一节经文，立即获得读经反馈。';
+
+  @override
+  String get featureDemoTajweedTitle => '读经';
+
+  @override
+  String get featureDemoTajweedIntroTitle => '了解读经练习如何运作';
+
+  @override
+  String get featureDemoTajweedIntroSubtitle =>
+      '留在 DeenFocus。打开读经练习，诵读一节经文，并逐词查看反馈。';
+
+  @override
+  String get featureDemoTajweedQuranCallout => '点按读经练习开始';
+
+  @override
+  String get featureDemoTajweedLegendCallout => '颜色高亮会在阅读时标示读经规则';
+
+  @override
+  String get featureDemoTajweedReciteCallout => '点按诵读并检查读经';
+
+  @override
+  String get featureDemoTajweedDownloadCallout => '一次性下载后即可离线练习';
+
+  @override
+  String get featureDemoTajweedMicCallout => '点按麦克风开始诵读';
+
+  @override
+  String get featureDemoTajweedResultCallout => '查看哪些词正确、遗漏或需要改进';
+
+  @override
+  String get featureDemoTajweedCompletionTitle => '读经已就绪';
+
+  @override
+  String get featureDemoTajweedCompletionSubtitle => '随时自信诵读。';
+
+  @override
+  String get featureDemoTajweedCompletionBody =>
+      '打开古兰经 → 读经练习，在设备上为任意经文评分 — 首次下载后即可完全离线。';
+
+  @override
+  String get featureDemoTajweedSurahName => 'Al-Fatihah';
+
+  @override
+  String get featureDemoTajweedBaqarahName => 'Al-Baqarah';
+
+  @override
+  String get featureDemoTajweedSurahListSubtitle => '7 节 • 麦加章';
+
+  @override
+  String get featureDemoTajweedBaqarahSubtitle => '286 节 • 麦地那章';
+
+  @override
+  String get featureDemoTajweedSurahHeaderSubtitle => '开端章 • 7 节';
+
+  @override
+  String get featureDemoTajweedSurahMeta => '第 1 章 • 麦加';
+
+  @override
+  String get featureDemoTajweedAyahTranslation => '奉至仁至慈的真主之名。';
+
+  @override
+  String get featureDemoTajweedPracticeTitle => '开端章 · 1:1';
+
+  @override
+  String get featureDemoTajweedPreparingTitle => '正在准备 AI 模型';
+
+  @override
+  String get featureDemoTajweedPreparingBody => '一次性下载，之后读经练习即可完全离线。只需一次。';
+
+  @override
+  String get featureDemoTajweedResultEncouragement => '继续练习 — 听参考音频再试一次。';
+
+  @override
+  String get featureDemoTajweedStatCorrect => '正确';
+
+  @override
+  String get featureDemoTajweedStatPronunciation => '发音';
+
+  @override
+  String get featureDemoTajweedStatWrong => '错词';
+
+  @override
+  String get featureDemoTajweedStatMissed => '遗漏';
+
+  @override
+  String get featureDemoTajweedStatExtra => '多余';
+
+  @override
   String get featureDemoContinue => '继续';
 
   @override
@@ -3663,4 +3797,275 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get libraryFiqhCommonGround => '共同点';
+
+  @override
+  String get insightsCompleted => '已完成';
+
+  @override
+  String get insightsInProgress => '进行中';
+
+  @override
+  String get insightsKeepGoingTitle => '继续加油！';
+
+  @override
+  String get insightsKeepGoingBody => '你进步很大。每一次礼拜都很重要。';
+
+  @override
+  String get insightsAchievementsUnlockedLabel => '已解锁成就';
+
+  @override
+  String insightsAchievementsCount(int unlocked, int total) {
+    return '$unlocked / $total';
+  }
+
+  @override
+  String get achievementDescFirstPrayer => '你完成了第一次礼拜。';
+
+  @override
+  String get achievementDescSevenPrayerStreak => '连续完成 7 次礼拜。';
+
+  @override
+  String get achievementDescThirtyPrayerStreak => '连续完成 30 次礼拜。';
+
+  @override
+  String get achievementDescFajrWarrior => '在 14 天完成晨礼。';
+
+  @override
+  String get achievementDescFajrChampion => '在 30 天完成晨礼。';
+
+  @override
+  String get achievementDescFiveADay => '在一天内完成全部五番礼拜。';
+
+  @override
+  String get achievementDescPerfectWeek => '连续 7 天完成每一次礼拜。';
+
+  @override
+  String get achievementDescPerfectMonth => '连续 30 天完成每一次礼拜。';
+
+  @override
+  String get achievementDescQuranReader => '在 7 天阅读古兰经。';
+
+  @override
+  String get achievementDescQuranDevotee => '在 30 天阅读古兰经。';
+
+  @override
+  String get achievementDescDhikrStarter => '在 7 天完成记主。';
+
+  @override
+  String get achievementDescDhikrMaster => '在 30 天完成记主。';
+
+  @override
+  String get achievementDescNightWorshipper => '在 7 天完成泰罕朱德。';
+
+  @override
+  String get achievementDescMasjidCompanion => '前往清真寺 7 次。';
+
+  @override
+  String get achievementDescDistractionDefender => '保持 7 天不受干扰。';
+
+  @override
+  String get achievementDescCycleGuardian => '使用周期模式保护连续记录 7 天。';
+
+  @override
+  String get achievementDescProtectedMonth => '使用周期模式保护连续记录 30 天。';
+
+  @override
+  String get achievementDescConsistencyChampion => '坚持 100 天。';
+
+  @override
+  String get achievementDescSixMonthJourney => '坚持 180 天。';
+
+  @override
+  String get achievementDescDeenFocusMaster => '达到 DeenFocus Master（第 15 级）。';
+
+  @override
+  String get dailyChecklistOptional => '可选';
+
+  @override
+  String get dailyChecklistIstighfar => '求饶（Istighfar）';
+
+  @override
+  String get dailyChecklistSalawat => '赞圣 / Durood';
+
+  @override
+  String get dailyChecklistControlAngerSpeakKindly => '克制怒气 / 友善说话';
+
+  @override
+  String get digitalBalanceTitle => '数字平衡';
+
+  @override
+  String get digitalBalanceSubtitle => '看看你的时间花在哪里';
+
+  @override
+  String get digitalBalanceViewCta => '查看数字平衡 →';
+
+  @override
+  String get digitalBalanceTodayLabel => '今天';
+
+  @override
+  String get digitalBalanceDeenFocus => 'DeenFocus';
+
+  @override
+  String get digitalBalanceOtherApps => '其他应用';
+
+  @override
+  String get digitalBalanceTodayPhoneTime => '今日手机使用';
+
+  @override
+  String get digitalBalanceWhereTimeGoes => '时间花在哪里';
+
+  @override
+  String get digitalBalanceViewAllApps => '查看全部应用';
+
+  @override
+  String get digitalBalanceAllAppsTitle => '全部应用';
+
+  @override
+  String get digitalBalanceNoApps => '今天还没有应用使用记录。';
+
+  @override
+  String get digitalBalanceDeenVsDigital => '信仰时间与数字时间';
+
+  @override
+  String get digitalBalanceYourWeek => '本周';
+
+  @override
+  String get digitalBalanceThisWeek => '本周';
+
+  @override
+  String get digitalBalancePhoneUsageLegend => '手机使用';
+
+  @override
+  String get digitalBalanceDailyInsight => '今日提示';
+
+  @override
+  String get digitalBalanceInsightKeepGoing => '每一分钟用于加强信仰都很重要。';
+
+  @override
+  String get digitalBalanceInsightWeekHigher =>
+      '本周的 DeenFocus 时间高于上周。MashaAllah！';
+
+  @override
+  String get digitalBalanceInsightQuietDay => '今天暂时很安静。DeenFocus 时间会显示在这里。';
+
+  @override
+  String get digitalBalanceGoalTitle => '你的信仰时间目标';
+
+  @override
+  String get digitalBalanceAdjustGoal => '调整目标';
+
+  @override
+  String get digitalBalanceGoalReached => '你已达成今日目标。MashaAllah！';
+
+  @override
+  String get digitalBalanceGoalSheetTitle => '每日信仰时间';
+
+  @override
+  String get digitalBalanceGoalCustomHint => '每天分钟数';
+
+  @override
+  String get digitalBalanceGoalSave => '保存';
+
+  @override
+  String get digitalBalanceGoal15 => '15 分钟';
+
+  @override
+  String get digitalBalanceGoal30 => '30 分钟';
+
+  @override
+  String get digitalBalanceGoal45 => '45 分钟';
+
+  @override
+  String get digitalBalanceGoal60 => '1 小时';
+
+  @override
+  String get digitalBalancePermissionTitle => '了解你的数字习惯';
+
+  @override
+  String get digitalBalancePermissionBody =>
+      '允许 DeenFocus 访问应用使用情况，以便了解时间花在哪里、以及你给信仰多少时间。';
+
+  @override
+  String get digitalBalanceEnableUsage => '开启应用使用';
+
+  @override
+  String get digitalBalanceMaybeLater => '稍后再说';
+
+  @override
+  String get digitalBalanceUnavailableTitle => '此处无法查看应用使用';
+
+  @override
+  String get digitalBalanceUnavailableBody =>
+      'Apple 不会与其他应用共享屏幕使用时间，因此暂时无法显示 iPhone 使用情况。礼拜、连续记录和 DeenFocus 洞察仍可正常使用。';
+
+  @override
+  String get digitalBalanceInfoTitle => '关于数字平衡';
+
+  @override
+  String get digitalBalanceInfoBody => '数字平衡帮助你了解时间花在哪里、以及你给信仰多少时间。使用数据保存在本机。';
+
+  @override
+  String digitalBalanceDurationMinutes(int minutes) {
+    return '${minutes}m';
+  }
+
+  @override
+  String digitalBalanceDurationHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String digitalBalanceDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String digitalBalancePercentShort(int percent) {
+    return 'DeenFocus · 占手机时间的 $percent%';
+  }
+
+  @override
+  String digitalBalancePercentOfPhoneTime(int percent) {
+    return 'DeenFocus = 占手机时间的 $percent%';
+  }
+
+  @override
+  String digitalBalancePercentToday(int percent) {
+    return '占今日手机时间的 $percent%';
+  }
+
+  @override
+  String digitalBalanceRingLabel(int percent) {
+    return '$percent%\nDeenFocus';
+  }
+
+  @override
+  String digitalBalanceWeekMoreDeen(int percent) {
+    return '↑ 比上周多 $percent% 的 DeenFocus 时间';
+  }
+
+  @override
+  String digitalBalanceInsightTimeToday(String duration) {
+    return '你今天在 DeenFocus 度过了 $duration。继续保持。';
+  }
+
+  @override
+  String digitalBalanceInsightIncreasedYesterday(int percent) {
+    return '你的 DeenFocus 时间比昨天增加了 $percent%。';
+  }
+
+  @override
+  String digitalBalanceGoalPerDay(String goal) {
+    return '$goal / 天';
+  }
+
+  @override
+  String digitalBalanceGoalProgress(String current, String goal) {
+    return '$current / $goal';
+  }
+
+  @override
+  String digitalBalanceMinutesToGoal(int minutes) {
+    return '距今日目标还差 $minutes 分钟';
+  }
 }

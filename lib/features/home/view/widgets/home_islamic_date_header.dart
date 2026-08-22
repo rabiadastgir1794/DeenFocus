@@ -90,8 +90,7 @@ class _HomeIslamicDateHeaderState extends State<HomeIslamicDateHeader> {
                 Text(
                   gregorianDate,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
-                    fontSize: 12,
+                    color: colorScheme.onSurfaceVariant,
                     height: 1.25,
                   ),
                 ),

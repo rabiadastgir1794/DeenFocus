@@ -88,7 +88,7 @@ class _QuranTabScreenState extends State<QuranTabScreen> {
                         Text(
                           l10n.libraryHomeSubtitle,
                           style: TextStyle(
-                            fontSize: 13.sp,
+                            fontSize: 14.sp,
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),

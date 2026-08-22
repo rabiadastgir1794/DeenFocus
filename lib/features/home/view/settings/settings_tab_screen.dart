@@ -34,10 +34,7 @@ import 'settings_list_widgets.dart';
 import 'settings_prayer_alarms_screen.dart';
 
 class SettingsTabScreen extends StatefulWidget {
-  const SettingsTabScreen({
-    super.key,
-    this.onRequestEnableFocusMode,
-  });
+  const SettingsTabScreen({super.key, this.onRequestEnableFocusMode});
 
   /// Handoff from Focus Mode App Demos → Focus tab enable / Superwall flow.
   final ValueChanged<FocusModeType>? onRequestEnableFocusMode;
@@ -57,16 +54,18 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    PrayerLiveActivityService.instance.preferenceListenable
-        .addListener(_onLiveActivityPreferenceChanged);
+    PrayerLiveActivityService.instance.preferenceListenable.addListener(
+      _onLiveActivityPreferenceChanged,
+    );
     _packageInfoFuture = PackageInfo.fromPlatform();
     unawaited(_loadLiveActivityState());
   }
 
   @override
   void dispose() {
-    PrayerLiveActivityService.instance.preferenceListenable
-        .removeListener(_onLiveActivityPreferenceChanged);
+    PrayerLiveActivityService.instance.preferenceListenable.removeListener(
+      _onLiveActivityPreferenceChanged,
+    );
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -369,10 +368,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
   }
 
   Future<void> _onContactUsTapped(BuildContext context) async {
-    final uri = Uri(
-      scheme: 'mailto',
-      path: 'rnr1710678@gmail.com',
-    );
+    final uri = Uri(scheme: 'mailto', path: 'rnr1710678@gmail.com');
     try {
       final launched = await launchUrl(
         uri,
@@ -604,12 +600,18 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                     );
                   },
                 ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SettingsGroup(
+              children: [
                 SettingsSubtitleSwitchRow(
+                  icon: Icons.notifications_active_outlined,
                   label: l10n.liveActivityEnableLabel,
                   subtitle: _liveActivitySupported
                       ? (_liveActivityEnabled
-                          ? l10n.liveActivityStatusActive
-                          : l10n.liveActivityStatusOff)
+                            ? l10n.liveActivityStatusActive
+                            : l10n.liveActivityStatusOff)
                       : l10n.liveActivityUnsupported,
                   value: _liveActivityEnabled,
                   enabled: _liveActivitySupported && !_liveActivityBusy,
@@ -643,7 +645,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                 SettingsRow(
                   icon: Icons.star_rounded,
                   label: l10n.settingsRateDeenFocus,
-                  onTap: () => unawaited(AppReviewService.requestReviewManually()),
+                  onTap: () =>
+                      unawaited(AppReviewService.requestReviewManually()),
                 ),
                 SettingsRow(
                   icon: Icons.email_outlined,

@@ -1,6 +1,14 @@
 enum FeatureDemoPhase {
   intro,
 
+  // Tajweed walkthrough
+  tajweedQuran,
+  tajweedSurahLegend,
+  tajweedSurahRecite,
+  tajweedDownload,
+  tajweedPractice,
+  tajweedResult,
+
   // Widgets walkthrough
   widgetsHome,
   widgetsEditMode,

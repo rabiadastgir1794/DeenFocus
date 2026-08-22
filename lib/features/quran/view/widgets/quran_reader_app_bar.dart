@@ -75,7 +75,7 @@ class QuranReaderAppBar extends StatelessWidget implements PreferredSizeWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
                                 color: palette.textSecondary,
                               ),

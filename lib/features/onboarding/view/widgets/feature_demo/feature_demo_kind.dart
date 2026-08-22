@@ -1,1 +1,1 @@
-enum FeatureDemoKind { widgets, liveActivity }
+enum FeatureDemoKind { tajweed, widgets, liveActivity }

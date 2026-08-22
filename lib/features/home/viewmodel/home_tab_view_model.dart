@@ -22,6 +22,7 @@ import '../helpers/daily_checklist_day.dart';
 import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
 import '../helpers/home_prayer_times_helper.dart';
+import '../helpers/insights_streak_delta.dart';
 import '../model/home_models.dart';
 import '../services/achievements_service.dart';
 import '../services/cycle_mode_policy.dart';
@@ -122,7 +123,38 @@ class HomeTabViewModel extends ChangeNotifier {
       ? _prayerStreakState.bestDayStreak
       : streakDays;
   int get bestStreakDays => bestDayStreak;
-  int get cycleProtectedDaysAvailable => cycleModeDaysRemaining;
+  int get cycleProtectedDaysAvailable =>
+      AchievementsService.protectedDaysUntilToday(
+        policy: cyclePolicy,
+        now: DateTime.now(),
+      ).length;
+
+  /// Counted salah today that actually extended the prayer streak; null = no chip.
+  int? get insightsPrayerStreakDeltaToday {
+    final now = DateTime.now();
+    final todayCount = WeeklyCalculator.completedCountOnDate(
+      now,
+      _mergedStatusHistory(),
+      (_) => false,
+    );
+    return InsightsStreakDelta.prayerDeltaToday(
+      prayerStreak: prayerStreak,
+      todaysCountedPrayers: todayCount,
+      isPausedToday: cyclePolicy.shouldPauseStreaks(now),
+    );
+  }
+
+  bool get insightsDayStreakGrewToday {
+    final now = DateTime.now();
+    return InsightsStreakDelta.dayStreakGrewToday(
+      dayStreak: streakDays,
+      todayFullyCompleted: DayStreakCalculator.isDayFullyCompleted(
+        now,
+        _mergedStatusHistory(),
+      ),
+      isPausedToday: cyclePolicy.shouldPauseStreaks(now),
+    );
+  }
   List<bool> get weekCycleHighlights {
     final now = DateTime.now();
     return currentWeekDates
@@ -236,6 +268,31 @@ class HomeTabViewModel extends ChangeNotifier {
   // Daily Checklist getters
   Set<DailyChecklistItem> get dailyChecklistCompletedItems =>
       _dailyChecklist.completedItems;
+
+  int get dailyChecklistCompletedCount =>
+      DailyChecklistDay.progressCompletedCount(
+        checklist: _dailyChecklist.completedItems,
+        obligatoryPrayersDone: dailyChecklistObligatoryPrayersDone,
+      );
+
+  int get dailyChecklistTotalCount => DailyChecklistDay.progressTotalCount();
+
+  int get dailyChecklistObligatoryPrayersDone {
+    var done = 0;
+    for (final prayer in TrackablePrayer.values) {
+      if (isChecklistPrayerCompleted(prayer)) done++;
+    }
+    return done;
+  }
+
+  /// Obligatory Fajr also counts a legacy checklist tick so old saves stay true.
+  bool isChecklistPrayerCompleted(TrackablePrayer prayer) {
+    if (PrayerAnalyticsService.countsForPrayerStreak(statusForToday(prayer))) {
+      return true;
+    }
+    return prayer == TrackablePrayer.fajr &&
+        _dailyChecklist.completedItems.contains(DailyChecklistItem.fajr);
+  }
 
   // Focus Score getters
   int get todayFocusScore => _todayFocusScore;
@@ -684,6 +741,10 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> toggleDailyChecklistItem(DailyChecklistItem item) async {
+    if (item == DailyChecklistItem.fajr) {
+      await toggleChecklistTrackedPrayer(TrackablePrayer.fajr);
+      return;
+    }
     await _ensureDailyChecklistCurrent();
     final completed = Set<DailyChecklistItem>.from(
       _dailyChecklist.completedItems,
@@ -705,52 +766,77 @@ class HomeTabViewModel extends ChangeNotifier {
     unawaited(_syncNightlyWrapUpIfPossible());
   }
 
+  /// Toggles an obligatory prayer from the checklist using Home prayer marks.
+  Future<void> toggleChecklistTrackedPrayer(TrackablePrayer prayer) async {
+    final done = isChecklistPrayerCompleted(prayer);
+    await markPrayerStatus(
+      DateTime.now(),
+      prayer,
+      done ? PrayerMarkStatus.none : PrayerMarkStatus.onTime,
+    );
+  }
+
+  Future<void> _syncLegacyFajrChecklist(bool completed) async {
+    await _ensureDailyChecklistCurrent();
+    final items = Set<DailyChecklistItem>.from(_dailyChecklist.completedItems);
+    if (completed) {
+      items.add(DailyChecklistItem.fajr);
+    } else {
+      items.remove(DailyChecklistItem.fajr);
+    }
+    if (items.length == _dailyChecklist.completedItems.length &&
+        items.contains(DailyChecklistItem.fajr) ==
+            _dailyChecklist.completedItems.contains(DailyChecklistItem.fajr)) {
+      return;
+    }
+    _dailyChecklist = _dailyChecklist.copyWith(completedItems: items);
+    _checklistHistory[_dailyChecklist.dateKey] = Set<DailyChecklistItem>.from(
+      items,
+    );
+    await _persistDailyChecklist();
+    await _persistChecklistHistory();
+    await _computeFocusScore();
+    notifyListeners();
+  }
+
   Future<void> _computeFocusScore() async {
     final completed = _dailyChecklist.completedItems;
 
-    // —— Prayer (Fajr + Tahajjud checklist, or marked prayers) ——
+    // Obligatory salah from Home marks; legacy checklist Fajr still counts.
     // Cycle Mode must not penalize the score when prayers are paused.
-    const prayerItems = <DailyChecklistItem>[
-      DailyChecklistItem.fajr,
-      DailyChecklistItem.tahajjud,
-    ];
-    final prayerChecklistPercent = _percentOf(prayerItems, completed);
     final prayerMarksPercent = _getPrayerCompletionPercent();
-    // Protect focus score on any cycle day (active or sealed early-end day).
     if (cyclePolicy.protectsFocusScore()) {
       _todayPrayerPercent = 100;
     } else {
-      _todayPrayerPercent = prayerMarksPercent >= prayerChecklistPercent
-          ? prayerMarksPercent
-          : prayerChecklistPercent;
+      _todayPrayerPercent = prayerMarksPercent;
     }
 
-    // —— Quran ——
     const quranItems = <DailyChecklistItem>[DailyChecklistItem.quran];
     _todayQuranPercent = _percentOf(quranItems, completed);
 
-    // —— Dhikr (Morning Adhkar + Evening Adhkar + Dhikr) ——
     const dhikrItems = <DailyChecklistItem>[
       DailyChecklistItem.morningAdhkar,
       DailyChecklistItem.eveningAdhkar,
       DailyChecklistItem.dhikr,
+      DailyChecklistItem.istighfar,
+      DailyChecklistItem.salawat,
     ];
     _todayDhikrPercent = _percentOf(dhikrItems, completed);
 
-    // —— Distraction control ——
     // Display % = remaining distraction (0% = disciplined / good).
     const distractionItems = <DailyChecklistItem>[
       DailyChecklistItem.noMusicToday,
       DailyChecklistItem.noSocialMediaBeforeIsha,
+      DailyChecklistItem.controlAngerSpeakKindly,
     ];
     final undistractedPercent = _percentOf(distractionItems, completed);
     _todayDistractionPercent = 100 - undistractedPercent;
 
-    // —— Good deeds (bonus toward 100) ——
     const bonusItems = <DailyChecklistItem>[
       DailyChecklistItem.charity,
       DailyChecklistItem.smileAtSomeone,
       DailyChecklistItem.familyCall,
+      DailyChecklistItem.tahajjud,
     ];
     final bonusDone = bonusItems.where(completed.contains).length;
     final coreAverage =
@@ -760,17 +846,17 @@ class HomeTabViewModel extends ChangeNotifier {
             undistractedPercent) /
         4;
     final allChecklistDone =
-        completed.length == DailyChecklistItem.values.length;
+        dailyChecklistObligatoryPrayersDone == TrackablePrayer.values.length &&
+        !DailyChecklistDay.isHabitIncomplete(completed);
 
     if (allChecklistDone) {
-      // Completing every checklist item yields a perfect Focus Score.
       _todayPrayerPercent = 100;
       _todayQuranPercent = 100;
       _todayDhikrPercent = 100;
       _todayDistractionPercent = 0;
       _todayFocusScore = 100;
     } else {
-      final bonusBoost = (bonusDone / bonusItems.length) * 5; // up to +5 points
+      final bonusBoost = (bonusDone / bonusItems.length) * 5;
       _todayFocusScore = (coreAverage + bonusBoost).round().clamp(0, 100);
     }
   }
@@ -785,25 +871,9 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   int _getPrayerCompletionPercent() {
-    // Calculate prayer completion percentage for today
-    final now = DateTime.now();
-    final today =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final dayData = _prayerStreakState.weekDays
-        .where((day) => day.dateKey == today)
-        .firstOrNull;
-    if (dayData == null) return 0;
-
     final total = TrackablePrayer.values.length;
-    int completed = 0;
-    for (final prayer in TrackablePrayer.values) {
-      final status = dayData.statusFor(prayer);
-      if (status == PrayerMarkStatus.onTime ||
-          status == PrayerMarkStatus.qada) {
-        completed++;
-      }
-    }
-    return total > 0 ? (completed * 100 / total).round() : 0;
+    if (total == 0) return 0;
+    return ((dailyChecklistObligatoryPrayersDone * 100) / total).round();
   }
 
   /// Expires an active cycle when the configured length has elapsed.
@@ -1192,6 +1262,11 @@ class HomeTabViewModel extends ChangeNotifier {
     await _refreshAchievements();
     notifyListeners();
     unawaited(_syncNightlyWrapUpIfPossible());
+    if (prayer == TrackablePrayer.fajr) {
+      await _syncLegacyFajrChecklist(
+        PrayerAnalyticsService.countsForPrayerStreak(status),
+      );
+    }
 
     final celebrated = newlyCounts;
     return PrayerMarkResult(

@@ -565,7 +565,6 @@ class _CardinalLabel extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              fontSize: 12,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),

@@ -13,10 +13,7 @@ import '../../../onboarding/view/widgets/feature_demo/feature_demo_kind.dart';
 
 /// Settings entry for interactive App Demo walkthroughs.
 class SettingsAppDemoScreen extends StatefulWidget {
-  const SettingsAppDemoScreen({
-    super.key,
-    this.onRequestEnableFocusMode,
-  });
+  const SettingsAppDemoScreen({super.key, this.onRequestEnableFocusMode});
 
   /// Opens Focus and runs the existing enable / Superwall flow for [mode].
   final ValueChanged<FocusModeType>? onRequestEnableFocusMode;
@@ -72,9 +69,7 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
       final featureImmersive = _featureKind != null && _immersive;
       final lockImmersive = _lockMode != null && _immersive;
       return Scaffold(
-        backgroundColor: lockImmersive
-            ? Colors.black
-            : colorScheme.surface,
+        backgroundColor: lockImmersive ? Colors.black : colorScheme.surface,
         body: SafeArea(
           top: !_immersive,
           bottom: false,
@@ -110,10 +105,9 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
                 AppDemoSkipButton(
                   onPressed: _backToPicker,
                   label: l10n.skip,
-                  foregroundColor: (featureImmersive
-                          ? colorScheme.onSurface
-                          : Colors.white)
-                      .withValues(alpha: 0.92),
+                  foregroundColor:
+                      (featureImmersive ? colorScheme.onSurface : Colors.white)
+                          .withValues(alpha: 0.92),
                   showShadow: !featureImmersive,
                 ),
             ],
@@ -145,18 +139,18 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
                   Text(
                     l10n.settingsAppDemoChooseModeTitle,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.3,
-                          color: colorScheme.onSurface,
-                        ),
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   SizedBox(height: Spacing.sm.h),
                   Text(
                     l10n.settingsAppDemoChooseModeSubtitle,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          height: 1.45,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.45,
+                    ),
                   ),
                   SizedBox(height: Spacing.lg.h),
                   _ModeOptionCard(
@@ -183,20 +177,27 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
                   Text(
                     l10n.settingsAppDemoHomeFeaturesTitle,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.3,
-                          color: colorScheme.onSurface,
-                        ),
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   SizedBox(height: Spacing.sm.h),
                   Text(
                     l10n.settingsAppDemoHomeFeaturesSubtitle,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          height: 1.45,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.45,
+                    ),
                   ),
                   SizedBox(height: Spacing.lg.h),
+                  _ModeOptionCard(
+                    icon: Icons.mic_rounded,
+                    title: l10n.featureDemoTajweedTitle,
+                    subtitle: l10n.settingsAppDemoTajweedCardSubtitle,
+                    onTap: () => _openFeature(FeatureDemoKind.tajweed),
+                  ),
+                  SizedBox(height: Spacing.md.h),
                   _ModeOptionCard(
                     icon: Icons.widgets_rounded,
                     title: l10n.featureDemoWidgetsTitle,

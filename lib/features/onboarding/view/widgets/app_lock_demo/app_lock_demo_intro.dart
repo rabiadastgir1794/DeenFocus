@@ -44,21 +44,6 @@ class AppLockDemoIntro extends StatelessWidget {
             title: navTitle,
             backLabel: l10n.calendarBack,
             onBack: onBack,
-          )
-        else
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Spacing.sm.w),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: IconButton(
-                onPressed: onBack,
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 20.sp,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-            ),
           ),
         Expanded(
           child: Padding(

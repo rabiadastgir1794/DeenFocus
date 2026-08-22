@@ -192,7 +192,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                             Text(
                               l10n.tasbihChooseOrAddSubtitle,
                               style: TextStyle(
-                                fontSize: 13.sp,
+                                fontSize: 14.sp,
                                 color: colorScheme.onSurfaceVariant,
                               ),
                             ),

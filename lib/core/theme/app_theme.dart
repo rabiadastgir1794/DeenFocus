@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../logger/startup_handoff.dart';
 import '../logger/startup_probe.dart';
 import 'dark_theme.dart';
 import 'light_theme.dart';
@@ -9,6 +12,7 @@ abstract class AppTheme {
 
   static ThemeData? _light;
   static ThemeData? _dark;
+  static bool _unusedThemeWarmScheduled = false;
 
   static ThemeData get light {
     final cached = _light;
@@ -30,5 +34,21 @@ abstract class AppTheme {
     );
     _dark = built;
     return built;
+  }
+
+  /// Evaluates the ThemeData that was skipped on first paint, after splash
+  /// so a later theme toggle does not hitch the branded animation.
+  static void warmUnusedAfterFirstFrame({required bool useDark}) {
+    if (_unusedThemeWarmScheduled) return;
+    _unusedThemeWarmScheduled = true;
+    unawaited(
+      StartupHandoff.firstDestinationFrame.then((_) {
+        if (useDark) {
+          light;
+        } else {
+          dark;
+        }
+      }),
+    );
   }
 }

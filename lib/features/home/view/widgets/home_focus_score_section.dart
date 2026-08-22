@@ -72,9 +72,8 @@ class HomeFocusScoreSection extends StatelessWidget {
               children: [
                 Text(
                   l10n.focusScoreTitle,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 13.5,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -137,9 +136,8 @@ class HomeFocusScoreSection extends StatelessWidget {
                     ),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.85,
+                        alpha: 0.9,
                       ),
-                      fontSize: 11.5,
                       height: 1.3,
                     ),
                   ),

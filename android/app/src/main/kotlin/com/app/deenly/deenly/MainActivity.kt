@@ -11,14 +11,14 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.ryanheise.audioservice.AudioServiceActivity
 import com.rnr.deenfocus.tajweed.TajweedChannelHandler
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity() {
+class MainActivity : AudioServiceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -41,6 +41,7 @@ class MainActivity : FlutterActivity() {
     private val tajweedEventChannelName = "com.app.deenly.deenly/tajweed_events"
     private val quranTranslationMethodChannelName = "com.app.deenly.deenly/quran_translations"
     private val quranTranslationEventChannelName = "com.app.deenly.deenly/quran_translation_events"
+    private val appUsageMethodChannelName = "com.app.deenly.deenly/app_usage"
     private var tajweedChannelHandler: TajweedChannelHandler? = null
     private var quranTranslationChannelHandler: com.rnr.deenfocus.qurantranslation.QuranTranslationChannelHandler? = null
 
@@ -121,6 +122,11 @@ class MainActivity : FlutterActivity() {
             MethodChannel(flutterEngine.dartExecutor.binaryMessenger, quranTranslationMethodChannelName),
             EventChannel(flutterEngine.dartExecutor.binaryMessenger, quranTranslationEventChannelName),
         )
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            appUsageMethodChannelName,
+        ).setMethodCallHandler(AppUsageChannelHandler(applicationContext))
     }
 
     /** Mirrors iOS `didReceiveMemoryWarningNotification` -> unload native model sessions. */

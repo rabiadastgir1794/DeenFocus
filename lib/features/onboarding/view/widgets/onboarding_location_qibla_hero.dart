@@ -62,7 +62,7 @@ class _OnboardingLocationQiblaHeroState
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final size = widget.size ?? (widget.compact ? 168.r : 196.r);
+    final size = widget.size ?? (widget.compact ? 156.r : 176.r);
     final centerSize = size * 0.42;
     final arrowSize = centerSize * 0.34;
 

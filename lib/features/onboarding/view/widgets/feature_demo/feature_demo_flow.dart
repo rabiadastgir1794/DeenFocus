@@ -10,6 +10,7 @@ import 'feature_demo_enable_offer.dart';
 import 'feature_demo_kind.dart';
 import 'feature_demo_live_activity_screens.dart';
 import 'feature_demo_phase.dart';
+import 'feature_demo_tajweed_screens.dart';
 import 'feature_demo_widgets_screens.dart';
 
 bool _isCupertinoPlatform() {
@@ -17,7 +18,7 @@ bool _isCupertinoPlatform() {
       defaultTargetPlatform == TargetPlatform.macOS;
 }
 
-/// Interactive Widgets / Live Activity walkthrough hosted by Settings App Demo.
+/// Interactive App Demo walkthrough hosted by Settings App Demo.
 class FeatureDemoFlow extends StatefulWidget {
   const FeatureDemoFlow({
     super.key,
@@ -109,15 +110,14 @@ class _FeatureDemoFlowState extends State<FeatureDemoFlow> {
           return Stack(
             fit: StackFit.expand,
             alignment: Alignment.center,
-            children: [
-              ...previousChildren,
-              ?currentChild,
-            ],
+            children: [...previousChildren, ?currentChild],
           );
         },
         transitionBuilder: (child, animation) {
-          final curved =
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+          final curved = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          );
           return FadeTransition(
             opacity: curved,
             child: SlideTransition(
@@ -155,6 +155,32 @@ class _FeatureDemoFlowState extends State<FeatureDemoFlow> {
           onStartDemo: _controller.startDemo,
           onBack: widget.onExit,
           showCenteredNavHeader: true,
+        );
+      case FeatureDemoPhase.tajweedQuran:
+        return FeatureDemoTajweedQuran(
+          controller: _controller,
+          callout: callout,
+        );
+      case FeatureDemoPhase.tajweedSurahLegend:
+      case FeatureDemoPhase.tajweedSurahRecite:
+        return FeatureDemoTajweedSurah(
+          controller: _controller,
+          callout: callout,
+        );
+      case FeatureDemoPhase.tajweedDownload:
+        return FeatureDemoTajweedDownload(
+          controller: _controller,
+          callout: callout,
+        );
+      case FeatureDemoPhase.tajweedPractice:
+        return FeatureDemoTajweedPractice(
+          controller: _controller,
+          callout: callout,
+        );
+      case FeatureDemoPhase.tajweedResult:
+        return FeatureDemoTajweedResult(
+          controller: _controller,
+          callout: callout,
         );
       case FeatureDemoPhase.widgetsHome:
       case FeatureDemoPhase.widgetsEditMode:

@@ -101,7 +101,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get locationButton => 'स्थान पहुंच की अनुमति दें';
 
   @override
-  String get locationManualEntry => 'या अपना शहर दर्ज करें';
+  String get locationManualEntry => 'अपना शहर मैन्युअल रूप से दर्ज करें';
+
+  @override
+  String get locationOrDivider => 'या';
 
   @override
   String get locationPrivacyNote => 'आपके डिवाइस पर ही रहता है';
@@ -126,6 +129,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get notificationsButton => 'सूचनाएं सक्षम करें';
 
   @override
+  String get notificationsMaybeLater => 'शायद बाद में';
+
+  @override
   String get notificationsEnabled => 'सूचनाएं सक्षम हैं';
 
   @override
@@ -147,21 +153,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get notificationsPreviewAdhanTitle => 'मग़रिब की अज़ान';
 
   @override
-  String get notificationsPreviewAdhanBody =>
-      'नमाज़ का समय हो गया। ऐप्स रोके गए हैं।';
+  String get notificationsPreviewAdhanBody => 'नमाज़ का समय हो गया।';
 
   @override
   String get notificationsPreviewDhikrTitle => 'दैनिक ज़िक्र';
 
   @override
-  String get notificationsPreviewDhikrBody =>
-      'सुब्हानअल्लाह — याद करने के लिए एक मिनट निकालें।';
+  String get notificationsPreviewDhikrBody => 'सुब्हानअल्लाह — एक पल निकालें।';
 
   @override
   String get notificationsPreviewStreakTitle => 'स्ट्रीक';
 
   @override
-  String get notificationsPreviewStreakBody => '7 दिन पूरी नमाज़ें। जारी रखें!';
+  String get notificationsPreviewStreakBody => '7 दिन पूरी नमाज़ें।';
 
   @override
   String get screenTimeTitle => 'स्क्रीन टाइम सक्षम करें';
@@ -192,6 +196,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get onboardingSelectAppsSkipForNow => 'अभी छोड़ें';
+
+  @override
+  String get onboardingSelectAppsPrivacyTitle => 'नियंत्रण आपके हाथ में है';
+
+  @override
+  String get onboardingSelectAppsPrivacyBody =>
+      'हम आपका डेटा कभी नहीं पढ़ते। केवल आपके चुने ऐप्स लॉक होते हैं।';
 
   @override
   String get onboardingSelectAppsMockAllApps => 'सभी ऐप्स और श्रेणियाँ';
@@ -464,6 +475,9 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get investTrialPill =>
       '✨ 7 दिन मुफ़्त — खत्म होने से पहले कभी भी रद्द करें';
+
+  @override
+  String get investNoCommitment => 'कोई बाध्यता नहीं। कभी भी रद्द करें।';
 
   @override
   String get investFeatureAiTitle => 'एआई इस्लामी सहायक';
@@ -979,6 +993,34 @@ class AppLocalizationsHi extends AppLocalizations {
       'सलाह के दौरान ध्यान भटकाने वाले ऐप्स ब्लॉक करें';
 
   @override
+  String get focusModeShortSalah => 'सलाह';
+
+  @override
+  String get focusModeShortNight => 'रात';
+
+  @override
+  String get focusModeShortChild => 'बच्चा';
+
+  @override
+  String get focusModeLabelSalah => 'सलाह मोड';
+
+  @override
+  String get focusModeLabelNight => 'रात मोड';
+
+  @override
+  String get focusModeLabelChild => 'चाइल्ड मोड';
+
+  @override
+  String homeFocusModeNamesTwo(String first, String second) {
+    return '$first और $second मोड चालू हैं';
+  }
+
+  @override
+  String homeFocusModeNamesThree(String first, String second, String third) {
+    return '$first, $second और $third मोड चालू हैं';
+  }
+
+  @override
   String get cycleModeTitle => 'साइकल मोड';
 
   @override
@@ -1007,7 +1049,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dailyChecklistSectionGoodDeeds => 'अच्छे काम';
 
   @override
-  String get dailyChecklistSectionDistraction => 'विकर्षण नियंत्रण';
+  String get dailyChecklistSectionDistraction => 'व्यक्तिगत अनुशासन';
 
   @override
   String get dailyChecklistFajr => 'फज्र';
@@ -1460,7 +1502,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get quranSearchHint => 'सुरा खोजें...';
 
   @override
-  String get quranSearchHintExtended => 'Search surah or meaning...';
+  String get quranSearchHintExtended => 'सूरह या अर्थ खोजें...';
 
   @override
   String get quranNoResults => 'No results found';
@@ -1504,13 +1546,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get quranSurahLabel => 'सूरा';
 
   @override
-  String get quranModeSurah => 'Surah';
+  String get quranModeSurah => 'सूरह';
 
   @override
-  String get quranModeJuz => 'Juz';
+  String get quranModeJuz => 'जुज़';
 
   @override
-  String get quranModePage => 'Page';
+  String get quranModePage => 'पृष्ठ';
 
   @override
   String get quranJuzLabel => 'Juz';
@@ -1519,7 +1561,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get quranPageLabel => 'Page';
 
   @override
-  String get quranContinueReading => 'Continue Reading';
+  String get quranContinueReading => 'पढ़ना जारी रखें';
 
   @override
   String get quranPreviousAyah => 'Previous ayah';
@@ -1559,11 +1601,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String quranJuzProgressLabel(int percent, int juz) {
-    return '$percent% of Juz $juz';
+    return 'जुज़ $juz का $percent%';
   }
 
   @override
-  String get quranBookmarksTitle => 'Bookmarks';
+  String get quranBookmarksTitle => 'बुकमार्क';
 
   @override
   String get quranBookmarksEmpty => 'No bookmarks yet';
@@ -1579,20 +1621,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String quranBookmarkCount(int count) {
-    return '$count saved';
+    return '$count सहेजे गए';
   }
 
   @override
-  String get quranQuickTajweed => 'Tajweed drill';
+  String get quranQuickTajweed => 'तजवीद अभ्यास';
 
   @override
-  String get quranQuickTajweedSub => 'Recite & score';
+  String get quranQuickTajweedSub => 'पढ़ें और स्कोर करें';
 
   @override
-  String get quranLastListened => 'Last listened';
+  String get quranLastListened => 'अंतिम सुना गया';
 
   @override
-  String get quranNoneYet => 'None yet';
+  String get quranNoneYet => 'अभी नहीं';
 
   @override
   String get quranOpenPage => 'Open page';
@@ -1673,7 +1715,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get quranRepeatSurah => 'Surah';
 
   @override
-  String get readingSettingsTitle => 'Reading Settings';
+  String get readingSettingsTitle => 'पठन सेटिंग्स';
 
   @override
   String get readingSettingsArabicFontSize => 'Arabic font size';
@@ -1798,7 +1840,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tajweedListenToAyah => 'Listen to ayah';
 
   @override
-  String get tajweedStartReciting => 'Start reciting';
+  String get tajweedStartReciting => 'पढ़ना शुरू करें';
 
   @override
   String get tajweedTapToStop => 'Tap to stop';
@@ -1810,47 +1852,47 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tajweedStopAnalyse => 'Stop & analyse';
 
   @override
-  String get tajweedWordAccuracyLabel => 'WORD ACCURACY';
+  String get tajweedWordAccuracyLabel => 'शब्द सटीकता';
 
   @override
-  String get tajweedWordReviewLabel => 'WORD REVIEW';
+  String get tajweedWordReviewLabel => 'शब्द समीक्षा';
 
   @override
   String get tajweedResultEncouragement =>
       'Beautiful effort — keep practicing your tajweed.';
 
   @override
-  String get quranReciteCheckTajweed => 'Recite & check tajweed';
+  String get quranReciteCheckTajweed => 'पढ़ें और तजवीद जाँचें';
 
   @override
-  String get quranTajweedLegendGhunnah => 'Ghunnah';
+  String get quranTajweedLegendGhunnah => 'ग़ुन्नह';
 
   @override
-  String get quranTajweedLegendGhunnahDesc => 'Nasal hold, 2 counts';
+  String get quranTajweedLegendGhunnahDesc => 'नासिकीय, 2 गिनती';
 
   @override
-  String get quranTajweedLegendQalqalah => 'Qalqalah';
+  String get quranTajweedLegendQalqalah => 'क़लक़लाह';
 
   @override
-  String get quranTajweedLegendQalqalahDesc => 'Echo bounce';
+  String get quranTajweedLegendQalqalahDesc => 'गूँज वाली टक्कर';
 
   @override
-  String get quranTajweedLegendMadd => 'Madd';
+  String get quranTajweedLegendMadd => 'मद्द';
 
   @override
-  String get quranTajweedLegendMaddDesc => 'Prolong the vowel';
+  String get quranTajweedLegendMaddDesc => 'स्वर लंबा करें';
 
   @override
-  String get quranTajweedLegendIdgham => 'Idgham';
+  String get quranTajweedLegendIdgham => 'इदग़ाम';
 
   @override
-  String get quranTajweedLegendIdghamDesc => 'Merge letters';
+  String get quranTajweedLegendIdghamDesc => 'अक्षर मिलाएँ';
 
   @override
-  String get quranTajweedLegendIkhfa => 'Ikhfa';
+  String get quranTajweedLegendIkhfa => 'इख़फ़ा';
 
   @override
-  String get quranTajweedLegendIkhfaDesc => 'Hide the noon';
+  String get quranTajweedLegendIkhfaDesc => 'नून छिपाएँ';
 
   @override
   String get save => 'बचाना';
@@ -2521,10 +2563,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get insightsDaysInARow => 'लगातार दिन';
 
   @override
-  String get insightsChipUpToday => '↑ +1';
+  String insightsChipUpToday(int count) {
+    return '↑ $count';
+  }
 
   @override
-  String get insightsChipDayUp => '↑ +1 today';
+  String get insightsChipDayUp => '↑ 1 today';
 
   @override
   String get insightsWeeklyCompletion => 'Weekly completion';
@@ -2561,7 +2605,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers. Alhamdulillah — keep going!';
+    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
   }
 
   @override
@@ -3242,6 +3286,107 @@ class AppLocalizationsHi extends AppLocalizations {
       'Current and next prayer on your Lock Screen and Dynamic Island.';
 
   @override
+  String get settingsAppDemoTajweedCardSubtitle =>
+      'Recite an ayah and get instant tajweed feedback.';
+
+  @override
+  String get featureDemoTajweedTitle => 'तजवीद';
+
+  @override
+  String get featureDemoTajweedIntroTitle =>
+      'तजवीद अभ्यास कैसे काम करता है देखें';
+
+  @override
+  String get featureDemoTajweedIntroSubtitle =>
+      'DeenFocus में रहें। तजवीद अभ्यास खोलें, आयत पढ़ें, और शब्द-दर-शब्द प्रतिक्रिया देखें।';
+
+  @override
+  String get featureDemoTajweedQuranCallout =>
+      'शुरू करने के लिए तजवीद अभ्यास पर टैप करें';
+
+  @override
+  String get featureDemoTajweedLegendCallout =>
+      'रंग हाइलाइट पढ़ते समय तजवीद नियम दिखाते हैं';
+
+  @override
+  String get featureDemoTajweedReciteCallout =>
+      'पढ़ें और तजवीद जाँचें पर टैप करें';
+
+  @override
+  String get featureDemoTajweedDownloadCallout =>
+      'ऑफ़लाइन अभ्यास के लिए एक बार डाउनलोड';
+
+  @override
+  String get featureDemoTajweedMicCallout =>
+      'माइक पर टैप करें और पढ़ना शुरू करें';
+
+  @override
+  String get featureDemoTajweedResultCallout =>
+      'देखें कौन से शब्द सही, छूटे या सुधार योग्य हैं';
+
+  @override
+  String get featureDemoTajweedCompletionTitle => 'तजवीद तैयार';
+
+  @override
+  String get featureDemoTajweedCompletionSubtitle =>
+      'कभी भी आत्मविश्वास से पढ़ें।';
+
+  @override
+  String get featureDemoTajweedCompletionBody =>
+      'किसी भी आयत का डिवाइस पर स्कोरिंग से अभ्यास करने के लिए क़ुरान → तजवीद अभ्यास खोलें — पहली डाउनलोड के बाद पूरी तरह ऑफ़लाइन।';
+
+  @override
+  String get featureDemoTajweedSurahName => 'अल-फ़ातिहा';
+
+  @override
+  String get featureDemoTajweedBaqarahName => 'अल-बक़रा';
+
+  @override
+  String get featureDemoTajweedSurahListSubtitle => '7 आयतें • मक्की';
+
+  @override
+  String get featureDemoTajweedBaqarahSubtitle => '286 आयतें • मदनी';
+
+  @override
+  String get featureDemoTajweedSurahHeaderSubtitle => 'अल-फ़ातिहा • 7 आयतें';
+
+  @override
+  String get featureDemoTajweedSurahMeta => 'सूरह 1 • मक्की';
+
+  @override
+  String get featureDemoTajweedAyahTranslation =>
+      'अल्लाह के नाम से, जो अत्यंत दयालु, विशेष रूप से कृपालु है।';
+
+  @override
+  String get featureDemoTajweedPracticeTitle => 'अल-फ़ातिहा · 1:1';
+
+  @override
+  String get featureDemoTajweedPreparingTitle => 'AI मॉडल तैयार हो रहा है';
+
+  @override
+  String get featureDemoTajweedPreparingBody =>
+      'एक बार का डाउनलोड ताकि तजवीद अभ्यास बाद में पूरी तरह ऑफ़लाइन चले। यह केवल एक बार होता है।';
+
+  @override
+  String get featureDemoTajweedResultEncouragement =>
+      'अभ्यास जारी रखें — संदर्भ सुनें और फिर कोशिश करें।';
+
+  @override
+  String get featureDemoTajweedStatCorrect => 'सही';
+
+  @override
+  String get featureDemoTajweedStatPronunciation => 'उच्चारण';
+
+  @override
+  String get featureDemoTajweedStatWrong => 'गलत शब्द';
+
+  @override
+  String get featureDemoTajweedStatMissed => 'छूटा';
+
+  @override
+  String get featureDemoTajweedStatExtra => 'अतिरिक्त';
+
+  @override
   String get featureDemoContinue => 'जारी रखें';
 
   @override
@@ -3831,4 +3976,288 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get libraryFiqhCommonGround => 'साझा आधार';
+
+  @override
+  String get insightsCompleted => 'पूर्ण';
+
+  @override
+  String get insightsInProgress => 'प्रगति पर';
+
+  @override
+  String get insightsKeepGoingTitle => 'लगे रहो!';
+
+  @override
+  String get insightsKeepGoingBody =>
+      'आप बहुत अच्छा प्रगति कर रहे हैं। हर नमाज़ मायने रखती है।';
+
+  @override
+  String get insightsAchievementsUnlockedLabel => 'अनलॉक उपलब्धियाँ';
+
+  @override
+  String insightsAchievementsCount(int unlocked, int total) {
+    return '$unlocked / $total';
+  }
+
+  @override
+  String get achievementDescFirstPrayer => 'आपने अपनी पहली नमाज़ पढ़ी।';
+
+  @override
+  String get achievementDescSevenPrayerStreak => 'लगातार 7 नमाज़ें पूरी करें।';
+
+  @override
+  String get achievementDescThirtyPrayerStreak =>
+      'लगातार 30 नमाज़ें पूरी करें।';
+
+  @override
+  String get achievementDescFajrWarrior => '14 दिनों तक फ़ज्र पढ़ें।';
+
+  @override
+  String get achievementDescFajrChampion => '30 दिनों तक फ़ज्र पढ़ें।';
+
+  @override
+  String get achievementDescFiveADay => 'एक दिन में पाँचों नमाज़ें पूरी करें।';
+
+  @override
+  String get achievementDescPerfectWeek =>
+      'लगातार 7 दिनों तक हर नमाज़ पूरी करें।';
+
+  @override
+  String get achievementDescPerfectMonth =>
+      'लगातार 30 दिनों तक हर नमाज़ पूरी करें।';
+
+  @override
+  String get achievementDescQuranReader => '7 दिनों तक कुरान पढ़ें।';
+
+  @override
+  String get achievementDescQuranDevotee => '30 दिनों तक कुरान पढ़ें।';
+
+  @override
+  String get achievementDescDhikrStarter => '7 दिनों तक ज़िक्र पूरा करें।';
+
+  @override
+  String get achievementDescDhikrMaster => '30 दिनों तक ज़िक्र पूरा करें।';
+
+  @override
+  String get achievementDescNightWorshipper => '7 दिनों तक तहज्जुद पढ़ें।';
+
+  @override
+  String get achievementDescMasjidCompanion => 'मस्जिद 7 बार जाएँ।';
+
+  @override
+  String get achievementDescDistractionDefender =>
+      '7 दिनों तक ध्यान भटकाने वाली चीज़ों से दूर रहें।';
+
+  @override
+  String get achievementDescCycleGuardian =>
+      '7 दिनों तक साइकिल मोड से अपनी स्ट्रीक सुरक्षित रखें।';
+
+  @override
+  String get achievementDescProtectedMonth =>
+      '30 दिनों तक साइकिल मोड से अपनी स्ट्रीक सुरक्षित रखें।';
+
+  @override
+  String get achievementDescConsistencyChampion => '100 दिनों तक नियमित रहें।';
+
+  @override
+  String get achievementDescSixMonthJourney => '180 दिनों तक जारी रखें।';
+
+  @override
+  String get achievementDescDeenFocusMaster =>
+      'DeenFocus Master (स्तर 15) तक पहुँचें।';
+
+  @override
+  String get dailyChecklistOptional => 'वैकल्पिक';
+
+  @override
+  String get dailyChecklistIstighfar => 'इस्तिग़फ़ार';
+
+  @override
+  String get dailyChecklistSalawat => 'सलावात / दुरूद';
+
+  @override
+  String get dailyChecklistControlAngerSpeakKindly =>
+      'गुस्सा नियंत्रित करें / नर्म बोलें';
+
+  @override
+  String get digitalBalanceTitle => 'डिजिटल संतुलन';
+
+  @override
+  String get digitalBalanceSubtitle => 'देखें आपका समय कहाँ जा रहा है';
+
+  @override
+  String get digitalBalanceViewCta => 'डिजिटल संतुलन देखें →';
+
+  @override
+  String get digitalBalanceTodayLabel => 'आज';
+
+  @override
+  String get digitalBalanceDeenFocus => 'DeenFocus';
+
+  @override
+  String get digitalBalanceOtherApps => 'अन्य ऐप्स';
+
+  @override
+  String get digitalBalanceTodayPhoneTime => 'आज का फ़ोन समय';
+
+  @override
+  String get digitalBalanceWhereTimeGoes => 'आपका समय कहाँ जाता है';
+
+  @override
+  String get digitalBalanceViewAllApps => 'सभी ऐप्स देखें';
+
+  @override
+  String get digitalBalanceAllAppsTitle => 'सभी ऐप्स';
+
+  @override
+  String get digitalBalanceNoApps => 'आज अभी कोई ऐप उपयोग दर्ज नहीं हुआ।';
+
+  @override
+  String get digitalBalanceDeenVsDigital => 'दीन बनाम डिजिटल समय';
+
+  @override
+  String get digitalBalanceYourWeek => 'आपका सप्ताह';
+
+  @override
+  String get digitalBalanceThisWeek => 'इस सप्ताह';
+
+  @override
+  String get digitalBalancePhoneUsageLegend => 'फ़ोन उपयोग';
+
+  @override
+  String get digitalBalanceDailyInsight => 'आज की बात';
+
+  @override
+  String get digitalBalanceInsightKeepGoing =>
+      'दीन मज़बूत करने वाला हर मिनट मायने रखता है।';
+
+  @override
+  String get digitalBalanceInsightWeekHigher =>
+      'इस सप्ताह आपका DeenFocus समय पिछले सप्ताह से अधिक है। माशाअल्लाह!';
+
+  @override
+  String get digitalBalanceInsightQuietDay =>
+      'अभी तक शांत दिन। DeenFocus समय यहाँ दिखेगा।';
+
+  @override
+  String get digitalBalanceGoalTitle => 'आपका दीन समय लक्ष्य';
+
+  @override
+  String get digitalBalanceAdjustGoal => 'लक्ष्य बदलें';
+
+  @override
+  String get digitalBalanceGoalReached =>
+      'आज का दीन समय लक्ष्य पूरा हुआ। माशाअल्लाह!';
+
+  @override
+  String get digitalBalanceGoalSheetTitle => 'रोज़ाना दीन समय';
+
+  @override
+  String get digitalBalanceGoalCustomHint => 'प्रति दिन मिनट';
+
+  @override
+  String get digitalBalanceGoalSave => 'सेव करें';
+
+  @override
+  String get digitalBalanceGoal15 => '15 min';
+
+  @override
+  String get digitalBalanceGoal30 => '30 min';
+
+  @override
+  String get digitalBalanceGoal45 => '45 min';
+
+  @override
+  String get digitalBalanceGoal60 => '1 घंटा';
+
+  @override
+  String get digitalBalancePermissionTitle => 'अपनी डिजिटल आदतें समझें';
+
+  @override
+  String get digitalBalancePermissionBody =>
+      'देखने के लिए कि आपका समय कहाँ जाता है और आप अपने दीन को कितना समय देते हैं, DeenFocus को ऐप उपयोग की अनुमति दें।';
+
+  @override
+  String get digitalBalanceEnableUsage => 'ऐप उपयोग सक्षम करें';
+
+  @override
+  String get digitalBalanceMaybeLater => 'बाद में';
+
+  @override
+  String get digitalBalanceUnavailableTitle => 'ऐप उपयोग यहाँ उपलब्ध नहीं है';
+
+  @override
+  String get digitalBalanceUnavailableBody =>
+      'Apple अन्य ऐप्स के साथ Screen Time साझा नहीं करता, इसलिए iPhone उपयोग अभी नहीं दिख सकता। आपकी नमाज़, स्ट्रीक और DeenFocus इनसाइट्स वैसे ही काम करती हैं।';
+
+  @override
+  String get digitalBalanceInfoTitle => 'डिजिटल संतुलन के बारे में';
+
+  @override
+  String get digitalBalanceInfoBody =>
+      'डिजिटल संतुलन बताता है आपका समय कहाँ जा रहा है और आप अपने दीन को कितना दे रहे हैं। उपयोग आपके डिवाइस पर रहता है।';
+
+  @override
+  String digitalBalanceDurationMinutes(int minutes) {
+    return '${minutes}m';
+  }
+
+  @override
+  String digitalBalanceDurationHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String digitalBalanceDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String digitalBalancePercentShort(int percent) {
+    return 'DeenFocus · फ़ोन समय का $percent%';
+  }
+
+  @override
+  String digitalBalancePercentOfPhoneTime(int percent) {
+    return 'DeenFocus = आपके फ़ोन समय का $percent%';
+  }
+
+  @override
+  String digitalBalancePercentToday(int percent) {
+    return 'आज के फ़ोन समय का $percent%';
+  }
+
+  @override
+  String digitalBalanceRingLabel(int percent) {
+    return '$percent%\nDeenFocus';
+  }
+
+  @override
+  String digitalBalanceWeekMoreDeen(int percent) {
+    return '↑ पिछले सप्ताह से $percent% अधिक DeenFocus समय';
+  }
+
+  @override
+  String digitalBalanceInsightTimeToday(String duration) {
+    return 'आज आपने DeenFocus में $duration बिताए। आदत बनाए रखें।';
+  }
+
+  @override
+  String digitalBalanceInsightIncreasedYesterday(int percent) {
+    return 'कल की तुलना में आपका DeenFocus समय $percent% बढ़ा।';
+  }
+
+  @override
+  String digitalBalanceGoalPerDay(String goal) {
+    return '$goal / दिन';
+  }
+
+  @override
+  String digitalBalanceGoalProgress(String current, String goal) {
+    return '$current / $goal';
+  }
+
+  @override
+  String digitalBalanceMinutesToGoal(int minutes) {
+    return 'आज के लक्ष्य तक $minutes मिनट बाकी';
+  }
 }

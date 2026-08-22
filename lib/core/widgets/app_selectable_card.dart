@@ -67,7 +67,7 @@ class AppSelectableCard extends StatelessWidget {
                   child: Text(
                     badge!,
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onPrimaryContainer,
                     ),
@@ -88,7 +88,7 @@ class AppSelectableCard extends StatelessWidget {
                 Text(
                   subtitle!,
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),

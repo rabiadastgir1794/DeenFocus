@@ -9,6 +9,7 @@ import ManagedSettings
 import CoreLocation
 import MapKit
 import UserNotifications
+import MediaPlayer
 
 /// Shared with `FocusDeviceActivityScheduler` / shield extension (no iOS 16 gate — used for theme prefs from any OS version).
 private enum FocusShieldThemeUserDefaults {
@@ -30,6 +31,8 @@ private enum ManagedSettingsStoreHolder {
   private let qiblaEventChannelName = "com.app.deenly.deenly/qibla_compass_events"
   private let widgetChannelName = "com.app.deenly.deenly/widgets"
   private let locationSearchChannelName = "com.app.deenly.deenly/location_search"
+  private let nowPlayingChannelName = "com.app.deenly.deenly/now_playing"
+  private let appUsageChannelName = "com.app.deenly.deenly/app_usage"
   // Prayer alarms use PrayerAlarmBridge (`com.app.deenly.deenly/prayer_alarm`).
   private let qiblaHeadingStreamHandler = QiblaHeadingStreamHandler()
   private let widgetAppGroup = "group.com.rnr.deenfocus"
@@ -63,6 +66,10 @@ private enum ManagedSettingsStoreHolder {
     #endif
     logPhase("1_GeneratedPluginRegistrant done", since: pluginsT0)
 
+    // Required for Lock Screen / Control Center Now Playing. audio_service
+    // registers MPRemoteCommandCenter targets; iOS still needs this flag.
+    application.beginReceivingRemoteControlEvents()
+
     // Use a dedicated registrar key for app channels (not a real plugin class).
     let channelsT0 = CFAbsoluteTimeGetCurrent()
     if let registrar = self.registrar(forPlugin: "DeenFocusAppChannels") {
@@ -85,6 +92,14 @@ private enum ManagedSettingsStoreHolder {
       )
       let locationSearchChannel = FlutterMethodChannel(
         name: locationSearchChannelName,
+        binaryMessenger: messenger
+      )
+      let nowPlayingChannel = FlutterMethodChannel(
+        name: nowPlayingChannelName,
+        binaryMessenger: messenger
+      )
+      let appUsageChannel = FlutterMethodChannel(
+        name: appUsageChannelName,
         binaryMessenger: messenger
       )
       let qiblaEventChannel = FlutterEventChannel(
@@ -148,6 +163,15 @@ private enum ManagedSettingsStoreHolder {
         }
       }
 
+      nowPlayingChannel.setMethodCallHandler { call, result in
+        switch call.method {
+        case "setArtwork":
+          self.setNowPlayingArtwork(call: call, result: result)
+        default:
+          result(FlutterMethodNotImplemented)
+        }
+      }
+
       locationSearchChannel.setMethodCallHandler { call, result in
         switch call.method {
         case "search":
@@ -168,6 +192,10 @@ private enum ManagedSettingsStoreHolder {
         default:
           result(FlutterMethodNotImplemented)
         }
+      }
+
+      appUsageChannel.setMethodCallHandler { call, result in
+        IosAppUsageBridge.handle(call: call, result: result)
       }
 
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
@@ -200,6 +228,22 @@ private enum ManagedSettingsStoreHolder {
   override func applicationDidBecomeActive(_ application: UIApplication) {
     super.applicationDidBecomeActive(application)
     PrayerLiveActivityBridge.refreshFromStorage()
+  }
+
+  private func setNowPlayingArtwork(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard let path = call.arguments as? String, !path.isEmpty else {
+      result(nil)
+      return
+    }
+    guard let image = UIImage(contentsOfFile: path) else {
+      result(nil)
+      return
+    }
+    let artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
+    var info = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
+    info[MPMediaItemPropertyArtwork] = artwork
+    MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+    result(nil)
   }
 
   override func applicationDidEnterBackground(_ application: UIApplication) {

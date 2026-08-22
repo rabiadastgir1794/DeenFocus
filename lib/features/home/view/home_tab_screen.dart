@@ -69,10 +69,7 @@ class HomeTabScreen extends StatelessWidget {
 }
 
 class _HomeTabView extends StatefulWidget {
-  const _HomeTabView({
-    required this.onOpenFocusTab,
-    required this.isTabActive,
-  });
+  const _HomeTabView({required this.onOpenFocusTab, required this.isTabActive});
 
   final VoidCallback onOpenFocusTab;
   final bool isTabActive;
@@ -534,7 +531,22 @@ class _HomeTabViewState extends State<_HomeTabView>
               isActive: widget.isTabActive,
             ),
             const SizedBox(height: 12),
-            _FocusModeCard(onTap: widget.onOpenFocusTab),
+            _FocusModeCard(
+              onTap: widget.onOpenFocusTab,
+              subtitle: focusVm.homeFocusModeCardSubtitle(l10n),
+              showLock: focusVm.isAnyModeEnabled,
+              isAppsLocked: focusVm.isAppsLocked,
+              isTemporarilyUnlocked: focusVm.isTemporarilyUnlocked,
+              onLockPressed: () {
+                if (focusVm.isTemporarilyUnlocked) {
+                  unawaited(focusVm.relockNowFromHome());
+                } else if (focusVm.isAppsLocked) {
+                  unawaited(focusVm.unlockFromHome());
+                } else {
+                  widget.onOpenFocusTab();
+                }
+              },
+            ),
             const SizedBox(height: 12),
             HomePrayerStreakSection(
               prayerStreak: vm.prayerStreak,
@@ -568,7 +580,8 @@ class _HomeTabViewState extends State<_HomeTabView>
             const SizedBox(height: 12),
             HomeDailyChecklistSection(
               backgroundColor: softCardColor,
-              completedItems: vm.dailyChecklistCompletedItems,
+              completedCount: vm.dailyChecklistCompletedCount,
+              totalCount: vm.dailyChecklistTotalCount,
               onOpen: () => unawaited(showDailyChecklistSheet(context)),
             ),
             const SizedBox(height: 10),
@@ -840,7 +853,6 @@ class _QuickActionItem extends StatelessWidget {
                 title,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  fontSize: 12,
                   height: 1.15,
                   color: colorScheme.onSurface,
                 ),
@@ -946,14 +958,35 @@ class _FocusLockCard extends StatelessWidget {
 
 /// Green Focus Mode CTA card — always visible below Today's Prayers.
 class _FocusModeCard extends StatelessWidget {
-  const _FocusModeCard({required this.onTap});
+  const _FocusModeCard({
+    required this.onTap,
+    required this.subtitle,
+    required this.showLock,
+    required this.isAppsLocked,
+    required this.isTemporarilyUnlocked,
+    required this.onLockPressed,
+  });
 
   final VoidCallback onTap;
+  final String subtitle;
+  final bool showLock;
+  final bool isAppsLocked;
+  final bool isTemporarilyUnlocked;
+  final VoidCallback onLockPressed;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final onPrimary = colorScheme.onPrimary;
+    final lockTooltip = isTemporarilyUnlocked
+        ? l10n.homeRelock
+        : isAppsLocked
+        ? l10n.homeUnlock
+        : l10n.focusModeActivated;
+    final lockIcon = isTemporarilyUnlocked
+        ? Icons.lock_open_rounded
+        : Icons.lock_rounded;
 
     return InkWell(
       onTap: onTap,
@@ -978,14 +1011,10 @@ class _FocusModeCard extends StatelessWidget {
               width: 46,
               height: 46,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.18),
+                color: onPrimary.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(
-                Icons.shield_outlined,
-                color: Colors.white,
-                size: 22,
-              ),
+              child: Icon(Icons.shield_outlined, color: onPrimary, size: 22),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -995,25 +1024,40 @@ class _FocusModeCard extends StatelessWidget {
                   Text(
                     l10n.homeFocusModeTitle,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.white,
+                      color: onPrimary,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.1,
                     ),
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    l10n.homeFocusModeSubtitle,
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.88),
+                      color: onPrimary.withValues(alpha: 0.88),
                       height: 1.25,
                     ),
                   ),
                 ],
               ),
             ),
+            if (showLock) ...[
+              IconButton(
+                tooltip: lockTooltip,
+                onPressed: onLockPressed,
+                visualDensity: VisualDensity.compact,
+                style: IconButton.styleFrom(
+                  foregroundColor: onPrimary,
+                  backgroundColor: onPrimary.withValues(alpha: 0.18),
+                ),
+                icon: Icon(lockIcon, size: 20),
+              ),
+              const SizedBox(width: 4),
+            ],
             Icon(
               Icons.arrow_forward_rounded,
-              color: Colors.white.withValues(alpha: 0.95),
+              color: onPrimary.withValues(alpha: 0.95),
               size: 22,
             ),
           ],
@@ -1077,7 +1121,6 @@ class _CycleModeToggleCard extends StatelessWidget {
                     l10n.cycleModeTitle,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-                      fontSize: 12.5,
                       height: 1.15,
                     ),
                   ),
@@ -1087,10 +1130,7 @@ class _CycleModeToggleCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.8,
-                      ),
-                      fontSize: 10,
+                      color: colorScheme.onSurfaceVariant,
                       height: 1.25,
                     ),
                   ),
@@ -1101,20 +1141,16 @@ class _CycleModeToggleCard extends StatelessWidget {
               onPressed: onEdit,
               style: TextButton.styleFrom(
                 foregroundColor: cycleModeColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
               ),
               child: Text(
                 l10n.cycleModeEditButton,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             Transform.scale(

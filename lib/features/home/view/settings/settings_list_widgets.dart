@@ -60,15 +60,15 @@ class SettingsCardButton extends StatelessWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -216,9 +216,9 @@ class SettingsSectionHeader extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: colorScheme.primary,
-              ),
+            fontWeight: FontWeight.w700,
+            color: colorScheme.primary,
+          ),
         ),
       ],
     );
@@ -256,8 +256,8 @@ class SettingsSwitchRow extends StatelessWidget {
                   child: Text(
                     label,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -274,6 +274,7 @@ class SettingsSwitchRow extends StatelessWidget {
 class SettingsSubtitleSwitchRow extends StatelessWidget {
   const SettingsSubtitleSwitchRow({
     super.key,
+    this.icon,
     required this.label,
     required this.subtitle,
     required this.value,
@@ -281,6 +282,7 @@ class SettingsSubtitleSwitchRow extends StatelessWidget {
     required this.onChanged,
   });
 
+  final IconData? icon;
   final String label;
   final String subtitle;
   final bool value;
@@ -297,6 +299,14 @@ class SettingsSubtitleSwitchRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 20,
+                color: enabled ? colorScheme.onSurfaceVariant : disabledColor,
+              ),
+              const SizedBox(width: 12),
+            ],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,18 +314,18 @@ class SettingsSubtitleSwitchRow extends StatelessWidget {
                   Text(
                     label,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: enabled ? null : disabledColor,
-                        ),
+                      fontWeight: FontWeight.w600,
+                      color: enabled ? null : disabledColor,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: enabled
-                              ? colorScheme.onSurfaceVariant
-                              : disabledColor,
-                        ),
+                      color: enabled
+                          ? colorScheme.onSurfaceVariant
+                          : disabledColor,
+                    ),
                   ),
                 ],
               ),

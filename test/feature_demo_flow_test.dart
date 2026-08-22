@@ -22,6 +22,57 @@ Widget _wrap(Widget child) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  group('FeatureDemoController tajweed', () {
+    test('quran → surah → download → practice → result → completion', () {
+      final c = FeatureDemoController(
+        kind: FeatureDemoKind.tajweed,
+        isCupertinoPlatform: true,
+      );
+      addTearDown(c.dispose);
+
+      c.startDemo();
+      expect(c.phase, FeatureDemoPhase.tajweedQuran);
+
+      c.tapTajweedDrill();
+      expect(c.phase, FeatureDemoPhase.tajweedSurahRecite);
+
+      c.tapTajweedRecite();
+      expect(c.phase, FeatureDemoPhase.tajweedDownload);
+
+      c.finishTajweedDownload();
+      expect(c.phase, FeatureDemoPhase.tajweedPractice);
+
+      c.tapTajweedMic();
+      expect(c.phase, FeatureDemoPhase.tajweedResult);
+
+      c.retryTajweedPractice();
+      expect(c.phase, FeatureDemoPhase.tajweedPractice);
+
+      c.tapTajweedMic();
+      c.finishTajweedDemo();
+      expect(c.phase, FeatureDemoPhase.completion);
+
+      c.openEnableOffer();
+      expect(c.phase, FeatureDemoPhase.completion);
+    });
+
+    test('goBack walks the tajweed stack to intro', () {
+      final c = FeatureDemoController(
+        kind: FeatureDemoKind.tajweed,
+        isCupertinoPlatform: false,
+      );
+      addTearDown(c.dispose);
+
+      c.startDemo();
+      c.tapTajweedDrill();
+      expect(c.phase, FeatureDemoPhase.tajweedSurahRecite);
+      c.goBack();
+      expect(c.phase, FeatureDemoPhase.tajweedQuran);
+      c.goBack();
+      expect(c.phase, FeatureDemoPhase.intro);
+    });
+  });
+
   group('FeatureDemoController widgets', () {
     test('long-press → gallery → place → completion', () {
       final c = FeatureDemoController(
@@ -102,6 +153,43 @@ void main() {
   });
 
   group('SettingsAppDemoScreen', () {
+    testWidgets('lists Tajweed before Widgets and Live Activity', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 1400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsAppDemoScreen()));
+      await tester.pumpAndSettle();
+
+      final tajweed = tester.getTopLeft(find.text('Tajweed'));
+      final widgets = tester.getTopLeft(find.text('Widgets'));
+      final live = tester.getTopLeft(find.text('Live Activity'));
+      expect(tajweed.dy, lessThan(widgets.dy));
+      expect(widgets.dy, lessThan(live.dy));
+    });
+
+    testWidgets('opens tajweed walkthrough intro', (tester) async {
+      tester.view.physicalSize = const Size(390, 1400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsAppDemoScreen()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Tajweed'));
+      await tester.pumpAndSettle();
+      expect(find.text('See how Tajweed practice works'), findsOneWidget);
+      expect(find.text('Official'), findsNothing);
+    });
+
     testWidgets('opens widgets walkthrough with long-press callout', (
       tester,
     ) async {

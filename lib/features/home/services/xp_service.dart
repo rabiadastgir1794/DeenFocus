@@ -65,6 +65,8 @@ abstract class XpService {
     DailyChecklistItem.morningAdhkar,
     DailyChecklistItem.eveningAdhkar,
     DailyChecklistItem.dhikr,
+    DailyChecklistItem.istighfar,
+    DailyChecklistItem.salawat,
   ];
 
   /// Merge newly computed events into [previous] by [XpEvent.sourceId].
@@ -182,7 +184,8 @@ abstract class XpService {
         );
       }
       if (checklist.contains(DailyChecklistItem.noMusicToday) ||
-          checklist.contains(DailyChecklistItem.noSocialMediaBeforeIsha)) {
+          checklist.contains(DailyChecklistItem.noSocialMediaBeforeIsha) ||
+          checklist.contains(DailyChecklistItem.controlAngerSpeakKindly)) {
         events.add(
           XpEvent(
             sourceId: 'protected_prayer:$key',

@@ -38,9 +38,7 @@ class FocusAppsPickerSheet extends StatelessWidget {
     final maxHeight = MediaQuery.sizeOf(context).height * 0.78;
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.viewInsetsOf(context).bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: Column(
@@ -101,7 +99,10 @@ class FocusAppsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    return Selector<FocusController, ({bool loading, List<FocusInstalledApp> apps})>(
+    return Selector<
+      FocusController,
+      ({bool loading, List<FocusInstalledApp> apps})
+    >(
       selector: (_, vm) => (loading: vm.isLoadingApps, apps: vm.installedApps),
       builder: (context, data, _) {
         if (data.loading) {
@@ -183,17 +184,27 @@ class _FocusGridAppTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selected = context.select<FocusController, bool>(
-      (vm) => vm.settings.selectedApps.containsKey(app.packageName),
-    );
+    final tileState = context
+        .select<FocusController, ({bool selected, bool locked})>((vm) {
+          final selected = vm.settings.selectedApps.containsKey(
+            app.packageName,
+          );
+          return (selected: selected, locked: selected && vm.isAppsLocked);
+        });
+    final selected = tileState.selected;
+    final locked = tileState.locked;
     final textStyle = Theme.of(
       context,
-    ).textTheme.bodySmall?.copyWith(fontSize: 10, fontWeight: FontWeight.w500);
-    final selectedColor = colorScheme.primary.withValues(alpha: 0.15);
+    ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500);
+    final selectedColor = locked
+        ? colorScheme.errorContainer.withValues(alpha: 0.32)
+        : colorScheme.primary.withValues(alpha: 0.15);
     final unselectedColor = colorScheme.surfaceContainerHighest.withValues(
       alpha: 0.5,
     );
-    final selectedBorderColor = colorScheme.primary.withValues(alpha: 0.3);
+    final selectedBorderColor = locked
+        ? colorScheme.error.withValues(alpha: 0.3)
+        : colorScheme.primary.withValues(alpha: 0.3);
     return InkWell(
       onTap: () => unawaited(onTap(app)),
       borderRadius: BorderRadius.circular(14),
@@ -214,6 +225,7 @@ class _FocusGridAppTile extends StatelessWidget {
               iconBytes: app.iconBytes,
               size: 28,
               radius: 10,
+              isLocked: locked,
             ),
             const SizedBox(height: 6),
             Text(

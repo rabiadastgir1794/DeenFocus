@@ -80,9 +80,7 @@ class HomePrayerTimesSection extends StatelessWidget {
                   l10n.homeTodaysPrayers,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: kAppFontFamily,
-                    fontSize: 15,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     height: 1.2,
                     color: colorScheme.onSurface,
@@ -113,13 +111,12 @@ class HomePrayerTimesSection extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.end,
-                          style: TextStyle(
-                    fontFamily: kAppFontFamily,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            height: 1.2,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w500,
+                                height: 1.2,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                         ),
                       ),
                     ],
@@ -132,9 +129,7 @@ class HomePrayerTimesSection extends StatelessWidget {
           if (prayerTimes == null)
             Text(
               l10n.homePrayerTimesUnavailable,
-              style: TextStyle(
-                    fontFamily: kAppFontFamily,
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             )
@@ -170,10 +165,7 @@ class HomePrayerTimesSection extends StatelessWidget {
             ),
           const SizedBox(height: 12),
           if (prayerTimes != null)
-            _NextPrayerCountdown(
-              prayerTimes: prayerTimes,
-              isActive: isActive,
-            ),
+            _NextPrayerCountdown(prayerTimes: prayerTimes, isActive: isActive),
           if (prayerTimes != null) ...[
             const SizedBox(height: 6),
             SizedBox(
@@ -181,12 +173,9 @@ class HomePrayerTimesSection extends StatelessWidget {
               child: Text(
                 l10n.homeTapPrayerToMark,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: kAppFontFamily,
-                  fontSize: 11,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   height: 1.3,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -256,11 +245,8 @@ class _NextPrayerCountdownState extends State<_NextPrayerCountdown> {
       children: [
         Text(
           l10n.homeNextPrayerIn,
-          style: TextStyle(
-                    fontFamily: kAppFontFamily,
-            fontSize: 13,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
             height: 1.2,
-            fontWeight: FontWeight.w500,
             color: colorScheme.onSurfaceVariant,
           ),
         ),
@@ -268,7 +254,7 @@ class _NextPrayerCountdownState extends State<_NextPrayerCountdown> {
         Text(
           _formatRemaining(l10n, remaining),
           style: TextStyle(
-                    fontFamily: kAppFontFamily,
+            fontFamily: kAppFontFamily,
             fontSize: 16,
             fontWeight: FontWeight.w700,
             height: 1.15,
@@ -361,12 +347,14 @@ class HomePrayerTile extends StatelessWidget {
       border = null;
       boxShadow = null;
     } else if (isPast && status == PrayerMarkStatus.qada) {
-      background = (isDark
-              ? AppColors.prayerQadaContainerDark
-              : AppColors.prayerQadaContainerLight)
-          .withValues(alpha: 0.85);
-      titleColor =
-          isDark ? AppColors.prayerQadaOnDark : AppColors.prayerQadaOnLight;
+      background =
+          (isDark
+                  ? AppColors.prayerQadaContainerDark
+                  : AppColors.prayerQadaContainerLight)
+              .withValues(alpha: 0.85);
+      titleColor = isDark
+          ? AppColors.prayerQadaOnDark
+          : AppColors.prayerQadaOnLight;
       timeColor = titleColor;
       border = null;
       boxShadow = null;
@@ -448,24 +436,23 @@ class HomePrayerTile extends StatelessWidget {
                         Text(
                           _labelForPrayer(l10n, slot.id),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                    fontFamily: kAppFontFamily,
-                            fontSize: 10,
-                            fontWeight: isCurrent
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            height: 1.2,
-                            color: titleColor.withValues(
-                              alpha: isCurrent ? 0.92 : 0.8,
-                            ),
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                fontWeight: isCurrent
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                                height: 1.2,
+                                color: titleColor.withValues(
+                                  alpha: isCurrent ? 0.92 : 0.88,
+                                ),
+                              ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           DateFormat.jm(l10n.localeName).format(slot.time),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                    fontFamily: kAppFontFamily,
+                            fontFamily: kAppFontFamily,
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             height: 1.15,

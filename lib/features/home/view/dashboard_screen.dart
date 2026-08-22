@@ -40,7 +40,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    CycleModeEntryIntent.pendingOpenSettings.addListener(_onCycleModeOpenRequested);
+    CycleModeEntryIntent.pendingOpenSettings.addListener(
+      _onCycleModeOpenRequested,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_maybePresentPostOnboardingPaywall());
       _onCycleModeOpenRequested();
@@ -49,8 +51,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
-    CycleModeEntryIntent.pendingOpenSettings
-        .removeListener(_onCycleModeOpenRequested);
+    CycleModeEntryIntent.pendingOpenSettings.removeListener(
+      _onCycleModeOpenRequested,
+    );
     super.dispose();
   }
 
@@ -112,8 +115,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     const selectedNavColor = AppColors.primary;
     // Solid nav background so scroll content never shows through.
-    final backgroundColor =
-        isDark ? AppColors.surfaceDark : AppColors.surfaceLight;
+    final backgroundColor = isDark
+        ? AppColors.surfaceDark
+        : AppColors.surfaceLight;
     final pages = List<Widget>.generate(_tabs.length, _buildTabPage);
 
     return Scaffold(
@@ -137,16 +141,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     : colorScheme.onSurfaceVariant,
               );
             }),
-            labelTextStyle:
-                WidgetStateProperty.resolveWith<TextStyle?>((states) {
+            labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((
+              states,
+            ) {
               final isSelected = states.contains(WidgetState.selected);
-              return TextStyle(
-                fontSize: 10,
-                height: 1,
+              return Theme.of(context).textTheme.labelSmall?.copyWith(
+                height: 1.15,
                 color: isSelected
                     ? selectedNavColor
                     : colorScheme.onSurfaceVariant,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
               );
             }),
           ),

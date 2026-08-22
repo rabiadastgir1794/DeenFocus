@@ -61,7 +61,10 @@ abstract final class NightlyWrapUpPlanner {
   }
 
   static bool isChecklistIncomplete(Set<DailyChecklistItem> completed) {
-    return completed.length < DailyChecklistItem.values.length;
+    for (final item in DailyChecklistItemX.storedHabits) {
+      if (!completed.contains(item)) return true;
+    }
+    return false;
   }
 
   static NightlyWrapUpContentKind? contentKind({

@@ -84,8 +84,8 @@ abstract final class StartupProbe {
       );
       prev = t;
     }
-    final first = _marks['6_first Flutter frame'];
-    final runApp = _marks['5_runApp'];
+    final first = _marks['5_first Flutter frame'];
+    final runApp = _marks['4_runApp'];
     if (first != null && runApp != null) {
       buf.writeln(
         '[STARTUP]   gap runApp → first frame: ${first - runApp}ms',

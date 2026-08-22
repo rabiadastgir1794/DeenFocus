@@ -94,15 +94,20 @@ class OnboardingSectPage extends StatelessWidget {
               duration: const Duration(milliseconds: 180),
               padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
               decoration: BoxDecoration(
-                color: isSelected ? colorScheme.primary : colorScheme.surface,
+                color: isSelected
+                    ? colorScheme.primaryContainer
+                    : colorScheme.surface,
                 borderRadius: BorderRadius.circular(16.r),
-                border: isSelected
-                    ? null
-                    : Border.all(color: colorScheme.outlineVariant, width: 1),
+                border: Border.all(
+                  color: isSelected
+                      ? colorScheme.primary.withValues(alpha: 0.35)
+                      : colorScheme.outlineVariant,
+                  width: 1,
+                ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: colorScheme.scrim.withValues(alpha: 0.08),
+                          color: colorScheme.scrim.withValues(alpha: 0.06),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
@@ -116,7 +121,7 @@ class OnboardingSectPage extends StatelessWidget {
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: isSelected
-                      ? colorScheme.onPrimary
+                      ? colorScheme.onPrimaryContainer
                       : colorScheme.onSurface,
                 ),
               ),

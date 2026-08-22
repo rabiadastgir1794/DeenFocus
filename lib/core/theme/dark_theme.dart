@@ -3,16 +3,11 @@ import 'package:flutter/services.dart';
 
 import '../logger/startup_probe.dart';
 import 'app_colors.dart';
-import 'light_theme.dart' show kAppFontFamily;
-
-TextTheme _plusJakartaTextTheme(TextTheme base) =>
-    base.apply(fontFamily: kAppFontFamily);
+import 'app_text_theme.dart';
 
 ThemeData get darkTheme {
   StartupProbe.detail('darkTheme getter enter');
-  return darkThemeWithText(
-    _plusJakartaTextTheme(Typography.material2021().white),
-  );
+  return darkThemeWithText(buildAppTextTheme(Brightness.dark));
 }
 
 ThemeData darkThemeWithText(TextTheme textTheme) {
@@ -101,6 +96,25 @@ ThemeData darkThemeWithText(TextTheme textTheme) {
       color: AppColors.cardBackgroundDark,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        final selected = states.contains(WidgetState.selected);
+        return textTheme.labelSmall?.copyWith(
+          height: 1.15,
+          fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+        );
+      }),
+    ),
+    listTileTheme: ListTileThemeData(
+      titleTextStyle: textTheme.titleSmall,
+      subtitleTextStyle: textTheme.bodySmall,
+    ),
+    dialogTheme: DialogThemeData(
+      titleTextStyle: textTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+      contentTextStyle: textTheme.bodyMedium,
     ),
   );
 }

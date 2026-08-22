@@ -41,3 +41,19 @@ transcripts and pronunciation scores, silently.
 caption is planned in the iOS integration plan.
 **Remaining risk:** No runtime guard exists against non-Hafs input yet —
 relies entirely on UX copy.
+
+## RISK-004 — iOS cannot export Screen Time totals into Digital Balance
+**Area:** Digital Balance / `IosAppUsageBridge`
+**Severity:** Medium (product)
+**Status:** Open
+**Description:** Family Controls authorization works, but the iPhoneOS 26.2
+SDK has no host-app API for per-app durations. `DeviceActivityReport` is
+sandboxed. `FamilyActivityData` / `approvedWithDataAccess` are iOS 26.4+
+and EU-only for customer installs. Adding
+`com.apple.developer.family-controls.app-and-website-usage` now would be
+an invalid entitlement on this SDK/profile.
+**Mitigation in place:** iOS returns `unsupported` (no fake numbers). Android
+UsageStats is unchanged.
+**Remaining risk:** Digital Balance on iPhone stays empty until Apple ships
+a usable data-access API in a later SDK *and* (for App Store) the user is
+in the EU, or Apple expands region support.

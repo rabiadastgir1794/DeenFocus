@@ -13,6 +13,7 @@ import 'app/routes/app_router.dart';
 import 'core/constants/app_languages.dart';
 import 'core/logger/app_logging.dart';
 import 'core/logger/logger_service.dart';
+import 'core/logger/startup_handoff.dart';
 import 'core/logger/startup_probe.dart';
 import 'core/logger/trace_helpers.dart';
 import 'core/services/app_notification_service.dart';
@@ -66,18 +67,24 @@ Future<void> main() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       StartupProbe.mark('5_first Flutter frame');
       StartupProbe.dumpSummary();
-      // Superwall + translation packs start after first paint so they cannot
-      // starve the splash isolate / compete with first-frame raster.
-      unawaited(
-        TraceHelpers.traceAsync(
-          'STARTUP',
-          'AppSuperwall.configure (background)',
-          AppSuperwall.configure,
-          logSuccess: true,
-        ),
-      );
-      unawaited(_initializeServices());
     });
+
+    // Superwall / alarms / translations wait until Home (or onboarding)
+    // has painted. Starting them at context.go() starved HomeRouteGate.
+    unawaited(
+      StartupHandoff.firstDestinationFrame.then((_) {
+        StartupProbe.detail('_initializeServices: after first destination frame');
+        unawaited(
+          TraceHelpers.traceAsync(
+            'STARTUP',
+            'AppSuperwall.configure (after destination frame)',
+            AppSuperwall.configure,
+            logSuccess: true,
+          ),
+        );
+        unawaited(_initializeServices());
+      }),
+    );
   }, AppLogging.recordZoneError);
 }
 
@@ -147,19 +154,16 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
     AppSuperwall.subscriptionActiveNotifier.addListener(
       _handleSubscriptionChanged,
     );
-    // [DashboardScreen] lazy-builds non-selected tabs as [SizedBox.shrink], so
-    // [FocusTabScreen] (and its post-frame [FocusController.initialize]) never
-    // runs until the user opens Focus. Home reads the same controller for the
-    // lock/unlock card — warm it once after first frame so UI matches storage
-    // without blocking the initial build (heavy work stays async in the controller).
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      StartupProbe.detail(
-        '_AppLifecycleObserver post-frame FocusController.initialize',
-      );
-      if (!mounted) return;
-      unawaited(context.read<FocusController>().initialize());
-      unawaited(_syncSubscriptionAndDisableFocusModesIfNeeded());
-    });
+    unawaited(
+      StartupHandoff.firstDestinationFrame.then((_) {
+        if (!mounted) return;
+        StartupProbe.detail(
+          '_AppLifecycleObserver: FocusController.initialize after Home',
+        );
+        unawaited(context.read<FocusController>().initialize());
+        unawaited(_syncSubscriptionAndDisableFocusModesIfNeeded());
+      }),
+    );
     StartupProbe.mark('_AppLifecycleObserver.initState end');
   }
 
@@ -251,6 +255,7 @@ class _DeenlyMaterialApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+        StartupProbe.markOnce('ScreenUtilInit.builder');
         final locale = context.select<LocaleService, Locale?>(
           (service) => service.locale,
         );
@@ -258,12 +263,25 @@ class _DeenlyMaterialApp extends StatelessWidget {
         final themeMode = context.select<ThemeService, ThemeMode>(
           (service) => service.themeMode,
         );
+        final platformDark =
+            MediaQuery.maybePlatformBrightnessOf(context) == Brightness.dark;
+        final useDark = switch (themeMode) {
+          ThemeMode.dark => true,
+          ThemeMode.light => false,
+          ThemeMode.system => platformDark,
+        };
+        // Building both Material 3 ThemeData objects on the first inflate
+        // was ~half of the DeenlyApp.build → SplashScreen gap. The other
+        // brightness is warmed after the first frame.
+        final theme = useDark ? AppTheme.dark : AppTheme.light;
+        StartupProbe.markOnce('MaterialApp.router themes ready');
+        AppTheme.warmUnusedAfterFirstFrame(useDark: useDark);
 
         return MaterialApp.router(
           title: 'Deenly',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
+          theme: theme,
+          darkTheme: theme,
           themeMode: themeMode,
           locale: locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

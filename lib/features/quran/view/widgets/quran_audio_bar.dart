@@ -189,7 +189,7 @@ class _AudioBarCard extends StatelessWidget {
                         Text(
                           '${speed}x · ${l10n.quranPlaybackSpeed}',
                           style: TextStyle(
-                            fontSize: 11.sp,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w500,
                             color: palette.textSecondary,
                           ),
@@ -218,7 +218,7 @@ class _AudioBarCard extends StatelessWidget {
                   Text(
                     formatTime(position),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: palette.textPrimary,
                     ),
@@ -247,7 +247,7 @@ class _AudioBarCard extends StatelessWidget {
                   Text(
                     formatTime(duration),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                       color: palette.textSecondary,
                     ),
                   ),
@@ -269,7 +269,7 @@ class _AudioBarCard extends StatelessWidget {
                           ? l10n.quranRepeatAyah
                           : l10n.quranRepeatSurah,
                       style: TextStyle(
-                        fontSize: 11.sp,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: palette.primary,
                       ),

@@ -726,11 +726,11 @@ class _AppsListHero extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final apps = <(String, bool)>[
-      (l10n.screenTimeAppInstagram, true),
-      (l10n.screenTimeAppTikTok, true),
-      (l10n.screenTimeAppYouTube, true),
-      (l10n.screenTimeAppGames, allSelected),
+    final apps = <(_AppPreviewKind, String, bool)>[
+      (_AppPreviewKind.instagram, l10n.screenTimeAppInstagram, true),
+      (_AppPreviewKind.tiktok, l10n.screenTimeAppTikTok, true),
+      (_AppPreviewKind.youtube, l10n.screenTimeAppYouTube, true),
+      (_AppPreviewKind.games, l10n.screenTimeAppGames, allSelected),
     ];
 
     return Container(
@@ -761,8 +761,9 @@ class _AppsListHero extends StatelessWidget {
                 color: colorScheme.outlineVariant.withValues(alpha: 0.4),
               ),
             _AppRow(
-              name: apps[i].$1,
-              selected: apps[i].$2,
+              kind: apps[i].$1,
+              name: apps[i].$2,
+              selected: apps[i].$3,
               asChip: chipRows,
             ),
           ],
@@ -772,13 +773,17 @@ class _AppsListHero extends StatelessWidget {
   }
 }
 
+enum _AppPreviewKind { instagram, tiktok, youtube, games }
+
 class _AppRow extends StatelessWidget {
   const _AppRow({
+    required this.kind,
     required this.name,
     required this.selected,
     required this.asChip,
   });
 
+  final _AppPreviewKind kind;
   final String name;
   final bool selected;
   final bool asChip;
@@ -789,14 +794,7 @@ class _AppRow extends StatelessWidget {
 
     final row = Row(
       children: [
-        Container(
-          width: 26.r,
-          height: 26.r,
-          decoration: BoxDecoration(
-            color: colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(7.r),
-          ),
-        ),
+        _AppPreviewIcon(kind: kind, size: 26.r),
         SizedBox(width: 10.w),
         Expanded(
           child: Text(
@@ -839,6 +837,123 @@ class _AppRow extends StatelessWidget {
       ),
       child: row,
     );
+  }
+}
+
+class _AppPreviewIcon extends StatelessWidget {
+  const _AppPreviewIcon({required this.kind, required this.size});
+
+  final _AppPreviewKind kind;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final radius = BorderRadius.circular(7.r);
+
+    switch (kind) {
+      case _AppPreviewKind.instagram:
+        return Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            gradient: const LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              colors: [
+                Color(0xFFF58529),
+                Color(0xFFDD2A7B),
+                Color(0xFF8134AF),
+              ],
+            ),
+          ),
+          child: Icon(
+            Icons.camera_alt_outlined,
+            size: size * 0.55,
+            color: Colors.white,
+          ),
+        );
+      case _AppPreviewKind.tiktok:
+        return Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: const Color(0xFF010101),
+            borderRadius: radius,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Transform.translate(
+                offset: Offset(size * 0.08, 0),
+                child: Icon(
+                  Icons.music_note_rounded,
+                  size: size * 0.62,
+                  color: const Color(0xFF25F4EE),
+                ),
+              ),
+              Transform.translate(
+                offset: Offset(-size * 0.08, 0),
+                child: Icon(
+                  Icons.music_note_rounded,
+                  size: size * 0.62,
+                  color: const Color(0xFFFE2C55),
+                ),
+              ),
+              Icon(
+                Icons.music_note_rounded,
+                size: size * 0.58,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        );
+      case _AppPreviewKind.youtube:
+        return Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: radius,
+            border: Border.all(
+              color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+            ),
+          ),
+          child: Center(
+            child: Container(
+              width: size * 0.72,
+              height: size * 0.5,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFF0000),
+                borderRadius: BorderRadius.circular(5.r),
+              ),
+              child: Icon(
+                Icons.play_arrow_rounded,
+                size: size * 0.46,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      case _AppPreviewKind.games:
+        return Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: radius,
+            border: Border.all(
+              color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+            ),
+          ),
+          child: Icon(
+            Icons.sports_esports_rounded,
+            size: size * 0.62,
+            color: colorScheme.primary,
+          ),
+        );
+    }
   }
 }
 

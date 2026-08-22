@@ -13,6 +13,8 @@ non-obvious reason.
 | `go_router` | Declarative navigation |
 | `hive` / `hive_flutter` | Local storage for seeded Quran data + app state |
 | `just_audio` | Quran recitation playback (remote MP3 CDN) |
+| `audio_session` | AVAudioSession / Android audio focus for background recitation |
+| `audio_service` | Lock Screen / Control Center / notification media controls |
 | `media_kit*` | Video playback (About DeenFocus screen only — not Quran) |
 | `permission_handler` | Location + notification permissions today; will
 | | need mic permission wiring for the tajweed feature (not yet configured — see `memory/features/tajweed/coreml-ios-integration-plan.md` Phase C) |

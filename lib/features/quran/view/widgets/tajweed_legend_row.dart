@@ -84,7 +84,7 @@ class _LegendChip extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
             ),
@@ -93,7 +93,7 @@ class _LegendChip extends StatelessWidget {
           Text(
             subtitle,
             style: TextStyle(
-              fontSize: 11.sp,
+              fontSize: 12.sp,
               color: colorScheme.onSurfaceVariant,
             ),
           ),
