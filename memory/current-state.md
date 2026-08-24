@@ -1,6 +1,60 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-22 — Android startup: audio_service engine + deferred Quran audio.
+> Last updated: 2026-08-24 — Home Live Prayer Updates promo card.
+
+## Status: AI Tajweed default off (2026-08-24)
+`StorageService.tajweedEnabled` defaults to **false** (paid feature). Reading
+Settings toggle initial state matches. Existing user prefs are unchanged.
+
+## Status: Focus score + checklist Optional label (2026-08-24)
+Today's Focus Score is checklist completion % (prayers + habits) — 100 only
+when everything is done. Category breakdown (Prayer/Quran/Dhikr/Distraction)
+unchanged. Cycle Mode still treats prayers as complete for the score.
+Removed the "Optional" label from Daily Checklist rows.
+
+## Status: Home Live Activity promo (2026-08-24)
+Home shows a **Live Prayer Updates** card under Today's Prayers until Live
+Activity is enabled (or the user dismisses via X). Tap opens App Demo →
+Live Activity walkthrough (`SettingsAppDemoScreen` with
+`initialFeatureKind: liveActivity`). Unset Live Activity preference no
+longer auto-enables on first resolve — stays off until the user opts in.
+App Demo Lock Screen step uses a dark card that mirrors the real iOS
+Live Activity (NOW badge, time, location, progress curve, next prayer,
+DEEN FOCUS). Promo phone mockup uses a soft green abstract lock-screen
+wallpaper (forest/sage blobs), Dynamic Island, charcoal Live Activity
+card with sage border and mint accents for next prayer time + brand.
+
+## Status: Premium Tajweed + translations (2026-08-24)
+AI Tajweed Practice (Reading Settings toggle + practice entry) and non-English
+Quran translation packs are gated via `PremiumGate` / Superwall paywall.
+English translation (`en`) stays free. Subscribed users skip the verifying
+loader: disk/session cache checked first; warm taps skip the overlay when
+Superwall is already configured. Non-subscribers dismiss the loader before
+`registerPlacement` (no 1s minimum hold) so the paywall shows ASAP.
+`PremiumGate.presentIfNeeded` also re-hydrates `loadCachedState` on each gate.
+
+## Status: Prayer Alarms settings sync (2026-08-24)
+Prayer Alarms settings page no longer shows Snooze Duration (snooze still
+used by the full-screen alarm UI via StorageService defaults). Soft
+notification and native alarm flags are independent again in
+`PrayerSettingsService` (shared Home ↔ Settings source of truth). Alarm
+toggles show OFF unless master + permission allow scheduling
+(`PrayerAlarmEnablement`). Enabling an alarm from Home or Settings runs
+the same permission gate and turns on the master schedule flag; denial
+keeps the toggle OFF with the existing permission dialog. Sound /
+notification / alarm prefs stay on one JSON blob — no second settings
+system.
+
+## Status: Donation purchases (2026-08-24)
+Support DeenFocus one-time amounts buy Superwall store consumables
+(`com.deenfocus.donation.{10,25,50,100,250}`) through Superwall's direct
+purchase API. Android: `android/app/build.gradle.kts` merges repo-root
+`dart_defines.json` into Flutter `dart-defines` so
+`SUPERWALL_API_KEY_ANDROID` reaches `String.fromEnvironment` even when the
+Flutter CLI only passes FLUTTER_* defines (Android Studio / bare
+`flutter build apk`). iOS still uses `tool/apply_dart_defines.sh`. Donations
+wait for `AppSuperwall.configure` and log keyPresent/keyLength/define name
+only. Existing monthly/yearly Superwall subscription placements are unchanged.
 
 ## Status: Android startup (2026-08-22)
 Second FlutterEngine / `audio_service` Activity error is fixed

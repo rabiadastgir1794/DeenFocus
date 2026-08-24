@@ -5,10 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/superwall/app_superwall.dart';
+import '../../../core/superwall/premium_gate.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 
 /// Pick, download, and switch Quran translation packs.
+///
+/// English (`en`) is free. Other languages require an active subscription.
 class ReadingTranslationScreen extends StatefulWidget {
   const ReadingTranslationScreen({super.key});
 
@@ -114,51 +118,71 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
     return _TranslationRowStatus.download;
   }
 
-  Future<void> _selectInstalled(QuranTranslationOption option) async {
-    await QuranTranslationService.selectLanguage(option.languageCode);
+  Future<void> _withPremiumIfNeeded(
+    QuranTranslationOption option,
+    Future<void> Function() action,
+  ) async {
+    if (!QuranTranslationService.requiresPremium(option.languageCode)) {
+      await action();
+      return;
+    }
     if (!mounted) return;
-    setState(() => _selectedTranslation = option.languageCode);
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      debugContext: 'quran_translation:${option.languageCode}',
+      onAccess: () => unawaited(action()),
+    );
+  }
+
+  Future<void> _selectInstalled(QuranTranslationOption option) async {
+    await _withPremiumIfNeeded(option, () async {
+      await QuranTranslationService.selectLanguage(option.languageCode);
+      if (!mounted) return;
+      setState(() => _selectedTranslation = option.languageCode);
+    });
   }
 
   Future<void> _downloadAndSelect(QuranTranslationOption option) async {
-    if (_downloadingLanguage != null) return;
-    setState(() {
-      _downloadingLanguage = option.languageCode;
-      _downloadProgress = 0;
-    });
-    await _downloadProgressSub?.cancel();
-    _downloadProgressSub = QuranTranslationService.downloadProgress().listen((
-      p,
-    ) {
-      if (!mounted) return;
-      setState(() => _downloadProgress = p);
-    });
-    try {
-      await QuranTranslationService.ensureTranslation(option.languageCode);
-      await QuranTranslationService.selectLanguage(option.languageCode);
-      if (!mounted) return;
+    await _withPremiumIfNeeded(option, () async {
+      if (_downloadingLanguage != null) return;
       setState(() {
-        _selectedTranslation = option.languageCode;
-        _downloadingLanguage = null;
+        _downloadingLanguage = option.languageCode;
+        _downloadProgress = 0;
       });
-      await _refresh();
-    } on QuranTranslationException {
-      if (!mounted) return;
-      setState(() => _downloadingLanguage = null);
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        SnackBar(
-          content: Text(
-            'Could not download ${_labelFor(option)}. Try again when online.',
-          ),
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _downloadingLanguage = null);
-    } finally {
       await _downloadProgressSub?.cancel();
-      _downloadProgressSub = null;
-    }
+      _downloadProgressSub = QuranTranslationService.downloadProgress().listen((
+        p,
+      ) {
+        if (!mounted) return;
+        setState(() => _downloadProgress = p);
+      });
+      try {
+        await QuranTranslationService.ensureTranslation(option.languageCode);
+        await QuranTranslationService.selectLanguage(option.languageCode);
+        if (!mounted) return;
+        setState(() {
+          _selectedTranslation = option.languageCode;
+          _downloadingLanguage = null;
+        });
+        await _refresh();
+      } on QuranTranslationException {
+        if (!mounted) return;
+        setState(() => _downloadingLanguage = null);
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(
+            content: Text(
+              'Could not download ${_labelFor(option)}. Try again when online.',
+            ),
+          ),
+        );
+      } catch (_) {
+        if (!mounted) return;
+        setState(() => _downloadingLanguage = null);
+      } finally {
+        await _downloadProgressSub?.cancel();
+        _downloadProgressSub = null;
+      }
+    });
   }
 
   @override
@@ -170,51 +194,71 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
       appBar: CustomAppBar(title: l10n.readingSettingsTranslationSection),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
-              children: [
-                if (_installedOptions.isNotEmpty) ...[
-                  _TranslationSectionHeader(
-                    label: l10n.readingSettingsInstalledTranslations,
-                  ),
-                  _SettingsGroup(
-                    children: _rowsFor(_installedOptions, l10n),
-                  ),
-                  SizedBox(height: 16.h),
-                ],
-                if (_availableOptions.isNotEmpty) ...[
-                  _TranslationSectionHeader(
-                    label: l10n.readingSettingsAvailableTranslations,
-                  ),
-                  _SettingsGroup(
-                    children: _rowsFor(_availableOptions, l10n),
-                  ),
-                ],
-                if (_installedOptions.isEmpty && _availableOptions.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 48.h),
-                      child: Text(
-                        l10n.readingSettingsTranslationDownloading,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          : ValueListenableBuilder<bool>(
+              valueListenable: AppSuperwall.subscriptionActiveNotifier,
+              builder: (context, isSubscribed, _) {
+                return ListView(
+                  padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
+                  children: [
+                    if (_installedOptions.isNotEmpty) ...[
+                      _TranslationSectionHeader(
+                        label: l10n.readingSettingsInstalledTranslations,
+                      ),
+                      _SettingsGroup(
+                        children: _rowsFor(
+                          _installedOptions,
+                          l10n,
+                          isSubscribed: isSubscribed,
                         ),
                       ),
-                    ),
-                  ),
-              ],
+                      SizedBox(height: 16.h),
+                    ],
+                    if (_availableOptions.isNotEmpty) ...[
+                      _TranslationSectionHeader(
+                        label: l10n.readingSettingsAvailableTranslations,
+                      ),
+                      _SettingsGroup(
+                        children: _rowsFor(
+                          _availableOptions,
+                          l10n,
+                          isSubscribed: isSubscribed,
+                        ),
+                      ),
+                    ],
+                    if (_installedOptions.isEmpty &&
+                        _availableOptions.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 48.h),
+                          child: Text(
+                            l10n.readingSettingsTranslationDownloading,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
     );
   }
 
   List<Widget> _rowsFor(
     List<QuranTranslationOption> options,
-    AppLocalizations l10n,
-  ) {
+    AppLocalizations l10n, {
+    required bool isSubscribed,
+  }) {
     final rows = <Widget>[];
     for (var i = 0; i < options.length; i++) {
       if (i > 0) rows.add(const _SettingsDivider());
       final option = options[i];
+      final locked =
+          QuranTranslationService.requiresPremium(option.languageCode) &&
+          !isSubscribed;
       rows.add(
         _TranslationOptionRow(
           key: ValueKey<String>(option.packId),
@@ -227,6 +271,7 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
           downloadLabel: l10n.readingSettingsTranslationDownload,
           installingLabel: l10n.readingSettingsTranslationInstalling,
           downloadingLabel: l10n.readingSettingsTranslationDownloading,
+          showPremiumBadge: locked,
           onSelect: () => unawaited(_selectInstalled(option)),
           onDownload: () => unawaited(_downloadAndSelect(option)),
         ),
@@ -278,6 +323,7 @@ class _TranslationOptionRow extends StatelessWidget {
     required this.downloadingLabel,
     required this.onSelect,
     required this.onDownload,
+    this.showPremiumBadge = false,
   });
 
   final String label;
@@ -291,6 +337,7 @@ class _TranslationOptionRow extends StatelessWidget {
   final String downloadingLabel;
   final VoidCallback onSelect;
   final VoidCallback onDownload;
+  final bool showPremiumBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +361,9 @@ class _TranslationOptionRow extends StatelessWidget {
         color: colorScheme.primary,
       ),
       _TranslationRowStatus.download => Icon(
-        Icons.download_rounded,
+        showPremiumBadge
+            ? Icons.lock_outline_rounded
+            : Icons.download_rounded,
         size: 20.sp,
         color: colorScheme.onSurfaceVariant,
       ),
@@ -339,11 +388,24 @@ class _TranslationOptionRow extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
-      _TranslationRowStatus.installed => Text(
-        installedLabel,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: colorScheme.primary,
-        ),
+      _TranslationRowStatus.installed => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showPremiumBadge) ...[
+            Icon(
+              Icons.lock_outline_rounded,
+              size: 14.sp,
+              color: colorScheme.onSurfaceVariant,
+            ),
+            SizedBox(width: 4.w),
+          ],
+          Text(
+            installedLabel,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
       ),
       _TranslationRowStatus.installing => Text(
         installingLabel,

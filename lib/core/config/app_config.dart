@@ -1,9 +1,15 @@
 abstract class AppConfig {
+  /// Must match the JSON key in repo-root `dart_defines.json`.
+  static const String superwallApiKeyAndroidDefine = 'SUPERWALL_API_KEY_ANDROID';
+
+  /// Must match the JSON key in repo-root `dart_defines.json`.
+  static const String superwallApiKeyIOSDefine = 'SUPERWALL_API_KEY_IOS';
+
   static const String superwallApiKeyAndroid = String.fromEnvironment(
-    'SUPERWALL_API_KEY_ANDROID',
+    superwallApiKeyAndroidDefine,
   );
   static const String superwallApiKeyIOS = String.fromEnvironment(
-    'SUPERWALL_API_KEY_IOS',
+    superwallApiKeyIOSDefine,
   );
 
   static String get mapTilesUrlTemplate {

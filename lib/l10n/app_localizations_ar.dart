@@ -979,6 +979,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeFocusModeSubtitle => 'احظر التطبيقات المشتتة أثناء الصلاة';
 
   @override
+  String get homeLivePrayerUpdatesTitle => 'تحديثات الصلاة المباشرة';
+
+  @override
+  String get homeLivePrayerUpdatesBody =>
+      'شاهد صلاتك الحالية والتالية على شاشة القفل وDynamic Island.';
+
+  @override
+  String get homeLivePrayerUpdatesCta => 'تفعيل التحديثات المباشرة';
+
+  @override
   String get focusModeShortSalah => 'صلاة';
 
   @override
@@ -1253,6 +1263,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supportUsLaunchFailed => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
+  String get supportUsThankYouTitle => 'جزاك الله خيراً';
+
+  @override
+  String get supportUsThankYouBody =>
+      'شكراً لدعمك DeenFocus. يمكنك الدعم مرة أخرى في أي وقت.';
+
+  @override
+  String get supportUsPurchasePending =>
+      'دعمك قيد الانتظار. سنؤكده بعد إكمال Apple عملية الشراء.';
+
+  @override
+  String get supportUsPurchaseFailed =>
+      'تعذر إكمال دفعة الدعم. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get supportUsProductUnavailable =>
+      'مبلغ الدعم هذا غير متاح الآن. يرجى المحاولة لاحقاً.';
 
   @override
   String get homeAiChatDescription =>

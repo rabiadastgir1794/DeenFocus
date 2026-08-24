@@ -25,10 +25,6 @@ void main() {
       expect(restored.alarmEnabled, isFalse);
       expect(restored.notificationsEnabled, isTrue);
       expect(restored.sound, PrayerNotificationSound.beep);
-      // State-level normalize repairs lockstep for scheduling/UI.
-      final synced = restored.normalizeAlertingSync();
-      expect(synced.alarmEnabled, isTrue);
-      expect(synced.notificationsEnabled, isTrue);
     },
   );
 

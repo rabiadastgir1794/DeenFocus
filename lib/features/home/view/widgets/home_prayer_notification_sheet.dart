@@ -1,19 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/spacing.dart';
+import '../../../../core/services/permission_service.dart';
+import '../../../../core/services/prayer_alarm_enablement.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
+import '../../../../core/widgets/app_permission_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../viewmodel/home_tab_view_model.dart';
 
 /// Lets the user pick a notification sound (or mute) and enable/disable
-/// notifications independently for [prayer].
+/// soft notifications and native prayer alarms independently for [prayer].
 Future<void> showPrayerNotificationSheet(
   BuildContext context,
   TrackablePrayer prayer,
@@ -35,10 +40,89 @@ Future<void> showPrayerNotificationSheet(
   );
 }
 
-class _PrayerNotificationSheetContent extends StatelessWidget {
+class _PrayerNotificationSheetContent extends StatefulWidget {
   const _PrayerNotificationSheetContent({required this.prayer});
 
   final TrackablePrayer prayer;
+
+  @override
+  State<_PrayerNotificationSheetContent> createState() =>
+      _PrayerNotificationSheetContentState();
+}
+
+class _PrayerNotificationSheetContentState
+    extends State<_PrayerNotificationSheetContent> {
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pick up master/auth changes made on the Prayer Alarms settings page.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(context.read<HomeTabViewModel>().refreshPrayerAlarmGate());
+    });
+  }
+
+  Future<void> _onNotificationChanged(bool value) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      final vm = context.read<HomeTabViewModel>();
+      final ok = await vm.setPrayerNotificationEnabled(widget.prayer, value);
+      if (!ok && mounted) {
+        await _showNotificationDeniedDialog();
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _onAlarmChanged(bool value) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      final vm = context.read<HomeTabViewModel>();
+      final status = await vm.setPrayerAlarmEnabled(widget.prayer, value);
+      if (!mounted) return;
+      if (status == PrayerAlarmEnablementStatus.denied ||
+          status == PrayerAlarmEnablementStatus.notificationDenied) {
+        await _showAlarmDeniedDialog();
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _showAlarmDeniedDialog() async {
+    final l10n = AppLocalizations.of(context)!;
+    await AppPermissionDialog.show(
+      context,
+      title: l10n.prayerAlarmsDeniedTitle,
+      message: l10n.prayerAlarmsDeniedMessage,
+      primaryButtonText: l10n.prayerAlarmsOpenSettings,
+      secondaryButtonText: l10n.prayerAlarmsCancel,
+      onPrimaryTap: () {
+        unawaited(PermissionService.openAppSettingsAsync());
+      },
+      onSecondaryTap: () {},
+    );
+  }
+
+  Future<void> _showNotificationDeniedDialog() async {
+    final l10n = AppLocalizations.of(context)!;
+    await AppPermissionDialog.show(
+      context,
+      title: l10n.prayerAlarmsDeniedTitle,
+      message: l10n.prayerAlarmsDeniedMessage,
+      primaryButtonText: l10n.prayerAlarmsOpenSettings,
+      secondaryButtonText: l10n.prayerAlarmsCancel,
+      onPrimaryTap: () {
+        unawaited(PermissionService.openAppSettingsAsync());
+      },
+      onSecondaryTap: () {},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +130,8 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
     final vm = context.watch<HomeTabViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final prayerLabel = prayer.label(l10n);
-    final settings = vm.settingsFor(prayer);
+    final prayerLabel = widget.prayer.label(l10n);
+    final settings = vm.settingsFor(widget.prayer);
     final borderColor = isDark
         ? colorScheme.outlineVariant.withValues(alpha: 0.35)
         : AppColors.outlineVariantLight.withValues(alpha: 0.35);
@@ -94,7 +178,7 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
                               settings.sound ==
                               PrayerNotificationSound.fullAdhan,
                           onTap: () => vm.setPrayerNotificationSound(
-                            prayer,
+                            widget.prayer,
                             PrayerNotificationSound.fullAdhan,
                           ),
                         ),
@@ -114,7 +198,7 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
                           selected:
                               settings.sound == PrayerNotificationSound.beep,
                           onTap: () => vm.setPrayerNotificationSound(
-                            prayer,
+                            widget.prayer,
                             PrayerNotificationSound.beep,
                           ),
                         ),
@@ -134,7 +218,7 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
                           selected:
                               settings.sound == PrayerNotificationSound.mute,
                           onTap: () => vm.setPrayerNotificationSound(
-                            prayer,
+                            widget.prayer,
                             PrayerNotificationSound.mute,
                           ),
                         ),
@@ -179,8 +263,11 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
                         ),
                         Switch.adaptive(
                           value: settings.notificationsEnabled,
-                          onChanged: (value) =>
-                              vm.setPrayerAlertingEnabled(prayer, value),
+                          onChanged: _busy
+                              ? null
+                              : (value) => unawaited(
+                                  _onNotificationChanged(value),
+                                ),
                         ),
                       ],
                     ),
@@ -220,9 +307,10 @@ class _PrayerNotificationSheetContent extends StatelessWidget {
                           ),
                         ),
                         Switch.adaptive(
-                          value: settings.alarmEnabled,
-                          onChanged: (value) =>
-                              vm.setPrayerAlertingEnabled(prayer, value),
+                          value: vm.effectiveAlarmEnabledFor(widget.prayer),
+                          onChanged: _busy
+                              ? null
+                              : (value) => unawaited(_onAlarmChanged(value)),
                         ),
                       ],
                     ),

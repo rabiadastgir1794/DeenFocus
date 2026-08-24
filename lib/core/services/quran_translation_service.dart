@@ -40,6 +40,10 @@ class QuranTranslationService {
   static bool isDefaultLanguage(String languageCode) =>
       languageCode == defaultLanguageCode;
 
+  /// Non-English translation packs require an active subscription.
+  static bool requiresPremium(String languageCode) =>
+      !isDefaultLanguage(languageCode);
+
   static Stream<Map<String, dynamic>> events() {
     return _events ??= _eventChannel.receiveBroadcastStream().map((raw) {
       if (raw is Map) return Map<String, dynamic>.from(raw);

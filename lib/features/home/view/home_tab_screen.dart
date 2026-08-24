@@ -32,6 +32,7 @@ import 'widgets/home_daily_checklist_sheet.dart';
 import 'widgets/home_focus_score_section.dart';
 import 'widgets/home_info_screens.dart';
 import 'widgets/home_islamic_date_header.dart';
+import 'widgets/home_live_activity_promo_card.dart';
 import 'widgets/home_nearby_mosques_screen.dart';
 import 'widgets/home_prayer_completion_popup.dart';
 import 'widgets/home_prayer_reminder_popup.dart';
@@ -530,6 +531,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               backgroundColor: softCardColor,
               isActive: widget.isTabActive,
             ),
+            const HomeLiveActivityPromoCard(),
             const SizedBox(height: 12),
             _FocusModeCard(
               onTap: widget.onOpenFocusTab,

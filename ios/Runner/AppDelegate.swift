@@ -201,6 +201,7 @@ private enum ManagedSettingsStoreHolder {
       qiblaEventChannel.setStreamHandler(qiblaHeadingStreamHandler)
       tajweedChannelHandler.register(messenger: messenger)
       quranTranslationChannelHandler.register(messenger: messenger)
+      SuperwallDonationBridge.register(messenger: messenger)
       logPhase("2_app method channels registered", since: channelsT0)
     } else {
       NSLog("[DeenFocus][Startup] ERROR: could not obtain Flutter registrar")

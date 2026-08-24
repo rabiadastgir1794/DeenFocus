@@ -13,6 +13,7 @@ import '../../../core/services/app_review_service.dart';
 import '../../../core/services/daily_refresh_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
+import '../../../core/services/prayer_alarm_enablement.dart';
 import '../../../core/services/prayer_alarm_service.dart';
 import '../../../core/services/prayer_live_activity_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -340,7 +341,62 @@ class HomeTabViewModel extends ChangeNotifier {
   PrayerSettingEntry settingsFor(TrackablePrayer prayer) =>
       _prayerSettingsService.forPrayer(prayer);
 
+  bool _prayerAlarmsMasterEnabled = false;
+  PrayerAlarmCapabilities? _prayerAlarmCapabilities;
+  PrayerAlarmAuthorizationStatus _prayerAlarmAuthorization =
+      PrayerAlarmAuthorizationStatus.unavailable;
+
+  bool get prayerAlarmsMasterEnabled => _prayerAlarmsMasterEnabled;
+
+  PrayerAlarmCapabilities? get prayerAlarmCapabilities =>
+      _prayerAlarmCapabilities;
+
+  PrayerAlarmAuthorizationStatus get prayerAlarmAuthorization =>
+      _prayerAlarmAuthorization;
+
+  /// True when native (or fallback) scheduling is actually allowed.
+  bool get canSchedulePrayerAlarms => PrayerAlarmEnablement.canSchedule(
+    masterEnabled: _prayerAlarmsMasterEnabled,
+    capabilities: _prayerAlarmCapabilities,
+    authorization: _prayerAlarmAuthorization,
+  );
+
+  /// UI value for the Home / Settings alarm toggle — never ON when it cannot fire.
+  bool effectiveAlarmEnabledFor(TrackablePrayer prayer) {
+    return PrayerAlarmEnablement.effectiveAlarmEnabled(
+      storedAlarmEnabled: settingsFor(prayer).alarmEnabled,
+      masterEnabled: _prayerAlarmsMasterEnabled,
+      capabilities: _prayerAlarmCapabilities,
+      authorization: _prayerAlarmAuthorization,
+    );
+  }
+
   void _onPrayerSettingsChanged() => notifyListeners();
+
+  Future<void> refreshPrayerAlarmGate({bool rescheduleIfReady = false}) async {
+    final master = await StorageService.prayerAlarmsEnabled;
+    final capabilities = await PrayerAlarmService.instance.getCapabilities(
+      forceRefresh: true,
+    );
+    final auth = await PrayerAlarmService.instance.getAuthorizationStatus();
+
+    var effectiveMaster = master;
+    if (master &&
+        capabilities.supportsNativeAlarm &&
+        auth != PrayerAlarmAuthorizationStatus.authorized) {
+      // Stored ON but permission missing — do not pretend scheduling works.
+      effectiveMaster = false;
+    }
+
+    _prayerAlarmsMasterEnabled = effectiveMaster;
+    _prayerAlarmCapabilities = capabilities;
+    _prayerAlarmAuthorization = auth;
+    notifyListeners();
+
+    if (rescheduleIfReady && canSchedulePrayerAlarms) {
+      await _reschedulePrayerAlarmsIfPossible();
+    }
+  }
 
   String? get qiblaInfo {
     if (latitude == null || longitude == null) {
@@ -415,6 +471,7 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> _onAppResumedBody() async {
     await _loadSubscriptionStatus();
     await _loadPrayerSettings();
+    await refreshPrayerAlarmGate();
     await _loadPrayerTimes();
     // Reload cycle state (restart / overnight) and auto-expire if needed.
     await _syncCycleModeFromStorage();
@@ -479,6 +536,7 @@ class HomeTabViewModel extends ChangeNotifier {
 
       await _loadSubscriptionStatus();
       await _loadPrayerSettings();
+      await refreshPrayerAlarmGate();
       await _loadPrayerTimes();
       await _syncCycleModeFromStorage();
       await _loadPrayerStreak();
@@ -673,24 +731,70 @@ class HomeTabViewModel extends ChangeNotifier {
     unawaited(_rescheduleNotificationsIfPossible());
   }
 
-  /// Single source of truth: soft notification and native alarm stay in sync.
+  /// Sets soft notification preference only (does not change native alarm).
+  ///
+  /// Returns false when enabling but notification permission is denied.
+  Future<bool> setPrayerNotificationEnabled(
+    TrackablePrayer prayer,
+    bool enabled,
+  ) async {
+    if (enabled) {
+      final ok = await PermissionService.requestNotification();
+      if (!ok) return false;
+    }
+    await _prayerSettingsService.setNotificationsEnabled(prayer, enabled);
+    notifyListeners();
+    unawaited(_rescheduleNotificationsIfPossible());
+    return true;
+  }
+
+  /// Sets native prayer-alarm preference for [prayer].
+  ///
+  /// Enabling requests alarm/notification permission and turns on the master
+  /// schedule flag. Returns a status the UI can use to explain denial.
+  Future<PrayerAlarmEnablementStatus?> setPrayerAlarmEnabled(
+    TrackablePrayer prayer,
+    bool enabled,
+  ) async {
+    if (!enabled) {
+      await _prayerSettingsService.setAlarmEnabled(prayer, false);
+      notifyListeners();
+      unawaited(_rescheduleNotificationsIfPossible());
+      return null;
+    }
+
+    final result = await PrayerAlarmEnablement.ensureReadyToSchedule();
+    _prayerAlarmCapabilities = result.capabilities;
+    _prayerAlarmAuthorization = result.authorization;
+    _prayerAlarmsMasterEnabled = result.canShowAlarmOn;
+
+    if (result.status == PrayerAlarmEnablementStatus.awaitingSettings) {
+      // Persist intent; toggle stays visually off until auth is confirmed.
+      await _prayerSettingsService.setAlarmEnabled(prayer, true);
+      notifyListeners();
+      return result.status;
+    }
+
+    if (!result.canShowAlarmOn) {
+      notifyListeners();
+      return result.status;
+    }
+
+    await _prayerSettingsService.setAlarmEnabled(prayer, true);
+    notifyListeners();
+    unawaited(_rescheduleNotificationsIfPossible());
+    return result.status;
+  }
+
+  /// Bulk soft+alarm (tests / rare callers). Prefer the specific setters.
   Future<void> setPrayerAlertingEnabled(
     TrackablePrayer prayer,
     bool enabled,
   ) async {
     await _prayerSettingsService.setAlertingEnabled(prayer, enabled);
     notifyListeners();
-    // Soft + native: ownership (Adhan ↔ mute) and cancel/schedule stay aligned.
     unawaited(_rescheduleNotificationsIfPossible());
   }
-
-  Future<void> setPrayerNotificationEnabled(
-    TrackablePrayer prayer,
-    bool enabled,
-  ) => setPrayerAlertingEnabled(prayer, enabled);
-
-  Future<void> setPrayerAlarmEnabled(TrackablePrayer prayer, bool enabled) =>
-      setPrayerAlertingEnabled(prayer, enabled);
 
   // Cycle Mode methods
   /// Loads prefs, applies one-time history purge, and auto-expires if needed.
@@ -832,21 +936,21 @@ class HomeTabViewModel extends ChangeNotifier {
     final undistractedPercent = _percentOf(distractionItems, completed);
     _todayDistractionPercent = 100 - undistractedPercent;
 
-    const bonusItems = <DailyChecklistItem>[
-      DailyChecklistItem.charity,
-      DailyChecklistItem.smileAtSomeone,
-      DailyChecklistItem.familyCall,
-      DailyChecklistItem.tahajjud,
-    ];
-    final bonusDone = bonusItems.where(completed.contains).length;
-    final coreAverage =
-        (_todayPrayerPercent +
-            _todayQuranPercent +
-            _todayDhikrPercent +
-            undistractedPercent) /
-        4;
+    final prayersForScore = cyclePolicy.protectsFocusScore()
+        ? TrackablePrayer.values.length
+        : dailyChecklistObligatoryPrayersDone;
+    final completedCount = DailyChecklistDay.progressCompletedCount(
+      checklist: completed,
+      obligatoryPrayersDone: prayersForScore,
+    );
+    final totalCount = DailyChecklistDay.progressTotalCount();
+    // Overall score tracks full checklist completion — 100 only when all done.
+    _todayFocusScore = totalCount == 0
+        ? 0
+        : ((completedCount * 100) / totalCount).round().clamp(0, 100);
+
     final allChecklistDone =
-        dailyChecklistObligatoryPrayersDone == TrackablePrayer.values.length &&
+        prayersForScore == TrackablePrayer.values.length &&
         !DailyChecklistDay.isHabitIncomplete(completed);
 
     if (allChecklistDone) {
@@ -855,9 +959,6 @@ class HomeTabViewModel extends ChangeNotifier {
       _todayDhikrPercent = 100;
       _todayDistractionPercent = 0;
       _todayFocusScore = 100;
-    } else {
-      final bonusBoost = (bonusDone / bonusItems.length) * 5;
-      _todayFocusScore = (coreAverage + bonusBoost).round().clamp(0, 100);
     }
   }
 

@@ -87,6 +87,9 @@ abstract class StorageService {
       'needs_prayer_notification_reschedule';
   static const String _keyPrayerLiveActivityEnabled =
       'prayer_live_activity_enabled';
+  // v2: resets dismiss after layout fix so the Home promo can show again.
+  static const String _keyHomeLiveActivityPromoDismissed =
+      'home_live_activity_promo_dismissed_v2';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
   /// Snooze durations offered in settings and on the full-screen alarm UI.
@@ -455,8 +458,8 @@ abstract class StorageService {
   }
 
   /// Master switch for Prayer Live Activity (iOS ActivityKit / Android ongoing).
-  /// Returns `null` when the user has never set a preference (caller may default
-  /// to ON on supported platforms).
+  /// Returns `null` when the user has never set a preference (treated as OFF
+  /// until they enable from Home promo, Settings, or App Demo).
   static Future<bool?> get prayerLiveActivityEnabledPreference async {
     final prefs = await _prefs;
     if (!prefs.containsKey(_keyPrayerLiveActivityEnabled)) return null;
@@ -470,6 +473,17 @@ abstract class StorageService {
   static Future<void> setPrayerLiveActivityEnabled(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyPrayerLiveActivityEnabled, value);
+  }
+
+  /// Home "Live Prayer Updates" promo dismissed via X (without enabling).
+  static Future<bool> get homeLiveActivityPromoDismissed async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHomeLiveActivityPromoDismissed) ?? false;
+  }
+
+  static Future<void> setHomeLiveActivityPromoDismissed(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHomeLiveActivityPromoDismissed, value);
   }
 
   static Future<int> get prayerAlarmSnoozeMinutes async {
@@ -1152,10 +1166,10 @@ abstract class StorageService {
     await prefs.setString(_keyQuranRepeatMode, value);
   }
 
-  /// Controlled rollout flag for AI Tajweed. Default false.
+  /// Controlled rollout flag for AI Tajweed. Default false (paid feature).
   static Future<bool> get tajweedEnabled async {
     final prefs = await _prefs;
-    return prefs.getBool(_keyTajweedEnabled) ?? true;
+    return prefs.getBool(_keyTajweedEnabled) ?? false;
   }
 
   static Future<void> setTajweedEnabled(bool value) async {

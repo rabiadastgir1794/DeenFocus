@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/routes/route_names.dart';
 import '../../core/services/storage_service.dart';
+import '../../core/superwall/premium_gate.dart';
 import '../quran/reading_engine/quran_script.dart';
 import '../quran/reading_engine/quran_script_texts.dart';
 import 'model/tajweed_practice_args.dart';
@@ -20,6 +21,8 @@ abstract final class TajweedEntryPoint {
   /// Opens practice using the **Reading Settings** script (text + font),
   /// matching the surah listing 100%. [arabicText] is only a fallback if the
   /// script corpus lacks that ayah.
+  ///
+  /// AI Tajweed is a premium feature — presents the paywall when needed.
   static void open(
     BuildContext context, {
     required int surah,
@@ -28,39 +31,65 @@ abstract final class TajweedEntryPoint {
     String? surahName,
     String? translation,
   }) {
-    unawaited(() async {
-      final script = QuranScriptX.fromName(await StorageService.quranScript);
-      final corpus = await QuranScriptTexts.load(script);
-      final resolvedText = corpus.textFor(surah, ayah) ?? arabicText;
-      // Uthmani is the canonical word-boundary reference for lexical alignment
-      // across mushaf presentation orthographies (IndoPak presentation spaces).
-      final uthmaniCorpus = script == QuranScript.uthmani
-          ? corpus
-          : await QuranScriptTexts.load(QuranScript.uthmani);
-      final lexicalReference =
-          uthmaniCorpus.textFor(surah, ayah) ?? resolvedText;
-      if (!context.mounted) return;
-      if (surahName != null) {
-        unawaited(
-          StorageService.setLastTajweedPractice(
-            surah: surah,
-            ayah: ayah,
-            surahName: surahName,
-          ),
-        );
-      }
-      context.push(
-        RouteNames.tajweedPractice,
-        extra: TajweedPracticeArgs(
+    unawaited(
+      PremiumGate.presentIfNeeded(
+        context: context,
+        debugContext: 'tajweed:practice',
+        onAccess: () {
+          unawaited(
+            _navigateAfterEntitlement(
+              context,
+              surah: surah,
+              ayah: ayah,
+              arabicText: arabicText,
+              surahName: surahName,
+              translation: translation,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  static Future<void> _navigateAfterEntitlement(
+    BuildContext context, {
+    required int surah,
+    required int ayah,
+    required String arabicText,
+    String? surahName,
+    String? translation,
+  }) async {
+    final script = QuranScriptX.fromName(await StorageService.quranScript);
+    final corpus = await QuranScriptTexts.load(script);
+    final resolvedText = corpus.textFor(surah, ayah) ?? arabicText;
+    // Uthmani is the canonical word-boundary reference for lexical alignment
+    // across mushaf presentation orthographies (IndoPak presentation spaces).
+    final uthmaniCorpus = script == QuranScript.uthmani
+        ? corpus
+        : await QuranScriptTexts.load(QuranScript.uthmani);
+    final lexicalReference =
+        uthmaniCorpus.textFor(surah, ayah) ?? resolvedText;
+    if (!context.mounted) return;
+    if (surahName != null) {
+      unawaited(
+        StorageService.setLastTajweedPractice(
           surah: surah,
           ayah: ayah,
-          arabicText: resolvedText,
-          arabicFontFamily: script.fontFamily,
-          lexicalReferenceArabic: lexicalReference,
           surahName: surahName,
-          translation: translation,
         ),
       );
-    }());
+    }
+    context.push(
+      RouteNames.tajweedPractice,
+      extra: TajweedPracticeArgs(
+        surah: surah,
+        ayah: ayah,
+        arabicText: resolvedText,
+        arabicFontFamily: script.fontFamily,
+        lexicalReferenceArabic: lexicalReference,
+        surahName: surahName,
+        translation: translation,
+      ),
+    );
   }
 }

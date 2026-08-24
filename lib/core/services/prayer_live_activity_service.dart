@@ -140,7 +140,8 @@ class PrayerLiveActivityService {
     }
   }
 
-  /// Effective on/off: defaults to ON the first time on supported platforms.
+  /// Effective on/off. Unset preference stays OFF so the Home promo can
+  /// prompt enablement; only an explicit user toggle turns it on.
   Future<bool> resolveEnabled() async {
     final caps = await getCapabilities();
     final supported = caps['supportsLiveActivity'] == true;
@@ -150,13 +151,9 @@ class PrayerLiveActivityService {
     }
 
     final preference = await StorageService.prayerLiveActivityEnabledPreference;
-    if (preference == null) {
-      await StorageService.setPrayerLiveActivityEnabled(true);
-      preferenceListenable.value = true;
-      return true;
-    }
-    preferenceListenable.value = preference;
-    return preference;
+    final enabled = preference ?? false;
+    preferenceListenable.value = enabled;
+    return enabled;
   }
 
   Future<void> stop() async {

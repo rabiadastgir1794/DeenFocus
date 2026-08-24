@@ -44,7 +44,6 @@ class _DailyChecklistSheetContent extends StatelessWidget {
       return _ChecklistItem(
         title: title,
         isCompleted: completedItems.contains(item),
-        isOptional: item.isOptionalHabit,
         onTap: () => unawaited(vm.toggleDailyChecklistItem(item)),
       );
     }
@@ -193,18 +192,15 @@ class _ChecklistItem extends StatelessWidget {
     required this.title,
     required this.isCompleted,
     required this.onTap,
-    this.isOptional = false,
   });
 
   final String title;
   final bool isCompleted;
-  final bool isOptional;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
@@ -248,15 +244,6 @@ class _ChecklistItem extends StatelessWidget {
                 ),
               ),
             ),
-            if (isOptional) ...[
-              SizedBox(width: Spacing.sm),
-              Text(
-                l10n.dailyChecklistOptional,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
           ],
         ),
       ),

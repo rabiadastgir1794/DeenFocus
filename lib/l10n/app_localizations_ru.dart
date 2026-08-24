@@ -999,6 +999,16 @@ class AppLocalizationsRu extends AppLocalizations {
       'Блокируйте отвлекающие приложения во время намаза';
 
   @override
+  String get homeLivePrayerUpdatesTitle => 'Молитвы в реальном времени';
+
+  @override
+  String get homeLivePrayerUpdatesBody =>
+      'Смотрите текущую и следующую молитву на экране блокировки и Dynamic Island.';
+
+  @override
+  String get homeLivePrayerUpdatesCta => 'Включить обновления';
+
+  @override
   String get focusModeShortSalah => 'Салях';
 
   @override
@@ -1279,6 +1289,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get supportUsLaunchFailed => 'Что-то пошло не так. Попробуйте снова.';
+
+  @override
+  String get supportUsThankYouTitle => 'Джазакаллаху хайран';
+
+  @override
+  String get supportUsThankYouBody =>
+      'Спасибо за поддержку DeenFocus. Вы можете поддержать снова в любое время.';
+
+  @override
+  String get supportUsPurchasePending =>
+      'Ваша поддержка ожидает подтверждения. Мы подтвердим её, когда Apple завершит покупку.';
+
+  @override
+  String get supportUsPurchaseFailed =>
+      'Не удалось завершить платёж поддержки. Пожалуйста, попробуйте снова.';
+
+  @override
+  String get supportUsProductUnavailable =>
+      'Эта сумма поддержки сейчас недоступна. Пожалуйста, попробуйте позже.';
 
   @override
   String get homeAiChatDescription =>

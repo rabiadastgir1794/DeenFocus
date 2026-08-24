@@ -1,3 +1,5 @@
+import 'package:deenly/features/support/model/support_contribution_result.dart';
+import 'package:deenly/features/support/services/donation_purchase_service.dart';
 import 'package:deenly/features/support/view/support_us_screen.dart';
 import 'package:deenly/features/support/viewmodel/support_view_model.dart';
 import 'package:deenly/l10n/app_localizations.dart';
@@ -6,14 +8,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-Widget _wrap(Widget child) {
+class _FixedDonationPurchaser implements DonationPurchaser {
+  const _FixedDonationPurchaser(this.outcome);
+
+  final SupportContributionResult outcome;
+
+  @override
+  bool get isAvailable => true;
+
+  @override
+  Future<SupportContributionResult> purchase(String productId) async => outcome;
+}
+
+Widget _wrap(Widget child, {SupportViewModel? viewModel}) {
   return ScreenUtilInit(
     designSize: const Size(390, 844),
-    builder: (_, __) => MaterialApp(
+    builder: (_, _) => MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: ChangeNotifierProvider(
-        create: (_) => SupportViewModel(),
+        create: (_) => viewModel ?? SupportViewModel(),
         child: child,
       ),
     ),
@@ -70,5 +84,69 @@ void main() {
         .element(find.byType(SupportUsScreen))
         .read<SupportViewModel>();
     expect(vm.amount, 100);
+  });
+
+  testWidgets('successful donation shows thank-you dialog', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 2800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      _wrap(
+        const SupportUsScreen(),
+        viewModel: SupportViewModel(
+          donationPurchaser: const _FixedDonationPurchaser(
+            SupportContributionResult.purchased,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Support DeenFocus with \$50'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('JazakAllah khair'), findsOneWidget);
+    expect(
+      find.text(
+        'Thank you for supporting DeenFocus. You can support again anytime.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('cancelled donation stays on the support screen', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 2800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      _wrap(
+        const SupportUsScreen(),
+        viewModel: SupportViewModel(
+          donationPurchaser: const _FixedDonationPurchaser(
+            SupportContributionResult.cancelled,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Support DeenFocus with \$50'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('JazakAllah khair'), findsNothing);
+    expect(find.text('Support DeenFocus'), findsOneWidget);
+    expect(find.text('Choose a support amount'), findsOneWidget);
   });
 }

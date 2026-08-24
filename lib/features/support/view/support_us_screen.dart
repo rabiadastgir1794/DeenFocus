@@ -8,6 +8,7 @@ import '../../../core/constants/spacing.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../model/support_contribution_result.dart';
 import '../model/support_impact_item.dart';
 import '../services/support_contact_service.dart';
 import '../viewmodel/support_view_model.dart';
@@ -115,6 +116,70 @@ class _SupportUsScreenState extends State<SupportUsScreen>
     );
   }
 
+  Future<void> _handleContributionResult(
+    BuildContext context,
+    SupportContributionResult result,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (!context.mounted) return;
+
+    switch (result) {
+      case SupportContributionResult.cancelled:
+      case SupportContributionResult.launchedExternally:
+        return;
+      case SupportContributionResult.purchased:
+        await _showThankYouDialog(context);
+        return;
+      case SupportContributionResult.pending:
+        _showMessage(context, l10n.supportUsPurchasePending);
+        return;
+      case SupportContributionResult.productUnavailable:
+        _showMessage(context, l10n.supportUsProductUnavailable);
+        return;
+      case SupportContributionResult.launchUnavailable:
+        _showMessage(context, l10n.supportUsLaunchUnavailable);
+        return;
+      case SupportContributionResult.failed:
+        _showMessage(context, l10n.supportUsPurchaseFailed);
+        return;
+    }
+  }
+
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Future<void> _showThankYouDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.r),
+          ),
+          title: Text(l10n.supportUsThankYouTitle),
+          content: Text(l10n.supportUsThankYouBody),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              style: FilledButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+              ),
+              child: Text(l10n.ok),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   String _formatAmount(int amount) => '\$$amount';
 
   @override
@@ -198,7 +263,7 @@ class _SupportUsScreenState extends State<SupportUsScreen>
                           onSubmit: () async {
                             final result = await vm.submitContribution();
                             if (!context.mounted) return;
-                            await _handleLaunchResult(context, result);
+                            await _handleContributionResult(context, result);
                           },
                         ),
                         SizedBox(height: Spacing.xl.h),

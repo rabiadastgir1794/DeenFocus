@@ -945,6 +945,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeFocusModeSubtitle => '礼拜期间屏蔽分心应用';
 
   @override
+  String get homeLivePrayerUpdatesTitle => '实时礼拜更新';
+
+  @override
+  String get homeLivePrayerUpdatesBody => '在锁定屏幕和灵动岛上查看当前和下一次礼拜。';
+
+  @override
+  String get homeLivePrayerUpdatesCta => '启用实时更新';
+
+  @override
   String get focusModeShortSalah => '礼拜';
 
   @override
@@ -1207,6 +1216,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get supportUsLaunchFailed => '出了点问题，请重试。';
+
+  @override
+  String get supportUsThankYouTitle => 'JazakAllah khair';
+
+  @override
+  String get supportUsThankYouBody => '感谢你支持 DeenFocus。你可以随时再次支持。';
+
+  @override
+  String get supportUsPurchasePending => '你的支持正在处理中。Apple 完成购买后我们会确认。';
+
+  @override
+  String get supportUsPurchaseFailed => '无法完成支持付款，请重试。';
+
+  @override
+  String get supportUsProductUnavailable => '该支持金额暂时不可用，请稍后再试。';
 
   @override
   String get homeAiChatDescription => '询问有关祈祷时间、古兰经和伊斯兰教指导的任何问题。';

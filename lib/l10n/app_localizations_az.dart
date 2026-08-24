@@ -996,6 +996,16 @@ class AppLocalizationsAz extends AppLocalizations {
       'Salah zamanı diqqəti yayındıran tətbiqləri bloklayın';
 
   @override
+  String get homeLivePrayerUpdatesTitle => 'Canlı namaz yeniləmələri';
+
+  @override
+  String get homeLivePrayerUpdatesBody =>
+      'Cari və növbəti namazı Kilid ekranı və Dynamic Island-da görün.';
+
+  @override
+  String get homeLivePrayerUpdatesCta => 'Canlı yeniləmələri aktiv et';
+
+  @override
   String get focusModeShortSalah => 'Salah';
 
   @override
@@ -1274,6 +1284,25 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get supportUsLaunchFailed => 'Xəta baş verdi. Yenidən cəhd edin.';
+
+  @override
+  String get supportUsThankYouTitle => 'CəzakAllahu xeyr';
+
+  @override
+  String get supportUsThankYouBody =>
+      'DeenFocus-u dəstəklədiyiniz üçün təşəkkür edirik. İstənilən vaxt yenidən dəstək ola bilərsiniz.';
+
+  @override
+  String get supportUsPurchasePending =>
+      'Dəstəyiniz gözləmədədir. Apple alış-verişi tamamlayanda təsdiqləyəcəyik.';
+
+  @override
+  String get supportUsPurchaseFailed =>
+      'Dəstək ödənişini tamamlaya bilmədik. Zəhmət olmasa yenidən cəhd edin.';
+
+  @override
+  String get supportUsProductUnavailable =>
+      'Bu dəstək məbləği hazırda əlçatan deyil. Zəhmət olmasa sonra yenidən cəhd edin.';
 
   @override
   String get homeAiChatDescription =>

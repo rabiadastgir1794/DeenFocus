@@ -13,43 +13,59 @@ void main() {
   });
 
   group('PrayerSettingsService — single source of truth', () {
-    test('Settings toggle and Home VM read the same Maghrib state', () async {
+    test('Settings alarm toggle and Home VM read the same Maghrib state', () async {
       final shared = PrayerSettingsService();
       final homeVm = HomeTabViewModel(prayerSettings: shared);
 
-      await shared.setAlertingEnabled(TrackablePrayer.maghrib, true);
+      await shared.setAlarmEnabled(TrackablePrayer.maghrib, true);
+      await shared.setNotificationsEnabled(TrackablePrayer.maghrib, false);
 
       expect(shared.forPrayer(TrackablePrayer.maghrib).alarmEnabled, isTrue);
       expect(
         shared.forPrayer(TrackablePrayer.maghrib).notificationsEnabled,
-        isTrue,
+        isFalse,
       );
       expect(homeVm.settingsFor(TrackablePrayer.maghrib).alarmEnabled, isTrue);
       expect(
         homeVm.settingsFor(TrackablePrayer.maghrib).notificationsEnabled,
-        isTrue,
-      );
-    });
-
-    test('Home toggle is visible to Settings via the same service', () async {
-      final shared = PrayerSettingsService();
-      final homeVm = HomeTabViewModel(prayerSettings: shared);
-
-      await homeVm.setPrayerAlertingEnabled(TrackablePrayer.fajr, false);
-
-      expect(shared.forPrayer(TrackablePrayer.fajr).alarmEnabled, isFalse);
-      expect(
-        shared.forPrayer(TrackablePrayer.fajr).notificationsEnabled,
         isFalse,
       );
     });
 
-    test('all five prayers stay synced after individual toggles', () async {
+    test('Home soft toggle does not flip native alarm', () async {
+      final shared = PrayerSettingsService();
+      final homeVm = HomeTabViewModel(prayerSettings: shared);
+
+      await shared.setAlarmEnabled(TrackablePrayer.fajr, true);
+      await homeVm.setPrayerNotificationEnabled(TrackablePrayer.fajr, false);
+
+      expect(shared.forPrayer(TrackablePrayer.fajr).notificationsEnabled, isFalse);
+      expect(shared.forPrayer(TrackablePrayer.fajr).alarmEnabled, isTrue);
+    });
+
+    test('Home sound change is visible to Settings via the same service', () async {
+      final shared = PrayerSettingsService();
+      final homeVm = HomeTabViewModel(prayerSettings: shared);
+
+      await homeVm.setPrayerNotificationSound(
+        TrackablePrayer.isha,
+        PrayerNotificationSound.beep,
+      );
+
+      expect(
+        shared.forPrayer(TrackablePrayer.isha).sound,
+        PrayerNotificationSound.beep,
+      );
+    });
+
+    test('all five prayers stay independent after individual toggles', () async {
       final shared = PrayerSettingsService();
       for (final prayer in TrackablePrayer.values) {
-        await shared.setAlertingEnabled(prayer, false);
+        await shared.setAlarmEnabled(prayer, false);
+        await shared.setNotificationsEnabled(prayer, false);
       }
-      await shared.setAlertingEnabled(TrackablePrayer.asr, true);
+      await shared.setAlarmEnabled(TrackablePrayer.asr, true);
+      await shared.setNotificationsEnabled(TrackablePrayer.asr, true);
 
       for (final prayer in TrackablePrayer.values) {
         final enabled = prayer == TrackablePrayer.asr;
@@ -61,8 +77,10 @@ void main() {
 
     test('persists across service reload (restart / resume)', () async {
       final writer = PrayerSettingsService();
-      await writer.setAlertingEnabled(TrackablePrayer.maghrib, false);
-      await writer.setAlertingEnabled(TrackablePrayer.isha, true);
+      await writer.setAlarmEnabled(TrackablePrayer.maghrib, false);
+      await writer.setNotificationsEnabled(TrackablePrayer.maghrib, true);
+      await writer.setAlarmEnabled(TrackablePrayer.isha, true);
+      await writer.setNotificationsEnabled(TrackablePrayer.isha, false);
 
       final raw = await StorageService.prayerSettingsJson;
       expect(raw, isNotNull);
@@ -72,12 +90,12 @@ void main() {
       expect(reader.forPrayer(TrackablePrayer.maghrib).alarmEnabled, isFalse);
       expect(
         reader.forPrayer(TrackablePrayer.maghrib).notificationsEnabled,
-        isFalse,
+        isTrue,
       );
       expect(reader.forPrayer(TrackablePrayer.isha).alarmEnabled, isTrue);
       expect(
         reader.forPrayer(TrackablePrayer.isha).notificationsEnabled,
-        isTrue,
+        isFalse,
       );
     });
 
@@ -88,7 +106,7 @@ void main() {
         var notified = 0;
         shared.addListener(() => notified++);
 
-        await shared.setAlertingEnabled(TrackablePrayer.dhuhr, false);
+        await shared.setAlarmEnabled(TrackablePrayer.dhuhr, false);
         expect(notified, greaterThan(0));
       },
     );

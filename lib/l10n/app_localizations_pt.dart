@@ -997,6 +997,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Bloqueie apps que distraem durante a Salah';
 
   @override
+  String get homeLivePrayerUpdatesTitle => 'Atualizações de oração ao vivo';
+
+  @override
+  String get homeLivePrayerUpdatesBody =>
+      'Veja a oração atual e a próxima na tela de bloqueio e Dynamic Island.';
+
+  @override
+  String get homeLivePrayerUpdatesCta => 'Ativar atualizações ao vivo';
+
+  @override
   String get focusModeShortSalah => 'Salah';
 
   @override
@@ -1276,6 +1286,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get supportUsLaunchFailed => 'Algo deu errado. Tente novamente.';
+
+  @override
+  String get supportUsThankYouTitle => 'JazakAllah khair';
+
+  @override
+  String get supportUsThankYouBody =>
+      'Obrigado por apoiar o DeenFocus. Você pode apoiar novamente a qualquer momento.';
+
+  @override
+  String get supportUsPurchasePending =>
+      'Seu apoio está pendente. Confirmaremos quando a Apple concluir a compra.';
+
+  @override
+  String get supportUsPurchaseFailed =>
+      'Não foi possível concluir seu pagamento de apoio. Tente novamente.';
+
+  @override
+  String get supportUsProductUnavailable =>
+      'Este valor de apoio não está disponível agora. Tente novamente mais tarde.';
 
   @override
   String get homeAiChatDescription =>

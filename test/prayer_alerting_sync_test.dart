@@ -1,10 +1,11 @@
+import 'package:deenly/core/services/prayer_alarm_enablement.dart';
 import 'package:deenly/core/services/prayer_alarm_service.dart';
 import 'package:deenly/features/home/helpers/prayer_sound_ownership.dart';
 import 'package:deenly/features/home/model/home_models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('PrayerSettingEntry alerting lockstep', () {
+  group('PrayerSettingEntry independent flags', () {
     test('withAlertingEnabled sets soft and native together', () {
       const base = PrayerSettingEntry(
         notificationsEnabled: true,
@@ -21,35 +22,23 @@ void main() {
       expect(on.alarmEnabled, isTrue);
     });
 
-    test('normalizeAlertingSync keeps ON when either flag was ON', () {
+    test('copyWith can change soft and native independently', () {
       const softOnly = PrayerSettingEntry(
         notificationsEnabled: true,
         alarmEnabled: false,
       );
-      final softFixed = softOnly.normalizeAlertingSync();
-      expect(softFixed.notificationsEnabled, isTrue);
-      expect(softFixed.alarmEnabled, isTrue);
+      expect(softOnly.notificationsEnabled, isTrue);
+      expect(softOnly.alarmEnabled, isFalse);
 
       const alarmOnly = PrayerSettingEntry(
         notificationsEnabled: false,
         alarmEnabled: true,
       );
-      final alarmFixed = alarmOnly.normalizeAlertingSync();
-      expect(alarmFixed.notificationsEnabled, isTrue);
-      expect(alarmFixed.alarmEnabled, isTrue);
+      expect(alarmOnly.notificationsEnabled, isFalse);
+      expect(alarmOnly.alarmEnabled, isTrue);
     });
 
-    test('normalizeAlertingSync keeps OFF when both were OFF', () {
-      const bothOff = PrayerSettingEntry(
-        notificationsEnabled: false,
-        alarmEnabled: false,
-      );
-      final fixed = bothOff.normalizeAlertingSync();
-      expect(fixed.notificationsEnabled, isFalse);
-      expect(fixed.alarmEnabled, isFalse);
-    });
-
-    test('fromMap preserves raw flags; state normalize repairs desync', () {
+    test('fromMap / toMap round-trip preserves independent flags', () {
       const desynced = PrayerSettingEntry(
         notificationsEnabled: true,
         alarmEnabled: false,
@@ -58,36 +47,35 @@ void main() {
       final restored = PrayerSettingEntry.fromMap(desynced.toMap());
       expect(restored.notificationsEnabled, isTrue);
       expect(restored.alarmEnabled, isFalse);
+      expect(restored.sound, PrayerNotificationSound.beep);
 
       final state = PrayerSettingsState(
         entries: {TrackablePrayer.maghrib: restored},
-      ).normalizeAlertingSync();
+      );
       final entry = state.forPrayer(TrackablePrayer.maghrib);
       expect(entry.notificationsEnabled, isTrue);
-      expect(entry.alarmEnabled, isTrue);
+      expect(entry.alarmEnabled, isFalse);
       expect(state.isAlertingEnabled(TrackablePrayer.maghrib), isTrue);
     });
 
-    test('round-trip JSON survives restart with synced flags', () {
+    test('round-trip JSON survives restart with independent flags', () {
       final state = PrayerSettingsState(
         entries: {
           TrackablePrayer.fajr: const PrayerSettingEntry(
             notificationsEnabled: false,
-            alarmEnabled: true, // legacy desync
+            alarmEnabled: true,
           ),
           TrackablePrayer.dhuhr: const PrayerSettingEntry(
             notificationsEnabled: true,
             alarmEnabled: true,
           ),
         },
-      ).normalizeAlertingSync();
+      );
 
-      final reloaded = PrayerSettingsState.fromJson(
-        state.toJson(),
-      ).normalizeAlertingSync();
+      final reloaded = PrayerSettingsState.fromJson(state.toJson());
       expect(
         reloaded.forPrayer(TrackablePrayer.fajr).notificationsEnabled,
-        isTrue,
+        isFalse,
       );
       expect(reloaded.forPrayer(TrackablePrayer.fajr).alarmEnabled, isTrue);
       expect(
@@ -98,24 +86,82 @@ void main() {
     });
   });
 
-  group('schedule gate mirrors synced UI', () {
-    test('alerting OFF → soft and native both skip', () {
-      final entry = const PrayerSettingEntry().withAlertingEnabled(false);
-      expect(entry.notificationsEnabled, isFalse);
+  group('PrayerAlarmEnablement effective UI', () {
+    const caps = PrayerAlarmCapabilities(
+      platform: 'ios',
+      implementation: 'alarmkit',
+      supportsNativeAlarm: true,
+      supportsFullScreen: true,
+      requiresAlarmKitEntitlement: true,
+    );
+
+    test('stored ON + no permission → effective OFF', () {
+      expect(
+        PrayerAlarmEnablement.effectiveAlarmEnabled(
+          storedAlarmEnabled: true,
+          masterEnabled: false,
+          capabilities: caps,
+          authorization: PrayerAlarmAuthorizationStatus.denied,
+        ),
+        isFalse,
+      );
+      expect(
+        PrayerAlarmEnablement.effectiveAlarmEnabled(
+          storedAlarmEnabled: true,
+          masterEnabled: true,
+          capabilities: caps,
+          authorization: PrayerAlarmAuthorizationStatus.denied,
+        ),
+        isFalse,
+      );
+    });
+
+    test('stored ON + master + authorized → effective ON', () {
+      expect(
+        PrayerAlarmEnablement.effectiveAlarmEnabled(
+          storedAlarmEnabled: true,
+          masterEnabled: true,
+          capabilities: caps,
+          authorization: PrayerAlarmAuthorizationStatus.authorized,
+        ),
+        isTrue,
+      );
+    });
+
+    test('stored OFF + authorized → effective OFF', () {
+      expect(
+        PrayerAlarmEnablement.effectiveAlarmEnabled(
+          storedAlarmEnabled: false,
+          masterEnabled: true,
+          capabilities: caps,
+          authorization: PrayerAlarmAuthorizationStatus.authorized,
+        ),
+        isFalse,
+      );
+    });
+  });
+
+  group('schedule gate uses independent flags', () {
+    test('alarm OFF → native skips even if soft ON', () {
+      const entry = PrayerSettingEntry(
+        notificationsEnabled: true,
+        alarmEnabled: false,
+      );
+      expect(entry.notificationsEnabled, isTrue);
       expect(entry.alarmEnabled, isFalse);
     });
 
-    test('alerting ON → soft and native both eligible', () {
-      final entry = const PrayerSettingEntry(
+    test('soft OFF → soft skips even if alarm ON', () {
+      const entry = PrayerSettingEntry(
         notificationsEnabled: false,
-        alarmEnabled: false,
-      ).withAlertingEnabled(true);
-      expect(entry.notificationsEnabled, isTrue);
+        alarmEnabled: true,
+      );
+      expect(entry.notificationsEnabled, isFalse);
       expect(entry.alarmEnabled, isTrue);
     });
   });
 
-  group('synced alerting preserves dual-Adhan ownership', () {
+  group('dual-Adhan ownership with independent flags', () {
     const androidCaps = PrayerAlarmCapabilities(
       platform: 'android',
       implementation: 'fullscreen_intent',
@@ -146,8 +192,11 @@ void main() {
       );
     });
 
-    test('both OFF → native does not own; soft would skip schedule', () {
-      final entry = const PrayerSettingEntry().withAlertingEnabled(false);
+    test('alarm OFF → native does not own; soft keeps sound', () {
+      const entry = PrayerSettingEntry(
+        notificationsEnabled: true,
+        alarmEnabled: false,
+      );
       expect(
         PrayerSoundOwnership.nativeOwnsSound(
           entry: entry,
@@ -157,10 +206,18 @@ void main() {
         ),
         isFalse,
       );
-      expect(entry.notificationsEnabled, isFalse);
+      expect(
+        PrayerSoundOwnership.softEffectiveSound(
+          entry: entry,
+          prayerAlarmsMasterEnabled: true,
+          capabilities: androidCaps,
+          authorization: PrayerAlarmAuthorizationStatus.authorized,
+        ),
+        PrayerNotificationSound.fullAdhan,
+      );
     });
 
-    test('master OFF + alerting ON → soft keeps Adhan (no dual sound)', () {
+    test('master OFF + alarm ON → soft keeps Adhan (no dual sound)', () {
       final entry = const PrayerSettingEntry().withAlertingEnabled(true);
       expect(
         PrayerSoundOwnership.softEffectiveSound(

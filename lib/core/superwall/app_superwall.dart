@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../config/app_config.dart';
@@ -17,6 +18,15 @@ abstract final class SuperwallPlacements {
 
 abstract final class SuperwallCustomActions {
   static const String openNormalPaywall = 'openNormalPaywall';
+}
+
+/// Result of Superwall's direct purchase API. Isolated from paywalls / `pro`.
+enum SuperwallDirectPurchaseResult {
+  purchased,
+  cancelled,
+  pending,
+  failed,
+  productNotFound,
 }
 
 class AppSuperwall {
@@ -46,50 +56,88 @@ class AppSuperwall {
     debugPrint('[Superwall] $message');
   }
 
+  /// Configures Superwall once. Retries on the next call if a previous attempt
+  /// finished without enabling the SDK (missing key / timeout / failure).
   static Future<void> configure() {
-    return _configureFuture ??= _configureInternal();
+    if (_enabled) return Future<void>.value();
+    return _configureFuture ??= _configureInternal().whenComplete(() {
+      // Allow a later retry when configure did not succeed (e.g. empty
+      // dart-define on a previous binary, or a transient timeout).
+      if (!_enabled) {
+        _configureFuture = null;
+      }
+    });
   }
 
   static Future<void> _configureInternal() async {
-    final key = _apiKeyForPlatform();
+    final platform = Platform.isAndroid ? 'android' : 'ios';
+    final key = _apiKeyForPlatform() ?? '';
+    final keyPresent = key.isNotEmpty;
+    final defineName = _apiKeyDefineNameForPlatform();
 
-    if (key == null || key.isEmpty) {
-      _log('Missing API key');
+    // Safe diagnostic only — never log the key value.
+    _log(
+      'Configure start platform=$platform keyPresent=$keyPresent '
+      'keyLength=${key.length} define=$defineName',
+    );
+
+    if (!keyPresent) {
+      _log(
+        'Configure failed: missing API key for $platform define=$defineName '
+        'keyPresent=false keyLength=0. '
+        'Android merges repo dart_defines.json in gradle; also pass '
+        '--dart-define-from-file=dart_defines.json for Flutter CLI runs. '
+        'Full rebuild required — hot reload cannot inject dart-defines.',
+      );
       return;
     }
 
     final completer = Completer<void>();
 
     try {
-      _log('Starting Superwall.configure');
+      _log(
+        'Starting Superwall.configure define=$defineName '
+        'keyPresent=true keyLength=${key.length}',
+      );
 
       Superwall.configure(
         key,
         completion: () {
-          _enabled = true;
-
-          _log('Superwall configured successfully');
-
-          if (!completer.isCompleted) {
-            completer.complete();
-          }
+          unawaited(_onConfigureCompletion(completer));
         },
       );
 
       await completer.future.timeout(
         const Duration(seconds: 8),
         onTimeout: () {
-          _log('Superwall.configure timed out after 8s — continuing');
+          _log(
+            'Superwall.configure completion timed out after 8s — '
+            'polling configuration status',
+          );
         },
       );
 
       if (!_enabled) {
-        _log('Superwall not marked enabled after configure attempt');
+        await _pollUntilConfigured(
+          timeout: const Duration(seconds: 12),
+          reason: 'after configure wait',
+        );
+      }
+
+      if (!_enabled) {
+        final status = await _safeConfigurationStatus();
+        _log(
+          'Configure failed: Superwall not enabled after attempt '
+          'platform=$platform status=$status',
+        );
         return;
       }
 
       Superwall.shared.setDelegate(_delegate);
-      _log('Superwall delegate registered for custom paywall actions');
+      _log(
+        'Configure succeeded platform=$platform '
+        'delegate registered for custom paywall actions',
+      );
 
       // Sync subscription state in the background so configure() completes
       // immediately after SDK init. On Play Store, getSubscriptionStatus() can
@@ -97,9 +145,83 @@ class AppSuperwall {
       // blocks every premium gate (via configure().timeout(30s)).
       unawaited(syncSubscriptionState());
     } catch (e, st) {
-      _log('Configure failed: $e');
+      _log('Configure failed with exception: $e');
       debugPrintStack(stackTrace: st);
     }
+  }
+
+  static Future<void> _onConfigureCompletion(Completer<void> completer) async {
+    try {
+      final status = await _safeConfigurationStatus();
+      if (status == ConfigurationStatus.configured) {
+        _enabled = true;
+        _log('Configure completion: success status=configured');
+      } else {
+        _log(
+          'Configure completion: SDK callback fired but status=$status '
+          '(not marking enabled yet)',
+        );
+      }
+    } catch (e) {
+      _log('Configure completion: status check failed: $e');
+    } finally {
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    }
+  }
+
+  static Future<ConfigurationStatus?> _safeConfigurationStatus() async {
+    try {
+      return await Superwall.shared.getConfigurationStatus();
+    } catch (e) {
+      _log('getConfigurationStatus failed: $e');
+      return null;
+    }
+  }
+
+  static Future<void> _pollUntilConfigured({
+    required Duration timeout,
+    required String reason,
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    _log('Polling Superwall configuration ($reason) for ${timeout.inSeconds}s');
+    while (!_enabled && DateTime.now().isBefore(deadline)) {
+      final status = await _safeConfigurationStatus();
+      if (status == ConfigurationStatus.configured) {
+        _enabled = true;
+        _log('Polling: Superwall became configured ($reason)');
+        return;
+      }
+      if (status == ConfigurationStatus.failed) {
+        _log('Polling: Superwall configuration failed ($reason)');
+        return;
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+    }
+  }
+
+  /// Android donations require Superwall. iOS may still use StoreKit 2.
+  static Future<bool> _ensureConfiguredForAndroidDonation() async {
+    await configure();
+    if (_enabled) return true;
+
+    await _pollUntilConfigured(
+      timeout: const Duration(seconds: 8),
+      reason: 'donation gate',
+    );
+
+    if (_enabled) return true;
+
+    final status = await _safeConfigurationStatus();
+    final key = _apiKeyForPlatform() ?? '';
+    final defineName = _apiKeyDefineNameForPlatform();
+    _log(
+      'Donation blocked: Superwall not configured on Android '
+      'define=$defineName keyPresent=${key.isNotEmpty} '
+      'keyLength=${key.length} status=$status superwallEnabled=$_enabled',
+    );
+    return false;
   }
 
   /// Loads the persisted subscription status into [subscriptionActiveNotifier]
@@ -506,6 +628,125 @@ class AppSuperwall {
     }
 
     return AppConfig.superwallApiKeyIOS.trim();
+  }
+
+  static String _apiKeyDefineNameForPlatform() {
+    if (Platform.isAndroid) {
+      return AppConfig.superwallApiKeyAndroidDefine;
+    }
+    return AppConfig.superwallApiKeyIOSDefine;
+  }
+
+  static const MethodChannel _donationChannel = MethodChannel(
+    'com.app.deenly.deenly/superwall_donations',
+  );
+
+  /// Fetches a store product via the native Superwall donation bridge.
+  /// iOS may fall back to StoreKit 2; Android uses Superwall only.
+  /// Does not present a paywall and does not change subscription / `pro` state.
+  static Future<Map<String, dynamic>?> fetchDonationProduct(
+    String productId,
+  ) async {
+    if (Platform.isAndroid) {
+      final ready = await _ensureConfiguredForAndroidDonation();
+      if (!ready) return null;
+    } else {
+      await configure();
+    }
+
+    try {
+      final raw = await _donationChannel.invokeMapMethod<String, dynamic>(
+        'fetchProduct',
+        <String, String>{'productId': productId},
+      );
+      _log(
+        'Fetched donation product id=$productId '
+        'superwallEnabled=$_enabled payload=$raw',
+      );
+      return raw;
+    } on PlatformException catch (e) {
+      _log(
+        'Donation product fetch failed id=$productId '
+        'code=${e.code} message=${e.message}',
+      );
+      if (e.code == 'PRODUCT_NOT_FOUND') return null;
+      rethrow;
+    } on MissingPluginException catch (e) {
+      _log('Donation product fetch missing plugin: $e');
+      return null;
+    }
+  }
+
+  /// Purchases a one-time donation via Superwall's direct purchase API.
+  /// iOS may fall back to StoreKit 2 when Superwall is unavailable; Android
+  /// uses Superwall only (Superwall owns the Play Billing lifecycle).
+  ///
+  /// Never presents a Superwall paywall, never calls [syncSubscriptionState],
+  /// and must not grant the `pro` entitlement.
+  static Future<SuperwallDirectPurchaseResult> purchaseDonation(
+    String productId,
+  ) async {
+    if (Platform.isAndroid) {
+      final ready = await _ensureConfiguredForAndroidDonation();
+      if (!ready) {
+        return SuperwallDirectPurchaseResult.failed;
+      }
+    } else {
+      await configure();
+    }
+
+    _log(
+      'Donation purchase start id=$productId superwallEnabled=$_enabled '
+      'platform=${Platform.isAndroid ? 'android' : 'ios'}',
+    );
+
+    try {
+      final product = await fetchDonationProduct(productId);
+      if (product == null) {
+        _log('Donation product not found id=$productId');
+        return SuperwallDirectPurchaseResult.productNotFound;
+      }
+
+      final raw = await _donationChannel.invokeMapMethod<String, dynamic>(
+        'purchase',
+        <String, String>{'productId': productId},
+      );
+      final status = raw?['status'] as String?;
+      _log('Donation purchase id=$productId status=$status');
+
+      switch (status) {
+        case 'purchased':
+          return SuperwallDirectPurchaseResult.purchased;
+        case 'cancelled':
+          return SuperwallDirectPurchaseResult.cancelled;
+        case 'pending':
+          return SuperwallDirectPurchaseResult.pending;
+        case 'failed':
+          return SuperwallDirectPurchaseResult.failed;
+        default:
+          _log('Donation purchase returned unknown status=$status');
+          return SuperwallDirectPurchaseResult.failed;
+      }
+    } on PlatformException catch (e) {
+      _log(
+        'Donation purchase failed id=$productId '
+        'code=${e.code} message=${e.message}',
+      );
+      if (e.code == 'PRODUCT_NOT_FOUND') {
+        return SuperwallDirectPurchaseResult.productNotFound;
+      }
+      if (e.code == 'cancelled') {
+        return SuperwallDirectPurchaseResult.cancelled;
+      }
+      return SuperwallDirectPurchaseResult.failed;
+    } on MissingPluginException catch (e) {
+      _log('Donation purchase missing plugin: $e');
+      return SuperwallDirectPurchaseResult.failed;
+    } catch (e, st) {
+      _log('Donation purchase failed id=$productId error=$e');
+      debugPrintStack(stackTrace: st);
+      return SuperwallDirectPurchaseResult.failed;
+    }
   }
 }
 

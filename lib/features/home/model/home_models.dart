@@ -205,7 +205,8 @@ class PrayerSettingEntry {
   factory PrayerSettingEntry.fromMap(Map<String, dynamic> map) {
     return PrayerSettingEntry(
       notificationsEnabled: map['notificationsEnabled'] as bool? ?? true,
-      // Default true so enabling the master Prayer Alarms switch covers all five.
+      // Default true so enabling the master Prayer Alarms switch covers all five
+      // once permission is granted. UI must still show OFF until scheduling works.
       alarmEnabled: map['alarmEnabled'] as bool? ?? true,
       sound:
           PrayerNotificationSound.values
@@ -245,15 +246,9 @@ class PrayerSettingEntry {
     );
   }
 
-  /// Soft notification + native alarm stay in lockstep for each prayer.
+  /// Soft notification + native alarm together (convenience for tests / bulk).
   PrayerSettingEntry withAlertingEnabled(bool enabled) =>
       copyWith(notificationsEnabled: enabled, alarmEnabled: enabled);
-
-  /// Repair legacy desync: keep alerting if either flag was on.
-  PrayerSettingEntry normalizeAlertingSync() {
-    if (notificationsEnabled == alarmEnabled) return this;
-    return withAlertingEnabled(notificationsEnabled || alarmEnabled);
-  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -298,7 +293,7 @@ class PrayerSettingsState {
   PrayerSettingEntry forPrayer(TrackablePrayer prayer) =>
       entries[prayer] ?? const PrayerSettingEntry();
 
-  /// Soft notification and native alarm flags stay equal for each prayer.
+  /// Soft notification preference for [prayer].
   bool isAlertingEnabled(TrackablePrayer prayer) =>
       forPrayer(prayer).notificationsEnabled;
 
@@ -317,22 +312,6 @@ class PrayerSettingsState {
   ) {
     final updated = Map<TrackablePrayer, PrayerSettingEntry>.from(entries);
     updated[prayer] = entry;
-    return PrayerSettingsState(entries: updated);
-  }
-
-  /// Repair legacy prefs where soft and native flags drifted apart.
-  PrayerSettingsState normalizeAlertingSync() {
-    var changed = false;
-    final updated = <TrackablePrayer, PrayerSettingEntry>{};
-    for (final entry in entries.entries) {
-      final normalized = entry.value.normalizeAlertingSync();
-      if (normalized.notificationsEnabled != entry.value.notificationsEnabled ||
-          normalized.alarmEnabled != entry.value.alarmEnabled) {
-        changed = true;
-      }
-      updated[entry.key] = normalized;
-    }
-    if (!changed) return this;
     return PrayerSettingsState(entries: updated);
   }
 

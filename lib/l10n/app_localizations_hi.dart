@@ -993,6 +993,16 @@ class AppLocalizationsHi extends AppLocalizations {
       'सलाह के दौरान ध्यान भटकाने वाले ऐप्स ब्लॉक करें';
 
   @override
+  String get homeLivePrayerUpdatesTitle => 'लाइव नमाज़ अपडेट';
+
+  @override
+  String get homeLivePrayerUpdatesBody =>
+      'लॉक स्क्रीन और Dynamic Island पर अपनी वर्तमान और अगली नमाज़ देखें।';
+
+  @override
+  String get homeLivePrayerUpdatesCta => 'लाइव अपडेट चालू करें';
+
+  @override
   String get focusModeShortSalah => 'सलाह';
 
   @override
@@ -1269,6 +1279,25 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get supportUsLaunchFailed => 'कुछ गलत हुआ। कृपया फिर कोशिश करें।';
+
+  @override
+  String get supportUsThankYouTitle => 'जजाक अल्लाह खैर';
+
+  @override
+  String get supportUsThankYouBody =>
+      'DeenFocus का समर्थन करने के लिए शुक्रिया। आप कभी भी फिर से समर्थन कर सकते हैं।';
+
+  @override
+  String get supportUsPurchasePending =>
+      'आपका समर्थन लंबित है। Apple खरीदारी पूरी करने के बाद हम पुष्टि करेंगे।';
+
+  @override
+  String get supportUsPurchaseFailed =>
+      'समर्थन भुगतान पूरा नहीं हो सका। कृपया फिर कोशिश करें।';
+
+  @override
+  String get supportUsProductUnavailable =>
+      'यह समर्थन राशि अभी उपलब्ध नहीं है। कृपया बाद में कोशिश करें।';
 
   @override
   String get homeAiChatDescription =>

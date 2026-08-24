@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/services/quran_bookmark_service.dart';
 import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/superwall/app_superwall.dart';
+import '../../../core/superwall/premium_gate.dart';
 import '../../../core/theme/segment_control_style.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -47,7 +49,7 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
   bool _showTransliteration = true;
   QuranLayoutTheme _layoutTheme = QuranLayoutTheme.classic;
   QuranReadingColorTheme _colorTheme = QuranReadingColorTheme.emerald;
-  bool _tajweedEnabled = true;
+  bool _tajweedEnabled = false;
 
   List<QuranTranslationOption> _translationOptions =
       const <QuranTranslationOption>[];
@@ -155,6 +157,23 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
       ),
     );
     await _refreshTranslationOptions();
+  }
+
+  Future<void> _onTajweedChanged(bool value) async {
+    if (!value) {
+      setState(() => _tajweedEnabled = false);
+      await StorageService.setTajweedEnabled(false);
+      return;
+    }
+    if (!mounted) return;
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      debugContext: 'reading_settings:tajweed',
+      onAccess: () {
+        setState(() => _tajweedEnabled = true);
+        unawaited(StorageService.setTajweedEnabled(true));
+      },
+    );
   }
 
   @override
@@ -369,14 +388,17 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                             },
                           ),
                           const _SettingsDivider(),
-                          _SettingsSwitchRow(
-                            icon: Icons.mic_outlined,
-                            label: l10n.readingSettingsTajweedPractice,
-                            value: _tajweedEnabled,
-                            onChanged: (value) {
-                              setState(() => _tajweedEnabled = value);
-                              unawaited(
-                                StorageService.setTajweedEnabled(value),
+                          ValueListenableBuilder<bool>(
+                            valueListenable:
+                                AppSuperwall.subscriptionActiveNotifier,
+                            builder: (context, isSubscribed, _) {
+                              return _SettingsSwitchRow(
+                                icon: Icons.mic_outlined,
+                                label: l10n.readingSettingsTajweedPractice,
+                                value: _tajweedEnabled,
+                                showPremiumBadge: !isSubscribed,
+                                onChanged: (value) =>
+                                    unawaited(_onTajweedChanged(value)),
                               );
                             },
                           ),
@@ -965,12 +987,14 @@ class _SettingsSwitchRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.onChanged,
+    this.showPremiumBadge = false,
   });
 
   final IconData icon;
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final bool showPremiumBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -993,6 +1017,14 @@ class _SettingsSwitchRow extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (showPremiumBadge) ...[
+                  SizedBox(width: 6.w),
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 16.sp,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ],
               ],
             ),
           ),

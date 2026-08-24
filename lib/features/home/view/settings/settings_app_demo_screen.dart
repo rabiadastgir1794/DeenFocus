@@ -13,10 +13,22 @@ import '../../../onboarding/view/widgets/feature_demo/feature_demo_kind.dart';
 
 /// Settings entry for interactive App Demo walkthroughs.
 class SettingsAppDemoScreen extends StatefulWidget {
-  const SettingsAppDemoScreen({super.key, this.onRequestEnableFocusMode});
+  const SettingsAppDemoScreen({
+    super.key,
+    this.onRequestEnableFocusMode,
+    this.initialFeatureKind,
+    this.popOnWalkthroughExit = false,
+  });
 
   /// Opens Focus and runs the existing enable / Superwall flow for [mode].
   final ValueChanged<FocusModeType>? onRequestEnableFocusMode;
+
+  /// When set, opens that feature walkthrough immediately (e.g. Home promo).
+  final FeatureDemoKind? initialFeatureKind;
+
+  /// If true, leaving the initial walkthrough pops this route instead of the
+  /// App Demo picker (used when opened from the Home Live Activity card).
+  final bool popOnWalkthroughExit;
 
   @override
   State<SettingsAppDemoScreen> createState() => _SettingsAppDemoScreenState();
@@ -26,6 +38,12 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
   AppLockDemoMode? _lockMode;
   FeatureDemoKind? _featureKind;
   bool _immersive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _featureKind = widget.initialFeatureKind;
+  }
 
   bool get _inWalkthrough => _lockMode != null || _featureKind != null;
 
@@ -46,6 +64,12 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
   }
 
   void _backToPicker() {
+    if (widget.popOnWalkthroughExit &&
+        widget.initialFeatureKind != null &&
+        _lockMode == null) {
+      Navigator.of(context).pop();
+      return;
+    }
     setState(() {
       _lockMode = null;
       _featureKind = null;

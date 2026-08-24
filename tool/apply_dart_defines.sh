@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Encodes repo-root dart_defines.json into ios/Flutter/DartDefines.xcconfig
-# so Xcode runs pick up GROQ_API_KEY the same way `flutter run --dart-define-from-file` does.
+# so Xcode runs pick up secrets the same way `flutter run --dart-define-from-file` does.
+#
+# Android: android/app/build.gradle.kts merges the same dart_defines.json into
+# Flutter's dart-defines (Flutter CLI alone only injects FLUTTER_* unless
+# --dart-define-from-file is passed).
 set -euo pipefail
 
 if [ -n "${SRCROOT:-}" ]; then

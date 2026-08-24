@@ -1908,6 +1908,24 @@ abstract class AppLocalizations {
   /// **'Block distracting apps during Salah'**
   String get homeFocusModeSubtitle;
 
+  /// No description provided for @homeLivePrayerUpdatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Prayer Updates'**
+  String get homeLivePrayerUpdatesTitle;
+
+  /// No description provided for @homeLivePrayerUpdatesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See your current and next prayer on your Lock Screen & Dynamic Island.'**
+  String get homeLivePrayerUpdatesBody;
+
+  /// No description provided for @homeLivePrayerUpdatesCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Live Updates'**
+  String get homeLivePrayerUpdatesCta;
+
   /// No description provided for @focusModeShortSalah.
   ///
   /// In en, this message translates to:
@@ -2410,6 +2428,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get supportUsLaunchFailed;
+
+  /// No description provided for @supportUsThankYouTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'JazakAllah khair'**
+  String get supportUsThankYouTitle;
+
+  /// No description provided for @supportUsThankYouBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for supporting DeenFocus. You can support again anytime.'**
+  String get supportUsThankYouBody;
+
+  /// No description provided for @supportUsPurchasePending.
+  ///
+  /// In en, this message translates to:
+  /// **'Your support is pending. We\'ll confirm it once Apple completes the purchase.'**
+  String get supportUsPurchasePending;
+
+  /// No description provided for @supportUsPurchaseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t complete your support payment. Please try again.'**
+  String get supportUsPurchaseFailed;
+
+  /// No description provided for @supportUsProductUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This support amount isn\'t available right now. Please try again later.'**
+  String get supportUsProductUnavailable;
 
   /// No description provided for @homeAiChatDescription.
   ///

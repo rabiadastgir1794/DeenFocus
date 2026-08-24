@@ -1,24 +1,36 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/config/support_config.dart';
+import '../model/support_contribution_result.dart';
+import '../services/donation_purchase_service.dart';
 import '../services/support_contact_service.dart';
 
 class SupportViewModel extends ChangeNotifier {
-  SupportViewModel({SupportContactService? contactService})
-      : _contactService = contactService ?? const SupportContactService();
+  SupportViewModel({
+    SupportContactService? contactService,
+    DonationPurchaser? donationPurchaser,
+  })  : _contactService = contactService ?? const SupportContactService(),
+        _donationPurchaser =
+            donationPurchaser ?? const SuperwallDonationPurchaser();
 
   final SupportContactService _contactService;
+  final DonationPurchaser _donationPurchaser;
 
   int _amount = SupportConfig.defaultContributionAmount;
   bool _isSubmitting = false;
   bool _isOpeningContact = false;
-  SupportLaunchResult? _lastResult;
+  SupportLaunchResult? _lastLaunchResult;
+  SupportContributionResult? _lastContributionResult;
 
   int get amount => _amount;
   bool get isSubmitting => _isSubmitting;
   bool get isOpeningContact => _isOpeningContact;
   bool get isBusy => _isSubmitting || _isOpeningContact;
-  SupportLaunchResult? get lastResult => _lastResult;
+  SupportLaunchResult? get lastResult => _lastLaunchResult;
+  SupportContributionResult? get lastContributionResult =>
+      _lastContributionResult;
+
+  String? get selectedProductId => SupportConfig.productIdForAmount(_amount);
 
   static List<int> get presetAmounts => SupportConfig.contributionAmounts;
   static int get defaultContributionAmount =>
@@ -28,27 +40,42 @@ class SupportViewModel extends ChangeNotifier {
     if (!SupportConfig.contributionAmounts.contains(value)) return;
     if (value == _amount) return;
     _amount = value;
-    _lastResult = null;
+    _lastLaunchResult = null;
+    _lastContributionResult = null;
     notifyListeners();
   }
 
   void clearLastResult() {
-    if (_lastResult == null) return;
-    _lastResult = null;
+    if (_lastLaunchResult == null && _lastContributionResult == null) return;
+    _lastLaunchResult = null;
+    _lastContributionResult = null;
     notifyListeners();
   }
 
-  /// One-time support payment. Never touches subscription / Superwall state.
-  Future<SupportLaunchResult> submitContribution() async {
-    if (_isSubmitting) return SupportLaunchResult.failed;
+  /// One-time support payment. Never touches subscription / `pro` state.
+  Future<SupportContributionResult> submitContribution() async {
+    if (_isSubmitting) return SupportContributionResult.failed;
     _isSubmitting = true;
-    _lastResult = null;
+    _lastLaunchResult = null;
+    _lastContributionResult = null;
     notifyListeners();
 
-    final result = await _contactService.submitContribution(amount: _amount);
+    SupportContributionResult result;
+    try {
+      final productId = SupportConfig.productIdForAmount(_amount);
+      if (productId != null && _donationPurchaser.isAvailable) {
+        result = await _donationPurchaser.purchase(productId);
+      } else if (productId != null && !_donationPurchaser.isAvailable) {
+        result = await _submitExternalContribution();
+      } else {
+        result = SupportContributionResult.productUnavailable;
+      }
+    } catch (_) {
+      result = SupportContributionResult.failed;
+    }
 
     _isSubmitting = false;
-    _lastResult = result;
+    _lastContributionResult = result;
     notifyListeners();
     return result;
   }
@@ -68,18 +95,30 @@ class SupportViewModel extends ChangeNotifier {
     );
   }
 
+  Future<SupportContributionResult> _submitExternalContribution() async {
+    final launch = await _contactService.submitContribution(amount: _amount);
+    _lastLaunchResult = launch;
+    return switch (launch) {
+      SupportLaunchResult.launched =>
+        SupportContributionResult.launchedExternally,
+      SupportLaunchResult.unavailable =>
+        SupportContributionResult.launchUnavailable,
+      SupportLaunchResult.failed => SupportContributionResult.failed,
+    };
+  }
+
   Future<SupportLaunchResult> _openContact(
     Future<SupportLaunchResult> Function() action,
   ) async {
     if (_isOpeningContact) return SupportLaunchResult.failed;
     _isOpeningContact = true;
-    _lastResult = null;
+    _lastLaunchResult = null;
     notifyListeners();
 
     final result = await action();
 
     _isOpeningContact = false;
-    _lastResult = result;
+    _lastLaunchResult = result;
     notifyListeners();
     return result;
   }

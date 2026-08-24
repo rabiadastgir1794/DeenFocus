@@ -1,0 +1,152 @@
+{
+  "identifier" : "021eb0cb-6b4f-4c64-900c-eeb4ff4e376b",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "10.00",
+      "familyShareable" : false,
+      "internalID" : "4eeadb63-6b2b-4914-8ff0-84f542926713",
+      "localizations" : [
+        {
+          "description" : "One-time support for DeenFocus",
+          "displayName" : "Support $10",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.deenfocus.donation.10",
+      "referenceName" : "Donation 10",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "25.00",
+      "familyShareable" : false,
+      "internalID" : "07e62c52-e101-4018-856b-c54ca6a71636",
+      "localizations" : [
+        {
+          "description" : "One-time support for DeenFocus",
+          "displayName" : "Support $25",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.deenfocus.donation.25",
+      "referenceName" : "Donation 25",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "50.00",
+      "familyShareable" : false,
+      "internalID" : "620e77f7-aa5c-49b9-bbd1-cc3a9d09b497",
+      "localizations" : [
+        {
+          "description" : "One-time support for DeenFocus",
+          "displayName" : "Support $50",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.deenfocus.donation.50",
+      "referenceName" : "Donation 50",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "100.00",
+      "familyShareable" : false,
+      "internalID" : "dc931299-7233-410a-971d-b34b2e9ae980",
+      "localizations" : [
+        {
+          "description" : "One-time support for DeenFocus",
+          "displayName" : "Support $100",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.deenfocus.donation.100",
+      "referenceName" : "Donation 100",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "250.00",
+      "familyShareable" : false,
+      "internalID" : "d21f34b1-f960-4f49-9d70-00bd88be0609",
+      "localizations" : [
+        {
+          "description" : "One-time support for DeenFocus",
+          "displayName" : "Support $250",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.deenfocus.donation.250",
+      "referenceName" : "Donation 250",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitError" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "5d8529da-95c7-47df-b409-cdab9a49531d",
+      "localizations" : [
+
+      ],
+      "name" : "Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "df8d175e-f263-44aa-ac5a-f68a5eb97d4e",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "DeenFocus Premium monthly",
+              "displayName" : "Premium Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.rnr.deenfocus.premium.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Monthly",
+          "subscriptionGroupID" : "5d8529da-95c7-47df-b409-cdab9a49531d",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "39.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "aa9f7846-6bf6-412a-a782-9e4b5c0f9caa",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "DeenFocus Premium yearly",
+              "displayName" : "Premium Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.rnr.deenfocus.premium.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium Yearly",
+          "subscriptionGroupID" : "5d8529da-95c7-47df-b409-cdab9a49531d",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/spacing.dart';
 import '../../../../core/services/app_notification_service.dart';
 import '../../../../core/services/permission_service.dart';
+import '../../../../core/services/prayer_alarm_enablement.dart';
 import '../../../../core/services/prayer_alarm_service.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../core/services/user_profile_service.dart';
@@ -18,10 +19,10 @@ import '../../helpers/prayer_label_helper.dart';
 import '../../model/home_models.dart';
 import '../../services/prayer_settings_service.dart';
 
-/// Global Prayer Alarms settings (master switch, snooze, per-prayer toggles).
+/// Global Prayer Alarms settings (master switch + per-prayer toggles).
 ///
 /// Enabling always runs the platform permission flow first. If required alarm
-/// authorization is denied, the master switch is turned back off.
+/// authorization is denied, the master switch and per-prayer toggles stay off.
 class SettingsPrayerAlarmsScreen extends StatefulWidget {
   const SettingsPrayerAlarmsScreen({super.key});
 
@@ -36,7 +37,6 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
   bool _busy = false;
   bool _enabled = false;
   bool _awaitingPermissionResult = false;
-  int _snoozeMinutes = StorageService.defaultPrayerAlarmSnoozeMinutes;
   PrayerAlarmCapabilities? _capabilities;
   PrayerAlarmAuthorizationStatus _auth =
       PrayerAlarmAuthorizationStatus.unavailable;
@@ -49,11 +49,11 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
 
   /// Switch reflects preference only when scheduling is actually allowed
   /// (or native alarms are unavailable and we keep the soft-notification path).
-  bool get _switchValue {
-    if (!_enabled) return false;
-    if (!_nativeSupported) return true;
-    return _schedulingAuthorized;
-  }
+  bool get _switchValue => PrayerAlarmEnablement.canSchedule(
+    masterEnabled: _enabled,
+    capabilities: _capabilities,
+    authorization: _auth,
+  );
 
   @override
   void initState() {
@@ -78,7 +78,6 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
   Future<void> _load() async {
     final prayerSettings = context.read<PrayerSettingsService>();
     final enabled = await StorageService.prayerAlarmsEnabled;
-    final snooze = await StorageService.prayerAlarmSnoozeMinutes;
     // Same in-memory + disk cache as Home prayer sheets.
     await prayerSettings.reload();
     final capabilities = await PrayerAlarmService.instance.getCapabilities(
@@ -102,7 +101,6 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     if (!mounted) return;
     setState(() {
       _enabled = effectiveEnabled;
-      _snoozeMinutes = snooze;
       _capabilities = capabilities;
       _auth = auth;
       _canUseFsi = fsi;
@@ -187,6 +185,46 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     );
   }
 
+  Future<void> _applyEnablementResult(PrayerAlarmEnablementResult result) async {
+    if (!mounted) return;
+    setState(() {
+      _capabilities = result.capabilities;
+      _auth = result.authorization;
+      _canUseFsi = result.canUseFullScreenIntent;
+    });
+
+    switch (result.status) {
+      case PrayerAlarmEnablementStatus.ready:
+        setState(() {
+          _enabled = true;
+          _awaitingPermissionResult = false;
+        });
+        await _reschedule();
+        if (Platform.isAndroid &&
+            result.canUseFullScreenIntent == false &&
+            mounted) {
+          await _showFsiOptionalDialog();
+        }
+      case PrayerAlarmEnablementStatus.awaitingSettings:
+        setState(() {
+          _enabled = true;
+          _awaitingPermissionResult = true;
+        });
+      case PrayerAlarmEnablementStatus.notificationDenied:
+        setState(() {
+          _enabled = false;
+          _awaitingPermissionResult = false;
+        });
+        await _showNotificationDeniedDialog();
+      case PrayerAlarmEnablementStatus.denied:
+        setState(() {
+          _enabled = false;
+          _awaitingPermissionResult = false;
+        });
+        await _showDeniedDialog();
+    }
+  }
+
   Future<void> _setEnabled(bool value) async {
     if (_busy) return;
     setState(() => _busy = true);
@@ -196,95 +234,14 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
           _enabled = false;
           _awaitingPermissionResult = false;
         });
-        await StorageService.setPrayerAlarmsEnabled(false);
-        await PrayerAlarmService.instance.cancelAll();
+        await PrayerAlarmEnablement.disableScheduling();
         // Restore soft Adhan/beep now that native no longer owns sound.
         await _rescheduleSoftOnly();
         return;
       }
 
-      // Soft notifications power the Android alarm presentation path.
-      if (Platform.isAndroid) {
-        final notificationsOk = await PermissionService.requestNotification();
-        if (!notificationsOk) {
-          await StorageService.setPrayerAlarmsEnabled(false);
-          await PrayerAlarmService.instance.cancelAll();
-          if (!mounted) return;
-          setState(() => _enabled = false);
-          await _showNotificationDeniedDialog();
-          return;
-        }
-      }
-
-      // Persist intent so returning from Settings can complete enablement.
-      await StorageService.setPrayerAlarmsEnabled(true);
-
-      final capabilities = await PrayerAlarmService.instance.getCapabilities(
-        forceRefresh: true,
-      );
-      if (!capabilities.supportsNativeAlarm) {
-        setState(() {
-          _enabled = true;
-          _capabilities = capabilities;
-        });
-        await PrayerAlarmService.instance.cancelAll();
-        return;
-      }
-
-      var auth = await PrayerAlarmService.instance.getAuthorizationStatus();
-      var requested = auth;
-      if (auth != PrayerAlarmAuthorizationStatus.authorized) {
-        requested = await PrayerAlarmService.instance.requestAuthorization();
-      }
-
-      // Re-read after iOS system sheet. On Android, Settings may still be open
-      // (request returns notDetermined) — complete on resume.
-      auth = await PrayerAlarmService.instance.getAuthorizationStatus();
-      if (requested == PrayerAlarmAuthorizationStatus.authorized) {
-        auth = PrayerAlarmAuthorizationStatus.authorized;
-      }
-      final fsi = Platform.isAndroid
-          ? await PrayerAlarmService.instance.canUseFullScreenIntent()
-          : null;
-
-      if (!mounted) return;
-
-      if (auth == PrayerAlarmAuthorizationStatus.authorized) {
-        setState(() {
-          _enabled = true;
-          _auth = auth;
-          _capabilities = capabilities;
-          _canUseFsi = fsi;
-        });
-        await _reschedule();
-        if (Platform.isAndroid && fsi == false && mounted) {
-          await _showFsiOptionalDialog();
-        }
-        return;
-      }
-
-      if (requested == PrayerAlarmAuthorizationStatus.notDetermined) {
-        // Waiting on system Settings — keep intent in storage; switch stays off
-        // until authorization is confirmed on resume.
-        setState(() {
-          _enabled = true;
-          _auth = auth;
-          _capabilities = capabilities;
-          _canUseFsi = fsi;
-          _awaitingPermissionResult = true;
-        });
-        return;
-      }
-
-      await StorageService.setPrayerAlarmsEnabled(false);
-      await PrayerAlarmService.instance.cancelAll();
-      setState(() {
-        _enabled = false;
-        _auth = auth;
-        _capabilities = capabilities;
-        _canUseFsi = fsi;
-      });
-      await _showDeniedDialog();
+      final result = await PrayerAlarmEnablement.ensureReadyToSchedule();
+      await _applyEnablementResult(result);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -350,58 +307,33 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
     if (_busy) return;
     setState(() => _busy = true);
     try {
-      await StorageService.setPrayerAlarmsEnabled(true);
-      final requested = await PrayerAlarmService.instance
-          .requestAuthorization();
-      var auth = await PrayerAlarmService.instance.getAuthorizationStatus();
-      if (requested == PrayerAlarmAuthorizationStatus.authorized) {
-        auth = PrayerAlarmAuthorizationStatus.authorized;
-      }
-      if (!mounted) return;
-      if (auth == PrayerAlarmAuthorizationStatus.authorized) {
-        setState(() {
-          _enabled = true;
-          _auth = auth;
-        });
-        await _reschedule();
-        return;
-      }
-      if (requested == PrayerAlarmAuthorizationStatus.notDetermined) {
-        setState(() {
-          _enabled = true;
-          _auth = auth;
-          _awaitingPermissionResult = true;
-        });
-        return;
-      }
-      await StorageService.setPrayerAlarmsEnabled(false);
-      await PrayerAlarmService.instance.cancelAll();
-      setState(() {
-        _enabled = false;
-        _auth = auth;
-        _awaitingPermissionResult = false;
-      });
-      await _showDeniedDialog();
+      final result = await PrayerAlarmEnablement.ensureReadyToSchedule();
+      await _applyEnablementResult(result);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _setSnooze(int minutes) async {
-    setState(() => _snoozeMinutes = minutes);
-    await StorageService.setPrayerAlarmSnoozeMinutes(minutes);
-    if (_switchValue) await _reschedule();
-  }
-
   Future<void> _setPrayerAlarm(TrackablePrayer prayer, bool enabled) async {
-    final prayerSettings = context.read<PrayerSettingsService>();
-    await prayerSettings.setAlertingEnabled(prayer, enabled);
-    // Soft always: mirrors home sheet and keeps Adhan ownership correct.
-    // Native only when master switch can schedule.
-    if (_switchValue) {
-      await _reschedule();
-    } else {
-      await _rescheduleSoftOnly();
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      final prayerSettings = context.read<PrayerSettingsService>();
+      if (enabled && !_switchValue) {
+        final result = await PrayerAlarmEnablement.ensureReadyToSchedule();
+        await _applyEnablementResult(result);
+        if (!result.canShowAlarmOn) return;
+      }
+      if (!enabled && !_switchValue) return;
+
+      await prayerSettings.setAlarmEnabled(prayer, enabled);
+      if (_switchValue) {
+        await _reschedule();
+      } else {
+        await _rescheduleSoftOnly();
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -517,40 +449,6 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
                         ],
                         SizedBox(height: Spacing.lg.toDouble()),
                         Text(
-                          l10n.prayerAlarmsSnoozeLabel,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        SizedBox(height: Spacing.sm.toDouble()),
-                        _SettingsCard(
-                          borderColor: borderColor,
-                          child: Column(
-                            children: [
-                              for (final minutes
-                                  in StorageService
-                                      .prayerAlarmSnoozeOptionMinutes)
-                                ListTile(
-                                  enabled: _switchValue && !_busy,
-                                  title: Text(
-                                    l10n.prayerAlarmsSnoozeMinutes(minutes),
-                                  ),
-                                  trailing: Icon(
-                                    _snoozeMinutes == minutes
-                                        ? Icons.check_circle_rounded
-                                        : Icons.circle_outlined,
-                                    color: _snoozeMinutes == minutes
-                                        ? colorScheme.primary
-                                        : colorScheme.outline,
-                                  ),
-                                  onTap: !_switchValue || _busy
-                                      ? null
-                                      : () => unawaited(_setSnooze(minutes)),
-                                ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: Spacing.lg.toDouble()),
-                        Text(
                           l10n.prayerAlarmsPerPrayerSection,
                           style: Theme.of(context).textTheme.titleSmall
                               ?.copyWith(fontWeight: FontWeight.w700),
@@ -572,10 +470,15 @@ class _SettingsPrayerAlarmsScreenState extends State<SettingsPrayerAlarmsScreen>
                                       prayer.label(l10n),
                                     ),
                                   ),
-                                  value: prayerSettings
-                                      .forPrayer(prayer)
-                                      .alarmEnabled,
-                                  onChanged: !_switchValue || _busy
+                                  value: PrayerAlarmEnablement.effectiveAlarmEnabled(
+                                    storedAlarmEnabled: prayerSettings
+                                        .forPrayer(prayer)
+                                        .alarmEnabled,
+                                    masterEnabled: _enabled,
+                                    capabilities: _capabilities,
+                                    authorization: _auth,
+                                  ),
+                                  onChanged: _busy
                                       ? null
                                       : (value) => unawaited(
                                           _setPrayerAlarm(prayer, value),

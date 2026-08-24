@@ -42,6 +42,7 @@ class MainActivity : AudioServiceActivity() {
     private val quranTranslationMethodChannelName = "com.app.deenly.deenly/quran_translations"
     private val quranTranslationEventChannelName = "com.app.deenly.deenly/quran_translation_events"
     private val appUsageMethodChannelName = "com.app.deenly.deenly/app_usage"
+    private val donationsMethodChannelName = SuperwallDonationBridge.CHANNEL
     private var tajweedChannelHandler: TajweedChannelHandler? = null
     private var quranTranslationChannelHandler: com.rnr.deenfocus.qurantranslation.QuranTranslationChannelHandler? = null
 
@@ -127,6 +128,11 @@ class MainActivity : AudioServiceActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             appUsageMethodChannelName,
         ).setMethodCallHandler(AppUsageChannelHandler(applicationContext))
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            donationsMethodChannelName,
+        ).setMethodCallHandler(SuperwallDonationBridge())
     }
 
     /** Mirrors iOS `didReceiveMemoryWarningNotification` -> unload native model sessions. */

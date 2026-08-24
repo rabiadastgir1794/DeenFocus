@@ -24,18 +24,14 @@ class PrayerSettingsService extends ChangeNotifier {
   Map<TrackablePrayer, int> get customTimeOverrides =>
       _state.customTimeOverrides;
 
-  /// Loads (or reloads) from disk and repairs legacy soft↔alarm desync.
+  /// Loads (or reloads) from disk. Soft notification and native alarm flags
+  /// stay independent so Home and Settings can toggle them separately.
   Future<void> reload() async {
     final raw = await StorageService.prayerSettingsJson;
-    final loaded = raw == null
+    _state = raw == null
         ? PrayerSettingsState.defaults()
         : PrayerSettingsState.fromJson(raw);
-    final normalized = loaded.normalizeAlertingSync();
-    _state = normalized;
     _loaded = true;
-    if (raw != null && normalized.toJson() != loaded.toJson()) {
-      await StorageService.setPrayerSettingsJson(normalized.toJson());
-    }
     notifyListeners();
   }
 
@@ -58,9 +54,22 @@ class PrayerSettingsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Soft notification and native alarm stay in lockstep for [prayer].
+  /// Soft notification and native alarm together (legacy / both-on helpers).
   Future<void> setAlertingEnabled(TrackablePrayer prayer, bool enabled) async {
     final entry = forPrayer(prayer).withAlertingEnabled(enabled);
+    await replaceEntry(prayer, entry);
+  }
+
+  Future<void> setNotificationsEnabled(
+    TrackablePrayer prayer,
+    bool enabled,
+  ) async {
+    final entry = forPrayer(prayer).copyWith(notificationsEnabled: enabled);
+    await replaceEntry(prayer, entry);
+  }
+
+  Future<void> setAlarmEnabled(TrackablePrayer prayer, bool enabled) async {
+    final entry = forPrayer(prayer).copyWith(alarmEnabled: enabled);
     await replaceEntry(prayer, entry);
   }
 

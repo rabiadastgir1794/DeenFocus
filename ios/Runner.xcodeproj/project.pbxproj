@@ -84,6 +84,7 @@
 		F60000000000000000000002 /* PrayerLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */; };
 		F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000012 /* PrayerLiveActivityBridge.swift */; };
 		F60000000000000000000004 /* PrayerLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60000000000000000000013 /* PrayerLiveActivityWidget.swift */; };
+		F70000000000000000000001 /* SuperwallDonationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70000000000000000000011 /* SuperwallDonationBridge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,6 +233,8 @@
 		F60000000000000000000011 /* PrayerLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityAttributes.swift; sourceTree = "<group>"; };
 		F60000000000000000000012 /* PrayerLiveActivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityBridge.swift; sourceTree = "<group>"; };
 		F60000000000000000000013 /* PrayerLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerLiveActivityWidget.swift; sourceTree = "<group>"; };
+		F70000000000000000000011 /* SuperwallDonationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuperwallDonationBridge.swift; sourceTree = "<group>"; };
+		F80000000000000000000011 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -345,6 +348,8 @@
 				F4A2GRP00000000000000001 /* AssetDownload */,
 				F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */,
 				F21000000000000000000011 /* IosAppUsageBridge.swift */,
+				F70000000000000000000011 /* SuperwallDonationBridge.swift */,
+				F80000000000000000000011 /* Products.storekit */,
 				F50000000000000000000011 /* PrayerAlarmBridge.swift */,
 				F60000000000000000000012 /* PrayerLiveActivityBridge.swift */,
 				F50000000000000000000012 /* Localizable.strings */,
@@ -888,6 +893,7 @@
 				F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
 				F21000000000000000000001 /* IosAppUsageBridge.swift in Sources */,
+				F70000000000000000000001 /* SuperwallDonationBridge.swift in Sources */,
 				F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */,
 				F60000000000000000000003 /* PrayerLiveActivityBridge.swift in Sources */,
 				F60000000000000000000001 /* PrayerLiveActivityAttributes.swift in Sources */,
