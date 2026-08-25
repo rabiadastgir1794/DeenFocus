@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/tasbih_local_repository.dart';
 import 'widgets/tasbih_beads_arc.dart';
@@ -133,9 +133,9 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
         _sessionTotal = 0;
       });
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.tasbihSessionSaved)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.tasbihSessionSaved)));
     });
   }
 
@@ -167,29 +167,32 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final softCard =
-        isDark ? colorScheme.surfaceContainerHighest : AppColors.surfaceLight;
+    final softCard = isDark
+        ? colorScheme.surfaceContainerHighest
+        : AppColors.surfaceLight;
 
     return Stack(
       children: [
         Scaffold(
-          appBar: CustomAppBar(
-            title: l10n.tasbihTabTitle,
-            subtitle: l10n.tasbihLoopLabel(_loopsCompleted + 1),
-            onBack: () => Navigator.of(context).pop(),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: 8.w),
-                child: Material(
-                  color: softCard,
-                  borderRadius: BorderRadius.circular(999),
-                  child: Row(
+          body: SafeArea(
+            child: Column(
+              children: [
+                AppCenteredNavHeader(
+                  title: l10n.tasbihTabTitle,
+                  subtitle: l10n.tasbihLoopLabel(_loopsCompleted + 1),
+                  backLabel: l10n.calendarBack,
+                  onBack: () => Navigator.of(context).pop(),
+                  trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         tooltip: l10n.tasbihRestart,
                         onPressed: _restartSession,
-                        icon: const Icon(Icons.refresh_rounded),
+                        visualDensity: VisualDensity.compact,
+                        icon: Icon(
+                          Icons.refresh_rounded,
+                          color: colorScheme.primary,
+                        ),
                       ),
                       PopupMenuButton<_TasbihDetailOption>(
                         padding: EdgeInsets.zero,
@@ -204,155 +207,158 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                             child: Text(l10n.tasbihResetTotal),
                           ),
                         ],
-                        icon: const Icon(Icons.more_horiz_rounded),
+                        icon: Icon(
+                          Icons.more_horiz_rounded,
+                          color: colorScheme.primary,
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 0),
+                Expanded(
                   child: Column(
                     children: [
-                      Text(
-                        '$_countInLoop',
-                        style: TextStyle(
-                          fontSize: 64.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                          height: 1,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 0),
+                        child: Column(
+                          children: [
+                            Text(
+                              '$_countInLoop',
+                              style: TextStyle(
+                                fontSize: 64.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary,
+                                height: 1,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            InkWell(
+                              onTap: _editCustomGoal,
+                              borderRadius: BorderRadius.circular(8.r),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w,
+                                  vertical: 4.h,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      '/ $_goal',
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                    SizedBox(width: 6.w),
+                                    Icon(
+                                      Icons.edit_outlined,
+                                      size: 16.sp,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 14.h),
+                            Wrap(
+                              spacing: 8.w,
+                              runSpacing: 8.h,
+                              alignment: WrapAlignment.center,
+                              children: [
+                                for (final preset in _goalPresets)
+                                  _GoalChip(
+                                    label: '$preset',
+                                    selected: _goal == preset,
+                                    onTap: () => _setGoal(preset),
+                                  ),
+                                if (!_goalPresets.contains(_goal))
+                                  _GoalChip(
+                                    label: '$_goal',
+                                    selected: true,
+                                    onTap: _editCustomGoal,
+                                  ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 4.h),
-                      InkWell(
-                        onTap: _editCustomGoal,
-                        borderRadius: BorderRadius.circular(8.r),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
+                      SizedBox(height: 16.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: SizedBox(
+                          height: 148.h,
+                          width: double.infinity,
+                          child: TasbihBeadsArc(
+                            beadColor: _beadColor,
+                            onBeadsCrossed: _applyBeadCrossings,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        l10n.tasbihSwipeHint,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          for (var i = 0; i < _beadColors.length; i++) ...[
+                            if (i > 0) SizedBox(width: 10.w),
+                            _ColorDot(
+                              color: _beadColors[i],
+                              selected: _beadColorIndex == i,
+                              onTap: () => setState(() => _beadColorIndex = i),
+                            ),
+                          ],
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
+                          child: Column(
                             children: [
+                              _DhikrCard(
+                                item: _item,
+                                backgroundColor: softCard,
+                                onViewAll: () => Navigator.of(context).pop(),
+                                onSaveSession: _saveSession,
+                              ),
+                              SizedBox(height: 12.h),
                               Text(
-                                '/ $_goal',
+                                l10n.tasbihSessionSummary(
+                                  _sessionTotal,
+                                  _goal,
+                                  _loopsCompleted,
+                                ),
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
                                   color: colorScheme.onSurfaceVariant,
                                 ),
                               ),
-                              SizedBox(width: 6.w),
-                              Icon(
-                                Icons.edit_outlined,
-                                size: 16.sp,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
+                              if (_item.totalCount > 0) ...[
+                                SizedBox(height: 4.h),
+                                Text(
+                                  '${l10n.tasbihGrandTotalLabel}: ${_item.totalCount}',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 14.h),
-                      Wrap(
-                        spacing: 8.w,
-                        runSpacing: 8.h,
-                        alignment: WrapAlignment.center,
-                        children: [
-                          for (final preset in _goalPresets)
-                            _GoalChip(
-                              label: '$preset',
-                              selected: _goal == preset,
-                              onTap: () => _setGoal(preset),
-                            ),
-                          if (!_goalPresets.contains(_goal))
-                            _GoalChip(
-                              label: '$_goal',
-                              selected: true,
-                              onTap: _editCustomGoal,
-                            ),
-                        ],
-                      ),
                     ],
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: SizedBox(
-                    height: 148.h,
-                    width: double.infinity,
-                    child: TasbihBeadsArc(
-                      beadColor: _beadColor,
-                      onBeadsCrossed: _applyBeadCrossings,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  l10n.tasbihSwipeHint,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (var i = 0; i < _beadColors.length; i++) ...[
-                      if (i > 0) SizedBox(width: 10.w),
-                      _ColorDot(
-                        color: _beadColors[i],
-                        selected: _beadColorIndex == i,
-                        onTap: () => setState(() => _beadColorIndex = i),
-                      ),
-                    ],
-                  ],
-                ),
-                SizedBox(height: 12.h),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
-                    child: Column(
-                      children: [
-                        _DhikrCard(
-                          item: _item,
-                          backgroundColor: softCard,
-                          onViewAll: () => Navigator.of(context).pop(),
-                          onSaveSession: _saveSession,
-                        ),
-                        SizedBox(height: 12.h),
-                        Text(
-                          l10n.tasbihSessionSummary(
-                            _sessionTotal,
-                            _goal,
-                            _loopsCompleted,
-                          ),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        if (_item.totalCount > 0) ...[
-                          SizedBox(height: 4.h),
-                          Text(
-                            '${l10n.tasbihGrandTotalLabel}: ${_item.totalCount}',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
                   ),
                 ),
               ],
@@ -431,8 +437,8 @@ class _ColorDot extends StatelessWidget {
             color: selected
                 ? AppColors.primary
                 : (isLight
-                    ? Colors.black26
-                    : Colors.white.withValues(alpha: 0.35)),
+                      ? Colors.black26
+                      : Colors.white.withValues(alpha: 0.35)),
             width: selected ? 2.5 : 1,
           ),
           boxShadow: [
@@ -483,10 +489,7 @@ class _DhikrCard extends StatelessWidget {
             children: [
               Text(
                 l10n.tasbihCurrentDhikr,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
               ),
               const Spacer(),
               TextButton(
@@ -594,9 +597,7 @@ class _CustomGoalDialogState extends State<_CustomGoalDialog> {
         controller: _controller,
         keyboardType: TextInputType.number,
         autofocus: true,
-        decoration: InputDecoration(
-          hintText: l10n.tasbihCustomGoalHint,
-        ),
+        decoration: InputDecoration(hintText: l10n.tasbihCustomGoalHint),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onSubmitted: (_) => _save(),
       ),
@@ -605,10 +606,7 @@ class _CustomGoalDialogState extends State<_CustomGoalDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        FilledButton(
-          onPressed: _save,
-          child: Text(l10n.save),
-        ),
+        FilledButton(onPressed: _save, child: Text(l10n.save)),
       ],
     );
   }

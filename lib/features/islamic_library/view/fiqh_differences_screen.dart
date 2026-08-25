@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
@@ -89,31 +89,41 @@ class _FiqhDifferencesScreenState extends State<FiqhDifferencesScreen>
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.libraryModuleFiqh,
-        subtitle: l10n.libraryModuleFiqhSub,
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: query,
-              onQueryChanged: (value) => setState(() => query = value),
-              itemCount: indexes.length,
-              totalCount: _topics.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final topic = _topics[index];
-                return LearningItemTile(
-                  title: topic.title,
-                  subtitle: topic.overview,
-                  leadingLabel: '${topic.index}',
-                  bookmarked: bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.balance_outlined,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.libraryModuleFiqh,
+              subtitle: l10n.libraryModuleFiqhSub,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: query,
+                      onQueryChanged: (value) => setState(() => query = value),
+                      itemCount: indexes.length,
+                      totalCount: _topics.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final topic = _topics[index];
+                        return LearningItemTile(
+                          title: topic.title,
+                          subtitle: topic.overview,
+                          leadingLabel: '${topic.index}',
+                          bookmarked: bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.balance_outlined,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

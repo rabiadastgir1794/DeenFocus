@@ -21,7 +21,7 @@ import 'surah_detail_bottom_sheet.dart';
 import 'widgets/continue_reading_card.dart';
 import 'widgets/quran_page_grid.dart';
 import 'widgets/quran_reader_theme.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import 'widgets/quran_reading_mode_tabs.dart';
 
 class QuranReaderScreen extends StatefulWidget {
@@ -293,9 +293,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     await QuranReadingSettingsLauncher.open(context);
     if (!mounted) return;
     final themeName = await StorageService.quranReadingColorTheme;
-    setState(
-      () => _colorTheme = QuranReadingColorTheme.fromName(themeName),
-    );
+    setState(() => _colorTheme = QuranReadingColorTheme.fromName(themeName));
     await _loadContinueReading();
   }
 
@@ -392,8 +390,10 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     final metadata = _metadata ?? await MushafMetadata.load();
 
     // Page: "15" or "page 15"
-    final pageMatch = RegExp(r'^(?:page\s*)?(\d{1,3})$', caseSensitive: false)
-        .firstMatch(lower);
+    final pageMatch = RegExp(
+      r'^(?:page\s*)?(\d{1,3})$',
+      caseSensitive: false,
+    ).firstMatch(lower);
     if (pageMatch != null) {
       final page = int.tryParse(pageMatch.group(1)!);
       if (page != null && page >= 1 && page <= metadata.totalPages) {
@@ -410,8 +410,10 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     }
 
     // Juz: "juz 3" or "3" when small
-    final juzMatch = RegExp(r'^(?:juz\s*)?(\d{1,2})$', caseSensitive: false)
-        .firstMatch(lower);
+    final juzMatch = RegExp(
+      r'^(?:juz\s*)?(\d{1,2})$',
+      caseSensitive: false,
+    ).firstMatch(lower);
     if (juzMatch != null) {
       final juz = int.tryParse(juzMatch.group(1)!);
       if (juz != null && juz >= 1 && juz <= metadata.totalJuz) {
@@ -428,7 +430,9 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     }
 
     // Ayah: "2:255" or "2 255"
-    final ayahMatch = RegExp(r'^(\d{1,3})\s*[:\-]\s*(\d{1,3})$').firstMatch(query);
+    final ayahMatch = RegExp(
+      r'^(\d{1,3})\s*[:\-]\s*(\d{1,3})$',
+    ).firstMatch(query);
     if (ayahMatch != null) {
       final surah = int.parse(ayahMatch.group(1)!);
       final ayah = int.parse(ayahMatch.group(2)!);
@@ -530,10 +534,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     }
   }
 
-  Future<void> _openSurahDetail(
-    SurahSummary surah, {
-    int? initialAyah,
-  }) async {
+  Future<void> _openSurahDetail(SurahSummary surah, {int? initialAyah}) async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) =>
@@ -587,83 +588,86 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     return QuranReaderThemeScope(
       palette: palette,
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: l10n.libraryModuleQuran,
-          subtitle: l10n.libraryModuleQuranSub,
-          actions: [
-            IconButton(
-              tooltip: l10n.readingSettingsTitle,
-              icon: Icon(
-                Icons.tune_rounded,
-                color: colorScheme.onSurfaceVariant,
-              ),
-              onPressed: _openReadingSettings,
-            ),
-          ],
-        ),
         body: SafeArea(
-          top: false,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_continueReading != null) ...[
-                  SizedBox(height: 8.h),
-                  ContinueReadingCard(
-                    mode: _continueReading!.mode,
-                    surahName: _continueReading!.surahName,
-                    ayahNumber: _continueReading!.ayahNumber,
-                    pageNumber: _continueReading!.pageNumber,
-                    juzNumber: _continueReading!.juzNumber,
-                    juzProgressPercent: _continueReading!.juzProgressPercent,
-                    onTap: _openContinueReading,
-                  ),
-                ],
-                SizedBox(height: 12.h),
-                _QuickActionsRow(
-                  bookmarkCount: _bookmarkCount,
-                  lastTajweed: _lastTajweedLabel,
-                  lastListened: _lastListenedLabel,
-                  onTajweed: () => unawaited(_openQuickTajweed()),
-                  onBookmarks: _openBookmarks,
-                  onLastListened: _openLastListened,
+          child: Column(
+            children: [
+              AppCenteredNavHeader(
+                title: l10n.libraryModuleQuran,
+                subtitle: l10n.libraryModuleQuranSub,
+                backLabel: l10n.calendarBack,
+                onBack: () => Navigator.of(context).maybePop(),
+                trailing: IconButton(
+                  tooltip: l10n.readingSettingsTitle,
+                  onPressed: _openReadingSettings,
+                  icon: Icon(Icons.tune_rounded, color: colorScheme.primary),
                 ),
-                SizedBox(height: 14.h),
-                QuranReadingModeTabs(
-                  selected: _selectedMode,
-                  onSelected: _onModeSelected,
-                  surahLabel: l10n.quranModeSurah,
-                  juzLabel: l10n.quranModeJuz,
-                  pageLabel: l10n.quranModePage,
-                ),
-                SizedBox(height: 14.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: l10n.quranSearchHintExtended,
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        size: 18.sp,
-                        color: colorScheme.onSurfaceVariant,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_continueReading != null) ...[
+                        SizedBox(height: 8.h),
+                        ContinueReadingCard(
+                          mode: _continueReading!.mode,
+                          surahName: _continueReading!.surahName,
+                          ayahNumber: _continueReading!.ayahNumber,
+                          pageNumber: _continueReading!.pageNumber,
+                          juzNumber: _continueReading!.juzNumber,
+                          juzProgressPercent:
+                              _continueReading!.juzProgressPercent,
+                          onTap: _openContinueReading,
+                        ),
+                      ],
+                      SizedBox(height: 12.h),
+                      _QuickActionsRow(
+                        bookmarkCount: _bookmarkCount,
+                        lastTajweed: _lastTajweedLabel,
+                        lastListened: _lastListenedLabel,
+                        onTajweed: () => unawaited(_openQuickTajweed()),
+                        onBookmarks: _openBookmarks,
+                        onLastListened: _openLastListened,
                       ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
+                      SizedBox(height: 14.h),
+                      QuranReadingModeTabs(
+                        selected: _selectedMode,
+                        onSelected: _onModeSelected,
+                        surahLabel: l10n.quranModeSurah,
+                        juzLabel: l10n.quranModeJuz,
+                        pageLabel: l10n.quranModePage,
                       ),
-                    ),
+                      SizedBox(height: 14.h),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            hintText: l10n.quranSearchHintExtended,
+                            prefixIcon: Icon(
+                              Icons.search_rounded,
+                              size: 18.sp,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 12.h,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Expanded(child: _buildBody(context, l10n)),
+                    ],
                   ),
                 ),
-                SizedBox(height: 12.h),
-                Expanded(child: _buildBody(context, l10n)),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -716,7 +720,10 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
           ),
           tileColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
           leading: Icon(_searchIcon(item.kind), color: colorScheme.primary),
-          title: Text(item.title, style: TextStyle(fontWeight: FontWeight.w600)),
+          title: Text(
+            item.title,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
           subtitle: Text(item.subtitle),
           onTap: () => unawaited(_openSearchResult(item)),
         );

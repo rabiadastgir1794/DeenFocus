@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
+import '../../../l10n/app_localizations.dart';
 import 'learning_card_actions.dart';
 
 /// Detail page shell: scrollable body + bookmark/copy/share.
@@ -31,20 +32,25 @@ class LearningDetailScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: title, subtitle: subtitle),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: child,
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: title,
+              subtitle: subtitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
-          ),
-          if (_hasActions)
-            SafeArea(
-              top: false,
-              child: Padding(
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: child,
+              ),
+            ),
+            if (_hasActions)
+              Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
                 child: LearningCardActions(
                   isBookmarked: isBookmarked,
@@ -54,8 +60,8 @@ class LearningDetailScaffold extends StatelessWidget {
                   onShare: () => onShare?.call(),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

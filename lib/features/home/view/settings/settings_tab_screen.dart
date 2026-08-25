@@ -753,43 +753,49 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: l10n.settingsLocationLabel),
-      body: Column(
-        children: [
-          Expanded(
-            child: OnboardingLocationPage(
-              initialSelection: widget.initialSelection,
-              onLocationSelected: (value) {
-                setState(() {
-                  _selectedLocation = value;
-                });
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.settingsLocationLabel,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).pop(),
             ),
-          ),
-          if (!keyboardOpen)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _selectedLocation == null || _saving
-                      ? null
-                      : () async {
-                          setState(() => _saving = true);
-                          await context.read<UserProfileService>().setLocation(
-                            _selectedLocation!,
-                          );
-                          if (context.mounted) Navigator.of(context).pop();
-                        },
-                  child: Text(
-                    _saving
-                        ? l10n.settingsSavingLocation
-                        : l10n.settingsSaveLocation,
+            Expanded(
+              child: OnboardingLocationPage(
+                initialSelection: widget.initialSelection,
+                onLocationSelected: (value) {
+                  setState(() {
+                    _selectedLocation = value;
+                  });
+                },
+              ),
+            ),
+            if (!keyboardOpen)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: _selectedLocation == null || _saving
+                        ? null
+                        : () async {
+                            setState(() => _saving = true);
+                            await context
+                                .read<UserProfileService>()
+                                .setLocation(_selectedLocation!);
+                            if (context.mounted) Navigator.of(context).pop();
+                          },
+                    child: Text(
+                      _saving
+                          ? l10n.settingsSavingLocation
+                          : l10n.settingsSaveLocation,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -803,104 +809,115 @@ class SettingsAboutScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: l10n.settingsAboutTitle),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.settingsAboutTitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).pop(),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.35,
+                        ),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Icon(
+                            Icons.mosque_outlined,
+                            size: 40,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.appTitle,
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.settingsAboutTagline,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          l10n.settingsAboutDescription,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                        _AboutFeatureItem(
+                          text: l10n.settingsAboutFeature1,
+                          colorScheme: colorScheme,
+                        ),
+                        const SizedBox(height: 10),
+                        _AboutFeatureItem(
+                          text: l10n.settingsAboutFeature2,
+                          colorScheme: colorScheme,
+                        ),
+                        const SizedBox(height: 10),
+                        _AboutFeatureItem(
+                          text: l10n.settingsAboutFeature3,
+                          colorScheme: colorScheme,
+                        ),
+                        const SizedBox(height: 10),
+                        _AboutFeatureItem(
+                          text: l10n.settingsAboutFeature4,
+                          colorScheme: colorScheme,
+                        ),
+                        const SizedBox(height: 10),
+                        _AboutFeatureItem(
+                          text: l10n.settingsAboutFeature5,
+                          colorScheme: colorScheme,
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            l10n.settingsAboutFocusDescription,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            l10n.settingsAboutFooter,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Column(
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Icon(
-                    Icons.mosque_outlined,
-                    size: 40,
-                    color: colorScheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.appTitle,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.settingsAboutTagline,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  l10n.settingsAboutDescription,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                _AboutFeatureItem(
-                  text: l10n.settingsAboutFeature1,
-                  colorScheme: colorScheme,
-                ),
-                const SizedBox(height: 10),
-                _AboutFeatureItem(
-                  text: l10n.settingsAboutFeature2,
-                  colorScheme: colorScheme,
-                ),
-                const SizedBox(height: 10),
-                _AboutFeatureItem(
-                  text: l10n.settingsAboutFeature3,
-                  colorScheme: colorScheme,
-                ),
-                const SizedBox(height: 10),
-                _AboutFeatureItem(
-                  text: l10n.settingsAboutFeature4,
-                  colorScheme: colorScheme,
-                ),
-                const SizedBox(height: 10),
-                _AboutFeatureItem(
-                  text: l10n.settingsAboutFeature5,
-                  colorScheme: colorScheme,
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    l10n.settingsAboutFocusDescription,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    l10n.settingsAboutFooter,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,47 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-25 — Android AI Tajweed Settings download audit fix.
+> Last updated: 2026-08-25 — Calendar-style headers across Quran, Learn, Tasbih, and Settings.
+
+## Status: Calendar-style header (Calculation Method) (2026-08-25)
+Settings Calculation Method uses `AppCenteredNavHeader` like Calendar (Back
+on the left, title centered). List content is unchanged.
+
+## Status: Calendar-style headers (Asr / Tasbih / About / Location) (2026-08-25)
+Asr Calculation, Tasbih detail, About Deen Focus, and Settings Location now
+use `AppCenteredNavHeader` (same back control and centered title as Calendar).
+Tasbih keeps reset and overflow actions in the header trailing slot, with
+loop count as the subtitle.
+
+## Status: Learn module Calendar-style headers (2026-08-25)
+Prayer & Islamic Methods (plus guide readers), 99 Names of Allah, Fiqh &
+Traditions, Pillars of Islam/Iman, Prophet Muhammad, and Islamic Occasions
+now use `AppCenteredNavHeader` like Calendar/Hadith/Duas.
+
+## Status: Hadith Calendar-style headers (2026-08-25)
+Hadith collections and collection readers now use `AppCenteredNavHeader`.
+Subtitle in that shared header is 11px and wraps fully (no ellipsis) so copy
+like “Collections from authentic sources” is not clipped. Calendar title-only
+layout is unchanged.
+
+## Status: Calendar-style headers (2026-08-25)
+Quran, Surah, Reading Settings, Quran Bookmarks, Duas categories/list,
+Tajweed practice, and learning detail screens now use `AppCenteredNavHeader`
+(same back control, centered title, padding, and min height as Calendar).
+Optional subtitle stacks under the title and wraps fully so long copy is
+not clipped. Title stays at most 2 lines. Header copy uses l10n, including
+`quranSurahHeaderSubtitle` and `tajweedPracticeAyahTitle`. Branch:
+`feature/localize-reading-screens`.
+
+## Status: Reading Settings / widgets onboarding localization (2026-08-25)
+Reading Settings and the onboarding Widgets/Live Activities page already used
+`AppLocalizations` keys, but most locales still fell back to English (Chinese
+title vs English labels). Filled translations in all `lib/l10n/app_*.arb`
+files (ar, az, de, es, fr, hi, it, nl, pt, ro, ru, zh). Preview ayah 1:1 now
+loads from the selected translation pack, with
+`readingSettingsTajweedFreePreviewTranslation` as fallback. Translation picker
+download error and size label are localized. Branch:
+`feature/localize-reading-screens`. Script:
+`tool/l10n_reading_settings_onboarding.py`.
 
 ## Status: Android Settings download dead-tap (2026-08-25)
 Tapping download on **AI Quran Tajweed** (lock visible) did nothing on Android

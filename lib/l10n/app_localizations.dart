@@ -2993,6 +2993,12 @@ abstract class AppLocalizations {
   /// **'verses'**
   String get quranVersesLabel;
 
+  /// No description provided for @quranSurahHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} • {count} verses'**
+  String quranSurahHeaderSubtitle(String name, int count);
+
   /// No description provided for @quranTextOptions.
   ///
   /// In en, this message translates to:
@@ -3664,6 +3670,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get readingSettingsResetHistoryButton;
+
+  /// No description provided for @readingSettingsTranslationDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not download {name}. Try again when online.'**
+  String readingSettingsTranslationDownloadFailed(String name);
+
+  /// No description provided for @readingSettingsTranslationSizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} MB'**
+  String readingSettingsTranslationSizeMb(String size);
 
   /// No description provided for @tajweedListenToAyah.
   ///
@@ -7979,6 +7997,12 @@ abstract class AppLocalizations {
   /// **'Tajweed Practice'**
   String get tajweedPracticeTitle;
 
+  /// No description provided for @tajweedPracticeAyahTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{surah} · {ref}'**
+  String tajweedPracticeAyahTitle(String surah, String ref);
+
   /// No description provided for @tajweedDownloadTitle.
   ///
   /// In en, this message translates to:
@@ -8056,6 +8080,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI Tajweed practice is not available on this device.'**
   String get tajweedErrorUnsupported;
+
+  /// No description provided for @sharePromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out this on DeenFocus 🌙'**
+  String get sharePromoTitle;
+
+  /// No description provided for @sharePromoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A simple app to help you stay focused on your Deen, pray on time and build better habits.'**
+  String get sharePromoBody;
+
+  /// No description provided for @sharePromoDownloadHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Download DeenFocus:'**
+  String get sharePromoDownloadHeading;
+
+  /// No description provided for @sharePromoAppStoreLine.
+  ///
+  /// In en, this message translates to:
+  /// **'🍎 App Store: {url}'**
+  String sharePromoAppStoreLine(String url);
+
+  /// No description provided for @sharePromoPlayStoreLine.
+  ///
+  /// In en, this message translates to:
+  /// **'🤖 Google Play: {url}'**
+  String sharePromoPlayStoreLine(String url);
+
+  /// No description provided for @shareBrandName.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus'**
+  String get shareBrandName;
+
+  /// No description provided for @shareBrandTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your companion for a better Deen, every day.'**
+  String get shareBrandTagline;
+
+  /// No description provided for @shareDownloadCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Download DeenFocus'**
+  String get shareDownloadCta;
+
+  /// No description provided for @shareAppStoreBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store'**
+  String get shareAppStoreBadge;
+
+  /// No description provided for @sharePlayStoreBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play'**
+  String get sharePlayStoreBadge;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to share. Please try again.'**
+  String get shareFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -339,66 +339,65 @@ class AppLocalizationsAr extends AppLocalizations {
       'استكشف كل ما يقدمه Deen Focus. اضغط على وضع التركيز لترى كيف يعمل.';
 
   @override
-  String get onboardingWidgetsLiveTitle => 'Your prayers, always within reach';
+  String get onboardingWidgetsLiveTitle => 'صلواتك، دائمًا في متناول يدك';
 
   @override
   String get onboardingWidgetsLiveSubtitle =>
-      'Stay connected with what matters most — right from your Home Screen or Lock Screen.';
+      'ابقَ على تواصل مع ما يهمك أكثر — مباشرة من الشاشة الرئيسية أو شاشة القفل.';
 
   @override
-  String get onboardingWidgetsSectionTitle => 'Widgets';
+  String get onboardingWidgetsSectionTitle => 'الأدوات';
 
   @override
   String get onboardingWidgetsSectionBodyPrefix =>
-      'Check your next prayer, streaks, and progress ';
+      'اطّلع على الصلاة التالية والسلاسل والتقدّم ';
 
   @override
-  String get onboardingWidgetsSectionBodyEmphasis => 'at a glance.';
+  String get onboardingWidgetsSectionBodyEmphasis => 'بنظرة واحدة.';
 
   @override
-  String get onboardingLiveActivitiesSectionTitle => 'Live Activities';
+  String get onboardingLiveActivitiesSectionTitle => 'النشاط المباشر';
 
   @override
   String get onboardingLiveActivitiesSectionBodyPrefix =>
-      'See your upcoming prayer updates in ';
+      'شاهد تحديثات صلاتك القادمة ';
 
   @override
-  String get onboardingLiveActivitiesSectionBodyEmphasis => 'real time';
+  String get onboardingLiveActivitiesSectionBodyEmphasis => 'لحظيًا';
 
   @override
   String get onboardingLiveActivitiesSectionBodySuffix =>
-      ' on your Lock Screen and Dynamic Island.';
+      ' على شاشة القفل والجزر الديناميكي.';
 
   @override
-  String get onboardingWidgetsLiveTrustPrefix => 'Designed to help you stay ';
+  String get onboardingWidgetsLiveTrustPrefix => 'صُمم ليساعدك على البقاء ';
 
   @override
-  String get onboardingWidgetsLiveTrustEmphasis => 'consistent';
+  String get onboardingWidgetsLiveTrustEmphasis => 'ثابتًا';
 
   @override
-  String get onboardingWidgetsLiveTrustSuffix =>
-      ' and never miss what matters most.';
+  String get onboardingWidgetsLiveTrustSuffix => ' وألا تفوّت ما يهمك أكثر.';
 
   @override
-  String get onboardingWidgetsMockStreak => 'Streak';
+  String get onboardingWidgetsMockStreak => 'السلسلة';
 
   @override
-  String get onboardingWidgetsMockStreakValue => '12 days';
+  String get onboardingWidgetsMockStreakValue => '12 يومًا';
 
   @override
-  String get onboardingWidgetsMockFocus => 'Focus';
+  String get onboardingWidgetsMockFocus => 'ركز';
 
   @override
-  String get onboardingWidgetsMockFocusValue => '25 min';
+  String get onboardingWidgetsMockFocusValue => '25 د';
 
   @override
-  String get onboardingWidgetsLiveLockDate => 'Tuesday, 6 May';
+  String get onboardingWidgetsLiveLockDate => 'الثلاثاء، ٦ مايو';
 
   @override
-  String get onboardingWidgetsLiveLockTime => '9:41';
+  String get onboardingWidgetsLiveLockTime => '٩:٤١';
 
   @override
-  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45 PM in 02:15:32';
+  String get onboardingWidgetsLiveNextPrayer => 'الظهر ١٢:٤٥ م خلال ٠٢:١٥:٣٢';
 
   @override
   String get focusModesSectionLabel => 'أوضاع التركيز · اضغط لمعرفة المزيد';
@@ -1586,6 +1585,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranVersesLabel => 'الآيات';
 
   @override
+  String quranSurahHeaderSubtitle(String name, int count) {
+    return '$name • $count آيات';
+  }
+
+  @override
   String get quranTextOptions => 'خيارات النص';
 
   @override
@@ -1765,7 +1769,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'اتلُ الآيات واحصل على ملاحظات';
 
   @override
-  String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+  String get readingSettingsTajweedSeeHowItWorks => 'شاهد كيف يعمل';
 
   @override
   String get quranSeeHowAiQuranTajweedWorks => 'see how AI Quran Tajweed works';
@@ -1794,7 +1798,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get readingSettingsTajweedFreePreviewTranslation =>
-      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+      'بسم الله الرحمن الرحيم';
 
   @override
   String get quranAudioSettingsTitle => 'Audio settings';
@@ -1939,6 +1943,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get readingSettingsResetHistoryButton => 'إعادة تعيين';
+
+  @override
+  String readingSettingsTranslationDownloadFailed(String name) {
+    return 'تعذّر تنزيل $name. حاول مرة أخرى عند الاتصال بالإنترنت.';
+  }
+
+  @override
+  String readingSettingsTranslationSizeMb(String size) {
+    return '$size MB';
+  }
 
   @override
   String get tajweedListenToAyah => 'Listen to ayah';
@@ -4373,6 +4387,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tajweedPracticeTitle => 'تمرين التجويد';
 
   @override
+  String tajweedPracticeAyahTitle(String surah, String ref) {
+    return '$surah · $ref';
+  }
+
+  @override
   String get tajweedDownloadTitle => 'جارٍ تجهيز نموذج الذكاء الاصطناعي';
 
   @override
@@ -4417,4 +4436,42 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get tajweedErrorUnsupported =>
       'تمرين التجويد بالذكاء الاصطناعي غير متاح على هذا الجهاز.';
+
+  @override
+  String get sharePromoTitle => 'شاهد هذا على DeenFocus 🌙';
+
+  @override
+  String get sharePromoBody =>
+      'تطبيق بسيط يساعدك على التركيز في دينك، والصلاة في وقتها، وبناء عادات أفضل.';
+
+  @override
+  String get sharePromoDownloadHeading => 'حمّل DeenFocus:';
+
+  @override
+  String sharePromoAppStoreLine(String url) {
+    return '🍎 آب ستور: $url';
+  }
+
+  @override
+  String sharePromoPlayStoreLine(String url) {
+    return '🤖 جوجل بلاي: $url';
+  }
+
+  @override
+  String get shareBrandName => 'DeenFocus';
+
+  @override
+  String get shareBrandTagline => 'رفيقك لحياة إيمانية أفضل، كل يوم.';
+
+  @override
+  String get shareDownloadCta => 'حمّل DeenFocus';
+
+  @override
+  String get shareAppStoreBadge => 'App Store';
+
+  @override
+  String get sharePlayStoreBadge => 'Google Play';
+
+  @override
+  String get shareFailed => 'تعذر المشاركة. يرجى المحاولة مرة أخرى.';
 }

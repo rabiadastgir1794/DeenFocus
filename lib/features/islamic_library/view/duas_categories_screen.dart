@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../model/library_dua.dart';
@@ -27,8 +27,8 @@ class _DuasCategoriesScreenState extends State<DuasCategoriesScreen> {
   }
 
   Future<void> _load() async {
-    final categories =
-        await IslamicLibraryRepository.instance.loadDuaCategories();
+    final categories = await IslamicLibraryRepository.instance
+        .loadDuaCategories();
     if (!mounted) return;
     setState(() {
       _categories = categories;
@@ -49,30 +49,41 @@ class _DuasCategoriesScreenState extends State<DuasCategoriesScreen> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final softCardColor =
-        isDark ? colorScheme.surfaceContainerHighest : AppColors.surfaceLight;
+    final softCardColor = isDark
+        ? colorScheme.surfaceContainerHighest
+        : AppColors.surfaceLight;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.libraryModuleDuas,
-        subtitle: l10n.libraryModuleDuasSub,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
-              itemCount: _categories.length,
-              separatorBuilder: (_, _) => SizedBox(height: 10.h),
-              itemBuilder: (context, index) {
-                final category = _categories[index];
-                return LibraryCategoryTile(
-                  title: duaCategoryTitle(l10n, category.id),
-                  subtitle: l10n.libraryDuaCount(category.itemCount),
-                  backgroundColor: softCardColor,
-                  onTap: () => _openCategory(category),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.libraryModuleDuas,
+              subtitle: l10n.libraryModuleDuasSub,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.separated(
+                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+                      itemCount: _categories.length,
+                      separatorBuilder: (_, _) => SizedBox(height: 10.h),
+                      itemBuilder: (context, index) {
+                        final category = _categories[index];
+                        return LibraryCategoryTile(
+                          title: duaCategoryTitle(l10n, category.id),
+                          subtitle: l10n.libraryDuaCount(category.itemCount),
+                          backgroundColor: softCardColor,
+                          onTap: () => _openCategory(category),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

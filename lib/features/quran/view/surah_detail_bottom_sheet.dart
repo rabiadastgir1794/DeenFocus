@@ -69,8 +69,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   StreamSubscription<Duration>? _positionSub;
   StreamSubscription<Duration?>? _durationSub;
   bool _suppressNextAutoScroll = false;
+
   /// True while stop/seek/play is in flight — ignore index stream glitches.
   bool _startingPlayback = false;
+
   /// Playlist finished (last ayah). Keep highlight; UI shows play not pause.
   bool _playbackCompleted = false;
   bool _tajweedEnabled = false;
@@ -211,15 +213,15 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         isBookmarked: _bookmarkedAyahs.contains(ayah.ayahNumber),
         onBookmarkTap: () => unawaited(_toggleBookmarkAyah(ayah)),
         onPracticeTap: () => TajweedEntryPoint.open(
-              context,
-              surah: ayah.surahNumber,
-              ayah: ayah.ayahNumber,
-              arabicText: ayah.arabicText,
-              surahName: widget.surah.name,
-              translation: _showEnglish && ayah.englishText.trim().isNotEmpty
-                  ? ayah.englishText
-                  : null,
-            ),
+          context,
+          surah: ayah.surahNumber,
+          ayah: ayah.ayahNumber,
+          arabicText: ayah.arabicText,
+          surahName: widget.surah.name,
+          translation: _showEnglish && ayah.englishText.trim().isNotEmpty
+              ? ayah.englishText
+              : null,
+        ),
       ),
     );
   }
@@ -535,8 +537,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         ? _ayahs[_playingAyahIndex]
         : null;
     final showAudioBar = _showAudioBar && currentAyah != null;
-    final subtitle =
-        '${widget.surah.name} • ${widget.surah.verses} ${l10n.quranVersesLabel}';
+    final subtitle = l10n.quranSurahHeaderSubtitle(
+      widget.surah.name,
+      widget.surah.verses,
+    );
     final palette = QuranReaderPalette.resolve(
       _colorTheme,
       Theme.of(context).brightness,
@@ -549,129 +553,141 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         onPopInvokedWithResult: (didPop, _) async {
           if (didPop) return;
           await _engine.flush();
-          if (mounted) Navigator.of(context).pop();
+          if (context.mounted) Navigator.of(context).pop();
         },
         child: Scaffold(
           backgroundColor: palette.background,
-          appBar: CustomAppBar(
-            title: widget.surah.name,
-            subtitle: subtitle,
-            onBack: () => unawaited(_leaveScreen()),
-            actions: [
-              QuranReadingSettingsLauncher.appBarAction(
-                context,
-                onReturn: () => unawaited(_reloadDisplayPrefs()),
-              ),
-            ],
-          ),
           body: SafeArea(
-            top: false,
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.bottomCenter,
+            child: Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: _loadingAyahs
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView(
-                              controller: _listController,
-                              padding: EdgeInsets.fromLTRB(
-                                16.w,
-                                12.h,
-                                16.w,
-                                16.h + (showAudioBar ? 200.h : 0),
-                              ),
-                              children: [
-                                SurahHeaderCard(
-                                  surah: widget.surah,
-                                  layoutTheme: _layoutTheme,
-                                ),
-                                SizedBox(height: 12.h),
-                                Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(bottom: 12.h),
-                                    child: InkWell(
-                                      onTap: () => unawaited(
-                                        TajweedEntryPoint.openFreePreview(
-                                          context,
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8.w,
-                                          vertical: 4.h,
-                                        ),
-                                        child: Text(
-                                          l10n.quranSeeHowAiQuranTajweedWorks,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                fontWeight: FontWeight.w600,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                decorationColor: Theme.of(
-                                                  context,
-                                                ).colorScheme.primary,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                if (_tajweedEnabled) ...[
-                                  const TajweedLegendRow(),
-                                  SizedBox(height: 14.h),
-                                ],
-                                ...List.generate(_ayahs.length, (index) {
-                                  return _buildAyahCard(index);
-                                }),
-                              ],
-                            ),
-                    ),
-                  ],
-                ),
-                if (showAudioBar)
-                  QuranAudioBar(
-                    label:
-                        '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
-                    position: _currentPosition,
-                    duration: _currentDuration,
-                    isPlaying: _isActivelyPlaying,
-                    isLoading: _isAudioLoading,
-                    speed: _playbackSpeed,
-                    volume: _playbackVolume,
-                    repeatMode: _repeatMode,
-                    onTogglePlayPause: _togglePlayPause,
-                    onClose: () => unawaited(_closeAudioBar()),
-                    onSeekStart: () => _isUserSeeking = true,
-                    onSeekChanged: (value) {
-                      if (_sliderDurationMs <= 0) return;
-                      final ms = (_sliderDurationMs * value).toInt();
-                      setState(
-                        () => _currentPosition = Duration(milliseconds: ms),
-                      );
-                    },
-                    onSeekEnd: (value) async {
-                      _isUserSeeking = false;
-                      if (_sliderDurationMs <= 0) return;
-                      final ms = (_sliderDurationMs * value).toInt();
-                      await _player.seek(Duration(milliseconds: ms));
-                    },
-                    onSpeedChanged: (value) =>
-                        unawaited(_setPlaybackSpeed(value)),
-                    onVolumeChanged: (value) =>
-                        unawaited(_setPlaybackVolume(value)),
-                    onRepeatModeChanged: (value) =>
-                        unawaited(_setRepeatMode(value)),
+                AppCenteredNavHeader(
+                  title: widget.surah.name,
+                  subtitle: subtitle,
+                  backLabel: l10n.calendarBack,
+                  onBack: () => unawaited(_leaveScreen()),
+                  trailing: QuranReadingSettingsLauncher.appBarAction(
+                    context,
+                    onReturn: () => unawaited(_reloadDisplayPrefs()),
                   ),
+                ),
+                Expanded(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: _loadingAyahs
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : ListView(
+                                    controller: _listController,
+                                    padding: EdgeInsets.fromLTRB(
+                                      16.w,
+                                      12.h,
+                                      16.w,
+                                      16.h + (showAudioBar ? 200.h : 0),
+                                    ),
+                                    children: [
+                                      SurahHeaderCard(
+                                        surah: widget.surah,
+                                        layoutTheme: _layoutTheme,
+                                      ),
+                                      SizedBox(height: 12.h),
+                                      Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: 12.h,
+                                          ),
+                                          child: InkWell(
+                                            onTap: () => unawaited(
+                                              TajweedEntryPoint.openFreePreview(
+                                                context,
+                                              ),
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 8.w,
+                                                vertical: 4.h,
+                                              ),
+                                              child: Text(
+                                                l10n.quranSeeHowAiQuranTajweedWorks,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.copyWith(
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.primary,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      decorationColor: Theme.of(
+                                                        context,
+                                                      ).colorScheme.primary,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      if (_tajweedEnabled) ...[
+                                        const TajweedLegendRow(),
+                                        SizedBox(height: 14.h),
+                                      ],
+                                      ...List.generate(_ayahs.length, (index) {
+                                        return _buildAyahCard(index);
+                                      }),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                      if (showAudioBar)
+                        QuranAudioBar(
+                          label:
+                              '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
+                          position: _currentPosition,
+                          duration: _currentDuration,
+                          isPlaying: _isActivelyPlaying,
+                          isLoading: _isAudioLoading,
+                          speed: _playbackSpeed,
+                          volume: _playbackVolume,
+                          repeatMode: _repeatMode,
+                          onTogglePlayPause: _togglePlayPause,
+                          onClose: () => unawaited(_closeAudioBar()),
+                          onSeekStart: () => _isUserSeeking = true,
+                          onSeekChanged: (value) {
+                            if (_sliderDurationMs <= 0) return;
+                            final ms = (_sliderDurationMs * value).toInt();
+                            setState(
+                              () =>
+                                  _currentPosition = Duration(milliseconds: ms),
+                            );
+                          },
+                          onSeekEnd: (value) async {
+                            _isUserSeeking = false;
+                            if (_sliderDurationMs <= 0) return;
+                            final ms = (_sliderDurationMs * value).toInt();
+                            await _player.seek(Duration(milliseconds: ms));
+                          },
+                          onSpeedChanged: (value) =>
+                              unawaited(_setPlaybackSpeed(value)),
+                          onVolumeChanged: (value) =>
+                              unawaited(_setPlaybackVolume(value)),
+                          onRepeatModeChanged: (value) =>
+                              unawaited(_setRepeatMode(value)),
+                        ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

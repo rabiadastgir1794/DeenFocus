@@ -65,41 +65,50 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final title = widget.args.surahName != null
-        ? '${widget.args.surahName} · ${widget.args.ref}'
+        ? l10n.tajweedPracticeAyahTitle(widget.args.surahName!, widget.args.ref)
         : l10n.tajweedPracticeTitle;
 
     return ChangeNotifierProvider<TajweedPracticeViewModel>.value(
       value: _viewModel,
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: title,
-          onBack: () {
-            if (context.canPop()) context.pop();
-          },
-        ),
-        body: Consumer<TajweedPracticeViewModel>(
-          builder: (context, viewModel, _) {
-            switch (viewModel.stage) {
-              case TajweedFlowStage.checkingModel:
-                return const Center(child: CircularProgressIndicator());
-              case TajweedFlowStage.downloadingModel:
-              case TajweedFlowStage.downloadFailed:
-                return TajweedDownloadView(viewModel: viewModel);
-              case TajweedFlowStage.recordingReady:
-              case TajweedFlowStage.recording:
-              case TajweedFlowStage.scoring:
-                return TajweedRecordingView(
-                  viewModel: viewModel,
-                  args: widget.args,
-                );
-              case TajweedFlowStage.result:
-                return TajweedResultView(
-                  viewModel: viewModel,
-                  args: widget.args,
-                  onDone: () => unawaited(_handleDone()),
-                );
-            }
-          },
+        body: SafeArea(
+          child: Column(
+            children: [
+              AppCenteredNavHeader(
+                title: title,
+                backLabel: l10n.calendarBack,
+                onBack: () {
+                  if (context.canPop()) context.pop();
+                },
+              ),
+              Expanded(
+                child: Consumer<TajweedPracticeViewModel>(
+                  builder: (context, viewModel, _) {
+                    switch (viewModel.stage) {
+                      case TajweedFlowStage.checkingModel:
+                        return const Center(child: CircularProgressIndicator());
+                      case TajweedFlowStage.downloadingModel:
+                      case TajweedFlowStage.downloadFailed:
+                        return TajweedDownloadView(viewModel: viewModel);
+                      case TajweedFlowStage.recordingReady:
+                      case TajweedFlowStage.recording:
+                      case TajweedFlowStage.scoring:
+                        return TajweedRecordingView(
+                          viewModel: viewModel,
+                          args: widget.args,
+                        );
+                      case TajweedFlowStage.result:
+                        return TajweedResultView(
+                          viewModel: viewModel,
+                          args: widget.args,
+                          onDone: () => unawaited(_handleDone()),
+                        );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

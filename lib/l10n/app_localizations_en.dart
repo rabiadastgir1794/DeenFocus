@@ -1599,6 +1599,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quranVersesLabel => 'verses';
 
   @override
+  String quranSurahHeaderSubtitle(String name, int count) {
+    return '$name • $count verses';
+  }
+
+  @override
   String get quranTextOptions => 'Text options';
 
   @override
@@ -1951,6 +1956,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readingSettingsResetHistoryButton => 'Reset';
+
+  @override
+  String readingSettingsTranslationDownloadFailed(String name) {
+    return 'Could not download $name. Try again when online.';
+  }
+
+  @override
+  String readingSettingsTranslationSizeMb(String size) {
+    return '$size MB';
+  }
 
   @override
   String get tajweedListenToAyah => 'Listen to ayah';
@@ -4405,6 +4420,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tajweedPracticeTitle => 'Tajweed Practice';
 
   @override
+  String tajweedPracticeAyahTitle(String surah, String ref) {
+    return '$surah · $ref';
+  }
+
+  @override
   String get tajweedDownloadTitle => 'Preparing AI model';
 
   @override
@@ -4448,4 +4468,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tajweedErrorUnsupported =>
       'AI Tajweed practice is not available on this device.';
+
+  @override
+  String get sharePromoTitle => 'Check out this on DeenFocus 🌙';
+
+  @override
+  String get sharePromoBody =>
+      'A simple app to help you stay focused on your Deen, pray on time and build better habits.';
+
+  @override
+  String get sharePromoDownloadHeading => 'Download DeenFocus:';
+
+  @override
+  String sharePromoAppStoreLine(String url) {
+    return '🍎 App Store: $url';
+  }
+
+  @override
+  String sharePromoPlayStoreLine(String url) {
+    return '🤖 Google Play: $url';
+  }
+
+  @override
+  String get shareBrandName => 'DeenFocus';
+
+  @override
+  String get shareBrandTagline =>
+      'Your companion for a better Deen, every day.';
+
+  @override
+  String get shareDownloadCta => 'Download DeenFocus';
+
+  @override
+  String get shareAppStoreBadge => 'App Store';
+
+  @override
+  String get sharePlayStoreBadge => 'Google Play';
+
+  @override
+  String get shareFailed => 'Unable to share. Please try again.';
 }

@@ -672,6 +672,17 @@
   "quranNoResults": "No results found",
   "quranNoSurahsFound": "No surahs found",
   "quranVersesLabel": "verses",
+  "quranSurahHeaderSubtitle": "{name} • {count} verses",
+  "@quranSurahHeaderSubtitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "quranTextOptions": "Text options",
   "quranEnglishAndArabic": "English and Arabic",
   "quranArabicOnly": "Arabic only",
@@ -808,6 +819,22 @@
   "readingSettingsResetHistoryConfirmBody": "This removes continue reading, page completion progress, bookmarks, last listened, and last Tajweed shortcuts. Your display and translation settings are kept.",
   "readingSettingsResetHistoryDone": "Reading data cleared",
   "readingSettingsResetHistoryButton": "Reset",
+  "readingSettingsTranslationDownloadFailed": "Could not download {name}. Try again when online.",
+  "@readingSettingsTranslationDownloadFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "readingSettingsTranslationSizeMb": "{size} MB",
+  "@readingSettingsTranslationSizeMb": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "tajweedListenToAyah": "Listen to ayah",
   "tajweedStartReciting": "Start reciting",
   "tajweedTapToStop": "Tap to stop",
@@ -2034,6 +2061,17 @@
     }
   },
   "tajweedPracticeTitle": "Tajweed Practice",
+  "tajweedPracticeAyahTitle": "{surah} · {ref}",
+  "@tajweedPracticeAyahTitle": {
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
   "tajweedDownloadTitle": "Preparing AI model",
   "tajweedDownloadFailedTitle": "Could not prepare AI model",
   "tajweedDownloadBody": "One-time download so Tajweed practice works fully offline afterwards. This only happens once.",
@@ -2046,5 +2084,30 @@
   "tajweedErrorModelDownloadFailed": "Downloading the AI model failed. Check your connection and try again.",
   "tajweedErrorModelLoadFailed": "The AI model could not be loaded on this device.",
   "tajweedErrorCouldNotPrepare": "Could not prepare the AI model.",
-  "tajweedErrorUnsupported": "AI Tajweed practice is not available on this device."
+  "tajweedErrorUnsupported": "AI Tajweed practice is not available on this device.",
+  "sharePromoTitle": "Check out this on DeenFocus 🌙",
+  "sharePromoBody": "A simple app to help you stay focused on your Deen, pray on time and build better habits.",
+  "sharePromoDownloadHeading": "Download DeenFocus:",
+  "sharePromoAppStoreLine": "🍎 App Store: {url}",
+  "sharePromoPlayStoreLine": "🤖 Google Play: {url}",
+  "shareBrandName": "DeenFocus",
+  "shareBrandTagline": "Your companion for a better Deen, every day.",
+  "shareDownloadCta": "Download DeenFocus",
+  "shareAppStoreBadge": "App Store",
+  "sharePlayStoreBadge": "Google Play",
+  "shareFailed": "Unable to share. Please try again.",
+  "@sharePromoAppStoreLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "@sharePromoPlayStoreLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  }
 }
