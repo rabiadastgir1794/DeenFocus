@@ -12,6 +12,7 @@ import '../data/quran_local_repository.dart';
 import '../reading_engine/mushaf_metadata.dart';
 import '../reading_engine/quran_audio_controller.dart';
 import '../reading_engine/quran_arabic_font.dart';
+import '../reading_engine/quran_display_prefs.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
 import '../reading_engine/quran_repeat_mode.dart';
@@ -117,7 +118,7 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
   }
 
   Future<void> _reloadTranslationTexts() async {
-    if (_loading || !mounted) return;
+    if (!mounted || _surahPages.isEmpty) return;
     final surahNumber = widget.surah.number;
     final metadata = await MushafMetadata.load();
     final ayahs = await QuranLocalRepository.instance.getAyahsBySurah(
@@ -136,6 +137,32 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
     }
     if (!mounted) return;
     setState(() => _pageAyahs = pageAyahs);
+  }
+
+  Future<void> _reloadDisplayPrefs() async {
+    final results = await Future.wait<Object>([
+      StorageService.quranShowEnglish,
+      StorageService.quranArabicFontSp,
+      StorageService.quranEnglishFontSp,
+      StorageService.quranLineSpacing,
+      QuranDisplayPrefs.load(),
+      StorageService.quranLayoutTheme,
+      StorageService.quranReadingColorTheme,
+    ]);
+    if (!mounted) return;
+    final display = results[4] as QuranDisplayPrefs;
+    setState(() {
+      _showEnglish = results[0] as bool;
+      _arabicFontSp = results[1] as double;
+      _englishFontSp = results[2] as double;
+      _lineSpacing = results[3] as double;
+      _arabicFontFamily = display.fontFamily;
+      _arabicFontFamilyFallback = display.fontFamilyFallback;
+      _layoutTheme = QuranLayoutTheme.fromName(results[5] as String);
+      _colorTheme = QuranReadingColorTheme.fromName(results[6] as String);
+    });
+    // Reload pages so Uthmani/IndoPak orthography + translation overlays apply.
+    await _reloadTranslationTexts();
   }
 
   Future<void> _bootstrap() async {
@@ -403,36 +430,6 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
     });
   }
 
-  Future<void> _reloadDisplayPrefs() async {
-    final results = await Future.wait<Object>([
-      StorageService.quranShowEnglish,
-      StorageService.quranArabicFontSp,
-      StorageService.quranEnglishFontSp,
-      StorageService.quranLineSpacing,
-      StorageService.quranScript,
-      StorageService.quranArabicFont.then((v) => v ?? ''),
-      StorageService.quranLayoutTheme,
-      StorageService.quranReadingColorTheme,
-    ]);
-    if (!mounted) return;
-    final script = QuranScriptX.fromName(results[4] as String);
-    final arabicFont = QuranArabicFont.resolve(
-      savedName: results[5] as String,
-      script: script,
-    );
-    setState(() {
-      _showEnglish = results[0] as bool;
-      _arabicFontSp = results[1] as double;
-      _englishFontSp = results[2] as double;
-      _lineSpacing = results[3] as double;
-      _arabicFontFamily = arabicFont.fontFamily;
-      _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
-      _layoutTheme = QuranLayoutTheme.fromName(results[6] as String);
-      _colorTheme = QuranReadingColorTheme.fromName(results[7] as String);
-    });
-    await _reloadTranslationTexts();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -442,7 +439,10 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
         appBar: CustomAppBar(
           title: widget.surah.name,
           actions: [
-            QuranReadingSettingsLauncher.appBarAction(context),
+            QuranReadingSettingsLauncher.appBarAction(
+              context,
+              onReturn: () => unawaited(_reloadDisplayPrefs()),
+            ),
           ],
         ),
         body: const Center(child: CircularProgressIndicator()),

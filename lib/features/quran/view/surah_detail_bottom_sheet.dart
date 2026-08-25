@@ -17,6 +17,7 @@ import '../reading_engine/quran_reading_color_theme.dart';
 import '../reading_engine/quran_recitation.dart';
 import '../reading_engine/quran_repeat_mode.dart';
 import '../reading_engine/quran_arabic_font.dart';
+import '../reading_engine/quran_display_prefs.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
@@ -106,7 +107,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   }
 
   Future<void> _reloadAyahTexts() async {
-    if (_loadingAyahs || !mounted) return;
+    if (!mounted) return;
     final ayahs = await QuranLocalRepository.instance.getAyahsBySurah(
       widget.surah.number,
     );
@@ -209,18 +210,16 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         onTap: () => unawaited(_onAyahTap(index)),
         isBookmarked: _bookmarkedAyahs.contains(ayah.ayahNumber),
         onBookmarkTap: () => unawaited(_toggleBookmarkAyah(ayah)),
-        onPracticeTap: _tajweedEnabled
-            ? () => TajweedEntryPoint.open(
-                context,
-                surah: ayah.surahNumber,
-                ayah: ayah.ayahNumber,
-                arabicText: ayah.arabicText,
-                surahName: widget.surah.name,
-                translation: _showEnglish && ayah.englishText.trim().isNotEmpty
-                    ? ayah.englishText
-                    : null,
-              )
-            : null,
+        onPracticeTap: () => TajweedEntryPoint.open(
+              context,
+              surah: ayah.surahNumber,
+              ayah: ayah.ayahNumber,
+              arabicText: ayah.arabicText,
+              surahName: widget.surah.name,
+              translation: _showEnglish && ayah.englishText.trim().isNotEmpty
+                  ? ayah.englishText
+                  : null,
+            ),
       ),
     );
   }
@@ -447,17 +446,12 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       StorageService.quranArabicFontSp,
       StorageService.quranEnglishFontSp,
       StorageService.quranLineSpacing,
-      StorageService.quranScript,
-      StorageService.quranArabicFont.then((v) => v ?? ''),
+      QuranDisplayPrefs.load(),
       StorageService.quranReadingColorTheme,
       TajweedEntryPoint.isEnabled(),
     ]);
     if (!mounted) return;
-    final script = QuranScriptX.fromName(results[6] as String);
-    final arabicFont = QuranArabicFont.resolve(
-      savedName: results[7] as String,
-      script: script,
-    );
+    final display = results[6] as QuranDisplayPrefs;
     setState(() {
       _showEnglish = results[0] as bool;
       _showTransliteration = results[1] as bool;
@@ -465,10 +459,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       _arabicFontSp = results[3] as double;
       _englishFontSp = results[4] as double;
       _lineSpacing = results[5] as double;
-      _arabicFontFamily = arabicFont.fontFamily;
-      _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
-      _colorTheme = QuranReadingColorTheme.fromName(results[8] as String);
-      _tajweedEnabled = results[9] as bool;
+      _arabicFontFamily = display.fontFamily;
+      _arabicFontFamilyFallback = display.fontFamilyFallback;
+      _colorTheme = QuranReadingColorTheme.fromName(results[7] as String);
+      _tajweedEnabled = results[8] as bool;
     });
     // Re-apply script + translation overlays so settings take effect immediately.
     await _reloadAyahTexts();
@@ -596,6 +590,42 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                   layoutTheme: _layoutTheme,
                                 ),
                                 SizedBox(height: 12.h),
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(bottom: 12.h),
+                                    child: InkWell(
+                                      onTap: () => unawaited(
+                                        TajweedEntryPoint.openFreePreview(
+                                          context,
+                                        ),
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8.w,
+                                          vertical: 4.h,
+                                        ),
+                                        child: Text(
+                                          l10n.quranSeeHowAiQuranTajweedWorks,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                fontWeight: FontWeight.w600,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor: Theme.of(
+                                                  context,
+                                                ).colorScheme.primary,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 if (_tajweedEnabled) ...[
                                   const TajweedLegendRow(),
                                   SizedBox(height: 14.h),

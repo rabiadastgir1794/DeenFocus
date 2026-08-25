@@ -57,6 +57,13 @@ class ModelStore(private val context: Context) {
             File(activeDir, tokens).exists()
     }
 
+    /** Removes the on-disk pack (active + staging). Call after disposing the engine. */
+    fun deleteInstalledPack() {
+        if (rootDir.exists()) {
+            rootDir.deleteRecursively()
+        }
+    }
+
     fun activeManifestVersion(): String =
         readManifest()?.optString("version", "") ?: ""
 

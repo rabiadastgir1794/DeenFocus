@@ -3320,7 +3320,7 @@ abstract class AppLocalizations {
   /// No description provided for @readingSettingsTajweedPractice.
   ///
   /// In en, this message translates to:
-  /// **'AI Tajweed Practice'**
+  /// **'AI Quran Tajweed'**
   String get readingSettingsTajweedPractice;
 
   /// No description provided for @readingSettingsTajweedPracticeSubtitle.
@@ -3334,6 +3334,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See how it works'**
   String get readingSettingsTajweedSeeHowItWorks;
+
+  /// No description provided for @quranSeeHowAiQuranTajweedWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'see how AI Quran Tajweed works'**
+  String get quranSeeHowAiQuranTajweedWorks;
+
+  /// No description provided for @readingSettingsTajweedDeleteModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete AI model'**
+  String get readingSettingsTajweedDeleteModel;
+
+  /// No description provided for @readingSettingsTajweedDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete AI Quran Tajweed model?'**
+  String get readingSettingsTajweedDeleteConfirmTitle;
+
+  /// No description provided for @readingSettingsTajweedDeleteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You won\'t be able to practice tajweed until you download the AI model again. This also frees storage on your device.'**
+  String get readingSettingsTajweedDeleteConfirmBody;
+
+  /// No description provided for @readingSettingsTajweedDeleteConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get readingSettingsTajweedDeleteConfirmAction;
+
+  /// No description provided for @readingSettingsTajweedDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Tajweed model deleted'**
+  String get readingSettingsTajweedDeleted;
+
+  /// No description provided for @readingSettingsTajweedDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the AI Tajweed model'**
+  String get readingSettingsTajweedDeleteFailed;
 
   /// No description provided for @readingSettingsTajweedFreePreviewTranslation.
   ///

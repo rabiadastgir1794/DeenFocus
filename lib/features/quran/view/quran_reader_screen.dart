@@ -8,6 +8,7 @@ import '../../../core/services/storage_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tajweed/tajweed_entry_point.dart';
+import '../../tajweed/tajweed_free_preview.dart';
 import '../data/quran_local_repository.dart';
 import '../reading_engine/mushaf_metadata.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
@@ -306,27 +307,28 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
   }
 
   Future<void> _openQuickTajweed() async {
-    if (!await TajweedEntryPoint.isEnabled()) {
+    final hasLastPractice =
+        _lastTajweedSurah != null && _lastTajweedAyah != null;
+
+    // No prior practice → Al-Fatihah 1:1 (same ayah as "See how it works").
+    // Non-subscribers hit the paywall via [TajweedEntryPoint.open].
+    if (!hasLastPractice) {
       if (!mounted) return;
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.tajweedDisabledHint),
-        ),
+      final l10n = AppLocalizations.of(context)!;
+      TajweedEntryPoint.open(
+        context,
+        surah: TajweedFreePreview.surah,
+        ayah: TajweedFreePreview.ayah,
+        arabicText: TajweedFreePreview.fallbackArabic,
+        surahName: l10n.featureDemoTajweedSurahName,
       );
+      if (mounted) await _refreshCounts();
       return;
     }
 
-    var surahNumber = _lastTajweedSurah;
-    var ayahNumber = _lastTajweedAyah;
-    var surahName = _lastTajweedSurahName;
-
-    if (surahNumber == null || ayahNumber == null) {
-      final state = _continueReading;
-      if (state == null) return;
-      surahNumber = state.surahNumber;
-      ayahNumber = state.ayahNumber;
-      surahName = state.surahName;
-    }
+    final surahNumber = _lastTajweedSurah!;
+    final ayahNumber = _lastTajweedAyah!;
+    final surahName = _lastTajweedSurahName;
 
     final surah = _allSurahs.firstWhere(
       (s) => s.number == surahNumber,

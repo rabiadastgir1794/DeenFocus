@@ -182,6 +182,7 @@ class TajweedResultView extends StatelessWidget {
                             textDirection: TextDirection.rtl,
                             style: TextStyle(
                               fontFamily: args.arabicFontFamily,
+                              fontFamilyFallback: args.arabicFontFamilyFallback,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w600,
                               color: _statusColor(colorScheme, token.status),

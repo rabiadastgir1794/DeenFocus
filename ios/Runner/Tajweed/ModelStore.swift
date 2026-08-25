@@ -31,6 +31,12 @@ final class ModelStore {
       && fm.fileExists(atPath: activeURL.appendingPathComponent(tokens).path)
   }
 
+  /// Removes the on-disk pack (active + staging). Call after disposing the engine.
+  func deleteInstalledPack() throws {
+    guard fm.fileExists(atPath: rootURL.path) else { return }
+    try fm.removeItem(at: rootURL)
+  }
+
   func encoderURL() throws -> URL {
     let m = try requireManifest()
     let name = m["encoder"] as! String

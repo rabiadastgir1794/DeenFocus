@@ -136,6 +136,21 @@ class TajweedChannelHandler(private val context: Context) : EventChannel.StreamH
                 if (didBindEngineEvents) engine.dispose()
                 mainHandler.post { result.success(null) }
             }
+            "deleteModel" -> {
+                if (didBindEngineEvents) engine.dispose()
+                try {
+                    ModelStore(context.applicationContext).deleteInstalledPack()
+                    mainHandler.post { result.success(null) }
+                } catch (e: Exception) {
+                    mainHandler.post {
+                        result.error(
+                            TajweedErrorCode.MODEL_MISSING,
+                            e.message,
+                            null,
+                        )
+                    }
+                }
+            }
             "getActiveCoreMlInfo" -> {
                 val store = ModelStore(context.applicationContext)
                 val info = mutableMapOf<String, Any?>(

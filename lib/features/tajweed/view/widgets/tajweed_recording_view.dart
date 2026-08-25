@@ -274,6 +274,7 @@ class _AyahReferenceCard extends StatelessWidget {
             textDirection: TextDirection.rtl,
             style: TextStyle(
               fontFamily: args.arabicFontFamily,
+              fontFamilyFallback: args.arabicFontFamilyFallback,
               fontSize: 28.sp,
               height: 1.85,
               color: colorScheme.onSurface,

@@ -11,11 +11,13 @@ import '../../../core/superwall/premium_gate.dart';
 import '../../../core/theme/segment_control_style.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../tajweed/tajweed_download_coordinator.dart';
 import '../../tajweed/tajweed_entry_point.dart';
 import '../reading_engine/quran_arabic_font.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
 import '../reading_engine/quran_script.dart';
+import '../reading_engine/quran_script_texts.dart';
 import '../reading_engine/quran_transliteration.dart';
 import '../reading_engine/reading_mode.dart';
 import 'reading_translation_screen.dart';
@@ -33,7 +35,7 @@ class ReadingSettingsScreen extends StatefulWidget {
 }
 
 class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
-  static const _previewArabic =
+  static const _fallbackPreviewArabic =
       'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
   static const _previewTranslation =
       'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
@@ -46,11 +48,11 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
   bool _rememberLastPosition = true;
   QuranScript _script = QuranScript.uthmani;
   QuranArabicFont _arabicFont = QuranArabicFont.uthmanicHafs;
+  String _previewArabic = _fallbackPreviewArabic;
   bool _showEnglish = true;
   bool _showTransliteration = true;
   QuranLayoutTheme _layoutTheme = QuranLayoutTheme.classic;
   QuranReadingColorTheme _colorTheme = QuranReadingColorTheme.emerald;
-  bool _tajweedEnabled = false;
 
   List<QuranTranslationOption> _translationOptions =
       const <QuranTranslationOption>[];
@@ -59,6 +61,7 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
   @override
   void initState() {
     super.initState();
+    TajweedDownloadCoordinator.ensureListening();
     QuranTranslationService.installationRevision.addListener(
       _onTranslationRevision,
     );
@@ -91,7 +94,6 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
       StorageService.quranLayoutTheme,
       StorageService.quranTranslationLanguage,
       StorageService.quranReadingColorTheme,
-      StorageService.tajweedEnabled,
     ]);
     if (!mounted) return;
     final script = QuranScriptX.fromName(results[5] as String);
@@ -111,15 +113,41 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
       _layoutTheme = QuranLayoutTheme.fromName(results[9] as String);
       _selectedTranslation = results[10] as String;
       _colorTheme = QuranReadingColorTheme.fromName(results[11] as String);
-      _tajweedEnabled = results[12] as bool;
       _loading = false;
     });
+    unawaited(_refreshPreviewArabic(script));
     unawaited(_refreshTranslationOptions());
+    unawaited(TajweedDownloadCoordinator.refresh());
     if (_showEnglish) {
       unawaited(
         QuranTranslationService.ensureDefaultTranslationInBackground(),
       );
     }
+  }
+
+  Future<void> _refreshPreviewArabic(QuranScript script) async {
+    try {
+      final corpus = await QuranScriptTexts.load(script);
+      final text = corpus.textFor(1, 1);
+      if (!mounted || text == null || text.isEmpty) return;
+      setState(() => _previewArabic = text);
+    } catch (_) {
+      // Keep current preview if corpus fails to load.
+    }
+  }
+
+  Future<void> _onScriptChanged(QuranScript script) async {
+    final font = QuranArabicFont.defaultFor(script);
+    setState(() {
+      _script = script;
+      // Script chooses the matching typeface; users can override via Font.
+      _arabicFont = font;
+    });
+    await Future.wait<void>([
+      StorageService.setQuranScript(script.name),
+      StorageService.setQuranArabicFont(font.name),
+    ]);
+    await _refreshPreviewArabic(script);
   }
 
   Future<void> _refreshTranslationOptions() async {
@@ -160,21 +188,60 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
     await _refreshTranslationOptions();
   }
 
-  Future<void> _onTajweedChanged(bool value) async {
-    if (!value) {
-      setState(() => _tajweedEnabled = false);
-      await StorageService.setTajweedEnabled(false);
+  Future<void> _onTajweedDownloadTapped({required bool isSubscribed}) async {
+    if (!isSubscribed) {
+      await PremiumGate.presentIfNeeded(
+        context: context,
+        debugContext: 'reading_settings:tajweed',
+        onAccess: () {
+          unawaited(TajweedDownloadCoordinator.startDownload());
+        },
+      );
       return;
     }
-    if (!mounted) return;
-    await PremiumGate.presentIfNeeded(
+    final phase = TajweedDownloadCoordinator.phase.value;
+    if (phase == TajweedDownloadPhase.downloaded ||
+        phase == TajweedDownloadPhase.downloading) {
+      return;
+    }
+    await TajweedDownloadCoordinator.startDownload();
+  }
+
+  Future<void> _onTajweedDeleteTapped() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
       context: context,
-      debugContext: 'reading_settings:tajweed',
-      onAccess: () {
-        setState(() => _tajweedEnabled = true);
-        unawaited(StorageService.setTajweedEnabled(true));
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l10n.readingSettingsTajweedDeleteConfirmTitle),
+          content: Text(l10n.readingSettingsTajweedDeleteConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: Text(l10n.readingSettingsTajweedDeleteConfirmAction),
+            ),
+          ],
+        );
       },
     );
+    if (confirmed != true || !mounted) return;
+    try {
+      await TajweedDownloadCoordinator.deleteDownloadedModel();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.readingSettingsTajweedDeleted)),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.readingSettingsTajweedDeleteFailed)),
+      );
+    }
   }
 
   @override
@@ -266,14 +333,7 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                             ],
                             selected: _script,
                             onChanged: (script) {
-                              setState(() {
-                                _script = script;
-                                // Keep explicit font if set; otherwise preview
-                                // follows the script default via resolve.
-                              });
-                              unawaited(
-                                StorageService.setQuranScript(script.name),
-                              );
+                              unawaited(_onScriptChanged(script));
                             },
                           ),
                           const _SettingsDivider(),
@@ -396,13 +456,13 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  _SettingsSwitchRow(
-                                    icon: Icons.mic_outlined,
+                                  _TajweedDownloadSettingsRow(
                                     label: l10n.readingSettingsTajweedPractice,
-                                    value: _tajweedEnabled,
-                                    showPremiumBadge: !isSubscribed,
-                                    onChanged: (value) => unawaited(
-                                      _onTajweedChanged(value),
+                                    showLock: !isSubscribed,
+                                    onDownloadTap: () => unawaited(
+                                      _onTajweedDownloadTapped(
+                                        isSubscribed: isSubscribed,
+                                      ),
                                     ),
                                   ),
                                   Padding(
@@ -420,7 +480,8 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                                             context,
                                           ),
                                         ),
-                                        borderRadius: BorderRadius.circular(4),
+                                        borderRadius:
+                                            BorderRadius.circular(4),
                                         child: Text(
                                           l10n.readingSettingsTajweedSeeHowItWorks,
                                           style: Theme.of(context)
@@ -431,8 +492,8 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                                                     .colorScheme
                                                     .primary,
                                                 fontWeight: FontWeight.w600,
-                                                decoration:
-                                                    TextDecoration.underline,
+                                                decoration: TextDecoration
+                                                    .underline,
                                                 decorationColor:
                                                     Theme.of(context)
                                                         .colorScheme
@@ -441,6 +502,50 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                                         ),
                                       ),
                                     ),
+                                  ),
+                                  ValueListenableBuilder<TajweedDownloadPhase>(
+                                    valueListenable:
+                                        TajweedDownloadCoordinator.phase,
+                                    builder: (context, phase, _) {
+                                      if (phase !=
+                                          TajweedDownloadPhase.downloaded) {
+                                        return const SizedBox.shrink();
+                                      }
+                                      return Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                          48.w,
+                                          0,
+                                          16.w,
+                                          12.h,
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: TextButton(
+                                            onPressed: () => unawaited(
+                                              _onTajweedDeleteTapped(),
+                                            ),
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: Colors.red,
+                                              padding: EdgeInsets.zero,
+                                              minimumSize: Size.zero,
+                                              tapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                            ),
+                                            child: Text(
+                                              l10n.readingSettingsTajweedDeleteModel,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               );
@@ -751,7 +856,10 @@ class _SettingsSegmentSection<T> extends StatelessWidget {
             selected: {selected},
             showSelectedIcon: false,
             style: deenSegmentStyle(context),
-            onSelectionChanged: (selection) => onChanged(selection.first),
+            onSelectionChanged: (selection) {
+              if (selection.isEmpty) return;
+              onChanged(selection.first);
+            },
           ),
         ],
       ),
@@ -1025,20 +1133,160 @@ class _SettingsDivider extends StatelessWidget {
   }
 }
 
+class _TajweedDownloadSettingsRow extends StatelessWidget {
+  const _TajweedDownloadSettingsRow({
+    required this.label,
+    required this.showLock,
+    required this.onDownloadTap,
+  });
+
+  final String label;
+  final bool showLock;
+  final VoidCallback onDownloadTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      child: Row(
+        children: [
+          Icon(Icons.mic_outlined, size: 20.sp, color: colorScheme.onSurfaceVariant),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (showLock) ...[
+                  SizedBox(width: 6.w),
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 16.sp,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          SizedBox(width: 12.w),
+          ValueListenableBuilder<TajweedDownloadPhase>(
+            valueListenable: TajweedDownloadCoordinator.phase,
+            builder: (context, phase, _) {
+              return ValueListenableBuilder<double>(
+                valueListenable: TajweedDownloadCoordinator.progress,
+                builder: (context, progress, _) {
+                  return _TajweedDownloadTrailing(
+                    phase: phase,
+                    progress: progress,
+                    onDownloadTap: onDownloadTap,
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TajweedDownloadTrailing extends StatelessWidget {
+  const _TajweedDownloadTrailing({
+    required this.phase,
+    required this.progress,
+    required this.onDownloadTap,
+  });
+
+  final TajweedDownloadPhase phase;
+  final double progress;
+  final VoidCallback onDownloadTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    switch (phase) {
+      case TajweedDownloadPhase.downloaded:
+        return Container(
+          width: 28.w,
+          height: 28.w,
+          decoration: BoxDecoration(
+            color: const Color(0xFF2E7D32),
+            borderRadius: BorderRadius.circular(6.r),
+          ),
+          child: Icon(Icons.check_rounded, size: 18.sp, color: Colors.white),
+        );
+      case TajweedDownloadPhase.downloading:
+        final pct = (progress * 100).clamp(0, 100).round();
+        final size = 40.w;
+        return SizedBox(
+          width: size,
+          height: size,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: size,
+                height: size,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  value: progress <= 0 ? null : progress.clamp(0.0, 1.0),
+                  color: colorScheme.primary,
+                  backgroundColor:
+                      colorScheme.primary.withValues(alpha: 0.15),
+                ),
+              ),
+              Text(
+                progress <= 0 ? '…' : '$pct%',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10.sp,
+                  color: colorScheme.primary,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        );
+      case TajweedDownloadPhase.failed:
+      case TajweedDownloadPhase.notDownloaded:
+        return IconButton(
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints.tightFor(width: 36.w, height: 36.w),
+          tooltip: labelDownload(context),
+          onPressed: onDownloadTap,
+          icon: Icon(
+            Icons.download_rounded,
+            size: 22.sp,
+            color: colorScheme.onSurfaceVariant,
+          ),
+        );
+    }
+  }
+
+  String labelDownload(BuildContext context) {
+    return AppLocalizations.of(context)!.readingSettingsTajweedPractice;
+  }
+}
+
 class _SettingsSwitchRow extends StatelessWidget {
   const _SettingsSwitchRow({
     required this.icon,
     required this.label,
     required this.value,
     required this.onChanged,
-    this.showPremiumBadge = false,
   });
 
   final IconData icon;
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final bool showPremiumBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -1061,14 +1309,6 @@ class _SettingsSwitchRow extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (showPremiumBadge) ...[
-                  SizedBox(width: 6.w),
-                  Icon(
-                    Icons.lock_outline_rounded,
-                    size: 16.sp,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ],
               ],
             ),
           ),

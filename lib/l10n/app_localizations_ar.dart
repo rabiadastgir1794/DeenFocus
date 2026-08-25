@@ -1758,8 +1758,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'فعّل ممارسة التجويد بالذكاء الاصطناعي من إعدادات القراءة';
 
   @override
-  String get readingSettingsTajweedPractice =>
-      'ممارسة التجويد بالذكاء الاصطناعي';
+  String get readingSettingsTajweedPractice => 'تجويد القرآن بالذكاء الاصطناعي';
 
   @override
   String get readingSettingsTajweedPracticeSubtitle =>
@@ -1767,6 +1766,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get quranSeeHowAiQuranTajweedWorks => 'see how AI Quran Tajweed works';
+
+  @override
+  String get readingSettingsTajweedDeleteModel => 'حذف نموذج الذكاء الاصطناعي';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmTitle =>
+      'حذف نموذج تجويد القرآن بالذكاء الاصطناعي؟';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmBody =>
+      'لن تتمكن من ممارسة التجويد حتى تعيد تنزيل نموذج الذكاء الاصطناعي. يؤدي هذا أيضاً إلى تحرير مساحة على جهازك.';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmAction => 'حذف';
+
+  @override
+  String get readingSettingsTajweedDeleted =>
+      'تم حذف نموذج التجويد بالذكاء الاصطناعي';
+
+  @override
+  String get readingSettingsTajweedDeleteFailed =>
+      'تعذّر حذف نموذج التجويد بالذكاء الاصطناعي';
 
   @override
   String get readingSettingsTajweedFreePreviewTranslation =>

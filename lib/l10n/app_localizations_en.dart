@@ -1772,7 +1772,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enable AI Tajweed Practice in Reading Settings';
 
   @override
-  String get readingSettingsTajweedPractice => 'AI Tajweed Practice';
+  String get readingSettingsTajweedPractice => 'AI Quran Tajweed';
 
   @override
   String get readingSettingsTajweedPracticeSubtitle =>
@@ -1780,6 +1780,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get quranSeeHowAiQuranTajweedWorks => 'see how AI Quran Tajweed works';
+
+  @override
+  String get readingSettingsTajweedDeleteModel => 'Delete AI model';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmTitle =>
+      'Delete AI Quran Tajweed model?';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmBody =>
+      'You won\'t be able to practice tajweed until you download the AI model again. This also frees storage on your device.';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmAction => 'Delete';
+
+  @override
+  String get readingSettingsTajweedDeleted => 'AI Tajweed model deleted';
+
+  @override
+  String get readingSettingsTajweedDeleteFailed =>
+      'Could not delete the AI Tajweed model';
 
   @override
   String get readingSettingsTajweedFreePreviewTranslation =>

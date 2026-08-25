@@ -5,6 +5,7 @@ class TajweedPracticeArgs {
     required this.ayah,
     required this.arabicText,
     required this.arabicFontFamily,
+    this.arabicFontFamilyFallback,
     this.lexicalReferenceArabic,
     this.surahName,
     this.translation,
@@ -18,8 +19,11 @@ class TajweedPracticeArgs {
   /// (`uthmani` / `indopak`) — same corpus as the surah listing.
   final String arabicText;
 
-  /// Bundled display font for [arabicText] (`UthmanicHafs` / `NooreHuda`).
+  /// Bundled / system display font for [arabicText].
   final String arabicFontFamily;
+
+  /// Extra families when [arabicFontFamily] is a system face.
+  final List<String>? arabicFontFamilyFallback;
 
   /// Canonical word-boundary text for lexical alignment (Uthmani for the same
   /// ayah). When null, native falls back to [arabicText].

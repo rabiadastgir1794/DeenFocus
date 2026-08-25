@@ -12,6 +12,7 @@ import '../../tajweed/tajweed_entry_point.dart';
 import '../data/quran_local_repository.dart';
 import '../reading_engine/quran_audio_controller.dart';
 import '../reading_engine/quran_arabic_font.dart';
+import '../reading_engine/quran_display_prefs.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
 import '../reading_engine/quran_repeat_mode.dart';
@@ -63,7 +64,6 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   double _speed = 1.0;
   double _volume = 1.0;
   QuranRepeatMode _repeatMode = QuranRepeatMode.off;
-  bool _tajweedEnabled = false;
 
   int _playingIndex = -1;
   bool _showAudioBar = false;
@@ -122,7 +122,6 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       StorageService.quranRepeatMode,
       StorageService.quranScript,
       StorageService.quranArabicFont.then((v) => v ?? ''),
-      TajweedEntryPoint.isEnabled(),
       StorageService.quranReadingColorTheme,
     ]);
     if (!mounted) return;
@@ -143,8 +142,7 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       _repeatMode = QuranRepeatMode.fromName(results[8] as String);
       _arabicFontFamily = arabicFont.fontFamily;
       _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
-      _tajweedEnabled = results[11] as bool;
-      _colorTheme = QuranReadingColorTheme.fromName(results[12] as String);
+      _colorTheme = QuranReadingColorTheme.fromName(results[11] as String);
     });
 
     await _audio.loadPreferences();
@@ -343,18 +341,16 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       surahLabel: surahLabel,
       style: AyahCardStyle.surahDetail,
       onTap: () => _onAyahTap(index),
-      onPracticeTap: _tajweedEnabled
-          ? () => TajweedEntryPoint.open(
-                context,
-                surah: ayah.surahNumber,
-                ayah: ayah.ayahNumber,
-                arabicText: ayah.arabicText,
-                translation:
-                    _showEnglish && ayah.englishText.trim().isNotEmpty
-                    ? ayah.englishText
-                    : null,
-              )
-          : null,
+      onPracticeTap: () => TajweedEntryPoint.open(
+            context,
+            surah: ayah.surahNumber,
+            ayah: ayah.ayahNumber,
+            arabicText: ayah.arabicText,
+            translation:
+                _showEnglish && ayah.englishText.trim().isNotEmpty
+                ? ayah.englishText
+                : null,
+          ),
     );
   }
 
@@ -366,17 +362,11 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       StorageService.quranArabicFontSp,
       StorageService.quranEnglishFontSp,
       StorageService.quranLineSpacing,
-      StorageService.quranScript,
-      StorageService.quranArabicFont.then((v) => v ?? ''),
+      QuranDisplayPrefs.load(),
       StorageService.quranReadingColorTheme,
-      TajweedEntryPoint.isEnabled(),
     ]);
     if (!mounted) return;
-    final script = QuranScriptX.fromName(results[6] as String);
-    final arabicFont = QuranArabicFont.resolve(
-      savedName: results[7] as String,
-      script: script,
-    );
+    final display = results[6] as QuranDisplayPrefs;
     setState(() {
       _showEnglish = results[0] as bool;
       _showTransliteration = results[1] as bool;
@@ -384,10 +374,9 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       _arabicFontSp = results[3] as double;
       _englishFontSp = results[4] as double;
       _lineSpacing = results[5] as double;
-      _arabicFontFamily = arabicFont.fontFamily;
-      _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
-      _colorTheme = QuranReadingColorTheme.fromName(results[8] as String);
-      _tajweedEnabled = results[9] as bool;
+      _arabicFontFamily = display.fontFamily;
+      _arabicFontFamilyFallback = display.fontFamilyFallback;
+      _colorTheme = QuranReadingColorTheme.fromName(results[7] as String);
     });
     await _engine.reloadAyahTexts();
     if (mounted) setState(() {});

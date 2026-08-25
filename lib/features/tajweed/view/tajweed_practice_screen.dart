@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/superwall/premium_gate.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/tajweed_practice_args.dart';
@@ -33,10 +36,29 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
     super.dispose();
   }
 
-  void _handleDone() {
-    if (context.canPop()) {
+  Future<void> _handleDone() async {
+    // Normal ayah practice (mic / Recite button after subscription): just leave.
+    if (!widget.args.freePreview) {
+      if (context.canPop()) context.pop();
+      return;
+    }
+
+    // Free "See how it works" demo only: offer the payment screen, then leave.
+    var left = false;
+    void leaveOnce() {
+      if (left || !mounted) return;
+      if (!context.canPop()) return;
+      left = true;
       context.pop();
     }
+
+    await PremiumGate.presentIfNeeded(
+      context: context,
+      debugContext: 'tajweed:free_preview_done',
+      onAccess: leaveOnce,
+    );
+    // Non-purchase dismiss / paywall presented: still return to Surah/Settings.
+    leaveOnce();
   }
 
   @override
@@ -74,7 +96,7 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
                 return TajweedResultView(
                   viewModel: viewModel,
                   args: widget.args,
-                  onDone: _handleDone,
+                  onDone: () => unawaited(_handleDone()),
                 );
             }
           },

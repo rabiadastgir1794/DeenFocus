@@ -70,6 +70,18 @@ class TajweedService {
     }
   }
 
+  /// Whether the on-device pack is present (status check — no feature flag).
+  static Future<bool> isAvailable() async {
+    try {
+      final result = await _methodChannel.invokeMethod<bool>('isAvailable');
+      return result ?? false;
+    } on PlatformException catch (e) {
+      _rethrowPlatform(e);
+    } on MissingPluginException {
+      return false;
+    }
+  }
+
   static Never _rethrowPlatform(PlatformException e) {
     throw TajweedException(
       code: e.code,
@@ -93,18 +105,6 @@ class TajweedService {
     }
   }
 
-  static Future<bool> isAvailable() async {
-    await _ensureEnabled();
-    try {
-      final result = await _methodChannel.invokeMethod<bool>('isAvailable');
-      return result ?? false;
-    } on PlatformException catch (e) {
-      _rethrowPlatform(e);
-    } on MissingPluginException {
-      return false;
-    }
-  }
-
   /// Triggers native download/verify/activate (ADR-007). Progress via [downloadProgress].
   ///
   /// Call only from Tajweed practice / DEBUG pack flows — never from app launch,
@@ -114,10 +114,10 @@ class TajweedService {
   /// Warm-loads native ASR + pronunciation head for inference.
   ///
   /// **Production call site:** only [TajweedModelSession._run] (via
-  /// `ensurePrepared`), which runs when the user opens Tajweed practice and the
-  /// session is not yet ready, or immediately after a fresh download / Official↔DIY
-  /// switch. Must **not** be called from `main()`, providers, app resume, Settings
-  /// init, or any screen outside the Tajweed feature.
+  /// `ensurePrepared`), which runs when the user opens Tajweed practice or
+  /// starts download from Reading Settings, and the session is not yet ready.
+  /// Must **not** be called from `main()`, providers, app resume, or unrelated
+  /// screens.
   static Future<void> prepareModel() {
     assert(() {
       debugPrint(
@@ -189,6 +189,22 @@ class TajweedService {
       _rethrowPlatform(e);
     } on MissingPluginException {
       // No-op when plugin absent.
+    }
+  }
+
+  /// Dispose the engine and delete the on-disk AI Tajweed pack.
+  ///
+  /// Allowed even when the feature flag is off (user reclaiming storage).
+  static Future<void> deleteModel() async {
+    try {
+      await _methodChannel.invokeMethod<void>('deleteModel');
+    } on PlatformException catch (e) {
+      _rethrowPlatform(e);
+    } on MissingPluginException {
+      throw const TajweedException(
+        code: TajweedErrorCode.unsupported,
+        message: 'Tajweed native plugin is not registered.',
+      );
     }
   }
 

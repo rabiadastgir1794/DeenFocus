@@ -1,6 +1,38 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-25 — Android Digital Balance usage fix.
+> Last updated: 2026-08-25 — AI Tajweed download UI (Settings + Surah mic).
+
+## Status: AI Tajweed download UI (2026-08-25)
+Surah/Juz mic always visible. Practice / mic tap: non-subscriber → paywall;
+subscriber → existing Tajweed practice screen (shows model download UI if pack
+missing — does **not** redirect to Reading Settings). Settings row label is
+**AI Quran Tajweed** (download icon / circular progress / green check). Settings
+always shows **See how it works** (free Bismillah preview). Surah reading shows
+a single **see how AI Quran Tajweed works** link under the app bar / before the
+surah header card (not on each ayah). **Delete AI model** appears in Reading
+Settings when the pack is installed (confirm dialog → native wipe). Free
+preview (**See how it works**) shows the subscription paywall on **Done** only;
+normal subscribed ayah practice does not. Quran home **Tajweed drill**: paywall
+if not subscribed; Al-Fatihah 1:1 if never practiced; else last practiced ayah
+(no “enable in Settings” snackbar). Download continues in-process via
+`TajweedModelSession`. `TajweedService.isAvailable` no longer requires the
+enable flag.
+
+## Status: Arabic script across Surah/Juz/Page/Tajweed (2026-08-25)
+Reading Settings Script now updates preview font+text; returning to readers
+reloads font via `QuranDisplayPrefs` and re-fetches ayahs so Uthmani/IndoPak
+orthography applies on Surah, Juz, Mushaf page, and full page. Tajweed opens
+with the same script corpus + resolved Arabic font (incl. fallbacks). Guards
+that skipped reload while “loading” were loosened so settings return always
+refreshes.
+
+## Status: Reading Settings Arabic script (2026-08-25)
+Changing Script (Uthmani / IndoPak) only saved the preference — preview kept
+the old font and a hardcoded Bismillah, so the style looked unchanged. Fix:
+script change now switches to the matching default font (and persists it),
+reloads preview ayah 1:1 from `assets/quran/text/<script>.json`, and Segmented
+Button ignores empty selection. Files: `reading_settings_screen.dart`,
+`quran_arabic_font.dart`.
 
 ## Status: Android Digital Balance usage 0m fix (2026-08-25)
 Root cause: native `queryUsageStats(INTERVAL_DAILY)` over a multi-day range

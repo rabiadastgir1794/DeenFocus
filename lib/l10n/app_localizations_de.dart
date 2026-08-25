@@ -1792,7 +1792,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Enable AI Tajweed Practice in Reading Settings';
 
   @override
-  String get readingSettingsTajweedPractice => 'AI Tajweed Practice';
+  String get readingSettingsTajweedPractice => 'AI Quran Tajweed';
 
   @override
   String get readingSettingsTajweedPracticeSubtitle =>
@@ -1800,6 +1800,30 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get quranSeeHowAiQuranTajweedWorks => 'see how AI Quran Tajweed works';
+
+  @override
+  String get readingSettingsTajweedDeleteModel => 'KI-Modell löschen';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmTitle =>
+      'KI-Koran-Tadschwid-Modell löschen?';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmBody =>
+      'Du kannst Tadschwid erst wieder üben, wenn du das KI-Modell erneut herunterlädst. Dadurch wird auch Speicherplatz freigegeben.';
+
+  @override
+  String get readingSettingsTajweedDeleteConfirmAction => 'Löschen';
+
+  @override
+  String get readingSettingsTajweedDeleted => 'KI-Tadschwid-Modell gelöscht';
+
+  @override
+  String get readingSettingsTajweedDeleteFailed =>
+      'KI-Tadschwid-Modell konnte nicht gelöscht werden';
 
   @override
   String get readingSettingsTajweedFreePreviewTranslation =>

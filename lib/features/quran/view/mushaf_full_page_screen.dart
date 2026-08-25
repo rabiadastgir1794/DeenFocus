@@ -11,6 +11,7 @@ import '../data/quran_local_repository.dart';
 import '../reading_engine/mushaf_metadata.dart';
 import '../reading_engine/quran_audio_controller.dart';
 import '../reading_engine/quran_arabic_font.dart';
+import '../reading_engine/quran_display_prefs.dart';
 import '../reading_engine/quran_repeat_mode.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
@@ -401,26 +402,21 @@ class _MushafFullPageScreenState extends State<MushafFullPageScreen> {
       StorageService.quranArabicFontSp,
       StorageService.quranEnglishFontSp,
       StorageService.quranLineSpacing,
-      StorageService.quranScript,
-      StorageService.quranArabicFont.then((v) => v ?? ''),
+      QuranDisplayPrefs.load(),
       StorageService.quranReadingColorTheme,
       StorageService.quranLayoutTheme,
     ]);
     if (!mounted) return;
-    final script = QuranScriptX.fromName(results[4] as String);
-    final arabicFont = QuranArabicFont.resolve(
-      savedName: results[5] as String,
-      script: script,
-    );
+    final display = results[4] as QuranDisplayPrefs;
     setState(() {
       _showEnglish = results[0] as bool;
       _arabicFontSp = results[1] as double;
       _englishFontSp = results[2] as double;
       _lineSpacing = results[3] as double;
-      _arabicFontFamily = arabicFont.fontFamily;
-      _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
-      _colorTheme = QuranReadingColorTheme.fromName(results[6] as String);
-      _layoutTheme = QuranLayoutTheme.fromName(results[7] as String);
+      _arabicFontFamily = display.fontFamily;
+      _arabicFontFamilyFallback = display.fontFamilyFallback;
+      _colorTheme = QuranReadingColorTheme.fromName(results[5] as String);
+      _layoutTheme = QuranLayoutTheme.fromName(results[6] as String);
     });
     // Force-reload cached pages so script/translation overlays refresh.
     await _reloadAllLoadedPages();

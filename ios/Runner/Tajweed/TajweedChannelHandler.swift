@@ -142,6 +142,22 @@ final class TajweedChannelHandler: NSObject, FlutterStreamHandler {
     case "dispose":
       TajweedEngine.shared.dispose()
       DispatchQueue.main.async { result(nil) }
+    case "deleteModel":
+      TajweedEngine.shared.dispose()
+      do {
+        try ModelStore.shared.deleteInstalledPack()
+        DispatchQueue.main.async { result(nil) }
+      } catch {
+        DispatchQueue.main.async {
+          result(
+            FlutterError(
+              code: TajweedErrorCode.modelMissing,
+              message: error.localizedDescription,
+              details: nil
+            )
+          )
+        }
+      }
     case "getDevCoreMlSource":
       DispatchQueue.main.async {
         result(

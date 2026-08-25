@@ -131,7 +131,6 @@ class _SurahDetailAyahCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final simple = layoutTheme == QuranLayoutTheme.simple;
     final textColor =
@@ -239,22 +238,7 @@ class _SurahDetailAyahCard extends StatelessWidget {
         ],
         if (onPracticeTap != null) ...[
           SizedBox(height: 14.h),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: onPracticeTap,
-              icon: Icon(Icons.mic_rounded, size: 18.sp),
-              label: Text(l10n.quranReciteCheckTajweed),
-              style: FilledButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-              ),
-            ),
-          ),
+          _ReciteTajweedCta(onPracticeTap: onPracticeTap!),
         ],
       ],
     );
@@ -393,7 +377,7 @@ class _ClassicAyahCard extends StatelessWidget {
           ),
         ],
         if (onPracticeTap != null && isSimple) ...[
-          _PracticeButton(onPressed: onPracticeTap!),
+          _ReciteTajweedCta(onPracticeTap: onPracticeTap!),
           SizedBox(height: 8.h),
         ],
         InkWell(
@@ -527,37 +511,33 @@ class _ClassicAyahCard extends StatelessWidget {
           ),
         if (onPracticeTap != null && !isSimple) ...[
           SizedBox(height: 10.h),
-          _PracticeButton(onPressed: onPracticeTap!),
+          _ReciteTajweedCta(onPracticeTap: onPracticeTap!),
         ],
       ],
     );
   }
 }
 
-class _PracticeButton extends StatelessWidget {
-  const _PracticeButton({required this.onPressed});
+/// Full-width “Recite & check tajweed” CTA on each ayah card.
+class _ReciteTajweedCta extends StatelessWidget {
+  const _ReciteTajweedCta({required this.onPracticeTap});
 
-  final VoidCallback onPressed;
+  final VoidCallback onPracticeTap;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+
     return SizedBox(
       width: double.infinity,
-      child: FilledButton.tonalIcon(
-        onPressed: onPressed,
-        icon: Icon(Icons.record_voice_over_rounded, size: 20.sp),
-        label: Text(
-          'Practice Tajweed',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 14.sp,
-            color: colorScheme.onPrimaryContainer,
-          ),
-        ),
+      child: FilledButton.icon(
+        onPressed: onPracticeTap,
+        icon: Icon(Icons.mic_rounded, size: 18.sp),
+        label: Text(l10n.quranReciteCheckTajweed),
         style: FilledButton.styleFrom(
-          backgroundColor: colorScheme.primaryContainer,
-          foregroundColor: colorScheme.onPrimaryContainer,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           padding: EdgeInsets.symmetric(vertical: 12.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14.r),

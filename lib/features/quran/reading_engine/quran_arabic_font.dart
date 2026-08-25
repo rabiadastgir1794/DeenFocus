@@ -13,6 +13,14 @@ enum QuranArabicFont {
   nooreHuda,
   system;
 
+  /// Default typeface for a script (Uthmani → Hafs, IndoPak → Noore Huda).
+  static QuranArabicFont defaultFor(QuranScript script) {
+    return switch (script) {
+      QuranScript.uthmani => QuranArabicFont.uthmanicHafs,
+      QuranScript.indopak => QuranArabicFont.nooreHuda,
+    };
+  }
+
   /// Prefer a saved preference; otherwise match the selected script's font.
   static QuranArabicFont resolve({
     required String? savedName,
@@ -21,10 +29,7 @@ enum QuranArabicFont {
     if (savedName != null && savedName.isNotEmpty) {
       return fromName(savedName);
     }
-    return switch (script) {
-      QuranScript.uthmani => QuranArabicFont.uthmanicHafs,
-      QuranScript.indopak => QuranArabicFont.nooreHuda,
-    };
+    return defaultFor(script);
   }
 
   static QuranArabicFont fromName(String? name) {

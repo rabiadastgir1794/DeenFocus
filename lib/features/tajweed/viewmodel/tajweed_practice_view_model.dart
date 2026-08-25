@@ -45,6 +45,14 @@ class TajweedModelSession {
   static Future<void>? _inFlight;
   static final List<VoidCallback> _afterEnsureListeners = <VoidCallback>[];
 
+  /// True while a shared ensure+prepare is running (survives screen changes).
+  static bool get isBusy => _inFlight != null;
+
+  /// Optional UI hooks (e.g. Settings progress) — set by
+  /// [TajweedDownloadCoordinator], never by native code.
+  static VoidCallback? onEnsureStarted;
+  static void Function({required bool success})? onEnsureFinished;
+
   /// Official↔DIY DEBUG switch — must start a fresh ensure+prepare.
   static void invalidateBecauseDevSourceSwitch() {
     _invalidate('devSourceSwitch');
@@ -123,7 +131,11 @@ class TajweedModelSession {
     }
 
     _inFlight ??= _run();
+    onEnsureStarted?.call();
     return _inFlight!.whenComplete(() {
+      final success = ready;
+      _inFlight = null;
+      onEnsureFinished?.call(success: success);
       if (onAfterEnsure != null) {
         _afterEnsureListeners.remove(onAfterEnsure);
       }
@@ -153,7 +165,6 @@ class TajweedModelSession {
       ready = false;
       boundVersion = null;
       boundEncoderSha = null;
-      _inFlight = null;
       debugPrint('[TajweedModelSession] ensure/prepare failed: $e');
       rethrow;
     }
