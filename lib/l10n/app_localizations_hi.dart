@@ -3966,6 +3966,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get librarySearchHint => 'खोजें…';
 
   @override
+  String get libraryHubSearchHint => 'लर्निंग खोजें…';
+
+  @override
+  String get libraryHubSearchSections => 'अनुभाग';
+
+  @override
+  String get libraryHubSearchTopics => 'विषय';
+
+  @override
   String get librarySearchEmpty => 'कोई परिणाम नहीं';
 
   @override

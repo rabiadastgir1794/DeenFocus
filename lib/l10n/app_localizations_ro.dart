@@ -4004,6 +4004,15 @@ class AppLocalizationsRo extends AppLocalizations {
   String get librarySearchHint => 'Caută…';
 
   @override
+  String get libraryHubSearchHint => 'Caută în Învățare…';
+
+  @override
+  String get libraryHubSearchSections => 'Secțiuni';
+
+  @override
+  String get libraryHubSearchTopics => 'Subiecte';
+
+  @override
   String get librarySearchEmpty => 'Niciun rezultat';
 
   @override

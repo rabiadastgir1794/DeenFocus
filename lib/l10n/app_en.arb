@@ -1737,6 +1737,9 @@
   "libraryComingSoonTitle": "Coming soon",
   "libraryComingSoonBody": "This module is being prepared. Check back in a future update.",
   "librarySearchHint": "Search…",
+  "libraryHubSearchHint": "Search Learning…",
+  "libraryHubSearchSections": "Sections",
+  "libraryHubSearchTopics": "Topics",
   "librarySearchEmpty": "No matching items",
   "libraryItemCount": "{count} items",
   "@libraryItemCount": {

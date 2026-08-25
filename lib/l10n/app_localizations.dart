@@ -7211,6 +7211,24 @@ abstract class AppLocalizations {
   /// **'Search…'**
   String get librarySearchHint;
 
+  /// No description provided for @libraryHubSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Learning…'**
+  String get libraryHubSearchHint;
+
+  /// No description provided for @libraryHubSearchSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Sections'**
+  String get libraryHubSearchSections;
+
+  /// No description provided for @libraryHubSearchTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'Topics'**
+  String get libraryHubSearchTopics;
+
   /// No description provided for @librarySearchEmpty.
   ///
   /// In en, this message translates to:

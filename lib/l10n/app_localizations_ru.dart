@@ -3995,6 +3995,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get librarySearchHint => 'Поиск…';
 
   @override
+  String get libraryHubSearchHint => 'Поиск в Обучении…';
+
+  @override
+  String get libraryHubSearchSections => 'Разделы';
+
+  @override
+  String get libraryHubSearchTopics => 'Темы';
+
+  @override
   String get librarySearchEmpty => 'Ничего не найдено';
 
   @override

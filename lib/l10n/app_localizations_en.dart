@@ -3959,6 +3959,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get librarySearchHint => 'Search…';
 
   @override
+  String get libraryHubSearchHint => 'Search Learning…';
+
+  @override
+  String get libraryHubSearchSections => 'Sections';
+
+  @override
+  String get libraryHubSearchTopics => 'Topics';
+
+  @override
   String get librarySearchEmpty => 'No matching items';
 
   @override

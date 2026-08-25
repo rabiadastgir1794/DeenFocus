@@ -3780,6 +3780,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get librarySearchHint => '搜索…';
 
   @override
+  String get libraryHubSearchHint => '搜索学习内容…';
+
+  @override
+  String get libraryHubSearchSections => '分类';
+
+  @override
+  String get libraryHubSearchTopics => '主题';
+
+  @override
   String get librarySearchEmpty => '无匹配项';
 
   @override

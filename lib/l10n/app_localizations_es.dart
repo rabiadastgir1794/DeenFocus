@@ -4001,6 +4001,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get librarySearchHint => 'Buscar…';
 
   @override
+  String get libraryHubSearchHint => 'Buscar en Aprendizaje…';
+
+  @override
+  String get libraryHubSearchSections => 'Secciones';
+
+  @override
+  String get libraryHubSearchTopics => 'Temas';
+
+  @override
   String get librarySearchEmpty => 'Sin resultados';
 
   @override

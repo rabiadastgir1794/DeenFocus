@@ -3995,6 +3995,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get librarySearchHint => 'Pesquisar…';
 
   @override
+  String get libraryHubSearchHint => 'Pesquisar em Aprender…';
+
+  @override
+  String get libraryHubSearchSections => 'Secções';
+
+  @override
+  String get libraryHubSearchTopics => 'Tópicos';
+
+  @override
   String get librarySearchEmpty => 'Nenhum resultado';
 
   @override

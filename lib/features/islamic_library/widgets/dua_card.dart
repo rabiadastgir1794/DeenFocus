@@ -51,6 +51,7 @@ class DuaCard extends StatelessWidget {
               dua.arabic,
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
+              softWrap: true,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontFamily: 'UthmanicHafs',
                     height: 1.6,
@@ -69,6 +70,7 @@ class DuaCard extends StatelessWidget {
             Text(
               dua.transliteration,
               textAlign: TextAlign.center,
+              softWrap: true,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontStyle: FontStyle.italic,
                     color: colorScheme.onSurfaceVariant,

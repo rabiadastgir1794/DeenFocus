@@ -2,6 +2,12 @@
 > Source of truth for recovery. Read this first after any interruption.
 > Last updated: 2026-08-25 — AI Tajweed download UI (Settings + Surah mic).
 
+## Status: Learning hub search (2026-08-25)
+Islamic Library (Learn tab) hub has a **Search Learning…** field that filters
+module sections and deep-searches Hadith, duas, Names of Allah, pillars,
+prayer guides, fiqh, prophets, and occasions — tapping a hit opens the matching
+screen / item.
+
 ## Status: AI Tajweed download UI (2026-08-25)
 Surah/Juz mic always visible. Practice / mic tap: non-subscriber → paywall;
 subscriber → existing Tajweed practice screen (shows model download UI if pack

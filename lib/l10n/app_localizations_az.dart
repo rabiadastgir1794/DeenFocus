@@ -3981,6 +3981,15 @@ class AppLocalizationsAz extends AppLocalizations {
   String get librarySearchHint => 'Axtar…';
 
   @override
+  String get libraryHubSearchHint => 'Öyrənmədə axtar…';
+
+  @override
+  String get libraryHubSearchSections => 'Bölmələr';
+
+  @override
+  String get libraryHubSearchTopics => 'Mövzular';
+
+  @override
   String get librarySearchEmpty => 'Uyğun nəticə yoxdur';
 
   @override

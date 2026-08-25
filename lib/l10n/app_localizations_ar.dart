@@ -3930,6 +3930,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get librarySearchHint => 'بحث…';
 
   @override
+  String get libraryHubSearchHint => 'ابحث في التعلم…';
+
+  @override
+  String get libraryHubSearchSections => 'الأقسام';
+
+  @override
+  String get libraryHubSearchTopics => 'المواضيع';
+
+  @override
   String get librarySearchEmpty => 'لا توجد نتائج';
 
   @override

@@ -3983,6 +3983,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String get librarySearchHint => 'Zoeken…';
 
   @override
+  String get libraryHubSearchHint => 'Zoek in Leren…';
+
+  @override
+  String get libraryHubSearchSections => 'Onderdelen';
+
+  @override
+  String get libraryHubSearchTopics => 'Onderwerpen';
+
+  @override
   String get librarySearchEmpty => 'Geen resultaten';
 
   @override

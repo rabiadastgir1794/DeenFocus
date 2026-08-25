@@ -4011,6 +4011,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get librarySearchHint => 'Rechercher…';
 
   @override
+  String get libraryHubSearchHint => 'Rechercher dans Apprendre…';
+
+  @override
+  String get libraryHubSearchSections => 'Sections';
+
+  @override
+  String get libraryHubSearchTopics => 'Sujets';
+
+  @override
   String get librarySearchEmpty => 'Aucun résultat';
 
   @override

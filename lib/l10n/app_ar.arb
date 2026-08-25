@@ -1303,6 +1303,9 @@
   "libraryComingSoonTitle": "قريبًا",
   "libraryComingSoonBody": "هذا القسم قيد الإعداد. عد في تحديث لاحق.",
   "librarySearchHint": "بحث…",
+  "libraryHubSearchHint": "ابحث في التعلم…",
+  "libraryHubSearchSections": "الأقسام",
+  "libraryHubSearchTopics": "المواضيع",
   "librarySearchEmpty": "لا توجد نتائج",
   "libraryItemCount": "{count} عنصر",
   "@libraryItemCount": {
