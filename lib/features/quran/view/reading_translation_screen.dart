@@ -85,8 +85,8 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
     final bytes = option.approxSizeBytes;
     if (bytes == null || bytes <= 0) return null;
     final mb = bytes / (1024 * 1024);
-    if (mb >= 10) return '${mb.round()} MB';
-    return '${mb.toStringAsFixed(1)} MB';
+    final size = mb >= 10 ? '${mb.round()}' : mb.toStringAsFixed(1);
+    return AppLocalizations.of(context)!.readingSettingsTranslationSizeMb(size);
   }
 
   List<QuranTranslationOption> get _installedOptions {
@@ -168,10 +168,11 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
       } on QuranTranslationException {
         if (!mounted) return;
         setState(() => _downloadingLanguage = null);
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(
           SnackBar(
             content: Text(
-              'Could not download ${_labelFor(option)}. Try again when online.',
+              l10n.readingSettingsTranslationDownloadFailed(_labelFor(option)),
             ),
           ),
         );
