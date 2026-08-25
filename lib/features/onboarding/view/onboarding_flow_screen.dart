@@ -28,6 +28,7 @@ import 'onboarding_sect_page.dart';
 import 'onboarding_app_lock_demo_page.dart';
 import 'onboarding_select_apps_page.dart';
 import 'onboarding_subscription_page.dart';
+import 'onboarding_widgets_live_page.dart';
 import 'onboarding_welcome_page.dart';
 import 'widgets/onboarding_theme_toggle.dart';
 
@@ -589,6 +590,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                       children: [
                         const OnboardingWelcomePage(),
                         const OnboardingFocusModePage(),
+                        const OnboardingWidgetsLivePage(),
                         OnboardingSectPage(
                           selectedSect: vm.selectedSect,
                           onSectSelected: vm.setSelectedSect,

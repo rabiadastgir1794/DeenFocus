@@ -732,6 +732,120 @@ abstract class AppLocalizations {
   /// **'Explore all that Deen Focus offers. Tap a focus mode to see how it works.'**
   String get focusModesSubtitle;
 
+  /// No description provided for @onboardingWidgetsLiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your prayers, always within reach'**
+  String get onboardingWidgetsLiveTitle;
+
+  /// No description provided for @onboardingWidgetsLiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay connected with what matters most — right from your Home Screen or Lock Screen.'**
+  String get onboardingWidgetsLiveSubtitle;
+
+  /// No description provided for @onboardingWidgetsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widgets'**
+  String get onboardingWidgetsSectionTitle;
+
+  /// No description provided for @onboardingWidgetsSectionBodyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your next prayer, streaks, and progress '**
+  String get onboardingWidgetsSectionBodyPrefix;
+
+  /// No description provided for @onboardingWidgetsSectionBodyEmphasis.
+  ///
+  /// In en, this message translates to:
+  /// **'at a glance.'**
+  String get onboardingWidgetsSectionBodyEmphasis;
+
+  /// No description provided for @onboardingLiveActivitiesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activities'**
+  String get onboardingLiveActivitiesSectionTitle;
+
+  /// No description provided for @onboardingLiveActivitiesSectionBodyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'See your upcoming prayer updates in '**
+  String get onboardingLiveActivitiesSectionBodyPrefix;
+
+  /// No description provided for @onboardingLiveActivitiesSectionBodyEmphasis.
+  ///
+  /// In en, this message translates to:
+  /// **'real time'**
+  String get onboardingLiveActivitiesSectionBodyEmphasis;
+
+  /// No description provided for @onboardingLiveActivitiesSectionBodySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' on your Lock Screen and Dynamic Island.'**
+  String get onboardingLiveActivitiesSectionBodySuffix;
+
+  /// No description provided for @onboardingWidgetsLiveTrustPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Designed to help you stay '**
+  String get onboardingWidgetsLiveTrustPrefix;
+
+  /// No description provided for @onboardingWidgetsLiveTrustEmphasis.
+  ///
+  /// In en, this message translates to:
+  /// **'consistent'**
+  String get onboardingWidgetsLiveTrustEmphasis;
+
+  /// No description provided for @onboardingWidgetsLiveTrustSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' and never miss what matters most.'**
+  String get onboardingWidgetsLiveTrustSuffix;
+
+  /// No description provided for @onboardingWidgetsMockStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get onboardingWidgetsMockStreak;
+
+  /// No description provided for @onboardingWidgetsMockStreakValue.
+  ///
+  /// In en, this message translates to:
+  /// **'12 days'**
+  String get onboardingWidgetsMockStreakValue;
+
+  /// No description provided for @onboardingWidgetsMockFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get onboardingWidgetsMockFocus;
+
+  /// No description provided for @onboardingWidgetsMockFocusValue.
+  ///
+  /// In en, this message translates to:
+  /// **'25 min'**
+  String get onboardingWidgetsMockFocusValue;
+
+  /// No description provided for @onboardingWidgetsLiveLockDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday, 6 May'**
+  String get onboardingWidgetsLiveLockDate;
+
+  /// No description provided for @onboardingWidgetsLiveLockTime.
+  ///
+  /// In en, this message translates to:
+  /// **'9:41'**
+  String get onboardingWidgetsLiveLockTime;
+
+  /// No description provided for @onboardingWidgetsLiveNextPrayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhuhr 12:45 PM in 02:15:32'**
+  String get onboardingWidgetsLiveNextPrayer;
+
   /// No description provided for @focusModesSectionLabel.
   ///
   /// In en, this message translates to:
@@ -3215,6 +3329,18 @@ abstract class AppLocalizations {
   /// **'Recite ayahs and get feedback'**
   String get readingSettingsTajweedPracticeSubtitle;
 
+  /// No description provided for @readingSettingsTajweedSeeHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'See how it works'**
+  String get readingSettingsTajweedSeeHowItWorks;
+
+  /// No description provided for @readingSettingsTajweedFreePreviewTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'In the name of Allah, the Entirely Merciful, the Especially Merciful.'**
+  String get readingSettingsTajweedFreePreviewTranslation;
+
   /// No description provided for @quranAudioSettingsTitle.
   ///
   /// In en, this message translates to:
@@ -5579,6 +5705,30 @@ abstract class AppLocalizations {
   /// **'Live Activity is off'**
   String get liveActivityStatusOff;
 
+  /// No description provided for @liveActivityEnabledPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activity is on'**
+  String get liveActivityEnabledPromptTitle;
+
+  /// No description provided for @liveActivityEnabledPromptBodyIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer updates are now on your Lock Screen and Dynamic Island. Lock your phone to see your current and next prayer anytime.'**
+  String get liveActivityEnabledPromptBodyIos;
+
+  /// No description provided for @liveActivityEnabledPromptBodyAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer updates now show as an ongoing notification. Lock your phone or pull down the notification shade to check anytime.'**
+  String get liveActivityEnabledPromptBodyAndroid;
+
+  /// No description provided for @liveActivityEnabledPromptButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get liveActivityEnabledPromptButton;
+
   /// No description provided for @liveActivityNowLabel.
   ///
   /// In en, this message translates to:
@@ -7762,6 +7912,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{minutes} minutes to reach today\'s goal'**
   String digitalBalanceMinutesToGoal(int minutes);
+
+  /// No description provided for @tajweedPracticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tajweed Practice'**
+  String get tajweedPracticeTitle;
+
+  /// No description provided for @tajweedDownloadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing AI model'**
+  String get tajweedDownloadTitle;
+
+  /// No description provided for @tajweedDownloadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not prepare AI model'**
+  String get tajweedDownloadFailedTitle;
+
+  /// No description provided for @tajweedDownloadBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time download so Tajweed practice works fully offline afterwards. This only happens once.'**
+  String get tajweedDownloadBody;
+
+  /// No description provided for @tajweedDownloadFinishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Finishing setup…'**
+  String get tajweedDownloadFinishing;
+
+  /// No description provided for @tajweedDownloadCanLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'You can leave this screen — the download continues in the background.'**
+  String get tajweedDownloadCanLeave;
+
+  /// No description provided for @tajweedDownloadTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tajweedDownloadTryAgain;
+
+  /// No description provided for @tajweedDownloadPleaseTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get tajweedDownloadPleaseTryAgain;
+
+  /// No description provided for @tajweedErrorFeatureDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Tajweed practice is turned off. Enable it in Settings first.'**
+  String get tajweedErrorFeatureDisabled;
+
+  /// No description provided for @tajweedErrorModelMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI model is not installed yet.'**
+  String get tajweedErrorModelMissing;
+
+  /// No description provided for @tajweedErrorModelDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the AI model failed. Check your connection and try again.'**
+  String get tajweedErrorModelDownloadFailed;
+
+  /// No description provided for @tajweedErrorModelLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI model could not be loaded on this device.'**
+  String get tajweedErrorModelLoadFailed;
+
+  /// No description provided for @tajweedErrorCouldNotPrepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not prepare the AI model.'**
+  String get tajweedErrorCouldNotPrepare;
+
+  /// No description provided for @tajweedErrorUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Tajweed practice is not available on this device.'**
+  String get tajweedErrorUnsupported;
 }
 
 class _AppLocalizationsDelegate

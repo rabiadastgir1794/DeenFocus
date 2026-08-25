@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "अभी नहीं",
   "focusModesTitle": "सब कुछ एक ऐप में",
   "focusModesSubtitle": "देखें Deen Focus क्या सब कुछ देता है। किसी फोकस मोड पर टैप करके जानें कि यह कैसे काम करता है।",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "प्रार्थना विधा",
   "focusPrayerModeDescription": "सलाह के दौरान ध्यान भटकाने वाले ऐप्स अपने आप ब्लॉक करें ताकि आप पूरे ख़ुशू के साथ नमाज़ पढ़ सकें।",
   "focusSleepModeTitle": "स्लीप मोड",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "खोज का दायरा: {radiusKm} किमी",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "मानचित्र पूर्वावलोकन अभी उपलब्ध नहीं है.",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "{radiusKm} किमी के अंदर कोई मस्जिद नहीं मिली",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "आस-पास की मस्जिदों को खोजने के लिए स्थान की पहुंच आवश्यक है।",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "इस स्थान के लिए OpenStreetMap पर {radiusKm} किमी के भीतर कुछ भी सूचीबद्ध नहीं है। बाद में पुनः प्रयास करें या क्षेत्र बढ़ाएँ।",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} मस्जिदें {radiusKm} किमी के भीतर पाई गईं",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "पास में {count} मस्जिदें",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "{radiusKm} किमी के भीतर · दूरी के अनुसार क्रमबद्ध",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "दिशा-निर्देश",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "कल की तुलना में आपका DeenFocus समय {percent}% बढ़ा।",
   "digitalBalanceGoalPerDay": "{goal} / दिन",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "आज के लक्ष्य तक {minutes} मिनट बाकी"
+  "digitalBalanceMinutesToGoal": "आज के लक्ष्य तक {minutes} मिनट बाकी",
+  "tajweedPracticeTitle": "तजवीद अभ्यास",
+  "tajweedDownloadTitle": "AI मॉडल तैयार हो रहा है",
+  "tajweedDownloadFailedTitle": "AI मॉडल तैयार नहीं हो सका",
+  "tajweedDownloadBody": "एक बार का डाउनलोड ताकि तजवीद अभ्यास बाद में पूरी तरह ऑफ़लाइन चले। यह सिर्फ़ एक बार होता है।",
+  "tajweedDownloadFinishing": "सेटअप पूरा हो रहा है…",
+  "tajweedDownloadCanLeave": "आप यह स्क्रीन छोड़ सकते हैं — डाउनलोड बैकग्राउंड में जारी रहेगा।",
+  "tajweedDownloadTryAgain": "फिर से कोशिश करें",
+  "tajweedDownloadPleaseTryAgain": "कृपया फिर से कोशिश करें।",
+  "tajweedErrorFeatureDisabled": "AI तजवीद अभ्यास बंद है। पहले सेटिंग्स में चालू करें।",
+  "tajweedErrorModelMissing": "AI मॉडल अभी इंस्टॉल नहीं है।",
+  "tajweedErrorModelDownloadFailed": "AI मॉडल डाउनलोड विफल। कनेक्शन जाँचें और फिर कोशिश करें।",
+  "tajweedErrorModelLoadFailed": "इस डिवाइस पर AI मॉडल लोड नहीं हो सका।",
+  "tajweedErrorCouldNotPrepare": "AI मॉडल तैयार नहीं हो सका।",
+  "tajweedErrorUnsupported": "इस डिवाइस पर AI तजवीद अभ्यास उपलब्ध नहीं है।"
 }

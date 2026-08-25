@@ -202,6 +202,10 @@ class TajweedPracticeViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  /// Stable [TajweedErrorCode] for download failures (localized in the view).
+  String? _errorCode;
+  String? get errorCode => _errorCode;
+
   /// Non-fatal banner shown on the recording screen (e.g. "recording too
   /// short, try again") without leaving [TajweedFlowStage.recordingReady].
   String? _recordingBanner;
@@ -262,14 +266,18 @@ class TajweedPracticeViewModel extends ChangeNotifier {
     _notify();
     unawaited(_loadReferenceAudioPrefs());
 
-    final enabled = await StorageService.tajweedEnabled;
-    if (_disposed) return;
-    if (!enabled) {
-      _stage = TajweedFlowStage.downloadFailed;
-      _errorMessage =
-          'AI Tajweed practice is turned off. Enable it in Settings first.';
-      _notify();
-      return;
+    if (!args.freePreview) {
+      final enabled = await StorageService.tajweedEnabled;
+      if (_disposed) return;
+      if (!enabled) {
+        _stage = TajweedFlowStage.downloadFailed;
+        _errorCode = TajweedErrorCode.featureDisabled;
+        _errorMessage = null;
+        _notify();
+        return;
+      }
+    } else {
+      TajweedService.setFreePreviewSession(true);
     }
 
     _eventsSub ??= TajweedService.events().listen(_onNativeEvent);
@@ -282,6 +290,7 @@ class TajweedPracticeViewModel extends ChangeNotifier {
   Future<void> _bootstrapModel({bool forceInstallUi = false}) async {
     if (_disposed) return;
     _errorMessage = null;
+    _errorCode = null;
 
     // Pack still bound from an earlier ayah / screen — skip install + ensure.
     if (!forceInstallUi && await TajweedModelSession.isReadyForInference()) {
@@ -334,7 +343,8 @@ class TajweedPracticeViewModel extends ChangeNotifier {
       if (!TajweedModelSession.ready) {
         // Should not happen — ensurePrepared only completes without throw when ready.
         _stage = TajweedFlowStage.downloadFailed;
-        _errorMessage = 'The AI model could not be loaded on this device.';
+        _errorCode = TajweedErrorCode.modelLoadFailed;
+        _errorMessage = null;
         _notify();
         return;
       }
@@ -344,11 +354,13 @@ class TajweedPracticeViewModel extends ChangeNotifier {
     } on TajweedException catch (e) {
       if (_disposed) return;
       _stage = TajweedFlowStage.downloadFailed;
+      _errorCode = e.code;
       _errorMessage = _friendlyMessage(e);
     } catch (e) {
       if (_disposed) return;
       _stage = TajweedFlowStage.downloadFailed;
-      _errorMessage = 'Could not prepare the AI model: $e';
+      _errorCode = TajweedErrorCode.modelLoadFailed;
+      _errorMessage = null;
     }
     _notify();
   }
@@ -825,6 +837,9 @@ class TajweedPracticeViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    if (args.freePreview) {
+      TajweedService.setFreePreviewSession(false);
+    }
     _stopElapsedTimer();
     _progressSub?.cancel();
     _eventsSub?.cancel();

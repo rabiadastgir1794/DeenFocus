@@ -810,13 +810,13 @@ void main() {
         cycleLength: 2,
         pauseStreaks: true,
       );
-      expectStableRecalc(
-        now: eve(DateTime(2026, 8, 8)),
-        history: history,
-        data: data,
-        prayerStreak: 10, // Aug 7+6; Aug 8 paused
-        dayStreak: 2,
-      );
+        expectStableRecalc(
+          now: eve(DateTime(2026, 8, 8)),
+          history: history,
+          data: data,
+          prayerStreak: 15, // Aug 8+7+6 preserved when Cycle starts today
+          dayStreak: 3, // Aug 8–7–6 preserved when Cycle starts today
+        );
 
       history[key(DateTime(2026, 8, 9))] = {
         TrackablePrayer.fajr: PrayerMarkStatus.missed,

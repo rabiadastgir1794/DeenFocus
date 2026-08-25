@@ -5,9 +5,10 @@ import 'package:flutter/services.dart';
 import '../../features/home/helpers/digital_balance_math.dart';
 import '../../features/home/model/digital_balance_models.dart';
 
-/// Platform app-usage bridge. Android reads UsageStats.
-/// iOS uses Family Controls authorization; per-app durations cannot be
-/// exported from the iPhoneOS 26.2 SDK (see IosAppUsageBridge).
+/// Platform app-usage bridge. Android aggregates UsageEvents (with a
+/// per-day UsageStats fallback). iOS uses Family Controls authorization;
+/// per-app durations cannot be exported from the iPhoneOS 26.2 SDK
+/// (see IosAppUsageBridge).
 abstract class AppUsageService {
   static const MethodChannel _channel = MethodChannel(
     'com.app.deenly.deenly/app_usage',

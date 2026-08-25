@@ -8,6 +8,7 @@ class TajweedPracticeArgs {
     this.lexicalReferenceArabic,
     this.surahName,
     this.translation,
+    this.freePreview = false,
   });
 
   final int surah;
@@ -29,6 +30,10 @@ class TajweedPracticeArgs {
 
   /// Display-only English translation shown alongside the Arabic reference.
   final String? translation;
+
+  /// When true, practice works without enabling AI Tajweed in Settings or
+  /// an active subscription (single demo ayah only).
+  final bool freePreview;
 
   String get ref => '$surah:$ayah';
 }

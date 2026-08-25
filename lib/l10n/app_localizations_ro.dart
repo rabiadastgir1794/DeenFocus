@@ -343,6 +343,68 @@ class AppLocalizationsRo extends AppLocalizations {
       'Explorează tot ce oferă Deen Focus. Atinge un mod de focus pentru a vedea cum funcționează.';
 
   @override
+  String get onboardingWidgetsLiveTitle => 'Your prayers, always within reach';
+
+  @override
+  String get onboardingWidgetsLiveSubtitle =>
+      'Stay connected with what matters most — right from your Home Screen or Lock Screen.';
+
+  @override
+  String get onboardingWidgetsSectionTitle => 'Widgets';
+
+  @override
+  String get onboardingWidgetsSectionBodyPrefix =>
+      'Check your next prayer, streaks, and progress ';
+
+  @override
+  String get onboardingWidgetsSectionBodyEmphasis => 'at a glance.';
+
+  @override
+  String get onboardingLiveActivitiesSectionTitle => 'Live Activities';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyPrefix =>
+      'See your upcoming prayer updates in ';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyEmphasis => 'real time';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodySuffix =>
+      ' on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get onboardingWidgetsLiveTrustPrefix => 'Designed to help you stay ';
+
+  @override
+  String get onboardingWidgetsLiveTrustEmphasis => 'consistent';
+
+  @override
+  String get onboardingWidgetsLiveTrustSuffix =>
+      ' and never miss what matters most.';
+
+  @override
+  String get onboardingWidgetsMockStreak => 'Streak';
+
+  @override
+  String get onboardingWidgetsMockStreakValue => '12 days';
+
+  @override
+  String get onboardingWidgetsMockFocus => 'Focus';
+
+  @override
+  String get onboardingWidgetsMockFocusValue => '25 min';
+
+  @override
+  String get onboardingWidgetsLiveLockDate => 'Tuesday, 6 May';
+
+  @override
+  String get onboardingWidgetsLiveLockTime => '9:41';
+
+  @override
+  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45 PM in 02:15:32';
+
+  @override
   String get focusModesSectionLabel => 'MODURI FOCUS · ATINGE PENTRU MAI MULTE';
 
   @override
@@ -1736,6 +1798,13 @@ class AppLocalizationsRo extends AppLocalizations {
       'Recite ayahs and get feedback';
 
   @override
+  String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get readingSettingsTajweedFreePreviewTranslation =>
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+
+  @override
   String get quranAudioSettingsTitle => 'Audio settings';
 
   @override
@@ -3071,6 +3140,20 @@ class AppLocalizationsRo extends AppLocalizations {
   String get liveActivityStatusOff => 'Live Activity este dezactivată';
 
   @override
+  String get liveActivityEnabledPromptTitle => 'Live Activity is on';
+
+  @override
+  String get liveActivityEnabledPromptBodyIos =>
+      'Prayer updates are now on your Lock Screen and Dynamic Island. Lock your phone to see your current and next prayer anytime.';
+
+  @override
+  String get liveActivityEnabledPromptBodyAndroid =>
+      'Prayer updates now show as an ongoing notification. Lock your phone or pull down the notification shade to check anytime.';
+
+  @override
+  String get liveActivityEnabledPromptButton => 'Got it';
+
+  @override
   String get liveActivityNowLabel => 'Acum';
 
   @override
@@ -4333,4 +4416,52 @@ class AppLocalizationsRo extends AppLocalizations {
   String digitalBalanceMinutesToGoal(int minutes) {
     return '$minutes minute până la obiectivul de azi';
   }
+
+  @override
+  String get tajweedPracticeTitle => 'Practică tajweed';
+
+  @override
+  String get tajweedDownloadTitle => 'Se pregătește modelul AI';
+
+  @override
+  String get tajweedDownloadFailedTitle => 'Nu s-a putut pregăti modelul AI';
+
+  @override
+  String get tajweedDownloadBody =>
+      'Descărcare unică, ca practica tajweed să funcționeze apoi complet offline. Se întâmplă o singură dată.';
+
+  @override
+  String get tajweedDownloadFinishing => 'Se finalizează configurarea…';
+
+  @override
+  String get tajweedDownloadCanLeave =>
+      'Poți părăsi acest ecran — descărcarea continuă în fundal.';
+
+  @override
+  String get tajweedDownloadTryAgain => 'Încearcă din nou';
+
+  @override
+  String get tajweedDownloadPleaseTryAgain => 'Te rugăm să încerci din nou.';
+
+  @override
+  String get tajweedErrorFeatureDisabled =>
+      'Practica tajweed AI este dezactivată. Activeaz-o mai întâi în Setări.';
+
+  @override
+  String get tajweedErrorModelMissing => 'Modelul AI nu este încă instalat.';
+
+  @override
+  String get tajweedErrorModelDownloadFailed =>
+      'Descărcarea modelului AI a eșuat. Verifică conexiunea și încearcă din nou.';
+
+  @override
+  String get tajweedErrorModelLoadFailed =>
+      'Modelul AI nu a putut fi încărcat pe acest dispozitiv.';
+
+  @override
+  String get tajweedErrorCouldNotPrepare => 'Nu s-a putut pregăti modelul AI.';
+
+  @override
+  String get tajweedErrorUnsupported =>
+      'Practica tajweed AI nu este disponibilă pe acest dispozitiv.';
 }

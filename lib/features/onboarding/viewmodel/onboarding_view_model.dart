@@ -13,19 +13,20 @@ import '../model/subscription_plan.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel() {
-    _totalSteps = 10;
+    _totalSteps = 11;
     _selectedPlan = SubscriptionPlan.yearly;
   }
 
   /// PageView index for [OnboardingLocationPage] (compulsory).
-  static const int locationStepIndex = 4;
-  static const int notificationStepIndex = 5;
-  static const int screenTimeStepIndex = 6;
-  static const int selectAppsStepIndex = 7;
-  static const int appLockDemoStepIndex = 8;
-  static const int subscriptionStepIndex = 9;
-  static const int sectStepIndex = 2;
-  static const int nameStepIndex = 3;
+  static const int widgetsLiveStepIndex = 2;
+  static const int locationStepIndex = 5;
+  static const int notificationStepIndex = 6;
+  static const int screenTimeStepIndex = 7;
+  static const int selectAppsStepIndex = 8;
+  static const int appLockDemoStepIndex = 9;
+  static const int subscriptionStepIndex = 10;
+  static const int sectStepIndex = 3;
+  static const int nameStepIndex = 4;
 
   late int _totalSteps;
 
@@ -58,7 +59,7 @@ class OnboardingViewModel extends ChangeNotifier {
   /// Screens that show Skip on top right.
   bool get showLanguageChangeOption => _currentIndex == 0;
   bool get showSkip =>
-      _currentIndex < 2 ||
+      _currentIndex < 3 ||
       _currentIndex == locationStepIndex ||
       _currentIndex == notificationStepIndex ||
       _currentIndex == screenTimeStepIndex ||

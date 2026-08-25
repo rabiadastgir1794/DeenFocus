@@ -196,6 +196,7 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
                             onOpen: () {
                               final balance = _digitalBalance;
                               if (balance == null) return;
+                              unawaited(balance.refresh());
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(
                                   builder: (_) =>

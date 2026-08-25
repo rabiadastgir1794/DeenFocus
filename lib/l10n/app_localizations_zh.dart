@@ -324,6 +324,68 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focusModesSubtitle => '探索 Deen Focus 提供的一切。点按专注模式了解其工作方式。';
 
   @override
+  String get onboardingWidgetsLiveTitle => 'Your prayers, always within reach';
+
+  @override
+  String get onboardingWidgetsLiveSubtitle =>
+      'Stay connected with what matters most — right from your Home Screen or Lock Screen.';
+
+  @override
+  String get onboardingWidgetsSectionTitle => 'Widgets';
+
+  @override
+  String get onboardingWidgetsSectionBodyPrefix =>
+      'Check your next prayer, streaks, and progress ';
+
+  @override
+  String get onboardingWidgetsSectionBodyEmphasis => 'at a glance.';
+
+  @override
+  String get onboardingLiveActivitiesSectionTitle => 'Live Activities';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyPrefix =>
+      'See your upcoming prayer updates in ';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyEmphasis => 'real time';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodySuffix =>
+      ' on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get onboardingWidgetsLiveTrustPrefix => 'Designed to help you stay ';
+
+  @override
+  String get onboardingWidgetsLiveTrustEmphasis => 'consistent';
+
+  @override
+  String get onboardingWidgetsLiveTrustSuffix =>
+      ' and never miss what matters most.';
+
+  @override
+  String get onboardingWidgetsMockStreak => 'Streak';
+
+  @override
+  String get onboardingWidgetsMockStreakValue => '12 days';
+
+  @override
+  String get onboardingWidgetsMockFocus => 'Focus';
+
+  @override
+  String get onboardingWidgetsMockFocusValue => '25 min';
+
+  @override
+  String get onboardingWidgetsLiveLockDate => 'Tuesday, 6 May';
+
+  @override
+  String get onboardingWidgetsLiveLockTime => '9:41';
+
+  @override
+  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45 PM in 02:15:32';
+
+  @override
   String get focusModesSectionLabel => '专注模式 · 点按了解更多';
 
   @override
@@ -1638,6 +1700,13 @@ class AppLocalizationsZh extends AppLocalizations {
       'Recite ayahs and get feedback';
 
   @override
+  String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get readingSettingsTajweedFreePreviewTranslation =>
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+
+  @override
   String get quranAudioSettingsTitle => 'Audio settings';
 
   @override
@@ -2909,6 +2978,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get liveActivityStatusOff => '实时活动已关闭';
 
   @override
+  String get liveActivityEnabledPromptTitle => 'Live Activity is on';
+
+  @override
+  String get liveActivityEnabledPromptBodyIos =>
+      'Prayer updates are now on your Lock Screen and Dynamic Island. Lock your phone to see your current and next prayer anytime.';
+
+  @override
+  String get liveActivityEnabledPromptBodyAndroid =>
+      'Prayer updates now show as an ongoing notification. Lock your phone or pull down the notification shade to check anytime.';
+
+  @override
+  String get liveActivityEnabledPromptButton => 'Got it';
+
+  @override
   String get liveActivityNowLabel => '现在';
 
   @override
@@ -4092,4 +4175,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String digitalBalanceMinutesToGoal(int minutes) {
     return '距今日目标还差 $minutes 分钟';
   }
+
+  @override
+  String get tajweedPracticeTitle => '泰吉威德练习';
+
+  @override
+  String get tajweedDownloadTitle => '正在准备 AI 模型';
+
+  @override
+  String get tajweedDownloadFailedTitle => '无法准备 AI 模型';
+
+  @override
+  String get tajweedDownloadBody => '一次性下载，之后泰吉威德练习可完全离线使用。仅需一次。';
+
+  @override
+  String get tajweedDownloadFinishing => '正在完成设置…';
+
+  @override
+  String get tajweedDownloadCanLeave => '可以离开此页面——下载会在后台继续。';
+
+  @override
+  String get tajweedDownloadTryAgain => '重试';
+
+  @override
+  String get tajweedDownloadPleaseTryAgain => '请重试。';
+
+  @override
+  String get tajweedErrorFeatureDisabled => 'AI 泰吉威德练习已关闭。请先在设置中开启。';
+
+  @override
+  String get tajweedErrorModelMissing => 'AI 模型尚未安装。';
+
+  @override
+  String get tajweedErrorModelDownloadFailed => 'AI 模型下载失败。请检查网络后重试。';
+
+  @override
+  String get tajweedErrorModelLoadFailed => '无法在此设备上加载 AI 模型。';
+
+  @override
+  String get tajweedErrorCouldNotPrepare => '无法准备 AI 模型。';
+
+  @override
+  String get tajweedErrorUnsupported => '此设备不支持 AI 泰吉威德练习。';
 }

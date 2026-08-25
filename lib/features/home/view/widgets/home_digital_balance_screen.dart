@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +17,24 @@ import 'digital_balance_chrome.dart';
 import 'home_digital_balance_apps_screen.dart';
 import 'home_digital_balance_card.dart';
 
-class HomeDigitalBalanceScreen extends StatelessWidget {
+class HomeDigitalBalanceScreen extends StatefulWidget {
   const HomeDigitalBalanceScreen({super.key});
+
+  @override
+  State<HomeDigitalBalanceScreen> createState() =>
+      _HomeDigitalBalanceScreenState();
+}
+
+class _HomeDigitalBalanceScreenState extends State<HomeDigitalBalanceScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (!DigitalBalanceInsightsCard.visibleOnThisPlatform) return;
+      unawaited(context.read<DigitalBalanceViewModel>().refresh());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

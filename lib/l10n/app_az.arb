@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "İndi yox",
   "focusModesTitle": "Hər şey bir tətbiqdə",
   "focusModesSubtitle": "Deen Focus-un təklif etdiyi hər şeyi kəşf edin. Necə işlədiyini görmək üçün fokus rejiminə toxunun.",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "Namaz rejimi",
   "focusPrayerModeDescription": "Namaz zamanı diqqəti yayındıran tətbiqləri avtomatik bloklayın ki, tam xuşu ilə namaz qıla biləsiniz.",
   "focusSleepModeTitle": "Yuxu rejimi",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "Axtarış radiusu: {radiusKm} km",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "Xəritənin önizləməsi hazırda əlçatan deyil.",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "{radiusKm} km məsafədə heç bir məscid tapılmadı",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "Yaxınlıqdakı məscidləri tapmaq üçün məkana giriş tələb olunur.",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "Bu yer üçün OpenStreetMap-da {radiusKm} km məsafədə heç nə qeyd edilməyib. Daha sonra yenidən cəhd edin və ya ərazini genişləndirin.",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} məscid {radiusKm} km məsafədə tapıldı",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "Yaxınlıqdakı {count} məscid",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "{radiusKm} km daxilində · Məsafəyə görə sıralanıb",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "Marşrut",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "DeenFocus vaxtın dünənlə müqayisədə {percent}% artdı.",
   "digitalBalanceGoalPerDay": "{goal} / gün",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "Bugünkü məqsədə {minutes} dəqiqə qalıb"
+  "digitalBalanceMinutesToGoal": "Bugünkü məqsədə {minutes} dəqiqə qalıb",
+  "tajweedPracticeTitle": "Təcvid məşqi",
+  "tajweedDownloadTitle": "AI modeli hazırlanır",
+  "tajweedDownloadFailedTitle": "AI modeli hazırlanmadı",
+  "tajweedDownloadBody": "Təcvid məşqinin sonra tam oflayn işləməsi üçün bir dəfəlik yükləmə. Bu yalnız bir dəfə olur.",
+  "tajweedDownloadFinishing": "Quraşdırma tamamlanır…",
+  "tajweedDownloadCanLeave": "Bu ekrandan çıxa bilərsiniz — yükləmə arxa planda davam edir.",
+  "tajweedDownloadTryAgain": "Yenidən cəhd et",
+  "tajweedDownloadPleaseTryAgain": "Yenidən cəhd edin.",
+  "tajweedErrorFeatureDisabled": "AI Təcvid məşqi sönülüdür. Əvvəlcə Parametrlərdə aktiv edin.",
+  "tajweedErrorModelMissing": "AI modeli hələ quraşdırılmayıb.",
+  "tajweedErrorModelDownloadFailed": "AI modeli yüklənmədi. Bağlantını yoxlayıb yenidən cəhd edin.",
+  "tajweedErrorModelLoadFailed": "AI modeli bu cihazda yüklənə bilmədi.",
+  "tajweedErrorCouldNotPrepare": "AI modeli hazırlana bilmədi.",
+  "tajweedErrorUnsupported": "AI Təcvid məşqi bu cihazda əlçatan deyil."
 }

@@ -11,6 +11,7 @@ import '../../../core/superwall/premium_gate.dart';
 import '../../../core/theme/segment_control_style.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../tajweed/tajweed_entry_point.dart';
 import '../reading_engine/quran_arabic_font.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
@@ -392,13 +393,56 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                             valueListenable:
                                 AppSuperwall.subscriptionActiveNotifier,
                             builder: (context, isSubscribed, _) {
-                              return _SettingsSwitchRow(
-                                icon: Icons.mic_outlined,
-                                label: l10n.readingSettingsTajweedPractice,
-                                value: _tajweedEnabled,
-                                showPremiumBadge: !isSubscribed,
-                                onChanged: (value) =>
-                                    unawaited(_onTajweedChanged(value)),
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  _SettingsSwitchRow(
+                                    icon: Icons.mic_outlined,
+                                    label: l10n.readingSettingsTajweedPractice,
+                                    value: _tajweedEnabled,
+                                    showPremiumBadge: !isSubscribed,
+                                    onChanged: (value) => unawaited(
+                                      _onTajweedChanged(value),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                      48.w,
+                                      0,
+                                      16.w,
+                                      12.h,
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: InkWell(
+                                        onTap: () => unawaited(
+                                          TajweedEntryPoint.openFreePreview(
+                                            context,
+                                          ),
+                                        ),
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: Text(
+                                          l10n.readingSettingsTajweedSeeHowItWorks,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                fontWeight: FontWeight.w600,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           ),

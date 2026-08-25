@@ -54,7 +54,12 @@ abstract final class PrayerLiveActivityToggle {
   }) async {
     final result = await apply(enabled);
     if (!context.mounted) return false;
-    if (result == PrayerLiveActivityToggleResult.success) return true;
+    if (result == PrayerLiveActivityToggleResult.success) {
+      if (enabled) {
+        await _showEnabledSuccessDialog(context);
+      }
+      return true;
+    }
 
     final l10n = AppLocalizations.of(context)!;
     switch (result) {
@@ -94,5 +99,19 @@ abstract final class PrayerLiveActivityToggle {
         );
         return false;
     }
+  }
+
+  static Future<void> _showEnabledSuccessDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final body = !kIsWeb && Platform.isAndroid
+        ? l10n.liveActivityEnabledPromptBodyAndroid
+        : l10n.liveActivityEnabledPromptBodyIos;
+    await AppPermissionDialog.show(
+      context,
+      title: l10n.liveActivityEnabledPromptTitle,
+      message: body,
+      primaryButtonText: l10n.liveActivityEnabledPromptButton,
+      onPrimaryTap: () {},
+    );
   }
 }

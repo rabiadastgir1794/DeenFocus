@@ -68,6 +68,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   StreamSubscription<Duration>? _positionSub;
   StreamSubscription<Duration?>? _durationSub;
   bool _suppressNextAutoScroll = false;
+  /// True while stop/seek/play is in flight — ignore index stream glitches.
+  bool _startingPlayback = false;
+  /// Playlist finished (last ayah). Keep highlight; UI shows play not pause.
+  bool _playbackCompleted = false;
   bool _tajweedEnabled = false;
   Set<int> _bookmarkedAyahs = const <int>{};
 
@@ -192,7 +196,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       child: AyahCard(
         ayah: ayah,
         isCurrent: isCurrent,
-        isPlaying: _player.playing,
+        isPlaying: _isActivelyPlaying,
         showEnglish: _showEnglish,
         showTransliteration: _showTransliteration,
         layoutTheme: _layoutTheme,
@@ -220,6 +224,13 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       ),
     );
   }
+
+  /// True only while audio is actively playing (not at end-of-playlist).
+  bool get _isActivelyPlaying =>
+      _showAudioBar &&
+      _player.playing &&
+      !_playbackCompleted &&
+      _player.processingState != ProcessingState.completed;
 
   void _maybeScrollToInitialAyah() {
     final targetAyah = widget.initialAyah;
@@ -269,13 +280,18 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
         setState(() => _isAudioLoading = isLoading);
       }
 
-      if (processingState == ProcessingState.completed) {
-        _hideAudioBarOnComplete();
+      if (processingState == ProcessingState.completed &&
+          _showAudioBar &&
+          !_startingPlayback &&
+          !_playbackCompleted) {
+        unawaited(_onPlaylistCompleted());
       }
     });
 
     _player.currentIndexStream.listen((index) {
       if (!mounted || index == null) return;
+      // stop()/completed can emit a stale earlier index — ignore those.
+      if (_startingPlayback || _playbackCompleted) return;
       if (index < 0 || index >= _ayahs.length) return;
       setState(() => _playingAyahIndex = index);
       final ayah = _ayahs[index];
@@ -296,21 +312,41 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       _scrollToAyah(index);
     });
 
-    _player.playerStateStream.listen((state) {
+    _player.playerStateStream.listen((_) {
       if (!mounted) return;
-      if (state.playing && !_showAudioBar) {
-        setState(() => _showAudioBar = true);
-      }
       setState(() {});
     });
 
     _positionSub = _player.positionStream.listen((position) {
-      if (!mounted || _isUserSeeking) return;
+      if (!mounted || _isUserSeeking || _playbackCompleted) return;
       setState(() => _currentPosition = position);
     });
     _durationSub = _player.durationStream.listen((duration) {
       if (!mounted) return;
-      setState(() => _currentDuration = duration ?? Duration.zero);
+      if (duration == null || duration <= Duration.zero) return;
+      setState(() => _currentDuration = duration);
+    });
+  }
+
+  /// Last ayah finished: keep highlight + bar on the last ayah, show play.
+  Future<void> _onPlaylistCompleted() async {
+    final stayAt = _ayahs.isEmpty ? -1 : _ayahs.length - 1;
+    try {
+      if (_player.playing) {
+        await _player.pause();
+      }
+    } catch (_) {
+      // Player may already be idle after completed.
+    }
+    if (!mounted || stayAt < 0) return;
+    setState(() {
+      _playbackCompleted = true;
+      _showAudioBar = true;
+      _playingAyahIndex = stayAt;
+      _isAudioLoading = false;
+      if (_currentDuration > Duration.zero) {
+        _currentPosition = _currentDuration;
+      }
     });
   }
 
@@ -344,13 +380,27 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   Future<void> _onAyahTap(int position) async {
     if (_ayahs.isEmpty) return;
     _suppressNextAutoScroll = true;
+    _startingPlayback = true;
+    _playbackCompleted = false;
     setState(() {
       _playingAyahIndex = position;
       _showAudioBar = true;
       _isAudioLoading = true;
     });
-    await _player.seek(Duration.zero, index: position);
-    await _player.play();
+    try {
+      // stop() clears completed; without it, seek can restart from an earlier ayah.
+      await _player.stop();
+      await _player.seek(Duration.zero, index: position);
+      await _player.play();
+    } finally {
+      _startingPlayback = false;
+    }
+    if (!mounted) return;
+    setState(() {
+      _playingAyahIndex = position;
+      _showAudioBar = true;
+      _playbackCompleted = false;
+    });
     unawaited(
       StorageService.setQuranLastListened(
         surahNumber: widget.surah.number,
@@ -363,7 +413,13 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   }
 
   Future<void> _togglePlayPause() async {
-    if (_player.playing) {
+    if (_playbackCompleted ||
+        _player.processingState == ProcessingState.completed) {
+      final index = _playingAyahIndex >= 0 ? _playingAyahIndex : 0;
+      await _onAyahTap(index);
+      return;
+    }
+    if (_isActivelyPlaying) {
       await _player.pause();
     } else if (_playingAyahIndex >= 0) {
       await _player.play();
@@ -371,7 +427,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   }
 
   Future<void> _closeAudioBar() async {
+    _playbackCompleted = false;
+    _startingPlayback = false;
     await _player.stop();
+    if (!mounted) return;
     setState(() {
       _playingAyahIndex = -1;
       _showAudioBar = false;
@@ -391,6 +450,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       StorageService.quranScript,
       StorageService.quranArabicFont.then((v) => v ?? ''),
       StorageService.quranReadingColorTheme,
+      TajweedEntryPoint.isEnabled(),
     ]);
     if (!mounted) return;
     final script = QuranScriptX.fromName(results[6] as String);
@@ -408,18 +468,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       _arabicFontFamily = arabicFont.fontFamily;
       _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
       _colorTheme = QuranReadingColorTheme.fromName(results[8] as String);
+      _tajweedEnabled = results[9] as bool;
     });
     // Re-apply script + translation overlays so settings take effect immediately.
     await _reloadAyahTexts();
-  }
-
-  void _hideAudioBarOnComplete() {
-    setState(() {
-      _showAudioBar = false;
-      _playingAyahIndex = -1;
-      _currentPosition = Duration.zero;
-      _currentDuration = Duration.zero;
-    });
   }
 
   int get _sliderDurationMs {
@@ -544,8 +596,10 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                                   layoutTheme: _layoutTheme,
                                 ),
                                 SizedBox(height: 12.h),
-                                const TajweedLegendRow(),
-                                SizedBox(height: 14.h),
+                                if (_tajweedEnabled) ...[
+                                  const TajweedLegendRow(),
+                                  SizedBox(height: 14.h),
+                                ],
                                 ...List.generate(_ayahs.length, (index) {
                                   return _buildAyahCard(index);
                                 }),
@@ -560,7 +614,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                         '${l10n.quranSurahLabel} ${currentAyah.surahNumber}:${currentAyah.ayahNumber}',
                     position: _currentPosition,
                     duration: _currentDuration,
-                    isPlaying: _player.playing,
+                    isPlaying: _isActivelyPlaying,
                     isLoading: _isAudioLoading,
                     speed: _playbackSpeed,
                     volume: _playbackVolume,

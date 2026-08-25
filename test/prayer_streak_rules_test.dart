@@ -390,6 +390,92 @@ void main() {
       expect(after.prayerStreak, 2);
     });
 
+    test(
+      'same-day Cycle ON preserves prayer 5 + day 1 when today is fully complete',
+      () {
+        final today = DateTime(2026, 8, 11);
+        final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+          key(today): allFive(),
+        };
+        final before = snap(
+          now: atHour(today, 21),
+          history: history,
+        );
+        expect(before.prayerStreak, 5);
+        expect(before.dayStreak, 1);
+
+        final data = CycleModeData(
+          isEnabled: true,
+          startDate: today,
+          cycleLength: 4,
+          pauseStreaks: true,
+        );
+        final during = snap(
+          now: atHour(today, 21),
+          history: history,
+          isPaused: CycleModePolicy(data).shouldPauseStreaks,
+        );
+        expect(during.prayerStreak, 5);
+        expect(during.dayStreak, 1);
+
+        final off = data.disableOn(today);
+        final after = snap(
+          now: atHour(today, 21),
+          history: history,
+          isPaused: CycleModePolicy(off).shouldPauseStreaks,
+        );
+        expect(after.prayerStreak, 5);
+        expect(after.dayStreak, 1);
+      },
+    );
+
+    test(
+      'same-day Cycle ON preserves multi-day streak when today completes the chain',
+      () {
+        final today = DateTime(2026, 8, 11);
+        final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+          key(DateTime(2026, 8, 9)): allFive(),
+          key(DateTime(2026, 8, 10)): allFive(),
+          key(today): allFive(),
+        };
+        final data = CycleModeData(
+          isEnabled: true,
+          startDate: today,
+          cycleLength: 4,
+          pauseStreaks: true,
+        );
+        final during = snap(
+          now: atHour(today, 21),
+          history: history,
+          isPaused: CycleModePolicy(data).shouldPauseStreaks,
+        );
+        expect(during.prayerStreak, 15);
+        expect(during.dayStreak, 3);
+      },
+    );
+
+    test(
+      'next-day Cycle ON preserves day streak from prior complete days',
+      () {
+        final today = DateTime(2026, 8, 12);
+        final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+          key(DateTime(2026, 8, 11)): allFive(),
+        };
+        final data = CycleModeData(
+          isEnabled: true,
+          startDate: today,
+          cycleLength: 4,
+          pauseStreaks: true,
+        );
+        final during = snap(
+          now: atHour(today, 10),
+          history: history,
+          isPaused: CycleModePolicy(data).shouldPauseStreaks,
+        );
+        expect(during.dayStreak, 1);
+      },
+    );
+
     test('ON + pauseStreaks=true skips cycle days and bridges streak', () {
       final data = CycleModeData(
         isEnabled: true,

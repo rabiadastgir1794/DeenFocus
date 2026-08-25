@@ -87,7 +87,7 @@ void main() {
         isPausedStreakDay: policy.shouldPauseStreaks,
         isExcludedStatsDay: policy.shouldExcludeFromStatistics,
       );
-      expect(snap.prayerStreak, 5); // Jul 31; Aug 1 paused
+      expect(snap.prayerStreak, 6); // Jul 31 + Aug 1 Fajr when Cycle starts today
       expect(snap.weeklyCompleted, 5);
       expect(snap.weeklyPossible, 5);
 

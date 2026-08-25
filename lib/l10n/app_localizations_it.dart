@@ -343,6 +343,68 @@ class AppLocalizationsIt extends AppLocalizations {
       'Scopri tutto ciò che offre Deen Focus. Tocca una modalità focus per vedere come funziona.';
 
   @override
+  String get onboardingWidgetsLiveTitle => 'Your prayers, always within reach';
+
+  @override
+  String get onboardingWidgetsLiveSubtitle =>
+      'Stay connected with what matters most — right from your Home Screen or Lock Screen.';
+
+  @override
+  String get onboardingWidgetsSectionTitle => 'Widgets';
+
+  @override
+  String get onboardingWidgetsSectionBodyPrefix =>
+      'Check your next prayer, streaks, and progress ';
+
+  @override
+  String get onboardingWidgetsSectionBodyEmphasis => 'at a glance.';
+
+  @override
+  String get onboardingLiveActivitiesSectionTitle => 'Live Activities';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyPrefix =>
+      'See your upcoming prayer updates in ';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyEmphasis => 'real time';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodySuffix =>
+      ' on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get onboardingWidgetsLiveTrustPrefix => 'Designed to help you stay ';
+
+  @override
+  String get onboardingWidgetsLiveTrustEmphasis => 'consistent';
+
+  @override
+  String get onboardingWidgetsLiveTrustSuffix =>
+      ' and never miss what matters most.';
+
+  @override
+  String get onboardingWidgetsMockStreak => 'Streak';
+
+  @override
+  String get onboardingWidgetsMockStreakValue => '12 days';
+
+  @override
+  String get onboardingWidgetsMockFocus => 'Focus';
+
+  @override
+  String get onboardingWidgetsMockFocusValue => '25 min';
+
+  @override
+  String get onboardingWidgetsLiveLockDate => 'Tuesday, 6 May';
+
+  @override
+  String get onboardingWidgetsLiveLockTime => '9:41';
+
+  @override
+  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45 PM in 02:15:32';
+
+  @override
   String get focusModesSectionLabel =>
       'MODALITÀ FOCUS · TOCCA PER SAPERNE DI PIÙ';
 
@@ -1736,6 +1798,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Recite ayahs and get feedback';
 
   @override
+  String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get readingSettingsTajweedFreePreviewTranslation =>
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+
+  @override
   String get quranAudioSettingsTitle => 'Audio settings';
 
   @override
@@ -3069,6 +3138,20 @@ class AppLocalizationsIt extends AppLocalizations {
   String get liveActivityStatusOff => 'Live Activity disattivata';
 
   @override
+  String get liveActivityEnabledPromptTitle => 'Live Activity is on';
+
+  @override
+  String get liveActivityEnabledPromptBodyIos =>
+      'Prayer updates are now on your Lock Screen and Dynamic Island. Lock your phone to see your current and next prayer anytime.';
+
+  @override
+  String get liveActivityEnabledPromptBodyAndroid =>
+      'Prayer updates now show as an ongoing notification. Lock your phone or pull down the notification shade to check anytime.';
+
+  @override
+  String get liveActivityEnabledPromptButton => 'Got it';
+
+  @override
   String get liveActivityNowLabel => 'Ora';
 
   @override
@@ -4336,4 +4419,55 @@ class AppLocalizationsIt extends AppLocalizations {
   String digitalBalanceMinutesToGoal(int minutes) {
     return '$minutes minuti per raggiungere l\'obiettivo di oggi';
   }
+
+  @override
+  String get tajweedPracticeTitle => 'Pratica del tajweed';
+
+  @override
+  String get tajweedDownloadTitle => 'Preparazione del modello IA';
+
+  @override
+  String get tajweedDownloadFailedTitle =>
+      'Impossibile preparare il modello IA';
+
+  @override
+  String get tajweedDownloadBody =>
+      'Download una tantum così la pratica del tajweed funziona poi completamente offline. Succede solo una volta.';
+
+  @override
+  String get tajweedDownloadFinishing => 'Completamento della configurazione…';
+
+  @override
+  String get tajweedDownloadCanLeave =>
+      'Puoi lasciare questa schermata: il download continua in background.';
+
+  @override
+  String get tajweedDownloadTryAgain => 'Riprova';
+
+  @override
+  String get tajweedDownloadPleaseTryAgain => 'Riprova.';
+
+  @override
+  String get tajweedErrorFeatureDisabled =>
+      'La pratica tajweed IA è disattivata. Attivala prima nelle Impostazioni.';
+
+  @override
+  String get tajweedErrorModelMissing =>
+      'Il modello IA non è ancora installato.';
+
+  @override
+  String get tajweedErrorModelDownloadFailed =>
+      'Download del modello IA non riuscito. Controlla la connessione e riprova.';
+
+  @override
+  String get tajweedErrorModelLoadFailed =>
+      'Impossibile caricare il modello IA su questo dispositivo.';
+
+  @override
+  String get tajweedErrorCouldNotPrepare =>
+      'Impossibile preparare il modello IA.';
+
+  @override
+  String get tajweedErrorUnsupported =>
+      'La pratica tajweed IA non è disponibile su questo dispositivo.';
 }

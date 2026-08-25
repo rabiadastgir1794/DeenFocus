@@ -6,9 +6,13 @@ import 'package:go_router/go_router.dart';
 import '../../app/routes/route_names.dart';
 import '../../core/services/storage_service.dart';
 import '../../core/superwall/premium_gate.dart';
+import '../../l10n/app_localizations.dart';
+import '../quran/data/quran_translation_texts.dart';
 import '../quran/reading_engine/quran_script.dart';
 import '../quran/reading_engine/quran_script_texts.dart';
+import '../../core/services/quran_translation_service.dart';
 import 'model/tajweed_practice_args.dart';
+import 'tajweed_free_preview.dart';
 
 /// Shared helpers for the per-ayah "Practice Tajweed" entry point, used by
 /// Surah/Juz reading screens so each one doesn't duplicate the rollout-flag
@@ -51,6 +55,34 @@ abstract final class TajweedEntryPoint {
     );
   }
 
+  /// Opens the free Al-Fatihah 1:1 (Bismillah) demo — no subscription required.
+  static Future<void> openFreePreview(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    var translation = l10n.readingSettingsTajweedFreePreviewTranslation;
+    try {
+      final lang = await StorageService.quranTranslationLanguage;
+      final code = lang.isEmpty
+          ? QuranTranslationService.defaultLanguageCode
+          : lang;
+      final texts = await QuranTranslationTexts.load(code);
+      translation =
+          texts.textFor(TajweedFreePreview.surah, TajweedFreePreview.ayah) ??
+          translation;
+    } catch (_) {
+      // Fall back to bundled l10n string.
+    }
+    if (!context.mounted) return;
+    await _navigateAfterEntitlement(
+      context,
+      surah: TajweedFreePreview.surah,
+      ayah: TajweedFreePreview.ayah,
+      arabicText: TajweedFreePreview.fallbackArabic,
+      surahName: l10n.featureDemoTajweedSurahName,
+      translation: translation,
+      freePreview: true,
+    );
+  }
+
   static Future<void> _navigateAfterEntitlement(
     BuildContext context, {
     required int surah,
@@ -58,6 +90,7 @@ abstract final class TajweedEntryPoint {
     required String arabicText,
     String? surahName,
     String? translation,
+    bool freePreview = false,
   }) async {
     final script = QuranScriptX.fromName(await StorageService.quranScript);
     final corpus = await QuranScriptTexts.load(script);
@@ -89,6 +122,7 @@ abstract final class TajweedEntryPoint {
         lexicalReferenceArabic: lexicalReference,
         surahName: surahName,
         translation: translation,
+        freePreview: freePreview,
       ),
     );
   }

@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "暂不",
   "focusModesTitle": "一站式功能合集",
   "focusModesSubtitle": "探索 Deen Focus 提供的一切。点按专注模式了解其工作方式。",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "祈祷模式",
   "focusPrayerModeDescription": "在礼拜期间自动屏蔽分心应用，让你能以充分的专注（khushu）祈祷。",
   "focusSleepModeTitle": "睡眠模式",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "搜索半径：{radiusKm} 公里",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "地图预览目前不可用。",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "{radiusKm} 公里内未发现清真寺",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "需要访问位置才能找到附近的清真寺。",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "OpenStreetMap 上 {radiusKm} 公里范围内没有列出该地点的清真寺。稍后重试或扩大范围。",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{radiusKm} 公里内发现 {count} 座清真寺",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "附近 {count} 座清真寺",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "{radiusKm} 公里内 · 按距离排序",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "路线",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "你的 DeenFocus 时间比昨天增加了 {percent}%。",
   "digitalBalanceGoalPerDay": "{goal} / 天",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "距今日目标还差 {minutes} 分钟"
+  "digitalBalanceMinutesToGoal": "距今日目标还差 {minutes} 分钟",
+  "tajweedPracticeTitle": "泰吉威德练习",
+  "tajweedDownloadTitle": "正在准备 AI 模型",
+  "tajweedDownloadFailedTitle": "无法准备 AI 模型",
+  "tajweedDownloadBody": "一次性下载，之后泰吉威德练习可完全离线使用。仅需一次。",
+  "tajweedDownloadFinishing": "正在完成设置…",
+  "tajweedDownloadCanLeave": "可以离开此页面——下载会在后台继续。",
+  "tajweedDownloadTryAgain": "重试",
+  "tajweedDownloadPleaseTryAgain": "请重试。",
+  "tajweedErrorFeatureDisabled": "AI 泰吉威德练习已关闭。请先在设置中开启。",
+  "tajweedErrorModelMissing": "AI 模型尚未安装。",
+  "tajweedErrorModelDownloadFailed": "AI 模型下载失败。请检查网络后重试。",
+  "tajweedErrorModelLoadFailed": "无法在此设备上加载 AI 模型。",
+  "tajweedErrorCouldNotPrepare": "无法准备 AI 模型。",
+  "tajweedErrorUnsupported": "此设备不支持 AI 泰吉威德练习。"
 }

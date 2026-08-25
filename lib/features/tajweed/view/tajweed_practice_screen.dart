@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/widgets/widgets.dart';
+import '../../../l10n/app_localizations.dart';
 import '../model/tajweed_practice_args.dart';
 import '../viewmodel/tajweed_practice_view_model.dart';
 import 'widgets/tajweed_download_view.dart';
@@ -40,13 +41,16 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final title = widget.args.surahName != null
+        ? '${widget.args.surahName} · ${widget.args.ref}'
+        : l10n.tajweedPracticeTitle;
+
     return ChangeNotifierProvider<TajweedPracticeViewModel>.value(
       value: _viewModel,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: widget.args.surahName != null
-              ? '${widget.args.surahName} · ${widget.args.ref}'
-              : 'Tajweed Practice',
+          title: title,
           onBack: () {
             if (context.canPop()) context.pop();
           },

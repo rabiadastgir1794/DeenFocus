@@ -31,6 +31,12 @@ class TajweedService {
   );
 
   static Stream<Map<String, dynamic>>? _events;
+  static bool _freePreviewSession = false;
+
+  /// Allows the one free demo ayah to run while AI Tajweed is off in Settings.
+  static void setFreePreviewSession(bool active) {
+    _freePreviewSession = active;
+  }
 
   /// Broadcast stream of native events (download progress, interruptions, etc.).
   static Stream<Map<String, dynamic>> events() {
@@ -54,6 +60,7 @@ class TajweedService {
   }
 
   static Future<void> _ensureEnabled() async {
+    if (_freePreviewSession) return;
     final enabled = await StorageService.tajweedEnabled;
     if (!enabled) {
       throw const TajweedException(

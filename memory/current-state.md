@@ -1,10 +1,70 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-24 — Home Live Prayer Updates promo card.
+> Last updated: 2026-08-25 — Android Digital Balance usage fix.
 
-## Status: AI Tajweed default off (2026-08-24)
+## Status: Android Digital Balance usage 0m fix (2026-08-25)
+Root cause: native `queryUsageStats(INTERVAL_DAILY)` over a multi-day range
+bucketed days via `UsageStats.firstTimeStamp`, which on many devices stamps
+the query range start — so **today** stayed 0m; that API also lags recent
+foreground time. Fix: aggregate `UsageEvents` (`MOVE_TO_FOREGROUND` /
+`MOVE_TO_BACKGROUND`) by local calendar day (split at midnight), with a
+per-day `INTERVAL_DAILY` fallback that uses the known day key. Refresh on
+Digital Balance open + existing resume path. Files:
+`AppUsageChannelHandler.kt`, `home_digital_balance_screen.dart`,
+`home_insights_screen.dart`, `app_usage_service.dart` comment.
+
+## Status: Debug StoreKit prices updated (2026-08-25)
+`Runner` scheme StoreKit config `ios/Runner/Products.storekit` had stale
+premium prices ($4.99 / $39.99). Updated to $3.99 monthly / $9.99 yearly for
+`com.rnr.deenfocus.premium.monthly` and `.yearly`. Product IDs unchanged.
+App Store Connect / Superwall / Liquid untouched. Temporary `[SUPERWALL PRICE
+DEBUG]` diagnostics removed after investigation.
+
+## Status: Tajweed enable sync on Surah/Juz (2026-08-25)
+Returning from Reading Settings now reloads `tajweedEnabled` in Surah and Juz
+readers (`_reloadDisplayPrefs`), so “Recite & check tajweed” / mic appear
+immediately without going back to the Quran tab. Legend row is gated on the
+same flag.
+
+## Status: Tajweed AI model download l10n + background (2026-08-25)
+AI model prepare screen (`TajweedDownloadView`) and practice app bar title are
+localized (`tajweedDownload*` / `tajweedPracticeTitle` / error keys). Download
+already continues after leaving the screen via process-wide
+`TajweedModelSession._inFlight` (native `ensureModel` is not cancelled on
+dispose; staging resumes if interrupted). UI hint:
+`tajweedDownloadCanLeave`. Not a true OS background URLSession/WorkManager
+transfer — app process must stay alive.
+
+## Status: Last-ayah recitation bar (2026-08-25)
+Playlist end keeps the bar on the **last ayah** (no jump to previous). UI shows
+**play** not pause (`_playbackCompleted` + pause player). `currentIndexStream`
+ignored while starting/completed so `stop()` cannot re-highlight an earlier
+ayah. Retap/play does stop→seek→play for a fresh start of that ayah.
+
+## Status: Onboarding Widgets + Live Activities (2026-08-25)
+New onboarding step (index 2) after **Everything in One App**: **Your prayers,
+always within reach** — Widgets + Live Activities sections with phone mockups,
+trust banner, Continue via shared flow chrome. 11 total onboarding steps;
+`OnboardingViewModel.widgetsLiveStepIndex = 2`; later step indices shifted +1.
+Widget asset re-cropped from original screenshot with inset rounded mask (293×286,
+transparent corners) to remove dark navy shadow fringe at bottom edges; phone
+preview wraps asset in `ClipRRect`.
+
+## Status: Cycle Mode streak preservation (2026-08-25)
+Same-day Cycle Mode enable no longer drops Day Streak to 0 (or shrinks Prayer
+Streak). Root cause: paused cycle days were skipped entirely in
+`DayStreakCalculator`; `PrayerStreakCalculator` skipped today when an older
+non-paused tip existed. Fix: when Cycle Mode **starts today** (yesterday not
+paused), a fully completed today still counts for day streak; today's counting
+prayer marks still count for prayer streak. Mid-cycle paused days still bridge
+without inflating streaks. Tests: `cycle_mode_streak_regression_test.dart`,
+`prayer_streak_rules_test.dart`, `cycle_mode_lifecycle_test.dart`.
+
+## Status: AI Tajweed default off + free preview (2026-08-24)
 `StorageService.tajweedEnabled` defaults to **false** (paid feature). Reading
-Settings toggle initial state matches. Existing user prefs are unchanged.
+Settings toggle initial state matches. **See how it works** (underlined) opens
+free Al-Fatihah 1:1 (Bismillah) practice without subscription or enabling the
+toggle (`TajweedFreePreview` + `freePreview` on `TajweedPracticeArgs`).
 
 ## Status: Focus score + checklist Optional label (2026-08-24)
 Today's Focus Score is checklist completion % (prayers + habits) — 100 only
@@ -14,15 +74,11 @@ Removed the "Optional" label from Daily Checklist rows.
 
 ## Status: Home Live Activity promo (2026-08-24)
 Home shows a **Live Prayer Updates** card under Today's Prayers until Live
-Activity is enabled (or the user dismisses via X). Tap opens App Demo →
-Live Activity walkthrough (`SettingsAppDemoScreen` with
-`initialFeatureKind: liveActivity`). Unset Live Activity preference no
-longer auto-enables on first resolve — stays off until the user opts in.
-App Demo Lock Screen step uses a dark card that mirrors the real iOS
-Live Activity (NOW badge, time, location, progress curve, next prayer,
-DEEN FOCUS). Promo phone mockup uses a soft green abstract lock-screen
-wallpaper (forest/sage blobs), Dynamic Island, charcoal Live Activity
-card with sage border and mint accents for next prayer time + brand.
+Activity is enabled (or the user dismisses via X). Tap enables Live Activity
+directly via `PrayerLiveActivityToggle` (same path as Settings), then shows
+a success prompt explaining Lock Screen / Dynamic Island (iOS) or ongoing
+notification (Android). Notification permission is only requested if not
+already granted.
 
 ## Status: Premium Tajweed + translations (2026-08-24)
 AI Tajweed Practice (Reading Settings toggle + practice entry) and non-English

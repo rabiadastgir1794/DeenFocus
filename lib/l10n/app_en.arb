@@ -120,6 +120,25 @@
   "screenTimeAndroidNotNow": "Not now",
   "focusModesTitle": "Everything in One App",
   "focusModesSubtitle": "Explore all that Deen Focus offers. Tap a focus mode to see how it works.",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusModesSectionLabel": "FOCUS MODES · TAP TO LEARN MORE",
   "focusPrayerTrackingSectionLabel": "PRAYER & TRACKING",
   "focusLearningHubSectionLabel": "LEARNING HUB",
@@ -384,16 +403,26 @@
   "homeFocusModeNamesTwo": "{first} and {second} Modes are enabled",
   "@homeFocusModeNamesTwo": {
     "placeholders": {
-      "first": { "type": "String" },
-      "second": { "type": "String" }
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
     }
   },
   "homeFocusModeNamesThree": "{first}, {second}, and {third} Modes are enabled",
   "@homeFocusModeNamesThree": {
     "placeholders": {
-      "first": { "type": "String" },
-      "second": { "type": "String" },
-      "third": { "type": "String" }
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      },
+      "third": {
+        "type": "String"
+      }
     }
   },
   "cycleModeTitle": "Cycle Mode",
@@ -669,7 +698,9 @@
   "quranPageMarkedRead": "Page {page} marked as read",
   "@quranPageMarkedRead": {
     "placeholders": {
-      "page": { "type": "int" }
+      "page": {
+        "type": "int"
+      }
     }
   },
   "quranMushafComplete": "Complete",
@@ -678,8 +709,12 @@
   "quranJuzProgressLabel": "{percent}% of Juz {juz}",
   "@quranJuzProgressLabel": {
     "placeholders": {
-      "percent": { "type": "int" },
-      "juz": { "type": "int" }
+      "percent": {
+        "type": "int"
+      },
+      "juz": {
+        "type": "int"
+      }
     }
   },
   "quranBookmarksTitle": "Bookmarks",
@@ -690,7 +725,9 @@
   "quranBookmarkCount": "{count} saved",
   "@quranBookmarkCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "quranQuickTajweed": "Tajweed drill",
@@ -715,6 +752,8 @@
   "tajweedDisabledHint": "Enable AI Tajweed Practice in Reading Settings",
   "readingSettingsTajweedPractice": "AI Tajweed Practice",
   "readingSettingsTajweedPracticeSubtitle": "Recite ayahs and get feedback",
+  "readingSettingsTajweedSeeHowItWorks": "See how it works",
+  "readingSettingsTajweedFreePreviewTranslation": "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
   "quranAudioSettingsTitle": "Audio settings",
   "quranPlaybackSpeed": "Playback speed",
   "quranVolume": "Volume",
@@ -801,7 +840,9 @@
   "tasbihLoopLabel": "Loop {number}",
   "@tasbihLoopLabel": {
     "placeholders": {
-      "number": { "type": "int" }
+      "number": {
+        "type": "int"
+      }
     }
   },
   "tasbihCurrentDhikr": "Current Dhikr",
@@ -816,9 +857,15 @@
   "tasbihSessionSummary": "Total this session {total} · Goal {goal} · Loops completed {loops}",
   "@tasbihSessionSummary": {
     "placeholders": {
-      "total": { "type": "int" },
-      "goal": { "type": "int" },
-      "loops": { "type": "int" }
+      "total": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      },
+      "loops": {
+        "type": "int"
+      }
     }
   },
   "focusModeActivated": "Focus Mode Activated",
@@ -967,7 +1014,9 @@
   "nearbyMosquesSearchRadius": "Search radius: {radiusKm} km",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "Map preview unavailable right now.",
@@ -978,7 +1027,9 @@
   "nearbyMosquesNoneWithinRadius": "No mosques found within {radiusKm} km",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "Location access is required to find nearby mosques.",
@@ -996,26 +1047,36 @@
   "nearbyMosquesEmptyHint": "Nothing listed within {radiusKm} km on OpenStreetMap for this spot. Try again later or move farther.",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} mosques found within {radiusKm} km",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "{count} mosques nearby",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "Within {radiusKm} km · Sorted by distance",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "Directions",
@@ -1377,6 +1438,10 @@
   "liveActivityPermissionButton": "Allow notifications",
   "liveActivityStatusActive": "Live Activity is on",
   "liveActivityStatusOff": "Live Activity is off",
+  "liveActivityEnabledPromptTitle": "Live Activity is on",
+  "liveActivityEnabledPromptBodyIos": "Prayer updates are now on your Lock Screen and Dynamic Island. Lock your phone to see your current and next prayer anytime.",
+  "liveActivityEnabledPromptBodyAndroid": "Prayer updates now show as an ongoing notification. Lock your phone or pull down the notification shade to check anytime.",
+  "liveActivityEnabledPromptButton": "Got it",
   "liveActivityNowLabel": "Now",
   "liveActivityUpdatedAt": "Updated at {time}",
   "@liveActivityUpdatedAt": {
@@ -1636,8 +1701,12 @@
   "libraryCardProgress": "{current} of {total}",
   "@libraryCardProgress": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "libraryPrevious": "Previous",
@@ -1665,33 +1734,45 @@
   "libraryItemCount": "{count} items",
   "@libraryItemCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "librarySearchResultCount": "{shown} of {total}",
   "@librarySearchResultCount": {
     "placeholders": {
-      "shown": { "type": "int" },
-      "total": { "type": "int" }
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "libraryContinueFrom": "Continue · {number}",
   "@libraryContinueFrom": {
     "placeholders": {
-      "number": { "type": "int" }
+      "number": {
+        "type": "int"
+      }
     }
   },
   "libraryInProgress": "In progress",
   "libraryReference": "Reference: {source}",
   "@libraryReference": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "libraryDuaCount": "{count} duas",
   "@libraryDuaCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "libraryDuaCategoryMorning": "Morning",
@@ -1707,7 +1788,9 @@
   "libraryHadithCount": "{count} hadith",
   "@libraryHadithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "libraryHadithNarrator": "Narrator:",
@@ -1720,14 +1803,20 @@
   "libraryGuideStepCount": "{count} steps",
   "@libraryGuideStepCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "libraryGuideStepLabel": "Step {current} of {total}",
   "@libraryGuideStepLabel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "libraryGuideWudu": "Wudu",
@@ -1933,5 +2022,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "tajweedPracticeTitle": "Tajweed Practice",
+  "tajweedDownloadTitle": "Preparing AI model",
+  "tajweedDownloadFailedTitle": "Could not prepare AI model",
+  "tajweedDownloadBody": "One-time download so Tajweed practice works fully offline afterwards. This only happens once.",
+  "tajweedDownloadFinishing": "Finishing setup…",
+  "tajweedDownloadCanLeave": "You can leave this screen — the download continues in the background.",
+  "tajweedDownloadTryAgain": "Try again",
+  "tajweedDownloadPleaseTryAgain": "Please try again.",
+  "tajweedErrorFeatureDisabled": "AI Tajweed practice is turned off. Enable it in Settings first.",
+  "tajweedErrorModelMissing": "The AI model is not installed yet.",
+  "tajweedErrorModelDownloadFailed": "Downloading the AI model failed. Check your connection and try again.",
+  "tajweedErrorModelLoadFailed": "The AI model could not be loaded on this device.",
+  "tajweedErrorCouldNotPrepare": "Could not prepare the AI model.",
+  "tajweedErrorUnsupported": "AI Tajweed practice is not available on this device."
 }

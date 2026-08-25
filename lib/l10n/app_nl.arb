@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "Niet nu",
   "focusModesTitle": "Alles in één app",
   "focusModesSubtitle": "Ontdek alles wat Deen Focus te bieden heeft. Tik op een focusmodus om te zien hoe het werkt.",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "Gebedsmodus",
   "focusPrayerModeDescription": "Blokkeer afleidende apps automatisch tijdens Salah zodat je met volle khushu kunt bidden.",
   "focusSleepModeTitle": "Slaapmodus",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "Zoekradius: {radiusKm} km",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "Kaartvoorbeeld momenteel niet beschikbaar.",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "Geen moskeeën gevonden binnen {radiusKm} km",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "Locatietoegang is vereist om nabijgelegen moskeeën te vinden.",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "Niets vermeld binnen een straal van {radiusKm} km op OpenStreetMap voor deze plek. Probeer later opnieuw of vergroot het gebied.",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} moskeeën gevonden binnen een straal van {radiusKm} km",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "{count} moskeeën in de buurt",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "Binnen {radiusKm} km · Gesorteerd op afstand",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "Route",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "Je DeenFocus-tijd steeg met {percent}% ten opzichte van gisteren.",
   "digitalBalanceGoalPerDay": "{goal} / dag",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "Nog {minutes} minuten tot het doel van vandaag"
+  "digitalBalanceMinutesToGoal": "Nog {minutes} minuten tot het doel van vandaag",
+  "tajweedPracticeTitle": "Tajweed-oefening",
+  "tajweedDownloadTitle": "AI-model voorbereiden",
+  "tajweedDownloadFailedTitle": "AI-model kon niet worden voorbereid",
+  "tajweedDownloadBody": "Eenmalige download zodat tajweed-oefening daarna volledig offline werkt. Dit gebeurt maar één keer.",
+  "tajweedDownloadFinishing": "Installatie afronden…",
+  "tajweedDownloadCanLeave": "Je kunt dit scherm verlaten — de download gaat op de achtergrond door.",
+  "tajweedDownloadTryAgain": "Opnieuw proberen",
+  "tajweedDownloadPleaseTryAgain": "Probeer het opnieuw.",
+  "tajweedErrorFeatureDisabled": "AI-tajweed-oefening staat uit. Zet het eerst aan in Instellingen.",
+  "tajweedErrorModelMissing": "Het AI-model is nog niet geïnstalleerd.",
+  "tajweedErrorModelDownloadFailed": "Download van het AI-model mislukt. Controleer je verbinding en probeer opnieuw.",
+  "tajweedErrorModelLoadFailed": "Het AI-model kon op dit apparaat niet worden geladen.",
+  "tajweedErrorCouldNotPrepare": "Het AI-model kon niet worden voorbereid.",
+  "tajweedErrorUnsupported": "AI-tajweed-oefening is niet beschikbaar op dit apparaat."
 }

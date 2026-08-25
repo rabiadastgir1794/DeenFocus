@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "Не сейчас",
   "focusModesTitle": "Всё в одном приложении",
   "focusModesSubtitle": "Откройте всё, что предлагает Deen Focus. Нажмите на режим фокуса, чтобы узнать, как он работает.",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "Молитвенный режим",
   "focusPrayerModeDescription": "Автоматически блокируйте отвлекающие приложения во время намаза, чтобы молиться с полным хушу.",
   "focusSleepModeTitle": "Спящий режим",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "Радиус поиска: {radiusKm} км",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "Предварительный просмотр карты сейчас недоступен.",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "В радиусе {radiusKm} км мечетей не обнаружено",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "Чтобы найти близлежащие мечети, необходим доступ к местоположению.",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "На OpenStreetMap ничего не указано в радиусе {radiusKm} км для этого места. Повторите попытку позже или расширьте область.",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} мечетей найдено в радиусе {radiusKm} км",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "{count} мечетей поблизости",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "В радиусе {radiusKm} км · Сортировка по расстоянию",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "Маршрут",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "Ваше время в DeenFocus выросло на {percent}% по сравнению со вчера.",
   "digitalBalanceGoalPerDay": "{goal} / день",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "Ещё {minutes} мин. до сегодняшней цели"
+  "digitalBalanceMinutesToGoal": "Ещё {minutes} мин. до сегодняшней цели",
+  "tajweedPracticeTitle": "Практика таджвида",
+  "tajweedDownloadTitle": "Подготовка модели ИИ",
+  "tajweedDownloadFailedTitle": "Не удалось подготовить модель ИИ",
+  "tajweedDownloadBody": "Одноразовая загрузка, чтобы практика таджвида затем работала полностью офлайн. Это происходит только один раз.",
+  "tajweedDownloadFinishing": "Завершение настройки…",
+  "tajweedDownloadCanLeave": "Можно уйти с этого экрана — загрузка продолжится в фоне.",
+  "tajweedDownloadTryAgain": "Повторить",
+  "tajweedDownloadPleaseTryAgain": "Попробуйте ещё раз.",
+  "tajweedErrorFeatureDisabled": "Практика таджвида с ИИ выключена. Сначала включите её в Настройках.",
+  "tajweedErrorModelMissing": "Модель ИИ ещё не установлена.",
+  "tajweedErrorModelDownloadFailed": "Не удалось скачать модель ИИ. Проверьте соединение и попробуйте снова.",
+  "tajweedErrorModelLoadFailed": "Не удалось загрузить модель ИИ на этом устройстве.",
+  "tajweedErrorCouldNotPrepare": "Не удалось подготовить модель ИИ.",
+  "tajweedErrorUnsupported": "Практика таджвида с ИИ недоступна на этом устройстве."
 }

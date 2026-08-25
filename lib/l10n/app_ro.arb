@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "Nu acum",
   "focusModesTitle": "Totul într-o singură aplicație",
   "focusModesSubtitle": "Explorează tot ce oferă Deen Focus. Atinge un mod de focus pentru a vedea cum funcționează.",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "Modul de rugăciune",
   "focusPrayerModeDescription": "Blochează automat aplicațiile care distrag în timpul Salah, ca să te poți ruga cu khushu deplin.",
   "focusSleepModeTitle": "Modul Sleep",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "Raza de căutare: {radiusKm} km",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "Previzualizarea hărții nu este disponibilă momentan.",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "Nu s-au găsit moschei pe o rază de {radiusKm} km",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "Accesul la locație este necesar pentru a găsi moscheile din apropiere.",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "Nimic listat în {radiusKm} km pe OpenStreetMap pentru acest loc. Încercați mai târziu sau extindeți zona.",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} moschei găsite pe o rază de {radiusKm} km",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "{count} moschei în apropiere",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "În {radiusKm} km · Sortate după distanță",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "Indicații",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "Timpul tău DeenFocus a crescut cu {percent}% față de ieri.",
   "digitalBalanceGoalPerDay": "{goal} / zi",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "{minutes} minute până la obiectivul de azi"
+  "digitalBalanceMinutesToGoal": "{minutes} minute până la obiectivul de azi",
+  "tajweedPracticeTitle": "Practică tajweed",
+  "tajweedDownloadTitle": "Se pregătește modelul AI",
+  "tajweedDownloadFailedTitle": "Nu s-a putut pregăti modelul AI",
+  "tajweedDownloadBody": "Descărcare unică, ca practica tajweed să funcționeze apoi complet offline. Se întâmplă o singură dată.",
+  "tajweedDownloadFinishing": "Se finalizează configurarea…",
+  "tajweedDownloadCanLeave": "Poți părăsi acest ecran — descărcarea continuă în fundal.",
+  "tajweedDownloadTryAgain": "Încearcă din nou",
+  "tajweedDownloadPleaseTryAgain": "Te rugăm să încerci din nou.",
+  "tajweedErrorFeatureDisabled": "Practica tajweed AI este dezactivată. Activeaz-o mai întâi în Setări.",
+  "tajweedErrorModelMissing": "Modelul AI nu este încă instalat.",
+  "tajweedErrorModelDownloadFailed": "Descărcarea modelului AI a eșuat. Verifică conexiunea și încearcă din nou.",
+  "tajweedErrorModelLoadFailed": "Modelul AI nu a putut fi încărcat pe acest dispozitiv.",
+  "tajweedErrorCouldNotPrepare": "Nu s-a putut pregăti modelul AI.",
+  "tajweedErrorUnsupported": "Practica tajweed AI nu este disponibilă pe acest dispozitiv."
 }

@@ -69,6 +69,8 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   bool _showAudioBar = false;
   bool _isAudioLoading = false;
   bool _isUserSeeking = false;
+  bool _startingPlayback = false;
+  bool _playbackCompleted = false;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
   StreamSubscription<Duration>? _positionSub;
@@ -177,6 +179,12 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     });
   }
 
+  bool get _isActivelyPlaying =>
+      _showAudioBar &&
+      _audio.player.playing &&
+      !_playbackCompleted &&
+      _audio.player.processingState != ProcessingState.completed;
+
   void _bindPlayerState() {
     final player = _audio.player;
     player.playbackEventStream.listen((_) {
@@ -186,50 +194,94 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
           state == ProcessingState.loading ||
           state == ProcessingState.buffering;
       if (_isAudioLoading != loading) setState(() => _isAudioLoading = loading);
-      if (state == ProcessingState.completed) _closeAudioBar();
+      if (state == ProcessingState.completed &&
+          _showAudioBar &&
+          !_startingPlayback &&
+          !_playbackCompleted) {
+        unawaited(_onPlaylistCompleted());
+      }
     });
 
     player.currentIndexStream.listen((index) {
       if (!mounted || index == null) return;
+      if (_startingPlayback || _playbackCompleted) return;
       if (index < 0 || index >= _engine.ayahs.length) return;
       setState(() => _playingIndex = index);
       final ayah = _engine.ayahs[index];
       _engine.reportAyahVisited(ayah.surahNumber, ayah.ayahNumber);
     });
 
-    player.playerStateStream.listen((state) {
+    player.playerStateStream.listen((_) {
       if (!mounted) return;
-      if (state.playing && !_showAudioBar) {
-        setState(() => _showAudioBar = true);
-      }
       setState(() {});
     });
 
     _positionSub = player.positionStream.listen((position) {
-      if (!mounted || _isUserSeeking) return;
+      if (!mounted || _isUserSeeking || _playbackCompleted) return;
       setState(() => _position = position);
     });
     _durationSub = player.durationStream.listen((duration) {
       if (!mounted) return;
-      setState(() => _duration = duration ?? Duration.zero);
+      if (duration == null || duration <= Duration.zero) return;
+      setState(() => _duration = duration);
+    });
+  }
+
+  Future<void> _onPlaylistCompleted() async {
+    final stayAt = _engine.ayahs.isEmpty ? -1 : _engine.ayahs.length - 1;
+    final player = _audio.player;
+    try {
+      if (player.playing) {
+        await player.pause();
+      }
+    } catch (_) {}
+    if (!mounted || stayAt < 0) return;
+    setState(() {
+      _playbackCompleted = true;
+      _showAudioBar = true;
+      _playingIndex = stayAt;
+      _isAudioLoading = false;
+      if (_duration > Duration.zero) {
+        _position = _duration;
+      }
     });
   }
 
   Future<void> _onAyahTap(int index) async {
     if (_engine.ayahs.isEmpty) return;
+    _startingPlayback = true;
+    _playbackCompleted = false;
     setState(() {
       _playingIndex = index;
+      _showAudioBar = true;
       _isAudioLoading = true;
     });
-    await _audio.player.seek(Duration.zero, index: index);
-    await _audio.player.play();
+    try {
+      await _audio.player.stop();
+      await _audio.player.seek(Duration.zero, index: index);
+      await _audio.player.play();
+    } finally {
+      _startingPlayback = false;
+    }
+    if (!mounted) return;
+    setState(() {
+      _playingIndex = index;
+      _showAudioBar = true;
+      _playbackCompleted = false;
+    });
     final ayah = _engine.ayahs[index];
     _engine.reportAyahVisited(ayah.surahNumber, ayah.ayahNumber);
   }
 
   Future<void> _togglePlayPause() async {
     final player = _audio.player;
-    if (player.playing) {
+    if (_playbackCompleted ||
+        player.processingState == ProcessingState.completed) {
+      final index = _playingIndex >= 0 ? _playingIndex : 0;
+      await _onAyahTap(index);
+      return;
+    }
+    if (_isActivelyPlaying) {
       await player.pause();
     } else if (_playingIndex >= 0) {
       await player.play();
@@ -239,6 +291,8 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   }
 
   void _closeAudioBar() {
+    _playbackCompleted = false;
+    _startingPlayback = false;
     unawaited(_audio.player.stop());
     setState(() {
       _playingIndex = -1;
@@ -277,7 +331,7 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     return AyahCard(
       ayah: ayah,
       isCurrent: index == _playingIndex,
-      isPlaying: _audio.player.playing,
+      isPlaying: _isActivelyPlaying,
       showEnglish: _showEnglish,
       showTransliteration: _showTransliteration,
       layoutTheme: _layoutTheme,
@@ -315,6 +369,7 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       StorageService.quranScript,
       StorageService.quranArabicFont.then((v) => v ?? ''),
       StorageService.quranReadingColorTheme,
+      TajweedEntryPoint.isEnabled(),
     ]);
     if (!mounted) return;
     final script = QuranScriptX.fromName(results[6] as String);
@@ -332,6 +387,7 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       _arabicFontFamily = arabicFont.fontFamily;
       _arabicFontFamilyFallback = arabicFont.fontFamilyFallback;
       _colorTheme = QuranReadingColorTheme.fromName(results[8] as String);
+      _tajweedEnabled = results[9] as bool;
     });
     await _engine.reloadAyahTexts();
     if (mounted) setState(() {});
@@ -402,7 +458,7 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
                     '${l10n.quranSurahLabel} ${ayahs[_playingIndex].surahNumber}:${ayahs[_playingIndex].ayahNumber}',
                 position: _position,
                 duration: _duration,
-                isPlaying: _audio.player.playing,
+                isPlaying: _isActivelyPlaying,
                 isLoading: _isAudioLoading,
                 speed: _speed,
                 volume: _volume,

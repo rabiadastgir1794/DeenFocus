@@ -119,6 +119,25 @@
   "screenTimeAndroidNotNow": "Non ora",
   "focusModesTitle": "Tutto in un'unica app",
   "focusModesSubtitle": "Scopri tutto ciò che offre Deen Focus. Tocca una modalità focus per vedere come funziona.",
+  "onboardingWidgetsLiveTitle": "Your prayers, always within reach",
+  "onboardingWidgetsLiveSubtitle": "Stay connected with what matters most — right from your Home Screen or Lock Screen.",
+  "onboardingWidgetsSectionTitle": "Widgets",
+  "onboardingWidgetsSectionBodyPrefix": "Check your next prayer, streaks, and progress ",
+  "onboardingWidgetsSectionBodyEmphasis": "at a glance.",
+  "onboardingLiveActivitiesSectionTitle": "Live Activities",
+  "onboardingLiveActivitiesSectionBodyPrefix": "See your upcoming prayer updates in ",
+  "onboardingLiveActivitiesSectionBodyEmphasis": "real time",
+  "onboardingLiveActivitiesSectionBodySuffix": " on your Lock Screen and Dynamic Island.",
+  "onboardingWidgetsLiveTrustPrefix": "Designed to help you stay ",
+  "onboardingWidgetsLiveTrustEmphasis": "consistent",
+  "onboardingWidgetsLiveTrustSuffix": " and never miss what matters most.",
+  "onboardingWidgetsMockStreak": "Streak",
+  "onboardingWidgetsMockStreakValue": "12 days",
+  "onboardingWidgetsMockFocus": "Focus",
+  "onboardingWidgetsMockFocusValue": "25 min",
+  "onboardingWidgetsLiveLockDate": "Tuesday, 6 May",
+  "onboardingWidgetsLiveLockTime": "9:41",
+  "onboardingWidgetsLiveNextPrayer": "Dhuhr 12:45 PM in 02:15:32",
   "focusPrayerModeTitle": "Modalità di preghiera",
   "focusPrayerModeDescription": "Blocca automaticamente le app che distraggono durante la Salah per pregare con pieno khushu.",
   "focusSleepModeTitle": "Modalità di sospensione",
@@ -480,7 +499,9 @@
   "nearbyMosquesSearchRadius": "Raggio di ricerca: {radiusKm} km",
   "@nearbyMosquesSearchRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesMapPreviewUnavailable": "Anteprima della mappa non disponibile al momento.",
@@ -489,7 +510,9 @@
   "nearbyMosquesNoneWithinRadius": "Nessuna moschea trovata nel raggio di {radiusKm} km",
   "@nearbyMosquesNoneWithinRadius": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesLocationRequired": "Per trovare le moschee vicine è necessario l'accesso alla posizione.",
@@ -507,26 +530,36 @@
   "nearbyMosquesEmptyHint": "Non è elencato nulla nel raggio di {radiusKm} km su OpenStreetMap per questo luogo. Riprova più tardi o amplia l’area.",
   "@nearbyMosquesEmptyHint": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesFoundWithin": "{count} moschee trovate nel raggio di {radiusKm} km",
   "@nearbyMosquesFoundWithin": {
     "placeholders": {
-      "count": { "type": "int" },
-      "radiusKm": { "type": "int" }
+      "count": {
+        "type": "int"
+      },
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesCountNearby": "{count} moschee nelle vicinanze",
   "@nearbyMosquesCountNearby": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesResultsMeta": "Entro {radiusKm} km · Ordinate per distanza",
   "@nearbyMosquesResultsMeta": {
     "placeholders": {
-      "radiusKm": { "type": "int" }
+      "radiusKm": {
+        "type": "int"
+      }
     }
   },
   "nearbyMosquesDirections": "Indicazioni",
@@ -1413,5 +1446,19 @@
   "digitalBalanceInsightIncreasedYesterday": "Il tuo tempo DeenFocus è aumentato del {percent}% rispetto a ieri.",
   "digitalBalanceGoalPerDay": "{goal} / giorno",
   "digitalBalanceGoalProgress": "{current} / {goal}",
-  "digitalBalanceMinutesToGoal": "{minutes} minuti per raggiungere l'obiettivo di oggi"
+  "digitalBalanceMinutesToGoal": "{minutes} minuti per raggiungere l'obiettivo di oggi",
+  "tajweedPracticeTitle": "Pratica del tajweed",
+  "tajweedDownloadTitle": "Preparazione del modello IA",
+  "tajweedDownloadFailedTitle": "Impossibile preparare il modello IA",
+  "tajweedDownloadBody": "Download una tantum così la pratica del tajweed funziona poi completamente offline. Succede solo una volta.",
+  "tajweedDownloadFinishing": "Completamento della configurazione…",
+  "tajweedDownloadCanLeave": "Puoi lasciare questa schermata: il download continua in background.",
+  "tajweedDownloadTryAgain": "Riprova",
+  "tajweedDownloadPleaseTryAgain": "Riprova.",
+  "tajweedErrorFeatureDisabled": "La pratica tajweed IA è disattivata. Attivala prima nelle Impostazioni.",
+  "tajweedErrorModelMissing": "Il modello IA non è ancora installato.",
+  "tajweedErrorModelDownloadFailed": "Download del modello IA non riuscito. Controlla la connessione e riprova.",
+  "tajweedErrorModelLoadFailed": "Impossibile caricare il modello IA su questo dispositivo.",
+  "tajweedErrorCouldNotPrepare": "Impossibile preparare il modello IA.",
+  "tajweedErrorUnsupported": "La pratica tajweed IA non è disponibile su questo dispositivo."
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
+import '../../model/tajweed_models.dart';
 import '../../viewmodel/tajweed_practice_view_model.dart';
 
 /// One-time "preparing the offline AI model" screen shown by
@@ -11,10 +13,30 @@ class TajweedDownloadView extends StatelessWidget {
 
   final TajweedPracticeViewModel viewModel;
 
+  String _failedBody(AppLocalizations l10n) {
+    switch (viewModel.errorCode) {
+      case TajweedErrorCode.featureDisabled:
+        return l10n.tajweedErrorFeatureDisabled;
+      case TajweedErrorCode.modelMissing:
+        return l10n.tajweedErrorModelMissing;
+      case TajweedErrorCode.modelDownloadFailed:
+        return l10n.tajweedErrorModelDownloadFailed;
+      case TajweedErrorCode.modelLoadFailed:
+        return l10n.tajweedErrorModelLoadFailed;
+      case TajweedErrorCode.unsupported:
+        return l10n.tajweedErrorUnsupported;
+      default:
+        final raw = viewModel.errorMessage?.trim();
+        if (raw != null && raw.isNotEmpty) return raw;
+        return l10n.tajweedDownloadPleaseTryAgain;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final failed = viewModel.stage == TajweedFlowStage.downloadFailed;
     final percent = (viewModel.downloadProgress * 100)
         .clamp(0, 100)
@@ -42,7 +64,9 @@ class TajweedDownloadView extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              failed ? 'Could not prepare AI model' : 'Preparing AI model',
+              failed
+                  ? l10n.tajweedDownloadFailedTitle
+                  : l10n.tajweedDownloadTitle,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
@@ -51,16 +75,25 @@ class TajweedDownloadView extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               failed
-                  ? (viewModel.errorMessage ?? 'Please try again.')
+                  ? _failedBody(l10n)
                   : viewModel.downloadProgress >= 1.0
-                  ? 'Finishing setup…'
-                  : 'One-time download so Tajweed practice works fully '
-                        'offline afterwards. This only happens once.',
+                  ? l10n.tajweedDownloadFinishing
+                  : l10n.tajweedDownloadBody,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
+            if (!failed) ...[
+              const SizedBox(height: 12),
+              Text(
+                l10n.tajweedDownloadCanLeave,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
             const SizedBox(height: 28),
             if (!failed) ...[
               ClipRRect(
@@ -85,7 +118,7 @@ class TajweedDownloadView extends StatelessWidget {
                 child: FilledButton.icon(
                   onPressed: () => viewModel.retryDownload(),
                   icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Try again'),
+                  label: Text(l10n.tajweedDownloadTryAgain),
                 ),
               ),
               const SizedBox(height: 12),
@@ -95,7 +128,7 @@ class TajweedDownloadView extends StatelessWidget {
                   onPressed: () {
                     if (context.canPop()) context.pop();
                   },
-                  child: const Text('Not now'),
+                  child: Text(l10n.notNow),
                 ),
               ),
             ],

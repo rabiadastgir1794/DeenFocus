@@ -239,15 +239,20 @@ abstract class PrayerStreakCalculator {
       final paused = isCycleDay(date);
 
       if (paused) {
-        // Prefer the older non-paused tip so pause-day marks do not inflate.
-        if (_nonPausedTipExists(
-          fromDayOffset: dayOffset + 1,
-          today: today,
-          now: now,
-          statusHistory: statusHistory,
-          isCycleDay: isCycleDay,
-          prayerStartTime: prayerStartTime,
-        )) {
+        // Same-day Cycle Mode start: keep today's counting marks even when an
+        // older non-paused tip exists (yesterday not paused). Mid-cycle paused
+        // days still bridge without inflating the streak.
+        final sameDayCycleStart = dayOffset == 0 &&
+            !isCycleDay(date.subtract(const Duration(days: 1)));
+        if (!sameDayCycleStart &&
+            _nonPausedTipExists(
+              fromDayOffset: dayOffset + 1,
+              today: today,
+              now: now,
+              statusHistory: statusHistory,
+              isCycleDay: isCycleDay,
+              prayerStartTime: prayerStartTime,
+            )) {
           continue;
         }
         // No older non-paused tip — counting marks preserve / continue the tip.
@@ -405,7 +410,9 @@ abstract class PrayerStreakCalculator {
 /// Consecutive calendar days with all five prayers completed (onTime or qada).
 ///
 /// Today's incomplete day is skipped (does not break a prior day streak).
-/// Separate from [PrayerStreakCalculator]. Paused Cycle Mode days are bridged.
+/// Separate from [PrayerStreakCalculator]. Paused Cycle Mode days are bridged:
+/// incomplete paused days never break; a fully completed **today** while paused
+/// still counts so enabling Cycle Mode on the same day does not zero the streak.
 abstract class DayStreakCalculator {
   static int calculate({
     required DateTime now,
@@ -417,7 +424,18 @@ abstract class DayStreakCalculator {
 
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
-      if (isCycleDay(date)) continue;
+      if (isCycleDay(date)) {
+        // Bridge incomplete paused days. A fully completed today counts only
+        // when Cycle Mode also starts today (yesterday not paused) so same-day
+        // enable preserves the streak without extending it mid-cycle later.
+        if (dayOffset == 0 && isDayFullyCompleted(date, statusHistory)) {
+          final yesterday = date.subtract(const Duration(days: 1));
+          if (!isCycleDay(yesterday)) {
+            count += 1;
+          }
+        }
+        continue;
+      }
 
       final complete = isDayFullyCompleted(date, statusHistory);
       if (dayOffset == 0 && !complete) continue;

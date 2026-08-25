@@ -340,6 +340,68 @@ class AppLocalizationsAz extends AppLocalizations {
       'Deen Focus-un təklif etdiyi hər şeyi kəşf edin. Necə işlədiyini görmək üçün fokus rejiminə toxunun.';
 
   @override
+  String get onboardingWidgetsLiveTitle => 'Your prayers, always within reach';
+
+  @override
+  String get onboardingWidgetsLiveSubtitle =>
+      'Stay connected with what matters most — right from your Home Screen or Lock Screen.';
+
+  @override
+  String get onboardingWidgetsSectionTitle => 'Widgets';
+
+  @override
+  String get onboardingWidgetsSectionBodyPrefix =>
+      'Check your next prayer, streaks, and progress ';
+
+  @override
+  String get onboardingWidgetsSectionBodyEmphasis => 'at a glance.';
+
+  @override
+  String get onboardingLiveActivitiesSectionTitle => 'Live Activities';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyPrefix =>
+      'See your upcoming prayer updates in ';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodyEmphasis => 'real time';
+
+  @override
+  String get onboardingLiveActivitiesSectionBodySuffix =>
+      ' on your Lock Screen and Dynamic Island.';
+
+  @override
+  String get onboardingWidgetsLiveTrustPrefix => 'Designed to help you stay ';
+
+  @override
+  String get onboardingWidgetsLiveTrustEmphasis => 'consistent';
+
+  @override
+  String get onboardingWidgetsLiveTrustSuffix =>
+      ' and never miss what matters most.';
+
+  @override
+  String get onboardingWidgetsMockStreak => 'Streak';
+
+  @override
+  String get onboardingWidgetsMockStreakValue => '12 days';
+
+  @override
+  String get onboardingWidgetsMockFocus => 'Focus';
+
+  @override
+  String get onboardingWidgetsMockFocusValue => '25 min';
+
+  @override
+  String get onboardingWidgetsLiveLockDate => 'Tuesday, 6 May';
+
+  @override
+  String get onboardingWidgetsLiveLockTime => '9:41';
+
+  @override
+  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45 PM in 02:15:32';
+
+  @override
   String get focusModesSectionLabel =>
       'FOKUS REJİMLƏRİ · DAHA ÇOX ÜÇÜN TOXUNUN';
 
@@ -1728,6 +1790,13 @@ class AppLocalizationsAz extends AppLocalizations {
       'Recite ayahs and get feedback';
 
   @override
+  String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+
+  @override
+  String get readingSettingsTajweedFreePreviewTranslation =>
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+
+  @override
   String get quranAudioSettingsTitle => 'Audio settings';
 
   @override
@@ -3051,6 +3120,20 @@ class AppLocalizationsAz extends AppLocalizations {
   String get liveActivityStatusOff => 'Live Activity bağlıdır';
 
   @override
+  String get liveActivityEnabledPromptTitle => 'Live Activity is on';
+
+  @override
+  String get liveActivityEnabledPromptBodyIos =>
+      'Prayer updates are now on your Lock Screen and Dynamic Island. Lock your phone to see your current and next prayer anytime.';
+
+  @override
+  String get liveActivityEnabledPromptBodyAndroid =>
+      'Prayer updates now show as an ongoing notification. Lock your phone or pull down the notification shade to check anytime.';
+
+  @override
+  String get liveActivityEnabledPromptButton => 'Got it';
+
+  @override
   String get liveActivityNowLabel => 'İndi';
 
   @override
@@ -4303,4 +4386,52 @@ class AppLocalizationsAz extends AppLocalizations {
   String digitalBalanceMinutesToGoal(int minutes) {
     return 'Bugünkü məqsədə $minutes dəqiqə qalıb';
   }
+
+  @override
+  String get tajweedPracticeTitle => 'Təcvid məşqi';
+
+  @override
+  String get tajweedDownloadTitle => 'AI modeli hazırlanır';
+
+  @override
+  String get tajweedDownloadFailedTitle => 'AI modeli hazırlanmadı';
+
+  @override
+  String get tajweedDownloadBody =>
+      'Təcvid məşqinin sonra tam oflayn işləməsi üçün bir dəfəlik yükləmə. Bu yalnız bir dəfə olur.';
+
+  @override
+  String get tajweedDownloadFinishing => 'Quraşdırma tamamlanır…';
+
+  @override
+  String get tajweedDownloadCanLeave =>
+      'Bu ekrandan çıxa bilərsiniz — yükləmə arxa planda davam edir.';
+
+  @override
+  String get tajweedDownloadTryAgain => 'Yenidən cəhd et';
+
+  @override
+  String get tajweedDownloadPleaseTryAgain => 'Yenidən cəhd edin.';
+
+  @override
+  String get tajweedErrorFeatureDisabled =>
+      'AI Təcvid məşqi sönülüdür. Əvvəlcə Parametrlərdə aktiv edin.';
+
+  @override
+  String get tajweedErrorModelMissing => 'AI modeli hələ quraşdırılmayıb.';
+
+  @override
+  String get tajweedErrorModelDownloadFailed =>
+      'AI modeli yüklənmədi. Bağlantını yoxlayıb yenidən cəhd edin.';
+
+  @override
+  String get tajweedErrorModelLoadFailed =>
+      'AI modeli bu cihazda yüklənə bilmədi.';
+
+  @override
+  String get tajweedErrorCouldNotPrepare => 'AI modeli hazırlana bilmədi.';
+
+  @override
+  String get tajweedErrorUnsupported =>
+      'AI Təcvid məşqi bu cihazda əlçatan deyil.';
 }

@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/services/prayer_live_activity_service.dart';
+import '../../../../core/services/prayer_live_activity_toggle.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../onboarding/view/widgets/feature_demo/feature_demo_kind.dart';
-import '../settings/settings_app_demo_screen.dart';
 
 /// Home promo for Live Activity — visible until enabled or dismissed.
 class HomeLiveActivityPromoCard extends StatefulWidget {
@@ -22,6 +21,7 @@ class HomeLiveActivityPromoCard extends StatefulWidget {
 class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
   bool _visible = false;
   bool _loading = true;
+  bool _enabling = false;
 
   @override
   void initState() {
@@ -62,15 +62,21 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
     setState(() => _visible = false);
   }
 
-  void _openTutorial() {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const SettingsAppDemoScreen(
-          initialFeatureKind: FeatureDemoKind.liveActivity,
-          popOnWalkthroughExit: true,
-        ),
-      ),
-    );
+  Future<void> _enableLiveActivity() async {
+    if (_enabling) return;
+    setState(() => _enabling = true);
+    try {
+      final ok = await PrayerLiveActivityToggle.applyWithDialogs(
+        context,
+        enabled: true,
+      );
+      if (!mounted) return;
+      if (ok) {
+        await _refreshVisibility();
+      }
+    } finally {
+      if (mounted) setState(() => _enabling = false);
+    }
   }
 
   @override
@@ -95,7 +101,7 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: _openTutorial,
+          onTap: _enabling ? null : () => unawaited(_enableLiveActivity()),
           borderRadius: BorderRadius.circular(20.r),
           child: Ink(
             decoration: BoxDecoration(
