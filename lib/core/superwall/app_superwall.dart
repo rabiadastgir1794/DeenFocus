@@ -388,11 +388,11 @@ class AppSuperwall {
             );
           }),
         feature: () async {
-          final latestStatus = await Superwall.shared.getSubscriptionStatus();
-
-          if (latestStatus.isActive) {
-            onAccess();
-          }
+          // Superwall's feature callback means "run the gated feature" —
+          // do not re-gate on isActive (breaks holdouts / paywall-skip paths).
+          _log('feature() invoked — granting access context=$debugContext');
+          onAccess();
+          unawaited(syncSubscriptionState());
         },
       );
     } catch (e, st) {

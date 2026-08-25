@@ -20,8 +20,9 @@ enum TajweedDownloadPhase {
 }
 
 /// Shared download coordinator so Settings progress and Surah mic routing
-/// stay in sync across navigation. Download keeps running in-process via
-/// [TajweedModelSession]; this class only mirrors progress for UI.
+/// stay in sync across navigation. Settings download calls
+/// [TajweedService.ensureModel] (pack only); practice still uses
+/// [TajweedModelSession.ensurePrepared] for warm-load.
 class TajweedDownloadCoordinator {
   TajweedDownloadCoordinator._();
 
@@ -49,7 +50,7 @@ class TajweedDownloadCoordinator {
     });
   }
 
-  /// Called when any path starts [TajweedModelSession.ensurePrepared].
+  /// Called when any path starts model ensure / prepare.
   static void noteEnsureStarted() {
     ensureListening();
     if (phase.value != TajweedDownloadPhase.downloaded) {
@@ -102,7 +103,10 @@ class TajweedDownloadCoordinator {
   }
 
   /// Start (or join) a Settings-driven download. Continues if the user leaves
-  /// the screen — [TajweedModelSession] owns the work.
+  /// the screen. Downloads/verifies the pack only — does **not** warm-load
+  /// inference ([TajweedModelSession.ensurePrepared] / prepare); practice does
+  /// that on open. Android ONNX prepare after a ~450MB install can fail/OOM
+  /// and previously made Settings look like download never started.
   static Future<void> startDownload() {
     ensureListening();
     return _inFlightUiDownload ??= _runDownload().whenComplete(() {
@@ -115,15 +119,17 @@ class TajweedDownloadCoordinator {
     noteEnsureStarted();
 
     try {
-      await TajweedModelSession.ensurePrepared(
-        onAfterEnsure: () {
-          progress.value = progress.value < 1 ? 1 : progress.value;
-        },
-      );
-      noteEnsureFinished(success: TajweedModelSession.ready);
+      await TajweedService.ensureModel();
+      final ok = await TajweedService.isAvailable();
+      if (progress.value < 1) progress.value = 1;
+      noteEnsureFinished(success: ok);
+      if (!ok) {
+        throw StateError('Model download finished but pack is not available');
+      }
     } catch (e) {
       debugPrint('[TajweedDownloadCoordinator] download failed: $e');
       noteEnsureFinished(success: false);
+      rethrow;
     }
   }
 

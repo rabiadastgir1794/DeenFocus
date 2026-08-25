@@ -266,18 +266,16 @@ class PremiumGate {
               );
             }),
           feature: () async {
-            // Superwall calls feature() when it decides not to show a paywall
-            // (subscription_status_timeout, no matching campaign, etc.).
-            try {
-              final latest = await Superwall.shared.getSubscriptionStatus();
-              if (!presented.isCompleted) presented.complete();
-              if (latest.isActive) {
-                grantAccess();
-              }
-            } catch (e) {
-              _log('feature status check failed: $e');
-              if (!presented.isCompleted) presented.complete();
-            }
+            // Superwall invokes feature() when the gated code should run:
+            // already subscribed, purchase/restore completed, holdout, or
+            // paywall skipped (e.g. no matching campaign / status timeout).
+            // Re-checking isActive here caused a silent no-op on Android when
+            // the SDK skipped the paywall without an active entitlement —
+            // Settings download / other gates looked like a dead button.
+            _log('feature() invoked — granting access context=$debugContext');
+            if (!presented.isCompleted) presented.complete();
+            grantAccess();
+            unawaited(AppSuperwall.syncSubscriptionState());
           },
         ),
       );

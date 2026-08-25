@@ -1,6 +1,24 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-25 — AI Tajweed download UI (Settings + Surah mic).
+> Last updated: 2026-08-25 — Android AI Tajweed Settings download audit fix.
+
+## Status: Android Settings download dead-tap (2026-08-25)
+Tapping download on **AI Quran Tajweed** (lock visible) did nothing on Android
+while iOS worked. Two causes:
+
+1. **PremiumGate `feature()`** only called `onAccess` when Superwall reported
+   `isActive`. Superwall invokes `feature()` when the gated code should run
+   (subscribed, purchase, holdout, or paywall skipped). Android often hit the
+   skip path without `isActive` → silent return, no download. Fixed: always
+   `grantAccess()` / `onAccess()` from `feature()` in `premium_gate.dart` and
+   `requireActiveSubscriptionOrPresentPaywall`.
+2. **Settings used `ensurePrepared`** (ensure + warm-load). After a ~450MB ONNX
+   download, Android prepare can fail/OOM and UI snapped back to the download
+   icon with no error. Settings now calls **`TajweedService.ensureModel()` only**;
+   practice still prepares. Failures show a SnackBar.
+
+Also: Android `AssetDownloadManager` free-space probe prefers an existing
+ancestor dir (non-existent staging parent can make `usableSpace` return 0).
 
 ## Status: Learning hub search (2026-08-25)
 Islamic Library (Learn tab) hub has a **Search Learning…** field that filters

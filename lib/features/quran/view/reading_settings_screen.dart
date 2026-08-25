@@ -11,6 +11,7 @@ import '../../../core/superwall/premium_gate.dart';
 import '../../../core/theme/segment_control_style.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../tajweed/model/tajweed_models.dart';
 import '../../tajweed/tajweed_download_coordinator.dart';
 import '../../tajweed/tajweed_entry_point.dart';
 import '../reading_engine/quran_arabic_font.dart';
@@ -194,17 +195,34 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
         context: context,
         debugContext: 'reading_settings:tajweed',
         onAccess: () {
-          unawaited(TajweedDownloadCoordinator.startDownload());
+          unawaited(_startTajweedDownloadWithFeedback());
         },
       );
       return;
     }
+    await _startTajweedDownloadWithFeedback();
+  }
+
+  Future<void> _startTajweedDownloadWithFeedback() async {
     final phase = TajweedDownloadCoordinator.phase.value;
     if (phase == TajweedDownloadPhase.downloaded ||
         phase == TajweedDownloadPhase.downloading) {
       return;
     }
-    await TajweedDownloadCoordinator.startDownload();
+    try {
+      await TajweedDownloadCoordinator.startDownload();
+    } catch (e) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      final message = e is TajweedException
+          ? (e.message?.trim().isNotEmpty == true
+                ? e.message!
+                : l10n.tajweedErrorModelDownloadFailed)
+          : l10n.tajweedErrorModelDownloadFailed;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
   }
 
   Future<void> _onTajweedDeleteTapped() async {

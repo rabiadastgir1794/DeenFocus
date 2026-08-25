@@ -25,44 +25,50 @@ class AssetDownloadManager(
         val expectedSizeBytes: Long? = null,
     )
 
-    // Single-thread executor: this framework's own guarantee that network + disk
-    // I/O never runs on the caller's thread (including the main thread), regardless
-    // of what thread `downloadFiles` is invoked from.
-    private val workExecutor = Executors.newSingleThreadExecutor { r -> Thread(r, "asset-download-manager") }
+  // Single-thread executor: this framework's own guarantee that network + disk
+  // I/O never runs on the caller's thread (including the main thread), regardless
+  // of what thread `downloadFiles` is invoked from.
+  private val workExecutor = Executors.newSingleThreadExecutor { r -> Thread(r, "asset-download-manager") }
 
-    /**
-     * Downloads every file in [specs] into [stagingDir], resuming any partially
-     * written `.part` file left over from a previous interrupted attempt (including
-     * across app relaunches, as long as the caller reuses the same [stagingDir] for
-     * the same pack version). Safe to call from any thread, including the main
-     * thread — the actual work always runs on an internal background thread.
-     */
-    fun downloadFiles(
-        specs: List<FileSpec>,
-        stagingDir: File,
-        isCancelled: () -> Boolean = { false },
-        progress: ((Double) -> Unit)? = null,
-    ) {
-        // Require pack size + headroom so activation/metadata writes don't hit
-        // ENOSPC immediately after a "successful" download on tight emulators.
-        val required = specs.mapNotNull { it.expectedSizeBytes }.sum()
-        val headroomBytes = 64L * 1024 * 1024
-        if (required > 0) {
-            val available = freeSpaceProvider(stagingDir.parentFile ?: stagingDir)
-            if (available != null && available < required + headroomBytes) {
-                throw AssetDownloadException.InsufficientStorage(required + headroomBytes, available)
-            }
-        }
-
-        val future = workExecutor.submit {
-            downloadFilesSync(specs, stagingDir, isCancelled, progress)
-        }
-        try {
-            future.get()
-        } catch (e: java.util.concurrent.ExecutionException) {
-            throw e.cause ?: e
-        }
+  /**
+   * Downloads every file in [specs] into [stagingDir], resuming any partially
+   * written `.part` file left over from a previous interrupted attempt (including
+   * across app relaunches, as long as the caller reuses the same [stagingDir] for
+   * the same pack version). Safe to call from any thread, including the main
+   * thread — the actual work always runs on an internal background thread.
+   */
+  fun downloadFiles(
+    specs: List<FileSpec>,
+    stagingDir: File,
+    isCancelled: () -> Boolean = { false },
+    progress: ((Double) -> Unit)? = null,
+  ) {
+    // Prefer an existing ancestor for usableSpace — a non-existent staging
+    // parent can make File.usableSpace return 0 (ENOENT), which would either
+    // skip the check or falsely trip InsufficientStorage before mkdirs.
+    val spaceProbe = stagingDir.parentFile?.takeIf { it.exists() }
+      ?: stagingDir.parentFile?.parentFile?.takeIf { it.exists() }
+      ?: stagingDir
+    // Require pack size + headroom so activation/metadata writes don't hit
+    // ENOSPC immediately after a "successful" download on tight emulators.
+    val required = specs.mapNotNull { it.expectedSizeBytes }.sum()
+    val headroomBytes = 64L * 1024 * 1024
+    if (required > 0) {
+      val available = freeSpaceProvider(spaceProbe)
+      if (available != null && available < required + headroomBytes) {
+        throw AssetDownloadException.InsufficientStorage(required + headroomBytes, available)
+      }
     }
+
+    val future = workExecutor.submit {
+      downloadFilesSync(specs, stagingDir, isCancelled, progress)
+    }
+    try {
+      future.get()
+    } catch (e: java.util.concurrent.ExecutionException) {
+      throw e.cause ?: e
+    }
+  }
 
     private fun downloadFilesSync(
         specs: List<FileSpec>,
