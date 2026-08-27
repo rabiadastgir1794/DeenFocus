@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Calendar-style header: leading back control + centered title.
-///
-/// Matches the Islamic Calendar screen header layout and typography.
-/// When [subtitle] is set, title and subtitle stack in the center without
-/// colliding with the back control or trailing widget.
+/// Calendar / My Insights header: back on the left, trailing on the right,
+/// title (and optional subtitle) centered in the remaining space.
 class AppCenteredNavHeader extends StatelessWidget {
   const AppCenteredNavHeader({
     super.key,
@@ -20,8 +17,9 @@ class AppCenteredNavHeader extends StatelessWidget {
   final String backLabel;
   final VoidCallback onBack;
 
-  /// Optional trailing control (e.g. Insights calendar). Layout matches
-  /// Calendar/Support when null.
+  /// Optional trailing control (e.g. Insights calendar). Equal [Expanded]
+  /// side slots keep the title centered even when this is wider or narrower
+  /// than the back control.
   final Widget? trailing;
 
   bool get _hasSubtitle {
@@ -29,10 +27,8 @@ class AppCenteredNavHeader extends StatelessWidget {
     return value != null && value.trim().isNotEmpty;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final backButton = TextButton.icon(
+  Widget _backButton(ColorScheme colorScheme) {
+    return TextButton.icon(
       onPressed: onBack,
       style: TextButton.styleFrom(
         foregroundColor: colorScheme.primary,
@@ -45,6 +41,12 @@ class AppCenteredNavHeader extends StatelessWidget {
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
@@ -53,19 +55,24 @@ class AppCenteredNavHeader extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            backButton,
             Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _backButton(colorScheme),
+              ),
+            ),
+            Expanded(
+              flex: 2,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
                       title,
                       textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      style: textTheme.titleMedium?.copyWith(
                         color: colorScheme.primary,
                         fontWeight: FontWeight.w800,
                       ),
@@ -75,7 +82,7 @@ class AppCenteredNavHeader extends StatelessWidget {
                       Text(
                         subtitle!,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        style: textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w500,
                           fontSize: 11,
@@ -87,12 +94,12 @@ class AppCenteredNavHeader extends StatelessWidget {
                 ),
               ),
             ),
-            trailing ??
-                ExcludeSemantics(
-                  child: IgnorePointer(
-                    child: Opacity(opacity: 0, child: backButton),
-                  ),
-                ),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: trailing ?? const SizedBox.shrink(),
+              ),
+            ),
           ],
         ),
       ),

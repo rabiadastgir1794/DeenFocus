@@ -2109,5 +2109,66 @@
         "type": "String"
       }
     }
-  }
+  },
+  "insightsRatio": "{done} / {possible}",
+  "@insightsRatio": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "possible": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsCompactRatio": "{done}/{possible}",
+  "@insightsCompactRatio": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "possible": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsPercent": "{value}%",
+  "@insightsPercent": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsFocusScoreValue": "{score} / 100",
+  "@insightsFocusScoreValue": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsWeekNumber": "W{week}",
+  "@insightsWeekNumber": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsLevelName1": "New Beginning",
+  "insightsLevelName2": "Getting Started",
+  "insightsLevelName3": "Building the Habit",
+  "insightsLevelName4": "Steady Worshipper",
+  "insightsLevelName5": "Consistent Heart",
+  "insightsLevelName6": "Prayer Keeper",
+  "insightsLevelName7": "Dedicated Servant",
+  "insightsLevelName8": "Strong Routine",
+  "insightsLevelName9": "Devoted Worshipper",
+  "insightsLevelName10": "Steadfast",
+  "insightsLevelName11": "Deepening Faith",
+  "insightsLevelName12": "Strong Consistency",
+  "insightsLevelName13": "Devotion Leader",
+  "insightsLevelName14": "Exceptional Consistency",
+  "insightsLevelName15": "DeenFocus Master"
 }

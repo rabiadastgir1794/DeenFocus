@@ -2711,7 +2711,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String insightsPrayerStreakCount(int count) {
-    return '$count prayers';
+    return '$count orações';
   }
 
   @override
@@ -2726,44 +2726,44 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get insightsChipDayUp => '↑ 1 today';
+  String get insightsChipDayUp => '↑ 1 hoje';
 
   @override
-  String get insightsWeeklyCompletion => 'Weekly completion';
+  String get insightsWeeklyCompletion => 'Progresso semanal';
 
   @override
-  String get insightsMonthlyCompletion => 'Monthly completion';
+  String get insightsMonthlyCompletion => 'Progresso mensal';
 
   @override
-  String get insightsThisWeek => 'This week';
+  String get insightsThisWeek => 'Esta semana';
 
   @override
-  String get insightsThisMonth => 'This month';
+  String get insightsThisMonth => 'Este mês';
 
   @override
-  String get insightsOverall => 'Overall';
+  String get insightsOverall => 'Geral';
 
   @override
-  String get insightsRateExcellent => 'Excellent';
+  String get insightsRateExcellent => 'Excelente';
 
   @override
-  String get insightsRateGood => 'Good';
+  String get insightsRateGood => 'Bom';
 
   @override
-  String get insightsRateFair => 'Fair';
+  String get insightsRateFair => 'Razoável';
 
   @override
-  String get insightsRateStart => 'Keep going';
+  String get insightsRateStart => 'Continua';
 
   @override
-  String get insightsPrayersCompletedWeekly => 'Prayers completed (weekly)';
+  String get insightsPrayersCompletedWeekly => 'Orações concluídas (semana)';
 
   @override
-  String get insightsPrayersCompletedMonthly => 'Prayers completed (monthly)';
+  String get insightsPrayersCompletedMonthly => 'Orações concluídas (mês)';
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
+    return 'Concluíste $done de $possible orações.\nAlhamdulillah — continua!';
   }
 
   @override
@@ -2777,7 +2777,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get insightsPrayersCompletedLabel =>
-      'Prayers completed — Alhamdulillah!';
+      'Orações concluídas — Alhamdulillah!';
 
   @override
   String get insightsCycleModeActiveLabel => 'Modo ciclo ativo';
@@ -2804,11 +2804,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get insightsAchieved => 'Alcançado';
 
   @override
-  String get insightsMyProgress => 'My progress';
+  String get insightsMyProgress => 'O meu progresso';
 
   @override
   String insightsLevelNumber(int level) {
-    return 'Level $level';
+    return 'Nível $level';
   }
 
   @override
@@ -2823,68 +2823,68 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String insightsXpToNext(String xp, int level) {
-    return '$xp XP to Level $level';
+    return '$xp XP para o nível $level';
   }
 
   @override
-  String get insightsMaxLevel => 'MAX LEVEL';
+  String get insightsMaxLevel => 'NÍVEL MÁXIMO';
 
   @override
   String insightsAchievementsUnlocked(int unlocked, int total) {
-    return '$unlocked / $total unlocked';
+    return '$unlocked / $total desbloqueadas';
   }
 
   @override
-  String get insightsAchievementUnlockedTitle => 'Achievement Unlocked';
+  String get insightsAchievementUnlockedTitle => 'Conquista desbloqueada';
 
   @override
-  String get insightsLevelUpTitle => 'LEVEL UP';
+  String get insightsLevelUpTitle => 'SUBISTE DE NÍVEL';
 
   @override
-  String get achievementFirstPrayer => 'First Prayer';
+  String get achievementFirstPrayer => 'Primeira oração';
 
   @override
-  String get achievementFajrChampion => 'Fajr Champion';
+  String get achievementFajrChampion => 'Campeão do Fajr';
 
   @override
-  String get achievementFiveADay => 'Five-a-Day';
+  String get achievementFiveADay => 'Cinco por dia';
 
   @override
-  String get achievementPerfectWeek => 'Perfect Week';
+  String get achievementPerfectWeek => 'Semana perfeita';
 
   @override
-  String get achievementPerfectMonth => 'Perfect Month';
+  String get achievementPerfectMonth => 'Mês perfeito';
 
   @override
-  String get achievementQuranDevotee => 'Quran Devotee';
+  String get achievementQuranDevotee => 'Devoto do Alcorão';
 
   @override
-  String get achievementDhikrStarter => 'Dhikr Starter';
+  String get achievementDhikrStarter => 'Início do dhikr';
 
   @override
-  String get achievementNightWorshipper => 'Night Worshipper';
+  String get achievementNightWorshipper => 'Adorador noturno';
 
   @override
-  String get achievementMasjidCompanion => 'Masjid Companion';
+  String get achievementMasjidCompanion => 'Companheiro da mesquita';
 
   @override
-  String get achievementDistractionDefender => 'Distraction Defender';
+  String get achievementDistractionDefender => 'Defensor do foco';
 
   @override
-  String get achievementCycleGuardian => 'Cycle Guardian';
+  String get achievementCycleGuardian => 'Guardião do ciclo';
 
   @override
-  String get achievementProtectedMonth => 'Protected Month';
+  String get achievementProtectedMonth => 'Mês protegido';
 
   @override
-  String get achievementSixMonthJourney => 'Six-Month Journey';
+  String get achievementSixMonthJourney => 'Jornada de seis meses';
 
   @override
   String get achievementDeenFocusMaster => 'DeenFocus Master';
 
   @override
   String insightsCycleModeFooter(int days) {
-    return 'Cycle Mode days are protected and not counted as streak breaks. You have $days protected day(s) available.';
+    return 'Os dias de ciclo estão protegidos e não quebram a sequência. Tens $days dia(s) protegido(s).';
   }
 
   @override
@@ -4550,4 +4550,74 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shareFailed => 'Não foi possível partilhar. Tenta novamente.';
+
+  @override
+  String insightsRatio(int done, int possible) {
+    return '$done / $possible';
+  }
+
+  @override
+  String insightsCompactRatio(int done, int possible) {
+    return '$done/$possible';
+  }
+
+  @override
+  String insightsPercent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String insightsFocusScoreValue(int score) {
+    return '$score / 100';
+  }
+
+  @override
+  String insightsWeekNumber(int week) {
+    return 'S$week';
+  }
+
+  @override
+  String get insightsLevelName1 => 'Novo começo';
+
+  @override
+  String get insightsLevelName2 => 'Primeiros passos';
+
+  @override
+  String get insightsLevelName3 => 'Criar o hábito';
+
+  @override
+  String get insightsLevelName4 => 'Orante constante';
+
+  @override
+  String get insightsLevelName5 => 'Coração constante';
+
+  @override
+  String get insightsLevelName6 => 'Guardião da oração';
+
+  @override
+  String get insightsLevelName7 => 'Servo dedicado';
+
+  @override
+  String get insightsLevelName8 => 'Rotina sólida';
+
+  @override
+  String get insightsLevelName9 => 'Orante devoto';
+
+  @override
+  String get insightsLevelName10 => 'Firme';
+
+  @override
+  String get insightsLevelName11 => 'Fé mais profunda';
+
+  @override
+  String get insightsLevelName12 => 'Forte consistência';
+
+  @override
+  String get insightsLevelName13 => 'Líder na devoção';
+
+  @override
+  String get insightsLevelName14 => 'Consistência excecional';
+
+  @override
+  String get insightsLevelName15 => 'DeenFocus Master';
 }

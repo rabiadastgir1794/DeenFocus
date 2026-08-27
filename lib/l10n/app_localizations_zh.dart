@@ -2560,7 +2560,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String insightsPrayerStreakCount(int count) {
-    return '$count prayers';
+    return '$count 次礼拜';
   }
 
   @override
@@ -2575,44 +2575,44 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get insightsChipDayUp => '↑ 1 today';
+  String get insightsChipDayUp => '↑ 1 今天';
 
   @override
-  String get insightsWeeklyCompletion => 'Weekly completion';
+  String get insightsWeeklyCompletion => '本周完成情况';
 
   @override
-  String get insightsMonthlyCompletion => 'Monthly completion';
+  String get insightsMonthlyCompletion => '本月完成情况';
 
   @override
-  String get insightsThisWeek => 'This week';
+  String get insightsThisWeek => '本周';
 
   @override
-  String get insightsThisMonth => 'This month';
+  String get insightsThisMonth => '本月';
 
   @override
-  String get insightsOverall => 'Overall';
+  String get insightsOverall => '总计';
 
   @override
-  String get insightsRateExcellent => 'Excellent';
+  String get insightsRateExcellent => '出色';
 
   @override
-  String get insightsRateGood => 'Good';
+  String get insightsRateGood => '良好';
 
   @override
-  String get insightsRateFair => 'Fair';
+  String get insightsRateFair => '一般';
 
   @override
-  String get insightsRateStart => 'Keep going';
+  String get insightsRateStart => '继续加油';
 
   @override
-  String get insightsPrayersCompletedWeekly => 'Prayers completed (weekly)';
+  String get insightsPrayersCompletedWeekly => '已完成礼拜（每周）';
 
   @override
-  String get insightsPrayersCompletedMonthly => 'Prayers completed (monthly)';
+  String get insightsPrayersCompletedMonthly => '已完成礼拜（每月）';
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
+    return '你完成了 $possible 次中的 $done 次礼拜。\n一切赞美全归真主 — 继续加油！';
   }
 
   @override
@@ -2625,8 +2625,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get insightsTodaysPrayers => '今日礼拜';
 
   @override
-  String get insightsPrayersCompletedLabel =>
-      'Prayers completed — Alhamdulillah!';
+  String get insightsPrayersCompletedLabel => '礼拜已完成 — 一切赞美全归真主！';
 
   @override
   String get insightsCycleModeActiveLabel => '生理期模式已开启';
@@ -2653,11 +2652,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get insightsAchieved => '已达成';
 
   @override
-  String get insightsMyProgress => 'My progress';
+  String get insightsMyProgress => '我的进度';
 
   @override
   String insightsLevelNumber(int level) {
-    return 'Level $level';
+    return '等级 $level';
   }
 
   @override
@@ -2672,68 +2671,68 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String insightsXpToNext(String xp, int level) {
-    return '$xp XP to Level $level';
+    return '还需 $xp XP 升至等级 $level';
   }
 
   @override
-  String get insightsMaxLevel => 'MAX LEVEL';
+  String get insightsMaxLevel => '最高等级';
 
   @override
   String insightsAchievementsUnlocked(int unlocked, int total) {
-    return '$unlocked / $total unlocked';
+    return '已解锁 $unlocked / $total';
   }
 
   @override
-  String get insightsAchievementUnlockedTitle => 'Achievement Unlocked';
+  String get insightsAchievementUnlockedTitle => '成就已解锁';
 
   @override
-  String get insightsLevelUpTitle => 'LEVEL UP';
+  String get insightsLevelUpTitle => '等级提升';
 
   @override
-  String get achievementFirstPrayer => 'First Prayer';
+  String get achievementFirstPrayer => '第一次礼拜';
 
   @override
-  String get achievementFajrChampion => 'Fajr Champion';
+  String get achievementFajrChampion => '晨礼冠军';
 
   @override
-  String get achievementFiveADay => 'Five-a-Day';
+  String get achievementFiveADay => '一日五礼';
 
   @override
-  String get achievementPerfectWeek => 'Perfect Week';
+  String get achievementPerfectWeek => '完美一周';
 
   @override
-  String get achievementPerfectMonth => 'Perfect Month';
+  String get achievementPerfectMonth => '完美一月';
 
   @override
-  String get achievementQuranDevotee => 'Quran Devotee';
+  String get achievementQuranDevotee => '古兰经热爱者';
 
   @override
-  String get achievementDhikrStarter => 'Dhikr Starter';
+  String get achievementDhikrStarter => '记主起步';
 
   @override
-  String get achievementNightWorshipper => 'Night Worshipper';
+  String get achievementNightWorshipper => '夜间礼拜者';
 
   @override
-  String get achievementMasjidCompanion => 'Masjid Companion';
+  String get achievementMasjidCompanion => '清真寺伙伴';
 
   @override
-  String get achievementDistractionDefender => 'Distraction Defender';
+  String get achievementDistractionDefender => '专注守护者';
 
   @override
-  String get achievementCycleGuardian => 'Cycle Guardian';
+  String get achievementCycleGuardian => '生理期守护者';
 
   @override
-  String get achievementProtectedMonth => 'Protected Month';
+  String get achievementProtectedMonth => '受保护的一个月';
 
   @override
-  String get achievementSixMonthJourney => 'Six-Month Journey';
+  String get achievementSixMonthJourney => '六个月旅程';
 
   @override
   String get achievementDeenFocusMaster => 'DeenFocus Master';
 
   @override
   String insightsCycleModeFooter(int days) {
-    return 'Cycle Mode days are protected and not counted as streak breaks. You have $days protected day(s) available.';
+    return '生理期日受保护，不会中断连续记录。你还有 $days 个保护日。';
   }
 
   @override
@@ -4297,4 +4296,74 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareFailed => '无法分享，请重试。';
+
+  @override
+  String insightsRatio(int done, int possible) {
+    return '$done / $possible';
+  }
+
+  @override
+  String insightsCompactRatio(int done, int possible) {
+    return '$done/$possible';
+  }
+
+  @override
+  String insightsPercent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String insightsFocusScoreValue(int score) {
+    return '$score / 100';
+  }
+
+  @override
+  String insightsWeekNumber(int week) {
+    return '第$week周';
+  }
+
+  @override
+  String get insightsLevelName1 => '新的开始';
+
+  @override
+  String get insightsLevelName2 => '迈出第一步';
+
+  @override
+  String get insightsLevelName3 => '养成习惯';
+
+  @override
+  String get insightsLevelName4 => '稳定的礼拜者';
+
+  @override
+  String get insightsLevelName5 => '持之以恒的心';
+
+  @override
+  String get insightsLevelName6 => '礼拜守护者';
+
+  @override
+  String get insightsLevelName7 => '虔诚的仆人';
+
+  @override
+  String get insightsLevelName8 => '稳定的日常';
+
+  @override
+  String get insightsLevelName9 => '虔诚的礼拜者';
+
+  @override
+  String get insightsLevelName10 => '坚定不移';
+
+  @override
+  String get insightsLevelName11 => '信仰更深';
+
+  @override
+  String get insightsLevelName12 => '强大的坚持';
+
+  @override
+  String get insightsLevelName13 => '虔诚的榜样';
+
+  @override
+  String get insightsLevelName14 => '非凡的坚持';
+
+  @override
+  String get insightsLevelName15 => 'DeenFocus Master';
 }

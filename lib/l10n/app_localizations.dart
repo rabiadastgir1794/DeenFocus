@@ -8146,6 +8146,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to share. Please try again.'**
   String get shareFailed;
+
+  /// No description provided for @insightsRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} / {possible}'**
+  String insightsRatio(int done, int possible);
+
+  /// No description provided for @insightsCompactRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{possible}'**
+  String insightsCompactRatio(int done, int possible);
+
+  /// No description provided for @insightsPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}%'**
+  String insightsPercent(int value);
+
+  /// No description provided for @insightsFocusScoreValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} / 100'**
+  String insightsFocusScoreValue(int score);
+
+  /// No description provided for @insightsWeekNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'W{week}'**
+  String insightsWeekNumber(int week);
+
+  /// No description provided for @insightsLevelName1.
+  ///
+  /// In en, this message translates to:
+  /// **'New Beginning'**
+  String get insightsLevelName1;
+
+  /// No description provided for @insightsLevelName2.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting Started'**
+  String get insightsLevelName2;
+
+  /// No description provided for @insightsLevelName3.
+  ///
+  /// In en, this message translates to:
+  /// **'Building the Habit'**
+  String get insightsLevelName3;
+
+  /// No description provided for @insightsLevelName4.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady Worshipper'**
+  String get insightsLevelName4;
+
+  /// No description provided for @insightsLevelName5.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistent Heart'**
+  String get insightsLevelName5;
+
+  /// No description provided for @insightsLevelName6.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Keeper'**
+  String get insightsLevelName6;
+
+  /// No description provided for @insightsLevelName7.
+  ///
+  /// In en, this message translates to:
+  /// **'Dedicated Servant'**
+  String get insightsLevelName7;
+
+  /// No description provided for @insightsLevelName8.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong Routine'**
+  String get insightsLevelName8;
+
+  /// No description provided for @insightsLevelName9.
+  ///
+  /// In en, this message translates to:
+  /// **'Devoted Worshipper'**
+  String get insightsLevelName9;
+
+  /// No description provided for @insightsLevelName10.
+  ///
+  /// In en, this message translates to:
+  /// **'Steadfast'**
+  String get insightsLevelName10;
+
+  /// No description provided for @insightsLevelName11.
+  ///
+  /// In en, this message translates to:
+  /// **'Deepening Faith'**
+  String get insightsLevelName11;
+
+  /// No description provided for @insightsLevelName12.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong Consistency'**
+  String get insightsLevelName12;
+
+  /// No description provided for @insightsLevelName13.
+  ///
+  /// In en, this message translates to:
+  /// **'Devotion Leader'**
+  String get insightsLevelName13;
+
+  /// No description provided for @insightsLevelName14.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptional Consistency'**
+  String get insightsLevelName14;
+
+  /// No description provided for @insightsLevelName15.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus Master'**
+  String get insightsLevelName15;
 }
 
 class _AppLocalizationsDelegate

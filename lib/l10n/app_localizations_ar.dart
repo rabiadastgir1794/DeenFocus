@@ -2680,44 +2680,44 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get insightsChipDayUp => '↑ 1 today';
+  String get insightsChipDayUp => '↑ ١ اليوم';
 
   @override
-  String get insightsWeeklyCompletion => 'Weekly completion';
+  String get insightsWeeklyCompletion => 'الإنجاز الأسبوعي';
 
   @override
-  String get insightsMonthlyCompletion => 'Monthly completion';
+  String get insightsMonthlyCompletion => 'الإنجاز الشهري';
 
   @override
-  String get insightsThisWeek => 'This week';
+  String get insightsThisWeek => 'هذا الأسبوع';
 
   @override
-  String get insightsThisMonth => 'This month';
+  String get insightsThisMonth => 'هذا الشهر';
 
   @override
-  String get insightsOverall => 'Overall';
+  String get insightsOverall => 'الإجمالي';
 
   @override
-  String get insightsRateExcellent => 'Excellent';
+  String get insightsRateExcellent => 'ممتاز';
 
   @override
-  String get insightsRateGood => 'Good';
+  String get insightsRateGood => 'جيد';
 
   @override
-  String get insightsRateFair => 'Fair';
+  String get insightsRateFair => 'مقبول';
 
   @override
-  String get insightsRateStart => 'Keep going';
+  String get insightsRateStart => 'استمر';
 
   @override
-  String get insightsPrayersCompletedWeekly => 'Prayers completed (weekly)';
+  String get insightsPrayersCompletedWeekly => 'الصلوات المكتملة (أسبوعيًا)';
 
   @override
-  String get insightsPrayersCompletedMonthly => 'Prayers completed (monthly)';
+  String get insightsPrayersCompletedMonthly => 'الصلوات المكتملة (شهريًا)';
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
+    return 'أكملت $done من أصل $possible صلاة.\nالحمد لله — استمر!';
   }
 
   @override
@@ -2730,8 +2730,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get insightsTodaysPrayers => 'صلوات اليوم';
 
   @override
-  String get insightsPrayersCompletedLabel =>
-      'Prayers completed — Alhamdulillah!';
+  String get insightsPrayersCompletedLabel => 'صلوات مكتملة — الحمد لله!';
 
   @override
   String get insightsCycleModeActiveLabel => 'وضع الدورة مفعّل';
@@ -2758,11 +2757,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get insightsAchieved => 'محقق';
 
   @override
-  String get insightsMyProgress => 'My progress';
+  String get insightsMyProgress => 'تقدّمي';
 
   @override
   String insightsLevelNumber(int level) {
-    return 'Level $level';
+    return 'المستوى $level';
   }
 
   @override
@@ -2777,68 +2776,68 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String insightsXpToNext(String xp, int level) {
-    return '$xp XP to Level $level';
+    return '$xp XP للمستوى $level';
   }
 
   @override
-  String get insightsMaxLevel => 'MAX LEVEL';
+  String get insightsMaxLevel => 'أعلى مستوى';
 
   @override
   String insightsAchievementsUnlocked(int unlocked, int total) {
-    return '$unlocked / $total unlocked';
+    return '$unlocked / $total مفتوح';
   }
 
   @override
-  String get insightsAchievementUnlockedTitle => 'Achievement Unlocked';
+  String get insightsAchievementUnlockedTitle => 'تم فتح إنجاز';
 
   @override
-  String get insightsLevelUpTitle => 'LEVEL UP';
+  String get insightsLevelUpTitle => 'ارتقيت مستوى';
 
   @override
-  String get achievementFirstPrayer => 'First Prayer';
+  String get achievementFirstPrayer => 'أول صلاة';
 
   @override
-  String get achievementFajrChampion => 'Fajr Champion';
+  String get achievementFajrChampion => 'بطل الفجر';
 
   @override
-  String get achievementFiveADay => 'Five-a-Day';
+  String get achievementFiveADay => 'الصلوات الخمس';
 
   @override
-  String get achievementPerfectWeek => 'Perfect Week';
+  String get achievementPerfectWeek => 'أسبوع كامل';
 
   @override
-  String get achievementPerfectMonth => 'Perfect Month';
+  String get achievementPerfectMonth => 'شهر كامل';
 
   @override
-  String get achievementQuranDevotee => 'Quran Devotee';
+  String get achievementQuranDevotee => 'محب القرآن';
 
   @override
-  String get achievementDhikrStarter => 'Dhikr Starter';
+  String get achievementDhikrStarter => 'بداية الذكر';
 
   @override
-  String get achievementNightWorshipper => 'Night Worshipper';
+  String get achievementNightWorshipper => 'عابد الليل';
 
   @override
-  String get achievementMasjidCompanion => 'Masjid Companion';
+  String get achievementMasjidCompanion => 'رفيق المسجد';
 
   @override
-  String get achievementDistractionDefender => 'Distraction Defender';
+  String get achievementDistractionDefender => 'حارس التركيز';
 
   @override
-  String get achievementCycleGuardian => 'Cycle Guardian';
+  String get achievementCycleGuardian => 'حارس الدورة';
 
   @override
-  String get achievementProtectedMonth => 'Protected Month';
+  String get achievementProtectedMonth => 'شهر محمي';
 
   @override
-  String get achievementSixMonthJourney => 'Six-Month Journey';
+  String get achievementSixMonthJourney => 'رحلة ستة أشهر';
 
   @override
   String get achievementDeenFocusMaster => 'DeenFocus Master';
 
   @override
   String insightsCycleModeFooter(int days) {
-    return 'Cycle Mode days are protected and not counted as streak breaks. You have $days protected day(s) available.';
+    return 'أيام وضع الدورة محمية ولا تُحتسب انقطاعًا للسلسلة. لديك $days يومًا محميًا.';
   }
 
   @override
@@ -4474,4 +4473,74 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shareFailed => 'تعذر المشاركة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String insightsRatio(int done, int possible) {
+    return '$done / $possible';
+  }
+
+  @override
+  String insightsCompactRatio(int done, int possible) {
+    return '$done/$possible';
+  }
+
+  @override
+  String insightsPercent(int value) {
+    return '$value٪';
+  }
+
+  @override
+  String insightsFocusScoreValue(int score) {
+    return '$score / 100';
+  }
+
+  @override
+  String insightsWeekNumber(int week) {
+    return 'أ$week';
+  }
+
+  @override
+  String get insightsLevelName1 => 'بداية جديدة';
+
+  @override
+  String get insightsLevelName2 => 'الخطوات الأولى';
+
+  @override
+  String get insightsLevelName3 => 'بناء العادة';
+
+  @override
+  String get insightsLevelName4 => 'عابد ثابت';
+
+  @override
+  String get insightsLevelName5 => 'قلب مواظب';
+
+  @override
+  String get insightsLevelName6 => 'حافظ الصلاة';
+
+  @override
+  String get insightsLevelName7 => 'عبد مخلص';
+
+  @override
+  String get insightsLevelName8 => 'روتين قوي';
+
+  @override
+  String get insightsLevelName9 => 'عابد متفانٍ';
+
+  @override
+  String get insightsLevelName10 => 'ثابت';
+
+  @override
+  String get insightsLevelName11 => 'إيمان يتعمّق';
+
+  @override
+  String get insightsLevelName12 => 'استمرار قوي';
+
+  @override
+  String get insightsLevelName13 => 'قدوة في العبادة';
+
+  @override
+  String get insightsLevelName14 => 'استمرار استثنائي';
+
+  @override
+  String get insightsLevelName15 => 'DeenFocus Master';
 }

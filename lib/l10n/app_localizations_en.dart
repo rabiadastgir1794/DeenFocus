@@ -4507,4 +4507,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareFailed => 'Unable to share. Please try again.';
+
+  @override
+  String insightsRatio(int done, int possible) {
+    return '$done / $possible';
+  }
+
+  @override
+  String insightsCompactRatio(int done, int possible) {
+    return '$done/$possible';
+  }
+
+  @override
+  String insightsPercent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String insightsFocusScoreValue(int score) {
+    return '$score / 100';
+  }
+
+  @override
+  String insightsWeekNumber(int week) {
+    return 'W$week';
+  }
+
+  @override
+  String get insightsLevelName1 => 'New Beginning';
+
+  @override
+  String get insightsLevelName2 => 'Getting Started';
+
+  @override
+  String get insightsLevelName3 => 'Building the Habit';
+
+  @override
+  String get insightsLevelName4 => 'Steady Worshipper';
+
+  @override
+  String get insightsLevelName5 => 'Consistent Heart';
+
+  @override
+  String get insightsLevelName6 => 'Prayer Keeper';
+
+  @override
+  String get insightsLevelName7 => 'Dedicated Servant';
+
+  @override
+  String get insightsLevelName8 => 'Strong Routine';
+
+  @override
+  String get insightsLevelName9 => 'Devoted Worshipper';
+
+  @override
+  String get insightsLevelName10 => 'Steadfast';
+
+  @override
+  String get insightsLevelName11 => 'Deepening Faith';
+
+  @override
+  String get insightsLevelName12 => 'Strong Consistency';
+
+  @override
+  String get insightsLevelName13 => 'Devotion Leader';
+
+  @override
+  String get insightsLevelName14 => 'Exceptional Consistency';
+
+  @override
+  String get insightsLevelName15 => 'DeenFocus Master';
 }

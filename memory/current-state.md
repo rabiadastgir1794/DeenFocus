@@ -1,6 +1,21 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-25 — Calendar-style headers across Quran, Learn, Tasbih, and Settings.
+> Last updated: 2026-08-27 — Centered AppCenteredNavHeader titles match My Insights.
+
+## Status: Shared header title centering (2026-08-27)
+Screens that already use `AppCenteredNavHeader` (same pattern as My Insights)
+keep that shared widget. Title and subtitle are center-aligned in equal side
+slots so they stay centered with or without a trailing action, and long
+localized copy wraps in the middle instead of clipping into the back control.
+`CustomAppBar` screens are unchanged. Branch:
+`feature/localize-reading-screens`.
+
+## Status: Insights & Achievements localization (2026-08-27)
+My Insights and Achievements are fully localized (all `app_*.arb` locales),
+including leftover English chart copy, achievement titles, and 15 level names.
+Weekly graph day labels share one-line FittedBox sizing so Wednesday matches
+the other days. Header titles stay centered via equal side slots on
+`AppCenteredNavHeader`. Branch: `feature/localize-reading-screens`.
 
 ## Status: Calendar-style header (Calculation Method) (2026-08-25)
 Settings Calculation Method uses `AppCenteredNavHeader` like Calendar (Back

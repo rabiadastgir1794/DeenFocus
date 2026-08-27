@@ -1,3 +1,5 @@
+import '../../../l10n/app_localizations.dart';
+
 /// Central XP → level calculator. Exactly 15 levels; never exceeds 15.
 abstract class LevelService {
   static const int maxLevel = 15;
@@ -39,6 +41,41 @@ abstract class LevelService {
     'Exceptional Consistency',
     'DeenFocus Master',
   ];
+
+  static String localizedName(AppLocalizations l10n, int level) {
+    switch (level.clamp(1, maxLevel)) {
+      case 1:
+        return l10n.insightsLevelName1;
+      case 2:
+        return l10n.insightsLevelName2;
+      case 3:
+        return l10n.insightsLevelName3;
+      case 4:
+        return l10n.insightsLevelName4;
+      case 5:
+        return l10n.insightsLevelName5;
+      case 6:
+        return l10n.insightsLevelName6;
+      case 7:
+        return l10n.insightsLevelName7;
+      case 8:
+        return l10n.insightsLevelName8;
+      case 9:
+        return l10n.insightsLevelName9;
+      case 10:
+        return l10n.insightsLevelName10;
+      case 11:
+        return l10n.insightsLevelName11;
+      case 12:
+        return l10n.insightsLevelName12;
+      case 13:
+        return l10n.insightsLevelName13;
+      case 14:
+        return l10n.insightsLevelName14;
+      default:
+        return l10n.insightsLevelName15;
+    }
+  }
 
   static int getXPRequiredForLevel(int level) {
     final clamped = level.clamp(1, maxLevel);
@@ -107,6 +144,7 @@ class LevelProgress {
   final double progressPercentage;
   final bool isMaxLevel;
   final int xpToNext;
+
   /// XP needed to finish the current level (next threshold − this level's start).
   final int xpSpan;
   final String name;

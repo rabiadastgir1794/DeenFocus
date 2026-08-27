@@ -84,7 +84,8 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
         context: context,
         builder: (ctx) => _ProgressionCelebrationDialog(
           title: l10n.insightsLevelUpTitle,
-          subtitle: '${l10n.insightsLevelNumber(levelUp)}\n${level.name}',
+          subtitle:
+              '${l10n.insightsLevelNumber(levelUp)}\n${LevelService.localizedName(l10n, level.currentLevel)}',
           icon: Icons.emoji_events_rounded,
           colorScheme: colorScheme,
         ),
@@ -111,136 +112,136 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
 
     final insights = Consumer<HomeTabViewModel>(
       builder: (context, vm, _) {
-          if (!_showingCelebration &&
-              (vm.pendingUnlockAchievements.isNotEmpty ||
-                  vm.pendingLevelUp != null)) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              unawaited(_playPendingCelebrations());
-            });
-          }
-          final done = _weekly
-              ? vm.weeklyCompletionDone
-              : vm.monthlyCompletionDone;
-          final possible = _weekly
-              ? vm.weeklyCompletionPossible
-              : vm.monthlyCompletionPossible;
-          final rate = possible == 0
-              ? 0
-              : ((done / possible) * 100).round().clamp(0, 100);
+        if (!_showingCelebration &&
+            (vm.pendingUnlockAchievements.isNotEmpty ||
+                vm.pendingLevelUp != null)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            unawaited(_playPendingCelebrations());
+          });
+        }
+        final done = _weekly
+            ? vm.weeklyCompletionDone
+            : vm.monthlyCompletionDone;
+        final possible = _weekly
+            ? vm.weeklyCompletionPossible
+            : vm.monthlyCompletionPossible;
+        final rate = possible == 0
+            ? 0
+            : ((done / possible) * 100).round().clamp(0, 100);
 
-          return Scaffold(
-            backgroundColor: cream,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  AppCenteredNavHeader(
-                    title: l10n.insightsTitle,
-                    backLabel: l10n.insightsBack,
-                    onBack: () => Navigator.of(context).pop(),
-                    trailing: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) =>
-                                ChangeNotifierProvider<HomeTabViewModel>.value(
-                                  value: vm,
-                                  child: const HomeCalendarScreen(),
-                                ),
-                          ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.calendar_month_rounded,
-                        color: colorScheme.primary,
-                      ),
+        return Scaffold(
+          backgroundColor: cream,
+          body: SafeArea(
+            child: Column(
+              children: [
+                AppCenteredNavHeader(
+                  title: l10n.insightsTitle,
+                  backLabel: l10n.insightsBack,
+                  onBack: () => Navigator.of(context).pop(),
+                  trailing: IconButton(
+                    tooltip: l10n.quickActionsCalendar,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) =>
+                              ChangeNotifierProvider<HomeTabViewModel>.value(
+                                value: vm,
+                                child: const HomeCalendarScreen(),
+                              ),
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      Icons.calendar_month_rounded,
+                      color: colorScheme.primary,
                     ),
                   ),
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-                      children: [
-                        _StreakSummaryCard(
-                          prayerStreak: vm.prayerStreak,
-                          bestStreak: vm.bestPrayerStreak,
-                          dayStreak: vm.streakDays,
-                          cycleDays: vm.cycleProtectedDaysAvailable,
-                          prayerDeltaToday: vm.insightsPrayerStreakDeltaToday,
-                          dayStreakGrewToday: vm.insightsDayStreakGrewToday,
-                          l10n: l10n,
-                          colorScheme: colorScheme,
-                          isDark: isDark,
-                        ),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
+                    children: [
+                      _StreakSummaryCard(
+                        prayerStreak: vm.prayerStreak,
+                        bestStreak: vm.bestPrayerStreak,
+                        dayStreak: vm.streakDays,
+                        cycleDays: vm.cycleProtectedDaysAvailable,
+                        prayerDeltaToday: vm.insightsPrayerStreakDeltaToday,
+                        dayStreakGrewToday: vm.insightsDayStreakGrewToday,
+                        l10n: l10n,
+                        colorScheme: colorScheme,
+                        isDark: isDark,
+                      ),
+                      const SizedBox(height: 16),
+                      _ChartCard(
+                        weekly: _weekly,
+                        onPeriodChanged: (v) => setState(() => _weekly = v),
+                        vm: vm,
+                        l10n: l10n,
+                        colorScheme: colorScheme,
+                        isDark: isDark,
+                        done: done,
+                        possible: possible,
+                        completionRate: rate,
+                        prayerRate: vm.prayerRatePercent,
+                      ),
+                      const SizedBox(height: 16),
+                      _FocusAndPrayersRow(
+                        vm: vm,
+                        l10n: l10n,
+                        colorScheme: colorScheme,
+                        isDark: isDark,
+                      ),
+                      if (_showDigitalBalance) ...[
                         const SizedBox(height: 16),
-                        _ChartCard(
-                          weekly: _weekly,
-                          onPeriodChanged: (v) => setState(() => _weekly = v),
-                          vm: vm,
-                          l10n: l10n,
-                          colorScheme: colorScheme,
-                          isDark: isDark,
-                          done: done,
-                          possible: possible,
-                          completionRate: rate,
-                          prayerRate: vm.prayerRatePercent,
-                        ),
-                        const SizedBox(height: 16),
-                        _FocusAndPrayersRow(
-                          vm: vm,
-                          l10n: l10n,
-                          colorScheme: colorScheme,
-                          isDark: isDark,
-                        ),
-                        if (_showDigitalBalance) ...[
-                          const SizedBox(height: 16),
-                          DigitalBalanceInsightsCard(
-                            onOpen: () {
-                              final balance = _digitalBalance;
-                              if (balance == null) return;
-                              unawaited(balance.refresh());
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) =>
-                                      ChangeNotifierProvider<
-                                        DigitalBalanceViewModel
-                                      >.value(
-                                        value: balance,
-                                        child:
-                                            const HomeDigitalBalanceScreen(),
-                                      ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-                        _ProgressionCard(
-                          level: vm.levelProgress,
-                          unlockedCount: vm.unlockedAchievementCount,
-                          totalCount: AchievementsService.totalCount,
-                          l10n: l10n,
-                          colorScheme: colorScheme,
-                          isDark: isDark,
-                          onOpenAchievements: () {
+                        DigitalBalanceInsightsCard(
+                          onOpen: () {
+                            final balance = _digitalBalance;
+                            if (balance == null) return;
+                            unawaited(balance.refresh());
                             Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                 builder: (_) =>
                                     ChangeNotifierProvider<
-                                      HomeTabViewModel
+                                      DigitalBalanceViewModel
                                     >.value(
-                                      value: vm,
-                                      child: const HomeAchievementsScreen(),
+                                      value: balance,
+                                      child: const HomeDigitalBalanceScreen(),
                                     ),
                               ),
                             );
                           },
                         ),
                       ],
-                    ),
+                      const SizedBox(height: 16),
+                      _ProgressionCard(
+                        level: vm.levelProgress,
+                        unlockedCount: vm.unlockedAchievementCount,
+                        totalCount: AchievementsService.totalCount,
+                        l10n: l10n,
+                        colorScheme: colorScheme,
+                        isDark: isDark,
+                        onOpenAchievements: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) =>
+                                  ChangeNotifierProvider<
+                                    HomeTabViewModel
+                                  >.value(
+                                    value: vm,
+                                    child: const HomeAchievementsScreen(),
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
+          ),
+        );
       },
     );
 
@@ -506,7 +507,7 @@ class _ChartCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '$done / $possible',
+                l10n.insightsRatio(done, possible),
                 style: Theme.of(
                   context,
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
@@ -519,7 +520,7 @@ class _ChartCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '$completionRate%',
+                  l10n.insightsPercent(completionRate),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: const Color(0xFFE91E8C),
                     fontWeight: FontWeight.w800,
@@ -624,7 +625,7 @@ class _PrayerRatePanel extends StatelessWidget {
           Text(
             l10n.insightsPrayerRate,
             textAlign: TextAlign.center,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(
               context,
@@ -649,7 +650,7 @@ class _PrayerRatePanel extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '$rate%',
+                  l10n.insightsPercent(rate),
                   style: Theme.of(
                     context,
                   ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
@@ -660,6 +661,9 @@ class _PrayerRatePanel extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             l10n.insightsOverall,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
@@ -675,7 +679,7 @@ class _PrayerRatePanel extends StatelessWidget {
             child: Text(
               l10n.insightsRateStart,
               textAlign: TextAlign.center,
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: colorScheme.primary,
@@ -709,7 +713,7 @@ class _WeeklyBars extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (var i = 0; i < dates.length; i++)
           Expanded(
@@ -719,7 +723,10 @@ class _WeeklyBars extends StatelessWidget {
                 value: counts.length > i ? counts[i].toDouble() : 0,
                 maxY: maxY,
                 label: DateFormat.E(l10n.localeName).format(dates[i]),
-                valueLabel: '${counts.length > i ? counts[i] : 0}/5',
+                valueLabel: l10n.insightsCompactRatio(
+                  counts.length > i ? counts[i] : 0,
+                  5,
+                ),
                 color: _weeklyBarColor(
                   count: counts.length > i ? counts[i] : 0,
                   isCycle: isCycle(dates[i]),
@@ -781,17 +788,20 @@ class _MonthlyBars extends StatelessWidget {
             ),
           ),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            for (final week in weeks)
+            for (var i = 0; i < weeks.length; i++)
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: _Bar(
-                    value: week.completed.toDouble(),
+                    value: weeks[i].completed.toDouble(),
                     maxY: scale,
-                    label: week.label,
-                    valueLabel: '${week.completed}/${week.possible}',
+                    label: l10n.insightsWeekNumber(i + 1),
+                    valueLabel: l10n.insightsCompactRatio(
+                      weeks[i].completed,
+                      weeks[i].possible,
+                    ),
                     color: colorScheme.primary,
                     colorScheme: colorScheme,
                   ),
@@ -826,11 +836,21 @@ class _Bar extends StatelessWidget {
     final fraction = maxY <= 0 ? 0.0 : (value / maxY).clamp(0.05, 1.0);
     return Column(
       children: [
-        Text(
-          valueLabel,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            fontSize: 9,
+        SizedBox(
+          height: 14,
+          width: double.infinity,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              valueLabel,
+              maxLines: 1,
+              softWrap: false,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: 9,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 4),
@@ -857,11 +877,21 @@ class _Bar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
+        SizedBox(
+          height: 16,
+          width: double.infinity,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ],
@@ -959,7 +989,7 @@ class _FocusPanel extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 18),
                     child: Text(
-                      '$score / 100',
+                      l10n.insightsFocusScoreValue(score),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: colorScheme.primary,
@@ -984,11 +1014,13 @@ class _FocusPanel extends StatelessWidget {
             label: l10n.focusScorePrayer,
             percent: prayer,
             colorScheme: colorScheme,
+            l10n: l10n,
           ),
           _MiniBar(
             label: l10n.focusScoreQuran,
             percent: quran,
             colorScheme: colorScheme,
+            l10n: l10n,
           ),
         ],
       ),
@@ -1001,11 +1033,13 @@ class _MiniBar extends StatelessWidget {
     required this.label,
     required this.percent,
     required this.colorScheme,
+    required this.l10n,
   });
 
   final String label;
   final int percent;
   final ColorScheme colorScheme;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -1023,7 +1057,7 @@ class _MiniBar extends StatelessWidget {
                 ),
               ),
               Text(
-                '$percent%',
+                l10n.insightsPercent(percent),
                 style: Theme.of(
                   context,
                 ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -1186,7 +1220,7 @@ class _TodayPrayersPanel extends StatelessWidget {
                 : Column(
                     children: [
                       Text(
-                        '$done / 5',
+                        l10n.insightsRatio(done, 5),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
                               color: colorScheme.primary,
@@ -1331,7 +1365,12 @@ class _ProgressionCard extends StatelessWidget {
                                   ?.copyWith(fontWeight: FontWeight.w800),
                             ),
                             Text(
-                              level.name,
+                              LevelService.localizedName(
+                                l10n,
+                                level.currentLevel,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
                                     color: colorScheme.primary,
