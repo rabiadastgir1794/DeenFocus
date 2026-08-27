@@ -203,11 +203,66 @@ class _FocusTabScreenState extends State<FocusTabScreen>
                 onToggleMode: _handleToggleMode,
                 onPickNightTime: _handlePickNightTime,
               ),
+              const SizedBox(height: 8),
+              _DiagnosticAppLockButton(
+                onTap: () => unawaited(_openDiagnosticAppLockSheet()),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _openDiagnosticAppLockSheet() async {
+    if (!mounted) return;
+    final vm = context.read<FocusController>();
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return ChangeNotifierProvider<FocusController>.value(
+          value: vm,
+          child: _DiagnosticAppLockSheet(
+            ensureAndroidBlocking: () async {
+              final accepted =
+                  await _ensureFocusAccessibilityDisclosureAccepted();
+              if (!accepted) return false;
+              return _ensureAndroidBlockingAccess(FocusModeType.child);
+            },
+            ensureIosScreenTime: () => _ensureDiagnosticScreenTimeAccess(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<bool> _ensureDiagnosticScreenTimeAccess() async {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return true;
+    if (!mounted) return false;
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isAuthorizingScreenTime = true);
+    try {
+      final result =
+          await PermissionService.requestScreenTimeAccessDetailed();
+      if (!mounted) return false;
+      if (result.granted) return true;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(
+            result.userFacingMessage() ??
+                l10n.focusScreenTimeRequiredBlockIphone,
+          ),
+        ),
+      );
+      return false;
+    } finally {
+      if (mounted) setState(() => _isAuthorizingScreenTime = false);
+    }
   }
 
   _TopBannerData? _computeTopBannerData(
@@ -1631,4 +1686,265 @@ class _SelectedAppChipData {
 
   @override
   int get hashCode => Object.hash(packageName, label);
+}
+
+class _DiagnosticAppLockButton extends StatelessWidget {
+  const _DiagnosticAppLockButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(Icons.bug_report_outlined, color: colorScheme.primary),
+        label: Text(l10n.focusDiagnosticButton),
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          foregroundColor: colorScheme.primary,
+          side: BorderSide(color: colorScheme.outlineVariant),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+enum _DiagnosticSheetPhase { idle, running, success, cancelled, blocked, failed }
+
+class _DiagnosticAppLockSheet extends StatefulWidget {
+  const _DiagnosticAppLockSheet({
+    required this.ensureAndroidBlocking,
+    required this.ensureIosScreenTime,
+  });
+
+  final Future<bool> Function() ensureAndroidBlocking;
+  final Future<bool> Function() ensureIosScreenTime;
+
+  @override
+  State<_DiagnosticAppLockSheet> createState() =>
+      _DiagnosticAppLockSheetState();
+}
+
+class _DiagnosticAppLockSheetState extends State<_DiagnosticAppLockSheet> {
+  _DiagnosticSheetPhase _phase = _DiagnosticSheetPhase.idle;
+  String? _blockTitle;
+  String? _blockBody;
+  bool _busy = false;
+  Timer? _ticker;
+  int _secondsLeft = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final vm = context.read<FocusController>();
+    if (vm.isDiagnosticLockActive) {
+      _phase = _DiagnosticSheetPhase.running;
+      _syncCountdown(vm);
+      _startTicker();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  void _startTicker() {
+    _ticker?.cancel();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      final vm = context.read<FocusController>();
+      if (!vm.isDiagnosticLockActive) {
+        _ticker?.cancel();
+        setState(() {
+          _phase = _DiagnosticSheetPhase.success;
+          _secondsLeft = 0;
+        });
+        return;
+      }
+      _syncCountdown(vm);
+    });
+  }
+
+  void _syncCountdown(FocusController vm) {
+    final until = vm.diagnosticLockUntil;
+    final left = until == null
+        ? 0
+        : until.difference(DateTime.now()).inSeconds.clamp(0, 3600);
+    setState(() => _secondsLeft = left);
+  }
+
+  Future<void> _start() async {
+    if (_busy) return;
+    final l10n = AppLocalizations.of(context)!;
+    final vm = context.read<FocusController>();
+
+    if (!vm.hasSelectedApps) {
+      setState(() {
+        _phase = _DiagnosticSheetPhase.blocked;
+        _blockTitle = l10n.focusDiagnosticMissingAppsTitle;
+        _blockBody = l10n.focusDiagnosticMissingAppsBody;
+      });
+      return;
+    }
+
+    setState(() => _busy = true);
+    try {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        final ok = await widget.ensureAndroidBlocking();
+        if (!mounted) return;
+        if (!ok) {
+          setState(() {
+            _phase = _DiagnosticSheetPhase.blocked;
+            _blockTitle = l10n.focusDiagnosticMissingPermissionTitle;
+            _blockBody = l10n.focusDiagnosticMissingPermissionBodyAndroid;
+          });
+          return;
+        }
+      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final ok = await widget.ensureIosScreenTime();
+        if (!mounted) return;
+        if (!ok) {
+          setState(() {
+            _phase = _DiagnosticSheetPhase.blocked;
+            _blockTitle = l10n.focusDiagnosticMissingPermissionTitle;
+            _blockBody = l10n.focusDiagnosticMissingPermissionBodyIos;
+          });
+          return;
+        }
+      }
+
+      final result = await vm.startDiagnosticAppLockTest();
+      if (!mounted) return;
+      switch (result) {
+        case FocusDiagnosticStartResult.started:
+        case FocusDiagnosticStartResult.alreadyActive:
+          setState(() => _phase = _DiagnosticSheetPhase.running);
+          _syncCountdown(vm);
+          _startTicker();
+        case FocusDiagnosticStartResult.missingApps:
+          setState(() {
+            _phase = _DiagnosticSheetPhase.blocked;
+            _blockTitle = l10n.focusDiagnosticMissingAppsTitle;
+            _blockBody = l10n.focusDiagnosticMissingAppsBody;
+          });
+        case FocusDiagnosticStartResult.failed:
+          setState(() {
+            _phase = _DiagnosticSheetPhase.failed;
+            _blockTitle = l10n.focusDiagnosticFailedTitle;
+            _blockBody = l10n.focusDiagnosticFailedBody;
+          });
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _endEarly() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await context.read<FocusController>().endDiagnosticAppLockTest();
+      if (!mounted) return;
+      _ticker?.cancel();
+      setState(() => _phase = _DiagnosticSheetPhase.cancelled);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final vm = context.watch<FocusController>();
+    final sampleApp = vm.diagnosticSampleAppLabel;
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+
+    final String title;
+    final String body;
+    switch (_phase) {
+      case _DiagnosticSheetPhase.idle:
+        title = l10n.focusDiagnosticTitle;
+        body = sampleApp == null
+            ? l10n.focusDiagnosticIntro
+            : l10n.focusDiagnosticIntroWithApp(sampleApp);
+      case _DiagnosticSheetPhase.running:
+        title = l10n.focusDiagnosticTitle;
+        body = l10n.focusDiagnosticRunning(_secondsLeft);
+      case _DiagnosticSheetPhase.success:
+        title = l10n.focusDiagnosticSuccessTitle;
+        body = l10n.focusDiagnosticSuccessBody;
+      case _DiagnosticSheetPhase.cancelled:
+        title = l10n.focusDiagnosticCancelledTitle;
+        body = l10n.focusDiagnosticCancelledBody;
+      case _DiagnosticSheetPhase.blocked:
+        title = _blockTitle ?? l10n.focusDiagnosticMissingPermissionTitle;
+        body = _blockBody ?? l10n.focusDiagnosticFailedBody;
+      case _DiagnosticSheetPhase.failed:
+        title = _blockTitle ?? l10n.focusDiagnosticFailedTitle;
+        body = _blockBody ?? l10n.focusDiagnosticFailedBody;
+    }
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(20, 8, 20, 16 + bottomInset),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (_phase == _DiagnosticSheetPhase.idle)
+              FilledButton(
+                onPressed: _busy ? null : () => unawaited(_start()),
+                child: _busy
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(l10n.focusDiagnosticStart),
+              ),
+            if (_phase == _DiagnosticSheetPhase.running)
+              OutlinedButton(
+                onPressed: _busy ? null : () => unawaited(_endEarly()),
+                child: Text(l10n.focusDiagnosticEndEarly),
+              ),
+            if (_phase == _DiagnosticSheetPhase.success ||
+                _phase == _DiagnosticSheetPhase.cancelled ||
+                _phase == _DiagnosticSheetPhase.blocked ||
+                _phase == _DiagnosticSheetPhase.failed)
+              FilledButton(
+                onPressed: () => Navigator.of(context).maybePop(),
+                child: Text(l10n.focusDiagnosticClose),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }

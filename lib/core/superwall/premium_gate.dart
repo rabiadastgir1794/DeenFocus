@@ -7,6 +7,7 @@ import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../logger/trace_helpers.dart';
 import 'app_superwall.dart';
+import 'premium_access_policy.dart';
 
 /// Centralised entry point for premium-gated features.
 ///
@@ -14,19 +15,40 @@ import 'app_superwall.dart';
 /// entitlement is cached or confirmed. Non-subscribers get the paywall as
 /// soon as Superwall is ready — the verifying overlay is only shown briefly
 /// while configure / status resolve, never held until the paywall appears.
+///
+/// Access is granted only when Superwall reports an active subscription, or
+/// after a confirmed purchase/restore. Presenting or dismissing the paywall
+/// without a purchase never unlocks a feature.
 class PremiumGate {
   PremiumGate._();
 
   static const Duration _verificationTimeout = Duration(seconds: 30);
   static const Duration _statusCheckTimeout = Duration(seconds: 2);
 
-  // Set to true after a purchase/restore completes so subsequent gated-feature
-  // taps don't re-verify against a lagging Superwall/StoreKit status.
-  // Reset to false if Superwall later confirms the subscription is not active.
-  static bool _accessGrantedThisSession = false;
-
   static void _log(String message) {
     debugPrint('[PremiumGate] $message');
+  }
+
+  /// Returns true only when Superwall currently reports an active entitlement.
+  static Future<bool> _confirmActiveEntitlement({
+    required String debugContext,
+  }) async {
+    await AppSuperwall.syncSubscriptionState();
+    if (AppSuperwall.subscriptionActiveNotifier.value) {
+      return true;
+    }
+    try {
+      final status = await Superwall.shared.getSubscriptionStatus().timeout(
+        const Duration(seconds: 5),
+      );
+      if (status.isActive) {
+        await AppSuperwall.syncSubscriptionState();
+        return AppSuperwall.subscriptionActiveNotifier.value || status.isActive;
+      }
+    } catch (e) {
+      _log('entitlement re-check failed context=$debugContext error=$e');
+    }
+    return false;
   }
 
   /// Verifies the user's subscription, then either invokes [onAccess]
@@ -35,8 +57,8 @@ class PremiumGate {
   /// Pass [placementOverride] for entry points that should always request a
   /// specific Superwall placement instead of the intro/premium decision.
   ///
-  /// Already-subscribed users (cached session or in-memory grant) call
-  /// [onAccess] immediately with **no** verifying loader.
+  /// Already-subscribed users (cached Superwall entitlement) call [onAccess]
+  /// immediately with **no** verifying loader.
   static Future<void> presentIfNeeded({
     required BuildContext context,
     required VoidCallback onAccess,
@@ -56,13 +78,6 @@ class PremiumGate {
       );
       return;
     }
-    if (_accessGrantedThisSession) {
-      _log(
-        'access already granted this session, skipping gate context=$debugContext',
-      );
-      onAccess();
-      return;
-    }
 
     // Hydrate disk cache in case cold-start loadCachedState() has not finished.
     await AppSuperwall.loadCachedState();
@@ -71,7 +86,6 @@ class PremiumGate {
         'disk-cached subscription active, opening immediately '
         'context=$debugContext',
       );
-      _accessGrantedThisSession = true;
       onAccess();
       unawaited(AppSuperwall.syncSubscriptionState());
       return;
@@ -152,7 +166,6 @@ class PremiumGate {
       }
 
       if (status != null && status.isActive) {
-        _accessGrantedThisSession = true;
         removeOverlay();
         onAccess();
         unawaited(AppSuperwall.syncSubscriptionState());
@@ -177,11 +190,35 @@ class PremiumGate {
       // AND feature() after a purchase, which would call onAccess twice and
       // open the downstream screen (e.g. iOS FamilyActivityPicker) twice.
       var accessGranted = false;
-      void grantAccess() {
+      void grantAccess(String source) {
         if (accessGranted) return;
         accessGranted = true;
-        _accessGrantedThisSession = true;
+        _log(
+          'GRANT_ACCESS source=$source context=$debugContext '
+          'subscriptionActive=${AppSuperwall.subscriptionActiveNotifier.value}',
+        );
         onAccess();
+      }
+
+      void applyDecision(
+        PremiumAccessDecision decision, {
+        required PremiumGateEvent event,
+        PaywallDismissKind? dismissKind,
+        required String source,
+      }) {
+        _log(
+          PremiumAccessPolicy.decisionLogLine(
+            decision: decision,
+            event: event,
+            subscriptionActive:
+                AppSuperwall.subscriptionActiveNotifier.value,
+            dismissKind: dismissKind,
+            debugContext: debugContext,
+          ),
+        );
+        if (decision.grantAccess) {
+          grantAccess(source);
+        }
       }
 
       unawaited(
@@ -193,9 +230,15 @@ class PremiumGate {
               if (!presented.isCompleted) presented.complete();
             })
             ..onDismiss((info, result) async {
-              _log('paywall dismissed context=$debugContext result=$result');
-              if (result is PurchasedPaywallResult ||
-                  result is RestoredPaywallResult) {
+              final dismissKind =
+                  PremiumAccessPolicy.dismissKindFromResultType(result.runtimeType);
+              _log(
+                'paywall dismissed context=$debugContext '
+                'result=$result dismissKind=${dismissKind.name} '
+                'subscriptionActive=${AppSuperwall.subscriptionActiveNotifier.value}',
+              );
+              if (dismissKind == PaywallDismissKind.purchased ||
+                  dismissKind == PaywallDismissKind.restored) {
                 // Brief verifying overlay while StoreKit / Play Billing catch up.
                 OverlayEntry? syncEntry;
                 var syncEntryRemoved = false;
@@ -217,13 +260,26 @@ class PremiumGate {
                 const maxAttempts = 5;
                 for (var attempt = 1; attempt <= maxAttempts; attempt++) {
                   await AppSuperwall.syncSubscriptionState();
-                  if (AppSuperwall.subscriptionActiveNotifier.value) {
+                  final mid = PremiumAccessPolicy.decide(
+                    event: PremiumGateEvent.paywallDismissed,
+                    subscriptionActive:
+                        AppSuperwall.subscriptionActiveNotifier.value,
+                    dismissKind: dismissKind,
+                    trustConfirmedPurchaseAfterSyncLag: false,
+                    debugContext: debugContext,
+                  );
+                  if (mid.grantAccess) {
                     _log(
                       'subscription confirmed active (attempt $attempt) '
                       'context=$debugContext',
                     );
                     removeSyncEntry();
-                    grantAccess();
+                    applyDecision(
+                      mid,
+                      event: PremiumGateEvent.paywallDismissed,
+                      dismissKind: dismissKind,
+                      source: 'dismiss_purchase_sync_$attempt',
+                    );
                     return;
                   }
                   _log(
@@ -234,24 +290,48 @@ class PremiumGate {
                     await Future<void>.delayed(const Duration(seconds: 2));
                   }
                 }
+                // Confirmed purchase/restore from Superwall, but StoreKit /
+                // Play Billing status is still lagging — unlock from the
+                // purchase event itself, not from paywall dismiss alone.
+                final trusted = PremiumAccessPolicy.decide(
+                  event: PremiumGateEvent.paywallDismissed,
+                  subscriptionActive:
+                      AppSuperwall.subscriptionActiveNotifier.value,
+                  dismissKind: dismissKind,
+                  trustConfirmedPurchaseAfterSyncLag: true,
+                  debugContext: debugContext,
+                );
                 _log(
                   'status still lagging after $maxAttempts attempts — '
-                  'trusting PurchasedPaywallResult context=$debugContext',
+                  'evaluating trusted purchase context=$debugContext',
                 );
+                if (trusted.grantAccess) {
+                  await AppSuperwall.markActiveFromConfirmedPurchase();
+                }
                 removeSyncEntry();
-                grantAccess();
+                applyDecision(
+                  trusted,
+                  event: PremiumGateEvent.paywallDismissed,
+                  dismissKind: dismissKind,
+                  source: 'dismiss_purchase_trusted',
+                );
                 return;
               }
-              try {
-                final updated = await Superwall.shared
-                    .getSubscriptionStatus()
-                    .timeout(const Duration(seconds: 10));
-                if (updated.isActive) {
-                  grantAccess();
-                }
-              } catch (e) {
-                _log('post-dismiss status check failed: $e');
-              }
+              // Close / cancel / failed payment: unlock only if entitlement
+              // is actually active (e.g. purchased in another session).
+              final active =
+                  await _confirmActiveEntitlement(debugContext: debugContext);
+              applyDecision(
+                PremiumAccessPolicy.decide(
+                  event: PremiumGateEvent.paywallDismissed,
+                  subscriptionActive: active,
+                  dismissKind: dismissKind,
+                  debugContext: debugContext,
+                ),
+                event: PremiumGateEvent.paywallDismissed,
+                dismissKind: dismissKind,
+                source: 'dismiss_non_purchase',
+              );
             })
             ..onError((error) {
               _log('paywall error context=$debugContext error=$error');
@@ -266,16 +346,25 @@ class PremiumGate {
               );
             }),
           feature: () async {
-            // Superwall invokes feature() when the gated code should run:
-            // already subscribed, purchase/restore completed, holdout, or
-            // paywall skipped (e.g. no matching campaign / status timeout).
-            // Re-checking isActive here caused a silent no-op on Android when
-            // the SDK skipped the paywall without an active entitlement —
-            // Settings download / other gates looked like a dead button.
-            _log('feature() invoked — granting access context=$debugContext');
+            // Superwall may invoke feature() for subscribed users, purchases,
+            // holdouts, or paywall-skipped campaigns. Never treat the callback
+            // itself as entitlement — verify an active subscription first.
+            _log(
+              'feature() invoked — verifying entitlement context=$debugContext '
+              'subscriptionActive=${AppSuperwall.subscriptionActiveNotifier.value}',
+            );
             if (!presented.isCompleted) presented.complete();
-            grantAccess();
-            unawaited(AppSuperwall.syncSubscriptionState());
+            final active =
+                await _confirmActiveEntitlement(debugContext: debugContext);
+            applyDecision(
+              PremiumAccessPolicy.decide(
+                event: PremiumGateEvent.featureCallback,
+                subscriptionActive: active,
+                debugContext: debugContext,
+              ),
+              event: PremiumGateEvent.featureCallback,
+              source: 'feature_callback',
+            );
           },
         ),
       );

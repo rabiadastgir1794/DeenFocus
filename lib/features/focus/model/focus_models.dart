@@ -376,6 +376,14 @@ class FocusLockState {
   final bool isTemporarilyUnlocked;
 }
 
+/// Result of [FocusController.startDiagnosticAppLockTest].
+enum FocusDiagnosticStartResult {
+  started,
+  missingApps,
+  alreadyActive,
+  failed,
+}
+
 class SalahWindow {
   const SalahWindow({
     required this.prayer,

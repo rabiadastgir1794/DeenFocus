@@ -10,6 +10,7 @@ import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 import '../config/app_config.dart';
 import '../services/billing_service.dart';
 import '../services/storage_service.dart';
+import 'premium_access_policy.dart';
 
 abstract final class SuperwallPlacements {
   static const String premiumFeature = 'premium_feature';
@@ -273,6 +274,35 @@ class AppSuperwall {
     }
   }
 
+  /// Marks entitlement active after Superwall confirms a purchase/restore when
+  /// StoreKit / Play Billing status is still catching up. Never call this from
+  /// paywall dismiss, skip, or feature() alone.
+  static Future<void> markActiveFromConfirmedPurchase() async {
+    purchasedSubscriptionActiveNotifier.value = true;
+    subscriptionActiveNotifier.value = true;
+    await StorageService.setCachedSubscriptionActive(true);
+    await StorageService.setHasEverSubscribed(true);
+    if (_enabled) {
+      try {
+        await Superwall.shared.setUserAttributes({
+          'isSubscribed': true,
+          'hasEverSubscribed': true,
+          'hasUsedIntroOffer': true,
+        });
+      } catch (e) {
+        _log('Failed setting attributes after confirmed purchase: $e');
+      }
+    }
+    _log('Marked subscription active from confirmed purchase/restore');
+    // Delay sync so a lagging StoreKit/Play status cannot immediately
+    // overwrite the confirmed purchase before billing catches up.
+    unawaited(
+      Future<void>.delayed(const Duration(seconds: 5)).then(
+        (_) => syncSubscriptionState(),
+      ),
+    );
+  }
+
   static Future<String> paywallPlacementForCurrentUser({
     String debugContext = '',
   }) async {
@@ -339,6 +369,37 @@ class AppSuperwall {
 
       _log('Showing paywall placement=$placement context=$debugContext');
 
+      var accessGranted = false;
+      void grantAccess(String source) {
+        if (accessGranted) return;
+        accessGranted = true;
+        _log(
+          'GRANT_ACCESS source=$source context=$debugContext '
+          'subscriptionActive=${subscriptionActiveNotifier.value}',
+        );
+        onAccess();
+      }
+
+      void applyDecision(
+        PremiumAccessDecision decision, {
+        required PremiumGateEvent event,
+        PaywallDismissKind? dismissKind,
+        required String source,
+      }) {
+        _log(
+          PremiumAccessPolicy.decisionLogLine(
+            decision: decision,
+            event: event,
+            subscriptionActive: subscriptionActiveNotifier.value,
+            dismissKind: dismissKind,
+            debugContext: debugContext,
+          ),
+        );
+        if (decision.grantAccess) {
+          grantAccess(source);
+        }
+      }
+
       await Superwall.shared.registerPlacement(
         placement,
         handler: PaywallPresentationHandler()
@@ -346,15 +407,32 @@ class AppSuperwall {
             _log('Paywall presented');
           })
           ..onDismiss((info, result) async {
-            _log('Paywall dismissed result=$result');
-            if (result is PurchasedPaywallResult ||
-                result is RestoredPaywallResult) {
+            final dismissKind =
+                PremiumAccessPolicy.dismissKindFromResultType(result.runtimeType);
+            _log(
+              'Paywall dismissed result=$result dismissKind=${dismissKind.name} '
+              'subscriptionActive=${subscriptionActiveNotifier.value}',
+            );
+            if (dismissKind == PaywallDismissKind.purchased ||
+                dismissKind == PaywallDismissKind.restored) {
               const maxAttempts = 5;
               for (var attempt = 1; attempt <= maxAttempts; attempt++) {
                 await syncSubscriptionState();
-                if (subscriptionActiveNotifier.value) {
+                final mid = PremiumAccessPolicy.decide(
+                  event: PremiumGateEvent.paywallDismissed,
+                  subscriptionActive: subscriptionActiveNotifier.value,
+                  dismissKind: dismissKind,
+                  trustConfirmedPurchaseAfterSyncLag: false,
+                  debugContext: debugContext,
+                );
+                if (mid.grantAccess) {
                   _log('Subscription confirmed active (attempt $attempt)');
-                  onAccess();
+                  applyDecision(
+                    mid,
+                    event: PremiumGateEvent.paywallDismissed,
+                    dismissKind: dismissKind,
+                    source: 'dismiss_purchase_sync_$attempt',
+                  );
                   return;
                 }
                 _log('Subscription not yet active ($attempt/$maxAttempts)');
@@ -362,21 +440,40 @@ class AppSuperwall {
                   await Future<void>.delayed(const Duration(seconds: 2));
                 }
               }
+              final trusted = PremiumAccessPolicy.decide(
+                event: PremiumGateEvent.paywallDismissed,
+                subscriptionActive: subscriptionActiveNotifier.value,
+                dismissKind: dismissKind,
+                trustConfirmedPurchaseAfterSyncLag: true,
+                debugContext: debugContext,
+              );
               _log(
                 'Status still lagging after $maxAttempts attempts — '
-                'trusting PurchasedPaywallResult',
+                'evaluating trusted purchase',
               );
-              onAccess();
+              if (trusted.grantAccess) {
+                await markActiveFromConfirmedPurchase();
+              }
+              applyDecision(
+                trusted,
+                event: PremiumGateEvent.paywallDismissed,
+                dismissKind: dismissKind,
+                source: 'dismiss_purchase_trusted',
+              );
               return;
             }
-            try {
-              final updatedStatus = await Superwall.shared
-                  .getSubscriptionStatus()
-                  .timeout(const Duration(seconds: 10));
-              if (updatedStatus.isActive) onAccess();
-            } catch (e) {
-              _log('post-dismiss status check failed: $e');
-            }
+            await syncSubscriptionState();
+            applyDecision(
+              PremiumAccessPolicy.decide(
+                event: PremiumGateEvent.paywallDismissed,
+                subscriptionActive: subscriptionActiveNotifier.value,
+                dismissKind: dismissKind,
+                debugContext: debugContext,
+              ),
+              event: PremiumGateEvent.paywallDismissed,
+              dismissKind: dismissKind,
+              source: 'dismiss_non_purchase',
+            );
           })
           ..onError((error) {
             _log('Paywall error: $error');
@@ -388,11 +485,35 @@ class AppSuperwall {
             );
           }),
         feature: () async {
-          // Superwall's feature callback means "run the gated feature" —
-          // do not re-gate on isActive (breaks holdouts / paywall-skip paths).
-          _log('feature() invoked — granting access context=$debugContext');
-          onAccess();
-          unawaited(syncSubscriptionState());
+          // Never treat feature() as entitlement by itself.
+          _log(
+            'feature() invoked — verifying entitlement context=$debugContext '
+            'subscriptionActive=${subscriptionActiveNotifier.value}',
+          );
+          await syncSubscriptionState();
+          var active = subscriptionActiveNotifier.value;
+          if (!active) {
+            try {
+              final updated = await Superwall.shared
+                  .getSubscriptionStatus()
+                  .timeout(const Duration(seconds: 5));
+              if (updated.isActive) {
+                await syncSubscriptionState();
+                active = subscriptionActiveNotifier.value || updated.isActive;
+              }
+            } catch (e) {
+              _log('feature() entitlement re-check failed: $e');
+            }
+          }
+          applyDecision(
+            PremiumAccessPolicy.decide(
+              event: PremiumGateEvent.featureCallback,
+              subscriptionActive: active,
+              debugContext: debugContext,
+            ),
+            event: PremiumGateEvent.featureCallback,
+            source: 'feature_callback',
+          );
         },
       );
     } catch (e, st) {

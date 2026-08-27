@@ -4811,6 +4811,120 @@ abstract class AppLocalizations {
   /// **'No apps selected. Please select apps to block first.'**
   String get focusNoAppsSelectedSnack;
 
+  /// No description provided for @focusDiagnosticButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostic'**
+  String get focusDiagnosticButton;
+
+  /// No description provided for @focusDiagnosticTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test App Lock'**
+  String get focusDiagnosticTitle;
+
+  /// No description provided for @focusDiagnosticIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.'**
+  String get focusDiagnosticIntro;
+
+  /// No description provided for @focusDiagnosticIntroWithApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.'**
+  String focusDiagnosticIntroWithApp(String appName);
+
+  /// No description provided for @focusDiagnosticStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Test'**
+  String get focusDiagnosticStart;
+
+  /// No description provided for @focusDiagnosticEndEarly.
+  ///
+  /// In en, this message translates to:
+  /// **'End Test'**
+  String get focusDiagnosticEndEarly;
+
+  /// No description provided for @focusDiagnosticRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.'**
+  String focusDiagnosticRunning(int seconds);
+
+  /// No description provided for @focusDiagnosticSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test completed'**
+  String get focusDiagnosticSuccessTitle;
+
+  /// No description provided for @focusDiagnosticSuccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.'**
+  String get focusDiagnosticSuccessBody;
+
+  /// No description provided for @focusDiagnosticCancelledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test ended'**
+  String get focusDiagnosticCancelledTitle;
+
+  /// No description provided for @focusDiagnosticCancelledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The diagnostic lock was turned off. Your Focus modes and schedules were not changed.'**
+  String get focusDiagnosticCancelledBody;
+
+  /// No description provided for @focusDiagnosticMissingAppsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select apps first'**
+  String get focusDiagnosticMissingAppsTitle;
+
+  /// No description provided for @focusDiagnosticMissingAppsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one app to block before running the App Lock test.'**
+  String get focusDiagnosticMissingAppsBody;
+
+  /// No description provided for @focusDiagnosticMissingPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission needed'**
+  String get focusDiagnosticMissingPermissionTitle;
+
+  /// No description provided for @focusDiagnosticMissingPermissionBodyIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time access is required to block apps. Allow Screen Time, then try again.'**
+  String get focusDiagnosticMissingPermissionBodyIos;
+
+  /// No description provided for @focusDiagnosticMissingPermissionBodyAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.'**
+  String get focusDiagnosticMissingPermissionBodyAndroid;
+
+  /// No description provided for @focusDiagnosticFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start test'**
+  String get focusDiagnosticFailedTitle;
+
+  /// No description provided for @focusDiagnosticFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock did not activate. Check permissions and selected apps, then try again.'**
+  String get focusDiagnosticFailedBody;
+
+  /// No description provided for @focusDiagnosticClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get focusDiagnosticClose;
+
   /// No description provided for @focusScreenTimeRequiredBlockIphone.
   ///
   /// In en, this message translates to:

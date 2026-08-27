@@ -42,6 +42,10 @@ abstract class StorageService {
   static const String _keyPrayerSettingsJson = 'prayer_settings_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
   static const String _keyFocusScheduleJson = 'focus_schedule_json';
+  /// Ephemeral App Lock diagnostic end time (ms since epoch). Separate from
+  /// [focus_settings_json] so a test never mutates mode/schedule preferences.
+  static const String _keyFocusDiagnosticLockUntilMs =
+      'focus_diagnostic_lock_until_ms';
   static const String _keyDarkModeEnabled = 'dark_mode_enabled';
   static const String _keyAppNotificationsEnabled = 'app_notifications_enabled';
   static const String _keyNearbyMosquesCacheLat = 'nearby_mosques_cache_lat';
@@ -530,6 +534,20 @@ abstract class StorageService {
   static Future<void> setFocusScheduleJson(String value) async {
     final prefs = await _prefs;
     await prefs.setString(_keyFocusScheduleJson, value);
+  }
+
+  static Future<int?> get focusDiagnosticLockUntilMs async {
+    final prefs = await _prefs;
+    return prefs.getInt(_keyFocusDiagnosticLockUntilMs);
+  }
+
+  static Future<void> setFocusDiagnosticLockUntilMs(int? value) async {
+    final prefs = await _prefs;
+    if (value == null) {
+      await prefs.remove(_keyFocusDiagnosticLockUntilMs);
+    } else {
+      await prefs.setInt(_keyFocusDiagnosticLockUntilMs, value);
+    }
   }
 
   static Future<bool?> get darkModeEnabled async {

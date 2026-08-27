@@ -1,6 +1,28 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-27 — Splash brand animation 1100ms.
+> Last updated: 2026-08-27 — Paywall dismiss no longer unlocks premium.
+
+## Status: Paywall entitlement gating (2026-08-27)
+Premium unlock requires confirmed Superwall entitlement (or Purchased/Restored).
+`feature()` and non-purchase dismiss no longer call `onAccess`. Removed
+`_accessGrantedThisSession`. Decision logic lives in
+`premium_access_policy.dart` (unit-tested: close/decline stay locked, purchase
+and active subscriber unlock — for every `kPremiumGateDebugContexts` entry).
+Device logs: filter `[PremiumGate] GATE_DECISION` / `GRANT_ACCESS`.
+
+## Status: Focus Diagnostic App Lock (2026-08-27)
+Focus tab has a Diagnostic button → Test App Lock sheet. Starts a 60s
+ephemeral lock via the same `FocusEnforcementService.sync` path as real
+modes (does not change selected apps or mode schedules). End time is stored
+separately (`focus_diagnostic_lock_until_ms`) so kill/restart cannot leave
+shields stuck past expiry; native unlock transition is scheduled too.
+
+## Status: AlarmKit presentation (2026-08-27)
+AlarmKit Alert only customizes `title` + optional secondary button. Fire time,
+layout/typography, and the app name ("Deen Focus" from CFBundleDisplayName)
+are system-controlled. Schedule path now uses short `prayerLabel` as the
+alert title (e.g. Maghrib) instead of "Maghrib — Time to Pray". On iOS 26.1+
+Stop is system-provided; "I've Prayed" remains the custom secondary action.
 
 ## Status: Splash → Home startup (2026-08-27)
 Splash waits only for the brand animation + onboarding flag (no fixed delay).

@@ -254,9 +254,17 @@ enum PrayerAlarmBridge {
     let fireDate = Date(timeIntervalSince1970: fireAtMs / 1000.0)
     guard fireDate > Date() else { return }
 
-    // Titles/labels are pre-localized by Flutter at schedule time.
-    let title = (alarm["title"] as? String)
-      ?? NSLocalizedString("prayer_alarm_subtitle", comment: "Time to Pray")
+    // AlarmKit Alert only accepts a single title string. Typography, layout,
+    // fire time, and the app name ("Deen Focus") are system-controlled —
+    // keep our title Clock-like: short prayer label only (not
+    // "Maghrib — Time to Pray").
+    let prayerLabel = (alarm["prayerLabel"] as? String)?
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+    let title: String = {
+      if let prayerLabel, !prayerLabel.isEmpty { return prayerLabel }
+      if let raw = alarm["title"] as? String, !raw.isEmpty { return raw }
+      return NSLocalizedString("prayer_alarm_subtitle", comment: "Time to Pray")
+    }()
     let ivePrayedLabel = (alarm["ivePrayedLabel"] as? String)
       ?? NSLocalizedString("prayer_alarm_ive_prayed", comment: "I've Prayed")
     let soundName = alarm["sound"] as? String
@@ -268,26 +276,36 @@ enum PrayerAlarmBridge {
     let uuid = UUID()
     map(id: alarmId, uuid: uuid)
 
-    // iOS 26.0 SDK still requires stopButton. Newer SDKs may deprecate it in favor of
-    // a system-provided stop control — keep stopButton for compatibility with 26.0.
-    let dismissLabel = (alarm["dismissLabel"] as? String)
-      ?? NSLocalizedString("prayer_alarm_dismiss", comment: "Dismiss")
-    let stopButton = AlarmButton(
-      text: LocalizedStringResource(stringLiteral: dismissLabel),
-      textColor: .white,
-      systemImageName: "xmark"
-    )
+    // Primary custom action. Stop/Dismiss sizing & style stay system-owned.
     let secondaryButton = AlarmButton(
       text: LocalizedStringResource(stringLiteral: ivePrayedLabel),
       textColor: .white,
       systemImageName: "checkmark"
     )
-    let alert = AlarmPresentation.Alert(
-      title: LocalizedStringResource(stringLiteral: title),
-      stopButton: stopButton,
-      secondaryButton: secondaryButton,
-      secondaryButtonBehavior: .custom
-    )
+    let alertTitle = LocalizedStringResource(stringLiteral: title)
+    let alert: AlarmPresentation.Alert
+    if #available(iOS 26.1, *) {
+      // System provides Stop; avoid a custom stopButton chrome.
+      alert = AlarmPresentation.Alert(
+        title: alertTitle,
+        secondaryButton: secondaryButton,
+        secondaryButtonBehavior: .custom
+      )
+    } else {
+      let dismissLabel = (alarm["dismissLabel"] as? String)
+        ?? NSLocalizedString("prayer_alarm_dismiss", comment: "Dismiss")
+      let stopButton = AlarmButton(
+        text: LocalizedStringResource(stringLiteral: dismissLabel),
+        textColor: .white,
+        systemImageName: "xmark"
+      )
+      alert = AlarmPresentation.Alert(
+        title: alertTitle,
+        stopButton: stopButton,
+        secondaryButton: secondaryButton,
+        secondaryButtonBehavior: .custom
+      )
+    }
     let presentation = AlarmPresentation(alert: alert)
     let tint = Color(red: 78.0 / 255.0, green: 154.0 / 255.0, blue: 124.0 / 255.0)
     let attributes = AlarmAttributes<PrayerAlarmMetadata>(

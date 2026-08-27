@@ -567,6 +567,40 @@
   "tasbihDelete": "Eliminar",
   "focusAndroidBlockingNotReady": "El bloqueo de apps en Android aún se está preparando. Mantén la accesibilidad activada y espera un momento a que se conecte.",
   "focusNoAppsSelectedSnack": "No hay apps seleccionadas. Elige primero las apps a bloquear.",
+
+  "focusDiagnosticButton": "Diagnostic",
+  "focusDiagnosticTitle": "Test App Lock",
+  "focusDiagnosticIntro": "Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.",
+  "focusDiagnosticIntroWithApp": "Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.",
+  "@focusDiagnosticIntroWithApp": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "focusDiagnosticStart": "Start Test",
+  "focusDiagnosticEndEarly": "End Test",
+  "focusDiagnosticRunning": "App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.",
+  "@focusDiagnosticRunning": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "focusDiagnosticSuccessTitle": "Test completed",
+  "focusDiagnosticSuccessBody": "App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.",
+  "focusDiagnosticCancelledTitle": "Test ended",
+  "focusDiagnosticCancelledBody": "The diagnostic lock was turned off. Your Focus modes and schedules were not changed.",
+  "focusDiagnosticMissingAppsTitle": "Select apps first",
+  "focusDiagnosticMissingAppsBody": "Choose at least one app to block before running the App Lock test.",
+  "focusDiagnosticMissingPermissionTitle": "Permission needed",
+  "focusDiagnosticMissingPermissionBodyIos": "Screen Time access is required to block apps. Allow Screen Time, then try again.",
+  "focusDiagnosticMissingPermissionBodyAndroid": "Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.",
+  "focusDiagnosticFailedTitle": "Could not start test",
+  "focusDiagnosticFailedBody": "App Lock did not activate. Check permissions and selected apps, then try again.",
+  "focusDiagnosticClose": "Done",
   "focusScreenTimeRequiredBlockIphone": "Se necesita acceso a Tiempo en pantalla para bloquear apps en el iPhone.",
   "focusModeUpdateFailedSnack": "Algo salió mal al actualizar el modo Enfoque. Inténtalo de nuevo.",
   "focusLoadingInstalledApps": "Cargando apps instaladas...",

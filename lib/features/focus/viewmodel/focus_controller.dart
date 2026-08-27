@@ -64,6 +64,9 @@ class FocusController extends ChangeNotifier {
   double? _cachedSalahWindowsLng;
   String? _cachedSalahWindowsOverrides;
 
+  /// Ephemeral App Lock diagnostic window (not part of Focus mode settings).
+  DateTime? _diagnosticLockUntil;
+
   FocusSettings get settings => _settings;
   FocusLockState get lockState => _lockState;
   List<FocusInstalledApp> get installedApps => _installedApps;
@@ -89,6 +92,24 @@ class FocusController extends ChangeNotifier {
   bool get needsLocationForSalah =>
       _settings.salahModeEnabled &&
       (_cachedLatitude == null || _cachedLongitude == null);
+
+  /// True while a short diagnostic App Lock test is forcing shields on.
+  bool get isDiagnosticLockActive {
+    final until = _diagnosticLockUntil;
+    return until != null && until.isAfter(DateTime.now());
+  }
+
+  DateTime? get diagnosticLockUntil =>
+      isDiagnosticLockActive ? _diagnosticLockUntil : null;
+
+  /// Label for one selected app (Android package map) or a generic iOS hint.
+  String? get diagnosticSampleAppLabel {
+    if (_settings.selectedApps.isNotEmpty) {
+      return _settings.selectedApps.values.first;
+    }
+    if (_settings.iosSelectionTotalCount > 0) return null;
+    return null;
+  }
 
   Future<void> initialize() async {
     if (_initializeFuture != null) {
@@ -532,6 +553,10 @@ class FocusController extends ChangeNotifier {
   /// the next schedule. Child mode is fully disabled here (parents expect that).
   Future<void> unlockFromHome() async {
     if (!_lockState.isLocked) return;
+    if (isDiagnosticLockActive || _diagnosticLockUntil != null) {
+      await endDiagnosticAppLockTest();
+      return;
+    }
     final mode = _lockState.activeMode;
     if (mode == FocusModeType.child) {
       await disableActiveMode();
@@ -819,9 +844,10 @@ class FocusController extends ChangeNotifier {
     _settings = json == null
         ? FocusSettings.defaults()
         : FocusSettings.fromJson(json);
+    await _hydrateDiagnosticLockFromStorage();
     await FocusEnforcementService.appendDebugLog(
       'focus.load',
-      'loaded mode=${_settings.enabledMode?.name} selected=${_settings.selectedApps.keys.join(",")} night=${_settings.nightDisciplineEnabled} salah=${_settings.salahModeEnabled}',
+      'loaded mode=${_settings.enabledMode?.name} selected=${_settings.selectedApps.keys.join(",")} night=${_settings.nightDisciplineEnabled} salah=${_settings.salahModeEnabled} diagnosticUntil=${_diagnosticLockUntil?.toIso8601String()}',
     );
     await _reloadLocation();
     if (Platform.isAndroid && _settings.selectedApps.isNotEmpty) {
@@ -829,6 +855,73 @@ class FocusController extends ChangeNotifier {
       unawaited(_warmInstalledAppsCacheDeferred());
     }
     notifyListeners();
+    await _recomputeAndPersist();
+  }
+
+  Future<void> _hydrateDiagnosticLockFromStorage() async {
+    final ms = await StorageService.focusDiagnosticLockUntilMs;
+    if (ms == null) {
+      _diagnosticLockUntil = null;
+      return;
+    }
+    final until = DateTime.fromMillisecondsSinceEpoch(ms);
+    if (!until.isAfter(DateTime.now())) {
+      _diagnosticLockUntil = null;
+      await StorageService.setFocusDiagnosticLockUntilMs(null);
+      return;
+    }
+    _diagnosticLockUntil = until;
+  }
+
+  Future<void> _clearExpiredDiagnosticLock() async {
+    final until = _diagnosticLockUntil;
+    if (until == null) return;
+    if (until.isAfter(DateTime.now())) return;
+    _diagnosticLockUntil = null;
+    await StorageService.setFocusDiagnosticLockUntilMs(null);
+  }
+
+  /// Starts a short App Lock diagnostic that uses the same native shield path
+  /// as real Focus modes. Does not change selected apps or mode schedules.
+  Future<FocusDiagnosticStartResult> startDiagnosticAppLockTest({
+    Duration duration = const Duration(seconds: 60),
+  }) async {
+    await initialize();
+    if (!_settings.hasSelectedApps) {
+      return FocusDiagnosticStartResult.missingApps;
+    }
+    if (isDiagnosticLockActive) {
+      return FocusDiagnosticStartResult.alreadyActive;
+    }
+
+    final until = DateTime.now().add(duration);
+    _diagnosticLockUntil = until;
+    await StorageService.setFocusDiagnosticLockUntilMs(
+      until.millisecondsSinceEpoch,
+    );
+    await FocusEnforcementService.appendDebugLog(
+      'focus.diagnostic.start',
+      'until=${until.toIso8601String()} selected=${_settings.selectedApps.keys.join(",")}',
+    );
+    await _recomputeAndPersist();
+    if (!_lockState.isLocked) {
+      await endDiagnosticAppLockTest();
+      return FocusDiagnosticStartResult.failed;
+    }
+    return FocusDiagnosticStartResult.started;
+  }
+
+  Future<void> endDiagnosticAppLockTest() async {
+    if (_diagnosticLockUntil == null &&
+        await StorageService.focusDiagnosticLockUntilMs == null) {
+      return;
+    }
+    _diagnosticLockUntil = null;
+    await StorageService.setFocusDiagnosticLockUntilMs(null);
+    await FocusEnforcementService.appendDebugLog(
+      'focus.diagnostic.end',
+      'cleared',
+    );
     await _recomputeAndPersist();
   }
 
@@ -880,6 +973,7 @@ class FocusController extends ChangeNotifier {
     final prevLocked = _lockState.isLocked;
     final prevMode = _lockState.activeMode;
     final prevReason = _lockState.reason;
+    await _clearExpiredDiagnosticLock();
     unawaited(
       FocusEnforcementService.appendDebugLog(
         'focus.recompute',
@@ -1113,6 +1207,9 @@ class FocusController extends ChangeNotifier {
   ) async {
     if (!settings.hasSelectedApps) return const FocusLockState.unlocked();
 
+    final diagnostic = _diagnosticLockStateIfActive(now);
+    if (diagnostic != null) return diagnostic;
+
     if (settings.childModeEnabled) {
       final isTempUnlocked = _isTemporaryUnlockActive(settings);
       return FocusLockState(
@@ -1134,6 +1231,19 @@ class FocusController extends ChangeNotifier {
     return _lockStateAtInstant(settings, now, windows);
   }
 
+  FocusLockState? _diagnosticLockStateIfActive(DateTime at) {
+    final until = _diagnosticLockUntil;
+    if (until == null || !at.isBefore(until)) return null;
+    return FocusLockState(
+      isLocked: true,
+      // Native shields need a mode label; this does not enable Child mode.
+      activeMode: FocusModeType.child,
+      reason: 'Diagnostic App Lock test is active.',
+      nextChangeAt: until,
+      isTemporarilyUnlocked: false,
+    );
+  }
+
   /// Same rules as live lock state, for an arbitrary instant (used for iOS schedules).
   FocusLockState _lockStateAtInstant(
     FocusSettings settings,
@@ -1141,6 +1251,9 @@ class FocusController extends ChangeNotifier {
     List<SalahWindow> windows,
   ) {
     if (!settings.hasSelectedApps) return const FocusLockState.unlocked();
+
+    final diagnostic = _diagnosticLockStateIfActive(at);
+    if (diagnostic != null) return diagnostic;
 
     if (settings.childModeEnabled) {
       final isTempUnlocked = _isTemporaryUnlockActiveAt(settings, at);
@@ -1767,6 +1880,21 @@ class FocusController extends ChangeNotifier {
           activeMode: FocusModeType.child,
           reason: 'Child mode duration ended.',
           nextChangeAt: null,
+        ),
+      );
+    }
+
+    final diagnosticUntil = _diagnosticLockUntil;
+    if (diagnosticUntil != null && diagnosticUntil.isAfter(now)) {
+      // End-of-test edge: compute what lock should be once diagnostic expires.
+      final after = _lockStateAtInstant(settings, diagnosticUntil, windows);
+      events.add(
+        _scheduledTransition(
+          at: diagnosticUntil,
+          isLocked: after.isLocked,
+          activeMode: after.activeMode ?? FocusModeType.child,
+          reason: after.reason ?? 'Diagnostic App Lock test ended.',
+          nextChangeAt: after.nextChangeAt,
         ),
       );
     }

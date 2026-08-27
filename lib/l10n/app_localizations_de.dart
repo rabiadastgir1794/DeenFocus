@@ -2624,6 +2624,74 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine Apps ausgewählt. Bitte wähle zuerst Apps zum Blockieren.';
 
   @override
+  String get focusDiagnosticButton => 'Diagnostic';
+
+  @override
+  String get focusDiagnosticTitle => 'Test App Lock';
+
+  @override
+  String get focusDiagnosticIntro =>
+      'Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.';
+
+  @override
+  String focusDiagnosticIntroWithApp(String appName) {
+    return 'Temporarily lock your selected apps for 60 seconds. Try opening $appName to confirm the DeenFocus lock screen appears.';
+  }
+
+  @override
+  String get focusDiagnosticStart => 'Start Test';
+
+  @override
+  String get focusDiagnosticEndEarly => 'End Test';
+
+  @override
+  String focusDiagnosticRunning(int seconds) {
+    return 'App Lock is on for ${seconds}s. Switch to a selected app to test the lock screen.';
+  }
+
+  @override
+  String get focusDiagnosticSuccessTitle => 'Test completed';
+
+  @override
+  String get focusDiagnosticSuccessBody =>
+      'App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.';
+
+  @override
+  String get focusDiagnosticCancelledTitle => 'Test ended';
+
+  @override
+  String get focusDiagnosticCancelledBody =>
+      'The diagnostic lock was turned off. Your Focus modes and schedules were not changed.';
+
+  @override
+  String get focusDiagnosticMissingAppsTitle => 'Select apps first';
+
+  @override
+  String get focusDiagnosticMissingAppsBody =>
+      'Choose at least one app to block before running the App Lock test.';
+
+  @override
+  String get focusDiagnosticMissingPermissionTitle => 'Permission needed';
+
+  @override
+  String get focusDiagnosticMissingPermissionBodyIos =>
+      'Screen Time access is required to block apps. Allow Screen Time, then try again.';
+
+  @override
+  String get focusDiagnosticMissingPermissionBodyAndroid =>
+      'Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.';
+
+  @override
+  String get focusDiagnosticFailedTitle => 'Could not start test';
+
+  @override
+  String get focusDiagnosticFailedBody =>
+      'App Lock did not activate. Check permissions and selected apps, then try again.';
+
+  @override
+  String get focusDiagnosticClose => 'Done';
+
+  @override
   String get focusScreenTimeRequiredBlockIphone =>
       'Für das Blockieren von Apps auf dem iPhone ist Bildschirmzeit-Zugriff erforderlich.';
 
