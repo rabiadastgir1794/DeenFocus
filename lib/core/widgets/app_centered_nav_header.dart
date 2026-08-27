@@ -47,7 +47,7 @@ class AppCenteredNavHeader extends StatelessWidget {
             ),
             // Keep long titles from colliding with the back control (sheets).
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 88),
+              padding: const EdgeInsets.symmetric(horizontal: 120),
               child: Text(
                 title,
                 textAlign: TextAlign.center,

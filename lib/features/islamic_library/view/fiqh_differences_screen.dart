@@ -67,6 +67,7 @@ class _FiqhDifferencesScreenState extends State<FiqhDifferencesScreen>
         sectionId: sectionId,
         index: index,
         shareText: topic.shareText(l10n),
+        sharePayload: topic.sharePayload(),
         initiallyBookmarked: bookmarks.contains(index),
         body: FiqhTopicCard(topic: topic, backgroundColor: cardColor),
       ),

@@ -69,6 +69,7 @@ class _DuasReaderScreenState extends State<DuasReaderScreen>
         sectionId: sectionId,
         index: index,
         shareText: dua.shareText(l10n),
+        sharePayload: dua.sharePayload(l10n),
         initiallyBookmarked: bookmarks.contains(index),
         body: DuaCard(dua: dua, backgroundColor: cardColor),
       ),

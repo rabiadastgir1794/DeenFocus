@@ -1016,6 +1016,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeLivePrayerUpdatesCta => '启用实时更新';
 
   @override
+  String get homeWidgetsPromoTitle => '小组件';
+
+  @override
+  String get homeWidgetsPromoBody => '在主屏幕查看今日经文和礼拜时间。';
+
+  @override
+  String get homeWidgetsPromoCta => '添加小组件';
+
+  @override
   String get focusModeShortSalah => '礼拜';
 
   @override
@@ -1269,6 +1278,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get supportUsWhatsAppPrefill => '安塞拉姆·阿莱库姆，我需要 DeenFocus 的帮助。';
+
+  @override
+  String get supportUsWhatsAppQuestionHowTo => '如何使用 DeenFocus？';
+
+  @override
+  String get supportUsWhatsAppQuestionFeature => '我需要功能方面的帮助';
+
+  @override
+  String get supportUsWhatsAppQuestionSubscription => '我的订阅有问题';
 
   @override
   String get supportUsEmailSubject => 'DeenFocus 支持请求';
@@ -3736,6 +3754,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get libraryShareCopiedHint => '已复制 — 粘贴即可分享';
+
+  @override
+  String get libraryShareReference => '出处';
+
+  @override
+  String get contentShareIntro =>
+      'Hey there! 👋 Check out DeenFocus — an app for Quran, Salah, and learning. I’m sharing this content from the app with you. 🤍';
+
+  @override
+  String get contentShareExplore => '了解 DeenFocus：';
+
+  @override
+  String get contentShareFailed => '暂时无法分享，请重试。';
 
   @override
   String get libraryBookmarkSaved => '书签已保存';

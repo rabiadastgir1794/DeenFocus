@@ -54,18 +54,22 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    PrayerLiveActivityService.instance.preferenceListenable.addListener(
-      _onLiveActivityPreferenceChanged,
-    );
+    if (PrayerLiveActivityService.visibleOnThisPlatform) {
+      PrayerLiveActivityService.instance.preferenceListenable.addListener(
+        _onLiveActivityPreferenceChanged,
+      );
+      unawaited(_loadLiveActivityState());
+    }
     _packageInfoFuture = PackageInfo.fromPlatform();
-    unawaited(_loadLiveActivityState());
   }
 
   @override
   void dispose() {
-    PrayerLiveActivityService.instance.preferenceListenable.removeListener(
-      _onLiveActivityPreferenceChanged,
-    );
+    if (PrayerLiveActivityService.visibleOnThisPlatform) {
+      PrayerLiveActivityService.instance.preferenceListenable.removeListener(
+        _onLiveActivityPreferenceChanged,
+      );
+    }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -77,7 +81,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed &&
+        PrayerLiveActivityService.visibleOnThisPlatform) {
       unawaited(_loadLiveActivityState());
     }
   }
@@ -602,25 +607,27 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            SettingsGroup(
-              children: [
-                SettingsSubtitleSwitchRow(
-                  icon: Icons.notifications_active_outlined,
-                  label: l10n.liveActivityEnableLabel,
-                  subtitle: _liveActivitySupported
-                      ? (_liveActivityEnabled
-                            ? l10n.liveActivityStatusActive
-                            : l10n.liveActivityStatusOff)
-                      : l10n.liveActivityUnsupported,
-                  value: _liveActivityEnabled,
-                  enabled: _liveActivitySupported && !_liveActivityBusy,
-                  onChanged: _liveActivitySupported && !_liveActivityBusy
-                      ? (value) => unawaited(_setLiveActivityEnabled(value))
-                      : null,
-                ),
-              ],
-            ),
+            if (PrayerLiveActivityService.visibleOnThisPlatform) ...[
+              const SizedBox(height: 16),
+              SettingsGroup(
+                children: [
+                  SettingsSubtitleSwitchRow(
+                    icon: Icons.notifications_active_outlined,
+                    label: l10n.liveActivityEnableLabel,
+                    subtitle: _liveActivitySupported
+                        ? (_liveActivityEnabled
+                              ? l10n.liveActivityStatusActive
+                              : l10n.liveActivityStatusOff)
+                        : l10n.liveActivityUnsupported,
+                    value: _liveActivityEnabled,
+                    enabled: _liveActivitySupported && !_liveActivityBusy,
+                    onChanged: _liveActivitySupported && !_liveActivityBusy
+                        ? (value) => unawaited(_setLiveActivityEnabled(value))
+                        : null,
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 16),
             SettingsGroup(
               children: [

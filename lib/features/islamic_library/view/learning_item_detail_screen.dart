@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/library_progress_service.dart';
 import '../widgets/learning_card_actions.dart';
@@ -14,6 +15,7 @@ class LearningItemDetailScreen extends StatefulWidget {
     required this.sectionId,
     required this.index,
     required this.shareText,
+    required this.sharePayload,
     required this.body,
     this.initiallyBookmarked = false,
   });
@@ -23,6 +25,7 @@ class LearningItemDetailScreen extends StatefulWidget {
   final String sectionId;
   final int index;
   final String shareText;
+  final ContentSharePayload sharePayload;
   final Widget body;
   final bool initiallyBookmarked;
 
@@ -59,7 +62,7 @@ class _LearningItemDetailScreenState extends State<LearningItemDetailScreen> {
       isBookmarked: _bookmarked,
       onBookmark: _toggleBookmark,
       onCopy: () => copyLearningText(context, widget.shareText),
-      onShare: () => shareLearningText(context, widget.shareText),
+      sharePayload: widget.sharePayload,
       child: widget.body,
     );
   }

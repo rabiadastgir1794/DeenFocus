@@ -7,18 +7,25 @@ import '../../model/tajweed_practice_args.dart';
 import '../../viewmodel/tajweed_practice_view_model.dart';
 
 /// Post-scoring results screen — layout only; scoring data unchanged.
-class TajweedResultView extends StatelessWidget {
+class TajweedResultView extends StatefulWidget {
   const TajweedResultView({
     super.key,
     required this.viewModel,
     required this.args,
+    required this.shareBoundaryKey,
     required this.onDone,
   });
 
   final TajweedPracticeViewModel viewModel;
   final TajweedPracticeArgs args;
+  final GlobalKey shareBoundaryKey;
   final VoidCallback onDone;
 
+  @override
+  State<TajweedResultView> createState() => _TajweedResultViewState();
+}
+
+class _TajweedResultViewState extends State<TajweedResultView> {
   Color _statusColor(ColorScheme colorScheme, TajweedTokenStatus status) {
     switch (status) {
       case TajweedTokenStatus.ok:
@@ -66,6 +73,9 @@ class TajweedResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = widget.viewModel;
+    final args = widget.args;
+    final onDone = widget.onDone;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
@@ -83,8 +93,20 @@ class TajweedResultView extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
         children: [
+          RepaintBoundary(
+            key: widget.shareBoundaryKey,
+            child: Material(
+              color: colorScheme.surface,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 16.h),
+                child: Column(
+              children: [
           Center(
             child: SizedBox(
+              width: 158.r,
+              height: 158.r,
+              child: Center(
+                child: SizedBox(
               width: 148.r,
               height: 148.r,
               child: Stack(
@@ -126,6 +148,8 @@ class TajweedResultView extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            ),
             ),
           ),
           SizedBox(height: 16.h),
@@ -236,6 +260,11 @@ class TajweedResultView extends StatelessWidget {
                   count: summary.extra,
                 ),
               ],
+            ),
+          ),
+              ],
+            ),
+            ),
             ),
           ),
           SizedBox(height: 24.h),

@@ -1068,6 +1068,16 @@ class AppLocalizationsAz extends AppLocalizations {
   String get homeLivePrayerUpdatesCta => 'Canlı yeniləmələri aktiv et';
 
   @override
+  String get homeWidgetsPromoTitle => 'Vidcetlər';
+
+  @override
+  String get homeWidgetsPromoBody =>
+      'Əsas ekranda günlük ayə və namaz vaxtlarına baxın.';
+
+  @override
+  String get homeWidgetsPromoCta => 'Vidcet əlavə et';
+
+  @override
   String get focusModeShortSalah => 'Salah';
 
   @override
@@ -1336,6 +1346,18 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get supportUsWhatsAppPrefill =>
       'Əssəlamu aleykum, DeenFocus ilə bağlı köməyə ehtiyacım var.';
+
+  @override
+  String get supportUsWhatsAppQuestionHowTo =>
+      'DeenFocus-u necə istifadə edim?';
+
+  @override
+  String get supportUsWhatsAppQuestionFeature =>
+      'Bir funksiya ilə bağlı köməyə ehtiyacım var';
+
+  @override
+  String get supportUsWhatsAppQuestionSubscription =>
+      'Abunəliyimlə bağlı problemim var';
 
   @override
   String get supportUsEmailSubject => 'DeenFocus dəstək sorğusu';
@@ -3934,6 +3956,20 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get libraryShareCopiedHint => 'Kopyalandı — paylaşmaq üçün yapışdırın';
+
+  @override
+  String get libraryShareReference => 'İstinad';
+
+  @override
+  String get contentShareIntro =>
+      'Hey there! 👋 Check out DeenFocus — an app for Quran, Salah, and learning. I’m sharing this content from the app with you. 🤍';
+
+  @override
+  String get contentShareExplore => 'DeenFocus-u kəşf et:';
+
+  @override
+  String get contentShareFailed =>
+      'İndi paylaşmaq mümkün olmadı. Yenidən cəhd edin.';
 
   @override
   String get libraryBookmarkSaved => 'Əlfəcin yadda saxlanıldı';

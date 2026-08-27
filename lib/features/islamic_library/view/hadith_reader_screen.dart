@@ -69,6 +69,7 @@ class _HadithReaderScreenState extends State<HadithReaderScreen>
         sectionId: sectionId,
         index: index,
         shareText: hadith.shareText(l10n),
+        sharePayload: hadith.sharePayload(l10n),
         initiallyBookmarked: bookmarks.contains(index),
         body: HadithCard(hadith: hadith, backgroundColor: cardColor),
       ),

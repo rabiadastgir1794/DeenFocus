@@ -335,6 +335,12 @@ class PrayerAlarmService {
         l10n.localeName,
         capabilities.implementation,
       ];
+      for (final prayer in TrackablePrayer.values) {
+        signatureParts.add(
+          '${prayer.name}:custom='
+          '${prayerSettings.forPrayer(prayer).customTimeMinutes}',
+        );
+      }
 
       // Calendar-day iteration (not Duration) so DST transitions cannot skip a day.
       final today = DateTime(now.year, now.month, now.day);

@@ -1,3 +1,4 @@
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 
 class PrayerGuide {
@@ -51,6 +52,13 @@ class GuideStep {
   }) =>
       '$guideTitle — ${l10n.libraryGuideStepLabel(index, totalSteps)}: '
       '$title\n\n$description';
+
+  ContentSharePayload sharePayload() {
+    return ContentSharePayload(
+      title: title,
+      paragraphs: [description],
+    );
+  }
 }
 
 class IslamicOccasion {
@@ -82,4 +90,11 @@ class IslamicOccasion {
       '$title\n\n${l10n.libraryOccasionImportance}:\n$importance\n\n'
       '${l10n.libraryOccasionVirtues}:\n$virtues\n\n'
       '${l10n.libraryOccasionRecommendedActs}:\n$recommendedActs';
+
+  ContentSharePayload sharePayload() {
+    return ContentSharePayload(
+      title: title,
+      paragraphs: [importance],
+    );
+  }
 }

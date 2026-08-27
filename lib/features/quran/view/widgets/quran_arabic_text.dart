@@ -13,12 +13,14 @@ class QuranArabicText extends StatelessWidget {
     required this.lineHeight,
     required this.color,
     this.fontFamilyFallback,
+    this.textAlign = TextAlign.right,
   });
 
   final String text;
   final QuranLayoutTheme layoutTheme;
   final String? fontFamily;
   final List<String>? fontFamilyFallback;
+  final TextAlign textAlign;
   final double fontSize;
   final double lineHeight;
   final Color color;
@@ -42,7 +44,7 @@ class QuranArabicText extends StatelessWidget {
     if (layoutTheme != QuranLayoutTheme.color) {
       return Text(
         text,
-        textAlign: TextAlign.right,
+        textAlign: textAlign,
         textDirection: TextDirection.rtl,
         style: _baseStyle,
       );
@@ -50,7 +52,7 @@ class QuranArabicText extends StatelessWidget {
 
     final words = text.split(RegExp(r'\s+'));
     return RichText(
-      textAlign: TextAlign.right,
+      textAlign: textAlign,
       textDirection: TextDirection.rtl,
       text: TextSpan(
         children: [

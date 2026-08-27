@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/services/user_profile_service.dart';
+import '../../../../core/share/shareable_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/light_theme.dart' show kAppFontFamily;
 import '../../../../l10n/app_localizations.dart';
@@ -51,7 +52,8 @@ class HomePrayerTimesSection extends StatelessWidget {
     final locationName = profile.locationName?.trim() ?? '';
     final hasLocation = locationName.isNotEmpty;
 
-    return Container(
+    return ShareableCard(
+      child: Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -123,6 +125,7 @@ class HomePrayerTimesSection extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 32),
             ],
           ),
           const SizedBox(height: 12),
@@ -182,6 +185,7 @@ class HomePrayerTimesSection extends StatelessWidget {
           ],
         ],
       ),
+    ),
     );
   }
 }
@@ -384,10 +388,10 @@ class HomePrayerTile extends StatelessWidget {
       boxShadow = null;
     }
 
-    // Edit affordance only for upcoming prayers (tap → settings). Once the
-    // prayer time has started/passed, the whole tile opens Mark Prayer;
-    // settings stay reachable from that sheet's gear.
-    final showSettingsAffordance = trackable != null && !isPassed;
+    // Always show Edit on trackable prayers. Tap uses [openPrayerAction]
+    // (upcoming → settings, started/passed → mark sheet). Sunrise has no
+    // trackable prayer, so it stays without an edit control.
+    final showEditAffordance = trackable != null;
     final editOnPrimary = isCurrent;
     final editBg = editOnPrimary
         ? colorScheme.onPrimary.withValues(alpha: 0.22)
@@ -465,7 +469,7 @@ class HomePrayerTile extends StatelessWidget {
                 ),
               ),
             ),
-            if (showSettingsAffordance)
+            if (showEditAffordance)
               Positioned(
                 top: 5,
                 left: 5,
@@ -474,7 +478,11 @@ class HomePrayerTile extends StatelessWidget {
                   shape: const CircleBorder(),
                   child: InkWell(
                     customBorder: const CircleBorder(),
-                    onTap: () => showPrayerSettingsSheet(context, trackable),
+                    onTap: () => openPrayerAction(
+                      context,
+                      trackable,
+                      prayerStart: slot.time,
+                    ),
                     child: Tooltip(
                       message: l10n.homeEditPrayerSettings,
                       child: SizedBox(

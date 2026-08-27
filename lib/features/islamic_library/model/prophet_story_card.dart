@@ -1,3 +1,4 @@
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ProphetStoryCard {
@@ -37,5 +38,22 @@ class ProphetStoryCard {
       buffer.writeln('\n${l10n.libraryReference(quranReference!)}');
     }
     return buffer.toString();
+  }
+
+  ContentSharePayload sharePayload(AppLocalizations l10n) {
+    return ContentSharePayload(
+      title: title,
+      paragraphs: [
+        body,
+        if (lesson != null && lesson!.isNotEmpty) lesson!,
+      ],
+      fields: [
+        if (quranReference != null && quranReference!.isNotEmpty)
+          ContentShareField(
+            label: l10n.libraryShareReference,
+            value: quranReference!,
+          ),
+      ],
+    );
   }
 }

@@ -2040,6 +2040,24 @@ abstract class AppLocalizations {
   /// **'Enable Live Updates'**
   String get homeLivePrayerUpdatesCta;
 
+  /// No description provided for @homeWidgetsPromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widgets'**
+  String get homeWidgetsPromoTitle;
+
+  /// No description provided for @homeWidgetsPromoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See your daily verse and prayer times on your Home Screen.'**
+  String get homeWidgetsPromoBody;
+
+  /// No description provided for @homeWidgetsPromoCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Widget'**
+  String get homeWidgetsPromoCta;
+
   /// No description provided for @focusModeShortSalah.
   ///
   /// In en, this message translates to:
@@ -2524,6 +2542,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Assalamu alaikum, I need help with DeenFocus.'**
   String get supportUsWhatsAppPrefill;
+
+  /// No description provided for @supportUsWhatsAppQuestionHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I use DeenFocus?'**
+  String get supportUsWhatsAppQuestionHowTo;
+
+  /// No description provided for @supportUsWhatsAppQuestionFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'I need help with a feature'**
+  String get supportUsWhatsAppQuestionFeature;
+
+  /// No description provided for @supportUsWhatsAppQuestionSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'I have a problem with my subscription'**
+  String get supportUsWhatsAppQuestionSubscription;
 
   /// No description provided for @supportUsEmailSubject.
   ///
@@ -7126,6 +7162,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied — paste to share'**
   String get libraryShareCopiedHint;
+
+  /// No description provided for @libraryShareReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get libraryShareReference;
+
+  /// No description provided for @contentShareIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Hey there! 👋 Check out DeenFocus — an app for Quran, Salah, and learning. I’m sharing this content from the app with you. 🤍'**
+  String get contentShareIntro;
+
+  /// No description provided for @contentShareExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore DeenFocus:'**
+  String get contentShareExplore;
+
+  /// No description provided for @contentShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t share right now. Please try again.'**
+  String get contentShareFailed;
 
   /// No description provided for @libraryBookmarkSaved.
   ///

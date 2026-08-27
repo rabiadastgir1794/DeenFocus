@@ -1,6 +1,81 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-25 — Android AI Tajweed Settings download audit fix.
+> Last updated: 2026-08-27 — Splash brand animation 1100ms.
+
+## Status: Splash → Home startup (2026-08-27)
+Splash waits only for the brand animation + onboarding flag (no fixed delay).
+Brand AnimationController duration: **1100ms** (was 1800ms). Intervals stay
+fractional so the sequence scales. Navigate on animation complete.
+
+## Status: Splash → Home startup (2026-08-27)
+Cold start stuck ~2.2s after first Flutter frame because Splash used
+`Future.delayed(2200)` before `context.go`. Navigation now waits for the
+existing brand animation + onboarding flag only. Services still start after
+Home/onboarding first frame (Focus custom-time listener unchanged).
+StartupProbe dumps again on destination first frame for A/B timing.
+
+## Status: Custom prayer time → schedules (2026-08-27)
+Saving an edited prayer time (or resetting it) rebuilds salah lock windows
+with Home's custom overrides. `FocusController` listens to
+`PrayerSettingsService.customTimeRevision` from construction so a save
+during initialize/_load cannot be missed; overlapping refreshes stay queued
+so the latest persisted time wins.
+
+## Status: Share control glyph (2026-08-27)
+Share buttons use `Icons.share_outlined`. Ayah cards use the same light-gray
+circle as play/bookmark. Insights My Progress has its own share overlay.
+Tasbih counter app bar shares the current session screen.
+
+## Status: Quran ayah + tajweed result share (2026-08-27)
+Each surah/juz ayah card has a share icon (branded PNG + store links).
+Tajweed result screen shares score, word review, and stats (not Try again/Done).
+
+## Status: Live Activity UI iOS-only (2026-08-27)
+Live Activity cards, settings, onboarding section, and App Demo walkthrough
+are gated by `PrayerLiveActivityService.visibleOnThisPlatform` (`Platform.isIOS`).
+Android Home promo shows Widgets only (no empty carousel). iOS Live Activity
+implementation is unchanged. Android widgets remain.
+
+## Status: Home and insights branded share (2026-08-27)
+Share buttons (same branded PNG + intro + both store links) on Today's
+Prayers, Today's Focus Score, each My Insights card, and completed
+achievements. Overlay lives outside `RepaintBoundary` via
+`lib/core/share/shareable_card.dart`.
+
+## Status: Share store links (2026-08-27)
+Share messages list both App Store and Play URLs via
+`ContentShareService.storeLinksBlock`. No `deenfocus.app/download`. The
+Cloudflare download Worker was removed (no domain yet). Card screenshot +
+logo footer unchanged.
+
+## Status: Learning branded share (2026-08-27)
+Share on Hadith/Dua/Learning detail captures the content card
+(`RepaintBoundary`), stamps a DeenFocus icon + tagline footer, and opens
+the native share sheet via `share_plus` with intro copy + one store URL
+(iOS vs Android). Copy still uses clipboard. Service:
+`lib/core/share/content_share_service.dart`.
+
+## Status: WhatsApp support chat (2026-08-27)
+Support WhatsApp now builds click-to-chat URLs from
+`SupportConfig.whatsAppNumber` / `SUPPORT_WHATSAPP_NUMBER` (digits only).
+Tries `whatsapp://send` then `wa.me` then `api.whatsapp.com`; if none launch,
+opens the existing support email with the same body. Suggested-question chips
+prefill the WhatsApp text. Set `SUPPORT_WHATSAPP_NUMBER` in `dart_defines.json`
+(gitignored) — empty still falls back to email.
+
+## Status: Home Live/Widgets promo carousel (2026-08-27)
+Home mint promo is a 2-slide horizontal `PageView`: Live Prayer Updates
+(existing copy/CTA/mockup) then Widgets (same chrome; Add Widget opens the
+existing widgets App Demo). Pagination dots under the card. Live slide still
+hides when enabled or dismissed; Widgets has its own dismiss key.
+File: `lib/features/home/view/widgets/home_live_activity_promo_card.dart`.
+
+## Status: Prayer Edit button routing (2026-08-27)
+On `feature/PrayerEditButton` (from `feature/DonationPurchases`; this UI is
+not on `dev`). The pencil on Today's Prayers is shown for every **trackable**
+prayer (not Sunrise). Tap reuses `openPrayerAction`: upcoming → Prayer
+Settings, started/passed → Mark Prayer sheet. File:
+`lib/features/home/view/widgets/home_prayer_times_section.dart`.
 
 ## Status: Android Settings download dead-tap (2026-08-25)
 Tapping download on **AI Quran Tajweed** (lock visible) did nothing on Android

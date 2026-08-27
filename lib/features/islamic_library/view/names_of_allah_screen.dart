@@ -214,7 +214,7 @@ class _NameDetailScreenState extends State<_NameDetailScreen> {
       isBookmarked: _bookmarked,
       onBookmark: _toggleBookmark,
       onCopy: () => copyLearningText(context, name.shareText(l10n)),
-      onShare: () => shareLearningText(context, name.shareText(l10n)),
+      sharePayload: name.sharePayload(),
       child: _NameDetailBody(name: name, backgroundColor: cardColor),
     );
   }

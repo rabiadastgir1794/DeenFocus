@@ -72,6 +72,7 @@ class _HomeRouteGateState extends State<HomeRouteGate> {
         _handedOff = true;
         StartupProbe.markOnce('HomeRouteGate.Dashboard first frame');
         StartupHandoff.notifyFirstDestinationFrame();
+        StartupProbe.dumpSummary();
       });
     }
     return home.DashboardScreen();
@@ -137,6 +138,7 @@ class _OnboardingRouteGateState extends State<OnboardingRouteGate> {
         _handedOff = true;
         StartupProbe.markOnce('OnboardingRouteGate first frame');
         StartupHandoff.notifyFirstDestinationFrame();
+        StartupProbe.dumpSummary();
       });
     }
     return onboarding.OnboardingFlowScreen();

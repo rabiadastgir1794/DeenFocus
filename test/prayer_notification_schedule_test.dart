@@ -103,6 +103,25 @@ void main() {
       }
     });
 
+    test('generatePrayerTimesForDateWithOverrides applies custom Asr', () async {
+      final date = DateTime(2026, 8, 11, 12);
+      final overridden =
+          await HomePrayerTimesHelper.generatePrayerTimesForDateWithOverrides(
+            latitude: 31.5204,
+            longitude: 74.3587,
+            date: date,
+            overridesMinutesSinceMidnight: const {
+              TrackablePrayer.asr: 16 * 60, // 4:00 PM
+            },
+          );
+      final asr = overridden.slots.firstWhere(
+        (slot) => slot.id == HomePrayerId.asr,
+      );
+      expect(asr.time.hour, 16);
+      expect(asr.time.minute, 0);
+      expect(asr.time.day, 11);
+    });
+
     test('custom override replaces only that prayer wall time', () async {
       final base = await HomePrayerTimesHelper.generatePrayerTimesForDate(
         latitude: 31.5204,

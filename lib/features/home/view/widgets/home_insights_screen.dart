@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/services/app_review_service.dart';
+import '../../../../core/share/shareable_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -29,6 +30,7 @@ class HomeInsightsScreen extends StatefulWidget {
 }
 
 class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
+  final GlobalKey _shareKey = GlobalKey();
   bool _weekly = true;
   bool _showingCelebration = false;
   DigitalBalanceViewModel? _digitalBalance;
@@ -137,28 +139,42 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
                     title: l10n.insightsTitle,
                     backLabel: l10n.insightsBack,
                     onBack: () => Navigator.of(context).pop(),
-                    trailing: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) =>
-                                ChangeNotifierProvider<HomeTabViewModel>.value(
-                                  value: vm,
-                                  child: const HomeCalendarScreen(),
-                                ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    ChangeNotifierProvider<HomeTabViewModel>.value(
+                                      value: vm,
+                                      child: const HomeCalendarScreen(),
+                                    ),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.calendar_month_rounded,
+                            color: colorScheme.primary,
                           ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.calendar_month_rounded,
-                        color: colorScheme.primary,
-                      ),
+                        ),
+                        CardShareIconButton(
+                          boundaryKey: _shareKey,
+                          iconSize: 24,
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(
-                    child: ListView(
+                    child: SingleChildScrollView(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-                      children: [
+                      child: RepaintBoundary(
+                        key: _shareKey,
+                        child: ColoredBox(
+                          color: cream,
+                          child: Column(
+                          children: [
                         _StreakSummaryCard(
                           prayerStreak: vm.prayerStreak,
                           bestStreak: vm.bestPrayerStreak,
@@ -213,7 +229,9 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
                           ),
                         ],
                         const SizedBox(height: 16),
-                        _ProgressionCard(
+                        ShareableCard(
+                          padding: const EdgeInsets.only(top: 2, right: 2),
+                          child: _ProgressionCard(
                           level: vm.levelProgress,
                           unlockedCount: vm.unlockedAchievementCount,
                           totalCount: AchievementsService.totalCount,
@@ -234,7 +252,11 @@ class _HomeInsightsScreenState extends State<HomeInsightsScreen> {
                             );
                           },
                         ),
-                      ],
+                        ),
+                          ],
+                        ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -1300,11 +1322,14 @@ class _ProgressionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.insightsMyProgress,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+          Padding(
+            padding: const EdgeInsets.only(right: 40),
+            child: Text(
+              l10n.insightsMyProgress,
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+            ),
           ),
           const SizedBox(height: 14),
           IntrinsicHeight(

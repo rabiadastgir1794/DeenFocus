@@ -1,3 +1,4 @@
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 
 class AllahName {
@@ -36,5 +37,12 @@ class AllahName {
       buffer.writeln('\n\n${l10n.libraryReflection}:\n$reflection');
     }
     return buffer.toString();
+  }
+
+  ContentSharePayload sharePayload() {
+    return ContentSharePayload(
+      title: transliteration,
+      paragraphs: [meaning],
+    );
   }
 }

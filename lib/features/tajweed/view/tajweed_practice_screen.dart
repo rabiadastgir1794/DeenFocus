@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/share/shareable_card.dart';
 import '../../../core/superwall/premium_gate.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -26,6 +27,7 @@ class TajweedPracticeScreen extends StatefulWidget {
 }
 
 class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
+  final GlobalKey _resultShareKey = GlobalKey();
   late final TajweedPracticeViewModel _viewModel = TajweedPracticeViewModel(
     args: widget.args,
   )..start();
@@ -70,37 +72,45 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
 
     return ChangeNotifierProvider<TajweedPracticeViewModel>.value(
       value: _viewModel,
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: title,
-          onBack: () {
-            if (context.canPop()) context.pop();
-          },
-        ),
-        body: Consumer<TajweedPracticeViewModel>(
-          builder: (context, viewModel, _) {
-            switch (viewModel.stage) {
-              case TajweedFlowStage.checkingModel:
-                return const Center(child: CircularProgressIndicator());
-              case TajweedFlowStage.downloadingModel:
-              case TajweedFlowStage.downloadFailed:
-                return TajweedDownloadView(viewModel: viewModel);
-              case TajweedFlowStage.recordingReady:
-              case TajweedFlowStage.recording:
-              case TajweedFlowStage.scoring:
-                return TajweedRecordingView(
+      child: Consumer<TajweedPracticeViewModel>(
+        builder: (context, viewModel, _) {
+          return Scaffold(
+            appBar: CustomAppBar(
+              title: title,
+              onBack: () {
+                if (context.canPop()) context.pop();
+              },
+              actions: viewModel.stage == TajweedFlowStage.result
+                  ? [
+                      CardShareIconButton(
+                        boundaryKey: _resultShareKey,
+                        iconSize: 24,
+                      ),
+                    ]
+                  : null,
+            ),
+            body: switch (viewModel.stage) {
+              TajweedFlowStage.checkingModel =>
+                const Center(child: CircularProgressIndicator()),
+              TajweedFlowStage.downloadingModel ||
+              TajweedFlowStage.downloadFailed =>
+                TajweedDownloadView(viewModel: viewModel),
+              TajweedFlowStage.recordingReady ||
+              TajweedFlowStage.recording ||
+              TajweedFlowStage.scoring =>
+                TajweedRecordingView(
                   viewModel: viewModel,
                   args: widget.args,
-                );
-              case TajweedFlowStage.result:
-                return TajweedResultView(
-                  viewModel: viewModel,
-                  args: widget.args,
-                  onDone: () => unawaited(_handleDone()),
-                );
-            }
-          },
-        ),
+                ),
+              TajweedFlowStage.result => TajweedResultView(
+                viewModel: viewModel,
+                args: widget.args,
+                shareBoundaryKey: _resultShareKey,
+                onDone: () => unawaited(_handleDone()),
+              ),
+            },
+          );
+        },
       ),
     );
   }

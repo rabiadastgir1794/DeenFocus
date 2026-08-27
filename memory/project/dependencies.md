@@ -23,6 +23,7 @@ non-obvious reason.
 | `geolocator`, `geocoding`, `flutter_map`, `latlong2` | Location + Qibla/mosque map |
 | `superwallkit_flutter`, `in_app_purchase*` | Paywall / subscriptions |
 | `flutter_screenutil` | Responsive sizing |
+| `share_plus` | Native share sheet for Learning cards (image + intro text) |
 | Bundled `PlusJakartaSans` (`assets/fonts/plus_jakarta_sans/`) | App UI typography (no runtime font HTTP) |
 
 ## tajweed-lab (`requirements.txt`)

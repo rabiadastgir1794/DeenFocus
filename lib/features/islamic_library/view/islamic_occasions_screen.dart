@@ -68,6 +68,7 @@ class _IslamicOccasionsScreenState extends State<IslamicOccasionsScreen>
         sectionId: sectionId,
         index: index,
         shareText: occasion.shareText(l10n),
+        sharePayload: occasion.sharePayload(),
         initiallyBookmarked: bookmarks.contains(index),
         body: OccasionCard(occasion: occasion, backgroundColor: cardColor),
       ),

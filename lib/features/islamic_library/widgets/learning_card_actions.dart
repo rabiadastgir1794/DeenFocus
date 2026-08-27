@@ -45,7 +45,7 @@ class LearningCardActions extends StatelessWidget {
         ],
         const SizedBox(width: 8),
         _ActionChip(
-          icon: Icons.ios_share_outlined,
+          icon: Icons.share_outlined,
           label: l10n.libraryShare,
           color: colorScheme.onSurfaceVariant,
           onTap: onShare,

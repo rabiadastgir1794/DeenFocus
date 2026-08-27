@@ -71,6 +71,11 @@ class WidgetSyncService {
     final prayerCache = <String, HomePrayerTimesData>{};
     final verseCache = <String, HomeDailyVerse?>{};
     final streakState = await _loadStreakState();
+    final prayerSettingsRaw = await StorageService.prayerSettingsJson;
+    final prayerSettings = prayerSettingsRaw == null
+        ? PrayerSettingsState.defaults()
+        : PrayerSettingsState.fromJson(prayerSettingsRaw);
+    final customTimeOverrides = prayerSettings.customTimeOverrides;
 
     final ui = <String, dynamic>{
       'brandName': l10n.appTitle,
@@ -105,11 +110,12 @@ class WidgetSyncService {
       }
       final prayerTimes = latitude != null && longitude != null
           ? prayerCache[dayKey] ??
-                await HomePrayerTimesHelper.generatePrayerTimesForDate(
+                await HomePrayerTimesHelper.generatePrayerTimesForDateWithOverrides(
                   latitude: latitude,
                   longitude: longitude,
                   date: date,
                   sectRaw: sect,
+                  overridesMinutesSinceMidnight: customTimeOverrides,
                 )
           : null;
       if (prayerTimes != null) {

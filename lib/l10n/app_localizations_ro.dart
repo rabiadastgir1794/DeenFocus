@@ -1075,6 +1075,16 @@ class AppLocalizationsRo extends AppLocalizations {
   String get homeLivePrayerUpdatesCta => 'Activează actualizările live';
 
   @override
+  String get homeWidgetsPromoTitle => 'Widgeturi';
+
+  @override
+  String get homeWidgetsPromoBody =>
+      'Vezi versetul zilei și orele de rugăciune pe ecranul principal.';
+
+  @override
+  String get homeWidgetsPromoCta => 'Adaugă widget';
+
+  @override
   String get focusModeShortSalah => 'Salah';
 
   @override
@@ -1343,6 +1353,17 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get supportUsWhatsAppPrefill =>
       'Assalamu alaikum, am nevoie de ajutor cu DeenFocus.';
+
+  @override
+  String get supportUsWhatsAppQuestionHowTo => 'Cum folosesc DeenFocus?';
+
+  @override
+  String get supportUsWhatsAppQuestionFeature =>
+      'Am nevoie de ajutor cu o funcție';
+
+  @override
+  String get supportUsWhatsAppQuestionSubscription =>
+      'Am o problemă cu abonamentul';
 
   @override
   String get supportUsEmailSubject => 'Cerere de suport DeenFocus';
@@ -3957,6 +3978,20 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get libraryShareCopiedHint => 'Copiat — lipește pentru a distribui';
+
+  @override
+  String get libraryShareReference => 'Referință';
+
+  @override
+  String get contentShareIntro =>
+      'Hey there! 👋 Check out DeenFocus — an app for Quran, Salah, and learning. I’m sharing this content from the app with you. 🤍';
+
+  @override
+  String get contentShareExplore => 'Explorează DeenFocus:';
+
+  @override
+  String get contentShareFailed =>
+      'Nu s-a putut distribui acum. Încearcă din nou.';
 
   @override
   String get libraryBookmarkSaved => 'Marcaj salvat';

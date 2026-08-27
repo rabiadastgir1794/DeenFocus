@@ -98,6 +98,16 @@ class _SupportUsScreenState extends State<SupportUsScreen>
     _startImpactAutoScroll();
   }
 
+  Future<void> _openWhatsAppChat(
+    BuildContext context,
+    String message,
+  ) async {
+    final vm = context.read<SupportViewModel>();
+    final result = await vm.openWhatsApp(message);
+    if (!context.mounted) return;
+    await _handleLaunchResult(context, result);
+  }
+
   Future<void> _handleLaunchResult(
     BuildContext context,
     SupportLaunchResult result,
@@ -340,16 +350,12 @@ class _SupportUsScreenState extends State<SupportUsScreen>
                                 label: l10n.supportUsWhatsApp,
                                 onTap: vm.isBusy
                                     ? null
-                                    : () async {
-                                        final result = await vm.openWhatsApp(
-                                          l10n.supportUsWhatsAppPrefill,
-                                        );
-                                        if (!context.mounted) return;
-                                        await _handleLaunchResult(
+                                    : () => unawaited(
+                                        _openWhatsAppChat(
                                           context,
-                                          result,
-                                        );
-                                      },
+                                          l10n.supportUsWhatsAppPrefill,
+                                        ),
+                                      ),
                                 cardColor: cardColor,
                                 borderColor: borderColor,
                               ),

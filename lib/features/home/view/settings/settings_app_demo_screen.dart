@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/spacing.dart';
+import '../../../../core/services/prayer_live_activity_service.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../focus/model/focus_models.dart';
@@ -42,7 +43,11 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
   @override
   void initState() {
     super.initState();
-    _featureKind = widget.initialFeatureKind;
+    _featureKind =
+        widget.initialFeatureKind == FeatureDemoKind.liveActivity &&
+            !PrayerLiveActivityService.visibleOnThisPlatform
+        ? null
+        : widget.initialFeatureKind;
   }
 
   bool get _inWalkthrough => _lockMode != null || _featureKind != null;
@@ -56,6 +61,10 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
   }
 
   void _openFeature(FeatureDemoKind kind) {
+    if (kind == FeatureDemoKind.liveActivity &&
+        !PrayerLiveActivityService.visibleOnThisPlatform) {
+      return;
+    }
     setState(() {
       _featureKind = kind;
       _lockMode = null;
@@ -208,7 +217,9 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
                   ),
                   SizedBox(height: Spacing.sm.h),
                   Text(
-                    l10n.settingsAppDemoHomeFeaturesSubtitle,
+                    PrayerLiveActivityService.visibleOnThisPlatform
+                        ? l10n.settingsAppDemoHomeFeaturesSubtitle
+                        : l10n.settingsAppDemoWidgetsCardSubtitle,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       height: 1.45,
@@ -228,13 +239,15 @@ class _SettingsAppDemoScreenState extends State<SettingsAppDemoScreen> {
                     subtitle: l10n.settingsAppDemoWidgetsCardSubtitle,
                     onTap: () => _openFeature(FeatureDemoKind.widgets),
                   ),
-                  SizedBox(height: Spacing.md.h),
-                  _ModeOptionCard(
-                    icon: Icons.notifications_active_rounded,
-                    title: l10n.featureDemoLiveActivityTitle,
-                    subtitle: l10n.settingsAppDemoLiveActivityCardSubtitle,
-                    onTap: () => _openFeature(FeatureDemoKind.liveActivity),
-                  ),
+                  if (PrayerLiveActivityService.visibleOnThisPlatform) ...[
+                    SizedBox(height: Spacing.md.h),
+                    _ModeOptionCard(
+                      icon: Icons.notifications_active_rounded,
+                      title: l10n.featureDemoLiveActivityTitle,
+                      subtitle: l10n.settingsAppDemoLiveActivityCardSubtitle,
+                      onTap: () => _openFeature(FeatureDemoKind.liveActivity),
+                    ),
+                  ],
                 ],
               ),
             ),

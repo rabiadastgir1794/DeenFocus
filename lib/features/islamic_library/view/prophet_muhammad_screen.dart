@@ -67,6 +67,7 @@ class _ProphetMuhammadScreenState extends State<ProphetMuhammadScreen>
         sectionId: sectionId,
         index: index,
         shareText: card.shareText(l10n),
+        sharePayload: card.sharePayload(l10n),
         initiallyBookmarked: bookmarks.contains(index),
         body: ProphetStoryCardView(card: card, backgroundColor: cardColor),
       ),

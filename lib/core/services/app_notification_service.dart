@@ -1315,7 +1315,8 @@ class AppNotificationService {
       prayerParts.add(
         '${prayer.name}:en=${entry.notificationsEnabled}:'
         'alarm=${entry.alarmEnabled}:pref=${entry.sound.name}:'
-        'soft=${softSound.name}',
+        'soft=${softSound.name}:'
+        'custom=${entry.customTimeMinutes}',
       );
     }
     for (final dataset in datasets) {

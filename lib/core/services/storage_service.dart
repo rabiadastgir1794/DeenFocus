@@ -90,6 +90,8 @@ abstract class StorageService {
   // v2: resets dismiss after layout fix so the Home promo can show again.
   static const String _keyHomeLiveActivityPromoDismissed =
       'home_live_activity_promo_dismissed_v2';
+  static const String _keyHomeWidgetsPromoDismissed =
+      'home_widgets_promo_dismissed';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
   /// Snooze durations offered in settings and on the full-screen alarm UI.
@@ -484,6 +486,16 @@ abstract class StorageService {
   static Future<void> setHomeLiveActivityPromoDismissed(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyHomeLiveActivityPromoDismissed, value);
+  }
+
+  static Future<bool> get homeWidgetsPromoDismissed async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHomeWidgetsPromoDismissed) ?? false;
+  }
+
+  static Future<void> setHomeWidgetsPromoDismissed(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHomeWidgetsPromoDismissed, value);
   }
 
   static Future<int> get prayerAlarmSnoozeMinutes async {

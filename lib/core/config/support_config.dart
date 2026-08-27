@@ -18,10 +18,16 @@ abstract class SupportConfig {
     defaultValue: 'rnr1710678@gmail.com',
   );
 
-  /// E.164 digits only, e.g. `923001234567`. Empty → WhatsApp uses email fallback.
+  /// E.164 digits only. Override with `--dart-define=SUPPORT_WHATSAPP_NUMBER=`
+  /// or `dart_defines.json`. Empty → WhatsApp falls back to email.
   static const String whatsAppNumber = String.fromEnvironment(
     'SUPPORT_WHATSAPP_NUMBER',
+    defaultValue: '16479649523',
   );
+
+  /// Digits only (no `+`, spaces, or punctuation) for `wa.me` / `whatsapp://`.
+  static String get normalizedWhatsAppNumber =>
+      whatsAppNumber.replaceAll(RegExp(r'\D'), '');
 
   /// Optional hosted checkout URL for one-time support.
   /// Used only when Superwall store purchase is unavailable.
@@ -39,7 +45,7 @@ abstract class SupportConfig {
     250: 'com.deenfocus.donation.250',
   };
 
-  static bool get hasWhatsApp => whatsAppNumber.trim().isNotEmpty;
+  static bool get hasWhatsApp => normalizedWhatsAppNumber.isNotEmpty;
   static bool get hasPaymentUrl => paymentUrl.trim().isNotEmpty;
 
   static String? productIdForAmount(int amount) => donationProductIds[amount];

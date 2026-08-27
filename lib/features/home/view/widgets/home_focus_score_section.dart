@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/share/shareable_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'home_card_open_arrow.dart';
 
@@ -146,7 +147,7 @@ class HomeFocusScoreSection extends StatelessWidget {
             ),
           ),
           if (isTappable) ...[
-            const SizedBox(width: 4),
+            const SizedBox(width: 28),
             HomeCardOpenArrow(
               color: colorScheme.primary.withValues(alpha: 0.7),
             ),
@@ -169,22 +170,26 @@ class HomeFocusScoreSection extends StatelessWidget {
     );
 
     if (!isTappable) {
-      return Container(
-        width: double.infinity,
-        decoration: decoration,
-        child: content,
-      );
-    }
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Ink(
+      return ShareableCard(
+        child: Container(
           width: double.infinity,
           decoration: decoration,
           child: content,
+        ),
+      );
+    }
+
+    return ShareableCard(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          child: Ink(
+            width: double.infinity,
+            decoration: decoration,
+            child: content,
+          ),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/share/shareable_card.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../l10n/app_localizations.dart';
@@ -36,6 +37,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
   int _loopsCompleted = 0;
   int _sessionTotal = 0;
   int _beadColorIndex = 0;
+  final GlobalKey _shareKey = GlobalKey();
 
   @override
   void initState() {
@@ -178,6 +180,10 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
             subtitle: l10n.tasbihLoopLabel(_loopsCompleted + 1),
             onBack: () => Navigator.of(context).pop(),
             actions: [
+              CardShareIconButton(
+                boundaryKey: _shareKey,
+                iconSize: 22,
+              ),
               Padding(
                 padding: EdgeInsets.only(right: 8.w),
                 child: Material(
@@ -213,7 +219,11 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
             ],
           ),
           body: SafeArea(
-            child: Column(
+            child: RepaintBoundary(
+              key: _shareKey,
+              child: ColoredBox(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Column(
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 0),
@@ -356,6 +366,8 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                   ),
                 ),
               ],
+            ),
+              ),
             ),
           ),
         ),

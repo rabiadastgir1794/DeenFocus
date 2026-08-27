@@ -1,3 +1,4 @@
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 
 class HadithCollection {
@@ -62,5 +63,16 @@ class LibraryHadith {
     buffer.writeln('\n${l10n.libraryHadithNarrator} $narrator');
     buffer.writeln('${l10n.libraryHadithSource} $source');
     return buffer.toString();
+  }
+
+  ContentSharePayload sharePayload(AppLocalizations l10n) {
+    return ContentSharePayload(
+      title: title,
+      paragraphs: [translation],
+      fields: [
+        ContentShareField(label: l10n.libraryHadithNarrator, value: narrator),
+        ContentShareField(label: l10n.libraryHadithSource, value: source),
+      ],
+    );
   }
 }

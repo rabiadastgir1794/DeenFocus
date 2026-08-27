@@ -24,6 +24,10 @@ class PrayerSettingsService extends ChangeNotifier {
   Map<TrackablePrayer, int> get customTimeOverrides =>
       _state.customTimeOverrides;
 
+  /// Incremented when a per-prayer custom wall time is saved or cleared so
+  /// Focus (app blocking) can drop cached salah windows immediately.
+  static final ValueNotifier<int> customTimeRevision = ValueNotifier<int>(0);
+
   /// Loads (or reloads) from disk. Soft notification and native alarm flags
   /// stay independent so Home and Settings can toggle them separately.
   Future<void> reload() async {
@@ -90,5 +94,6 @@ class PrayerSettingsService extends ChangeNotifier {
       clearCustomTime: minutesSinceMidnight == null,
     );
     await replaceEntry(prayer, entry);
+    customTimeRevision.value++;
   }
 }

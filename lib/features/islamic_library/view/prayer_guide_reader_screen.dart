@@ -75,6 +75,7 @@ class _PrayerGuideReaderScreenState extends State<PrayerGuideReaderScreen>
           guideTitle,
           totalSteps: _steps.length,
         ),
+        sharePayload: step.sharePayload(),
         initiallyBookmarked: bookmarks.contains(index),
         body: GuideStepCard(
           step: step,

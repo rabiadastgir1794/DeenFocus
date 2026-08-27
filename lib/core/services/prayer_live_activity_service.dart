@@ -20,6 +20,9 @@ class PrayerLiveActivityService {
 
   static final PrayerLiveActivityService instance = PrayerLiveActivityService._();
 
+  /// Live Activity UI is iOS-only. Android home-screen widgets stay available.
+  static bool get visibleOnThisPlatform => !kIsWeb && Platform.isIOS;
+
   static const MethodChannel _channel = MethodChannel(
     'com.app.deenly.deenly/prayer_live_activity',
   );

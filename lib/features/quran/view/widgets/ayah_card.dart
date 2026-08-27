@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/share/shareable_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/quran_local_repository.dart';
 import '../../reading_engine/quran_layout_theme.dart';
@@ -92,7 +93,7 @@ class AyahCard extends StatelessWidget {
   }
 }
 
-class _SurahDetailAyahCard extends StatelessWidget {
+class _SurahDetailAyahCard extends StatefulWidget {
   const _SurahDetailAyahCard({
     required this.ayah,
     required this.isCurrent,
@@ -130,7 +131,31 @@ class _SurahDetailAyahCard extends StatelessWidget {
   final bool isBookmarked;
 
   @override
+  State<_SurahDetailAyahCard> createState() => _SurahDetailAyahCardState();
+}
+
+class _SurahDetailAyahCardState extends State<_SurahDetailAyahCard> {
+  final GlobalKey _shareKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
+    final ayah = widget.ayah;
+    final isCurrent = widget.isCurrent;
+    final isPlaying = widget.isPlaying;
+    final showEnglish = widget.showEnglish;
+    final showTransliteration = widget.showTransliteration;
+    final layoutTheme = widget.layoutTheme;
+    final arabicFontSp = widget.arabicFontSp;
+    final englishFontSp = widget.englishFontSp;
+    final lineSpacing = widget.lineSpacing;
+    final onPlayTap = widget.onPlayTap;
+    final arabicFontFamily = widget.arabicFontFamily;
+    final arabicFontFamilyFallback = widget.arabicFontFamilyFallback;
+    final surahLabel = widget.surahLabel;
+    final onPracticeTap = widget.onPracticeTap;
+    final onBookmarkTap = widget.onBookmarkTap;
+    final isBookmarked = widget.isBookmarked;
+
     final colorScheme = Theme.of(context).colorScheme;
     final simple = layoutTheme == QuranLayoutTheme.simple;
     final textColor =
@@ -138,71 +163,36 @@ class _SurahDetailAyahCard extends StatelessWidget {
     final mutedColor = colorScheme.onSurfaceVariant;
     final chipBg = colorScheme.secondaryContainer.withValues(alpha: 0.55);
 
-    final body = Column(
+    final verseChip = simple
+        ? Text(
+            '${ayah.ayahNumber}',
+            style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              color: mutedColor,
+            ),
+          )
+        : Container(
+            width: 30.w,
+            height: 30.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: chipBg,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '${ayah.ayahNumber}',
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.secondary,
+              ),
+            ),
+          );
+
+    final ayahBody = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            if (simple)
-              Text(
-                '${ayah.ayahNumber}',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w700,
-                  color: mutedColor,
-                ),
-              )
-            else
-              Container(
-                width: 30.w,
-                height: 30.w,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: chipBg,
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  '${ayah.ayahNumber}',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.secondary,
-                  ),
-                ),
-              ),
-            const Spacer(),
-            _ActionIcon(
-              icon: isPlaying && isCurrent
-                  ? Icons.pause_circle_filled_rounded
-                  : Icons.volume_up_rounded,
-              onTap: onPlayTap,
-              color: isCurrent
-                  ? colorScheme.primary
-                  : colorScheme.onSurfaceVariant,
-            ),
-            if (onPracticeTap != null) ...[
-              SizedBox(width: 4.w),
-              _ActionIcon(
-                icon: Icons.mic_rounded,
-                onTap: onPracticeTap!,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ],
-            if (onBookmarkTap != null) ...[
-              SizedBox(width: 4.w),
-              _ActionIcon(
-                icon: isBookmarked
-                    ? Icons.bookmark_rounded
-                    : Icons.bookmark_border_rounded,
-                onTap: onBookmarkTap!,
-                color: isBookmarked
-                    ? colorScheme.primary
-                    : colorScheme.onSurfaceVariant,
-              ),
-            ],
-          ],
-        ),
-        SizedBox(height: 12.h),
         QuranArabicText(
           text: ayah.arabicText,
           layoutTheme: layoutTheme,
@@ -211,6 +201,7 @@ class _SurahDetailAyahCard extends StatelessWidget {
           fontSize: arabicFontSp.sp,
           lineHeight: lineSpacing,
           color: textColor,
+          textAlign: TextAlign.center,
         ),
         if (showTransliteration) ...[
           SizedBox(height: 8.h),
@@ -229,6 +220,7 @@ class _SurahDetailAyahCard extends StatelessWidget {
           SizedBox(height: 10.h),
           Text(
             ayah.englishText,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: englishFontSp.sp,
               height: 1.45,
@@ -236,9 +228,68 @@ class _SurahDetailAyahCard extends StatelessWidget {
             ),
           ),
         ],
+      ],
+    );
+
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            verseChip,
+            const Spacer(),
+            _ActionIcon(
+              icon: isPlaying && isCurrent
+                  ? Icons.pause_circle_filled_rounded
+                  : Icons.volume_up_rounded,
+              onTap: onPlayTap,
+              color: isCurrent
+                  ? colorScheme.primary
+                  : colorScheme.onSurfaceVariant,
+            ),
+            if (onPracticeTap != null) ...[
+              SizedBox(width: 4.w),
+              _ActionIcon(
+                icon: Icons.mic_rounded,
+                onTap: onPracticeTap,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ],
+            if (onBookmarkTap != null) ...[
+              SizedBox(width: 4.w),
+              _ActionIcon(
+                icon: isBookmarked
+                    ? Icons.bookmark_rounded
+                    : Icons.bookmark_border_rounded,
+                onTap: onBookmarkTap,
+                color: isBookmarked
+                    ? colorScheme.primary
+                    : colorScheme.onSurfaceVariant,
+              ),
+            ],
+            SizedBox(width: 4.w),
+            CardShareIconButton(
+              boundaryKey: _shareKey,
+              iconSize: 18.sp,
+              color: colorScheme.onSurfaceVariant,
+              circled: true,
+            ),
+          ],
+        ),
+        SizedBox(height: 12.h),
+        RepaintBoundary(
+          key: _shareKey,
+          child: ColoredBox(
+            color: colorScheme.surface,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 16.h),
+              child: ayahBody,
+            ),
+          ),
+        ),
         if (onPracticeTap != null) ...[
           SizedBox(height: 14.h),
-          _ReciteTajweedCta(onPracticeTap: onPracticeTap!),
+          _ReciteTajweedCta(onPracticeTap: onPracticeTap),
         ],
       ],
     );
@@ -250,7 +301,7 @@ class _SurahDetailAyahCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 4.h),
             child: Text(
-              surahLabel!,
+              surahLabel,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.sp,
@@ -318,7 +369,7 @@ class _ActionIcon extends StatelessWidget {
   }
 }
 
-class _ClassicAyahCard extends StatelessWidget {
+class _ClassicAyahCard extends StatefulWidget {
   const _ClassicAyahCard({
     required this.ayah,
     required this.isCurrent,
@@ -352,7 +403,29 @@ class _ClassicAyahCard extends StatelessWidget {
   final VoidCallback? onPracticeTap;
 
   @override
+  State<_ClassicAyahCard> createState() => _ClassicAyahCardState();
+}
+
+class _ClassicAyahCardState extends State<_ClassicAyahCard> {
+  final GlobalKey _shareKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
+    final ayah = widget.ayah;
+    final isCurrent = widget.isCurrent;
+    final isPlaying = widget.isPlaying;
+    final showEnglish = widget.showEnglish;
+    final showTransliteration = widget.showTransliteration;
+    final layoutTheme = widget.layoutTheme;
+    final arabicFontSp = widget.arabicFontSp;
+    final englishFontSp = widget.englishFontSp;
+    final lineSpacing = widget.lineSpacing;
+    final onTap = widget.onTap;
+    final arabicFontFamily = widget.arabicFontFamily;
+    final arabicFontFamilyFallback = widget.arabicFontFamilyFallback;
+    final surahLabel = widget.surahLabel;
+    final onPracticeTap = widget.onPracticeTap;
+
     final colorScheme = Theme.of(context).colorScheme;
     final isSimple = layoutTheme == QuranLayoutTheme.simple;
     final textColor =
@@ -366,7 +439,7 @@ class _ClassicAyahCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 4.h),
             child: Text(
-              surahLabel!,
+              surahLabel,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.sp,
@@ -377,7 +450,7 @@ class _ClassicAyahCard extends StatelessWidget {
           ),
         ],
         if (onPracticeTap != null && isSimple) ...[
-          _ReciteTajweedCta(onPracticeTap: onPracticeTap!),
+          _ReciteTajweedCta(onPracticeTap: onPracticeTap),
           SizedBox(height: 8.h),
         ],
         InkWell(
@@ -462,9 +535,25 @@ class _ClassicAyahCard extends StatelessWidget {
                           color: colorScheme.primary,
                           size: 18.sp,
                         ),
+                      SizedBox(width: 4.w),
+                      CardShareIconButton(
+                        boundaryKey: _shareKey,
+                        iconSize: 18.sp,
+                        color: colorScheme.onSurfaceVariant,
+                        circled: true,
+                      ),
                     ],
                   ),
                   SizedBox(height: isSimple ? 8.h : 12.h),
+                  RepaintBoundary(
+                    key: _shareKey,
+                    child: ColoredBox(
+                      color: colorScheme.surface,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 16.h),
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                   QuranArabicText(
                     text: ayah.arabicText,
                     layoutTheme: layoutTheme,
@@ -498,6 +587,11 @@ class _ClassicAyahCard extends StatelessWidget {
                       ),
                     ),
                   ],
+                      ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -511,7 +605,7 @@ class _ClassicAyahCard extends StatelessWidget {
           ),
         if (onPracticeTap != null && !isSimple) ...[
           SizedBox(height: 10.h),
-          _ReciteTajweedCta(onPracticeTap: onPracticeTap!),
+          _ReciteTajweedCta(onPracticeTap: onPracticeTap),
         ],
       ],
     );

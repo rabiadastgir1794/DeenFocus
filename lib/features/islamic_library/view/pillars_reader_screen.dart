@@ -81,6 +81,7 @@ class _PillarsReaderScreenState extends State<PillarsReaderScreen>
         sectionId: sectionId,
         index: index,
         shareText: pillar.shareText(l10n),
+        sharePayload: pillar.sharePayload(l10n),
         initiallyBookmarked: bookmarks.contains(index),
         body: PillarCard(pillar: pillar, backgroundColor: cardColor),
       ),

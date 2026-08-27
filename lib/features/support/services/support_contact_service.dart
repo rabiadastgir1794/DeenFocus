@@ -9,25 +9,45 @@ class SupportContactService {
   const SupportContactService();
 
   Future<SupportLaunchResult> openWhatsApp({String? message}) async {
-    final text = message?.trim();
-    final encoded = text == null || text.isEmpty
-        ? null
-        : Uri.encodeComponent(text);
+    final text = message?.trim() ?? '';
+    final digits = SupportConfig.normalizedWhatsAppNumber;
 
-    final Uri uri;
-    if (SupportConfig.hasWhatsApp) {
-      final base = 'https://wa.me/${SupportConfig.whatsAppNumber}';
-      uri = encoded == null ? Uri.parse(base) : Uri.parse('$base?text=$encoded');
-    } else if (encoded != null) {
-      uri = Uri.parse('https://wa.me/?text=$encoded');
-    } else {
+    if (digits.isEmpty) {
       return openEmail(
         subject: 'DeenFocus support',
-        body: text,
+        body: text.isEmpty ? null : text,
       );
     }
 
-    return _launch(uri);
+    for (final uri in whatsAppLaunchUris(digits: digits, text: text)) {
+      final result = await _launch(uri, checkCanLaunch: false);
+      if (result == SupportLaunchResult.launched) return result;
+    }
+
+    return openEmail(
+      subject: 'DeenFocus support',
+      body: text.isEmpty ? null : text,
+    );
+  }
+
+  /// Native scheme first (installed app), then https click-to-chat (Play/App Store
+  /// / in-app browser if WhatsApp is missing).
+  static List<Uri> whatsAppLaunchUris({
+    required String digits,
+    String text = '',
+  }) {
+    final phone = digits.replaceAll(RegExp(r'\D'), '');
+    final query = <String, String>{
+      'phone': phone,
+      if (text.isNotEmpty) 'text': text,
+    };
+    return <Uri>[
+      Uri(scheme: 'whatsapp', host: 'send', queryParameters: query),
+      Uri.https('wa.me', '/$phone', {
+        if (text.isNotEmpty) 'text': text,
+      }),
+      Uri.https('api.whatsapp.com', '/send', query),
+    ];
   }
 
   Future<SupportLaunchResult> openEmail({
@@ -68,11 +88,19 @@ class SupportContactService {
     );
   }
 
-  Future<SupportLaunchResult> _launch(Uri uri) async {
+  Future<SupportLaunchResult> _launch(
+    Uri uri, {
+    bool checkCanLaunch = true,
+  }) async {
     try {
-      final can = await canLaunchUrl(uri);
-      if (!can) return SupportLaunchResult.unavailable;
-      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (checkCanLaunch) {
+        final can = await canLaunchUrl(uri);
+        if (!can) return SupportLaunchResult.unavailable;
+      }
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
       return launched ? SupportLaunchResult.launched : SupportLaunchResult.failed;
     } catch (_) {
       return SupportLaunchResult.failed;

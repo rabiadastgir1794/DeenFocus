@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/share/shareable_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -272,7 +273,7 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _AchievementRow extends StatelessWidget {
+class _AchievementRow extends StatefulWidget {
   const _AchievementRow({
     required this.item,
     required this.l10n,
@@ -286,9 +287,25 @@ class _AchievementRow extends StatelessWidget {
   final bool isDark;
 
   @override
+  State<_AchievementRow> createState() => _AchievementRowState();
+}
+
+class _AchievementRowState extends State<_AchievementRow> {
+  final GlobalKey _boundaryKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
+    final item = widget.item;
+    final l10n = widget.l10n;
+    final colorScheme = widget.colorScheme;
+    final isDark = widget.isDark;
     final unlocked = item.isUnlocked;
-    return Container(
+    return Row(
+      children: [
+        Expanded(
+          child: RepaintBoundary(
+            key: _boundaryKey,
+            child: Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: _cardDecoration(colorScheme, isDark),
@@ -371,6 +388,13 @@ class _AchievementRow extends StatelessWidget {
             ),
         ],
       ),
+            ),
+          ),
+        ),
+        if (unlocked) ...[
+          CardShareIconButton(boundaryKey: _boundaryKey),
+        ],
+      ],
     );
   }
 }

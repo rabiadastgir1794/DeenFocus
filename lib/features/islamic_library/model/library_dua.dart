@@ -1,3 +1,4 @@
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 
 class DuaCategory {
@@ -63,5 +64,19 @@ class LibraryDua {
       buffer.writeln('\n${l10n.libraryReference(reference!)}');
     }
     return buffer.toString();
+  }
+
+  ContentSharePayload sharePayload(AppLocalizations l10n) {
+    return ContentSharePayload(
+      title: title,
+      paragraphs: [translation],
+      fields: [
+        if (reference != null && reference!.isNotEmpty)
+          ContentShareField(
+            label: l10n.libraryShareReference,
+            value: reference!,
+          ),
+      ],
+    );
   }
 }

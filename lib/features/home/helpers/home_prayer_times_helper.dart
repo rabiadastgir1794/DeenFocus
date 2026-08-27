@@ -155,6 +155,28 @@ abstract class HomePrayerTimesHelper {
     return _buildData(updatedSlots, referenceTime);
   }
 
+  /// Calculated times for [date], with the same custom wall-clock overrides
+  /// used on Home, notifications, and alarms.
+  static Future<HomePrayerTimesData> generatePrayerTimesForDateWithOverrides({
+    required double latitude,
+    required double longitude,
+    required DateTime date,
+    required Map<TrackablePrayer, int> overridesMinutesSinceMidnight,
+    String? sectRaw,
+  }) async {
+    final day = DateTime(date.year, date.month, date.day);
+    return applyCustomOverrides(
+      data: await generatePrayerTimesForDate(
+        latitude: latitude,
+        longitude: longitude,
+        date: day,
+        sectRaw: sectRaw,
+      ),
+      overridesMinutesSinceMidnight: overridesMinutesSinceMidnight,
+      referenceTime: DateTime(day.year, day.month, day.day, 12),
+    );
+  }
+
   static CalculationParameters _buildParameters(
     CalculationMethodOption method,
     AsrCalculationOption asr,

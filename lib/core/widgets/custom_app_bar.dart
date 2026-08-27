@@ -80,7 +80,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
 
-      actionsPadding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
+      actionsPadding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
       actions: actions,
     );
   }

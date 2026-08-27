@@ -133,5 +133,21 @@ void main() {
       final result = await service.submitContribution(amount: 50);
       expect(result, isNotNull);
     });
+
+    test('whatsAppLaunchUris use digits-only phone and prefilled text', () {
+      final uris = SupportContactService.whatsAppLaunchUris(
+        digits: '+92 300-123-4567',
+        text: 'How do I use DeenFocus?',
+      );
+      expect(uris, hasLength(3));
+      expect(uris[0].scheme, 'whatsapp');
+      expect(uris[0].queryParameters['phone'], '923001234567');
+      expect(uris[0].queryParameters['text'], 'How do I use DeenFocus?');
+      expect(uris[1].host, 'wa.me');
+      expect(uris[1].path, '/923001234567');
+      expect(uris[1].queryParameters['text'], 'How do I use DeenFocus?');
+      expect(uris[2].host, 'api.whatsapp.com');
+      expect(uris[2].queryParameters['phone'], '923001234567');
+    });
   });
 }

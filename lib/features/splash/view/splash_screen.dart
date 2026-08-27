@@ -37,7 +37,8 @@ class _SplashScreenState extends State<SplashScreen>
     StartupProbe.mark('SplashScreen.initState begin');
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      // 1100ms keeps icon → title → tagline readable without feeling stuck.
+      duration: const Duration(milliseconds: 1100),
     );
     _iconScale = TweenSequence<double>([
       TweenSequenceItem(
@@ -78,24 +79,33 @@ class _SplashScreenState extends State<SplashScreen>
       end: Offset.zero,
     ).animate(taglineCurve);
     _controller.forward();
+    // Resolve destination while the first frame + brand animation run.
+    // Do not preload Home+Onboarding here — deferred JIT starves this isolate.
+    final destinationFuture = _resolveDestination();
 
-    // First frame paints immediately; navigation after the branded animation.
-    // Do not preload Home+Onboarding here — deferred JIT of both libraries
-    // starves this isolate and freezes splash for tens of seconds in debug.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       StartupProbe.detail('SplashScreen post-frame: navigate begin');
       if (!mounted) return;
       unawaited(precacheImage(const AssetImage(_kAppIconAsset), context));
-      unawaited(_navigateNext());
+      unawaited(_navigateNext(destinationFuture));
     });
     StartupProbe.mark('SplashScreen.initState end');
   }
 
-  Future<void> _navigateNext() async {
+  Future<void> _navigateNext(Future<String> destinationFuture) async {
     await TraceHelpers.traceScreen('SplashScreen', () async {
-      final destination = _resolveDestination();
-      await Future<void>.delayed(const Duration(milliseconds: 2200));
-      final path = await destination;
+      // Wait for the branded animation that is already running — never an
+      // arbitrary wall-clock delay that outlasts the animation.
+      if (_controller.status != AnimationStatus.completed) {
+        StartupProbe.detail('SplashScreen awaiting brand animation');
+        await _controller.forward();
+      }
+      StartupProbe.mark('SplashScreen animation complete');
+
+      final path = await StartupProbe.timeAsync(
+        'SplashScreen destination resolved',
+        () => destinationFuture,
+      );
       if (!mounted) return;
       StartupProbe.mark('SplashScreen context.go($path)');
       context.go(path);
@@ -103,6 +113,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<String> _resolveDestination() async {
+    StartupProbe.detail('SplashScreen resolveDestination begin');
     var completed = false;
     try {
       completed = await StorageService.onboardingCompleted.timeout(
@@ -111,6 +122,9 @@ class _SplashScreenState extends State<SplashScreen>
     } catch (e) {
       debugPrint('[Splash] onboardingCompleted timed out/failed: $e');
     }
+    StartupProbe.detail(
+      'SplashScreen resolveDestination done onboardingCompleted=$completed',
+    );
     return completed ? RouteNames.home : RouteNames.onboarding;
   }
 

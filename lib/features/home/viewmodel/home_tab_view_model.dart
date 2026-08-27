@@ -719,7 +719,10 @@ class HomeTabViewModel extends ChangeNotifier {
     await _prayerSettingsService.setCustomTime(prayer, minutesSinceMidnight);
     await _loadPrayerTimes();
     notifyListeners();
-    unawaited(_rescheduleNotificationsIfPossible());
+    AppNotificationService.instance.invalidatePrayerScheduleCache();
+    await _rescheduleNotificationsIfPossible();
+    await WidgetSyncService.instance.syncTimeline();
+    unawaited(PrayerLiveActivityService.instance.syncFromStorage(force: true));
   }
 
   Future<void> setPrayerNotificationSound(

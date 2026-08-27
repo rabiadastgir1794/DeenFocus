@@ -14,9 +14,15 @@ import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
 import '../../home/model/home_models.dart';
+import '../../home/services/prayer_settings_service.dart';
 import '../model/focus_models.dart';
 
 class FocusController extends ChangeNotifier {
+  FocusController() {
+    PrayerSettingsService.customTimeRevision.addListener(
+      _onCustomPrayerTimesChanged,
+    );
+  }
   // TEMP: Salah test mode (keep code, disable for production)
   // static const bool _salahTestModeEnabled = true;
   static const bool _salahTestModeEnabled = false;
@@ -37,6 +43,7 @@ class FocusController extends ChangeNotifier {
   bool _isInitialized = false;
   Future<void>? _initializeFuture;
   Future<void>? _refreshFuture;
+  bool _refreshQueued = false;
   bool _isLoadingApps = false;
   Timer? _refreshTimer;
   String? _lastEnforcedScheduleSignature;
@@ -55,6 +62,7 @@ class FocusController extends ChangeNotifier {
   DateTime? _cachedSalahWindowsDate;
   double? _cachedSalahWindowsLat;
   double? _cachedSalahWindowsLng;
+  String? _cachedSalahWindowsOverrides;
 
   FocusSettings get settings => _settings;
   FocusLockState get lockState => _lockState;
@@ -85,10 +93,15 @@ class FocusController extends ChangeNotifier {
   Future<void> initialize() async {
     if (_initializeFuture != null) {
       await _initializeFuture;
-      return;
+    } else {
+      _initializeFuture = _initialize();
+      await _initializeFuture;
     }
-    _initializeFuture = _initialize();
-    await _initializeFuture;
+    // A custom-time save during _load is queued; native sync must still run
+    // with the persisted latest value even if no refresh() was in flight.
+    if (_refreshQueued && _refreshFuture == null) {
+      unawaited(refresh());
+    }
   }
 
   Future<void> _initialize() async {
@@ -103,15 +116,19 @@ class FocusController extends ChangeNotifier {
 
   Future<void> refresh() async {
     if (_refreshFuture != null) {
+      _refreshQueued = true;
       await _refreshFuture;
       return;
     }
-    _refreshFuture = _refreshBody();
-    try {
-      await _refreshFuture;
-    } finally {
-      _refreshFuture = null;
-    }
+    do {
+      _refreshQueued = false;
+      _refreshFuture = _refreshBody();
+      try {
+        await _refreshFuture;
+      } finally {
+        _refreshFuture = null;
+      }
+    } while (_refreshQueued);
   }
 
   Future<void> _refreshBody() async {
@@ -828,13 +845,23 @@ class FocusController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _reloadLocation() async {
-    // Invalidate salah window cache whenever location is refreshed — new
-    // coordinates produce different prayer times.
+  void _onCustomPrayerTimesChanged() {
+    _invalidateSalahWindowCache();
+    unawaited(refresh());
+  }
+
+  void _invalidateSalahWindowCache() {
     _cachedSalahWindows = null;
     _cachedSalahWindowsDate = null;
     _cachedSalahWindowsLat = null;
     _cachedSalahWindowsLng = null;
+    _cachedSalahWindowsOverrides = null;
+  }
+
+  Future<void> _reloadLocation() async {
+    // Invalidate salah window cache whenever location is refreshed — new
+    // coordinates produce different prayer times.
+    _invalidateSalahWindowCache();
     _cachedLatitude = await StorageService.locationLatitude;
     _cachedLongitude = await StorageService.locationLongitude;
     await FocusEnforcementService.appendDebugLog(
@@ -1626,13 +1653,21 @@ class FocusController extends ChangeNotifier {
       return const <SalahWindow>[];
     }
 
-    // Return cached result when the date and location match — prayer times are
-    // stable for the full day and the same coordinates.
+    // Return cached result when the date, location, and custom prayer times
+    // match. Custom overrides must be part of the key or an edited Asr time
+    // would keep blocking at the previously calculated clock time.
     final today = DateTime(now.year, now.month, now.day);
+    final settingsRaw = await StorageService.prayerSettingsJson;
+    final prayerSettings = settingsRaw == null
+        ? PrayerSettingsState.defaults()
+        : PrayerSettingsState.fromJson(settingsRaw);
+    final overrides = prayerSettings.customTimeOverrides;
+    final overridesKey = _salahOverridesCacheKey(overrides);
     if (_cachedSalahWindows != null &&
         _cachedSalahWindowsDate == today &&
         _cachedSalahWindowsLat == _cachedLatitude &&
-        _cachedSalahWindowsLng == _cachedLongitude) {
+        _cachedSalahWindowsLng == _cachedLongitude &&
+        _cachedSalahWindowsOverrides == overridesKey) {
       return _cachedSalahWindows!;
     }
 
@@ -1640,12 +1675,14 @@ class FocusController extends ChangeNotifier {
     final startDate = today;
     final sect = await StorageService.sect;
     for (var offset = 0; offset < _scheduleHorizonDays; offset++) {
-      final data = await HomePrayerTimesHelper.generatePrayerTimesForDate(
-        latitude: _cachedLatitude!,
-        longitude: _cachedLongitude!,
-        date: startDate.add(Duration(days: offset)),
-        sectRaw: sect,
-      );
+      final data =
+          await HomePrayerTimesHelper.generatePrayerTimesForDateWithOverrides(
+            latitude: _cachedLatitude!,
+            longitude: _cachedLongitude!,
+            date: startDate.add(Duration(days: offset)),
+            overridesMinutesSinceMidnight: overrides,
+            sectRaw: sect,
+          );
       prayers.addAll(
         data.slots.where((slot) => slot.id != HomePrayerId.sunrise),
       );
@@ -1664,7 +1701,17 @@ class FocusController extends ChangeNotifier {
     _cachedSalahWindowsDate = today;
     _cachedSalahWindowsLat = _cachedLatitude;
     _cachedSalahWindowsLng = _cachedLongitude;
+    _cachedSalahWindowsOverrides = overridesKey;
     return windows;
+  }
+
+  static String _salahOverridesCacheKey(Map<TrackablePrayer, int> overrides) {
+    if (overrides.isEmpty) return '';
+    final parts = overrides.entries
+        .map((e) => '${e.key.name}:${e.value}')
+        .toList()
+      ..sort();
+    return parts.join(',');
   }
 
   HomePrayerId _testPrayerIdForIndex(int index) {
@@ -2235,6 +2282,9 @@ class FocusController extends ChangeNotifier {
 
   @override
   void dispose() {
+    PrayerSettingsService.customTimeRevision.removeListener(
+      _onCustomPrayerTimesChanged,
+    );
     _refreshTimer?.cancel();
     super.dispose();
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/spacing.dart';
+import '../../../core/services/prayer_live_activity_service.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/onboarding_widgets_live_phone_frames.dart';
 
@@ -18,6 +19,7 @@ class OnboardingWidgetsLivePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showLive = PrayerLiveActivityService.visibleOnThisPlatform;
     final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -73,7 +75,7 @@ class OnboardingWidgetsLivePage extends StatelessWidget {
               ),
               SizedBox(height: compact ? 20.h : 32.h),
               Expanded(
-                flex: 11,
+                flex: showLive ? 11 : 1,
                 child: _WidgetsSection(
                   compact: compact,
                   iconCircle: iconCircle,
@@ -83,18 +85,20 @@ class OnboardingWidgetsLivePage extends StatelessWidget {
                   l10n: l10n,
                 ),
               ),
-              SizedBox(height: compact ? 8.h : 14.h),
-              Expanded(
-                flex: 10,
-                child: _LiveActivitiesSection(
-                  compact: compact,
-                  iconCircle: iconCircle,
-                  accentGreen: accentGreen,
-                  bodyColor: bodyColor,
-                  titleColor: titleColor,
-                  l10n: l10n,
+              if (showLive) ...[
+                SizedBox(height: compact ? 8.h : 14.h),
+                Expanded(
+                  flex: 10,
+                  child: _LiveActivitiesSection(
+                    compact: compact,
+                    iconCircle: iconCircle,
+                    accentGreen: accentGreen,
+                    bodyColor: bodyColor,
+                    titleColor: titleColor,
+                    l10n: l10n,
+                  ),
                 ),
-              ),
+              ],
               SizedBox(height: compact ? 14.h : 20.h),
               _TrustBanner(
                 l10n: l10n,

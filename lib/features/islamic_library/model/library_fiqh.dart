@@ -1,3 +1,4 @@
+import '../../../core/share/content_share_payload.dart';
 import '../../../l10n/app_localizations.dart';
 
 class FiqhTopic {
@@ -33,4 +34,11 @@ class FiqhTopic {
       '${l10n.libraryFiqhKeyPoints}:\n$keyPoints\n\n'
       '${l10n.libraryFiqhDifferences}:\n$differences\n\n'
       '${l10n.libraryFiqhCommonGround}:\n$commonGround';
+
+  ContentSharePayload sharePayload() {
+    return ContentSharePayload(
+      title: title,
+      paragraphs: [overview],
+    );
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/share/content_share_service.dart';
 import '../../../../core/services/quran_bookmark_service.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -160,10 +161,7 @@ class _TajweedReadingToolsSheetState extends State<_TajweedReadingToolsSheet> {
   }
 
   Future<void> _shareAyah() async {
-    await _copyAyah();
-    if (mounted) {
-      _snack(AppLocalizations.of(context)!.quranShareCopiedHint);
-    }
+    await ContentShareService.shareIntro(context: context);
   }
 
   void _openAudioSettings() {
