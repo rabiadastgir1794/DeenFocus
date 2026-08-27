@@ -1,6 +1,25 @@
 # Current State
-> Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-27 — Centered AppCenteredNavHeader titles match My Insights.
+> Source of truth for recovery. Last updated: 2026-08-27 — Lock Screen Style picker, persistence, styled reminder.
+> Branch: `feature/lock-screen-style`.
+
+## Status: Lock Screen Style (2026-08-27)
+Focus (below Child Mode) and Settings (below Live Activity, above Dark Mode)
+open the same picker (`LockScreenOptionsPopup` → `LockScreenOptionsScreen`).
+One style is always selected: first launch persists Prayer reminder
+(`LockScreenStyle.classic`) via `LockScreenStylePreference.ensureSelected`.
+Tapping the selected card does not deselect. Classic is free; other styles
+go through existing `PremiumGate` / Superwall and are not saved until
+access is granted. Preview icon opens the full-screen experience without
+Superwall. Choice is stored in `StorageService.lockScreenStyle`.
+
+The in-app “Did you pray?” reminder is a centered `AlertDialog`
+(`PrayerReminderPopup` / `showDialog`). Inner content is the selected style
+(tasbih, verse, quiz, countdown, hold, type, minimal); unpaid/invalid
+falls back to Classic. Yes / Later / hold / type / tasbih-complete return
+`true`/`false`/`null` so Home can mark via `_confirmReminderPrayerOnTime`.
+Prayer labels come from the current `TrackablePrayer`, not hardcoded Asr.
+`HomeTabViewModel` is provided at `DashboardScreen`. Copy is localized in
+all `app_*.arb` locales. Tests: `test/lock_screen_options_popup_test.dart`.
 
 ## Status: Shared header title centering (2026-08-27)
 Screens that already use `AppCenteredNavHeader` (same pattern as My Insights)

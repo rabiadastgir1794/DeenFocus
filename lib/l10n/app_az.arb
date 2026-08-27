@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Güclü davamlılıq",
   "insightsLevelName13": "İbadət rəhbəri",
   "insightsLevelName14": "Fövqəladə davamlılıq",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Kilid ekranı stili",
+  "lockScreenOptionsSubtitle": "Namaz xatırlatmalarının necə görünəcəyini seçin",
+  "lockScreenOptionsHint": "Tam ekran görünüşü üçün bir stilə toxunun.",
+  "lockScreenDefaultBadge": "Standart",
+  "lockScreenSelectedBadge": "Seçilib",
+  "lockScreenPreviewLabel": "Önizləmə",
+  "lockScreenStyleClassic": "Namaz xatırlatması",
+  "lockScreenStyleTasbih": "Təsbih sayğacı",
+  "lockScreenStyleVerse": "Günün ayəsi",
+  "lockScreenStyleDua": "Günün duası",
+  "lockScreenStyleQuiz": "Bilik yoxlaması",
+  "lockScreenStyleTimes": "Namaz vaxtları",
+  "lockScreenStyleCountdown": "Geri sayım",
+  "lockScreenStyleHold": "Təsdiq üçün basıb saxlayın",
+  "lockScreenStyleType": "Təsdiq üçün yazın",
+  "lockScreenItsTimeToPray": "Namaz vaxtıdır:",
+  "lockScreenRemainingTime": "Qalan vaxt: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Sonra xatırlat",
+  "lockScreenNextVerse": "Növbəti ayə",
+  "lockScreenVerseForToday": "Bugünkü ayə",
+  "lockScreenDuaForToday": "Bugünkü dua",
+  "lockScreenTapToCount": "Saymaq üçün istənilən yerə toxunun",
+  "lockScreenHoldHint": "Təsdiq etmək üçün basıb saxlayın",
+  "lockScreenTypeHint": "Təsdiq etmək üçün {word} yazın",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Allah qarşısında namaz qıldığınızı təsdiq edin.",
+  "lockScreenQuizCategory": "Namaz",
+  "lockScreenQuizQuestion": "Gündə neçə namaz vacibdir?",
+  "lockScreenQuizA": "Üç",
+  "lockScreenQuizB": "Dörd",
+  "lockScreenQuizC": "Beş",
+  "lockScreenQuizCorrect": "Düzgündür",
+  "lockScreenCountProgress": "{current} / {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Səhvdir",
+  "lockScreenQuizComplete": "Bilik yoxlaması tamamlandı",
+  "lockScreenQuizCategoryFasting": "Oruc",
+  "lockScreenQuizCategoryPillars": "Sütunlar",
+  "lockScreenQuizQ2": "Müsəlmanlar hansı ayda oruc tuturlar?",
+  "lockScreenQuizQ2A": "Şəvval",
+  "lockScreenQuizQ2B": "Ramazan",
+  "lockScreenQuizQ2C": "Məhərrəm",
+  "lockScreenQuizQ3": "İslamın birinci rüknü hansıdır?",
+  "lockScreenQuizQ3A": "Namaz",
+  "lockScreenQuizQ3B": "Şəhadət",
+  "lockScreenQuizQ3C": "Həcc",
+  "lockScreenTimeUp": "Vaxt bitdi",
+  "lockScreenHoldRelease": "Təsdiq etmək üçün basmağa davam edin",
+  "lockScreenStyleMinimal": "Minimal Fokus",
+  "lockScreenVerseTranslation": "Məni xatırlayın, Mən də sizi xatırlayaram.",
+  "lockScreenVerseRef": "Quran 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Rəbbimiz, bizə dünyada da, axirətdə də xeyir ver.",
+  "lockScreenDuaSource": "Əl-Bəqərə 2:201",
+  "lockScreenSampleRemaining": "2s 34d",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

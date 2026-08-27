@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "强大的坚持",
   "insightsLevelName13": "虔诚的榜样",
   "insightsLevelName14": "非凡的坚持",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "锁屏样式",
+  "lockScreenOptionsSubtitle": "选择礼拜提醒的显示方式",
+  "lockScreenOptionsHint": "点按一种样式以打开全屏布局。",
+  "lockScreenDefaultBadge": "默认",
+  "lockScreenSelectedBadge": "已选",
+  "lockScreenPreviewLabel": "预览",
+  "lockScreenStyleClassic": "礼拜提醒",
+  "lockScreenStyleTasbih": "赞念计数",
+  "lockScreenStyleVerse": "每日经文",
+  "lockScreenStyleDua": "每日祷词",
+  "lockScreenStyleQuiz": "知识测验",
+  "lockScreenStyleTimes": "礼拜时间",
+  "lockScreenStyleCountdown": "倒计时",
+  "lockScreenStyleHold": "长按确认",
+  "lockScreenStyleType": "输入确认",
+  "lockScreenItsTimeToPray": "礼拜时间到了：",
+  "lockScreenRemainingTime": "剩余时间：{time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "稍后提醒我",
+  "lockScreenNextVerse": "下一节经文",
+  "lockScreenVerseForToday": "今日经文",
+  "lockScreenDuaForToday": "今日祷词",
+  "lockScreenTapToCount": "点按任意处计数",
+  "lockScreenHoldHint": "按住以确认",
+  "lockScreenTypeHint": "输入 {word} 以确认",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "在真主面前确认你已完成礼拜。",
+  "lockScreenQuizCategory": "礼拜",
+  "lockScreenQuizQuestion": "每天有多少次主命拜？",
+  "lockScreenQuizA": "三次",
+  "lockScreenQuizB": "四次",
+  "lockScreenQuizC": "五次",
+  "lockScreenQuizCorrect": "正确",
+  "lockScreenCountProgress": "{current} / {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "错误",
+  "lockScreenQuizComplete": "知识测验完成",
+  "lockScreenQuizCategoryFasting": "斋戒",
+  "lockScreenQuizCategoryPillars": "支柱",
+  "lockScreenQuizQ2": "穆斯林在哪个月封斋？",
+  "lockScreenQuizQ2A": "闪瓦勒月",
+  "lockScreenQuizQ2B": "赖买丹月",
+  "lockScreenQuizQ2C": "穆哈兰月",
+  "lockScreenQuizQ3": "伊斯兰教的第一支柱是什么？",
+  "lockScreenQuizQ3A": "礼拜",
+  "lockScreenQuizQ3B": "作证言",
+  "lockScreenQuizQ3C": "朝觐",
+  "lockScreenTimeUp": "时间到",
+  "lockScreenHoldRelease": "继续按住以确认",
+  "lockScreenStyleMinimal": "极简专注",
+  "lockScreenVerseTranslation": "你们记念我，我便记念你们。",
+  "lockScreenVerseRef": "古兰经 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "我们的主啊，求你在今世赐我们美好，在后世也赐我们美好。",
+  "lockScreenDuaSource": "黄牛章 2:201",
+  "lockScreenSampleRemaining": "2小时34分",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

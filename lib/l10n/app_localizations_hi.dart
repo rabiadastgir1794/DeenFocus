@@ -4580,4 +4580,189 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => 'लॉक स्क्रीन शैली';
+
+  @override
+  String get lockScreenOptionsSubtitle =>
+      'चुनें कि नमाज़ के रिमाइंडर कैसे दिखें';
+
+  @override
+  String get lockScreenOptionsHint =>
+      'पूर्ण-स्क्रीन लेआउट खोलने के लिए एक शैली पर टैप करें।';
+
+  @override
+  String get lockScreenDefaultBadge => 'डिफ़ॉल्ट';
+
+  @override
+  String get lockScreenSelectedBadge => 'चयनित';
+
+  @override
+  String get lockScreenPreviewLabel => 'पूर्वावलोकन';
+
+  @override
+  String get lockScreenStyleClassic => 'नमाज़ रिमाइंडर';
+
+  @override
+  String get lockScreenStyleTasbih => 'तस्बीह काउंटर';
+
+  @override
+  String get lockScreenStyleVerse => 'दैनिक आयत';
+
+  @override
+  String get lockScreenStyleDua => 'दैनिक दुआ';
+
+  @override
+  String get lockScreenStyleQuiz => 'ज्ञान जाँच';
+
+  @override
+  String get lockScreenStyleTimes => 'नमाज़ के समय';
+
+  @override
+  String get lockScreenStyleCountdown => 'काउंटडाउन';
+
+  @override
+  String get lockScreenStyleHold => 'पुष्टि के लिए दबाए रखें';
+
+  @override
+  String get lockScreenStyleType => 'पुष्टि के लिए टाइप करें';
+
+  @override
+  String get lockScreenStyleMinimal => 'न्यूनतम फोकस';
+
+  @override
+  String get lockScreenItsTimeToPray => 'नमाज़ का समय हो गया है:';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return 'शेष समय: $time';
+  }
+
+  @override
+  String get lockScreenRemindLater => 'बाद में याद दिलाएँ';
+
+  @override
+  String get lockScreenNextVerse => 'अगली आयत';
+
+  @override
+  String get lockScreenVerseForToday => 'आज की आयत';
+
+  @override
+  String get lockScreenDuaForToday => 'आज की दुआ';
+
+  @override
+  String get lockScreenTapToCount => 'गिनने के लिए कहीं भी टैप करें';
+
+  @override
+  String get lockScreenHoldHint => 'पुष्टि के लिए दबाए रखें';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return 'पुष्टि के लिए $word टाइप करें';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah =>
+      'अल्लाह के सामने पुष्टि करें कि आपने नमाज़ पढ़ ली है।';
+
+  @override
+  String get lockScreenQuizCategory => 'नमाज़';
+
+  @override
+  String get lockScreenQuizQuestion => 'रोज़ कितनी नमाज़ें फ़र्ज़ हैं?';
+
+  @override
+  String get lockScreenQuizA => 'तीन';
+
+  @override
+  String get lockScreenQuizB => 'चार';
+
+  @override
+  String get lockScreenQuizC => 'पाँच';
+
+  @override
+  String get lockScreenQuizCorrect => 'सही';
+
+  @override
+  String get lockScreenQuizIncorrect => 'गलत';
+
+  @override
+  String get lockScreenQuizComplete => 'ज्ञान जाँच पूरी हुई';
+
+  @override
+  String get lockScreenQuizCategoryFasting => 'रोज़ा';
+
+  @override
+  String get lockScreenQuizCategoryPillars => 'स्तंभ';
+
+  @override
+  String get lockScreenQuizQ2 => 'मुसलमान किस महीने में रोज़ा रखते हैं?';
+
+  @override
+  String get lockScreenQuizQ2A => 'शव्वाल';
+
+  @override
+  String get lockScreenQuizQ2B => 'रमज़ान';
+
+  @override
+  String get lockScreenQuizQ2C => 'मुहर्रम';
+
+  @override
+  String get lockScreenQuizQ3 => 'इस्लाम का पहला स्तंभ कौन सा है?';
+
+  @override
+  String get lockScreenQuizQ3A => 'सलाह';
+
+  @override
+  String get lockScreenQuizQ3B => 'शहादा';
+
+  @override
+  String get lockScreenQuizQ3C => 'हज';
+
+  @override
+  String get lockScreenTimeUp => 'समय समाप्त';
+
+  @override
+  String get lockScreenHoldRelease => 'पुष्टि के लिए दबाए रहते रहें';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation =>
+      'मुझे याद रखो, मैं तुम्हें याद रखूँगा।';
+
+  @override
+  String get lockScreenVerseRef => 'क़ुरआन 2:152';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation =>
+      'ऐ हमारे रब, हमें दुनिया में भलाई दे और आख़िरत में भी भलाई दे।';
+
+  @override
+  String get lockScreenDuaSource => 'अल-बक़रा 2:201';
+
+  @override
+  String get lockScreenSampleRemaining => '2घं 34मि';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

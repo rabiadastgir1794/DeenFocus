@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "मज़बूत निरंतरता",
   "insightsLevelName13": "इबादत में अग्रणी",
   "insightsLevelName14": "असाधारण निरंतरता",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "लॉक स्क्रीन शैली",
+  "lockScreenOptionsSubtitle": "चुनें कि नमाज़ के रिमाइंडर कैसे दिखें",
+  "lockScreenOptionsHint": "पूर्ण-स्क्रीन लेआउट खोलने के लिए एक शैली पर टैप करें।",
+  "lockScreenDefaultBadge": "डिफ़ॉल्ट",
+  "lockScreenSelectedBadge": "चयनित",
+  "lockScreenPreviewLabel": "पूर्वावलोकन",
+  "lockScreenStyleClassic": "नमाज़ रिमाइंडर",
+  "lockScreenStyleTasbih": "तस्बीह काउंटर",
+  "lockScreenStyleVerse": "दैनिक आयत",
+  "lockScreenStyleDua": "दैनिक दुआ",
+  "lockScreenStyleQuiz": "ज्ञान जाँच",
+  "lockScreenStyleTimes": "नमाज़ के समय",
+  "lockScreenStyleCountdown": "काउंटडाउन",
+  "lockScreenStyleHold": "पुष्टि के लिए दबाए रखें",
+  "lockScreenStyleType": "पुष्टि के लिए टाइप करें",
+  "lockScreenItsTimeToPray": "नमाज़ का समय हो गया है:",
+  "lockScreenRemainingTime": "शेष समय: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "बाद में याद दिलाएँ",
+  "lockScreenNextVerse": "अगली आयत",
+  "lockScreenVerseForToday": "आज की आयत",
+  "lockScreenDuaForToday": "आज की दुआ",
+  "lockScreenTapToCount": "गिनने के लिए कहीं भी टैप करें",
+  "lockScreenHoldHint": "पुष्टि के लिए दबाए रखें",
+  "lockScreenTypeHint": "पुष्टि के लिए {word} टाइप करें",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "अल्लाह के सामने पुष्टि करें कि आपने नमाज़ पढ़ ली है।",
+  "lockScreenQuizCategory": "नमाज़",
+  "lockScreenQuizQuestion": "रोज़ कितनी नमाज़ें फ़र्ज़ हैं?",
+  "lockScreenQuizA": "तीन",
+  "lockScreenQuizB": "चार",
+  "lockScreenQuizC": "पाँच",
+  "lockScreenQuizCorrect": "सही",
+  "lockScreenCountProgress": "{current} / {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "गलत",
+  "lockScreenQuizComplete": "ज्ञान जाँच पूरी हुई",
+  "lockScreenQuizCategoryFasting": "रोज़ा",
+  "lockScreenQuizCategoryPillars": "स्तंभ",
+  "lockScreenQuizQ2": "मुसलमान किस महीने में रोज़ा रखते हैं?",
+  "lockScreenQuizQ2A": "शव्वाल",
+  "lockScreenQuizQ2B": "रमज़ान",
+  "lockScreenQuizQ2C": "मुहर्रम",
+  "lockScreenQuizQ3": "इस्लाम का पहला स्तंभ कौन सा है?",
+  "lockScreenQuizQ3A": "सलाह",
+  "lockScreenQuizQ3B": "शहादा",
+  "lockScreenQuizQ3C": "हज",
+  "lockScreenTimeUp": "समय समाप्त",
+  "lockScreenHoldRelease": "पुष्टि के लिए दबाए रहते रहें",
+  "lockScreenStyleMinimal": "न्यूनतम फोकस",
+  "lockScreenVerseTranslation": "मुझे याद रखो, मैं तुम्हें याद रखूँगा।",
+  "lockScreenVerseRef": "क़ुरआन 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "ऐ हमारे रब, हमें दुनिया में भलाई दे और आख़िरत में भी भलाई दे।",
+  "lockScreenDuaSource": "अल-बक़रा 2:201",
+  "lockScreenSampleRemaining": "2घं 34मि",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Forte costanza",
   "insightsLevelName13": "Guida nella devozione",
   "insightsLevelName14": "Costanza eccezionale",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Stile schermata di blocco",
+  "lockScreenOptionsSubtitle": "Scegli come appaiono i promemoria di preghiera",
+  "lockScreenOptionsHint": "Tocca uno stile per aprire il layout a schermo intero.",
+  "lockScreenDefaultBadge": "Predefinito",
+  "lockScreenSelectedBadge": "Selezionato",
+  "lockScreenPreviewLabel": "Anteprima",
+  "lockScreenStyleClassic": "Promemoria di preghiera",
+  "lockScreenStyleTasbih": "Contatore tasbih",
+  "lockScreenStyleVerse": "Versetto del giorno",
+  "lockScreenStyleDua": "Du'a del giorno",
+  "lockScreenStyleQuiz": "Verifica delle conoscenze",
+  "lockScreenStyleTimes": "Orari di preghiera",
+  "lockScreenStyleCountdown": "Conto alla rovescia",
+  "lockScreenStyleHold": "Tieni premuto per confermare",
+  "lockScreenStyleType": "Digita per confermare",
+  "lockScreenItsTimeToPray": "È ora di pregare:",
+  "lockScreenRemainingTime": "Tempo rimanente: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Ricordamelo più tardi",
+  "lockScreenNextVerse": "Versetto successivo",
+  "lockScreenVerseForToday": "Versetto di oggi",
+  "lockScreenDuaForToday": "Du'a di oggi",
+  "lockScreenTapToCount": "Tocca ovunque per contare",
+  "lockScreenHoldHint": "Tieni premuto per confermare",
+  "lockScreenTypeHint": "Digita {word} per confermare",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Conferma davanti ad Allah di aver pregato.",
+  "lockScreenQuizCategory": "Preghiera",
+  "lockScreenQuizQuestion": "Quante preghiere quotidiane sono obbligatorie?",
+  "lockScreenQuizA": "Tre",
+  "lockScreenQuizB": "Quattro",
+  "lockScreenQuizC": "Cinque",
+  "lockScreenQuizCorrect": "Corretto",
+  "lockScreenCountProgress": "{current} di {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Errato",
+  "lockScreenQuizComplete": "Verifica delle conoscenze completata",
+  "lockScreenQuizCategoryFasting": "Digiuno",
+  "lockScreenQuizCategoryPillars": "Pilastri",
+  "lockScreenQuizQ2": "In quale mese digiunano i musulmani?",
+  "lockScreenQuizQ2A": "Shawwal",
+  "lockScreenQuizQ2B": "Ramadan",
+  "lockScreenQuizQ2C": "Muharram",
+  "lockScreenQuizQ3": "Qual è il primo pilastro dell'Islam?",
+  "lockScreenQuizQ3A": "Salah",
+  "lockScreenQuizQ3B": "Shahada",
+  "lockScreenQuizQ3C": "Hajj",
+  "lockScreenTimeUp": "Tempo scaduto",
+  "lockScreenHoldRelease": "Continua a tenere premuto per confermare",
+  "lockScreenStyleMinimal": "Focus minimale",
+  "lockScreenVerseTranslation": "Ricordatevi di Me, Io Mi ricorderò di voi.",
+  "lockScreenVerseRef": "Corano 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Signore nostro, donaci un bene in questa vita e un bene nell'Aldilà.",
+  "lockScreenDuaSource": "Al-Baqara 2:201",
+  "lockScreenSampleRemaining": "2h 34m",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

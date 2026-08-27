@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Сильная постоянность",
   "insightsLevelName13": "Ориентир в поклонении",
   "insightsLevelName14": "Исключительная постоянность",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Стиль экрана блокировки",
+  "lockScreenOptionsSubtitle": "Выберите, как отображаются напоминания о молитве",
+  "lockScreenOptionsHint": "Нажмите на стиль, чтобы открыть полноэкранный макет.",
+  "lockScreenDefaultBadge": "По умолчанию",
+  "lockScreenSelectedBadge": "Выбрано",
+  "lockScreenPreviewLabel": "Предпросмотр",
+  "lockScreenStyleClassic": "Напоминание о молитве",
+  "lockScreenStyleTasbih": "Счётчик тасбиха",
+  "lockScreenStyleVerse": "Аят дня",
+  "lockScreenStyleDua": "Дуа дня",
+  "lockScreenStyleQuiz": "Проверка знаний",
+  "lockScreenStyleTimes": "Время намаза",
+  "lockScreenStyleCountdown": "Обратный отсчёт",
+  "lockScreenStyleHold": "Удерживайте для подтверждения",
+  "lockScreenStyleType": "Введите для подтверждения",
+  "lockScreenItsTimeToPray": "Пора молиться:",
+  "lockScreenRemainingTime": "Оставшееся время: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Напомнить позже",
+  "lockScreenNextVerse": "Следующий аят",
+  "lockScreenVerseForToday": "Аят на сегодня",
+  "lockScreenDuaForToday": "Дуа на сегодня",
+  "lockScreenTapToCount": "Нажмите в любом месте, чтобы считать",
+  "lockScreenHoldHint": "Удерживайте, чтобы подтвердить",
+  "lockScreenTypeHint": "Введите {word}, чтобы подтвердить",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Подтвердите перед Аллахом, что вы совершили молитву.",
+  "lockScreenQuizCategory": "Молитва",
+  "lockScreenQuizQuestion": "Сколько ежедневных молитв обязательны?",
+  "lockScreenQuizA": "Три",
+  "lockScreenQuizB": "Четыре",
+  "lockScreenQuizC": "Пять",
+  "lockScreenQuizCorrect": "Верно",
+  "lockScreenCountProgress": "{current} из {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Неверно",
+  "lockScreenQuizComplete": "Проверка знаний завершена",
+  "lockScreenQuizCategoryFasting": "Пост",
+  "lockScreenQuizCategoryPillars": "Столпы",
+  "lockScreenQuizQ2": "В каком месяце мусульмане постятся?",
+  "lockScreenQuizQ2A": "Шавваль",
+  "lockScreenQuizQ2B": "Рамадан",
+  "lockScreenQuizQ2C": "Мухаррам",
+  "lockScreenQuizQ3": "Какой первый столп ислама?",
+  "lockScreenQuizQ3A": "Намаз",
+  "lockScreenQuizQ3B": "Шахада",
+  "lockScreenQuizQ3C": "Хадж",
+  "lockScreenTimeUp": "Время вышло",
+  "lockScreenHoldRelease": "Продолжайте удерживать для подтверждения",
+  "lockScreenStyleMinimal": "Минимальный фокус",
+  "lockScreenVerseTranslation": "Поминайте Меня, и Я помяну вас.",
+  "lockScreenVerseRef": "Коран 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Господь наш, даруй нам благо в этом мире и благо в мире вечном.",
+  "lockScreenDuaSource": "Аль-Бакара 2:201",
+  "lockScreenSampleRemaining": "2 ч 34 мин",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

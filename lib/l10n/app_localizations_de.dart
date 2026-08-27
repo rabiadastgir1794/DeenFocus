@@ -4625,4 +4625,190 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => 'Sperrbildschirm-Stil';
+
+  @override
+  String get lockScreenOptionsSubtitle =>
+      'Wähle, wie Gebetserinnerungen erscheinen';
+
+  @override
+  String get lockScreenOptionsHint =>
+      'Tippe auf einen Stil, um das Vollbild-Layout zu öffnen.';
+
+  @override
+  String get lockScreenDefaultBadge => 'Standard';
+
+  @override
+  String get lockScreenSelectedBadge => 'Ausgewählt';
+
+  @override
+  String get lockScreenPreviewLabel => 'Vorschau';
+
+  @override
+  String get lockScreenStyleClassic => 'Gebetserinnerung';
+
+  @override
+  String get lockScreenStyleTasbih => 'Tasbih-Zähler';
+
+  @override
+  String get lockScreenStyleVerse => 'Täglicher Vers';
+
+  @override
+  String get lockScreenStyleDua => 'Tägliches Bittgebet';
+
+  @override
+  String get lockScreenStyleQuiz => 'Wissenscheck';
+
+  @override
+  String get lockScreenStyleTimes => 'Gebetszeiten';
+
+  @override
+  String get lockScreenStyleCountdown => 'Countdown';
+
+  @override
+  String get lockScreenStyleHold => 'Halten zum Bestätigen';
+
+  @override
+  String get lockScreenStyleType => 'Tippen zum Bestätigen';
+
+  @override
+  String get lockScreenStyleMinimal => 'Minimaler Fokus';
+
+  @override
+  String get lockScreenItsTimeToPray => 'Es ist Zeit zum Beten:';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return 'Verbleibende Zeit: $time';
+  }
+
+  @override
+  String get lockScreenRemindLater => 'Später erinnern';
+
+  @override
+  String get lockScreenNextVerse => 'Nächster Vers';
+
+  @override
+  String get lockScreenVerseForToday => 'Vers für heute';
+
+  @override
+  String get lockScreenDuaForToday => 'Bittgebet für heute';
+
+  @override
+  String get lockScreenTapToCount => 'Tippe irgendwo, um zu zählen';
+
+  @override
+  String get lockScreenHoldHint => 'Gedrückt halten zum Bestätigen';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return 'Tippe $word zum Bestätigen';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah =>
+      'Bestätige vor Allah, dass du gebetet hast.';
+
+  @override
+  String get lockScreenQuizCategory => 'Gebet';
+
+  @override
+  String get lockScreenQuizQuestion =>
+      'Wie viele tägliche Gebete sind verpflichtend?';
+
+  @override
+  String get lockScreenQuizA => 'Drei';
+
+  @override
+  String get lockScreenQuizB => 'Vier';
+
+  @override
+  String get lockScreenQuizC => 'Fünf';
+
+  @override
+  String get lockScreenQuizCorrect => 'Richtig';
+
+  @override
+  String get lockScreenQuizIncorrect => 'Falsch';
+
+  @override
+  String get lockScreenQuizComplete => 'Wissenscheck abgeschlossen';
+
+  @override
+  String get lockScreenQuizCategoryFasting => 'Fasten';
+
+  @override
+  String get lockScreenQuizCategoryPillars => 'Säulen';
+
+  @override
+  String get lockScreenQuizQ2 => 'In welchem Monat fasten Muslime?';
+
+  @override
+  String get lockScreenQuizQ2A => 'Schawwal';
+
+  @override
+  String get lockScreenQuizQ2B => 'Ramadan';
+
+  @override
+  String get lockScreenQuizQ2C => 'Muharram';
+
+  @override
+  String get lockScreenQuizQ3 => 'Welche ist die erste Säule des Islam?';
+
+  @override
+  String get lockScreenQuizQ3A => 'Salah';
+
+  @override
+  String get lockScreenQuizQ3B => 'Schahada';
+
+  @override
+  String get lockScreenQuizQ3C => 'Haddsch';
+
+  @override
+  String get lockScreenTimeUp => 'Die Zeit ist um';
+
+  @override
+  String get lockScreenHoldRelease => 'Weiter halten zum Bestätigen';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current von $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation =>
+      'Gedenket Meiner, so gedenke Ich euer.';
+
+  @override
+  String get lockScreenVerseRef => 'Koran 2:152';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation =>
+      'Unser Herr, gib uns Gutes im Diesseits und Gutes im Jenseits.';
+
+  @override
+  String get lockScreenDuaSource => 'Al-Baqara 2:201';
+
+  @override
+  String get lockScreenSampleRemaining => '2 Std. 34 Min.';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

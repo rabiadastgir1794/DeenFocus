@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Consecvență puternică",
   "insightsLevelName13": "Ghid al devotamentului",
   "insightsLevelName14": "Consecvență excepțională",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Stil ecran de blocare",
+  "lockScreenOptionsSubtitle": "Alege cum apar mementourile de rugăciune",
+  "lockScreenOptionsHint": "Atinge un stil pentru a deschide aspectul pe tot ecranul.",
+  "lockScreenDefaultBadge": "Implicit",
+  "lockScreenSelectedBadge": "Selectat",
+  "lockScreenPreviewLabel": "Previzualizare",
+  "lockScreenStyleClassic": "Memento de rugăciune",
+  "lockScreenStyleTasbih": "Contor tasbih",
+  "lockScreenStyleVerse": "Versetul zilei",
+  "lockScreenStyleDua": "Dua zilei",
+  "lockScreenStyleQuiz": "Verificare de cunoștințe",
+  "lockScreenStyleTimes": "Ore de rugăciune",
+  "lockScreenStyleCountdown": "Numărătoare inversă",
+  "lockScreenStyleHold": "Ține apăsat pentru a confirma",
+  "lockScreenStyleType": "Tastează pentru a confirma",
+  "lockScreenItsTimeToPray": "Este timpul să te rogi:",
+  "lockScreenRemainingTime": "Timp rămas: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Amintește-mi mai târziu",
+  "lockScreenNextVerse": "Versetul următor",
+  "lockScreenVerseForToday": "Versetul de azi",
+  "lockScreenDuaForToday": "Dua de azi",
+  "lockScreenTapToCount": "Atinge oriunde pentru a număra",
+  "lockScreenHoldHint": "Apasă lung pentru a confirma",
+  "lockScreenTypeHint": "Tastează {word} pentru a confirma",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Confirmă înaintea lui Allah că te-ai rugat.",
+  "lockScreenQuizCategory": "Rugăciune",
+  "lockScreenQuizQuestion": "Câte rugăciuni zilnice sunt obligatorii?",
+  "lockScreenQuizA": "Trei",
+  "lockScreenQuizB": "Patru",
+  "lockScreenQuizC": "Cinci",
+  "lockScreenQuizCorrect": "Corect",
+  "lockScreenCountProgress": "{current} din {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Incorect",
+  "lockScreenQuizComplete": "Verificarea de cunoștințe s-a încheiat",
+  "lockScreenQuizCategoryFasting": "Post",
+  "lockScreenQuizCategoryPillars": "Stâlpi",
+  "lockScreenQuizQ2": "În ce lună postesc musulmanii?",
+  "lockScreenQuizQ2A": "Shawwal",
+  "lockScreenQuizQ2B": "Ramadan",
+  "lockScreenQuizQ2C": "Muharram",
+  "lockScreenQuizQ3": "Care este primul stâlp al islamului?",
+  "lockScreenQuizQ3A": "Salah",
+  "lockScreenQuizQ3B": "Shahada",
+  "lockScreenQuizQ3C": "Hajj",
+  "lockScreenTimeUp": "Timpul a expirat",
+  "lockScreenHoldRelease": "Continuă să ții apăsat pentru a confirma",
+  "lockScreenStyleMinimal": "Focus minimal",
+  "lockScreenVerseTranslation": "Aduceți-vă aminte de Mine, și Eu Îmi voi aduce aminte de voi.",
+  "lockScreenVerseRef": "Coran 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Doamne, dă-ne bine în această lume și bine în Viața de Apoi.",
+  "lockScreenDuaSource": "Al-Baqara 2:201",
+  "lockScreenSampleRemaining": "2h 34m",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

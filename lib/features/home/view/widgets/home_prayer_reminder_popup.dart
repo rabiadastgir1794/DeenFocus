@@ -1,102 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../core/constants/spacing.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../helpers/prayer_label_helper.dart';
+import '../../helpers/lock_screen_prayer_actions.dart';
+import '../../helpers/lock_screen_style_preference.dart';
 import '../../model/home_models.dart';
+import '../../viewmodel/home_tab_view_model.dart';
+import 'lock_screen_options/lock_screen_style.dart';
+import 'lock_screen_options/lock_screen_style_interactive.dart';
 
-/// Prayer Reminder Popup that shows when the app opens if the most recent
-/// prayer hasn't been marked. Encourages users to keep their streak alive.
+/// Prayer reminder shown when the app opens if the most recent prayer
+/// hasn't been marked.
 ///
-/// Returns `true` when the user taps Yes, `false` for Later, and `null` if
-/// dismissed. Callers should mark the prayer on-time when the result is `true`.
+/// Returns `true` when the user confirms on-time, `false` for Later, and
+/// `null` if dismissed. Callers should mark the prayer on-time when the
+/// result is `true`.
+///
+/// Presentation is always the original centered [AlertDialog] (barrier,
+/// 24px card, default fade/scale). Inner content follows the selected
+/// Lock Screen Style (Classic Prayer Reminder when none is selected or a
+/// paid style is no longer entitled).
 class PrayerReminderPopup {
   static Future<bool?> show({
     required BuildContext context,
     required TrackablePrayer prayer,
   }) async {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final style = await LockScreenStylePreference.resolveForReminder();
+    if (!context.mounted) return null;
+
+    HomeTabViewModel? homeVm;
+    try {
+      homeVm = context.read<HomeTabViewModel>();
+    } on ProviderNotFoundException {
+      homeVm = null;
+    }
 
     return showDialog<bool>(
       context: context,
       barrierDismissible: true,
-      builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: isDark
-              ? colorScheme.surfaceContainerHigh
-              : colorScheme.surface,
-          surfaceTintColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          contentPadding: EdgeInsets.all(Spacing.lg),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.mosque_rounded,
-                  size: 40,
-                  color: colorScheme.primary,
-                ),
-              ),
-              SizedBox(height: Spacing.lg),
-              Text(
-                l10n.prayerReminderTitle(prayer.label(l10n)),
-                textAlign: TextAlign.center,
-                style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: Spacing.sm),
-              Text(
-                l10n.prayerReminderSubtitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  height: 1.5,
-                ),
-              ),
-              SizedBox(height: Spacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: Spacing.md),
-                  ),
-                  child: Text(l10n.prayerReminderYesButton),
-                ),
-              ),
-              SizedBox(height: Spacing.sm),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: Spacing.md),
-                  ),
-                  child: Text(l10n.prayerReminderLaterButton),
-                ),
-              ),
-            ],
-          ),
+      builder: (dialogContext) {
+        Widget dialog = PrayerReminderStyleDialog(style: style, prayer: prayer);
+        if (homeVm == null) return dialog;
+        return ChangeNotifierProvider<HomeTabViewModel>.value(
+          value: homeVm,
+          child: dialog,
         );
       },
+    );
+  }
+}
+
+/// Centered reminder dialog chrome shared by every Lock Screen Style.
+class PrayerReminderStyleDialog extends StatelessWidget {
+  const PrayerReminderStyleDialog({
+    super.key,
+    required this.style,
+    required this.prayer,
+  });
+
+  final LockScreenStyle style;
+  final TrackablePrayer prayer;
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final maxHeight = media.size.height * 0.78;
+    final contentWidth = (media.size.width - 80).clamp(260.0, 360.0);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+      content: SizedBox(
+        width: contentWidth,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: SingleChildScrollView(
+            child: LockScreenInteractiveStyle(
+              style: style,
+              prayer: prayer,
+              compact: true,
+              onConfirm: () =>
+                  LockScreenPrayerActions.completeReminder(context),
+              onLater: () => LockScreenPrayerActions.deferReminder(context),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

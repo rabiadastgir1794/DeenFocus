@@ -2170,5 +2170,87 @@
   "insightsLevelName12": "Strong Consistency",
   "insightsLevelName13": "Devotion Leader",
   "insightsLevelName14": "Exceptional Consistency",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Lock Screen Style",
+  "lockScreenOptionsSubtitle": "Choose how prayer reminders appear",
+  "lockScreenOptionsHint": "Tap a style to open the full-screen layout.",
+  "lockScreenDefaultBadge": "Default",
+  "lockScreenSelectedBadge": "Selected",
+  "lockScreenPreviewLabel": "Preview",
+  "lockScreenStyleClassic": "Prayer reminder",
+  "lockScreenStyleTasbih": "Tasbih counter",
+  "lockScreenStyleVerse": "Daily verse",
+  "lockScreenStyleDua": "Daily du'a",
+  "lockScreenStyleQuiz": "Knowledge check",
+  "lockScreenStyleTimes": "Prayer times",
+  "lockScreenStyleCountdown": "Countdown",
+  "lockScreenStyleHold": "Hold to confirm",
+  "lockScreenStyleType": "Type to confirm",
+  "lockScreenStyleMinimal": "Minimal Focus",
+  "lockScreenItsTimeToPray": "It's time to pray:",
+  "lockScreenRemainingTime": "Remaining time: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Remind Me Later",
+  "lockScreenNextVerse": "Next verse",
+  "lockScreenVerseForToday": "Verse for today",
+  "lockScreenDuaForToday": "Du'a for today",
+  "lockScreenTapToCount": "Tap anywhere to count",
+  "lockScreenHoldHint": "Press and hold to confirm",
+  "lockScreenTypeHint": "Type {word} to confirm",
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Confirm before Allah that you have prayed.",
+  "lockScreenQuizCategory": "Prayer",
+  "lockScreenQuizQuestion": "How many daily prayers are obligatory?",
+  "lockScreenQuizA": "Three",
+  "lockScreenQuizB": "Four",
+  "lockScreenQuizC": "Five",
+  "lockScreenQuizCorrect": "Correct",
+  "lockScreenQuizIncorrect": "Incorrect",
+  "lockScreenQuizComplete": "Knowledge check complete",
+  "lockScreenQuizCategoryFasting": "Fasting",
+  "lockScreenQuizCategoryPillars": "Pillars",
+  "lockScreenQuizQ2": "In which month do Muslims fast?",
+  "lockScreenQuizQ2A": "Shawwal",
+  "lockScreenQuizQ2B": "Ramadan",
+  "lockScreenQuizQ2C": "Muharram",
+  "lockScreenQuizQ3": "Which is the first pillar of Islam?",
+  "lockScreenQuizQ3A": "Salah",
+  "lockScreenQuizQ3B": "Shahada",
+  "lockScreenQuizQ3C": "Hajj",
+  "lockScreenTimeUp": "Time's up",
+  "lockScreenHoldRelease": "Keep holding to confirm",
+  "lockScreenCountProgress": "{current} of {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "lockScreenVerseTranslation": "So remember Me; I will remember you.",
+  "lockScreenVerseRef": "Quran 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Our Lord, give us good in this world and good in the Hereafter.",
+  "lockScreenDuaSource": "Al-Baqarah 2:201",
+  "lockScreenSampleRemaining": "2h 34m",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

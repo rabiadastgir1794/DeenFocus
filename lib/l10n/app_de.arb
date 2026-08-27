@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Starke Beständigkeit",
   "insightsLevelName13": "Vorbild der Hingabe",
   "insightsLevelName14": "Außergewöhnliche Beständigkeit",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Sperrbildschirm-Stil",
+  "lockScreenOptionsSubtitle": "Wähle, wie Gebetserinnerungen erscheinen",
+  "lockScreenOptionsHint": "Tippe auf einen Stil, um das Vollbild-Layout zu öffnen.",
+  "lockScreenDefaultBadge": "Standard",
+  "lockScreenSelectedBadge": "Ausgewählt",
+  "lockScreenPreviewLabel": "Vorschau",
+  "lockScreenStyleClassic": "Gebetserinnerung",
+  "lockScreenStyleTasbih": "Tasbih-Zähler",
+  "lockScreenStyleVerse": "Täglicher Vers",
+  "lockScreenStyleDua": "Tägliches Bittgebet",
+  "lockScreenStyleQuiz": "Wissenscheck",
+  "lockScreenStyleTimes": "Gebetszeiten",
+  "lockScreenStyleCountdown": "Countdown",
+  "lockScreenStyleHold": "Halten zum Bestätigen",
+  "lockScreenStyleType": "Tippen zum Bestätigen",
+  "lockScreenItsTimeToPray": "Es ist Zeit zum Beten:",
+  "lockScreenRemainingTime": "Verbleibende Zeit: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Später erinnern",
+  "lockScreenNextVerse": "Nächster Vers",
+  "lockScreenVerseForToday": "Vers für heute",
+  "lockScreenDuaForToday": "Bittgebet für heute",
+  "lockScreenTapToCount": "Tippe irgendwo, um zu zählen",
+  "lockScreenHoldHint": "Gedrückt halten zum Bestätigen",
+  "lockScreenTypeHint": "Tippe {word} zum Bestätigen",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Bestätige vor Allah, dass du gebetet hast.",
+  "lockScreenQuizCategory": "Gebet",
+  "lockScreenQuizQuestion": "Wie viele tägliche Gebete sind verpflichtend?",
+  "lockScreenQuizA": "Drei",
+  "lockScreenQuizB": "Vier",
+  "lockScreenQuizC": "Fünf",
+  "lockScreenQuizCorrect": "Richtig",
+  "lockScreenCountProgress": "{current} von {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Falsch",
+  "lockScreenQuizComplete": "Wissenscheck abgeschlossen",
+  "lockScreenQuizCategoryFasting": "Fasten",
+  "lockScreenQuizCategoryPillars": "Säulen",
+  "lockScreenQuizQ2": "In welchem Monat fasten Muslime?",
+  "lockScreenQuizQ2A": "Schawwal",
+  "lockScreenQuizQ2B": "Ramadan",
+  "lockScreenQuizQ2C": "Muharram",
+  "lockScreenQuizQ3": "Welche ist die erste Säule des Islam?",
+  "lockScreenQuizQ3A": "Salah",
+  "lockScreenQuizQ3B": "Schahada",
+  "lockScreenQuizQ3C": "Haddsch",
+  "lockScreenTimeUp": "Die Zeit ist um",
+  "lockScreenHoldRelease": "Weiter halten zum Bestätigen",
+  "lockScreenStyleMinimal": "Minimaler Fokus",
+  "lockScreenVerseTranslation": "Gedenket Meiner, so gedenke Ich euer.",
+  "lockScreenVerseRef": "Koran 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Unser Herr, gib uns Gutes im Diesseits und Gutes im Jenseits.",
+  "lockScreenDuaSource": "Al-Baqara 2:201",
+  "lockScreenSampleRemaining": "2 Std. 34 Min.",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

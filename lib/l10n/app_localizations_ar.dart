@@ -4543,4 +4543,186 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => 'أسلوب شاشة القفل';
+
+  @override
+  String get lockScreenOptionsSubtitle => 'اختر كيف تظهر تذكيرات الصلاة';
+
+  @override
+  String get lockScreenOptionsHint =>
+      'اضغط على أسلوب لفتح التخطيط بملء الشاشة.';
+
+  @override
+  String get lockScreenDefaultBadge => 'الافتراضي';
+
+  @override
+  String get lockScreenSelectedBadge => 'محدد';
+
+  @override
+  String get lockScreenPreviewLabel => 'معاينة';
+
+  @override
+  String get lockScreenStyleClassic => 'تذكير الصلاة';
+
+  @override
+  String get lockScreenStyleTasbih => 'عدّاد التسبيح';
+
+  @override
+  String get lockScreenStyleVerse => 'آية اليوم';
+
+  @override
+  String get lockScreenStyleDua => 'دعاء اليوم';
+
+  @override
+  String get lockScreenStyleQuiz => 'اختبار المعرفة';
+
+  @override
+  String get lockScreenStyleTimes => 'أوقات الصلاة';
+
+  @override
+  String get lockScreenStyleCountdown => 'العد التنازلي';
+
+  @override
+  String get lockScreenStyleHold => 'اضغط مطولًا للتأكيد';
+
+  @override
+  String get lockScreenStyleType => 'اكتب للتأكيد';
+
+  @override
+  String get lockScreenStyleMinimal => 'تركيز بسيط';
+
+  @override
+  String get lockScreenItsTimeToPray => 'حان وقت الصلاة:';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return 'الوقت المتبقي: $time';
+  }
+
+  @override
+  String get lockScreenRemindLater => 'ذكّرني لاحقًا';
+
+  @override
+  String get lockScreenNextVerse => 'الآية التالية';
+
+  @override
+  String get lockScreenVerseForToday => 'آية اليوم';
+
+  @override
+  String get lockScreenDuaForToday => 'دعاء اليوم';
+
+  @override
+  String get lockScreenTapToCount => 'اضغط في أي مكان للعدّ';
+
+  @override
+  String get lockScreenHoldHint => 'اضغط مطولًا للتأكيد';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return 'اكتب $word للتأكيد';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah => 'أكّد أمام الله أنك قد صلّيت.';
+
+  @override
+  String get lockScreenQuizCategory => 'الصلاة';
+
+  @override
+  String get lockScreenQuizQuestion => 'كم عدد الصلوات المفروضة يوميًا؟';
+
+  @override
+  String get lockScreenQuizA => 'ثلاث';
+
+  @override
+  String get lockScreenQuizB => 'أربع';
+
+  @override
+  String get lockScreenQuizC => 'خمس';
+
+  @override
+  String get lockScreenQuizCorrect => 'صحيح';
+
+  @override
+  String get lockScreenQuizIncorrect => 'خطأ';
+
+  @override
+  String get lockScreenQuizComplete => 'اكتمل اختبار المعرفة';
+
+  @override
+  String get lockScreenQuizCategoryFasting => 'الصيام';
+
+  @override
+  String get lockScreenQuizCategoryPillars => 'الأركان';
+
+  @override
+  String get lockScreenQuizQ2 => 'في أي شهر يصوم المسلمون؟';
+
+  @override
+  String get lockScreenQuizQ2A => 'شوال';
+
+  @override
+  String get lockScreenQuizQ2B => 'رمضان';
+
+  @override
+  String get lockScreenQuizQ2C => 'محرم';
+
+  @override
+  String get lockScreenQuizQ3 => 'ما هو الركن الأول من أركان الإسلام؟';
+
+  @override
+  String get lockScreenQuizQ3A => 'الصلاة';
+
+  @override
+  String get lockScreenQuizQ3B => 'الشهادة';
+
+  @override
+  String get lockScreenQuizQ3C => 'الحج';
+
+  @override
+  String get lockScreenTimeUp => 'انتهى الوقت';
+
+  @override
+  String get lockScreenHoldRelease => 'استمر في الضغط للتأكيد';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current من $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation => 'فاذكروني أذكركم.';
+
+  @override
+  String get lockScreenVerseRef => 'القرآن ٢:١٥٢';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation =>
+      'ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة.';
+
+  @override
+  String get lockScreenDuaSource => 'البقرة ٢:٢٠١';
+
+  @override
+  String get lockScreenSampleRemaining => '٢ س ٣٤ د';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

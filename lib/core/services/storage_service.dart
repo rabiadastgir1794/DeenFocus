@@ -17,8 +17,10 @@ abstract class StorageService {
   static const String _keyLocationLongitude = 'user_location_longitude';
   static const String _keyQuranSeedVersion = 'quran_seed_version';
   static const String _keyQuranShowEnglish = 'quran_show_english';
-  static const String _keyQuranTranslationLanguage = 'quran_translation_language';
-  static const String _keyQuranShowTransliteration = 'quran_show_transliteration';
+  static const String _keyQuranTranslationLanguage =
+      'quran_translation_language';
+  static const String _keyQuranShowTransliteration =
+      'quran_show_transliteration';
   static const String _keyQuranLayoutTheme = 'quran_layout_theme';
   static const String _keyQuranReadingColorTheme = 'quran_reading_color_theme';
   static const String _keyQuranArabicFontSp = 'quran_arabic_font_sp';
@@ -71,9 +73,11 @@ abstract class StorageService {
   static const String _keyCycleModeDataJson = 'cycle_mode_data_json';
   static const String _keyCycleModeCleanupVersion =
       'cycle_mode_cleanup_version';
+
   /// Bump when adding new Cycle Mode data repairs (Edit-bug history purge, etc.).
   static const int _cycleModeCleanupVersion = 1;
-  static const String _keyLastPrayerReminderPromptMs = 'last_prayer_reminder_prompt_ms';
+  static const String _keyLastPrayerReminderPromptMs =
+      'last_prayer_reminder_prompt_ms';
   static const String _keyPrayerReminderPromptedKeys =
       'prayer_reminder_prompted_keys';
   static const String _keyDailyChecklistJson = 'daily_checklist_json';
@@ -90,6 +94,7 @@ abstract class StorageService {
   // v2: resets dismiss after layout fix so the Home promo can show again.
   static const String _keyHomeLiveActivityPromoDismissed =
       'home_live_activity_promo_dismissed_v2';
+  static const String _keyLockScreenStyle = 'lock_screen_style';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
   /// Snooze durations offered in settings and on the full-screen alarm UI.
@@ -494,10 +499,7 @@ abstract class StorageService {
 
   static Future<void> setPrayerAlarmSnoozeMinutes(int value) async {
     final prefs = await _prefs;
-    await prefs.setInt(
-      _keyPrayerAlarmSnoozeMinutes,
-      value.clamp(1, 60),
-    );
+    await prefs.setInt(_keyPrayerAlarmSnoozeMinutes, value.clamp(1, 60));
   }
 
   static Future<String?> get focusSettingsJson async {
@@ -762,10 +764,7 @@ abstract class StorageService {
     final startDate = startMs != null
         ? DateTime.fromMillisecondsSinceEpoch(startMs)
         : DateTime.now();
-    final migrated = CycleModeData(
-      isEnabled: enabled,
-      startDate: startDate,
-    );
+    final migrated = CycleModeData(isEnabled: enabled, startDate: startDate);
     await setCycleModeData(migrated);
     return migrated;
   }
@@ -779,10 +778,7 @@ abstract class StorageService {
     final changed = purged.toJson() != data.toJson();
     if (changed || applied < _cycleModeCleanupVersion) {
       await setCycleModeData(purged);
-      await prefs.setInt(
-        _keyCycleModeCleanupVersion,
-        _cycleModeCleanupVersion,
-      );
+      await prefs.setInt(_keyCycleModeCleanupVersion, _cycleModeCleanupVersion);
     }
     return purged;
   }
@@ -795,8 +791,11 @@ abstract class StorageService {
     if (data.isEnabled) {
       await prefs.setInt(
         _keyCycleModeStartDateMs,
-        DateTime(data.startDate.year, data.startDate.month, data.startDate.day)
-            .millisecondsSinceEpoch,
+        DateTime(
+          data.startDate.year,
+          data.startDate.month,
+          data.startDate.day,
+        ).millisecondsSinceEpoch,
       );
     } else {
       await prefs.remove(_keyCycleModeStartDateMs);
@@ -823,16 +822,31 @@ abstract class StorageService {
 
   static Future<void> markPrayerReminderPrompted(String key) async {
     final prefs = await _prefs;
-    final keys = (prefs.getStringList(_keyPrayerReminderPromptedKeys) ??
-            <String>[])
-        .toSet()
-      ..add(key);
+    final keys =
+        (prefs.getStringList(_keyPrayerReminderPromptedKeys) ?? <String>[])
+            .toSet()
+          ..add(key);
     // Keep only recent keys to avoid unbounded growth.
     final trimmed = keys.toList()..sort();
     final keep = trimmed.length <= 40
         ? trimmed
         : trimmed.sublist(trimmed.length - 40);
     await prefs.setStringList(_keyPrayerReminderPromptedKeys, keep);
+  }
+
+  /// Persisted Lock Screen Style name, or null when none is selected.
+  static Future<String?> get lockScreenStyle async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyLockScreenStyle);
+  }
+
+  static Future<void> setLockScreenStyle(String? value) async {
+    final prefs = await _prefs;
+    if (value == null || value.isEmpty) {
+      await prefs.remove(_keyLockScreenStyle);
+    } else {
+      await prefs.setString(_keyLockScreenStyle, value);
+    }
   }
 
   static Future<bool> get streakRestoreUsed async {
@@ -844,7 +858,7 @@ abstract class StorageService {
     final prefs = await _prefs;
     await prefs.setBool(_keyStreakRestoreUsed, value);
   }
-  
+
   // Daily Checklist
   static Future<String?> get dailyChecklistJson async {
     final prefs = await _prefs;

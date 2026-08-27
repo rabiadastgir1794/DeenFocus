@@ -4598,4 +4598,189 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => 'Kilid ekranı stili';
+
+  @override
+  String get lockScreenOptionsSubtitle =>
+      'Namaz xatırlatmalarının necə görünəcəyini seçin';
+
+  @override
+  String get lockScreenOptionsHint =>
+      'Tam ekran görünüşü üçün bir stilə toxunun.';
+
+  @override
+  String get lockScreenDefaultBadge => 'Standart';
+
+  @override
+  String get lockScreenSelectedBadge => 'Seçilib';
+
+  @override
+  String get lockScreenPreviewLabel => 'Önizləmə';
+
+  @override
+  String get lockScreenStyleClassic => 'Namaz xatırlatması';
+
+  @override
+  String get lockScreenStyleTasbih => 'Təsbih sayğacı';
+
+  @override
+  String get lockScreenStyleVerse => 'Günün ayəsi';
+
+  @override
+  String get lockScreenStyleDua => 'Günün duası';
+
+  @override
+  String get lockScreenStyleQuiz => 'Bilik yoxlaması';
+
+  @override
+  String get lockScreenStyleTimes => 'Namaz vaxtları';
+
+  @override
+  String get lockScreenStyleCountdown => 'Geri sayım';
+
+  @override
+  String get lockScreenStyleHold => 'Təsdiq üçün basıb saxlayın';
+
+  @override
+  String get lockScreenStyleType => 'Təsdiq üçün yazın';
+
+  @override
+  String get lockScreenStyleMinimal => 'Minimal Fokus';
+
+  @override
+  String get lockScreenItsTimeToPray => 'Namaz vaxtıdır:';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return 'Qalan vaxt: $time';
+  }
+
+  @override
+  String get lockScreenRemindLater => 'Sonra xatırlat';
+
+  @override
+  String get lockScreenNextVerse => 'Növbəti ayə';
+
+  @override
+  String get lockScreenVerseForToday => 'Bugünkü ayə';
+
+  @override
+  String get lockScreenDuaForToday => 'Bugünkü dua';
+
+  @override
+  String get lockScreenTapToCount => 'Saymaq üçün istənilən yerə toxunun';
+
+  @override
+  String get lockScreenHoldHint => 'Təsdiq etmək üçün basıb saxlayın';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return 'Təsdiq etmək üçün $word yazın';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah =>
+      'Allah qarşısında namaz qıldığınızı təsdiq edin.';
+
+  @override
+  String get lockScreenQuizCategory => 'Namaz';
+
+  @override
+  String get lockScreenQuizQuestion => 'Gündə neçə namaz vacibdir?';
+
+  @override
+  String get lockScreenQuizA => 'Üç';
+
+  @override
+  String get lockScreenQuizB => 'Dörd';
+
+  @override
+  String get lockScreenQuizC => 'Beş';
+
+  @override
+  String get lockScreenQuizCorrect => 'Düzgündür';
+
+  @override
+  String get lockScreenQuizIncorrect => 'Səhvdir';
+
+  @override
+  String get lockScreenQuizComplete => 'Bilik yoxlaması tamamlandı';
+
+  @override
+  String get lockScreenQuizCategoryFasting => 'Oruc';
+
+  @override
+  String get lockScreenQuizCategoryPillars => 'Sütunlar';
+
+  @override
+  String get lockScreenQuizQ2 => 'Müsəlmanlar hansı ayda oruc tuturlar?';
+
+  @override
+  String get lockScreenQuizQ2A => 'Şəvval';
+
+  @override
+  String get lockScreenQuizQ2B => 'Ramazan';
+
+  @override
+  String get lockScreenQuizQ2C => 'Məhərrəm';
+
+  @override
+  String get lockScreenQuizQ3 => 'İslamın birinci rüknü hansıdır?';
+
+  @override
+  String get lockScreenQuizQ3A => 'Namaz';
+
+  @override
+  String get lockScreenQuizQ3B => 'Şəhadət';
+
+  @override
+  String get lockScreenQuizQ3C => 'Həcc';
+
+  @override
+  String get lockScreenTimeUp => 'Vaxt bitdi';
+
+  @override
+  String get lockScreenHoldRelease => 'Təsdiq etmək üçün basmağa davam edin';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation =>
+      'Məni xatırlayın, Mən də sizi xatırlayaram.';
+
+  @override
+  String get lockScreenVerseRef => 'Quran 2:152';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation =>
+      'Rəbbimiz, bizə dünyada da, axirətdə də xeyir ver.';
+
+  @override
+  String get lockScreenDuaSource => 'Əl-Bəqərə 2:201';
+
+  @override
+  String get lockScreenSampleRemaining => '2s 34d';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

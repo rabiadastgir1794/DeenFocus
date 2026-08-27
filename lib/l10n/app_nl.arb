@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Sterke consistentie",
   "insightsLevelName13": "Gids in toewijding",
   "insightsLevelName14": "Uitzonderlijke consistentie",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Vergrendelschermstijl",
+  "lockScreenOptionsSubtitle": "Kies hoe gebedsherinneringen verschijnen",
+  "lockScreenOptionsHint": "Tik op een stijl om de schermvullende indeling te openen.",
+  "lockScreenDefaultBadge": "Standaard",
+  "lockScreenSelectedBadge": "Geselecteerd",
+  "lockScreenPreviewLabel": "Voorbeeld",
+  "lockScreenStyleClassic": "Gebedsherinnering",
+  "lockScreenStyleTasbih": "Tasbih-teller",
+  "lockScreenStyleVerse": "Dagelijkse vers",
+  "lockScreenStyleDua": "Dagelijkse doe'a",
+  "lockScreenStyleQuiz": "Kennistoets",
+  "lockScreenStyleTimes": "Gebedstijden",
+  "lockScreenStyleCountdown": "Aftelling",
+  "lockScreenStyleHold": "Ingedrukt houden om te bevestigen",
+  "lockScreenStyleType": "Typ om te bevestigen",
+  "lockScreenItsTimeToPray": "Het is tijd om te bidden:",
+  "lockScreenRemainingTime": "Resterende tijd: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Herinner me later",
+  "lockScreenNextVerse": "Volgende vers",
+  "lockScreenVerseForToday": "Vers van vandaag",
+  "lockScreenDuaForToday": "Doe'a van vandaag",
+  "lockScreenTapToCount": "Tik ergens om te tellen",
+  "lockScreenHoldHint": "Houd ingedrukt om te bevestigen",
+  "lockScreenTypeHint": "Typ {word} om te bevestigen",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Bevestig voor Allah dat je hebt gebeden.",
+  "lockScreenQuizCategory": "Gebed",
+  "lockScreenQuizQuestion": "Hoeveel dagelijkse gebeden zijn verplicht?",
+  "lockScreenQuizA": "Drie",
+  "lockScreenQuizB": "Vier",
+  "lockScreenQuizC": "Vijf",
+  "lockScreenQuizCorrect": "Juist",
+  "lockScreenCountProgress": "{current} van {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Onjuist",
+  "lockScreenQuizComplete": "Kennistoets voltooid",
+  "lockScreenQuizCategoryFasting": "Vasten",
+  "lockScreenQuizCategoryPillars": "Zuilen",
+  "lockScreenQuizQ2": "In welke maand vasten moslims?",
+  "lockScreenQuizQ2A": "Shawwal",
+  "lockScreenQuizQ2B": "Ramadan",
+  "lockScreenQuizQ2C": "Moeharram",
+  "lockScreenQuizQ3": "Wat is de eerste zuil van de islam?",
+  "lockScreenQuizQ3A": "Salah",
+  "lockScreenQuizQ3B": "Shahada",
+  "lockScreenQuizQ3C": "Hadj",
+  "lockScreenTimeUp": "De tijd is om",
+  "lockScreenHoldRelease": "Blijf indrukken om te bevestigen",
+  "lockScreenStyleMinimal": "Minimale focus",
+  "lockScreenVerseTranslation": "Gedenk Mij, dan gedenk Ik jullie.",
+  "lockScreenVerseRef": "Koran 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Onze Heer, schenk ons het goede in deze wereld en het goede in het Hiernamaals.",
+  "lockScreenDuaSource": "Al-Baqara 2:201",
+  "lockScreenSampleRemaining": "2u 34m",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

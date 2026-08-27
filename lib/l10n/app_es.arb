@@ -1570,5 +1570,87 @@
   "insightsLevelName12": "Gran constancia",
   "insightsLevelName13": "Líder en devoción",
   "insightsLevelName14": "Constancia excepcional",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Estilo de pantalla de bloqueo",
+  "lockScreenOptionsSubtitle": "Elige cómo aparecen los recordatorios de oración",
+  "lockScreenOptionsHint": "Toca un estilo para abrir el diseño a pantalla completa.",
+  "lockScreenDefaultBadge": "Predeterminado",
+  "lockScreenSelectedBadge": "Seleccionado",
+  "lockScreenPreviewLabel": "Vista previa",
+  "lockScreenStyleClassic": "Recordatorio de oración",
+  "lockScreenStyleTasbih": "Contador de tasbih",
+  "lockScreenStyleVerse": "Versículo diario",
+  "lockScreenStyleDua": "Dua diaria",
+  "lockScreenStyleQuiz": "Comprobación de conocimientos",
+  "lockScreenStyleTimes": "Horarios de oración",
+  "lockScreenStyleCountdown": "Cuenta atrás",
+  "lockScreenStyleHold": "Mantén pulsado para confirmar",
+  "lockScreenStyleType": "Escribe para confirmar",
+  "lockScreenItsTimeToPray": "Es hora de orar:",
+  "lockScreenRemainingTime": "Tiempo restante: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Recuérdame más tarde",
+  "lockScreenNextVerse": "Siguiente versículo",
+  "lockScreenVerseForToday": "Versículo de hoy",
+  "lockScreenDuaForToday": "Dua de hoy",
+  "lockScreenTapToCount": "Toca en cualquier lugar para contar",
+  "lockScreenHoldHint": "Mantén pulsado para confirmar",
+  "lockScreenTypeHint": "Escribe {word} para confirmar",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Confirma ante Allah que has orado.",
+  "lockScreenQuizCategory": "Oración",
+  "lockScreenQuizQuestion": "¿Cuántas oraciones diarias son obligatorias?",
+  "lockScreenQuizA": "Tres",
+  "lockScreenQuizB": "Cuatro",
+  "lockScreenQuizC": "Cinco",
+  "lockScreenQuizCorrect": "Correcto",
+  "lockScreenCountProgress": "{current} de {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "Incorrecto",
+  "lockScreenQuizComplete": "Comprobación de conocimientos completada",
+  "lockScreenQuizCategoryFasting": "Ayuno",
+  "lockScreenQuizCategoryPillars": "Pilares",
+  "lockScreenQuizQ2": "¿En qué mes ayunan los musulmanes?",
+  "lockScreenQuizQ2A": "Shawwal",
+  "lockScreenQuizQ2B": "Ramadán",
+  "lockScreenQuizQ2C": "Muharram",
+  "lockScreenQuizQ3": "¿Cuál es el primer pilar del islam?",
+  "lockScreenQuizQ3A": "Salat",
+  "lockScreenQuizQ3B": "Shahada",
+  "lockScreenQuizQ3C": "Hajj",
+  "lockScreenTimeUp": "Se acabó el tiempo",
+  "lockScreenHoldRelease": "Sigue pulsando para confirmar",
+  "lockScreenStyleMinimal": "Enfoque mínimo",
+  "lockScreenVerseTranslation": "Acordaos de Mí, que Yo me acordaré de vosotros.",
+  "lockScreenVerseRef": "Corán 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Señor nuestro, danos bien en este mundo y bien en el Más Allá.",
+  "lockScreenDuaSource": "Al-Baqara 2:201",
+  "lockScreenSampleRemaining": "2h 34m",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

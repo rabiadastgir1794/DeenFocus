@@ -28,6 +28,9 @@ import '../../../../features/tajweed/view/tajweed_asset_debug_screen.dart'
     deferred as tajweed_asset_debug;
 import '../../../../l10n/app_localizations.dart';
 import '../../../focus/model/focus_models.dart';
+import '../../helpers/lock_screen_style_preference.dart';
+import '../widgets/lock_screen_options/lock_screen_options_popup.dart';
+import '../widgets/lock_screen_options/lock_screen_style.dart';
 import 'settings_app_demo_screen.dart';
 import 'settings_calculation_method_screen.dart';
 import 'settings_list_widgets.dart';
@@ -49,6 +52,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
   bool _liveActivityEnabled = false;
   bool _liveActivitySupported = false;
   bool _liveActivityBusy = false;
+  LockScreenStyle _lockScreenStyle = LockScreenStyle.classic;
 
   @override
   void initState() {
@@ -59,6 +63,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
     );
     _packageInfoFuture = PackageInfo.fromPlatform();
     unawaited(_loadLiveActivityState());
+    unawaited(_loadLockScreenStyle());
   }
 
   @override
@@ -98,6 +103,18 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
     } else {
       unawaited(PrayerLiveActivityService.instance.stop());
     }
+  }
+
+  Future<void> _loadLockScreenStyle() async {
+    final style = await LockScreenStylePreference.ensureSelected();
+    if (!mounted) return;
+    setState(() => _lockScreenStyle = style);
+  }
+
+  Future<void> _openLockScreenOptions() async {
+    await LockScreenOptionsPopup.show(context);
+    if (!mounted) return;
+    await _loadLockScreenStyle();
   }
 
   Future<void> _setLiveActivityEnabled(bool value) async {
@@ -618,6 +635,17 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                   onChanged: _liveActivitySupported && !_liveActivityBusy
                       ? (value) => unawaited(_setLiveActivityEnabled(value))
                       : null,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SettingsGroup(
+              children: [
+                SettingsRow(
+                  icon: Icons.stay_current_portrait_outlined,
+                  label: l10n.lockScreenOptionsTitle,
+                  value: _lockScreenStyle.title(l10n),
+                  onTap: () => unawaited(_openLockScreenOptions()),
                 ),
               ],
             ),

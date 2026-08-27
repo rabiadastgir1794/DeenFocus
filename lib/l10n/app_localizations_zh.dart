@@ -4366,4 +4366,184 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => '锁屏样式';
+
+  @override
+  String get lockScreenOptionsSubtitle => '选择礼拜提醒的显示方式';
+
+  @override
+  String get lockScreenOptionsHint => '点按一种样式以打开全屏布局。';
+
+  @override
+  String get lockScreenDefaultBadge => '默认';
+
+  @override
+  String get lockScreenSelectedBadge => '已选';
+
+  @override
+  String get lockScreenPreviewLabel => '预览';
+
+  @override
+  String get lockScreenStyleClassic => '礼拜提醒';
+
+  @override
+  String get lockScreenStyleTasbih => '赞念计数';
+
+  @override
+  String get lockScreenStyleVerse => '每日经文';
+
+  @override
+  String get lockScreenStyleDua => '每日祷词';
+
+  @override
+  String get lockScreenStyleQuiz => '知识测验';
+
+  @override
+  String get lockScreenStyleTimes => '礼拜时间';
+
+  @override
+  String get lockScreenStyleCountdown => '倒计时';
+
+  @override
+  String get lockScreenStyleHold => '长按确认';
+
+  @override
+  String get lockScreenStyleType => '输入确认';
+
+  @override
+  String get lockScreenStyleMinimal => '极简专注';
+
+  @override
+  String get lockScreenItsTimeToPray => '礼拜时间到了：';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return '剩余时间：$time';
+  }
+
+  @override
+  String get lockScreenRemindLater => '稍后提醒我';
+
+  @override
+  String get lockScreenNextVerse => '下一节经文';
+
+  @override
+  String get lockScreenVerseForToday => '今日经文';
+
+  @override
+  String get lockScreenDuaForToday => '今日祷词';
+
+  @override
+  String get lockScreenTapToCount => '点按任意处计数';
+
+  @override
+  String get lockScreenHoldHint => '按住以确认';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return '输入 $word 以确认';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah => '在真主面前确认你已完成礼拜。';
+
+  @override
+  String get lockScreenQuizCategory => '礼拜';
+
+  @override
+  String get lockScreenQuizQuestion => '每天有多少次主命拜？';
+
+  @override
+  String get lockScreenQuizA => '三次';
+
+  @override
+  String get lockScreenQuizB => '四次';
+
+  @override
+  String get lockScreenQuizC => '五次';
+
+  @override
+  String get lockScreenQuizCorrect => '正确';
+
+  @override
+  String get lockScreenQuizIncorrect => '错误';
+
+  @override
+  String get lockScreenQuizComplete => '知识测验完成';
+
+  @override
+  String get lockScreenQuizCategoryFasting => '斋戒';
+
+  @override
+  String get lockScreenQuizCategoryPillars => '支柱';
+
+  @override
+  String get lockScreenQuizQ2 => '穆斯林在哪个月封斋？';
+
+  @override
+  String get lockScreenQuizQ2A => '闪瓦勒月';
+
+  @override
+  String get lockScreenQuizQ2B => '赖买丹月';
+
+  @override
+  String get lockScreenQuizQ2C => '穆哈兰月';
+
+  @override
+  String get lockScreenQuizQ3 => '伊斯兰教的第一支柱是什么？';
+
+  @override
+  String get lockScreenQuizQ3A => '礼拜';
+
+  @override
+  String get lockScreenQuizQ3B => '作证言';
+
+  @override
+  String get lockScreenQuizQ3C => '朝觐';
+
+  @override
+  String get lockScreenTimeUp => '时间到';
+
+  @override
+  String get lockScreenHoldRelease => '继续按住以确认';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation => '你们记念我，我便记念你们。';
+
+  @override
+  String get lockScreenVerseRef => '古兰经 2:152';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation => '我们的主啊，求你在今世赐我们美好，在后世也赐我们美好。';
+
+  @override
+  String get lockScreenDuaSource => '黄牛章 2:201';
+
+  @override
+  String get lockScreenSampleRemaining => '2小时34分';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

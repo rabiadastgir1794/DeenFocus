@@ -4633,4 +4633,191 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => 'Stil ecran de blocare';
+
+  @override
+  String get lockScreenOptionsSubtitle =>
+      'Alege cum apar mementourile de rugăciune';
+
+  @override
+  String get lockScreenOptionsHint =>
+      'Atinge un stil pentru a deschide aspectul pe tot ecranul.';
+
+  @override
+  String get lockScreenDefaultBadge => 'Implicit';
+
+  @override
+  String get lockScreenSelectedBadge => 'Selectat';
+
+  @override
+  String get lockScreenPreviewLabel => 'Previzualizare';
+
+  @override
+  String get lockScreenStyleClassic => 'Memento de rugăciune';
+
+  @override
+  String get lockScreenStyleTasbih => 'Contor tasbih';
+
+  @override
+  String get lockScreenStyleVerse => 'Versetul zilei';
+
+  @override
+  String get lockScreenStyleDua => 'Dua zilei';
+
+  @override
+  String get lockScreenStyleQuiz => 'Verificare de cunoștințe';
+
+  @override
+  String get lockScreenStyleTimes => 'Ore de rugăciune';
+
+  @override
+  String get lockScreenStyleCountdown => 'Numărătoare inversă';
+
+  @override
+  String get lockScreenStyleHold => 'Ține apăsat pentru a confirma';
+
+  @override
+  String get lockScreenStyleType => 'Tastează pentru a confirma';
+
+  @override
+  String get lockScreenStyleMinimal => 'Focus minimal';
+
+  @override
+  String get lockScreenItsTimeToPray => 'Este timpul să te rogi:';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return 'Timp rămas: $time';
+  }
+
+  @override
+  String get lockScreenRemindLater => 'Amintește-mi mai târziu';
+
+  @override
+  String get lockScreenNextVerse => 'Versetul următor';
+
+  @override
+  String get lockScreenVerseForToday => 'Versetul de azi';
+
+  @override
+  String get lockScreenDuaForToday => 'Dua de azi';
+
+  @override
+  String get lockScreenTapToCount => 'Atinge oriunde pentru a număra';
+
+  @override
+  String get lockScreenHoldHint => 'Apasă lung pentru a confirma';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return 'Tastează $word pentru a confirma';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah =>
+      'Confirmă înaintea lui Allah că te-ai rugat.';
+
+  @override
+  String get lockScreenQuizCategory => 'Rugăciune';
+
+  @override
+  String get lockScreenQuizQuestion =>
+      'Câte rugăciuni zilnice sunt obligatorii?';
+
+  @override
+  String get lockScreenQuizA => 'Trei';
+
+  @override
+  String get lockScreenQuizB => 'Patru';
+
+  @override
+  String get lockScreenQuizC => 'Cinci';
+
+  @override
+  String get lockScreenQuizCorrect => 'Corect';
+
+  @override
+  String get lockScreenQuizIncorrect => 'Incorect';
+
+  @override
+  String get lockScreenQuizComplete => 'Verificarea de cunoștințe s-a încheiat';
+
+  @override
+  String get lockScreenQuizCategoryFasting => 'Post';
+
+  @override
+  String get lockScreenQuizCategoryPillars => 'Stâlpi';
+
+  @override
+  String get lockScreenQuizQ2 => 'În ce lună postesc musulmanii?';
+
+  @override
+  String get lockScreenQuizQ2A => 'Shawwal';
+
+  @override
+  String get lockScreenQuizQ2B => 'Ramadan';
+
+  @override
+  String get lockScreenQuizQ2C => 'Muharram';
+
+  @override
+  String get lockScreenQuizQ3 => 'Care este primul stâlp al islamului?';
+
+  @override
+  String get lockScreenQuizQ3A => 'Salah';
+
+  @override
+  String get lockScreenQuizQ3B => 'Shahada';
+
+  @override
+  String get lockScreenQuizQ3C => 'Hajj';
+
+  @override
+  String get lockScreenTimeUp => 'Timpul a expirat';
+
+  @override
+  String get lockScreenHoldRelease =>
+      'Continuă să ții apăsat pentru a confirma';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current din $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation =>
+      'Aduceți-vă aminte de Mine, și Eu Îmi voi aduce aminte de voi.';
+
+  @override
+  String get lockScreenVerseRef => 'Coran 2:152';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation =>
+      'Doamne, dă-ne bine în această lume și bine în Viața de Apoi.';
+
+  @override
+  String get lockScreenDuaSource => 'Al-Baqara 2:201';
+
+  @override
+  String get lockScreenSampleRemaining => '2h 34m';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

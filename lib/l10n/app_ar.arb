@@ -1585,5 +1585,87 @@
   "insightsLevelName12": "استمرار قوي",
   "insightsLevelName13": "قدوة في العبادة",
   "insightsLevelName14": "استمرار استثنائي",
-  "insightsLevelName15": "DeenFocus Master"
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "أسلوب شاشة القفل",
+  "lockScreenOptionsSubtitle": "اختر كيف تظهر تذكيرات الصلاة",
+  "lockScreenOptionsHint": "اضغط على أسلوب لفتح التخطيط بملء الشاشة.",
+  "lockScreenDefaultBadge": "الافتراضي",
+  "lockScreenSelectedBadge": "محدد",
+  "lockScreenPreviewLabel": "معاينة",
+  "lockScreenStyleClassic": "تذكير الصلاة",
+  "lockScreenStyleTasbih": "عدّاد التسبيح",
+  "lockScreenStyleVerse": "آية اليوم",
+  "lockScreenStyleDua": "دعاء اليوم",
+  "lockScreenStyleQuiz": "اختبار المعرفة",
+  "lockScreenStyleTimes": "أوقات الصلاة",
+  "lockScreenStyleCountdown": "العد التنازلي",
+  "lockScreenStyleHold": "اضغط مطولًا للتأكيد",
+  "lockScreenStyleType": "اكتب للتأكيد",
+  "lockScreenItsTimeToPray": "حان وقت الصلاة:",
+  "lockScreenRemainingTime": "الوقت المتبقي: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "ذكّرني لاحقًا",
+  "lockScreenNextVerse": "الآية التالية",
+  "lockScreenVerseForToday": "آية اليوم",
+  "lockScreenDuaForToday": "دعاء اليوم",
+  "lockScreenTapToCount": "اضغط في أي مكان للعدّ",
+  "lockScreenHoldHint": "اضغط مطولًا للتأكيد",
+  "lockScreenTypeHint": "اكتب {word} للتأكيد",
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "أكّد أمام الله أنك قد صلّيت.",
+  "lockScreenQuizCategory": "الصلاة",
+  "lockScreenQuizQuestion": "كم عدد الصلوات المفروضة يوميًا؟",
+  "lockScreenQuizA": "ثلاث",
+  "lockScreenQuizB": "أربع",
+  "lockScreenQuizC": "خمس",
+  "lockScreenQuizCorrect": "صحيح",
+  "lockScreenCountProgress": "{current} من {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenQuizIncorrect": "خطأ",
+  "lockScreenQuizComplete": "اكتمل اختبار المعرفة",
+  "lockScreenQuizCategoryFasting": "الصيام",
+  "lockScreenQuizCategoryPillars": "الأركان",
+  "lockScreenQuizQ2": "في أي شهر يصوم المسلمون؟",
+  "lockScreenQuizQ2A": "شوال",
+  "lockScreenQuizQ2B": "رمضان",
+  "lockScreenQuizQ2C": "محرم",
+  "lockScreenQuizQ3": "ما هو الركن الأول من أركان الإسلام؟",
+  "lockScreenQuizQ3A": "الصلاة",
+  "lockScreenQuizQ3B": "الشهادة",
+  "lockScreenQuizQ3C": "الحج",
+  "lockScreenTimeUp": "انتهى الوقت",
+  "lockScreenHoldRelease": "استمر في الضغط للتأكيد",
+  "lockScreenStyleMinimal": "تركيز بسيط",
+  "lockScreenVerseTranslation": "فاذكروني أذكركم.",
+  "lockScreenVerseRef": "القرآن ٢:١٥٢",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة.",
+  "lockScreenDuaSource": "البقرة ٢:٢٠١",
+  "lockScreenSampleRemaining": "٢ س ٣٤ د",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

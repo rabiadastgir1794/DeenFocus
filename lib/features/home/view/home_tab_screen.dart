@@ -57,15 +57,23 @@ class HomeTabScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<HomeTabViewModel>(
-      create: (context) => HomeTabViewModel(
-        prayerSettings: context.read<PrayerSettingsService>(),
-      )..initialize(),
-      child: _HomeTabView(
+    try {
+      context.read<HomeTabViewModel>();
+      return _HomeTabView(
         onOpenFocusTab: onOpenFocusTab,
         isTabActive: isTabActive,
-      ),
-    );
+      );
+    } on ProviderNotFoundException {
+      return ChangeNotifierProvider<HomeTabViewModel>(
+        create: (context) => HomeTabViewModel(
+          prayerSettings: context.read<PrayerSettingsService>(),
+        )..initialize(),
+        child: _HomeTabView(
+          onOpenFocusTab: onOpenFocusTab,
+          isTabActive: isTabActive,
+        ),
+      );
+    }
   }
 }
 
