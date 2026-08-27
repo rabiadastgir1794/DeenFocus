@@ -82,9 +82,8 @@ class _QuranBookmarksScreenState extends State<QuranBookmarksScreen> {
         if (!mounted) return;
         await Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (_) => MushafFullPageScreen(
-              initialPage: bookmark.page ?? 1,
-            ),
+            builder: (_) =>
+                MushafFullPageScreen(initialPage: bookmark.page ?? 1),
           ),
         );
       case QuranBookmarkKind.juz:
@@ -107,62 +106,76 @@ class _QuranBookmarksScreenState extends State<QuranBookmarksScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: CustomAppBar(title: l10n.quranBookmarksTitle),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _items.isEmpty
-          ? Center(
-              child: Text(
-                l10n.quranBookmarksEmpty,
-                style: TextStyle(color: colorScheme.onSurfaceVariant),
-              ),
-            )
-          : ListView.separated(
-              padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
-              itemCount: _items.length,
-              separatorBuilder: (_, _) => SizedBox(height: 8.h),
-              itemBuilder: (context, index) {
-                final item = _items[index];
-                return Dismissible(
-                  key: ValueKey<String>(item.id),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (_) => unawaited(_remove(item)),
-                  background: Container(
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(right: 20.w),
-                    decoration: BoxDecoration(
-                      color: colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Icon(Icons.delete_outline, color: colorScheme.error),
-                  ),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                      side: BorderSide(
-                        color: colorScheme.outlineVariant.withValues(
-                          alpha: 0.35,
-                        ),
-                      ),
-                    ),
-                    tileColor: colorScheme.surfaceContainerHighest.withValues(
-                      alpha: 0.25,
-                    ),
-                    leading: Icon(
-                      _iconFor(item.kind),
-                      color: colorScheme.primary,
-                    ),
-                    title: Text(
-                      item.label,
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(_kindLabel(l10n, item.kind)),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => unawaited(_open(item)),
-                  ),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.quranBookmarksTitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _items.isEmpty
+                  ? Center(
+                      child: Text(
+                        l10n.quranBookmarksEmpty,
+                        style: TextStyle(color: colorScheme.onSurfaceVariant),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
+                      itemCount: _items.length,
+                      separatorBuilder: (_, _) => SizedBox(height: 8.h),
+                      itemBuilder: (context, index) {
+                        final item = _items[index];
+                        return Dismissible(
+                          key: ValueKey<String>(item.id),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (_) => unawaited(_remove(item)),
+                          background: Container(
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 20.w),
+                            decoration: BoxDecoration(
+                              color: colorScheme.errorContainer,
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Icon(
+                              Icons.delete_outline,
+                              color: colorScheme.error,
+                            ),
+                          ),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                              side: BorderSide(
+                                color: colorScheme.outlineVariant.withValues(
+                                  alpha: 0.35,
+                                ),
+                              ),
+                            ),
+                            tileColor: colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.25),
+                            leading: Icon(
+                              _iconFor(item.kind),
+                              color: colorScheme.primary,
+                            ),
+                            title: Text(
+                              item.label,
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(_kindLabel(l10n, item.kind)),
+                            trailing: const Icon(Icons.chevron_right_rounded),
+                            onTap: () => unawaited(_open(item)),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../helpers/learning_list_controller.dart';
 import '../model/library_hadith.dart';
@@ -29,9 +29,8 @@ class HadithReaderScreen extends StatefulWidget {
 class _HadithReaderScreenState extends State<HadithReaderScreen>
     with LearningListController {
   @override
-  String get sectionId => widget.collection.progressSectionId(
-        LibraryModuleId.hadith.name,
-      );
+  String get sectionId =>
+      widget.collection.progressSectionId(LibraryModuleId.hadith.name);
 
   @override
   int? get initialCardIndex => widget.initialCardIndex;
@@ -84,8 +83,7 @@ class _HadithReaderScreenState extends State<HadithReaderScreen>
     final cardColor = isDark
         ? colorScheme.surfaceContainerHighest
         : AppColors.surfaceLight;
-    final collectionTitle =
-        hadithCollectionTitle(l10n, widget.collection.id);
+    final collectionTitle = hadithCollectionTitle(l10n, widget.collection.id);
     final q = query.trim().toLowerCase();
     final indexes = filterIndexes((i) {
       final h = _hadiths[i];
@@ -96,32 +94,42 @@ class _HadithReaderScreenState extends State<HadithReaderScreen>
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: collectionTitle,
-        subtitle: l10n.libraryHadithCount(_hadiths.length),
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: query,
-              onQueryChanged: (value) => setState(() => query = value),
-              itemCount: indexes.length,
-              totalCount: _hadiths.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final hadith = _hadiths[index];
-                return LearningItemTile(
-                  title: hadith.title,
-                  subtitle: hadith.translation,
-                  leadingLabel: '${hadith.index}',
-                  leadingArabic: hadith.arabic,
-                  bookmarked: bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.format_quote_outlined,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: collectionTitle,
+              subtitle: l10n.libraryHadithCount(_hadiths.length),
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: query,
+                      onQueryChanged: (value) => setState(() => query = value),
+                      itemCount: indexes.length,
+                      totalCount: _hadiths.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final hadith = _hadiths[index];
+                        return LearningItemTile(
+                          title: hadith.title,
+                          subtitle: hadith.translation,
+                          leadingLabel: '${hadith.index}',
+                          leadingArabic: hadith.arabic,
+                          bookmarked: bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.format_quote_outlined,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

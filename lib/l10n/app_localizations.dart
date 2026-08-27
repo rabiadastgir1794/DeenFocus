@@ -3029,6 +3029,12 @@ abstract class AppLocalizations {
   /// **'verses'**
   String get quranVersesLabel;
 
+  /// No description provided for @quranSurahHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} • {count} verses'**
+  String quranSurahHeaderSubtitle(String name, int count);
+
   /// No description provided for @quranTextOptions.
   ///
   /// In en, this message translates to:
@@ -3700,6 +3706,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get readingSettingsResetHistoryButton;
+
+  /// No description provided for @readingSettingsTranslationDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not download {name}. Try again when online.'**
+  String readingSettingsTranslationDownloadFailed(String name);
+
+  /// No description provided for @readingSettingsTranslationSizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} MB'**
+  String readingSettingsTranslationSizeMb(String size);
 
   /// No description provided for @tajweedListenToAyah.
   ///
@@ -8153,6 +8171,12 @@ abstract class AppLocalizations {
   /// **'Tajweed Practice'**
   String get tajweedPracticeTitle;
 
+  /// No description provided for @tajweedPracticeAyahTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{surah} · {ref}'**
+  String tajweedPracticeAyahTitle(String surah, String ref);
+
   /// No description provided for @tajweedDownloadTitle.
   ///
   /// In en, this message translates to:
@@ -8230,6 +8254,540 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI Tajweed practice is not available on this device.'**
   String get tajweedErrorUnsupported;
+
+  /// No description provided for @sharePromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out this on DeenFocus 🌙'**
+  String get sharePromoTitle;
+
+  /// No description provided for @sharePromoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A simple app to help you stay focused on your Deen, pray on time and build better habits.'**
+  String get sharePromoBody;
+
+  /// No description provided for @sharePromoDownloadHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Download DeenFocus:'**
+  String get sharePromoDownloadHeading;
+
+  /// No description provided for @sharePromoAppStoreLine.
+  ///
+  /// In en, this message translates to:
+  /// **'🍎 App Store: {url}'**
+  String sharePromoAppStoreLine(String url);
+
+  /// No description provided for @sharePromoPlayStoreLine.
+  ///
+  /// In en, this message translates to:
+  /// **'🤖 Google Play: {url}'**
+  String sharePromoPlayStoreLine(String url);
+
+  /// No description provided for @shareBrandName.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus'**
+  String get shareBrandName;
+
+  /// No description provided for @shareBrandTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your companion for a better Deen, every day.'**
+  String get shareBrandTagline;
+
+  /// No description provided for @shareDownloadCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Download DeenFocus'**
+  String get shareDownloadCta;
+
+  /// No description provided for @shareAppStoreBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store'**
+  String get shareAppStoreBadge;
+
+  /// No description provided for @sharePlayStoreBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play'**
+  String get sharePlayStoreBadge;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to share. Please try again.'**
+  String get shareFailed;
+
+  /// No description provided for @insightsRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} / {possible}'**
+  String insightsRatio(int done, int possible);
+
+  /// No description provided for @insightsCompactRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{possible}'**
+  String insightsCompactRatio(int done, int possible);
+
+  /// No description provided for @insightsPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}%'**
+  String insightsPercent(int value);
+
+  /// No description provided for @insightsFocusScoreValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} / 100'**
+  String insightsFocusScoreValue(int score);
+
+  /// No description provided for @insightsWeekNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'W{week}'**
+  String insightsWeekNumber(int week);
+
+  /// No description provided for @insightsLevelName1.
+  ///
+  /// In en, this message translates to:
+  /// **'New Beginning'**
+  String get insightsLevelName1;
+
+  /// No description provided for @insightsLevelName2.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting Started'**
+  String get insightsLevelName2;
+
+  /// No description provided for @insightsLevelName3.
+  ///
+  /// In en, this message translates to:
+  /// **'Building the Habit'**
+  String get insightsLevelName3;
+
+  /// No description provided for @insightsLevelName4.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady Worshipper'**
+  String get insightsLevelName4;
+
+  /// No description provided for @insightsLevelName5.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistent Heart'**
+  String get insightsLevelName5;
+
+  /// No description provided for @insightsLevelName6.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Keeper'**
+  String get insightsLevelName6;
+
+  /// No description provided for @insightsLevelName7.
+  ///
+  /// In en, this message translates to:
+  /// **'Dedicated Servant'**
+  String get insightsLevelName7;
+
+  /// No description provided for @insightsLevelName8.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong Routine'**
+  String get insightsLevelName8;
+
+  /// No description provided for @insightsLevelName9.
+  ///
+  /// In en, this message translates to:
+  /// **'Devoted Worshipper'**
+  String get insightsLevelName9;
+
+  /// No description provided for @insightsLevelName10.
+  ///
+  /// In en, this message translates to:
+  /// **'Steadfast'**
+  String get insightsLevelName10;
+
+  /// No description provided for @insightsLevelName11.
+  ///
+  /// In en, this message translates to:
+  /// **'Deepening Faith'**
+  String get insightsLevelName11;
+
+  /// No description provided for @insightsLevelName12.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong Consistency'**
+  String get insightsLevelName12;
+
+  /// No description provided for @insightsLevelName13.
+  ///
+  /// In en, this message translates to:
+  /// **'Devotion Leader'**
+  String get insightsLevelName13;
+
+  /// No description provided for @insightsLevelName14.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptional Consistency'**
+  String get insightsLevelName14;
+
+  /// No description provided for @insightsLevelName15.
+  ///
+  /// In en, this message translates to:
+  /// **'DeenFocus Master'**
+  String get insightsLevelName15;
+
+  /// No description provided for @lockScreenOptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Screen Style'**
+  String get lockScreenOptionsTitle;
+
+  /// No description provided for @lockScreenOptionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how prayer reminders appear'**
+  String get lockScreenOptionsSubtitle;
+
+  /// No description provided for @lockScreenOptionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a style to open the full-screen layout.'**
+  String get lockScreenOptionsHint;
+
+  /// No description provided for @lockScreenDefaultBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get lockScreenDefaultBadge;
+
+  /// No description provided for @lockScreenSelectedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get lockScreenSelectedBadge;
+
+  /// No description provided for @lockScreenPreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get lockScreenPreviewLabel;
+
+  /// No description provided for @lockScreenStyleClassic.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer reminder'**
+  String get lockScreenStyleClassic;
+
+  /// No description provided for @lockScreenStyleTasbih.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih counter'**
+  String get lockScreenStyleTasbih;
+
+  /// No description provided for @lockScreenStyleVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily verse'**
+  String get lockScreenStyleVerse;
+
+  /// No description provided for @lockScreenStyleDua.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily du\'a'**
+  String get lockScreenStyleDua;
+
+  /// No description provided for @lockScreenStyleQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge check'**
+  String get lockScreenStyleQuiz;
+
+  /// No description provided for @lockScreenStyleTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer times'**
+  String get lockScreenStyleTimes;
+
+  /// No description provided for @lockScreenStyleCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Countdown'**
+  String get lockScreenStyleCountdown;
+
+  /// No description provided for @lockScreenStyleHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to confirm'**
+  String get lockScreenStyleHold;
+
+  /// No description provided for @lockScreenStyleType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type to confirm'**
+  String get lockScreenStyleType;
+
+  /// No description provided for @lockScreenStyleMinimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal Focus'**
+  String get lockScreenStyleMinimal;
+
+  /// No description provided for @lockScreenItsTimeToPray.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time to pray:'**
+  String get lockScreenItsTimeToPray;
+
+  /// No description provided for @lockScreenRemainingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining time: {time}'**
+  String lockScreenRemainingTime(String time);
+
+  /// No description provided for @lockScreenRemindLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind Me Later'**
+  String get lockScreenRemindLater;
+
+  /// No description provided for @lockScreenNextVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Next verse'**
+  String get lockScreenNextVerse;
+
+  /// No description provided for @lockScreenVerseForToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse for today'**
+  String get lockScreenVerseForToday;
+
+  /// No description provided for @lockScreenDuaForToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Du\'a for today'**
+  String get lockScreenDuaForToday;
+
+  /// No description provided for @lockScreenTapToCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap anywhere to count'**
+  String get lockScreenTapToCount;
+
+  /// No description provided for @lockScreenHoldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Press and hold to confirm'**
+  String get lockScreenHoldHint;
+
+  /// No description provided for @lockScreenTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type {word} to confirm'**
+  String lockScreenTypeHint(String word);
+
+  /// No description provided for @lockScreenTypeWord.
+  ///
+  /// In en, this message translates to:
+  /// **'ALHAMDULILLAH'**
+  String get lockScreenTypeWord;
+
+  /// No description provided for @lockScreenConfirmBeforeAllah.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm before Allah that you have prayed.'**
+  String get lockScreenConfirmBeforeAllah;
+
+  /// No description provided for @lockScreenQuizCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer'**
+  String get lockScreenQuizCategory;
+
+  /// No description provided for @lockScreenQuizQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How many daily prayers are obligatory?'**
+  String get lockScreenQuizQuestion;
+
+  /// No description provided for @lockScreenQuizA.
+  ///
+  /// In en, this message translates to:
+  /// **'Three'**
+  String get lockScreenQuizA;
+
+  /// No description provided for @lockScreenQuizB.
+  ///
+  /// In en, this message translates to:
+  /// **'Four'**
+  String get lockScreenQuizB;
+
+  /// No description provided for @lockScreenQuizC.
+  ///
+  /// In en, this message translates to:
+  /// **'Five'**
+  String get lockScreenQuizC;
+
+  /// No description provided for @lockScreenQuizCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get lockScreenQuizCorrect;
+
+  /// No description provided for @lockScreenQuizIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect'**
+  String get lockScreenQuizIncorrect;
+
+  /// No description provided for @lockScreenQuizComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Knowledge check complete'**
+  String get lockScreenQuizComplete;
+
+  /// No description provided for @lockScreenQuizCategoryFasting.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasting'**
+  String get lockScreenQuizCategoryFasting;
+
+  /// No description provided for @lockScreenQuizCategoryPillars.
+  ///
+  /// In en, this message translates to:
+  /// **'Pillars'**
+  String get lockScreenQuizCategoryPillars;
+
+  /// No description provided for @lockScreenQuizQ2.
+  ///
+  /// In en, this message translates to:
+  /// **'In which month do Muslims fast?'**
+  String get lockScreenQuizQ2;
+
+  /// No description provided for @lockScreenQuizQ2A.
+  ///
+  /// In en, this message translates to:
+  /// **'Shawwal'**
+  String get lockScreenQuizQ2A;
+
+  /// No description provided for @lockScreenQuizQ2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan'**
+  String get lockScreenQuizQ2B;
+
+  /// No description provided for @lockScreenQuizQ2C.
+  ///
+  /// In en, this message translates to:
+  /// **'Muharram'**
+  String get lockScreenQuizQ2C;
+
+  /// No description provided for @lockScreenQuizQ3.
+  ///
+  /// In en, this message translates to:
+  /// **'Which is the first pillar of Islam?'**
+  String get lockScreenQuizQ3;
+
+  /// No description provided for @lockScreenQuizQ3A.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah'**
+  String get lockScreenQuizQ3A;
+
+  /// No description provided for @lockScreenQuizQ3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Shahada'**
+  String get lockScreenQuizQ3B;
+
+  /// No description provided for @lockScreenQuizQ3C.
+  ///
+  /// In en, this message translates to:
+  /// **'Hajj'**
+  String get lockScreenQuizQ3C;
+
+  /// No description provided for @lockScreenTimeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Time\'s up'**
+  String get lockScreenTimeUp;
+
+  /// No description provided for @lockScreenHoldRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep holding to confirm'**
+  String get lockScreenHoldRelease;
+
+  /// No description provided for @lockScreenCountProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String lockScreenCountProgress(int current, int total);
+
+  /// No description provided for @lockScreenVerseTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'So remember Me; I will remember you.'**
+  String get lockScreenVerseTranslation;
+
+  /// No description provided for @lockScreenVerseRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran 2:152'**
+  String get lockScreenVerseRef;
+
+  /// No description provided for @lockScreenDuaTransliteration.
+  ///
+  /// In en, this message translates to:
+  /// **'Rabbana atina fid-dunya hasanah'**
+  String get lockScreenDuaTransliteration;
+
+  /// No description provided for @lockScreenDuaTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Lord, give us good in this world and good in the Hereafter.'**
+  String get lockScreenDuaTranslation;
+
+  /// No description provided for @lockScreenDuaSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Baqarah 2:201'**
+  String get lockScreenDuaSource;
+
+  /// No description provided for @lockScreenSampleRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'2h 34m'**
+  String get lockScreenSampleRemaining;
+
+  /// No description provided for @lockScreenDhikrAstaghfirullah.
+  ///
+  /// In en, this message translates to:
+  /// **'Astaghfirullah'**
+  String get lockScreenDhikrAstaghfirullah;
+
+  /// No description provided for @lockScreenDhikrSubhanAllah.
+  ///
+  /// In en, this message translates to:
+  /// **'SubhanAllah'**
+  String get lockScreenDhikrSubhanAllah;
+
+  /// No description provided for @lockScreenDhikrAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah'**
+  String get lockScreenDhikrAlhamdulillah;
+
+  /// No description provided for @lockScreenDhikrAllahuAkbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Allahu Akbar'**
+  String get lockScreenDhikrAllahuAkbar;
 }
 
 class _AppLocalizationsDelegate

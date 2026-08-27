@@ -339,51 +339,52 @@ class AppLocalizationsNl extends AppLocalizations {
       'Ontdek alles wat Deen Focus te bieden heeft. Tik op een focusmodus om te zien hoe het werkt.';
 
   @override
-  String get onboardingWidgetsLiveTitle => 'Your prayers, always within reach';
+  String get onboardingWidgetsLiveTitle =>
+      'Je gebeden, altijd binnen handbereik';
 
   @override
   String get onboardingWidgetsLiveSubtitle =>
-      'Stay connected with what matters most — right from your Home Screen or Lock Screen.';
+      'Blijf verbonden met wat het meest telt — vanaf je beginscherm of vergrendelscherm.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'Widgets';
 
   @override
   String get onboardingWidgetsSectionBodyPrefix =>
-      'Check your next prayer, streaks, and progress ';
+      'Bekijk je volgende gebed, reeksen en voortgang ';
 
   @override
-  String get onboardingWidgetsSectionBodyEmphasis => 'at a glance.';
+  String get onboardingWidgetsSectionBodyEmphasis => 'in één oogopslag.';
 
   @override
-  String get onboardingLiveActivitiesSectionTitle => 'Live Activities';
+  String get onboardingLiveActivitiesSectionTitle => 'Live Activity';
 
   @override
   String get onboardingLiveActivitiesSectionBodyPrefix =>
-      'See your upcoming prayer updates in ';
+      'Bekijk aankomende gebedsupdates in ';
 
   @override
-  String get onboardingLiveActivitiesSectionBodyEmphasis => 'real time';
+  String get onboardingLiveActivitiesSectionBodyEmphasis => 'realtime';
 
   @override
   String get onboardingLiveActivitiesSectionBodySuffix =>
-      ' on your Lock Screen and Dynamic Island.';
+      ' op je vergrendelscherm en Dynamic Island.';
 
   @override
-  String get onboardingWidgetsLiveTrustPrefix => 'Designed to help you stay ';
+  String get onboardingWidgetsLiveTrustPrefix => 'Ontworpen om je te helpen ';
 
   @override
   String get onboardingWidgetsLiveTrustEmphasis => 'consistent';
 
   @override
   String get onboardingWidgetsLiveTrustSuffix =>
-      ' and never miss what matters most.';
+      ' te blijven en nooit te missen wat het meest telt.';
 
   @override
-  String get onboardingWidgetsMockStreak => 'Streak';
+  String get onboardingWidgetsMockStreak => 'Reeks';
 
   @override
-  String get onboardingWidgetsMockStreakValue => '12 days';
+  String get onboardingWidgetsMockStreakValue => '12 dagen';
 
   @override
   String get onboardingWidgetsMockFocus => 'Focus';
@@ -392,13 +393,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onboardingWidgetsMockFocusValue => '25 min';
 
   @override
-  String get onboardingWidgetsLiveLockDate => 'Tuesday, 6 May';
+  String get onboardingWidgetsLiveLockDate => 'Dinsdag 6 mei';
 
   @override
   String get onboardingWidgetsLiveLockTime => '9:41';
 
   @override
-  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45 PM in 02:15:32';
+  String get onboardingWidgetsLiveNextPrayer => 'Dhuhr 12:45, over 02:15:32';
 
   @override
   String get focusModesSectionLabel => 'FOCUSMODI · TIK VOOR MEER';
@@ -1630,6 +1631,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quranVersesLabel => 'verzen';
 
   @override
+  String quranSurahHeaderSubtitle(String name, int count) {
+    return '$name • $count verzen';
+  }
+
+  @override
   String get quranTextOptions => 'Tekst opties';
 
   @override
@@ -1803,14 +1809,14 @@ class AppLocalizationsNl extends AppLocalizations {
       'Enable AI Tajweed Practice in Reading Settings';
 
   @override
-  String get readingSettingsTajweedPractice => 'AI Quran Tajweed';
+  String get readingSettingsTajweedPractice => 'AI Koran-tajweed';
 
   @override
   String get readingSettingsTajweedPracticeSubtitle =>
-      'Recite ayahs and get feedback';
+      'Reciteer verzen en krijg feedback';
 
   @override
-  String get readingSettingsTajweedSeeHowItWorks => 'See how it works';
+  String get readingSettingsTajweedSeeHowItWorks => 'Bekijk hoe het werkt';
 
   @override
   String get quranSeeHowAiQuranTajweedWorks => 'see how AI Quran Tajweed works';
@@ -1838,7 +1844,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get readingSettingsTajweedFreePreviewTranslation =>
-      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
+      'In de naam van Allah, de Erbarmer, de Barmhartige.';
 
   @override
   String get quranAudioSettingsTitle => 'Audio settings';
@@ -1865,22 +1871,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get readingSettingsTitle => 'Leesinstellingen';
 
   @override
-  String get readingSettingsArabicFontSize => 'Arabic font size';
+  String get readingSettingsArabicFontSize => 'Arabische lettergrootte';
 
   @override
-  String get readingSettingsTranslationFontSize => 'Translation font size';
+  String get readingSettingsTranslationFontSize => 'Lettergrootte vertaling';
 
   @override
-  String get readingSettingsLineSpacing => 'Line spacing';
+  String get readingSettingsLineSpacing => 'Regelafstand';
 
   @override
-  String get readingSettingsDefaultMode => 'Default reading mode';
+  String get readingSettingsDefaultMode => 'Standaard leesmodus';
 
   @override
-  String get readingSettingsRememberPosition => 'Remember last position';
+  String get readingSettingsRememberPosition => 'Laatste positie onthouden';
 
   @override
-  String get readingSettingsScript => 'Arabic script';
+  String get readingSettingsScript => 'Arabisch schrift';
 
   @override
   String get readingSettingsScriptUthmani => 'Uthmani (Hafs)';
@@ -1889,7 +1895,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get readingSettingsScriptIndopak => 'IndoPak (Hafs)';
 
   @override
-  String get readingSettingsArabicFont => 'Arabic font';
+  String get readingSettingsArabicFont => 'Arabisch lettertype';
 
   @override
   String get readingSettingsFontUthmanic => 'Uthmanic Hafs';
@@ -1898,90 +1904,101 @@ class AppLocalizationsNl extends AppLocalizations {
   String get readingSettingsFontNooreHuda => 'Noore Huda';
 
   @override
-  String get readingSettingsFontSystem => 'System (native)';
+  String get readingSettingsFontSystem => 'Systeem (native)';
 
   @override
-  String get readingSettingsShowTranslation => 'Show translation';
+  String get readingSettingsShowTranslation => 'Vertaling tonen';
 
   @override
-  String get readingSettingsShowTransliteration => 'Show transliteration';
+  String get readingSettingsShowTransliteration => 'Transliteratie tonen';
 
   @override
-  String get readingSettingsTranslationSection => 'Translation';
+  String get readingSettingsTranslationSection => 'Vertaling';
 
   @override
-  String get readingSettingsTranslationLabel => 'Translation';
+  String get readingSettingsTranslationLabel => 'Vertaling';
 
   @override
-  String get readingSettingsTranslationCurrent => 'Current';
+  String get readingSettingsTranslationCurrent => 'Huidig';
 
   @override
-  String get readingSettingsInstalledTranslations => 'Installed';
+  String get readingSettingsInstalledTranslations => 'Geïnstalleerd';
 
   @override
-  String get readingSettingsAvailableTranslations => 'Available';
+  String get readingSettingsAvailableTranslations => 'Beschikbaar';
 
   @override
-  String get readingSettingsTranslationInstalled => 'Installed';
+  String get readingSettingsTranslationInstalled => 'Geïnstalleerd';
 
   @override
-  String get readingSettingsTranslationSelected => 'Selected';
+  String get readingSettingsTranslationSelected => 'Geselecteerd';
 
   @override
-  String get readingSettingsTranslationDownload => 'Download';
+  String get readingSettingsTranslationDownload => 'Downloaden';
 
   @override
-  String get readingSettingsTranslationInstalling => 'Installing…';
+  String get readingSettingsTranslationInstalling => 'Installeren…';
 
   @override
-  String get readingSettingsTranslationDownloading => 'Downloading…';
+  String get readingSettingsTranslationDownloading => 'Downloaden…';
 
   @override
-  String get readingSettingsLayoutTheme => 'Quran layout';
+  String get readingSettingsLayoutTheme => 'Koran-indeling';
 
   @override
   String get readingSettingsLayoutClassic => 'Mushaf';
 
   @override
-  String get readingSettingsLayoutSimple => 'Simple';
+  String get readingSettingsLayoutSimple => 'Eenvoudig';
 
   @override
-  String get readingSettingsLayoutColor => 'Color Quran';
+  String get readingSettingsLayoutColor => 'Kleur-Koran';
 
   @override
-  String get readingSettingsColorTheme => 'Reading theme';
+  String get readingSettingsColorTheme => 'Leesthema';
 
   @override
-  String get readingSettingsColorThemeParchment => 'Parchment';
+  String get readingSettingsColorThemeParchment => 'Perkament';
 
   @override
-  String get readingSettingsColorThemeEmerald => 'Emerald';
+  String get readingSettingsColorThemeEmerald => 'Smaragd';
 
   @override
-  String get readingSettingsColorThemeMidnight => 'Midnight';
+  String get readingSettingsColorThemeMidnight => 'Middernacht';
 
   @override
-  String get readingSettingsPreview => 'Preview';
+  String get readingSettingsPreview => 'Voorbeeld';
 
   @override
-  String get readingSettingsResetHistoryTitle => 'Reset reading data';
+  String get readingSettingsResetHistoryTitle => 'Leesgegevens resetten';
 
   @override
   String get readingSettingsResetHistorySubtitle =>
-      'Clears continue reading, page progress, bookmarks, and quick actions';
+      'Wist verder lezen, paginavoortgang, bladwijzers en snelle acties';
 
   @override
-  String get readingSettingsResetHistoryConfirmTitle => 'Reset reading data?';
+  String get readingSettingsResetHistoryConfirmTitle =>
+      'Leesgegevens resetten?';
 
   @override
   String get readingSettingsResetHistoryConfirmBody =>
-      'This removes continue reading, page completion progress, bookmarks, last listened, and last Tajweed shortcuts. Your display and translation settings are kept.';
+      'Dit verwijdert verder lezen, paginavoortgang, bladwijzers, laatst beluisterd en tajweed-snelkoppelingen. Weergave- en vertaalinstellingen blijven behouden.';
 
   @override
-  String get readingSettingsResetHistoryDone => 'Reading data cleared';
+  String get readingSettingsResetHistoryDone => 'Leesgegevens gewist';
 
   @override
-  String get readingSettingsResetHistoryButton => 'Reset';
+  String get readingSettingsResetHistoryButton => 'Resetten';
+
+  @override
+  String readingSettingsTranslationDownloadFailed(String name) {
+    return 'Kon $name niet downloaden. Probeer opnieuw wanneer je online bent.';
+  }
+
+  @override
+  String readingSettingsTranslationSizeMb(String size) {
+    return '$size MB';
+  }
 
   @override
   String get tajweedListenToAyah => 'Listen to ayah';
@@ -2775,7 +2792,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String insightsPrayerStreakCount(int count) {
-    return '$count prayers';
+    return '$count gebeden';
   }
 
   @override
@@ -2790,44 +2807,44 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get insightsChipDayUp => '↑ 1 today';
+  String get insightsChipDayUp => '↑ 1 vandaag';
 
   @override
-  String get insightsWeeklyCompletion => 'Weekly completion';
+  String get insightsWeeklyCompletion => 'Wekelijkse voortgang';
 
   @override
-  String get insightsMonthlyCompletion => 'Monthly completion';
+  String get insightsMonthlyCompletion => 'Maandelijkse voortgang';
 
   @override
-  String get insightsThisWeek => 'This week';
+  String get insightsThisWeek => 'Deze week';
 
   @override
-  String get insightsThisMonth => 'This month';
+  String get insightsThisMonth => 'Deze maand';
 
   @override
-  String get insightsOverall => 'Overall';
+  String get insightsOverall => 'Totaal';
 
   @override
-  String get insightsRateExcellent => 'Excellent';
+  String get insightsRateExcellent => 'Uitstekend';
 
   @override
-  String get insightsRateGood => 'Good';
+  String get insightsRateGood => 'Goed';
 
   @override
-  String get insightsRateFair => 'Fair';
+  String get insightsRateFair => 'Redelijk';
 
   @override
-  String get insightsRateStart => 'Keep going';
+  String get insightsRateStart => 'Ga door';
 
   @override
-  String get insightsPrayersCompletedWeekly => 'Prayers completed (weekly)';
+  String get insightsPrayersCompletedWeekly => 'Gebeden voltooid (week)';
 
   @override
-  String get insightsPrayersCompletedMonthly => 'Prayers completed (monthly)';
+  String get insightsPrayersCompletedMonthly => 'Gebeden voltooid (maand)';
 
   @override
   String insightsCompletionSummary(int done, int possible) {
-    return 'You completed $done out of $possible prayers.\nAlhamdulillah — keep going!';
+    return 'Je hebt $done van $possible gebeden voltooid.\nAlhamdulillah — ga door!';
   }
 
   @override
@@ -2841,7 +2858,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get insightsPrayersCompletedLabel =>
-      'Prayers completed — Alhamdulillah!';
+      'Gebeden voltooid — Alhamdulillah!';
 
   @override
   String get insightsCycleModeActiveLabel => 'Cyclusmodus actief';
@@ -2868,11 +2885,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get insightsAchieved => 'Behaald';
 
   @override
-  String get insightsMyProgress => 'My progress';
+  String get insightsMyProgress => 'Mijn voortgang';
 
   @override
   String insightsLevelNumber(int level) {
-    return 'Level $level';
+    return 'Niveau $level';
   }
 
   @override
@@ -2887,68 +2904,68 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String insightsXpToNext(String xp, int level) {
-    return '$xp XP to Level $level';
+    return '$xp XP tot niveau $level';
   }
 
   @override
-  String get insightsMaxLevel => 'MAX LEVEL';
+  String get insightsMaxLevel => 'MAXIMAAL NIVEAU';
 
   @override
   String insightsAchievementsUnlocked(int unlocked, int total) {
-    return '$unlocked / $total unlocked';
+    return '$unlocked / $total ontgrendeld';
   }
 
   @override
-  String get insightsAchievementUnlockedTitle => 'Achievement Unlocked';
+  String get insightsAchievementUnlockedTitle => 'Prestatie ontgrendeld';
 
   @override
-  String get insightsLevelUpTitle => 'LEVEL UP';
+  String get insightsLevelUpTitle => 'NIVEAU OMHOOG';
 
   @override
-  String get achievementFirstPrayer => 'First Prayer';
+  String get achievementFirstPrayer => 'Eerste gebed';
 
   @override
-  String get achievementFajrChampion => 'Fajr Champion';
+  String get achievementFajrChampion => 'Fajr-kampioen';
 
   @override
-  String get achievementFiveADay => 'Five-a-Day';
+  String get achievementFiveADay => 'Vijf per dag';
 
   @override
-  String get achievementPerfectWeek => 'Perfect Week';
+  String get achievementPerfectWeek => 'Perfecte week';
 
   @override
-  String get achievementPerfectMonth => 'Perfect Month';
+  String get achievementPerfectMonth => 'Perfecte maand';
 
   @override
-  String get achievementQuranDevotee => 'Quran Devotee';
+  String get achievementQuranDevotee => 'Koranvriend';
 
   @override
-  String get achievementDhikrStarter => 'Dhikr Starter';
+  String get achievementDhikrStarter => 'Start met dhikr';
 
   @override
-  String get achievementNightWorshipper => 'Night Worshipper';
+  String get achievementNightWorshipper => 'Nachtelijke aanbidder';
 
   @override
-  String get achievementMasjidCompanion => 'Masjid Companion';
+  String get achievementMasjidCompanion => 'Moskeemetgezel';
 
   @override
-  String get achievementDistractionDefender => 'Distraction Defender';
+  String get achievementDistractionDefender => 'Focusbewaker';
 
   @override
-  String get achievementCycleGuardian => 'Cycle Guardian';
+  String get achievementCycleGuardian => 'Cyclusbewaker';
 
   @override
-  String get achievementProtectedMonth => 'Protected Month';
+  String get achievementProtectedMonth => 'Beschermde maand';
 
   @override
-  String get achievementSixMonthJourney => 'Six-Month Journey';
+  String get achievementSixMonthJourney => 'Zes maanden reis';
 
   @override
   String get achievementDeenFocusMaster => 'DeenFocus Master';
 
   @override
   String insightsCycleModeFooter(int days) {
-    return 'Cycle Mode days are protected and not counted as streak breaks. You have $days protected day(s) available.';
+    return 'Cyclusdagen zijn beschermd en tellen niet als reeksonderbreking. Je hebt $days beschermde dag(en).';
   }
 
   @override
@@ -4532,6 +4549,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get tajweedPracticeTitle => 'Tajweed-oefening';
 
   @override
+  String tajweedPracticeAyahTitle(String surah, String ref) {
+    return '$surah · $ref';
+  }
+
+  @override
   String get tajweedDownloadTitle => 'AI-model voorbereiden';
 
   @override
@@ -4578,4 +4600,298 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get tajweedErrorUnsupported =>
       'AI-tajweed-oefening is niet beschikbaar op dit apparaat.';
+
+  @override
+  String get sharePromoTitle => 'Bekijk dit op DeenFocus 🌙';
+
+  @override
+  String get sharePromoBody =>
+      'Een eenvoudige app om gefocust te blijven op je Deen, op tijd te bidden en betere gewoontes op te bouwen.';
+
+  @override
+  String get sharePromoDownloadHeading => 'Download DeenFocus:';
+
+  @override
+  String sharePromoAppStoreLine(String url) {
+    return '🍎 App Store: $url';
+  }
+
+  @override
+  String sharePromoPlayStoreLine(String url) {
+    return '🤖 Google Play: $url';
+  }
+
+  @override
+  String get shareBrandName => 'DeenFocus';
+
+  @override
+  String get shareBrandTagline =>
+      'Jouw metgezel voor een beter Deen, elke dag.';
+
+  @override
+  String get shareDownloadCta => 'Download DeenFocus';
+
+  @override
+  String get shareAppStoreBadge => 'App Store';
+
+  @override
+  String get sharePlayStoreBadge => 'Google Play';
+
+  @override
+  String get shareFailed => 'Delen is mislukt. Probeer het opnieuw.';
+
+  @override
+  String insightsRatio(int done, int possible) {
+    return '$done / $possible';
+  }
+
+  @override
+  String insightsCompactRatio(int done, int possible) {
+    return '$done/$possible';
+  }
+
+  @override
+  String insightsPercent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String insightsFocusScoreValue(int score) {
+    return '$score / 100';
+  }
+
+  @override
+  String insightsWeekNumber(int week) {
+    return 'W$week';
+  }
+
+  @override
+  String get insightsLevelName1 => 'Nieuw begin';
+
+  @override
+  String get insightsLevelName2 => 'Eerste stappen';
+
+  @override
+  String get insightsLevelName3 => 'Gewoonte opbouwen';
+
+  @override
+  String get insightsLevelName4 => 'Regelmatige biddende';
+
+  @override
+  String get insightsLevelName5 => 'Standvastig hart';
+
+  @override
+  String get insightsLevelName6 => 'Bewaker van het gebed';
+
+  @override
+  String get insightsLevelName7 => 'Toegewijde dienaar';
+
+  @override
+  String get insightsLevelName8 => 'Sterke routine';
+
+  @override
+  String get insightsLevelName9 => 'Toegewijde biddende';
+
+  @override
+  String get insightsLevelName10 => 'Standvastig';
+
+  @override
+  String get insightsLevelName11 => 'Dieper geloof';
+
+  @override
+  String get insightsLevelName12 => 'Sterke consistentie';
+
+  @override
+  String get insightsLevelName13 => 'Gids in toewijding';
+
+  @override
+  String get insightsLevelName14 => 'Uitzonderlijke consistentie';
+
+  @override
+  String get insightsLevelName15 => 'DeenFocus Master';
+
+  @override
+  String get lockScreenOptionsTitle => 'Vergrendelschermstijl';
+
+  @override
+  String get lockScreenOptionsSubtitle =>
+      'Kies hoe gebedsherinneringen verschijnen';
+
+  @override
+  String get lockScreenOptionsHint =>
+      'Tik op een stijl om de schermvullende indeling te openen.';
+
+  @override
+  String get lockScreenDefaultBadge => 'Standaard';
+
+  @override
+  String get lockScreenSelectedBadge => 'Geselecteerd';
+
+  @override
+  String get lockScreenPreviewLabel => 'Voorbeeld';
+
+  @override
+  String get lockScreenStyleClassic => 'Gebedsherinnering';
+
+  @override
+  String get lockScreenStyleTasbih => 'Tasbih-teller';
+
+  @override
+  String get lockScreenStyleVerse => 'Dagelijkse vers';
+
+  @override
+  String get lockScreenStyleDua => 'Dagelijkse doe\'a';
+
+  @override
+  String get lockScreenStyleQuiz => 'Kennistoets';
+
+  @override
+  String get lockScreenStyleTimes => 'Gebedstijden';
+
+  @override
+  String get lockScreenStyleCountdown => 'Aftelling';
+
+  @override
+  String get lockScreenStyleHold => 'Ingedrukt houden om te bevestigen';
+
+  @override
+  String get lockScreenStyleType => 'Typ om te bevestigen';
+
+  @override
+  String get lockScreenStyleMinimal => 'Minimale focus';
+
+  @override
+  String get lockScreenItsTimeToPray => 'Het is tijd om te bidden:';
+
+  @override
+  String lockScreenRemainingTime(String time) {
+    return 'Resterende tijd: $time';
+  }
+
+  @override
+  String get lockScreenRemindLater => 'Herinner me later';
+
+  @override
+  String get lockScreenNextVerse => 'Volgende vers';
+
+  @override
+  String get lockScreenVerseForToday => 'Vers van vandaag';
+
+  @override
+  String get lockScreenDuaForToday => 'Doe\'a van vandaag';
+
+  @override
+  String get lockScreenTapToCount => 'Tik ergens om te tellen';
+
+  @override
+  String get lockScreenHoldHint => 'Houd ingedrukt om te bevestigen';
+
+  @override
+  String lockScreenTypeHint(String word) {
+    return 'Typ $word om te bevestigen';
+  }
+
+  @override
+  String get lockScreenTypeWord => 'ALHAMDULILLAH';
+
+  @override
+  String get lockScreenConfirmBeforeAllah =>
+      'Bevestig voor Allah dat je hebt gebeden.';
+
+  @override
+  String get lockScreenQuizCategory => 'Gebed';
+
+  @override
+  String get lockScreenQuizQuestion =>
+      'Hoeveel dagelijkse gebeden zijn verplicht?';
+
+  @override
+  String get lockScreenQuizA => 'Drie';
+
+  @override
+  String get lockScreenQuizB => 'Vier';
+
+  @override
+  String get lockScreenQuizC => 'Vijf';
+
+  @override
+  String get lockScreenQuizCorrect => 'Juist';
+
+  @override
+  String get lockScreenQuizIncorrect => 'Onjuist';
+
+  @override
+  String get lockScreenQuizComplete => 'Kennistoets voltooid';
+
+  @override
+  String get lockScreenQuizCategoryFasting => 'Vasten';
+
+  @override
+  String get lockScreenQuizCategoryPillars => 'Zuilen';
+
+  @override
+  String get lockScreenQuizQ2 => 'In welke maand vasten moslims?';
+
+  @override
+  String get lockScreenQuizQ2A => 'Shawwal';
+
+  @override
+  String get lockScreenQuizQ2B => 'Ramadan';
+
+  @override
+  String get lockScreenQuizQ2C => 'Moeharram';
+
+  @override
+  String get lockScreenQuizQ3 => 'Wat is de eerste zuil van de islam?';
+
+  @override
+  String get lockScreenQuizQ3A => 'Salah';
+
+  @override
+  String get lockScreenQuizQ3B => 'Shahada';
+
+  @override
+  String get lockScreenQuizQ3C => 'Hadj';
+
+  @override
+  String get lockScreenTimeUp => 'De tijd is om';
+
+  @override
+  String get lockScreenHoldRelease => 'Blijf indrukken om te bevestigen';
+
+  @override
+  String lockScreenCountProgress(int current, int total) {
+    return '$current van $total';
+  }
+
+  @override
+  String get lockScreenVerseTranslation => 'Gedenk Mij, dan gedenk Ik jullie.';
+
+  @override
+  String get lockScreenVerseRef => 'Koran 2:152';
+
+  @override
+  String get lockScreenDuaTransliteration => 'Rabbana atina fid-dunya hasanah';
+
+  @override
+  String get lockScreenDuaTranslation =>
+      'Onze Heer, schenk ons het goede in deze wereld en het goede in het Hiernamaals.';
+
+  @override
+  String get lockScreenDuaSource => 'Al-Baqara 2:201';
+
+  @override
+  String get lockScreenSampleRemaining => '2u 34m';
+
+  @override
+  String get lockScreenDhikrAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get lockScreenDhikrSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get lockScreenDhikrAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
 }

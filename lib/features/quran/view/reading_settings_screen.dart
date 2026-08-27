@@ -14,6 +14,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../tajweed/model/tajweed_models.dart';
 import '../../tajweed/tajweed_download_coordinator.dart';
 import '../../tajweed/tajweed_entry_point.dart';
+import '../data/quran_translation_texts.dart';
 import '../reading_engine/quran_arabic_font.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
@@ -38,10 +39,9 @@ class ReadingSettingsScreen extends StatefulWidget {
 class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
   static const _fallbackPreviewArabic =
       'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
-  static const _previewTranslation =
-      'In the name of Allah, the Entirely Merciful, the Especially Merciful.';
 
   bool _loading = true;
+  String _previewTranslation = '';
   double _arabicFontSp = 20;
   double _englishFontSp = 15;
   double _lineSpacing = 1.8;
@@ -117,12 +117,11 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
       _loading = false;
     });
     unawaited(_refreshPreviewArabic(script));
+    unawaited(_refreshPreviewTranslation());
     unawaited(_refreshTranslationOptions());
     unawaited(TajweedDownloadCoordinator.refresh());
     if (_showEnglish) {
-      unawaited(
-        QuranTranslationService.ensureDefaultTranslationInBackground(),
-      );
+      unawaited(QuranTranslationService.ensureDefaultTranslationInBackground());
     }
   }
 
@@ -162,8 +161,23 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
         _translationOptions = options;
         _selectedTranslation = selected;
       });
+      unawaited(_refreshPreviewTranslation());
     } catch (_) {
       // Catalog offline — keep whatever we already have.
+    }
+  }
+
+  Future<void> _refreshPreviewTranslation() async {
+    final language = _selectedTranslation;
+    try {
+      final texts = await QuranTranslationTexts.load(language);
+      final text = texts.textFor(1, 1)?.trim();
+      if (!mounted || language != _selectedTranslation) return;
+      setState(() {
+        _previewTranslation = (text != null && text.isNotEmpty) ? text : '';
+      });
+    } catch (_) {
+      // Keep the localized fallback shown by the preview card.
     }
   }
 
@@ -182,9 +196,7 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
 
   Future<void> _openTranslationSettings() async {
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const ReadingTranslationScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (_) => const ReadingTranslationScreen()),
     );
     await _refreshTranslationOptions();
   }
@@ -219,9 +231,9 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
                 ? e.message!
                 : l10n.tajweedErrorModelDownloadFailed)
           : l10n.tajweedErrorModelDownloadFailed;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -275,445 +287,451 @@ class _ReadingSettingsScreenState extends State<ReadingSettingsScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: CustomAppBar(title: l10n.readingSettingsTitle),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
-                  child: _ReadingPreviewCard(
-                    title: l10n.readingSettingsPreview,
-                    arabicText: _previewArabic,
-                    translation: _previewTranslation,
-                    arabicFontSp: _arabicFontSp,
-                    englishFontSp: _englishFontSp,
-                    lineSpacing: _lineSpacing,
-                    arabicFont: _arabicFont,
-                    showEnglish: _showEnglish,
-                    showTransliteration: _showTransliteration,
-                    layoutTheme: _layoutTheme,
-                    palette: palette,
-                  ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.readingSettingsTitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
+            ),
+            if (_loading)
+              const Expanded(child: Center(child: CircularProgressIndicator()))
+            else ...[
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 0),
+                child: _ReadingPreviewCard(
+                  title: l10n.readingSettingsPreview,
+                  arabicText: _previewArabic,
+                  translation: _previewTranslation.isNotEmpty
+                      ? _previewTranslation
+                      : l10n.readingSettingsTajweedFreePreviewTranslation,
+                  arabicFontSp: _arabicFontSp,
+                  englishFontSp: _englishFontSp,
+                  lineSpacing: _lineSpacing,
+                  arabicFont: _arabicFont,
+                  showEnglish: _showEnglish,
+                  showTransliteration: _showTransliteration,
+                  layoutTheme: _layoutTheme,
+                  palette: palette,
                 ),
-                Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
-                    children: [
-                      _SettingsGroup(
-                        children: [
-                          _SettingsNavRow(
-                            icon: Icons.translate_rounded,
-                            label: l10n.readingSettingsTranslationLabel,
-                            value: selectedLabel,
-                            onTap: () => unawaited(_openTranslationSettings()),
-                          ),
-                          const _SettingsDivider(),
-                          _SettingsSegmentSection<QuranLayoutTheme>(
-                            icon: Icons.palette_outlined,
-                            label: l10n.readingSettingsLayoutTheme,
-                            segments: [
-                              ButtonSegment(
-                                value: QuranLayoutTheme.classic,
-                                label: Text(l10n.readingSettingsLayoutClassic),
-                              ),
-                              ButtonSegment(
-                                value: QuranLayoutTheme.simple,
-                                label: Text(l10n.readingSettingsLayoutSimple),
-                              ),
-                              ButtonSegment(
-                                value: QuranLayoutTheme.color,
-                                label: Text(l10n.readingSettingsLayoutColor),
-                              ),
-                            ],
-                            selected: _layoutTheme,
-                            onChanged: (theme) {
-                              setState(() => _layoutTheme = theme);
-                              unawaited(
-                                StorageService.setQuranLayoutTheme(theme.name),
-                              );
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          _SettingsSegmentSection<QuranScript>(
-                            icon: Icons.font_download_rounded,
-                            label: l10n.readingSettingsScript,
-                            segments: [
-                              ButtonSegment(
-                                value: QuranScript.uthmani,
-                                label: Text(l10n.readingSettingsScriptUthmani),
-                              ),
-                              ButtonSegment(
-                                value: QuranScript.indopak,
-                                label: Text(l10n.readingSettingsScriptIndopak),
-                              ),
-                            ],
-                            selected: _script,
-                            onChanged: (script) {
-                              unawaited(_onScriptChanged(script));
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          _SettingsSegmentSection<QuranArabicFont>(
-                            icon: Icons.text_format_rounded,
-                            label: l10n.readingSettingsArabicFont,
-                            segments: [
-                              ButtonSegment(
-                                value: QuranArabicFont.uthmanicHafs,
-                                label: Text(l10n.readingSettingsFontUthmanic),
-                              ),
-                              ButtonSegment(
-                                value: QuranArabicFont.nooreHuda,
-                                label: Text(l10n.readingSettingsFontNooreHuda),
-                              ),
-                              ButtonSegment(
-                                value: QuranArabicFont.system,
-                                label: Text(l10n.readingSettingsFontSystem),
-                              ),
-                            ],
-                            selected: _arabicFont,
-                            onChanged: (font) {
-                              setState(() => _arabicFont = font);
-                              unawaited(
-                                StorageService.setQuranArabicFont(font.name),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      _SettingsGroup(
-                        children: [
-                          _SettingsSliderRow(
-                            icon: Icons.text_fields_rounded,
-                            label: l10n.readingSettingsArabicFontSize,
-                            value: _arabicFontSp,
-                            min: 16,
-                            max: 32,
-                            valueLabel: _arabicFontSp.round().toString(),
-                            onChanged: (value) {
-                              setState(() => _arabicFontSp = value);
-                              unawaited(
-                                StorageService.setQuranArabicFontSp(value),
-                              );
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          _SettingsSliderRow(
-                            icon: Icons.format_size_rounded,
-                            label: l10n.readingSettingsTranslationFontSize,
-                            value: _englishFontSp,
-                            min: 12,
-                            max: 24,
-                            valueLabel: _englishFontSp.round().toString(),
-                            onChanged: (value) {
-                              setState(() => _englishFontSp = value);
-                              unawaited(
-                                StorageService.setQuranEnglishFontSp(value),
-                              );
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          _SettingsSliderRow(
-                            icon: Icons.format_line_spacing_rounded,
-                            label: l10n.readingSettingsLineSpacing,
-                            value: _lineSpacing,
-                            min: 1.2,
-                            max: 2.4,
-                            valueLabel: _lineSpacing.toStringAsFixed(1),
-                            onChanged: (value) {
-                              setState(() => _lineSpacing = value);
-                              unawaited(
-                                StorageService.setQuranLineSpacing(value),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      _SettingsGroup(
-                        children: [
-                          _SettingsSwitchRow(
-                            icon: Icons.menu_book_outlined,
-                            label: l10n.readingSettingsShowTranslation,
-                            value: _showEnglish,
-                            onChanged: (value) {
-                              setState(() => _showEnglish = value);
-                              unawaited(
-                                StorageService.setQuranShowEnglish(value),
-                              );
-                              if (value) {
-                                unawaited(
-                                  QuranTranslationService
-                                      .ensureDefaultTranslationInBackground(),
-                                );
-                                unawaited(_refreshTranslationOptions());
-                              }
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          _SettingsSwitchRow(
-                            icon: Icons.spellcheck_rounded,
-                            label: l10n.readingSettingsShowTransliteration,
-                            value: _showTransliteration,
-                            onChanged: (value) {
-                              setState(() => _showTransliteration = value);
-                              unawaited(
-                                StorageService.setQuranShowTransliteration(
-                                  value,
-                                ),
-                              );
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          ValueListenableBuilder<bool>(
-                            valueListenable:
-                                AppSuperwall.subscriptionActiveNotifier,
-                            builder: (context, isSubscribed, _) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  _TajweedDownloadSettingsRow(
-                                    label: l10n.readingSettingsTajweedPractice,
-                                    showLock: !isSubscribed,
-                                    onDownloadTap: () => unawaited(
-                                      _onTajweedDownloadTapped(
-                                        isSubscribed: isSubscribed,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                      48.w,
-                                      0,
-                                      16.w,
-                                      12.h,
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: InkWell(
-                                        onTap: () => unawaited(
-                                          TajweedEntryPoint.openFreePreview(
-                                            context,
-                                          ),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(4),
-                                        child: Text(
-                                          l10n.readingSettingsTajweedSeeHowItWorks,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                fontWeight: FontWeight.w600,
-                                                decoration: TextDecoration
-                                                    .underline,
-                                                decorationColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ValueListenableBuilder<TajweedDownloadPhase>(
-                                    valueListenable:
-                                        TajweedDownloadCoordinator.phase,
-                                    builder: (context, phase, _) {
-                                      if (phase !=
-                                          TajweedDownloadPhase.downloaded) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                          48.w,
-                                          0,
-                                          16.w,
-                                          12.h,
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: TextButton(
-                                            onPressed: () => unawaited(
-                                              _onTajweedDeleteTapped(),
-                                            ),
-                                            style: TextButton.styleFrom(
-                                              foregroundColor: Colors.red,
-                                              padding: EdgeInsets.zero,
-                                              minimumSize: Size.zero,
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                            ),
-                                            child: Text(
-                                              l10n.readingSettingsTajweedDeleteModel,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall
-                                                  ?.copyWith(
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          const _SettingsDivider(),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 6.h),
-                            child: _SettingsSectionHeader(
-                              icon: Icons.color_lens_outlined,
-                              label: l10n.readingSettingsColorTheme,
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
+                  children: [
+                    _SettingsGroup(
+                      children: [
+                        _SettingsNavRow(
+                          icon: Icons.translate_rounded,
+                          label: l10n.readingSettingsTranslationLabel,
+                          value: selectedLabel,
+                          onTap: () => unawaited(_openTranslationSettings()),
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSegmentSection<QuranLayoutTheme>(
+                          icon: Icons.palette_outlined,
+                          label: l10n.readingSettingsLayoutTheme,
+                          segments: [
+                            ButtonSegment(
+                              value: QuranLayoutTheme.classic,
+                              label: Text(l10n.readingSettingsLayoutClassic),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 14.h),
-                            child: Row(
+                            ButtonSegment(
+                              value: QuranLayoutTheme.simple,
+                              label: Text(l10n.readingSettingsLayoutSimple),
+                            ),
+                            ButtonSegment(
+                              value: QuranLayoutTheme.color,
+                              label: Text(l10n.readingSettingsLayoutColor),
+                            ),
+                          ],
+                          selected: _layoutTheme,
+                          onChanged: (theme) {
+                            setState(() => _layoutTheme = theme);
+                            unawaited(
+                              StorageService.setQuranLayoutTheme(theme.name),
+                            );
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSegmentSection<QuranScript>(
+                          icon: Icons.font_download_rounded,
+                          label: l10n.readingSettingsScript,
+                          segments: [
+                            ButtonSegment(
+                              value: QuranScript.uthmani,
+                              label: Text(l10n.readingSettingsScriptUthmani),
+                            ),
+                            ButtonSegment(
+                              value: QuranScript.indopak,
+                              label: Text(l10n.readingSettingsScriptIndopak),
+                            ),
+                          ],
+                          selected: _script,
+                          onChanged: (script) {
+                            unawaited(_onScriptChanged(script));
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSegmentSection<QuranArabicFont>(
+                          icon: Icons.text_format_rounded,
+                          label: l10n.readingSettingsArabicFont,
+                          segments: [
+                            ButtonSegment(
+                              value: QuranArabicFont.uthmanicHafs,
+                              label: Text(l10n.readingSettingsFontUthmanic),
+                            ),
+                            ButtonSegment(
+                              value: QuranArabicFont.nooreHuda,
+                              label: Text(l10n.readingSettingsFontNooreHuda),
+                            ),
+                            ButtonSegment(
+                              value: QuranArabicFont.system,
+                              label: Text(l10n.readingSettingsFontSystem),
+                            ),
+                          ],
+                          selected: _arabicFont,
+                          onChanged: (font) {
+                            setState(() => _arabicFont = font);
+                            unawaited(
+                              StorageService.setQuranArabicFont(font.name),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    _SettingsGroup(
+                      children: [
+                        _SettingsSliderRow(
+                          icon: Icons.text_fields_rounded,
+                          label: l10n.readingSettingsArabicFontSize,
+                          value: _arabicFontSp,
+                          min: 16,
+                          max: 32,
+                          valueLabel: _arabicFontSp.round().toString(),
+                          onChanged: (value) {
+                            setState(() => _arabicFontSp = value);
+                            unawaited(
+                              StorageService.setQuranArabicFontSp(value),
+                            );
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSliderRow(
+                          icon: Icons.format_size_rounded,
+                          label: l10n.readingSettingsTranslationFontSize,
+                          value: _englishFontSp,
+                          min: 12,
+                          max: 24,
+                          valueLabel: _englishFontSp.round().toString(),
+                          onChanged: (value) {
+                            setState(() => _englishFontSp = value);
+                            unawaited(
+                              StorageService.setQuranEnglishFontSp(value),
+                            );
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSliderRow(
+                          icon: Icons.format_line_spacing_rounded,
+                          label: l10n.readingSettingsLineSpacing,
+                          value: _lineSpacing,
+                          min: 1.2,
+                          max: 2.4,
+                          valueLabel: _lineSpacing.toStringAsFixed(1),
+                          onChanged: (value) {
+                            setState(() => _lineSpacing = value);
+                            unawaited(
+                              StorageService.setQuranLineSpacing(value),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    _SettingsGroup(
+                      children: [
+                        _SettingsSwitchRow(
+                          icon: Icons.menu_book_outlined,
+                          label: l10n.readingSettingsShowTranslation,
+                          value: _showEnglish,
+                          onChanged: (value) {
+                            setState(() => _showEnglish = value);
+                            unawaited(
+                              StorageService.setQuranShowEnglish(value),
+                            );
+                            if (value) {
+                              unawaited(
+                                QuranTranslationService.ensureDefaultTranslationInBackground(),
+                              );
+                              unawaited(_refreshTranslationOptions());
+                            }
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSwitchRow(
+                          icon: Icons.spellcheck_rounded,
+                          label: l10n.readingSettingsShowTransliteration,
+                          value: _showTransliteration,
+                          onChanged: (value) {
+                            setState(() => _showTransliteration = value);
+                            unawaited(
+                              StorageService.setQuranShowTransliteration(value),
+                            );
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        ValueListenableBuilder<bool>(
+                          valueListenable:
+                              AppSuperwall.subscriptionActiveNotifier,
+                          builder: (context, isSubscribed, _) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Expanded(
-                                  child: _ColorThemeOption(
-                                    label: l10n.readingSettingsColorThemeParchment,
-                                    theme: QuranReadingColorTheme.parchment,
-                                    selected:
-                                        _colorTheme ==
-                                        QuranReadingColorTheme.parchment,
-                                    onTap: () => _setColorTheme(
-                                      QuranReadingColorTheme.parchment,
+                                _TajweedDownloadSettingsRow(
+                                  label: l10n.readingSettingsTajweedPractice,
+                                  showLock: !isSubscribed,
+                                  onDownloadTap: () => unawaited(
+                                    _onTajweedDownloadTapped(
+                                      isSubscribed: isSubscribed,
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: _ColorThemeOption(
-                                    label: l10n.readingSettingsColorThemeEmerald,
-                                    theme: QuranReadingColorTheme.emerald,
-                                    selected:
-                                        _colorTheme ==
-                                        QuranReadingColorTheme.emerald,
-                                    onTap: () => _setColorTheme(
-                                      QuranReadingColorTheme.emerald,
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    48.w,
+                                    0,
+                                    16.w,
+                                    12.h,
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: InkWell(
+                                      onTap: () => unawaited(
+                                        TajweedEntryPoint.openFreePreview(
+                                          context,
+                                        ),
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: Text(
+                                        l10n.readingSettingsTajweedSeeHowItWorks,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                              fontWeight: FontWeight.w600,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationColor: Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                            ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: _ColorThemeOption(
-                                    label: l10n.readingSettingsColorThemeMidnight,
-                                    theme: QuranReadingColorTheme.midnight,
-                                    selected:
-                                        _colorTheme ==
-                                        QuranReadingColorTheme.midnight,
-                                    onTap: () => _setColorTheme(
-                                      QuranReadingColorTheme.midnight,
-                                    ),
-                                  ),
+                                ValueListenableBuilder<TajweedDownloadPhase>(
+                                  valueListenable:
+                                      TajweedDownloadCoordinator.phase,
+                                  builder: (context, phase, _) {
+                                    if (phase !=
+                                        TajweedDownloadPhase.downloaded) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                        48.w,
+                                        0,
+                                        16.w,
+                                        12.h,
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: TextButton(
+                                          onPressed: () => unawaited(
+                                            _onTajweedDeleteTapped(),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Colors.red,
+                                            padding: EdgeInsets.zero,
+                                            minimumSize: Size.zero,
+                                            tapTargetSize: MaterialTapTargetSize
+                                                .shrinkWrap,
+                                          ),
+                                          child: Text(
+                                            l10n.readingSettingsTajweedDeleteModel,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
-                            ),
+                            );
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 6.h),
+                          child: _SettingsSectionHeader(
+                            icon: Icons.color_lens_outlined,
+                            label: l10n.readingSettingsColorTheme,
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      _SettingsGroup(
-                        children: [
-                          _SettingsSegmentSection<ReadingMode>(
-                            icon: Icons.menu_book_rounded,
-                            label: l10n.readingSettingsDefaultMode,
-                            segments: [
-                              ButtonSegment(
-                                value: ReadingMode.surah,
-                                label: Text(l10n.quranModeSurah),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 14.h),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: _ColorThemeOption(
+                                  label:
+                                      l10n.readingSettingsColorThemeParchment,
+                                  theme: QuranReadingColorTheme.parchment,
+                                  selected:
+                                      _colorTheme ==
+                                      QuranReadingColorTheme.parchment,
+                                  onTap: () => _setColorTheme(
+                                    QuranReadingColorTheme.parchment,
+                                  ),
+                                ),
                               ),
-                              ButtonSegment(
-                                value: ReadingMode.juz,
-                                label: Text(l10n.quranModeJuz),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: _ColorThemeOption(
+                                  label: l10n.readingSettingsColorThemeEmerald,
+                                  theme: QuranReadingColorTheme.emerald,
+                                  selected:
+                                      _colorTheme ==
+                                      QuranReadingColorTheme.emerald,
+                                  onTap: () => _setColorTheme(
+                                    QuranReadingColorTheme.emerald,
+                                  ),
+                                ),
                               ),
-                              ButtonSegment(
-                                value: ReadingMode.page,
-                                label: Text(l10n.quranModePage),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: _ColorThemeOption(
+                                  label: l10n.readingSettingsColorThemeMidnight,
+                                  theme: QuranReadingColorTheme.midnight,
+                                  selected:
+                                      _colorTheme ==
+                                      QuranReadingColorTheme.midnight,
+                                  onTap: () => _setColorTheme(
+                                    QuranReadingColorTheme.midnight,
+                                  ),
+                                ),
                               ),
                             ],
-                            selected: _defaultMode,
-                            onChanged: (mode) {
-                              setState(() => _defaultMode = mode);
-                              unawaited(
-                                StorageService.setQuranDefaultReadingMode(
-                                  mode.name,
-                                ),
-                              );
-                            },
                           ),
-                          const _SettingsDivider(),
-                          _SettingsSwitchRow(
-                            icon: Icons.bookmark_outlined,
-                            label: l10n.readingSettingsRememberPosition,
-                            value: _rememberLastPosition,
-                            onChanged: (value) {
-                              setState(() => _rememberLastPosition = value);
-                              unawaited(
-                                StorageService.setQuranRememberLastPosition(
-                                  value,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      _SettingsGroup(
-                        children: [
-                          ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 4.h,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    _SettingsGroup(
+                      children: [
+                        _SettingsSegmentSection<ReadingMode>(
+                          icon: Icons.menu_book_rounded,
+                          label: l10n.readingSettingsDefaultMode,
+                          segments: [
+                            ButtonSegment(
+                              value: ReadingMode.surah,
+                              label: Text(l10n.quranModeSurah),
                             ),
-                            leading: Icon(
-                              Icons.restart_alt_rounded,
-                              size: 22.sp,
+                            ButtonSegment(
+                              value: ReadingMode.juz,
+                              label: Text(l10n.quranModeJuz),
+                            ),
+                            ButtonSegment(
+                              value: ReadingMode.page,
+                              label: Text(l10n.quranModePage),
+                            ),
+                          ],
+                          selected: _defaultMode,
+                          onChanged: (mode) {
+                            setState(() => _defaultMode = mode);
+                            unawaited(
+                              StorageService.setQuranDefaultReadingMode(
+                                mode.name,
+                              ),
+                            );
+                          },
+                        ),
+                        const _SettingsDivider(),
+                        _SettingsSwitchRow(
+                          icon: Icons.bookmark_outlined,
+                          label: l10n.readingSettingsRememberPosition,
+                          value: _rememberLastPosition,
+                          onChanged: (value) {
+                            setState(() => _rememberLastPosition = value);
+                            unawaited(
+                              StorageService.setQuranRememberLastPosition(
+                                value,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    _SettingsGroup(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 4.h,
+                          ),
+                          leading: Icon(
+                            Icons.restart_alt_rounded,
+                            size: 22.sp,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          title: Text(
+                            l10n.readingSettingsResetHistoryTitle,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
                               color: Theme.of(context).colorScheme.error,
                             ),
-                            title: Text(
-                              l10n.readingSettingsResetHistoryTitle,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
+                          ),
+                          subtitle: Text(
+                            l10n.readingSettingsResetHistorySubtitle,
+                          ),
+                          trailing: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Theme.of(
+                                context,
+                              ).colorScheme.error,
+                              side: BorderSide(
                                 color: Theme.of(context).colorScheme.error,
                               ),
                             ),
-                            subtitle: Text(
-                              l10n.readingSettingsResetHistorySubtitle,
-                            ),
-                            trailing: OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor:
-                                    Theme.of(context).colorScheme.error,
-                                side: BorderSide(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                              ),
-                              onPressed: () =>
-                                  unawaited(_confirmResetReadingHistory()),
-                              child: Text(l10n.readingSettingsResetHistoryButton),
-                            ),
+                            onPressed: () =>
+                                unawaited(_confirmResetReadingHistory()),
+                            child: Text(l10n.readingSettingsResetHistoryButton),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 24.h),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 24.h),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -788,9 +806,9 @@ class _SettingsNavRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               SizedBox(width: 8.w),
@@ -819,10 +837,7 @@ class _SettingsNavRow extends StatelessWidget {
 }
 
 class _SettingsSectionHeader extends StatelessWidget {
-  const _SettingsSectionHeader({
-    required this.icon,
-    required this.label,
-  });
+  const _SettingsSectionHeader({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -836,9 +851,9 @@ class _SettingsSectionHeader extends StatelessWidget {
         SizedBox(width: 12.w),
         Text(
           label,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -1144,9 +1159,9 @@ class _SettingsDivider extends StatelessWidget {
       height: 1,
       indent: 16.w,
       endIndent: 16.w,
-      color: Theme.of(context).colorScheme.outlineVariant.withValues(
-        alpha: 0.25,
-      ),
+      color: Theme.of(
+        context,
+      ).colorScheme.outlineVariant.withValues(alpha: 0.25),
     );
   }
 }
@@ -1169,7 +1184,11 @@ class _TajweedDownloadSettingsRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       child: Row(
         children: [
-          Icon(Icons.mic_outlined, size: 20.sp, color: colorScheme.onSurfaceVariant),
+          Icon(
+            Icons.mic_outlined,
+            size: 20.sp,
+            color: colorScheme.onSurfaceVariant,
+          ),
           SizedBox(width: 12.w),
           Expanded(
             child: Row(
@@ -1256,8 +1275,7 @@ class _TajweedDownloadTrailing extends StatelessWidget {
                   strokeWidth: 3,
                   value: progress <= 0 ? null : progress.clamp(0.0, 1.0),
                   color: colorScheme.primary,
-                  backgroundColor:
-                      colorScheme.primary.withValues(alpha: 0.15),
+                  backgroundColor: colorScheme.primary.withValues(alpha: 0.15),
                 ),
               ),
               Text(
@@ -1393,7 +1411,12 @@ class _SettingsSliderRow extends StatelessWidget {
               thumbColor: colorScheme.primary,
               overlayColor: colorScheme.primary.withValues(alpha: 0.08),
             ),
-            child: Slider(value: value, min: min, max: max, onChanged: onChanged),
+            child: Slider(
+              value: value,
+              min: min,
+              max: max,
+              onChanged: onChanged,
+            ),
           ),
         ],
       ),

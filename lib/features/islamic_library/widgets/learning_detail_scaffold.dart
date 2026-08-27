@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/share/content_share_payload.dart';
 import '../../../core/share/content_share_service.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
+import '../../../l10n/app_localizations.dart';
 import 'learning_card_actions.dart';
 
 /// Detail page shell: scrollable body + bookmark/copy/share.
@@ -58,23 +59,28 @@ class _LearningDetailScaffoldState extends State<LearningDetailScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: widget.title, subtitle: widget.subtitle),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: RepaintBoundary(
-                key: _cardKey,
-                child: widget.child,
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: widget.title,
+              subtitle: widget.subtitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: RepaintBoundary(
+                  key: _cardKey,
+                  child: widget.child,
+                ),
               ),
             ),
-          ),
-          if (_hasActions)
-            SafeArea(
-              top: false,
-              child: Padding(
+            if (_hasActions)
+              Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
                 child: LearningCardActions(
                   isBookmarked: widget.isBookmarked,
@@ -84,8 +90,8 @@ class _LearningDetailScaffoldState extends State<LearningDetailScaffold> {
                   onShare: _sharing ? () {} : _share,
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

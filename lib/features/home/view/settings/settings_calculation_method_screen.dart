@@ -55,9 +55,8 @@ class SettingsCalculationMethodScreen extends StatelessWidget {
                   _MethodTile(
                     method: methods[i],
                     selected: methods[i] == current,
-                    onTap: () => unawaited(
-                      profile.setCalculationMethod(methods[i]),
-                    ),
+                    onTap: () =>
+                        unawaited(profile.setCalculationMethod(methods[i])),
                   ),
                 ],
               ],
@@ -68,31 +67,43 @@ class SettingsCalculationMethodScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: CustomAppBar(title: l10n.settingsCalculationMethodTitle),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
-        children: [
-          section(l10n.calculationMethodSectionMajorOrgs, const [
-            CalculationMethodOption.muslimWorldLeague,
-            CalculationMethodOption.northAmerica,
-            CalculationMethodOption.egyptian,
-            CalculationMethodOption.ummAlQura,
-            CalculationMethodOption.karachi,
-            CalculationMethodOption.tehran,
-          ]),
-          section(l10n.calculationMethodSectionMiddleEast, const [
-            CalculationMethodOption.kuwait,
-            CalculationMethodOption.qatar,
-            CalculationMethodOption.dubai,
-            CalculationMethodOption.turkey,
-          ]),
-          section(l10n.calculationMethodSectionAsiaPacific, const [
-            CalculationMethodOption.singapore,
-          ]),
-          section(l10n.calculationMethodSectionSpecial, const [
-            CalculationMethodOption.moonsightingCommittee,
-          ]),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.settingsCalculationMethodTitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).pop(),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
+                children: [
+                  section(l10n.calculationMethodSectionMajorOrgs, const [
+                    CalculationMethodOption.muslimWorldLeague,
+                    CalculationMethodOption.northAmerica,
+                    CalculationMethodOption.egyptian,
+                    CalculationMethodOption.ummAlQura,
+                    CalculationMethodOption.karachi,
+                    CalculationMethodOption.tehran,
+                  ]),
+                  section(l10n.calculationMethodSectionMiddleEast, const [
+                    CalculationMethodOption.kuwait,
+                    CalculationMethodOption.qatar,
+                    CalculationMethodOption.dubai,
+                    CalculationMethodOption.turkey,
+                  ]),
+                  section(l10n.calculationMethodSectionAsiaPacific, const [
+                    CalculationMethodOption.singapore,
+                  ]),
+                  section(l10n.calculationMethodSectionSpecial, const [
+                    CalculationMethodOption.moonsightingCommittee,
+                  ]),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -124,17 +135,12 @@ class _MethodTile extends StatelessWidget {
                 method.label,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: selected ? colorScheme.primary : null,
-                  fontWeight:
-                      selected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),
             ),
             if (selected)
-              Icon(
-                Icons.check_rounded,
-                color: colorScheme.primary,
-                size: 20,
-              ),
+              Icon(Icons.check_rounded, color: colorScheme.primary, size: 20),
           ],
         ),
       ),
@@ -153,85 +159,108 @@ class SettingsAsrCalculationScreen extends StatelessWidget {
     final current = profile.asrMethod;
 
     return Scaffold(
-      appBar: CustomAppBar(title: l10n.settingsAsrCalculationTitle),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-              ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.settingsAsrCalculationTitle,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).pop(),
             ),
-            child: Column(
-              children: [
-                for (final option in AsrCalculationOption.values) ...[
-                  if (option != AsrCalculationOption.values.first)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      indent: 16,
-                      endIndent: 16,
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-                    ),
-                  InkWell(
-                    onTap: () => unawaited(profile.setAsrMethod(option)),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.35,
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  option == AsrCalculationOption.standard
-                                      ? l10n.asrMethodStandard
-                                      : l10n.asrMethodHanafi,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.copyWith(
-                                    color: option == current
-                                        ? colorScheme.primary
-                                        : null,
-                                    fontWeight: option == current
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
-                                  ),
-                                ),
-                                if (option == AsrCalculationOption.standard)
-                                  Text(
-                                    l10n.asrMethodStandardSubtitle,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    child: Column(
+                      children: [
+                        for (final option in AsrCalculationOption.values) ...[
+                          if (option != AsrCalculationOption.values.first)
+                            Divider(
+                              height: 1,
+                              thickness: 1,
+                              indent: 16,
+                              endIndent: 16,
+                              color: colorScheme.outlineVariant.withValues(
+                                alpha: 0.3,
+                              ),
+                            ),
+                          InkWell(
+                            onTap: () =>
+                                unawaited(profile.setAsrMethod(option)),
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          option ==
+                                                  AsrCalculationOption.standard
+                                              ? l10n.asrMethodStandard
+                                              : l10n.asrMethodHanafi,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: option == current
+                                                    ? colorScheme.primary
+                                                    : null,
+                                                fontWeight: option == current
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w400,
+                                              ),
+                                        ),
+                                        if (option ==
+                                            AsrCalculationOption.standard)
+                                          Text(
+                                            l10n.asrMethodStandardSubtitle,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: colorScheme
+                                                      .onSurfaceVariant,
+                                                ),
+                                          ),
+                                      ],
                                     ),
                                   ),
-                              ],
+                                  if (option == current)
+                                    Icon(
+                                      Icons.check_rounded,
+                                      color: colorScheme.primary,
+                                      size: 20,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                          if (option == current)
-                            Icon(
-                              Icons.check_rounded,
-                              color: colorScheme.primary,
-                              size: 20,
-                            ),
                         ],
-                      ),
+                      ],
                     ),
                   ),
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

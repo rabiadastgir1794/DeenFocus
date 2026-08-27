@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
@@ -91,31 +91,41 @@ class _ProphetMuhammadScreenState extends State<ProphetMuhammadScreen>
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.libraryModuleProphets,
-        subtitle: l10n.libraryModuleProphetsSub,
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: query,
-              onQueryChanged: (value) => setState(() => query = value),
-              itemCount: indexes.length,
-              totalCount: _cards.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final card = _cards[index];
-                return LearningItemTile(
-                  title: card.title,
-                  subtitle: card.subtitle,
-                  leadingLabel: '${card.index}',
-                  bookmarked: bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.mosque_outlined,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.libraryModuleProphets,
+              subtitle: l10n.libraryModuleProphetsSub,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: query,
+                      onQueryChanged: (value) => setState(() => query = value),
+                      itemCount: indexes.length,
+                      totalCount: _cards.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final card = _cards[index];
+                        return LearningItemTile(
+                          title: card.title,
+                          subtitle: card.subtitle,
+                          leadingLabel: '${card.index}',
+                          bookmarked: bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.mosque_outlined,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

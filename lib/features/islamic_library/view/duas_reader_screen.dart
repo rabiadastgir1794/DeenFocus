@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../helpers/learning_list_controller.dart';
 import '../model/library_dua.dart';
@@ -29,9 +29,8 @@ class DuasReaderScreen extends StatefulWidget {
 class _DuasReaderScreenState extends State<DuasReaderScreen>
     with LearningListController {
   @override
-  String get sectionId => widget.category.progressSectionId(
-        LibraryModuleId.duasAdhkar.name,
-      );
+  String get sectionId =>
+      widget.category.progressSectionId(LibraryModuleId.duasAdhkar.name);
 
   @override
   int? get initialCardIndex => widget.initialCardIndex;
@@ -95,32 +94,42 @@ class _DuasReaderScreenState extends State<DuasReaderScreen>
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: categoryTitle,
-        subtitle: l10n.libraryDuaCount(_duas.length),
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: query,
-              onQueryChanged: (value) => setState(() => query = value),
-              itemCount: indexes.length,
-              totalCount: _duas.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final dua = _duas[index];
-                return LearningItemTile(
-                  title: dua.title,
-                  subtitle: dua.transliteration,
-                  leadingLabel: '${dua.index}',
-                  leadingArabic: dua.arabic,
-                  bookmarked: bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.favorite_outline,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: categoryTitle,
+              subtitle: l10n.libraryDuaCount(_duas.length),
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: query,
+                      onQueryChanged: (value) => setState(() => query = value),
+                      itemCount: indexes.length,
+                      totalCount: _duas.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final dua = _duas[index];
+                        return LearningItemTile(
+                          title: dua.title,
+                          subtitle: dua.transliteration,
+                          leadingLabel: '${dua.index}',
+                          leadingArabic: dua.arabic,
+                          bookmarked: bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.favorite_outline,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

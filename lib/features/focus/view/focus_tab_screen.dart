@@ -14,6 +14,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../../core/widgets/focus_app_icon.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/view/widgets/lock_screen_options/lock_screen_options_popup.dart';
 import '../focus_entry_intent.dart';
 import '../model/focus_models.dart';
 import '../viewmodel/focus_controller.dart';
@@ -1258,6 +1259,7 @@ class _ModeCardsSection extends StatelessWidget {
                   : null,
             ),
             _ModeCard(
+              marginBottom: 16,
               icon: Icons.child_care_outlined,
               iconBackground: colorScheme.error.withValues(alpha: 0.1),
               iconColor: colorScheme.error,
@@ -1272,6 +1274,14 @@ class _ModeCardsSection extends StatelessWidget {
                       color: colorScheme.error,
                     )
                   : null,
+            ),
+            _FocusNavCard(
+              icon: Icons.stay_current_portrait_outlined,
+              iconBackground: colorScheme.primary.withValues(alpha: 0.1),
+              iconColor: colorScheme.primary,
+              title: l10n.lockScreenOptionsTitle,
+              subtitle: l10n.lockScreenOptionsSubtitle,
+              onTap: () => LockScreenOptionsPopup.show(context),
             ),
           ],
         );
@@ -1309,6 +1319,76 @@ class _GlassCard extends StatelessWidget {
         ],
       ),
       child: child,
+    );
+  }
+}
+
+class _FocusNavCard extends StatelessWidget {
+  const _FocusNavCard({
+    required this.icon,
+    required this.iconBackground,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color iconBackground;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return _GlassCard(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: iconBackground,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, size: 20, color: iconColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

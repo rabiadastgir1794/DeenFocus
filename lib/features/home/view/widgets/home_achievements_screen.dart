@@ -160,7 +160,9 @@ class _LevelHeroCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      level.name,
+                      LevelService.localizedName(l10n, level.currentLevel),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: heroFg.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w600,
@@ -333,7 +335,7 @@ class _AchievementRowState extends State<_AchievementRow> {
               children: [
                 Text(
                   AchievementsService.title(l10n, item.id),
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(
                     context,
@@ -366,7 +368,7 @@ class _AchievementRowState extends State<_AchievementRow> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${item.current}/${item.target}',
+                    l10n.insightsCompactRatio(item.current, item.target),
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),

@@ -678,6 +678,17 @@
   "quranNoResults": "No results found",
   "quranNoSurahsFound": "No surahs found",
   "quranVersesLabel": "verses",
+  "quranSurahHeaderSubtitle": "{name} • {count} verses",
+  "@quranSurahHeaderSubtitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "quranTextOptions": "Text options",
   "quranEnglishAndArabic": "English and Arabic",
   "quranArabicOnly": "Arabic only",
@@ -814,6 +825,22 @@
   "readingSettingsResetHistoryConfirmBody": "This removes continue reading, page completion progress, bookmarks, last listened, and last Tajweed shortcuts. Your display and translation settings are kept.",
   "readingSettingsResetHistoryDone": "Reading data cleared",
   "readingSettingsResetHistoryButton": "Reset",
+  "readingSettingsTranslationDownloadFailed": "Could not download {name}. Try again when online.",
+  "@readingSettingsTranslationDownloadFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "readingSettingsTranslationSizeMb": "{size} MB",
+  "@readingSettingsTranslationSizeMb": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "tajweedListenToAyah": "Listen to ayah",
   "tajweedStartReciting": "Start reciting",
   "tajweedTapToStop": "Tap to stop",
@@ -2077,6 +2104,17 @@
     }
   },
   "tajweedPracticeTitle": "Tajweed Practice",
+  "tajweedPracticeAyahTitle": "{surah} · {ref}",
+  "@tajweedPracticeAyahTitle": {
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
   "tajweedDownloadTitle": "Preparing AI model",
   "tajweedDownloadFailedTitle": "Could not prepare AI model",
   "tajweedDownloadBody": "One-time download so Tajweed practice works fully offline afterwards. This only happens once.",
@@ -2089,5 +2127,173 @@
   "tajweedErrorModelDownloadFailed": "Downloading the AI model failed. Check your connection and try again.",
   "tajweedErrorModelLoadFailed": "The AI model could not be loaded on this device.",
   "tajweedErrorCouldNotPrepare": "Could not prepare the AI model.",
-  "tajweedErrorUnsupported": "AI Tajweed practice is not available on this device."
+  "tajweedErrorUnsupported": "AI Tajweed practice is not available on this device.",
+  "sharePromoTitle": "Check out this on DeenFocus 🌙",
+  "sharePromoBody": "A simple app to help you stay focused on your Deen, pray on time and build better habits.",
+  "sharePromoDownloadHeading": "Download DeenFocus:",
+  "sharePromoAppStoreLine": "🍎 App Store: {url}",
+  "sharePromoPlayStoreLine": "🤖 Google Play: {url}",
+  "shareBrandName": "DeenFocus",
+  "shareBrandTagline": "Your companion for a better Deen, every day.",
+  "shareDownloadCta": "Download DeenFocus",
+  "shareAppStoreBadge": "App Store",
+  "sharePlayStoreBadge": "Google Play",
+  "shareFailed": "Unable to share. Please try again.",
+  "@sharePromoAppStoreLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "@sharePromoPlayStoreLine": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsRatio": "{done} / {possible}",
+  "@insightsRatio": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "possible": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsCompactRatio": "{done}/{possible}",
+  "@insightsCompactRatio": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "possible": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsPercent": "{value}%",
+  "@insightsPercent": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsFocusScoreValue": "{score} / 100",
+  "@insightsFocusScoreValue": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsWeekNumber": "W{week}",
+  "@insightsWeekNumber": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsLevelName1": "New Beginning",
+  "insightsLevelName2": "Getting Started",
+  "insightsLevelName3": "Building the Habit",
+  "insightsLevelName4": "Steady Worshipper",
+  "insightsLevelName5": "Consistent Heart",
+  "insightsLevelName6": "Prayer Keeper",
+  "insightsLevelName7": "Dedicated Servant",
+  "insightsLevelName8": "Strong Routine",
+  "insightsLevelName9": "Devoted Worshipper",
+  "insightsLevelName10": "Steadfast",
+  "insightsLevelName11": "Deepening Faith",
+  "insightsLevelName12": "Strong Consistency",
+  "insightsLevelName13": "Devotion Leader",
+  "insightsLevelName14": "Exceptional Consistency",
+  "insightsLevelName15": "DeenFocus Master",
+  "lockScreenOptionsTitle": "Lock Screen Style",
+  "lockScreenOptionsSubtitle": "Choose how prayer reminders appear",
+  "lockScreenOptionsHint": "Tap a style to open the full-screen layout.",
+  "lockScreenDefaultBadge": "Default",
+  "lockScreenSelectedBadge": "Selected",
+  "lockScreenPreviewLabel": "Preview",
+  "lockScreenStyleClassic": "Prayer reminder",
+  "lockScreenStyleTasbih": "Tasbih counter",
+  "lockScreenStyleVerse": "Daily verse",
+  "lockScreenStyleDua": "Daily du'a",
+  "lockScreenStyleQuiz": "Knowledge check",
+  "lockScreenStyleTimes": "Prayer times",
+  "lockScreenStyleCountdown": "Countdown",
+  "lockScreenStyleHold": "Hold to confirm",
+  "lockScreenStyleType": "Type to confirm",
+  "lockScreenStyleMinimal": "Minimal Focus",
+  "lockScreenItsTimeToPray": "It's time to pray:",
+  "lockScreenRemainingTime": "Remaining time: {time}",
+  "@lockScreenRemainingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRemindLater": "Remind Me Later",
+  "lockScreenNextVerse": "Next verse",
+  "lockScreenVerseForToday": "Verse for today",
+  "lockScreenDuaForToday": "Du'a for today",
+  "lockScreenTapToCount": "Tap anywhere to count",
+  "lockScreenHoldHint": "Press and hold to confirm",
+  "lockScreenTypeHint": "Type {word} to confirm",
+  "@lockScreenTypeHint": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenTypeWord": "ALHAMDULILLAH",
+  "lockScreenConfirmBeforeAllah": "Confirm before Allah that you have prayed.",
+  "lockScreenQuizCategory": "Prayer",
+  "lockScreenQuizQuestion": "How many daily prayers are obligatory?",
+  "lockScreenQuizA": "Three",
+  "lockScreenQuizB": "Four",
+  "lockScreenQuizC": "Five",
+  "lockScreenQuizCorrect": "Correct",
+  "lockScreenQuizIncorrect": "Incorrect",
+  "lockScreenQuizComplete": "Knowledge check complete",
+  "lockScreenQuizCategoryFasting": "Fasting",
+  "lockScreenQuizCategoryPillars": "Pillars",
+  "lockScreenQuizQ2": "In which month do Muslims fast?",
+  "lockScreenQuizQ2A": "Shawwal",
+  "lockScreenQuizQ2B": "Ramadan",
+  "lockScreenQuizQ2C": "Muharram",
+  "lockScreenQuizQ3": "Which is the first pillar of Islam?",
+  "lockScreenQuizQ3A": "Salah",
+  "lockScreenQuizQ3B": "Shahada",
+  "lockScreenQuizQ3C": "Hajj",
+  "lockScreenTimeUp": "Time's up",
+  "lockScreenHoldRelease": "Keep holding to confirm",
+  "lockScreenCountProgress": "{current} of {total}",
+  "@lockScreenCountProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "lockScreenVerseTranslation": "So remember Me; I will remember you.",
+  "lockScreenVerseRef": "Quran 2:152",
+  "lockScreenDuaTransliteration": "Rabbana atina fid-dunya hasanah",
+  "lockScreenDuaTranslation": "Our Lord, give us good in this world and good in the Hereafter.",
+  "lockScreenDuaSource": "Al-Baqarah 2:201",
+  "lockScreenSampleRemaining": "2h 34m",
+  "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
+  "lockScreenDhikrSubhanAllah": "SubhanAllah",
+  "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
 }

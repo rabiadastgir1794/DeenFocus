@@ -381,7 +381,7 @@ class PrayerAlarmService {
             'subtitle': l10n.prayerAlarmSubtitle,
             'prayerLabel': prayerLabel,
             'badgeLabel': l10n.prayerAlarmBadge,
-            'ivePrayedLabel': l10n.prayerAlarmIvePrayed,
+            'ivePrayedLabel': l10n.prayerReminderYesButton,
             'dismissLabel': l10n.prayerAlarmDismiss,
             'snoozeLabel': l10n.prayerAlarmSnooze,
             'snoozeSectionLabel': l10n.prayerAlarmsSnoozeLabel,

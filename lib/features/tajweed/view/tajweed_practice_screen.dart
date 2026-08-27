@@ -67,7 +67,7 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final title = widget.args.surahName != null
-        ? '${widget.args.surahName} · ${widget.args.ref}'
+        ? l10n.tajweedPracticeAyahTitle(widget.args.surahName!, widget.args.ref)
         : l10n.tajweedPracticeTitle;
 
     return ChangeNotifierProvider<TajweedPracticeViewModel>.value(
@@ -75,40 +75,47 @@ class _TajweedPracticeScreenState extends State<TajweedPracticeScreen> {
       child: Consumer<TajweedPracticeViewModel>(
         builder: (context, viewModel, _) {
           return Scaffold(
-            appBar: CustomAppBar(
-              title: title,
-              onBack: () {
-                if (context.canPop()) context.pop();
-              },
-              actions: viewModel.stage == TajweedFlowStage.result
-                  ? [
-                      CardShareIconButton(
-                        boundaryKey: _resultShareKey,
-                        iconSize: 24,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  AppCenteredNavHeader(
+                    title: title,
+                    backLabel: l10n.calendarBack,
+                    onBack: () {
+                      if (context.canPop()) context.pop();
+                    },
+                    trailing: viewModel.stage == TajweedFlowStage.result
+                        ? CardShareIconButton(
+                            boundaryKey: _resultShareKey,
+                            iconSize: 24,
+                          )
+                        : null,
+                  ),
+                  Expanded(
+                    child: switch (viewModel.stage) {
+                      TajweedFlowStage.checkingModel =>
+                        const Center(child: CircularProgressIndicator()),
+                      TajweedFlowStage.downloadingModel ||
+                      TajweedFlowStage.downloadFailed =>
+                        TajweedDownloadView(viewModel: viewModel),
+                      TajweedFlowStage.recordingReady ||
+                      TajweedFlowStage.recording ||
+                      TajweedFlowStage.scoring =>
+                        TajweedRecordingView(
+                          viewModel: viewModel,
+                          args: widget.args,
+                        ),
+                      TajweedFlowStage.result => TajweedResultView(
+                        viewModel: viewModel,
+                        args: widget.args,
+                        shareBoundaryKey: _resultShareKey,
+                        onDone: () => unawaited(_handleDone()),
                       ),
-                    ]
-                  : null,
-            ),
-            body: switch (viewModel.stage) {
-              TajweedFlowStage.checkingModel =>
-                const Center(child: CircularProgressIndicator()),
-              TajweedFlowStage.downloadingModel ||
-              TajweedFlowStage.downloadFailed =>
-                TajweedDownloadView(viewModel: viewModel),
-              TajweedFlowStage.recordingReady ||
-              TajweedFlowStage.recording ||
-              TajweedFlowStage.scoring =>
-                TajweedRecordingView(
-                  viewModel: viewModel,
-                  args: widget.args,
-                ),
-              TajweedFlowStage.result => TajweedResultView(
-                viewModel: viewModel,
-                args: widget.args,
-                shareBoundaryKey: _resultShareKey,
-                onDone: () => unawaited(_handleDone()),
+                    },
+                  ),
+                ],
               ),
-            },
+            ),
           );
         },
       ),

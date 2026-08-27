@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
@@ -105,32 +105,42 @@ class _PillarsReaderScreenState extends State<PillarsReaderScreen>
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: libraryModuleTitle(l10n, widget.moduleId),
-        subtitle: libraryModuleSubtitle(l10n, widget.moduleId),
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: query,
-              onQueryChanged: (value) => setState(() => query = value),
-              itemCount: indexes.length,
-              totalCount: _pillars.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final pillar = _pillars[index];
-                return LearningItemTile(
-                  title: pillar.title,
-                  subtitle: pillar.subtitle,
-                  leadingLabel: '${pillar.index}',
-                  leadingArabic: pillar.arabic,
-                  bookmarked: bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.account_balance_outlined,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: libraryModuleTitle(l10n, widget.moduleId),
+              subtitle: libraryModuleSubtitle(l10n, widget.moduleId),
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: query,
+                      onQueryChanged: (value) => setState(() => query = value),
+                      itemCount: indexes.length,
+                      totalCount: _pillars.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final pillar = _pillars[index];
+                        return LearningItemTile(
+                          title: pillar.title,
+                          subtitle: pillar.subtitle,
+                          leadingLabel: '${pillar.index}',
+                          leadingArabic: pillar.arabic,
+                          bookmarked: bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.account_balance_outlined,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

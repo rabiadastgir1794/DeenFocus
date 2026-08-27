@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../data/library_progress_service.dart';
@@ -107,8 +107,9 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
       ),
     );
     if (!mounted) return;
-    final progress =
-        await LibraryProgressService.instance.getProgress(_sectionId.name);
+    final progress = await LibraryProgressService.instance.getProgress(
+      _sectionId.name,
+    );
     if (!mounted) return;
     setState(() {
       _bookmarks = Set<int>.from(progress.bookmarks);
@@ -126,32 +127,42 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
     final indexes = _filteredIndexes;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.libraryModuleNames,
-        subtitle: l10n.libraryModuleNamesSub,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: _query,
-              onQueryChanged: (value) => setState(() => _query = value),
-              itemCount: indexes.length,
-              totalCount: _names.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final name = _names[index];
-                return LearningItemTile(
-                  title: name.transliteration,
-                  subtitle: name.meaning,
-                  leadingLabel: '${name.index}',
-                  leadingArabic: name.arabic,
-                  bookmarked: _bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.auto_awesome_outlined,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.libraryModuleNames,
+              subtitle: l10n.libraryModuleNamesSub,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: _query,
+                      onQueryChanged: (value) => setState(() => _query = value),
+                      itemCount: indexes.length,
+                      totalCount: _names.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final name = _names[index];
+                        return LearningItemTile(
+                          title: name.transliteration,
+                          subtitle: name.meaning,
+                          leadingLabel: '${name.index}',
+                          leadingArabic: name.arabic,
+                          bookmarked: _bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.auto_awesome_outlined,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -221,10 +232,7 @@ class _NameDetailScreenState extends State<_NameDetailScreen> {
 }
 
 class _NameDetailBody extends StatelessWidget {
-  const _NameDetailBody({
-    required this.name,
-    required this.backgroundColor,
-  });
+  const _NameDetailBody({required this.name, required this.backgroundColor});
 
   final AllahName name;
   final Color backgroundColor;
@@ -250,9 +258,9 @@ class _NameDetailBody extends StatelessWidget {
           Text(
             '${name.index}',
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
@@ -260,33 +268,33 @@ class _NameDetailBody extends StatelessWidget {
             textAlign: TextAlign.center,
             textDirection: TextDirection.rtl,
             style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontFamily: 'UthmanicHafs',
-                  height: 1.5,
-                  fontWeight: FontWeight.w500,
-                ),
+              fontFamily: 'UthmanicHafs',
+              height: 1.5,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             name.transliteration,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 4),
           Text(
             l10n.libraryMeaning,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             name.meaning,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 20),
           Align(
@@ -294,9 +302,9 @@ class _NameDetailBody extends StatelessWidget {
             child: Text(
               name.explanation,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    height: 1.55,
-                    color: colorScheme.onSurface,
-                  ),
+                height: 1.55,
+                color: colorScheme.onSurface,
+              ),
             ),
           ),
           if (name.reflection != null && name.reflection!.isNotEmpty) ...[
@@ -314,17 +322,17 @@ class _NameDetailBody extends StatelessWidget {
                   Text(
                     l10n.libraryReflection,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     name.reflection!,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          height: 1.5,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                      height: 1.5,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),

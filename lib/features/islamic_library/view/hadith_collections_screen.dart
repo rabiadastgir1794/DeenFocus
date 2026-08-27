@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../model/library_hadith.dart';
@@ -28,8 +28,8 @@ class _HadithCollectionsScreenState extends State<HadithCollectionsScreen> {
   }
 
   Future<void> _load() async {
-    final collections =
-        await IslamicLibraryRepository.instance.loadHadithCollections();
+    final collections = await IslamicLibraryRepository.instance
+        .loadHadithCollections();
     if (!mounted) return;
     setState(() {
       _collections = collections;
@@ -50,31 +50,44 @@ class _HadithCollectionsScreenState extends State<HadithCollectionsScreen> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final softCardColor =
-        isDark ? colorScheme.surfaceContainerHighest : AppColors.surfaceLight;
+    final softCardColor = isDark
+        ? colorScheme.surfaceContainerHighest
+        : AppColors.surfaceLight;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.libraryModuleHadith,
-        subtitle: l10n.libraryModuleHadithSub,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
-              itemCount: _collections.length,
-              separatorBuilder: (_, _) => SizedBox(height: 10.h),
-              itemBuilder: (context, index) {
-                final collection = _collections[index];
-                return LibraryCategoryTile(
-                  title: hadithCollectionTitle(l10n, collection.id),
-                  subtitle: l10n.libraryHadithCount(collection.itemCount),
-                  icon: Icons.auto_stories_outlined,
-                  backgroundColor: softCardColor,
-                  onTap: () => _openCollection(collection),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.libraryModuleHadith,
+              subtitle: l10n.libraryModuleHadithSub,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.separated(
+                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+                      itemCount: _collections.length,
+                      separatorBuilder: (_, _) => SizedBox(height: 10.h),
+                      itemBuilder: (context, index) {
+                        final collection = _collections[index];
+                        return LibraryCategoryTile(
+                          title: hadithCollectionTitle(l10n, collection.id),
+                          subtitle: l10n.libraryHadithCount(
+                            collection.itemCount,
+                          ),
+                          icon: Icons.auto_stories_outlined,
+                          backgroundColor: softCardColor,
+                          onTap: () => _openCollection(collection),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

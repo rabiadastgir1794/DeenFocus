@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../helpers/learning_list_controller.dart';
 import '../model/library_guide.dart';
@@ -30,9 +30,8 @@ class PrayerGuideReaderScreen extends StatefulWidget {
 class _PrayerGuideReaderScreenState extends State<PrayerGuideReaderScreen>
     with LearningListController {
   @override
-  String get sectionId => widget.guide.progressSectionId(
-        LibraryModuleId.prayerMethods.name,
-      );
+  String get sectionId =>
+      widget.guide.progressSectionId(LibraryModuleId.prayerMethods.name);
 
   @override
   int? get initialCardIndex => widget.initialCardIndex;
@@ -104,31 +103,41 @@ class _PrayerGuideReaderScreenState extends State<PrayerGuideReaderScreen>
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: guideTitle,
-        subtitle: l10n.libraryItemCount(_steps.length),
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LearningSearchableList(
-              query: query,
-              onQueryChanged: (value) => setState(() => query = value),
-              itemCount: indexes.length,
-              totalCount: _steps.length,
-              itemBuilder: (context, i) {
-                final index = indexes[i];
-                final step = _steps[index];
-                return LearningItemTile(
-                  title: step.title,
-                  subtitle: step.description,
-                  leadingLabel: '${step.index}',
-                  bookmarked: bookmarks.contains(index),
-                  backgroundColor: cardColor,
-                  icon: Icons.accessibility_new_outlined,
-                  onTap: () => _openDetail(index),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: guideTitle,
+              subtitle: l10n.libraryItemCount(_steps.length),
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : LearningSearchableList(
+                      query: query,
+                      onQueryChanged: (value) => setState(() => query = value),
+                      itemCount: indexes.length,
+                      totalCount: _steps.length,
+                      itemBuilder: (context, i) {
+                        final index = indexes[i];
+                        final step = _steps[index];
+                        return LearningItemTile(
+                          title: step.title,
+                          subtitle: step.description,
+                          leadingLabel: '${step.index}',
+                          bookmarked: bookmarks.contains(index),
+                          backgroundColor: cardColor,
+                          icon: Icons.accessibility_new_outlined,
+                          onTap: () => _openDetail(index),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

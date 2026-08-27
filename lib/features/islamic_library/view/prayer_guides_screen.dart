@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../model/library_guide.dart';
@@ -27,8 +27,7 @@ class _PrayerGuidesScreenState extends State<PrayerGuidesScreen> {
   }
 
   Future<void> _load() async {
-    final guides =
-        await IslamicLibraryRepository.instance.loadPrayerGuides();
+    final guides = await IslamicLibraryRepository.instance.loadPrayerGuides();
     if (!mounted) return;
     setState(() {
       _guides = guides;
@@ -49,31 +48,42 @@ class _PrayerGuidesScreenState extends State<PrayerGuidesScreen> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final softCardColor =
-        isDark ? colorScheme.surfaceContainerHighest : AppColors.surfaceLight;
+    final softCardColor = isDark
+        ? colorScheme.surfaceContainerHighest
+        : AppColors.surfaceLight;
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: l10n.libraryModulePrayerMethods,
-        subtitle: l10n.libraryModulePrayerMethodsSub,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
-              itemCount: _guides.length,
-              separatorBuilder: (_, _) => SizedBox(height: 10.h),
-              itemBuilder: (context, index) {
-                final guide = _guides[index];
-                return LibraryCategoryTile(
-                  title: prayerGuideTitle(l10n, guide.id),
-                  subtitle: l10n.libraryGuideStepCount(guide.itemCount),
-                  icon: Icons.accessibility_new_outlined,
-                  backgroundColor: softCardColor,
-                  onTap: () => _openGuide(guide),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppCenteredNavHeader(
+              title: l10n.libraryModulePrayerMethods,
+              subtitle: l10n.libraryModulePrayerMethodsSub,
+              backLabel: l10n.calendarBack,
+              onBack: () => Navigator.of(context).maybePop(),
             ),
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.separated(
+                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+                      itemCount: _guides.length,
+                      separatorBuilder: (_, _) => SizedBox(height: 10.h),
+                      itemBuilder: (context, index) {
+                        final guide = _guides[index];
+                        return LibraryCategoryTile(
+                          title: prayerGuideTitle(l10n, guide.id),
+                          subtitle: l10n.libraryGuideStepCount(guide.itemCount),
+                          icon: Icons.accessibility_new_outlined,
+                          backgroundColor: softCardColor,
+                          onTap: () => _openGuide(guide),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
