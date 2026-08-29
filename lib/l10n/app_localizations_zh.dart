@@ -438,6 +438,63 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focusChildModeBullet3 => '每次都安心';
 
   @override
+  String get restrictedModeSalahTitle => '礼拜时间';
+
+  @override
+  String get restrictedModeSalahMessage => '远离干扰，回应礼拜的召唤。';
+
+  @override
+  String get restrictedModeSalahInfo => '把握此刻与真主相连。';
+
+  @override
+  String get restrictedModeSalahQuote => '当谨守拜功以记念我。';
+
+  @override
+  String get restrictedModeSalahQuoteSource => '古兰经 20:14';
+
+  @override
+  String get restrictedModeSalahCta => '开始礼拜';
+
+  @override
+  String get restrictedModeChildTitle => '儿童专注模式';
+
+  @override
+  String get restrictedModeChildMessage => '更安全、更平衡的专注屏幕时间空间。';
+
+  @override
+  String get restrictedModeChildInfo => '部分应用暂时不可用。';
+
+  @override
+  String get restrictedModeChildQuote => '当孩子七岁时，当教导他们礼拜。';
+
+  @override
+  String get restrictedModeChildQuoteSource => '圣训 - 艾布·达乌德';
+
+  @override
+  String get restrictedModeChildCta => '保持保护';
+
+  @override
+  String get restrictedModeNightTitle => '夜间专注模式';
+
+  @override
+  String get restrictedModeNightMessage => '是时候休息，远离数字干扰。';
+
+  @override
+  String get restrictedModeNightInfo => '放下设备，享受宁静的夜晚。';
+
+  @override
+  String get restrictedModeNightQuote => '我使你们的睡眠为休息。';
+
+  @override
+  String get restrictedModeNightQuoteSource => '古兰经 78:9';
+
+  @override
+  String get restrictedModeNightCta => '晚安';
+
+  @override
+  String get restrictedModeAppsUnavailable => '部分应用暂时不可用。';
+
+  @override
   String get focusModeGotIt => '知道了';
 
   @override
@@ -887,11 +944,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendarEventWhiteDaysDesc => '推荐封斋日';
 
   @override
-  String get cycleModeActiveTitle => '“真主欲你们便利，不要你们困难。” — 古兰经 2:185';
+  String get cycleModeActiveTitle => '你的周期是暂停，不是停止。';
 
   @override
-  String get cycleModeActiveSubtitle =>
-      '在此期间，您的礼拜连续记录会受到保护。经期日以粉色标示，周期结束后周期模式会自动关闭。';
+  String get cycleModeActiveSubtitle => '记念 • 赞珠 • 听古兰经';
 
   @override
   String get cycleModeStreakProtected =>
@@ -934,7 +990,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get cycleModePauseStreaksLabel => '暂停连续记录';
+  String get cycleModePauseStreaksLabel => '保护礼拜连续记录';
 
   @override
   String get cycleModeExcludeFromStatisticsLabel => '不计入统计';
@@ -1577,6 +1633,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get quranModePage => '页';
+
+  @override
+  String get quranSwitchToPageView => '页面视图';
+
+  @override
+  String get quranSwitchToSurahView => '章节视图';
 
   @override
   String get quranJuzLabel => 'Juz';
@@ -2259,7 +2321,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAboutTitle => '关于德恩焦点';
 
   @override
-  String get settingsRateDeenFocus => 'Rate DeenFocus ⭐';
+  String get settingsRateDeenFocus => '为 DeenFocus 评分 ⭐';
 
   @override
   String get settingsContactUsTitle => '联系我们';
@@ -2297,7 +2359,97 @@ class AppLocalizationsZh extends AppLocalizations {
       '智能专注模式帮助您在礼拜、睡眠和重要时刻屏蔽干扰，让您保持专注和自律。';
 
   @override
-  String get settingsAboutFooter => '保持一致。保持专注。\n保持与您的信仰的联系。';
+  String get settingsAboutFooter => '保持一致。保持专注。与您的信仰保持连接。';
+
+  @override
+  String get settingsAboutOffersHeading => 'Deen Focus 提供什么';
+
+  @override
+  String get settingsAboutNewBadge => '新';
+
+  @override
+  String get settingsAboutFooterCard => '智能工具助您每天保持专注、一致，并与您的信仰保持连接。';
+
+  @override
+  String get settingsAboutOfferPrayerTimesTitle => '准确的礼拜时间';
+
+  @override
+  String get settingsAboutOfferPrayerTimesSubtitle => '及时的礼拜提醒和精美小组件，助您保持正轨。';
+
+  @override
+  String get settingsAboutOfferPrayerStreaksTitle => '礼拜连续记录';
+
+  @override
+  String get settingsAboutOfferPrayerStreaksSubtitle =>
+      '通过每日和总体连续记录追踪，建立一致性并在信仰中成长。';
+
+  @override
+  String get settingsAboutOfferCycleModeTitle => '生理期模式';
+
+  @override
+  String get settingsAboutOfferCycleModeSubtitle =>
+      '适用于经期——暂停礼拜，保留连续记录，继续您的旅程。';
+
+  @override
+  String get settingsAboutOfferQuranTajweedTitle => '古兰经塔吉维德';
+
+  @override
+  String get settingsAboutOfferQuranTajweedSubtitle =>
+      '阅读、聆听并练习塔吉维德，获得 AI 驱动的实时反馈。';
+
+  @override
+  String get settingsAboutOfferLiveActivitiesTitle => '实时活动';
+
+  @override
+  String get settingsAboutOfferLiveActivitiesSubtitle => '从锁屏直接了解正在进行的礼拜和专注会话。';
+
+  @override
+  String get settingsAboutOfferQiblaTitle => '朝拜方向与清真寺查找';
+
+  @override
+  String get settingsAboutOfferQiblaSubtitle => '随时查找朝拜方向，无论身在何处都能发现附近的清真寺。';
+
+  @override
+  String get settingsAboutOfferFocusModesTitle => '专注模式';
+
+  @override
+  String get settingsAboutOfferFocusModesSubtitle => '在礼拜、睡眠、学习或家庭时间屏蔽干扰应用。';
+
+  @override
+  String get settingsAboutOfferTasbihTitle => '赞珠与记主';
+
+  @override
+  String get settingsAboutOfferTasbihSubtitle => '电子赞珠，帮助您全天记念真主。';
+
+  @override
+  String get settingsAboutOfferCalendarTitle => '伊斯兰日历';
+
+  @override
+  String get settingsAboutOfferCalendarSubtitle => '带有重要伊斯兰日期和提醒的回历日历。';
+
+  @override
+  String get settingsAboutGridNamesTitle => '安拉的九十九个美名';
+
+  @override
+  String get settingsAboutGridNamesSubtitle => '学习并思考至美名（Asma ul-Husna）。';
+
+  @override
+  String get settingsAboutGridDuasTitle => '杜阿与记念';
+
+  @override
+  String get settingsAboutGridDuasSubtitle => '晨间、晚间和每日杜阿。';
+
+  @override
+  String get settingsAboutGridPrayerTitle => '礼拜与方法';
+
+  @override
+  String get settingsAboutGridPrayerSubtitle => '学习礼拜、小净、朝觐等。';
+
+  @override
+  String get settingsAboutGridFiqhTitle => '法学与传统';
+
+  @override
+  String get settingsAboutGridFiqhSubtitle => '探索正宗的伊斯兰知识。';
 
   @override
   String get settingsEnableSystemNotifications => '启用系统通知以打开此功能。';
@@ -2487,72 +2639,69 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focusNoAppsSelectedSnack => '未选择应用。请先选择要拦截的应用。';
 
   @override
-  String get focusDiagnosticButton => 'Diagnostic';
+  String get focusDiagnosticButton => '诊断';
 
   @override
-  String get focusDiagnosticTitle => 'Test App Lock';
+  String get focusDiagnosticTitle => '测试应用锁定';
 
   @override
   String get focusDiagnosticIntro =>
-      'Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.';
+      '使用与专注模式相同的应用锁定，暂时锁定所选应用 60 秒。打开被锁定的应用，确认 DeenFocus 锁定屏幕是否出现。';
 
   @override
   String focusDiagnosticIntroWithApp(String appName) {
-    return 'Temporarily lock your selected apps for 60 seconds. Try opening $appName to confirm the DeenFocus lock screen appears.';
+    return '暂时锁定所选应用 60 秒。尝试打开 $appName，确认 DeenFocus 锁定屏幕是否出现。';
   }
 
   @override
-  String get focusDiagnosticStart => 'Start Test';
+  String get focusDiagnosticStart => '开始测试';
 
   @override
-  String get focusDiagnosticEndEarly => 'End Test';
+  String get focusDiagnosticEndEarly => '结束测试';
 
   @override
   String focusDiagnosticRunning(int seconds) {
-    return 'App Lock is on for ${seconds}s. Switch to a selected app to test the lock screen.';
+    return '应用锁定已开启 $seconds 秒。切换到所选应用以测试锁定屏幕。';
   }
 
   @override
-  String get focusDiagnosticSuccessTitle => 'Test completed';
+  String get focusDiagnosticSuccessTitle => '测试完成';
 
   @override
   String get focusDiagnosticSuccessBody =>
-      'App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.';
+      '已对你选择的应用启用锁定。若看到 DeenFocus 锁定屏幕，说明应用锁定正常工作。';
 
   @override
-  String get focusDiagnosticCancelledTitle => 'Test ended';
+  String get focusDiagnosticCancelledTitle => '测试已结束';
 
   @override
-  String get focusDiagnosticCancelledBody =>
-      'The diagnostic lock was turned off. Your Focus modes and schedules were not changed.';
+  String get focusDiagnosticCancelledBody => '诊断锁定已关闭。你的专注模式和时间表未更改。';
 
   @override
-  String get focusDiagnosticMissingAppsTitle => 'Select apps first';
+  String get focusDiagnosticMissingAppsTitle => '请先选择应用';
 
   @override
-  String get focusDiagnosticMissingAppsBody =>
-      'Choose at least one app to block before running the App Lock test.';
+  String get focusDiagnosticMissingAppsBody => '运行应用锁定测试前，请至少选择一个要阻止的应用。';
 
   @override
-  String get focusDiagnosticMissingPermissionTitle => 'Permission needed';
+  String get focusDiagnosticMissingPermissionTitle => '需要权限';
 
   @override
   String get focusDiagnosticMissingPermissionBodyIos =>
-      'Screen Time access is required to block apps. Allow Screen Time, then try again.';
+      '阻止应用需要屏幕使用时间权限。请允许后重试。';
 
   @override
   String get focusDiagnosticMissingPermissionBodyAndroid =>
-      'Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.';
+      '必须在 Android 中为 DeenFocus 启用无障碍服务，才能阻止应用。';
 
   @override
-  String get focusDiagnosticFailedTitle => 'Could not start test';
+  String get focusDiagnosticFailedTitle => '无法开始测试';
 
   @override
-  String get focusDiagnosticFailedBody =>
-      'App Lock did not activate. Check permissions and selected apps, then try again.';
+  String get focusDiagnosticFailedBody => '应用锁定未激活。请检查权限和所选应用后重试。';
 
   @override
-  String get focusDiagnosticClose => 'Done';
+  String get focusDiagnosticClose => '完成';
 
   @override
   String get focusScreenTimeRequiredBlockIphone =>
@@ -4645,4 +4794,114 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
+
+  @override
+  String get homeTajweedPromoTitle => '古兰经 AI 塔吉维德';
+
+  @override
+  String get homeTajweedPromoBody => '诵读任意经文，即时获得 AI 塔吉维德反馈。';
+
+  @override
+  String get homeTajweedPromoCta => '练习塔吉维德';
+
+  @override
+  String get homeTajweedPromoAiFeedback => 'AI 反馈';
+
+  @override
+  String homeTajweedPromoWordAccuracy(int percent) {
+    return '$percent% 词准确率';
+  }
+
+  @override
+  String get homeLockScreenPromoTitle => '锁屏样式';
+
+  @override
+  String get homeLockScreenPromoBody => '用精美的伊斯兰设计和实用提醒个性化你的锁屏。';
+
+  @override
+  String get homeLockScreenPromoCta => '探索样式';
+
+  @override
+  String get homePromoNewBadge => '新';
+
+  @override
+  String get homeReadQuranPromoTitle => '阅读古兰经';
+
+  @override
+  String get homeReadQuranPromoSubtitle => '阅读、聆听并练习塔吉维德';
+
+  @override
+  String get homeReadQuranPromoCta => '打开古兰经';
+
+  @override
+  String get homeReadQuranPromoNewBadge => '新';
+
+  @override
+  String cycleModeActiveStatus(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '连续记录受保护 • $days 天后结束',
+      one: '连续记录受保护 • 明天结束',
+      zero: '连续记录受保护 • 今天结束',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModeProtectPrayerStreakSubtitle => '在周期日内保持连续记录不变';
+
+  @override
+  String get cycleModeExcludeFromStatisticsSubtitle => '周期日不计入礼拜统计数据';
+
+  @override
+  String get homePromoPreviewCity => '拉合尔';
+
+  @override
+  String get focusScreenTimeAuthPasscodeRequired =>
+      '此 iPhone 需先设置设备密码，Apple 才会允许“屏幕使用时间”访问。请在设置中设置密码后重试。';
+
+  @override
+  String get focusScreenTimeAuthCanceled => '屏幕使用时间授权在完成前被取消。请重试并完成 Apple 提示。';
+
+  @override
+  String get focusScreenTimeAuthConflict =>
+      '另一款应用已在管理此 iPhone 上的“家人控制”。请先关闭后再试。';
+
+  @override
+  String get focusScreenTimeAuthInvalidAccount =>
+      '请使用有效的 iCloud 账户登录此 iPhone，然后再次尝试屏幕使用时间访问。';
+
+  @override
+  String get focusScreenTimeAuthNetwork =>
+      '此 iPhone 需要联网后，Apple 才能授予屏幕使用时间访问权限。';
+
+  @override
+  String get focusScreenTimeAuthRestricted =>
+      '此 iPhone 上的“家人控制”受限，因此 DeenFocus 无法在此请求屏幕使用时间访问。';
+
+  @override
+  String get focusScreenTimeAuthUnavailable => '此 iPhone 上暂时无法使用“家人控制”。';
+
+  @override
+  String get focusScreenTimeAuthIosVersion => '屏幕使用时间应用拦截需要 iOS 16 或更高版本。';
+
+  @override
+  String get focusScreenTimeAuthInvalidArgument => '屏幕使用时间授权请求无效。请重试。';
+
+  @override
+  String get focusScreenTimeAuthFailedGeneric => '无法在此 iPhone 上授予屏幕使用时间访问权限。';
+
+  @override
+  String widgetLockCountdownHoursMinutes(String hours, String minutes) {
+    return '$hours小时$minutes分钟后';
+  }
+
+  @override
+  String widgetLockCountdownMinutes(String minutes) {
+    return '$minutes分钟后';
+  }
+
+  @override
+  String get lockScreenRecommendedBadge => '推荐';
 }

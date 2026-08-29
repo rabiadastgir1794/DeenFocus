@@ -43,8 +43,16 @@ class _HomeRouteGateState extends State<HomeRouteGate> {
       StartupProbe.detail('HomeRouteGate.loadLibrary failed: $e');
       if (!mounted) return;
       setState(() => _error = e);
-      StartupHandoff.notifyFirstDestinationFrame();
+      _notifyDestinationReady();
     }
+  }
+
+  void _notifyDestinationReady() {
+    StartupHandoff.notifyFirstDestinationFrame();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      StartupProbe.markOnce('HomeRouteGate destination idle');
+      StartupHandoff.notifyFirstDestinationIdle();
+    });
   }
 
   @override
@@ -71,7 +79,7 @@ class _HomeRouteGateState extends State<HomeRouteGate> {
         if (_handedOff) return;
         _handedOff = true;
         StartupProbe.markOnce('HomeRouteGate.Dashboard first frame');
-        StartupHandoff.notifyFirstDestinationFrame();
+        _notifyDestinationReady();
         StartupProbe.dumpSummary();
       });
     }
@@ -109,8 +117,16 @@ class _OnboardingRouteGateState extends State<OnboardingRouteGate> {
       StartupProbe.detail('OnboardingRouteGate.loadLibrary failed: $e');
       if (!mounted) return;
       setState(() => _error = e);
-      StartupHandoff.notifyFirstDestinationFrame();
+      _notifyDestinationReady();
     }
+  }
+
+  void _notifyDestinationReady() {
+    StartupHandoff.notifyFirstDestinationFrame();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      StartupProbe.markOnce('OnboardingRouteGate destination idle');
+      StartupHandoff.notifyFirstDestinationIdle();
+    });
   }
 
   @override
@@ -137,7 +153,7 @@ class _OnboardingRouteGateState extends State<OnboardingRouteGate> {
         if (_handedOff) return;
         _handedOff = true;
         StartupProbe.markOnce('OnboardingRouteGate first frame');
-        StartupHandoff.notifyFirstDestinationFrame();
+        _notifyDestinationReady();
         StartupProbe.dumpSummary();
       });
     }

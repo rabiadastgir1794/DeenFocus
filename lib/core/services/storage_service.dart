@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/home/model/home_models.dart';
@@ -44,6 +45,7 @@ abstract class StorageService {
   static const String _keyPrayerSettingsJson = 'prayer_settings_json';
   static const String _keyFocusSettingsJson = 'focus_settings_json';
   static const String _keyFocusScheduleJson = 'focus_schedule_json';
+
   /// Ephemeral App Lock diagnostic end time (ms since epoch). Separate from
   /// [focus_settings_json] so a test never mutates mode/schedule preferences.
   static const String _keyFocusDiagnosticLockUntilMs =
@@ -100,6 +102,10 @@ abstract class StorageService {
       'home_live_activity_promo_dismissed_v2';
   static const String _keyHomeWidgetsPromoDismissed =
       'home_widgets_promo_dismissed';
+  static const String _keyHomeTajweedPromoDismissed =
+      'home_tajweed_promo_dismissed';
+  static const String _keyHomeLockScreenPromoDismissed =
+      'home_lock_screen_promo_dismissed';
   static const String _keyLockScreenStyle = 'lock_screen_style';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
@@ -148,12 +154,32 @@ abstract class StorageService {
   static Future<SharedPreferences> get _prefs async =>
       await SharedPreferences.getInstance();
 
+  static bool? _onboardingCompletedCache;
+
+  /// Loads [onboardingCompleted] before [runApp] so splash never races a
+  /// busy isolate against a short timeout.
+  static Future<void> warmOnboardingCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    _onboardingCompletedCache = prefs.getBool(_keyOnboardingCompleted) ?? false;
+  }
+
+  @visibleForTesting
+  static void debugResetOnboardingCache() {
+    _onboardingCompletedCache = null;
+  }
+
   static Future<bool> get onboardingCompleted async {
+    if (_onboardingCompletedCache != null) {
+      return _onboardingCompletedCache!;
+    }
     final prefs = await _prefs;
-    return prefs.getBool(_keyOnboardingCompleted) ?? false;
+    final value = prefs.getBool(_keyOnboardingCompleted) ?? false;
+    _onboardingCompletedCache = value;
+    return value;
   }
 
   static Future<void> setOnboardingCompleted(bool value) async {
+    _onboardingCompletedCache = value;
     final prefs = await _prefs;
     await prefs.setBool(_keyOnboardingCompleted, value);
   }
@@ -505,6 +531,26 @@ abstract class StorageService {
   static Future<void> setHomeWidgetsPromoDismissed(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyHomeWidgetsPromoDismissed, value);
+  }
+
+  static Future<bool> get homeTajweedPromoDismissed async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHomeTajweedPromoDismissed) ?? false;
+  }
+
+  static Future<void> setHomeTajweedPromoDismissed(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHomeTajweedPromoDismissed, value);
+  }
+
+  static Future<bool> get homeLockScreenPromoDismissed async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHomeLockScreenPromoDismissed) ?? false;
+  }
+
+  static Future<void> setHomeLockScreenPromoDismissed(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHomeLockScreenPromoDismissed, value);
   }
 
   static Future<int> get prayerAlarmSnoozeMinutes async {

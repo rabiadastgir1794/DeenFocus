@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 import '../config/app_config.dart';
+import '../logger/startup_probe.dart';
 import '../services/billing_service.dart';
 import '../services/storage_service.dart';
 import 'premium_access_policy.dart';
@@ -96,9 +97,11 @@ class AppSuperwall {
     final completer = Completer<void>();
 
     try {
+      StartupProbe.mark('Superwall.configure native begin');
       _log(
         'Starting Superwall.configure define=$defineName '
-        'keyPresent=true keyLength=${key.length}',
+        'keyPresent=true keyLength=${key.length} '
+        '(WKWebView/paywall engine starts here)',
       );
 
       Superwall.configure(
@@ -111,6 +114,7 @@ class AppSuperwall {
       await completer.future.timeout(
         const Duration(seconds: 8),
         onTimeout: () {
+          StartupProbe.mark('Superwall.configure completion timeout');
           _log(
             'Superwall.configure completion timed out after 8s — '
             'polling configuration status',
@@ -135,6 +139,7 @@ class AppSuperwall {
       }
 
       Superwall.shared.setDelegate(_delegate);
+      StartupProbe.mark('Superwall.configure native end (enabled)');
       _log(
         'Configure succeeded platform=$platform '
         'delegate registered for custom paywall actions',
@@ -368,6 +373,9 @@ class AppSuperwall {
           await paywallPlacementForCurrentUser(debugContext: debugContext);
 
       _log('Showing paywall placement=$placement context=$debugContext');
+      StartupProbe.mark(
+        'Superwall.registerPlacement begin ($placement / $debugContext)',
+      );
 
       var accessGranted = false;
       void grantAccess(String source) {
@@ -404,6 +412,9 @@ class AppSuperwall {
         placement,
         handler: PaywallPresentationHandler()
           ..onPresent((info) {
+            StartupProbe.mark(
+              'Superwall paywall presented (WKWebView) $debugContext',
+            );
             _log('Paywall presented');
           })
           ..onDismiss((info, result) async {
@@ -620,6 +631,7 @@ class AppSuperwall {
         SuperwallPlacements.premiumFeature,
         handler: PaywallPresentationHandler()
           ..onPresent((info) {
+            StartupProbe.mark('Superwall custom-action paywall presented');
             _log(
               'Custom action paywall presented '
               'placement=${SuperwallPlacements.premiumFeature}',
@@ -888,19 +900,49 @@ class _AppSuperwallDelegate extends SuperwallDelegate {
   }
 
   @override
-  void handleSuperwallEvent(SuperwallEventInfo eventInfo) {}
+  void handleSuperwallEvent(SuperwallEventInfo eventInfo) {
+    final type = eventInfo.event.type;
+    switch (type) {
+      case EventType.paywallWebviewLoadStart:
+      case EventType.paywallWebviewLoadComplete:
+      case EventType.paywallWebviewLoadFail:
+      case EventType.paywallWebviewLoadTimeout:
+      case EventType.paywallWebviewProcessTerminated:
+      case EventType.paywallPreloadStart:
+      case EventType.paywallPreloadComplete:
+      case EventType.shimmerViewStart:
+      case EventType.paywallResponseLoadStart:
+      case EventType.paywallResponseLoadComplete:
+        StartupProbe.mark('Superwall event $type');
+        AppSuperwall._log('event=$type');
+      default:
+        break;
+    }
+  }
 
   @override
   void willDismissPaywall(PaywallInfo paywallInfo) {}
 
   @override
-  void willPresentPaywall(PaywallInfo paywallInfo) {}
+  void willPresentPaywall(PaywallInfo paywallInfo) {
+    StartupProbe.mark(
+      'Superwall.willPresentPaywall id=${paywallInfo.identifier}',
+    );
+    AppSuperwall._log(
+      'willPresentPaywall identifier=${paywallInfo.identifier} '
+      '(WebContent typically starts here; Superwall CDN may serve WebP)',
+    );
+  }
 
   @override
   void didDismissPaywall(PaywallInfo paywallInfo) {}
 
   @override
-  void didPresentPaywall(PaywallInfo paywallInfo) {}
+  void didPresentPaywall(PaywallInfo paywallInfo) {
+    StartupProbe.mark(
+      'Superwall.didPresentPaywall id=${paywallInfo.identifier}',
+    );
+  }
 
   @override
   void paywallWillOpenURL(Uri url) {}

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/logger/startup_handoff.dart';
+import '../../../core/logger/startup_probe.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../../../core/theme/app_colors.dart';
@@ -47,9 +49,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _onCycleModeOpenRequested,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(_maybePresentPostOnboardingPaywall());
       _onCycleModeOpenRequested();
     });
+    unawaited(
+      StartupHandoff.firstDestinationIdle.then((_) {
+        unawaited(_maybePresentPostOnboardingPaywall());
+      }),
+    );
   }
 
   @override
@@ -84,6 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await StorageService.setPendingPostOnboardingPaywall(false);
     if (!mounted) return;
 
+    StartupProbe.mark('Dashboard post-onboarding paywall present start');
     await AppSuperwall.requireActiveSubscriptionOrPresentPaywall(
       () {},
       debugContext: 'post_onboarding_home',

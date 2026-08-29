@@ -459,7 +459,7 @@ class AppNotificationService {
       }
 
       final cyclePolicy = CycleModePolicy(await StorageService.cycleModeData);
-      // Match existing prayer-reminder suppression: cycle member days skip.
+      // Match prayer-reminder suppression: any cycle member day skips wrap-up.
       final skipForCycle = cyclePolicy.isCycleMember(today);
 
       final checklistRaw = await StorageService.dailyChecklistJson;

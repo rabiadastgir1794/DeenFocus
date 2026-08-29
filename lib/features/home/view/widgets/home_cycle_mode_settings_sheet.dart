@@ -304,6 +304,13 @@ class _CycleModeSettingsSheetContentState
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                subtitle: Text(
+                  l10n.cycleModeProtectPrayerStreakSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+                ),
               ),
               CheckboxListTile(
                 value: _excludeFromStatistics,
@@ -316,6 +323,13 @@ class _CycleModeSettingsSheetContentState
                   l10n.cycleModeExcludeFromStatisticsLabel,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: Text(
+                  l10n.cycleModeExcludeFromStatisticsSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    height: 1.35,
                   ),
                 ),
               ),

@@ -10,7 +10,6 @@ const List<String> kPremiumGateDebugContexts = [
   'focus:enable_mode:salah',
   'focus:enable_mode:nightDiscipline',
   'focus:enable_mode:child',
-  'focus:load_apps',
   'tajweed:practice',
   'tajweed:free_preview_done',
   'reading_settings:tajweed',

@@ -470,6 +470,73 @@ class AppLocalizationsRo extends AppLocalizations {
   String get focusChildModeBullet3 => 'Liniște, de fiecare dată';
 
   @override
+  String get restrictedModeSalahTitle => 'Timpul Salah';
+
+  @override
+  String get restrictedModeSalahMessage =>
+      'Îndepărtează-te de distrageri și răspunde chemării la rugăciune.';
+
+  @override
+  String get restrictedModeSalahInfo =>
+      'Folosește acest moment ca să te conectezi cu Allah.';
+
+  @override
+  String get restrictedModeSalahQuote =>
+      'Stabilește rugăciunea spre pomenirea Mea.';
+
+  @override
+  String get restrictedModeSalahQuoteSource => 'Coran 20:14';
+
+  @override
+  String get restrictedModeSalahCta => 'Începe Salah';
+
+  @override
+  String get restrictedModeChildTitle => 'Mod focus copil';
+
+  @override
+  String get restrictedModeChildMessage =>
+      'Un spațiu mai sigur și mai echilibrat pentru timpul petrecut pe ecran.';
+
+  @override
+  String get restrictedModeChildInfo =>
+      'Unele aplicații sunt temporar indisponibile.';
+
+  @override
+  String get restrictedModeChildQuote =>
+      'Învățați-vă copiii rugăciunea la vârsta de șapte ani.';
+
+  @override
+  String get restrictedModeChildQuoteSource => 'Hadith - Abu Dawud';
+
+  @override
+  String get restrictedModeChildCta => 'Rămâi protejat';
+
+  @override
+  String get restrictedModeNightTitle => 'Mod focus noapte';
+
+  @override
+  String get restrictedModeNightMessage =>
+      'E timpul să te odihnești și să te deconectezi de distragerile digitale.';
+
+  @override
+  String get restrictedModeNightInfo =>
+      'Pune dispozitivul deoparte și bucură-te de o noapte liniștită.';
+
+  @override
+  String get restrictedModeNightQuote =>
+      'Și am făcut somnul vostru un mijloc de odihnă.';
+
+  @override
+  String get restrictedModeNightQuoteSource => 'Coran 78:9';
+
+  @override
+  String get restrictedModeNightCta => 'Noapte bună';
+
+  @override
+  String get restrictedModeAppsUnavailable =>
+      'Unele aplicații sunt temporar indisponibile.';
+
+  @override
   String get focusModeGotIt => 'Am înțeles';
 
   @override
@@ -942,12 +1009,10 @@ class AppLocalizationsRo extends AppLocalizations {
   String get calendarEventWhiteDaysDesc => 'Zile de post recomandate';
 
   @override
-  String get cycleModeActiveTitle =>
-      '„Allah dorește pentru voi ușurința și nu dorește pentru voi greutatea.” — Coran 2:185';
+  String get cycleModeActiveTitle => 'Ciclul tău e o pauză, nu un stop.';
 
   @override
-  String get cycleModeActiveSubtitle =>
-      'În această perioadă, seria ta este protejată. Zilele ciclului sunt evidențiate în roz, iar Modul ciclu se oprește automat la finalul ciclului.';
+  String get cycleModeActiveSubtitle => 'Dhikr • Tasbih • Ascultare Coran';
 
   @override
   String get cycleModeStreakProtected =>
@@ -990,7 +1055,7 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get cycleModePauseStreaksLabel => 'Pauzează seriile';
+  String get cycleModePauseStreaksLabel => 'Protejează seria de rugăciuni';
 
   @override
   String get cycleModeExcludeFromStatisticsLabel => 'Exclude din statistici';
@@ -1685,6 +1750,12 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get quranModePage => 'Pagină';
+
+  @override
+  String get quranSwitchToPageView => 'Vizualizare pagină';
+
+  @override
+  String get quranSwitchToSurahView => 'Vizualizare sură';
 
   @override
   String get quranJuzLabel => 'Juz';
@@ -2394,7 +2465,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsAboutTitle => 'Despre Deen Focus';
 
   @override
-  String get settingsRateDeenFocus => 'Rate DeenFocus ⭐';
+  String get settingsRateDeenFocus => 'Evaluează DeenFocus ⭐';
 
   @override
   String get settingsContactUsTitle => 'Contactați-ne';
@@ -2435,7 +2506,108 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get settingsAboutFooter =>
-      'Rămâi constant. Rămâi conștient.\nRămâi conectat la Deen-ul tău.';
+      'Rămâi constant. Rămâi conștient. Rămâi conectat la Deen-ul tău.';
+
+  @override
+  String get settingsAboutOffersHeading => 'Ce oferă Deen Focus';
+
+  @override
+  String get settingsAboutNewBadge => 'Nou';
+
+  @override
+  String get settingsAboutFooterCard =>
+      'Instrumente inteligente care te ajută să rămâi conștient, constant și conectat la Deen-ul tău — în fiecare zi.';
+
+  @override
+  String get settingsAboutOfferPrayerTimesTitle => 'Ore de rugăciune precise';
+
+  @override
+  String get settingsAboutOfferPrayerTimesSubtitle =>
+      'Alerte la timp și widget-uri frumoase pentru a rămâne pe drumul cel bun.';
+
+  @override
+  String get settingsAboutOfferPrayerStreaksTitle => 'Serii de rugăciuni';
+
+  @override
+  String get settingsAboutOfferPrayerStreaksSubtitle =>
+      'Construiește consecvență și crește în Deen-ul tău cu urmărirea seriilor zilnice și totale.';
+
+  @override
+  String get settingsAboutOfferCycleModeTitle => 'Mod ciclu';
+
+  @override
+  String get settingsAboutOfferCycleModeSubtitle =>
+      'Pentru menstruație — pune rugăciunile pe pauză, păstrează seria și continuă drumul.';
+
+  @override
+  String get settingsAboutOfferQuranTajweedTitle => 'Tajweed Coranic';
+
+  @override
+  String get settingsAboutOfferQuranTajweedSubtitle =>
+      'Citește, ascultă și exersează tajweed cu feedback în timp real bazat pe IA.';
+
+  @override
+  String get settingsAboutOfferLiveActivitiesTitle => 'Live Activities';
+
+  @override
+  String get settingsAboutOfferLiveActivitiesSubtitle =>
+      'Rămâi la curent cu rugăciunile în desfășurare și sesiunile de focus direct de pe ecranul de blocare.';
+
+  @override
+  String get settingsAboutOfferQiblaTitle => 'Qibla și găsitor de moschei';
+
+  @override
+  String get settingsAboutOfferQiblaSubtitle =>
+      'Găsește direcția Qibla oricând și descoperă moschei din apropiere.';
+
+  @override
+  String get settingsAboutOfferFocusModesTitle => 'Moduri de focus';
+
+  @override
+  String get settingsAboutOfferFocusModesSubtitle =>
+      'Blochează aplicațiile distragătoare în timpul Salah, somnului, studiului sau timpului cu familia.';
+
+  @override
+  String get settingsAboutOfferTasbihTitle => 'Tasbih și dhikr';
+
+  @override
+  String get settingsAboutOfferTasbihSubtitle =>
+      'Tasbih digital care te ajută să-L amintești pe Allah pe parcursul zilei.';
+
+  @override
+  String get settingsAboutOfferCalendarTitle => 'Calendar islamic';
+
+  @override
+  String get settingsAboutOfferCalendarSubtitle =>
+      'Calendar hijri cu date islamice importante și memento-uri.';
+
+  @override
+  String get settingsAboutGridNamesTitle => '99 Nume ale lui Allah';
+
+  @override
+  String get settingsAboutGridNamesSubtitle =>
+      'Învață și reflectează asupra Asma ul-Husna.';
+
+  @override
+  String get settingsAboutGridDuasTitle => 'Duas și adhkar';
+
+  @override
+  String get settingsAboutGridDuasSubtitle =>
+      'Duas de dimineață, seară și zilnice.';
+
+  @override
+  String get settingsAboutGridPrayerTitle => 'Rugăciune și metode';
+
+  @override
+  String get settingsAboutGridPrayerSubtitle =>
+      'Învață Salah, Wudu, Hajj și altele.';
+
+  @override
+  String get settingsAboutGridFiqhTitle => 'Fiqh și tradiții';
+
+  @override
+  String get settingsAboutGridFiqhSubtitle =>
+      'Explorează cunoștințe islamice autentice.';
 
   @override
   String get settingsEnableSystemNotifications =>
@@ -2650,69 +2822,70 @@ class AppLocalizationsRo extends AppLocalizations {
   String get focusDiagnosticButton => 'Diagnostic';
 
   @override
-  String get focusDiagnosticTitle => 'Test App Lock';
+  String get focusDiagnosticTitle => 'Testează blocarea aplicațiilor';
 
   @override
   String get focusDiagnosticIntro =>
-      'Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.';
+      'Blochează temporar aplicațiile selectate timp de 60 de secunde cu aceeași blocare ca în modul Focus. Deschide o aplicație blocată pentru a confirma ecranul de blocare DeenFocus.';
 
   @override
   String focusDiagnosticIntroWithApp(String appName) {
-    return 'Temporarily lock your selected apps for 60 seconds. Try opening $appName to confirm the DeenFocus lock screen appears.';
+    return 'Blochează temporar aplicațiile selectate timp de 60 de secunde. Încearcă să deschizi $appName pentru a confirma ecranul de blocare DeenFocus.';
   }
 
   @override
-  String get focusDiagnosticStart => 'Start Test';
+  String get focusDiagnosticStart => 'Pornește testul';
 
   @override
-  String get focusDiagnosticEndEarly => 'End Test';
+  String get focusDiagnosticEndEarly => 'Oprește testul';
 
   @override
   String focusDiagnosticRunning(int seconds) {
-    return 'App Lock is on for ${seconds}s. Switch to a selected app to test the lock screen.';
+    return 'Blocarea este activă ${seconds}s. Comută la o aplicație selectată pentru a testa ecranul de blocare.';
   }
 
   @override
-  String get focusDiagnosticSuccessTitle => 'Test completed';
+  String get focusDiagnosticSuccessTitle => 'Test finalizat';
 
   @override
   String get focusDiagnosticSuccessBody =>
-      'App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.';
+      'Blocarea a fost activată cu aplicațiile selectate. Dacă ai văzut ecranul DeenFocus, blocarea funcționează.';
 
   @override
-  String get focusDiagnosticCancelledTitle => 'Test ended';
+  String get focusDiagnosticCancelledTitle => 'Test oprit';
 
   @override
   String get focusDiagnosticCancelledBody =>
-      'The diagnostic lock was turned off. Your Focus modes and schedules were not changed.';
+      'Blocarea de diagnostic a fost oprită. Modurile Focus și programele nu au fost modificate.';
 
   @override
-  String get focusDiagnosticMissingAppsTitle => 'Select apps first';
+  String get focusDiagnosticMissingAppsTitle =>
+      'Selectează aplicații mai întâi';
 
   @override
   String get focusDiagnosticMissingAppsBody =>
-      'Choose at least one app to block before running the App Lock test.';
+      'Alege cel puțin o aplicație de blocat înainte de test.';
 
   @override
-  String get focusDiagnosticMissingPermissionTitle => 'Permission needed';
+  String get focusDiagnosticMissingPermissionTitle => 'Permisiune necesară';
 
   @override
   String get focusDiagnosticMissingPermissionBodyIos =>
-      'Screen Time access is required to block apps. Allow Screen Time, then try again.';
+      'Este necesar accesul la Timp de ecran. Permite accesul și încearcă din nou.';
 
   @override
   String get focusDiagnosticMissingPermissionBodyAndroid =>
-      'Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.';
+      'Accesibilitatea Android trebuie activată pentru DeenFocus ca să blocheze aplicații.';
 
   @override
-  String get focusDiagnosticFailedTitle => 'Could not start test';
+  String get focusDiagnosticFailedTitle => 'Testul nu a putut porni';
 
   @override
   String get focusDiagnosticFailedBody =>
-      'App Lock did not activate. Check permissions and selected apps, then try again.';
+      'Blocarea nu s-a activat. Verifică permisiunile și aplicațiile selectate, apoi încearcă din nou.';
 
   @override
-  String get focusDiagnosticClose => 'Done';
+  String get focusDiagnosticClose => 'Gata';
 
   @override
   String get focusScreenTimeRequiredBlockIphone =>
@@ -4923,4 +5096,124 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get lockScreenDhikrAllahuAkbar => 'Allahu Akbar';
+
+  @override
+  String get homeTajweedPromoTitle => 'Tajweed Coranic cu IA';
+
+  @override
+  String get homeTajweedPromoBody =>
+      'Recită orice verset și primește feedback instant de la IA pentru tajweed.';
+
+  @override
+  String get homeTajweedPromoCta => 'Exersează tajweed';
+
+  @override
+  String get homeTajweedPromoAiFeedback => 'Feedback IA';
+
+  @override
+  String homeTajweedPromoWordAccuracy(int percent) {
+    return '$percent% acuratețe cuvinte';
+  }
+
+  @override
+  String get homeLockScreenPromoTitle => 'Stiluri ecran de blocare';
+
+  @override
+  String get homeLockScreenPromoBody =>
+      'Personalizează ecranul de blocare cu designuri islamice frumoase și memento-uri utile.';
+
+  @override
+  String get homeLockScreenPromoCta => 'Explorează stiluri';
+
+  @override
+  String get homePromoNewBadge => 'NOU';
+
+  @override
+  String get homeReadQuranPromoTitle => 'Citește Coranul';
+
+  @override
+  String get homeReadQuranPromoSubtitle =>
+      'Citește, ascultă și exersează tajweed';
+
+  @override
+  String get homeReadQuranPromoCta => 'Deschide Coranul';
+
+  @override
+  String get homeReadQuranPromoNewBadge => 'Nou';
+
+  @override
+  String cycleModeActiveStatus(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Serie protejată • Se termină în $days zile',
+      one: 'Serie protejată • Se termină mâine',
+      zero: 'Serie protejată • Se termină azi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cycleModeProtectPrayerStreakSubtitle =>
+      'Păstrează seria intactă în zilele de ciclu';
+
+  @override
+  String get cycleModeExcludeFromStatisticsSubtitle =>
+      'Nu include zilele de ciclu în statisticile de rugăciune';
+
+  @override
+  String get homePromoPreviewCity => 'Lahore';
+
+  @override
+  String get focusScreenTimeAuthPasscodeRequired =>
+      'Acest iPhone are nevoie de un cod de dispozitiv înainte ca Apple să permită accesul la Timp ecran. Setează-l în Setări, apoi încearcă din nou.';
+
+  @override
+  String get focusScreenTimeAuthCanceled =>
+      'Accesul la Timp ecran a fost anulat înainte ca Apple să-l acorde. Încearcă din nou și finalizează solicitarea Apple.';
+
+  @override
+  String get focusScreenTimeAuthConflict =>
+      'O altă aplicație gestionează deja Controalele parentale pe acest iPhone. Dezactiveaz-o mai întâi, apoi încearcă din nou.';
+
+  @override
+  String get focusScreenTimeAuthInvalidAccount =>
+      'Autentifică-te cu un cont iCloud valid pe acest iPhone, apoi încearcă din nou accesul la Timp ecran.';
+
+  @override
+  String get focusScreenTimeAuthNetwork =>
+      'Acest iPhone are nevoie de internet pentru ca Apple să poată acorda accesul la Timp ecran.';
+
+  @override
+  String get focusScreenTimeAuthRestricted =>
+      'Controalele parentale sunt restricționate pe acest iPhone, deci DeenFocus nu poate solicita aici accesul la Timp ecran.';
+
+  @override
+  String get focusScreenTimeAuthUnavailable =>
+      'Controalele parentale nu sunt disponibile momentan pe acest iPhone.';
+
+  @override
+  String get focusScreenTimeAuthIosVersion =>
+      'Blocarea aplicațiilor prin Timp ecran necesită iOS 16 sau o versiune ulterioară.';
+
+  @override
+  String get focusScreenTimeAuthInvalidArgument =>
+      'Cererea de autorizare Timp ecran este invalidă. Încearcă din nou.';
+
+  @override
+  String get focusScreenTimeAuthFailedGeneric =>
+      'Accesul la Timp ecran nu a putut fi acordat pe acest iPhone.';
+
+  @override
+  String widgetLockCountdownHoursMinutes(String hours, String minutes) {
+    return 'În $hours h $minutes min';
+  }
+
+  @override
+  String widgetLockCountdownMinutes(String minutes) {
+    return 'În $minutes min';
+  }
+
+  @override
+  String get lockScreenRecommendedBadge => 'Recomandat';
 }

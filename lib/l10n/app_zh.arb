@@ -283,8 +283,8 @@
   "calendarUpcomingEvents": "即将到来的伊斯兰节日",
   "cycleModeTitle": "生理期模式",
   "cycleModeSubtitle": "月经期间 — 暂停礼拜，保留连续记录",
-  "cycleModeActiveTitle": "“真主欲你们便利，不要你们困难。” — 古兰经 2:185",
-  "cycleModeActiveSubtitle": "在此期间，您的礼拜连续记录会受到保护。经期日以粉色标示，周期结束后周期模式会自动关闭。",
+  "cycleModeActiveTitle": "你的周期是暂停，不是停止。",
+  "cycleModeActiveSubtitle": "记念 • 赞珠 • 听古兰经",
   "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
   "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
   "cycleModeAutoEndInfo": "{days, plural, =0{今天结束} =1{明天自动结束} other{将在 {days} 天后自动结束}}",
@@ -292,7 +292,7 @@
   "cycleModeStartDateLabel": "开始日期",
   "cycleModeLengthLabel": "周期长度",
   "cycleModeLengthValue": "{count, plural, =1{1 天} other{{count} 天}}",
-  "cycleModePauseStreaksLabel": "暂停连续记录",
+  "cycleModePauseStreaksLabel": "保护礼拜连续记录",
   "cycleModeExcludeFromStatisticsLabel": "不计入统计",
   "cycleModeSaveButton": "保存",
   "cycleModeEditButton": "编辑",
@@ -465,7 +465,36 @@
   "settingsAboutFeature4": "附近的清真寺",
   "settingsAboutFeature5": "用于礼拜、睡眠和家庭时间的智能专注模式",
   "settingsAboutFocusDescription": "智能专注模式帮助您在礼拜、睡眠和重要时刻屏蔽干扰，让您保持专注和自律。",
-  "settingsAboutFooter": "保持一致。保持专注。\n保持与您的信仰的联系。",
+  "settingsAboutFooter": "保持一致。保持专注。与您的信仰保持连接。",
+  "settingsAboutOffersHeading": "Deen Focus 提供什么",
+  "settingsAboutNewBadge": "新",
+  "settingsAboutFooterCard": "智能工具助您每天保持专注、一致，并与您的信仰保持连接。",
+  "settingsAboutOfferPrayerTimesTitle": "准确的礼拜时间",
+  "settingsAboutOfferPrayerTimesSubtitle": "及时的礼拜提醒和精美小组件，助您保持正轨。",
+  "settingsAboutOfferPrayerStreaksTitle": "礼拜连续记录",
+  "settingsAboutOfferPrayerStreaksSubtitle": "通过每日和总体连续记录追踪，建立一致性并在信仰中成长。",
+  "settingsAboutOfferCycleModeTitle": "生理期模式",
+  "settingsAboutOfferCycleModeSubtitle": "适用于经期——暂停礼拜，保留连续记录，继续您的旅程。",
+  "settingsAboutOfferQuranTajweedTitle": "古兰经塔吉维德",
+  "settingsAboutOfferQuranTajweedSubtitle": "阅读、聆听并练习塔吉维德，获得 AI 驱动的实时反馈。",
+  "settingsAboutOfferLiveActivitiesTitle": "实时活动",
+  "settingsAboutOfferLiveActivitiesSubtitle": "从锁屏直接了解正在进行的礼拜和专注会话。",
+  "settingsAboutOfferQiblaTitle": "朝拜方向与清真寺查找",
+  "settingsAboutOfferQiblaSubtitle": "随时查找朝拜方向，无论身在何处都能发现附近的清真寺。",
+  "settingsAboutOfferFocusModesTitle": "专注模式",
+  "settingsAboutOfferFocusModesSubtitle": "在礼拜、睡眠、学习或家庭时间屏蔽干扰应用。",
+  "settingsAboutOfferTasbihTitle": "赞珠与记主",
+  "settingsAboutOfferTasbihSubtitle": "电子赞珠，帮助您全天记念真主。",
+  "settingsAboutOfferCalendarTitle": "伊斯兰日历",
+  "settingsAboutOfferCalendarSubtitle": "带有重要伊斯兰日期和提醒的回历日历。",
+  "settingsAboutGridNamesTitle": "安拉的九十九个美名",
+  "settingsAboutGridNamesSubtitle": "学习并思考至美名（Asma ul-Husna）。",
+  "settingsAboutGridDuasTitle": "杜阿与记念",
+  "settingsAboutGridDuasSubtitle": "晨间、晚间和每日杜阿。",
+  "settingsAboutGridPrayerTitle": "礼拜与方法",
+  "settingsAboutGridPrayerSubtitle": "学习礼拜、小净、朝觐等。",
+  "settingsAboutGridFiqhTitle": "法学与传统",
+  "settingsAboutGridFiqhSubtitle": "探索正宗的伊斯兰知识。",
   "settingsEnableSystemNotifications": "启用系统通知以打开此功能。",
   "appDemoTitle": "应用程序演示",
   "appDemoLoadFailed": "无法加载演示视频。",
@@ -567,11 +596,10 @@
   "tasbihDelete": "删除",
   "focusAndroidBlockingNotReady": "Android 应用拦截仍在准备中。请保持无障碍已开启，稍等片刻以完成连接。",
   "focusNoAppsSelectedSnack": "未选择应用。请先选择要拦截的应用。",
-
-  "focusDiagnosticButton": "Diagnostic",
-  "focusDiagnosticTitle": "Test App Lock",
-  "focusDiagnosticIntro": "Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.",
-  "focusDiagnosticIntroWithApp": "Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.",
+  "focusDiagnosticButton": "诊断",
+  "focusDiagnosticTitle": "测试应用锁定",
+  "focusDiagnosticIntro": "使用与专注模式相同的应用锁定，暂时锁定所选应用 60 秒。打开被锁定的应用，确认 DeenFocus 锁定屏幕是否出现。",
+  "focusDiagnosticIntroWithApp": "暂时锁定所选应用 60 秒。尝试打开 {appName}，确认 DeenFocus 锁定屏幕是否出现。",
   "@focusDiagnosticIntroWithApp": {
     "placeholders": {
       "appName": {
@@ -579,9 +607,9 @@
       }
     }
   },
-  "focusDiagnosticStart": "Start Test",
-  "focusDiagnosticEndEarly": "End Test",
-  "focusDiagnosticRunning": "App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.",
+  "focusDiagnosticStart": "开始测试",
+  "focusDiagnosticEndEarly": "结束测试",
+  "focusDiagnosticRunning": "应用锁定已开启 {seconds} 秒。切换到所选应用以测试锁定屏幕。",
   "@focusDiagnosticRunning": {
     "placeholders": {
       "seconds": {
@@ -589,18 +617,18 @@
       }
     }
   },
-  "focusDiagnosticSuccessTitle": "Test completed",
-  "focusDiagnosticSuccessBody": "App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.",
-  "focusDiagnosticCancelledTitle": "Test ended",
-  "focusDiagnosticCancelledBody": "The diagnostic lock was turned off. Your Focus modes and schedules were not changed.",
-  "focusDiagnosticMissingAppsTitle": "Select apps first",
-  "focusDiagnosticMissingAppsBody": "Choose at least one app to block before running the App Lock test.",
-  "focusDiagnosticMissingPermissionTitle": "Permission needed",
-  "focusDiagnosticMissingPermissionBodyIos": "Screen Time access is required to block apps. Allow Screen Time, then try again.",
-  "focusDiagnosticMissingPermissionBodyAndroid": "Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.",
-  "focusDiagnosticFailedTitle": "Could not start test",
-  "focusDiagnosticFailedBody": "App Lock did not activate. Check permissions and selected apps, then try again.",
-  "focusDiagnosticClose": "Done",
+  "focusDiagnosticSuccessTitle": "测试完成",
+  "focusDiagnosticSuccessBody": "已对你选择的应用启用锁定。若看到 DeenFocus 锁定屏幕，说明应用锁定正常工作。",
+  "focusDiagnosticCancelledTitle": "测试已结束",
+  "focusDiagnosticCancelledBody": "诊断锁定已关闭。你的专注模式和时间表未更改。",
+  "focusDiagnosticMissingAppsTitle": "请先选择应用",
+  "focusDiagnosticMissingAppsBody": "运行应用锁定测试前，请至少选择一个要阻止的应用。",
+  "focusDiagnosticMissingPermissionTitle": "需要权限",
+  "focusDiagnosticMissingPermissionBodyIos": "阻止应用需要屏幕使用时间权限。请允许后重试。",
+  "focusDiagnosticMissingPermissionBodyAndroid": "必须在 Android 中为 DeenFocus 启用无障碍服务，才能阻止应用。",
+  "focusDiagnosticFailedTitle": "无法开始测试",
+  "focusDiagnosticFailedBody": "应用锁定未激活。请检查权限和所选应用后重试。",
+  "focusDiagnosticClose": "完成",
   "focusScreenTimeRequiredBlockIphone": "在 iPhone 上拦截应用需要“屏幕使用时间”权限。",
   "focusModeUpdateFailedSnack": "更新专注模式时出错，请重试。",
   "focusLoadingInstalledApps": "正在加载已安装应用...",
@@ -1230,6 +1258,8 @@
   "quranModeSurah": "章",
   "quranModeJuz": "卷",
   "quranModePage": "页",
+  "quranSwitchToPageView": "页面视图",
+  "quranSwitchToSurahView": "章节视图",
   "readingSettingsTitle": "阅读设置",
   "featureDemoContinue": "继续",
   "featureDemoSampleStatusTime": "9:41",
@@ -1696,5 +1726,86 @@
   "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
   "lockScreenDhikrSubhanAllah": "SubhanAllah",
   "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
-  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar",
+  "homeTajweedPromoTitle": "古兰经 AI 塔吉维德",
+  "homeTajweedPromoBody": "诵读任意经文，即时获得 AI 塔吉维德反馈。",
+  "homeTajweedPromoCta": "练习塔吉维德",
+  "homeTajweedPromoAiFeedback": "AI 反馈",
+  "homeTajweedPromoWordAccuracy": "{percent}% 词准确率",
+  "@homeTajweedPromoWordAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockScreenPromoTitle": "锁屏样式",
+  "homeLockScreenPromoBody": "用精美的伊斯兰设计和实用提醒个性化你的锁屏。",
+  "homeLockScreenPromoCta": "探索样式",
+  "homePromoNewBadge": "新",
+  "homeReadQuranPromoTitle": "阅读古兰经",
+  "homeReadQuranPromoSubtitle": "阅读、聆听并练习塔吉维德",
+  "homeReadQuranPromoCta": "打开古兰经",
+  "homeReadQuranPromoNewBadge": "新",
+  "cycleModeActiveStatus": "{days, plural, =0{连续记录受保护 • 今天结束} =1{连续记录受保护 • 明天结束} other{连续记录受保护 • {days} 天后结束}}",
+  "@cycleModeActiveStatus": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeProtectPrayerStreakSubtitle": "在周期日内保持连续记录不变",
+  "cycleModeExcludeFromStatisticsSubtitle": "周期日不计入礼拜统计数据",
+  "homePromoPreviewCity": "拉合尔",
+  "settingsRateDeenFocus": "为 DeenFocus 评分 ⭐",
+  "focusScreenTimeAuthPasscodeRequired": "此 iPhone 需先设置设备密码，Apple 才会允许“屏幕使用时间”访问。请在设置中设置密码后重试。",
+  "focusScreenTimeAuthCanceled": "屏幕使用时间授权在完成前被取消。请重试并完成 Apple 提示。",
+  "focusScreenTimeAuthConflict": "另一款应用已在管理此 iPhone 上的“家人控制”。请先关闭后再试。",
+  "focusScreenTimeAuthInvalidAccount": "请使用有效的 iCloud 账户登录此 iPhone，然后再次尝试屏幕使用时间访问。",
+  "focusScreenTimeAuthNetwork": "此 iPhone 需要联网后，Apple 才能授予屏幕使用时间访问权限。",
+  "focusScreenTimeAuthRestricted": "此 iPhone 上的“家人控制”受限，因此 DeenFocus 无法在此请求屏幕使用时间访问。",
+  "focusScreenTimeAuthUnavailable": "此 iPhone 上暂时无法使用“家人控制”。",
+  "focusScreenTimeAuthIosVersion": "屏幕使用时间应用拦截需要 iOS 16 或更高版本。",
+  "focusScreenTimeAuthInvalidArgument": "屏幕使用时间授权请求无效。请重试。",
+  "focusScreenTimeAuthFailedGeneric": "无法在此 iPhone 上授予屏幕使用时间访问权限。",
+  "widgetLockCountdownHoursMinutes": "{hours}小时{minutes}分钟后",
+  "widgetLockCountdownMinutes": "{minutes}分钟后",
+  "@widgetLockCountdownHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "@widgetLockCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRecommendedBadge": "推荐",
+  "restrictedModeSalahTitle": "礼拜时间",
+  "restrictedModeSalahMessage": "远离干扰，回应礼拜的召唤。",
+  "restrictedModeSalahInfo": "把握此刻与真主相连。",
+  "restrictedModeSalahQuote": "当谨守拜功以记念我。",
+  "restrictedModeSalahQuoteSource": "古兰经 20:14",
+  "restrictedModeSalahCta": "开始礼拜",
+  "restrictedModeChildTitle": "儿童专注模式",
+  "restrictedModeChildMessage": "更安全、更平衡的专注屏幕时间空间。",
+  "restrictedModeChildInfo": "部分应用暂时不可用。",
+  "restrictedModeChildQuote": "当孩子七岁时，当教导他们礼拜。",
+  "restrictedModeChildQuoteSource": "圣训 - 艾布·达乌德",
+  "restrictedModeChildCta": "保持保护",
+  "restrictedModeNightTitle": "夜间专注模式",
+  "restrictedModeNightMessage": "是时候休息，远离数字干扰。",
+  "restrictedModeNightInfo": "放下设备，享受宁静的夜晚。",
+  "restrictedModeNightQuote": "我使你们的睡眠为休息。",
+  "restrictedModeNightQuoteSource": "古兰经 78:9",
+  "restrictedModeNightCta": "晚安",
+  "restrictedModeAppsUnavailable": "部分应用暂时不可用。"
 }

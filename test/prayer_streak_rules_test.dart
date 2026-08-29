@@ -357,7 +357,7 @@ void main() {
       };
     }
 
-    test('paused today keeps tip from counting marks (no older tip)', () {
+    test('paused today contributes zero; same-day OFF restores tip', () {
       final today = DateTime(2026, 8, 11);
       final history = {
         key(today): {
@@ -376,7 +376,7 @@ void main() {
         history: history,
         isPaused: CycleModePolicy(data).shouldPauseStreaks,
       );
-      expect(s.prayerStreak, 2);
+      expect(s.prayerStreak, 0);
       expect(s.dayStreak, 0);
 
       final off = data.disableOn(today);
@@ -391,7 +391,7 @@ void main() {
     });
 
     test(
-      'same-day Cycle ON preserves prayer 5 + day 1 when today is fully complete',
+      'same-day Cycle ON excludes today; same-day OFF restores prayer 5 + day 1',
       () {
         final today = DateTime(2026, 8, 11);
         final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
@@ -415,8 +415,8 @@ void main() {
           history: history,
           isPaused: CycleModePolicy(data).shouldPauseStreaks,
         );
-        expect(during.prayerStreak, 5);
-        expect(during.dayStreak, 1);
+        expect(during.prayerStreak, 0);
+        expect(during.dayStreak, 0);
 
         final off = data.disableOn(today);
         final after = snap(
@@ -430,7 +430,7 @@ void main() {
     );
 
     test(
-      'same-day Cycle ON preserves multi-day streak when today completes the chain',
+      'same-day Cycle ON bridges to prior days only (today contributes zero)',
       () {
         final today = DateTime(2026, 8, 11);
         final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
@@ -449,8 +449,8 @@ void main() {
           history: history,
           isPaused: CycleModePolicy(data).shouldPauseStreaks,
         );
-        expect(during.prayerStreak, 15);
-        expect(during.dayStreak, 3);
+        expect(during.prayerStreak, 10);
+        expect(during.dayStreak, 2);
       },
     );
 

@@ -17,7 +17,7 @@ import '../settings/settings_tab_screen.dart';
 import 'home_mark_prayer_sheet.dart';
 import 'home_prayer_settings_sheet.dart';
 
-class HomePrayerTimesSection extends StatelessWidget {
+class HomePrayerTimesSection extends StatefulWidget {
   const HomePrayerTimesSection({
     super.key,
     required this.prayerTimes,
@@ -30,6 +30,13 @@ class HomePrayerTimesSection extends StatelessWidget {
 
   /// When false (e.g. another bottom tab visible), skip the 1 Hz countdown ticker.
   final bool isActive;
+
+  @override
+  State<HomePrayerTimesSection> createState() => _HomePrayerTimesSectionState();
+}
+
+class _HomePrayerTimesSectionState extends State<HomePrayerTimesSection> {
+  final GlobalKey _shareBoundaryKey = GlobalKey();
 
   void _openLocationSettings(BuildContext context) {
     final profile = context.read<UserProfileService>();
@@ -47,16 +54,17 @@ class HomePrayerTimesSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final prayerTimes = this.prayerTimes;
+    final prayerTimes = widget.prayerTimes;
     final profile = context.watch<UserProfileService>();
     final locationName = profile.locationName?.trim() ?? '';
     final hasLocation = locationName.isNotEmpty;
 
-    return ShareableCard(
+    return RepaintBoundary(
+      key: _shareBoundaryKey,
       child: Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
@@ -76,6 +84,7 @@ class HomePrayerTimesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Text(
@@ -93,39 +102,40 @@ class HomePrayerTimesSection extends StatelessWidget {
               InkWell(
                 onTap: () => _openLocationSettings(context),
                 borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Iconsax.location,
-                        size: 13,
-                        color: colorScheme.primary,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Iconsax.location,
+                      size: 13,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.sizeOf(context).width * 0.38,
                       ),
-                      const SizedBox(width: 4),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.sizeOf(context).width * 0.38,
-                        ),
-                        child: Text(
-                          hasLocation ? locationName : l10n.homeSetLocation,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.end,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                height: 1.2,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
+                      child: Text(
+                        hasLocation ? locationName : l10n.homeSetLocation,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          height: 1.0,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 32),
+              const SizedBox(width: 8),
+              CardShareIconButton(
+                boundaryKey: _shareBoundaryKey,
+                iconSize: 14,
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -168,7 +178,10 @@ class HomePrayerTimesSection extends StatelessWidget {
             ),
           const SizedBox(height: 12),
           if (prayerTimes != null)
-            _NextPrayerCountdown(prayerTimes: prayerTimes, isActive: isActive),
+            _NextPrayerCountdown(
+              prayerTimes: prayerTimes,
+              isActive: widget.isActive,
+            ),
           if (prayerTimes != null) ...[
             const SizedBox(height: 6),
             SizedBox(
@@ -278,19 +291,13 @@ class _NextPrayerCountdownState extends State<_NextPrayerCountdown> {
   }
 
   Duration? _dynamicRemaining(HomePrayerTimesData prayerTimes) {
-    if (prayerTimes.nextPrayer == null) return null;
-    final nextPrayerTime = prayerTimes.nextPrayerTime;
-    if (nextPrayerTime != null) {
-      final remaining = nextPrayerTime.difference(DateTime.now());
-      return remaining.isNegative ? Duration.zero : remaining;
-    }
-    final nextSlot = prayerTimes.slots
-        .where((slot) => slot.id == prayerTimes.nextPrayer)
-        .firstOrNull;
-    if (nextSlot == null) return prayerTimes.remaining;
-    final remaining = nextSlot.time.difference(DateTime.now());
-    if (remaining.isNegative) return Duration.zero;
-    return remaining;
+    final next = HomePrayerTimesHelper.nextPrayerOnDay(
+      slots: prayerTimes.slots,
+      now: DateTime.now(),
+    );
+    if (next == null) return null;
+    final remaining = next.at.difference(DateTime.now());
+    return remaining.isNegative ? Duration.zero : remaining;
   }
 }
 
@@ -315,7 +322,13 @@ class HomePrayerTile extends StatelessWidget {
     // Match the clock time shown on the tile (hour:minute today), not a possibly
     // wrong date component on [slot.time] — that bug made only Fajr markable.
     final isPassed = HomePrayerTimesHelper.hasStartedOnDay(slot.time, now);
-    final isCurrent = prayerTimes.nextPrayer == slot.id;
+    // Live next prayer (wall-clock) — never trust a baked nextPrayer alone, or a
+    // slot dated tomorrow can keep Dhuhr green past Maghrib/Isha.
+    final liveNext = HomePrayerTimesHelper.nextPrayerOnDay(
+      slots: prayerTimes.slots,
+      now: now,
+    );
+    final isCurrent = liveNext?.id == slot.id;
     final isPast = isPassed && !isCurrent;
     final trackable = slot.id.trackablePrayer;
     final status = trackable == null

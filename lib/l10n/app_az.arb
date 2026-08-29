@@ -283,8 +283,8 @@
   "calendarUpcomingEvents": "Yaxınlaşan islam hadisələri",
   "cycleModeTitle": "Tsikl rejimi",
   "cycleModeSubtitle": "Aybaşı üçün — namazları dayandırın, seriyanı saxlayın",
-  "cycleModeActiveTitle": "«Allah sizin üçün asanlıq istəyir, çətinlik istəmir.» — Quran 2:185",
-  "cycleModeActiveSubtitle": "Bu dövrdə namaz seriyanız qorunur. Sikl günləri çəhrayı rənglə vurğulanır və Sikl rejimi sikl bitəndə avtomatik sönür.",
+  "cycleModeActiveTitle": "Siklindir pause, dayanmaq deyil.",
+  "cycleModeActiveSubtitle": "Zikr • Təsbeh • Quran dinləmə",
   "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
   "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
   "cycleModeAutoEndInfo": "{days, plural, =0{Bu gün bitir} =1{Sabah avtomatik bitir} other{{days} günə avtomatik bitir}}",
@@ -292,7 +292,7 @@
   "cycleModeStartDateLabel": "Başlama tarixi",
   "cycleModeLengthLabel": "Sikl uzunluğu",
   "cycleModeLengthValue": "{count, plural, =1{1 gün} other{{count} gün}}",
-  "cycleModePauseStreaksLabel": "Seriyaları dayandır",
+  "cycleModePauseStreaksLabel": "Namaz seriyasını qoru",
   "cycleModeExcludeFromStatisticsLabel": "Statistikadan çıxar",
   "cycleModeSaveButton": "Yadda saxla",
   "cycleModeEditButton": "Redaktə et",
@@ -465,7 +465,36 @@
   "settingsAboutFeature4": "Yaxınlıqdakı məscidlər",
   "settingsAboutFeature5": "Namaz, yuxu və ailə vaxtı üçün ağıllı fokus rejimləri",
   "settingsAboutFocusDescription": "Ağıllı fokus rejimləri namaz, yuxu və mühüm anlar zamanı diqqət yayındırıcıları bloklamağa kömək edir ki, siz hazır və intizamlı qala biləsiniz.",
-  "settingsAboutFooter": "Ardıcıl olun. Diqqətli olun.\nDininizə bağlı qalın.",
+  "settingsAboutFooter": "Ardıcıl olun. Diqqətli olun. Dininizə bağlı qalın.",
+  "settingsAboutOffersHeading": "Deen Focus nə təklif edir",
+  "settingsAboutNewBadge": "Yeni",
+  "settingsAboutFooterCard": "Hər gün diqqətli, ardıcıl və dininizə bağlı qalmağınıza kömək edən ağıllı alətlər.",
+  "settingsAboutOfferPrayerTimesTitle": "Dəqiq namaz vaxtları",
+  "settingsAboutOfferPrayerTimesSubtitle": "Vaxtında namaz xəbərdarlıqları və sizi yolda saxlayan gözəl vidjetlər.",
+  "settingsAboutOfferPrayerStreaksTitle": "Namaz seriyaları",
+  "settingsAboutOfferPrayerStreaksSubtitle": "Gündəlik və ümumi seriya izləməsi ilə ardıcıllıq qurun və dininizdə böyüyün.",
+  "settingsAboutOfferCycleModeTitle": "Tsikl rejimi",
+  "settingsAboutOfferCycleModeSubtitle": "Menstruasiya üçün — namazları dayandırın, seriyanızı saxlayın və yolunuzu davam etdirin.",
+  "settingsAboutOfferQuranTajweedTitle": "Quran təcvidi",
+  "settingsAboutOfferQuranTajweedSubtitle": "Süni intellektlə real vaxt rəy ilə oxuyun, dinləyin və təcvid məşqi edin.",
+  "settingsAboutOfferLiveActivitiesTitle": "Live Activities",
+  "settingsAboutOfferLiveActivitiesSubtitle": "Kilid ekranından davam edən namazlar və fokus sessiyaları haqqında məlumatlı qalın.",
+  "settingsAboutOfferQiblaTitle": "Qiblə və məscid axtarışı",
+  "settingsAboutOfferQiblaSubtitle": "İstənilən vaxt qiblə istiqamətini tapın və harada olursunuzsa, yaxınlıqdakı məscidləri kəşf edin.",
+  "settingsAboutOfferFocusModesTitle": "Fokus rejimləri",
+  "settingsAboutOfferFocusModesSubtitle": "Namaz, yuxu, təhsil və ya ailə vaxtında diqqət yayındıran tətbiqləri bloklayın.",
+  "settingsAboutOfferTasbihTitle": "Təsbih və zikr",
+  "settingsAboutOfferTasbihSubtitle": "Gün ərzində Allaha xatırlatmağa kömək edən rəqəmsal təsbih.",
+  "settingsAboutOfferCalendarTitle": "İslam təqvimi",
+  "settingsAboutOfferCalendarSubtitle": "Vacib islam tarixləri və xatırlatmalarla hicri təqvim.",
+  "settingsAboutGridNamesTitle": "Allahın 99 adı",
+  "settingsAboutGridNamesSubtitle": "Əsməül-Hüsna öyrənin və üzərində düşünün.",
+  "settingsAboutGridDuasTitle": "Dualar və zikrlər",
+  "settingsAboutGridDuasSubtitle": "Səhər, axşam və gündəlik dualar.",
+  "settingsAboutGridPrayerTitle": "Namaz və üsullar",
+  "settingsAboutGridPrayerSubtitle": "Namaz, abdest, Həcc və daha çoxunu öyrənin.",
+  "settingsAboutGridFiqhTitle": "Fiqh və ənənələr",
+  "settingsAboutGridFiqhSubtitle": "Həqiqi islam biliklərini kəşf edin.",
   "settingsEnableSystemNotifications": "Bunu aktiv etmək üçün sistem bildirişlərini aktiv edin.",
   "appDemoTitle": "Tətbiq Demo",
   "appDemoLoadFailed": "Demo videonu yükləmək mümkün olmadı.",
@@ -567,11 +596,10 @@
   "tasbihDelete": "Sil",
   "focusAndroidBlockingNotReady": "Android tətbiq bloklaması hələ hazırlanır. Əlçatanlığı aktiv saxlayın və qoşulana qədər bir az gözləyin.",
   "focusNoAppsSelectedSnack": "Tətbiq seçilməyib. Əvvəlcə bloklamaq üçün tətbiqləri seçin.",
-
-  "focusDiagnosticButton": "Diagnostic",
-  "focusDiagnosticTitle": "Test App Lock",
-  "focusDiagnosticIntro": "Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.",
-  "focusDiagnosticIntroWithApp": "Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.",
+  "focusDiagnosticButton": "Diaqnostika",
+  "focusDiagnosticTitle": "Tətbiq kilidini sına",
+  "focusDiagnosticIntro": "Seçilmiş tətbiqləri Fokus rejimindəki eyni tətbiq kilidi ilə 60 saniyəlik müvəqqəti kilidləyin. DeenFocus kilid ekranının göründüyünü yoxlamaq üçün bloklanmış tətbiqi açın.",
+  "focusDiagnosticIntroWithApp": "Seçilmiş tətbiqləri 60 saniyəlik müvəqqəti kilidləyin. DeenFocus kilid ekranını yoxlamaq üçün {appName} açmağa cəhd edin.",
   "@focusDiagnosticIntroWithApp": {
     "placeholders": {
       "appName": {
@@ -579,9 +607,9 @@
       }
     }
   },
-  "focusDiagnosticStart": "Start Test",
-  "focusDiagnosticEndEarly": "End Test",
-  "focusDiagnosticRunning": "App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.",
+  "focusDiagnosticStart": "Testi başlat",
+  "focusDiagnosticEndEarly": "Testi bitir",
+  "focusDiagnosticRunning": "Tətbiq kilidi {seconds} saniyə aktivdir. Kilid ekranını sınamaq üçün seçilmiş tətbiqə keçin.",
   "@focusDiagnosticRunning": {
     "placeholders": {
       "seconds": {
@@ -589,18 +617,18 @@
       }
     }
   },
-  "focusDiagnosticSuccessTitle": "Test completed",
-  "focusDiagnosticSuccessBody": "App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.",
-  "focusDiagnosticCancelledTitle": "Test ended",
-  "focusDiagnosticCancelledBody": "The diagnostic lock was turned off. Your Focus modes and schedules were not changed.",
-  "focusDiagnosticMissingAppsTitle": "Select apps first",
-  "focusDiagnosticMissingAppsBody": "Choose at least one app to block before running the App Lock test.",
-  "focusDiagnosticMissingPermissionTitle": "Permission needed",
-  "focusDiagnosticMissingPermissionBodyIos": "Screen Time access is required to block apps. Allow Screen Time, then try again.",
-  "focusDiagnosticMissingPermissionBodyAndroid": "Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.",
-  "focusDiagnosticFailedTitle": "Could not start test",
-  "focusDiagnosticFailedBody": "App Lock did not activate. Check permissions and selected apps, then try again.",
-  "focusDiagnosticClose": "Done",
+  "focusDiagnosticSuccessTitle": "Test tamamlandı",
+  "focusDiagnosticSuccessBody": "Seçilmiş tətbiqlərlə tətbiq kilidi aktivləşdirildi. DeenFocus kilid ekranını gördünüzsə, kilid işləyir.",
+  "focusDiagnosticCancelledTitle": "Test bitdi",
+  "focusDiagnosticCancelledBody": "Diaqnostik kilid söndürüldü. Fokus rejimləriniz və cədvəlləriniz dəyişmədi.",
+  "focusDiagnosticMissingAppsTitle": "Əvvəlcə tətbiqləri seçin",
+  "focusDiagnosticMissingAppsBody": "Testdən əvvəl bloklamaq üçün ən azı bir tətbiq seçin.",
+  "focusDiagnosticMissingPermissionTitle": "İcazə lazımdır",
+  "focusDiagnosticMissingPermissionBodyIos": "Tətbiqləri bloklamaq üçün Ekran vaxtı icazəsi lazımdır. İcazə verin və yenidən cəhd edin.",
+  "focusDiagnosticMissingPermissionBodyAndroid": "Tətbiq kilidi üçün Android-də DeenFocus əlçatanlığı aktiv olmalıdır.",
+  "focusDiagnosticFailedTitle": "Test başladıla bilmədi",
+  "focusDiagnosticFailedBody": "Tətbiq kilidi aktivləşmədi. İcazələri və seçilmiş tətbiqləri yoxlayın və yenidən cəhd edin.",
+  "focusDiagnosticClose": "Hazırdır",
   "focusScreenTimeRequiredBlockIphone": "iPhone-da tətbiqləri bloklamaq üçün Ekran vaxtına giriş tələb olunur.",
   "focusModeUpdateFailedSnack": "Fokus rejimi yenilənərkən xəta baş verdi. Yenidən cəhd edin.",
   "focusLoadingInstalledApps": "Quraşdırılmış tətbiqlər yüklənir...",
@@ -1230,6 +1258,8 @@
   "quranModeSurah": "Surə",
   "quranModeJuz": "Cüz",
   "quranModePage": "Səhifə",
+  "quranSwitchToPageView": "Səhifə görünüşü",
+  "quranSwitchToSurahView": "Surə görünüşü",
   "readingSettingsTitle": "Oxu ayarları",
   "featureDemoContinue": "Davam et",
   "featureDemoSampleStatusTime": "9:41",
@@ -1696,5 +1726,86 @@
   "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
   "lockScreenDhikrSubhanAllah": "SubhanAllah",
   "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
-  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar",
+  "homeTajweedPromoTitle": "Quran AI Təcvid",
+  "homeTajweedPromoBody": "İstənilən ayəni oxuyun və təcvidiniz barədə dərhal AI rəyini alın.",
+  "homeTajweedPromoCta": "Təcvid məşqi",
+  "homeTajweedPromoAiFeedback": "AI rəyi",
+  "homeTajweedPromoWordAccuracy": "{percent}% söz dəqiqliyi",
+  "@homeTajweedPromoWordAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockScreenPromoTitle": "Kilid ekranı stilləri",
+  "homeLockScreenPromoBody": "Kilid ekranınızı gözəl islami dizaynlar və faydalı xatırlatmalarla fərdiləşdirin.",
+  "homeLockScreenPromoCta": "Stilləri kəşf et",
+  "homePromoNewBadge": "YENİ",
+  "homeReadQuranPromoTitle": "Quran oxu",
+  "homeReadQuranPromoSubtitle": "Oxu, dinlə və təcvid məşqi et",
+  "homeReadQuranPromoCta": "Quranı aç",
+  "homeReadQuranPromoNewBadge": "Yeni",
+  "cycleModeActiveStatus": "{days, plural, =0{Seriya qorunur • Bu gün bitir} =1{Seriya qorunur • Sabah bitir} other{Seriya qorunur • {days} günə bitir}}",
+  "@cycleModeActiveStatus": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeProtectPrayerStreakSubtitle": "Sikl günlərində seriyanı qoruyun",
+  "cycleModeExcludeFromStatisticsSubtitle": "Sikl günlərini namaz statistikasında saymayın",
+  "homePromoPreviewCity": "Lahore",
+  "settingsRateDeenFocus": "DeenFocus-u qiymətləndir ⭐",
+  "focusScreenTimeAuthPasscodeRequired": "Apple Ekran vaxtına icazə verməzdən əvvəl bu iPhone-da cihaz parolu olmalıdır. Parametrlərdə parol qoyun, sonra yenidən cəhd edin.",
+  "focusScreenTimeAuthCanceled": "Apple icazə verməzdən əvvəl Ekran vaxtı girişi ləğv edildi. Yenidən cəhd edin və Apple sorğusunu tamamlayın.",
+  "focusScreenTimeAuthConflict": "Bu iPhone-da başqa tətbiq artıq Ailə nəzarətini idarə edir. Əvvəlcə onu söndürün, sonra yenidən cəhd edin.",
+  "focusScreenTimeAuthInvalidAccount": "Bu iPhone-da etibarlı iCloud hesabı ilə daxil olun, sonra Ekran vaxtı girişini yenidən yoxlayın.",
+  "focusScreenTimeAuthNetwork": "Apple Ekran vaxtı girişi verməzdən əvvəl bu iPhone internetə qoşulmalıdır.",
+  "focusScreenTimeAuthRestricted": "Bu iPhone-da Ailə nəzarəti məhdudlaşdırılıb, ona görə DeenFocus burada Ekran vaxtı girişi istəyə bilməz.",
+  "focusScreenTimeAuthUnavailable": "Bu iPhone-da Ailə nəzarəti hazırda əlçatan deyil.",
+  "focusScreenTimeAuthIosVersion": "Ekran vaxtı ilə tətbiq bloklaması iOS 16 və ya daha yeni tələb edir.",
+  "focusScreenTimeAuthInvalidArgument": "Ekran vaxtı icazə sorğusu etibarsızdır. Yenidən cəhd edin.",
+  "focusScreenTimeAuthFailedGeneric": "Bu iPhone-da Ekran vaxtı girişi verilə bilmədi.",
+  "widgetLockCountdownHoursMinutes": "{hours} saat {minutes} dəq sonra",
+  "widgetLockCountdownMinutes": "{minutes} dəq sonra",
+  "@widgetLockCountdownHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "@widgetLockCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRecommendedBadge": "Tövsiyə olunur",
+  "restrictedModeSalahTitle": "Namaz vaxtı",
+  "restrictedModeSalahMessage": "Diqqəti yayındıranlardan uzaqlaşın və namaz çağırışına cavab verin.",
+  "restrictedModeSalahInfo": "Bu anı Allahla bağlanmaq üçün istifadə edin.",
+  "restrictedModeSalahQuote": "Məni xatırlamaq üçün namazı qılın.",
+  "restrictedModeSalahQuoteSource": "Quran 20:14",
+  "restrictedModeSalahCta": "Namaza başla",
+  "restrictedModeChildTitle": "Uşaq fokus rejimi",
+  "restrictedModeChildMessage": "Ekran vaxtı üçün daha təhlükəsiz, tarazlı bir məkan.",
+  "restrictedModeChildInfo": "Bəzi tətbiqlər müvəqqəti əlçatan deyil.",
+  "restrictedModeChildQuote": "Uşaqlarınıza yeddi yaşında namazı öyrədin.",
+  "restrictedModeChildQuoteSource": "Hədis - Əbu Davud",
+  "restrictedModeChildCta": "Qorunmuş qalın",
+  "restrictedModeNightTitle": "Gecə fokus rejimi",
+  "restrictedModeNightMessage": "Dincəlmək və rəqəmsal yayındırıcılardan uzaqlaşmaq vaxtıdır.",
+  "restrictedModeNightInfo": "Cihazı kənara qoyun və dinc gecədən zövq alın.",
+  "restrictedModeNightQuote": "Və yuxunuzu dincəlmək üçün etdik.",
+  "restrictedModeNightQuoteSource": "Quran 78:9",
+  "restrictedModeNightCta": "Gecəniz xeyir",
+  "restrictedModeAppsUnavailable": "Bəzi tətbiqlər müvəqqəti əlçatan deyil."
 }

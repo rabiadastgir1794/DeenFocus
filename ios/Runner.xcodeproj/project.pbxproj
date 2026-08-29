@@ -18,7 +18,7 @@
 		CA277777AE680AD19FA04D03 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B763B5985E42201E1C3F7B29 /* Pods_Runner.framework */; };
 		E71745EB0E75FE671B097FD3 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C58341D157CAB42C4C956A /* Pods_RunnerTests.framework */; };
 		F10000000000000000000001 /* DeenlyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000011 /* DeenlyWidgets.swift */; };
-		F10000000000000000000002 /* DeenlyWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F10000000000000000000010 /* DeenlyWidgets.appex */; };
+		F10000000000000000000002 /* DeenlyWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F10000000000000000000010 /* DeenlyWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F10000000000000000000003 /* fajr.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000014 /* fajr.png */; };
 		F10000000000000000000004 /* dhuhr.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000015 /* dhuhr.png */; };
 		F10000000000000000000005 /* asar.png in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000016 /* asar.png */; };
@@ -30,6 +30,9 @@
 		F21000000000000000000001 /* IosAppUsageBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21000000000000000000011 /* IosAppUsageBridge.swift */; };
 		F30000000000000000000001 /* FocusShieldConfigurationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */; };
 		F30000000000000000000002 /* FocusShieldConfiguration.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000000000000000000010 /* FocusShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F30000000000000000000003 /* child.png in Resources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000021 /* child.png */; };
+		F30000000000000000000004 /* salah.png in Resources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000022 /* salah.png */; };
+		F30000000000000000000005 /* night.png in Resources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000023 /* night.png */; };
 		F40000000000000000000001 /* azan.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* azan.caf */; };
 		F40000000000000000000002 /* beep.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* beep.caf */; };
 		F4A1B00100000000000000001 /* TajweedErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00100000000000000001 /* TajweedErrors.swift */; };
@@ -94,6 +97,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
+		};
+		F10000000000000000000041 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F10000000000000000000025;
+			remoteInfo = DeenlyWidgets;
+		};
+		F200DEP00000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F20000000000000000000025;
+			remoteInfo = FocusDeviceActivityMonitor;
+		};
+		F300DEP00000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F30000000000000000000025;
+			remoteInfo = FocusShieldConfiguration;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -167,6 +191,9 @@
 		F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusShieldConfigurationExtension.swift; sourceTree = "<group>"; };
 		F30000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F30000000000000000000013 /* FocusShieldConfiguration.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusShieldConfiguration.entitlements; sourceTree = "<group>"; };
+		F30000000000000000000021 /* child.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = child.png; sourceTree = "<group>"; };
+		F30000000000000000000022 /* salah.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = salah.png; sourceTree = "<group>"; };
+		F30000000000000000000023 /* night.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = night.png; sourceTree = "<group>"; };
 		F40000000000000000000011 /* azan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = azan.caf; sourceTree = "<group>"; };
 		F40000000000000000000012 /* beep.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = beep.caf; sourceTree = "<group>"; };
 		F4A1F00100000000000000001 /* TajweedErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedErrors.swift; sourceTree = "<group>"; };
@@ -401,6 +428,9 @@
 				F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */,
 				F30000000000000000000012 /* Info.plist */,
 				F30000000000000000000013 /* FocusShieldConfiguration.entitlements */,
+				F30000000000000000000021 /* child.png */,
+				F30000000000000000000022 /* salah.png */,
+				F30000000000000000000023 /* night.png */,
 			);
 			path = FocusShieldConfiguration;
 			sourceTree = "<group>";
@@ -544,6 +574,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				F10000000000000000000042 /* PBXTargetDependency */,
+				F200DEP00000000000000002 /* PBXTargetDependency */,
+				F300DEP00000000000000002 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -717,6 +750,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F30000000000000000000003 /* child.png in Resources */,
+				F30000000000000000000004 /* salah.png in Resources */,
+				F30000000000000000000005 /* night.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -935,6 +971,21 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		F10000000000000000000042 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F10000000000000000000025 /* DeenlyWidgets */;
+			targetProxy = F10000000000000000000041 /* PBXContainerItemProxy */;
+		};
+		F200DEP00000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F20000000000000000000025 /* FocusDeviceActivityMonitor */;
+			targetProxy = F200DEP00000000000000001 /* PBXContainerItemProxy */;
+		};
+		F300DEP00000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F30000000000000000000025 /* FocusShieldConfiguration */;
+			targetProxy = F300DEP00000000000000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1454,8 +1505,10 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = FocusShieldConfiguration/FocusShieldConfiguration.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 44;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = DUU697NT67;
+				ENABLE_DEBUG_DYLIB = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FocusShieldConfiguration/Info.plist;
@@ -1465,8 +1518,20 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 32.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+					"-framework",
+					ManagedSettings,
+					"-framework",
+					ManagedSettingsUI,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rnr.deenfocus.FocusShieldConfiguration;
+				PRODUCT_MODULE_NAME = FocusShieldConfiguration;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1482,8 +1547,10 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = FocusShieldConfiguration/FocusShieldConfiguration.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 44;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = DUU697NT67;
+				ENABLE_DEBUG_DYLIB = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FocusShieldConfiguration/Info.plist;
@@ -1493,8 +1560,20 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 32.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+					"-framework",
+					ManagedSettings,
+					"-framework",
+					ManagedSettingsUI,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rnr.deenfocus.FocusShieldConfiguration;
+				PRODUCT_MODULE_NAME = FocusShieldConfiguration;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1509,8 +1588,10 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = FocusShieldConfiguration/FocusShieldConfiguration.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 44;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = DUU697NT67;
+				ENABLE_DEBUG_DYLIB = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = FocusShieldConfiguration/Info.plist;
@@ -1520,8 +1601,20 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 32.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+					"-framework",
+					ManagedSettings,
+					"-framework",
+					ManagedSettingsUI,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rnr.deenfocus.FocusShieldConfiguration;
+				PRODUCT_MODULE_NAME = FocusShieldConfiguration;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;

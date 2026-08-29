@@ -261,16 +261,18 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                           ),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(
-                            contentPadding: EdgeInsets.only(
-                              left: 16.w,
-                              right: 0,
+                            contentPadding: EdgeInsetsDirectional.only(
+                              start: 16.w,
+                              end: 0,
                             ),
                             onTap: () => _openDetail(item),
                             title: Row(
                               children: [
                                 if (item.isPinned)
                                   Padding(
-                                    padding: EdgeInsets.only(right: 6.w),
+                                    padding: EdgeInsetsDirectional.only(
+                                      end: 6.w,
+                                    ),
                                     child: Icon(
                                       Icons.push_pin_rounded,
                                       size: 14.sp,

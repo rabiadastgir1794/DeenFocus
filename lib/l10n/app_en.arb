@@ -158,6 +158,25 @@
   "focusChildModeBullet1": "One-tap safe mode",
   "focusChildModeBullet2": "Passcode-protected exit",
   "focusChildModeBullet3": "Peace of mind, every time",
+  "restrictedModeSalahTitle": "Salah Time",
+  "restrictedModeSalahMessage": "It's time to step away from distractions and answer the call to prayer.",
+  "restrictedModeSalahInfo": "Take this moment to connect with Allah.",
+  "restrictedModeSalahQuote": "Establish prayer for My remembrance.",
+  "restrictedModeSalahQuoteSource": "Quran 20:14",
+  "restrictedModeSalahCta": "Start Salah",
+  "restrictedModeChildTitle": "Child Focus Mode",
+  "restrictedModeChildMessage": "A safer, more balanced space for focused screen time.",
+  "restrictedModeChildInfo": "Some apps are temporarily unavailable.",
+  "restrictedModeChildQuote": "Teach your children prayer when they are seven.",
+  "restrictedModeChildQuoteSource": "Hadith - Abu Dawood",
+  "restrictedModeChildCta": "Stay Protected",
+  "restrictedModeNightTitle": "Night Focus Mode",
+  "restrictedModeNightMessage": "It's time to rest and disconnect from digital distractions.",
+  "restrictedModeNightInfo": "Put your device aside and enjoy a peaceful night.",
+  "restrictedModeNightQuote": "And We made your sleep a means for rest.",
+  "restrictedModeNightQuoteSource": "Quran 78:9",
+  "restrictedModeNightCta": "Good Night",
+  "restrictedModeAppsUnavailable": "Some apps are temporarily unavailable.",
   "focusModeGotIt": "Got it",
   "focusFeaturePrayerTimesTitle": "Accurate Prayer Times",
   "focusFeaturePrayerTimesSubtitle": "Adhan & reminders",
@@ -333,8 +352,8 @@
   "calendarEventJumuahDesc": "Friday congregational prayer",
   "calendarEventWhiteDays": "White Days",
   "calendarEventWhiteDaysDesc": "Recommended fasting days",
-  "cycleModeActiveTitle": "\"Allah intends ease for you and does not intend hardship for you.\" — Quran 2:185",
-  "cycleModeActiveSubtitle": "During this period, your prayer streak is protected. Your cycle days are highlighted in pink, and Cycle Mode turns off automatically when the cycle ends.",
+  "cycleModeActiveTitle": "Your cycle is a pause, not a stop.",
+  "cycleModeActiveSubtitle": "Dhikr • Tasbih • Quran listening",
   "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
   "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
   "cycleModeAutoEndInfo": "{days, plural, =0{Ends today} =1{Automatically ends tomorrow} other{Automatically ends in {days} days}}",
@@ -356,7 +375,7 @@
       }
     }
   },
-  "cycleModePauseStreaksLabel": "Pause streaks",
+  "cycleModePauseStreaksLabel": "Protect prayer streak",
   "cycleModeExcludeFromStatisticsLabel": "Exclude from statistics",
   "cycleModeSaveButton": "Save",
   "cycleModeEditButton": "Edit",
@@ -702,6 +721,8 @@
   "quranModeSurah": "Surah",
   "quranModeJuz": "Juz",
   "quranModePage": "Page",
+  "quranSwitchToPageView": "Page view",
+  "quranSwitchToSurahView": "Surah view",
   "quranJuzLabel": "Juz",
   "quranPageLabel": "Page",
   "quranContinueReading": "Continue Reading",
@@ -1020,7 +1041,36 @@
   "settingsAboutFeature4": "Nearby mosques",
   "settingsAboutFeature5": "Smart focus modes for Salah, sleep, and family time",
   "settingsAboutFocusDescription": "Smart focus modes help you block distractions during Salah, sleep, and important moments, so you can stay present and disciplined.",
-  "settingsAboutFooter": "Stay consistent. Stay mindful.\nStay connected to your Deen.",
+  "settingsAboutFooter": "Stay consistent. Stay mindful. Stay connected to your Deen.",
+  "settingsAboutOffersHeading": "What Deen Focus offers",
+  "settingsAboutNewBadge": "New",
+  "settingsAboutFooterCard": "Smart tools to help you stay mindful, consistent, and connected to your Deen — every day.",
+  "settingsAboutOfferPrayerTimesTitle": "Accurate Prayer Times",
+  "settingsAboutOfferPrayerTimesSubtitle": "Timely prayer alerts and beautiful widgets to keep you on track.",
+  "settingsAboutOfferPrayerStreaksTitle": "Prayer Streaks",
+  "settingsAboutOfferPrayerStreaksSubtitle": "Build consistency and grow in your Deen with daily and overall streak tracking.",
+  "settingsAboutOfferCycleModeTitle": "Cycle Mode",
+  "settingsAboutOfferCycleModeSubtitle": "For menstruation — pause prayers, keep your streak, and maintain your journey.",
+  "settingsAboutOfferQuranTajweedTitle": "Al Quran Tajweed",
+  "settingsAboutOfferQuranTajweedSubtitle": "Read, listen, and practice Tajweed with our AI-powered real-time feedback.",
+  "settingsAboutOfferLiveActivitiesTitle": "Live Activities",
+  "settingsAboutOfferLiveActivitiesSubtitle": "Stay updated with ongoing prayers and focus sessions right from your Lock Screen.",
+  "settingsAboutOfferQiblaTitle": "Qibla & Masjid Finder",
+  "settingsAboutOfferQiblaSubtitle": "Find Qibla direction anytime and discover nearby mosques wherever you are.",
+  "settingsAboutOfferFocusModesTitle": "Focus Modes",
+  "settingsAboutOfferFocusModesSubtitle": "Block distracting apps during Salah, sleep, study, or family time.",
+  "settingsAboutOfferTasbihTitle": "Tasbih & Dhikr",
+  "settingsAboutOfferTasbihSubtitle": "Digital Tasbih to help you remember Allah throughout the day.",
+  "settingsAboutOfferCalendarTitle": "Islamic Calendar",
+  "settingsAboutOfferCalendarSubtitle": "Hijri calendar with important Islamic dates and reminders.",
+  "settingsAboutGridNamesTitle": "99 Names of Allah",
+  "settingsAboutGridNamesSubtitle": "Learn and reflect on Asma ul-Husna.",
+  "settingsAboutGridDuasTitle": "Duas & Adhkar",
+  "settingsAboutGridDuasSubtitle": "Morning, evening and daily duas.",
+  "settingsAboutGridPrayerTitle": "Prayer & Methods",
+  "settingsAboutGridPrayerSubtitle": "Learn Salah, Wudu, Hajj and more.",
+  "settingsAboutGridFiqhTitle": "Fiqh & Traditions",
+  "settingsAboutGridFiqhSubtitle": "Explore authentic Islamic knowledge.",
   "settingsEnableSystemNotifications": "Enable system notifications to turn this on.",
   "appDemoTitle": "App Demo",
   "appDemoLoadFailed": "Could not load the demo video.",
@@ -2295,5 +2345,66 @@
   "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
   "lockScreenDhikrSubhanAllah": "SubhanAllah",
   "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
-  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar",
+  "homeTajweedPromoTitle": "Quran AI Tajweed",
+  "homeTajweedPromoBody": "Recite any verse and get instant AI feedback on your Tajweed.",
+  "homeTajweedPromoCta": "Practice Tajweed",
+  "homeTajweedPromoAiFeedback": "AI Feedback",
+  "homeTajweedPromoWordAccuracy": "{percent}% Word Accuracy",
+  "@homeTajweedPromoWordAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockScreenPromoTitle": "Lock Screen Styles",
+  "homeLockScreenPromoBody": "Personalize your lock screen with beautiful Islamic designs and helpful reminders.",
+  "homeLockScreenPromoCta": "Explore Styles",
+  "homePromoNewBadge": "NEW",
+  "homeReadQuranPromoTitle": "Read Quran",
+  "homeReadQuranPromoSubtitle": "Read, listen & practice tajweed",
+  "homeReadQuranPromoCta": "Open Quran",
+  "homeReadQuranPromoNewBadge": "New",
+  "cycleModeActiveStatus": "{days, plural, =0{Streak protected • Ends today} =1{Streak protected • Ends tomorrow} other{Streak protected • Ends in {days} days}}",
+  "@cycleModeActiveStatus": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeProtectPrayerStreakSubtitle": "Keep your streak intact during cycle days",
+  "cycleModeExcludeFromStatisticsSubtitle": "Don't count cycle days in your prayer stats",
+  "homePromoPreviewCity": "Lahore",
+  "focusScreenTimeAuthPasscodeRequired": "This iPhone needs a device passcode before Apple will allow Screen Time access. Set a passcode in iPhone Settings, then try again.",
+  "focusScreenTimeAuthCanceled": "Screen Time access was canceled before Apple finished granting it. Please try again and complete the Apple prompt.",
+  "focusScreenTimeAuthConflict": "Another app is already managing Family Controls on this iPhone. Turn that off first, then try again.",
+  "focusScreenTimeAuthInvalidAccount": "Sign in with a valid iCloud account on this iPhone, then try Screen Time access again.",
+  "focusScreenTimeAuthNetwork": "This iPhone needs an internet connection before Apple can grant Screen Time access.",
+  "focusScreenTimeAuthRestricted": "Family Controls is restricted on this iPhone, so DeenFocus cannot request Screen Time access here.",
+  "focusScreenTimeAuthUnavailable": "Family Controls is currently unavailable on this iPhone.",
+  "focusScreenTimeAuthIosVersion": "Screen Time app blocking requires iOS 16 or later.",
+  "focusScreenTimeAuthInvalidArgument": "The Screen Time authorization request was invalid. Please try again.",
+  "focusScreenTimeAuthFailedGeneric": "Screen Time access could not be granted on this iPhone.",
+  "widgetLockCountdownHoursMinutes": "In {hours}h {minutes}m",
+  "widgetLockCountdownMinutes": "In {minutes}m",
+  "@widgetLockCountdownHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "@widgetLockCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRecommendedBadge": "Recommended"
 }

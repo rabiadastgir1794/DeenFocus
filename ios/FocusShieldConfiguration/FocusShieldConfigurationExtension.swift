@@ -1,7 +1,7 @@
-import FamilyControls
 import Foundation
 import ManagedSettings
 import ManagedSettingsUI
+import os
 import UIKit
 
 /// Writes to the same app-group log as the main app (throttled — shield config is queried often).
@@ -45,6 +45,7 @@ private enum FocusShieldDebugLogger {
 private enum FocusShieldSharedState {
   static let appGroupId = "group.com.rnr.deenfocus"
   static let activeModeKey = "focus_shield_active_mode"
+  static let appThemeIsDarkKey = "focus_shield_app_theme_is_dark"
 }
 
 private enum FocusShieldMode: String {
@@ -68,7 +69,7 @@ private enum FocusShieldMode: String {
   var title: String {
     switch self {
     case .salah:
-      return "Salah Time - Stay Focused"
+      return "Salah Time"
     case .child:
       return "Child Focus Mode"
     case .nightDiscipline:
@@ -76,36 +77,62 @@ private enum FocusShieldMode: String {
     }
   }
 
-  var subtitle: String {
+  var message: String {
     switch self {
     case .salah:
-      return """
-      Step away from distractions and answer the call to prayer.
-      Take this moment to connect with Allah.
-
-      Return after completing your Salah in DeenFocus.
-
-      "Establish prayer for My remembrance."
-      (Quran 20:14)
-      """
+      return "It's time to step away from distractions and answer the call to prayer."
     case .child:
-      return """
-      This device is currently in child focus mode to help maintain a safe and balanced digital experience.
-
-      Some apps are temporarily unavailable.
-
-      "Teach your children prayer when they are seven."
-      (Hadith - Abu Dawood)
-      """
+      return "A safer, more balanced space for focused screen time."
     case .nightDiscipline:
-      return """
-      It's time to rest and disconnect from digital distractions.
+      return "It's time to rest and disconnect from digital distractions."
+    }
+  }
 
-      Put your device aside and enjoy a peaceful night.
+  var info: String {
+    "Some apps are temporarily unavailable."
+  }
 
-      "And We made your sleep a means for rest."
-      (Quran 78:9)
-      """
+  var quote: String {
+    switch self {
+    case .salah:
+      return "Establish prayer for My remembrance."
+    case .child:
+      return "Teach your children prayer when they are seven."
+    case .nightDiscipline:
+      return "And We made your sleep a means for rest."
+    }
+  }
+
+  var quoteSource: String {
+    switch self {
+    case .salah:
+      return "Quran 20:14"
+    case .child:
+      return "Hadith - Abu Dawood"
+    case .nightDiscipline:
+      return "Quran 78:9"
+    }
+  }
+
+  var subtitle: String {
+    """
+    \(message)
+
+    \(info)
+
+    “\(quote)”
+    (\(quoteSource))
+    """
+  }
+
+  var symbolName: String {
+    switch self {
+    case .salah:
+      return "building.columns.fill"
+    case .child:
+      return "hourglass"
+    case .nightDiscipline:
+      return "moon.stars.fill"
     }
   }
 
@@ -120,10 +147,27 @@ private enum FocusShieldMode: String {
       return "Good\(nb)Night"
     }
   }
+
+  func heroIcon(bundle: Bundle, tint: UIColor) -> UIImage? {
+    UIImage(named: assetName, in: bundle, compatibleWith: nil)
+      ?? UIImage(named: assetName)
+      ?? UIImage(systemName: symbolName)?.withTintColor(tint, renderingMode: .alwaysOriginal)
+  }
+
+  var assetName: String {
+    switch self {
+    case .child: return "child"
+    case .salah: return "salah"
+    case .nightDiscipline: return "night"
+    }
+  }
 }
 
-@available(iOSApplicationExtension 16.0, *)
-final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
+class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
+  private static let log = Logger(
+    subsystem: "com.rnr.deenfocus.FocusShieldConfiguration",
+    category: "shield"
+  )
   private static var lastShieldLogMono: TimeInterval = 0
   private static let shieldLogMinInterval: TimeInterval = 2.0
 
@@ -133,10 +177,21 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
     let subtitleColor: UIColor
     let buttonBackgroundColor: UIColor
     let buttonTextColor: UIColor
+    let iconColor: UIColor
   }
 
   private var sharedDefaults: UserDefaults? {
     UserDefaults(suiteName: FocusShieldSharedState.appGroupId)
+  }
+
+  override init() {
+    super.init()
+    Self.log.notice("FocusShieldConfigurationExtension.init")
+    NSLog("[DeenFocus] FocusShieldConfigurationExtension.init")
+    FocusShieldDebugLogger.append(
+      "ios.shield.init",
+      "FocusShieldConfigurationExtension instantiated"
+    )
   }
 
   override func configuration(shielding application: Application) -> ShieldConfiguration {
@@ -180,18 +235,25 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
       "ios.shield.display",
       "\(kind) mode=\(mode) detail=\(detail)"
     )
+    Self.log.notice("configuration kind=\(kind, privacy: .public) mode=\(mode, privacy: .public)")
   }
 
   private func makeConfiguration() -> ShieldConfiguration {
     let modeRawValue = sharedDefaults?.string(forKey: FocusShieldSharedState.activeModeKey)
     let mode = FocusShieldMode(rawMode: modeRawValue)
-    sharedDefaults?.synchronize()
-    let palette = themePalette()
+    let appDark =
+      mode == .nightDiscipline
+      || (sharedDefaults?.bool(forKey: FocusShieldSharedState.appThemeIsDarkKey) ?? false)
+    let palette = themePalette(mode: mode, appDark: appDark)
+    let blur: UIBlurEffect.Style = appDark ? .systemMaterialDark : .systemMaterialLight
 
     return ShieldConfiguration(
-      backgroundBlurStyle: nil,
+      backgroundBlurStyle: blur,
       backgroundColor: palette.backgroundColor,
-      icon: nil,
+      icon: mode.heroIcon(
+        bundle: Bundle(for: FocusShieldConfigurationExtension.self),
+        tint: palette.iconColor
+      ),
       title: ShieldConfiguration.Label(
         text: mode.title,
         color: palette.titleColor
@@ -209,22 +271,48 @@ final class FocusShieldConfigurationExtension: ShieldConfigurationDataSource {
     )
   }
 
-  private func themePalette() -> ThemePalette {
-    let background = UIColor { traits in
-      traits.userInterfaceStyle == .dark ? .black : .white
+  private func themePalette(mode: FocusShieldMode, appDark: Bool) -> ThemePalette {
+    let green: UIColor
+    let titleGreen: UIColor
+    let mint: UIColor
+    let body: UIColor
+    switch mode {
+    case .nightDiscipline:
+      green = UIColor(red: 0.29, green: 0.48, blue: 0.65, alpha: 1.0)
+      titleGreen = UIColor.white
+      mint = UIColor(red: 0.03, green: 0.06, blue: 0.10, alpha: 1.0)
+      body = UIColor(red: 0.92, green: 0.95, blue: 0.98, alpha: 1.0)
+    case .salah:
+      green = UIColor(red: 0.24, green: 0.54, blue: 0.29, alpha: 1.0)
+      if appDark {
+        titleGreen = UIColor(red: 0.91, green: 0.95, blue: 0.85, alpha: 1.0)
+        mint = UIColor(red: 0.06, green: 0.09, blue: 0.05, alpha: 1.0)
+        body = UIColor(red: 0.83, green: 0.87, blue: 0.78, alpha: 1.0)
+      } else {
+        titleGreen = UIColor(red: 0.10, green: 0.36, blue: 0.20, alpha: 1.0)
+        mint = UIColor(red: 0.92, green: 0.96, blue: 0.86, alpha: 1.0)
+        body = UIColor(red: 0.24, green: 0.31, blue: 0.22, alpha: 1.0)
+      }
+    case .child:
+      green = UIColor(red: 0.16, green: 0.54, blue: 0.37, alpha: 1.0)
+      if appDark {
+        titleGreen = UIColor(red: 0.91, green: 0.96, blue: 0.93, alpha: 1.0)
+        mint = UIColor(red: 0.04, green: 0.09, blue: 0.07, alpha: 1.0)
+        body = UIColor(red: 0.84, green: 0.91, blue: 0.86, alpha: 1.0)
+      } else {
+        titleGreen = UIColor(red: 0.10, green: 0.42, blue: 0.29, alpha: 1.0)
+        mint = UIColor(red: 0.90, green: 0.96, blue: 0.93, alpha: 1.0)
+        body = UIColor(red: 0.24, green: 0.33, blue: 0.28, alpha: 1.0)
+      }
     }
-    let foreground = UIColor { traits in
-      traits.userInterfaceStyle == .dark ? .white : .black
-    }
-    let buttonBackground = UIColor(red: 0.306, green: 0.604, blue: 0.486, alpha: 1.0)  // #4E9A7C
-    let buttonText = UIColor.white
 
     return ThemePalette(
-      backgroundColor: background,
-      titleColor: foreground,
-      subtitleColor: foreground,
-      buttonBackgroundColor: buttonBackground,
-      buttonTextColor: buttonText
+      backgroundColor: mint,
+      titleColor: titleGreen,
+      subtitleColor: body,
+      buttonBackgroundColor: green,
+      buttonTextColor: .white,
+      iconColor: green
     )
   }
 }

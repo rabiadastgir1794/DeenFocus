@@ -8,10 +8,14 @@ import '../../../../core/services/prayer_live_activity_toggle.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../tajweed/tajweed_entry_point.dart';
+import '../../../tajweed/tajweed_free_preview.dart';
 import '../../../onboarding/view/widgets/feature_demo/feature_demo_kind.dart';
 import '../settings/settings_app_demo_screen.dart';
+import 'lock_screen_options/lock_screen_options_popup.dart';
+import 'home_card_open_arrow.dart';
 
-/// Home promo carousel: Live Activity + Widgets.
+/// Home promo carousel: Live Activity, Widgets, Quran AI Tajweed, Lock Screen Styles.
 class HomeLiveActivityPromoCard extends StatefulWidget {
   const HomeLiveActivityPromoCard({super.key});
 
@@ -21,12 +25,17 @@ class HomeLiveActivityPromoCard extends StatefulWidget {
 }
 
 class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
+  static const Duration _autoSlideInterval = Duration(seconds: 5);
+
   bool _liveVisible = false;
   bool _widgetsVisible = false;
+  bool _tajweedVisible = false;
+  bool _lockScreenVisible = false;
   bool _loading = true;
   bool _enabling = false;
   int _page = 0;
   late final PageController _pageController;
+  Timer? _autoSlideTimer;
 
   @override
   void initState() {
@@ -40,6 +49,7 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
 
   @override
   void dispose() {
+    _stopAutoSlide();
     _pageController.dispose();
     PrayerLiveActivityService.instance.preferenceListenable.removeListener(
       _onPreferenceChanged,
@@ -61,6 +71,9 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
     }
     final liveDismissed = await StorageService.homeLiveActivityPromoDismissed;
     final widgetsDismissed = await StorageService.homeWidgetsPromoDismissed;
+    final tajweedDismissed = await StorageService.homeTajweedPromoDismissed;
+    final lockScreenDismissed =
+        await StorageService.homeLockScreenPromoDismissed;
     if (!mounted) return;
     setState(() {
       _liveVisible = PrayerLiveActivityService.visibleOnThisPlatform &&
@@ -68,15 +81,49 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
           !enabled &&
           !liveDismissed;
       _widgetsVisible = !widgetsDismissed;
+      _tajweedVisible = !tajweedDismissed;
+      _lockScreenVisible = !lockScreenDismissed;
       _loading = false;
       if (_slideCount <= 1) _page = 0;
     });
+    _syncAutoSlide(_slideCount);
+  }
+
+  void _stopAutoSlide() {
+    _autoSlideTimer?.cancel();
+    _autoSlideTimer = null;
+  }
+
+  void _syncAutoSlide(int slideCount) {
+    _stopAutoSlide();
+    if (slideCount <= 1 || !mounted) return;
+
+    _autoSlideTimer = Timer.periodic(_autoSlideInterval, (_) {
+      if (!mounted || !_pageController.hasClients) return;
+
+      final current = _pageController.page?.round() ?? _page;
+      final next = (current + 1) % slideCount;
+      unawaited(
+        _pageController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeInOut,
+        ),
+      );
+    });
+  }
+
+  void _onPromoPageChanged(int index, int slideCount) {
+    setState(() => _page = index);
+    _syncAutoSlide(slideCount);
   }
 
   int get _slideCount {
     var count = 0;
     if (_liveVisible) count++;
     if (_widgetsVisible) count++;
+    if (_tajweedVisible) count++;
+    if (_lockScreenVisible) count++;
     return count;
   }
 
@@ -87,6 +134,8 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
       _liveVisible = false;
       _page = 0;
     });
+    _resetPageController();
+    _syncAutoSlide(_slideCount);
   }
 
   Future<void> _dismissWidgets() async {
@@ -96,6 +145,36 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
       _widgetsVisible = false;
       _page = 0;
     });
+    _resetPageController();
+    _syncAutoSlide(_slideCount);
+  }
+
+  Future<void> _dismissTajweed() async {
+    await StorageService.setHomeTajweedPromoDismissed(true);
+    if (!mounted) return;
+    setState(() {
+      _tajweedVisible = false;
+      _page = 0;
+    });
+    _resetPageController();
+    _syncAutoSlide(_slideCount);
+  }
+
+  Future<void> _dismissLockScreen() async {
+    await StorageService.setHomeLockScreenPromoDismissed(true);
+    if (!mounted) return;
+    setState(() {
+      _lockScreenVisible = false;
+      _page = 0;
+    });
+    _resetPageController();
+    _syncAutoSlide(_slideCount);
+  }
+
+  void _resetPageController() {
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(0);
+    }
   }
 
   Future<void> _enableLiveActivity() async {
@@ -126,9 +205,16 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
     );
   }
 
+  Future<void> _openLockScreenStyles() async {
+    await LockScreenOptionsPopup.show(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_loading || _slideCount == 0) return const SizedBox.shrink();
+    if (_loading || _slideCount == 0) {
+      _stopAutoSlide();
+      return const SizedBox.shrink();
+    }
 
     final l10n = AppLocalizations.of(context)!;
     final slides = <Widget>[
@@ -153,6 +239,28 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
           onTap: () => unawaited(_openWidgetsDemo()),
           onDismiss: () => unawaited(_dismissWidgets()),
         ),
+      if (_tajweedVisible)
+        _HomePromoSlide(
+          icon: Icons.graphic_eq_rounded,
+          title: l10n.homeTajweedPromoTitle,
+          body: l10n.homeTajweedPromoBody,
+          cta: l10n.homeTajweedPromoCta,
+          ctaLeadingIcon: Icons.mic_rounded,
+          mockup: _PromoTajweedMockup(l10n: l10n),
+          onTap: () => unawaited(TajweedEntryPoint.openFreePreview(context)),
+          onDismiss: () => unawaited(_dismissTajweed()),
+        ),
+      if (_lockScreenVisible)
+        _HomePromoSlide(
+          icon: Icons.phonelink_lock_rounded,
+          title: l10n.homeLockScreenPromoTitle,
+          body: l10n.homeLockScreenPromoBody,
+          cta: l10n.homeLockScreenPromoCta,
+          ctaLeadingIcon: Icons.smartphone_rounded,
+          mockup: _PromoLockScreenStylesMockup(l10n: l10n),
+          onTap: () => unawaited(_openLockScreenStyles()),
+          onDismiss: () => unawaited(_dismissLockScreen()),
+        ),
     ];
 
     return Padding(
@@ -160,15 +268,19 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
       child: Column(
         children: [
           SizedBox(
-            height: 228.h,
-            child: slides.length == 1
-                ? slides.first
-                : PageView(
-                    controller: _pageController,
-                    clipBehavior: Clip.none,
-                    onPageChanged: (index) => setState(() => _page = index),
-                    children: slides,
-                  ),
+            height: 236.h,
+            child: Padding(
+              padding: EdgeInsets.only(top: 8.h),
+              child: slides.length == 1
+                  ? slides.first
+                  : PageView(
+                      controller: _pageController,
+                      clipBehavior: Clip.none,
+                      onPageChanged: (index) =>
+                          _onPromoPageChanged(index, slides.length),
+                      children: slides,
+                    ),
+            ),
           ),
           if (slides.length > 1) ...[
             SizedBox(height: 8.h),
@@ -221,6 +333,7 @@ class _HomePromoSlide extends StatelessWidget {
     required this.onTap,
     required this.onDismiss,
     this.busy = false,
+    this.ctaLeadingIcon,
   });
 
   final IconData icon;
@@ -231,6 +344,7 @@ class _HomePromoSlide extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDismiss;
   final bool busy;
+  final IconData? ctaLeadingIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -308,15 +422,18 @@ class _HomePromoSlide extends StatelessWidget {
                         ),
                         SizedBox(
                           width: 32.w,
-                          height: 32.w,
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            visualDensity: VisualDensity.compact,
-                            onPressed: onDismiss,
-                            icon: Icon(
-                              Icons.close_rounded,
-                              size: 18.sp,
-                              color: bodyColor.withValues(alpha: 0.7),
+                          height: 40.h,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 10.h),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                              onPressed: onDismiss,
+                              icon: Icon(
+                                Icons.close_rounded,
+                                size: 18.sp,
+                                color: bodyColor.withValues(alpha: 0.7),
+                              ),
                             ),
                           ),
                         ),
@@ -357,6 +474,14 @@ class _HomePromoSlide extends StatelessWidget {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
+                                          if (ctaLeadingIcon != null) ...[
+                                            Icon(
+                                              ctaLeadingIcon,
+                                              size: 16.sp,
+                                              color: colorScheme.onPrimary,
+                                            ),
+                                            SizedBox(width: 6.w),
+                                          ],
                                           Flexible(
                                             child: Text(
                                               cta,
@@ -373,8 +498,7 @@ class _HomePromoSlide extends StatelessWidget {
                                             ),
                                           ),
                                           SizedBox(width: 6.w),
-                                          Icon(
-                                            Icons.arrow_forward_rounded,
+                                          HomeDirectionalForwardIcon(
                                             size: 16.sp,
                                             color: colorScheme.onPrimary,
                                           ),
@@ -393,9 +517,64 @@ class _HomePromoSlide extends StatelessWidget {
                   ],
                 ),
               ),
+              Positioned(
+                top: -6.h,
+                right: 10.w,
+                child: const _PromoNewBadge(),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PromoNewBadge extends StatelessWidget {
+  const _PromoNewBadge();
+
+  static const Color _badgeRed = Color(0xFFC62828);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final background =
+        isDark ? Theme.of(context).colorScheme.error : _badgeRed;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.14),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.auto_awesome_rounded,
+            size: 11.sp,
+            color: Colors.white,
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            l10n.homePromoNewBadge,
+            style: TextStyle(
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              letterSpacing: 0.5,
+              height: 1,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -570,6 +749,809 @@ class _PromoWidgetsMockup extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PromoTajweedMockup extends StatelessWidget {
+  const _PromoTajweedMockup({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  static const Color _practiceBg = Color(0xFFF3EDE3);
+  static const Color _practiceBorder = Color(0xFFE0D8CC);
+  static const Color _feedbackBg = Color(0xFF0F1F18);
+  static const Color _feedbackBorder = Color(0xFF2A4A3A);
+  static const Color _primaryGreen = Color(0xFF2E7D32);
+  static const Color _accentMint = Color(0xFF7BC4A4);
+
+  @override
+  Widget build(BuildContext context) {
+    final mockupWidth = 124.w;
+
+    return SizedBox(
+      width: mockupWidth,
+      height: 154.h,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 8.w,
+            bottom: 18.h,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(8.w, 6.h, 8.w, 6.h),
+              decoration: BoxDecoration(
+                color: _practiceBg,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: _practiceBorder),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _MiniCircleIcon(Icons.tune_rounded),
+                      SizedBox(width: 4.w),
+                      _MiniCircleIcon(Icons.volume_up_rounded),
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    TajweedFreePreview.fallbackArabic,
+                    textDirection: TextDirection.rtl,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 8.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.25,
+                      color: const Color(0xFF1A3328),
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    'bsm allh alrhman alrhym',
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 5.sp,
+                      color: const Color(0xFF6B7C74),
+                      height: 1.2,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    l10n.readingSettingsTajweedFreePreviewTranslation,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 4.5.sp,
+                      color: const Color(0xFF6B7C74),
+                      height: 1.2,
+                    ),
+                  ),
+                  const Spacer(),
+                  Center(
+                    child: Container(
+                      width: 24.w,
+                      height: 24.w,
+                      decoration: const BoxDecoration(
+                        color: _primaryGreen,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.mic_rounded,
+                        size: 12.sp,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final h in [3.0, 6.0, 4.0, 7.0, 3.0]) ...[
+                        Container(
+                          width: 2.w,
+                          height: h.h,
+                          margin: EdgeInsets.symmetric(horizontal: 0.5.w),
+                          decoration: BoxDecoration(
+                            color: _accentMint.withValues(alpha: 0.85),
+                            borderRadius: BorderRadius.circular(1.r),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    l10n.tajweedStartReciting,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 5.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF245C48),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            width: 88.w,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(8.w, 6.h, 8.w, 6.h),
+              decoration: BoxDecoration(
+                color: _feedbackBg,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(
+                  color: _feedbackBorder.withValues(alpha: 0.7),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.28),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5.w,
+                          vertical: 1.5.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _primaryGreen.withValues(alpha: 0.35),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '0%',
+                          style: TextStyle(
+                            color: _accentMint,
+                            fontSize: 5.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: Text(
+                          l10n.homeTajweedPromoAiFeedback,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 5.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    l10n.homeTajweedPromoWordAccuracy(0),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 7.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.1,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  _FeedbackStatRow(
+                    color: _primaryGreen,
+                    label: l10n.featureDemoTajweedStatCorrect,
+                    count: '0',
+                  ),
+                  SizedBox(height: 2.h),
+                  _FeedbackStatRow(
+                    color: const Color(0xFFF9A825),
+                    label: l10n.featureDemoTajweedStatPronunciation,
+                    count: '0',
+                  ),
+                  SizedBox(height: 2.h),
+                  _FeedbackStatRow(
+                    color: const Color(0xFFE53935),
+                    label: l10n.featureDemoTajweedStatWrong,
+                    count: '1',
+                  ),
+                  SizedBox(height: 2.h),
+                  _FeedbackStatRow(
+                    color: const Color(0xFF9E9E9E),
+                    label: l10n.featureDemoTajweedStatMissed,
+                    count: '3',
+                  ),
+                  SizedBox(height: 5.h),
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 3.h,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: _accentMint.withValues(alpha: 0.55),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.refresh_rounded,
+                            size: 6.sp,
+                            color: _accentMint,
+                          ),
+                          SizedBox(width: 3.w),
+                          Text(
+                            l10n.tajweedDownloadTryAgain,
+                            style: TextStyle(
+                              color: _accentMint,
+                              fontSize: 5.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiniCircleIcon extends StatelessWidget {
+  const _MiniCircleIcon(this.icon);
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 12.w,
+      height: 12.w,
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F0EB),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        icon,
+        size: 6.sp,
+        color: const Color(0xFF245C48),
+      ),
+    );
+  }
+}
+
+class _FeedbackStatRow extends StatelessWidget {
+  const _FeedbackStatRow({
+    required this.color,
+    required this.label,
+    required this.count,
+  });
+
+  final Color color;
+  final String label;
+  final String count;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 4.w,
+          height: 4.w,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        SizedBox(width: 4.w),
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.85),
+              fontSize: 4.5.sp,
+              height: 1.1,
+            ),
+          ),
+        ),
+        Text(
+          count,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.9),
+            fontSize: 4.5.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PromoLockScreenStylesMockup extends StatelessWidget {
+  const _PromoLockScreenStylesMockup({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final mockupWidth = 124.w;
+    final sideWidth = 34.w;
+    final sideHeight = 106.h;
+    final centerWidth = 44.w;
+    final centerHeight = 130.h;
+    final overlap = 9.w;
+    final centerLift = 8.h;
+
+    final groupWidth = (2 * sideWidth) + centerWidth - (2 * overlap);
+    final inset = (mockupWidth - groupWidth) / 2;
+    final leftX = inset;
+    final centerX = leftX + sideWidth - overlap;
+    final rightX = centerX + centerWidth - overlap;
+
+    return SizedBox(
+      width: mockupWidth,
+      height: 154.h,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: leftX,
+            bottom: 0,
+            child: _MiniLockStylePhone(
+              width: sideWidth,
+              height: sideHeight,
+              label:
+                  '${l10n.lockScreenPreviewLabel} · ${l10n.lockScreenStyleHold}',
+              laterLabel: l10n.prayerReminderLaterButton,
+              child: _HoldPreviewContent(l10n: l10n),
+            ),
+          ),
+          Positioned(
+            left: rightX,
+            bottom: 0,
+            child: _MiniLockStylePhone(
+              width: sideWidth,
+              height: sideHeight,
+              label:
+                  '${l10n.lockScreenPreviewLabel} · ${l10n.lockScreenStyleTasbih}',
+              laterLabel: l10n.prayerReminderLaterButton,
+              child: _TasbihPreviewContent(l10n: l10n),
+            ),
+          ),
+          Positioned(
+            left: centerX,
+            bottom: centerLift,
+            child: _MiniLockStylePhone(
+              width: centerWidth,
+              height: centerHeight,
+              label:
+                  '${l10n.lockScreenPreviewLabel} · ${l10n.lockScreenStyleType}',
+              laterLabel: l10n.prayerReminderLaterButton,
+              elevated: true,
+              child: _TypePreviewContent(l10n: l10n),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiniLockStylePhone extends StatelessWidget {
+  const _MiniLockStylePhone({
+    required this.width,
+    required this.height,
+    required this.label,
+    required this.laterLabel,
+    required this.child,
+    this.elevated = false,
+  });
+
+  final double width;
+  final double height;
+  final String label;
+  final String laterLabel;
+  final Widget child;
+  final bool elevated;
+
+  static const double _designWidth = 132;
+  static const double _designHeight = 286;
+
+  static const Color _phoneBorder = Color(0xFF2A4A3A);
+  static const Color _phoneBg = Color(0xFFFAFAF7);
+  static const Color _primaryGreen = Color(0xFF1F4D3A);
+  static const Color _accentGreen = Color(0xFF2E7D32);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: elevated
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.16),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+        ),
+        child: FittedBox(
+          fit: BoxFit.contain,
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: _designWidth,
+            height: _designHeight,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: _phoneBg,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: _phoneBorder, width: 1.6),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE8F0EB),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          label,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            height: 1.15,
+                            color: _primaryGreen,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
+                        child: child,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
+                            color: _accentGreen.withValues(alpha: 0.45),
+                          ),
+                        ),
+                        child: Text(
+                          laterLabel,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: _accentGreen,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HoldPreviewContent extends StatelessWidget {
+  const _HoldPreviewContent({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  static const Color _primaryGreen = Color(0xFF1F4D3A);
+  static const Color _accentGreen = Color(0xFF2E7D32);
+  static const Color _muted = Color(0xFF6B7C74);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          l10n.lockScreenItsTimeToPray,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 10, color: _muted, height: 1.2),
+        ),
+        Text(
+          l10n.homePrayerDhuhr,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: _primaryGreen,
+          ),
+        ),
+        const Spacer(),
+        AspectRatio(
+          aspectRatio: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _accentGreen.withValues(alpha: 0.08),
+              border: Border.all(
+                color: _accentGreen.withValues(alpha: 0.5),
+                width: 2.5,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'الظهر',
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: _primaryGreen,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    l10n.lockScreenHoldHint,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 8.5,
+                      color: _muted,
+                      height: 1.15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+}
+
+class _TypePreviewContent extends StatelessWidget {
+  const _TypePreviewContent({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  static const Color _primaryGreen = Color(0xFF1F4D3A);
+  static const Color _muted = Color(0xFF6B7C74);
+  static const Color _phoneBorder = Color(0xFF2A4A3A);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.lockScreenConfirmBeforeAllah,
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 9.5, color: _muted, height: 1.2),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.lockScreenTypeHint(l10n.lockScreenTypeWord),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 9,
+            color: _primaryGreen,
+            fontWeight: FontWeight.w600,
+            height: 1.15,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          height: 28,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: _phoneBorder.withValues(alpha: 0.35)),
+          ),
+          child: Text(
+            l10n.lockScreenTypeWord,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.3,
+              color: _primaryGreen,
+            ),
+          ),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+}
+
+class _TasbihPreviewContent extends StatelessWidget {
+  const _TasbihPreviewContent({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  static const Color _primaryGreen = Color(0xFF1F4D3A);
+  static const Color _accentGreen = Color(0xFF2E7D32);
+  static const Color _muted = Color(0xFF6B7C74);
+
+  @override
+  Widget build(BuildContext context) {
+    final phrases = [
+      l10n.lockScreenDhikrAstaghfirullah,
+      l10n.lockScreenDhikrSubhanAllah,
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.lockScreenItsTimeToPray,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 9, color: _muted, height: 1.15),
+        ),
+        Text(
+          l10n.homePrayerDhuhr,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: _primaryGreen,
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'سُبْحَانَ اللّٰهِ',
+          textDirection: TextDirection.rtl,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: _primaryGreen,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var i = 0; i < phrases.length; i++) ...[
+              if (i > 0) const SizedBox(width: 4),
+              Container(
+                width: 5,
+                height: 5,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i == 0 ? _accentGreen : _muted.withValues(alpha: 0.35),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  phrases[i],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 7.5,
+                    fontWeight: i == 0 ? FontWeight.w700 : FontWeight.w500,
+                    color: i == 0 ? _primaryGreen : _muted,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l10n.lockScreenCountProgress(0, 3),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            color: _primaryGreen,
+          ),
+        ),
+        Text(
+          l10n.lockScreenTapToCount,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 8, color: _muted, height: 1.1),
+        ),
+        const Spacer(),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          decoration: BoxDecoration(
+            color: _accentGreen,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Text(
+            l10n.prayerReminderYesButton,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              height: 1.1,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+      ],
     );
   }
 }
@@ -854,7 +1836,7 @@ class _PromoLiveActivityCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text('Lahore', style: secondary),
+                    Text(l10n.homePromoPreviewCity, style: secondary),
                   ],
                 ),
               ),

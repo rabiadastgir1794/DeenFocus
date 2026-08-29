@@ -122,6 +122,73 @@ void main() {
       expect(asr.time.day, 11);
     });
 
+    test('Fajr custom override 4:11 AM stays morning for alarms', () async {
+      final date = DateTime(2026, 8, 28, 12);
+      final overridden =
+          await HomePrayerTimesHelper.generatePrayerTimesForDateWithOverrides(
+            latitude: 31.5204,
+            longitude: 74.3587,
+            date: date,
+            overridesMinutesSinceMidnight: const {
+              TrackablePrayer.fajr: 4 * 60 + 11,
+            },
+          );
+      final fajr = overridden.slots.firstWhere(
+        (slot) => slot.id == HomePrayerId.fajr,
+      );
+      expect(fajr.time.hour, 4);
+      expect(fajr.time.minute, 11);
+      expect(fajr.time.hour, lessThan(12));
+    });
+
+    test('wrong-date Dhuhr does not stay next near Isha', () {
+      // Regression: a Dhuhr DateTime dated tomorrow (hour still 12:05) used to
+      // win slot.time.isAfter(now) and stay highlighted all evening.
+      final now = DateTime(2026, 8, 28, 19, 40); // Maghrib passed, Isha soon
+      final slots = <HomePrayerSlot>[
+        HomePrayerSlot(
+          id: HomePrayerId.fajr,
+          time: DateTime(2026, 8, 28, 4, 11),
+        ),
+        HomePrayerSlot(
+          id: HomePrayerId.sunrise,
+          time: DateTime(2026, 8, 28, 5, 36),
+        ),
+        HomePrayerSlot(
+          id: HomePrayerId.dhuhr,
+          // Bad date component (tomorrow) with today's Dhuhr clock.
+          time: DateTime(2026, 8, 29, 12, 5),
+        ),
+        HomePrayerSlot(
+          id: HomePrayerId.asr,
+          time: DateTime(2026, 8, 28, 15, 40),
+        ),
+        HomePrayerSlot(
+          id: HomePrayerId.maghrib,
+          time: DateTime(2026, 8, 28, 18, 32),
+        ),
+        HomePrayerSlot(
+          id: HomePrayerId.isha,
+          time: DateTime(2026, 8, 28, 19, 51),
+        ),
+      ];
+      final next = HomePrayerTimesHelper.nextPrayerOnDay(slots: slots, now: now);
+      expect(next?.id, HomePrayerId.isha);
+      expect(next?.at, DateTime(2026, 8, 28, 19, 51));
+
+      final rebuilt = HomePrayerTimesHelper.applyCustomOverrides(
+        data: HomePrayerTimesData(
+          slots: slots,
+          nextPrayer: HomePrayerId.dhuhr,
+          nextPrayerTime: slots[2].time,
+          remaining: Duration.zero,
+        ),
+        overridesMinutesSinceMidnight: const {},
+        referenceTime: now,
+      );
+      expect(rebuilt.nextPrayer, HomePrayerId.isha);
+    });
+
     test('custom override replaces only that prayer wall time', () async {
       final base = await HomePrayerTimesHelper.generatePrayerTimesForDate(
         latitude: 31.5204,

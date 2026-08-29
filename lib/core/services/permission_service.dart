@@ -4,6 +4,8 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// Centralized permission requests and checks. Used by onboarding ViewModel.
 abstract class PermissionService {
   static const MethodChannel _screenTimeChannel = MethodChannel(
@@ -130,29 +132,27 @@ class ScreenTimeAuthorizationResult {
   final String? errorCode;
   final String? errorMessage;
 
-  String? userFacingMessage() {
+  String userFacingMessage(AppLocalizations l10n) {
     switch (errorCode) {
       case 'AUTHENTICATION_METHOD_UNAVAILABLE':
-        return 'This iPhone needs a device passcode before Apple will allow Screen Time access. Set a passcode in iPhone Settings, then try again.';
+        return l10n.focusScreenTimeAuthPasscodeRequired;
       case 'AUTHORIZATION_CANCELED':
-        return 'Screen Time access was canceled before Apple finished granting it. Please try again and complete the Apple prompt.';
+        return l10n.focusScreenTimeAuthCanceled;
       case 'AUTHORIZATION_CONFLICT':
-        return 'Another app is already managing Family Controls on this iPhone. Turn that off first, then try again.';
+        return l10n.focusScreenTimeAuthConflict;
       case 'INVALID_ACCOUNT_TYPE':
-        return 'Sign in with a valid iCloud account on this iPhone, then try Screen Time access again.';
+        return l10n.focusScreenTimeAuthInvalidAccount;
       case 'NETWORK_ERROR':
-        return 'This iPhone needs an internet connection before Apple can grant Screen Time access.';
+        return l10n.focusScreenTimeAuthNetwork;
       case 'RESTRICTED':
-        return 'Family Controls is restricted on this iPhone, so Deenly cannot request Screen Time access here.';
+        return l10n.focusScreenTimeAuthRestricted;
       case 'UNAVAILABLE':
-        return 'Family Controls is currently unavailable on this iPhone.';
+        return l10n.focusScreenTimeAuthUnavailable;
       case 'IOS_VERSION_UNSUPPORTED':
-        return 'Screen Time app blocking requires iOS 16 or later.';
+        return l10n.focusScreenTimeAuthIosVersion;
+      case 'INVALID_ARGUMENT':
+        return l10n.focusScreenTimeAuthInvalidArgument;
     }
-
-    if (errorMessage != null && errorMessage!.trim().isNotEmpty) {
-      return errorMessage;
-    }
-    return 'Screen Time access could not be granted on this iPhone.';
+    return l10n.focusScreenTimeAuthFailedGeneric;
   }
 }

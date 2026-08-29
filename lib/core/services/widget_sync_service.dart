@@ -85,6 +85,12 @@ class WidgetSyncService {
       'prayerProgressTitle': l10n.widgetPrayerProgressTitle,
       'prayersCompletedSubtitle': l10n.widgetPrayersCompletedSubtitle,
       'defaultProgressCountLabel': l10n.widgetPrayerProgressCount(0, 5),
+      'lockCountdownHoursMinutes': l10n.widgetLockCountdownHoursMinutes(
+        '{hours}',
+        '{minutes}',
+      ),
+      'lockCountdownMinutes': l10n.widgetLockCountdownMinutes('{minutes}'),
+      'fallbackPrayerName': l10n.homePrayerFajr,
     };
 
     final entries = <Map<String, dynamic>>[];

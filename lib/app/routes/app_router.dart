@@ -56,18 +56,26 @@ GoRouter createAppRouter() {
   );
   final router = StartupProbe.timeSync(
     'createAppRouter: GoRouter() constructor',
-    () => GoRouter(
-      navigatorKey: _rootNavigatorKey,
-      observers: <NavigatorObserver>[_loggingNavigationObserver],
-      initialLocation: RouteNames.splash,
-      redirect: (context, state) {
-        StartupProbe.detail(
-          'GoRouter.redirect loc=${state.uri} matched=${state.matchedLocation}',
-        );
-        return null; // no redirect — measurement only
-      },
-      routes: routes,
-    ),
+    () {
+      var redirectCount = 0;
+      return GoRouter(
+        navigatorKey: _rootNavigatorKey,
+        observers: <NavigatorObserver>[_loggingNavigationObserver],
+        initialLocation: RouteNames.splash,
+        redirect: (context, state) {
+          redirectCount += 1;
+          if (redirectCount == 1) {
+            StartupProbe.mark('GoRouter.redirect first');
+          }
+          StartupProbe.detail(
+            'GoRouter.redirect #$redirectCount loc=${state.uri} '
+            'matched=${state.matchedLocation}',
+          );
+          return null; // no redirect — measurement only
+        },
+        routes: routes,
+      );
+    },
   );
   StartupProbe.detail('createAppRouter: exit');
   return router;

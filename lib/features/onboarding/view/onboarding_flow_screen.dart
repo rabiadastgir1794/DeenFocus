@@ -434,10 +434,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     if (vm.selectAppsLoading || _selectAppsAutoAdvancing) return;
     vm.setSelectAppsLoading(true);
     try {
-      // Skip premium during onboarding — App Lock Demo + subscription follow.
       await FocusAppSelectionFlow.open(
         context: context,
-        requirePremium: false,
         requireAccessibilityDisclosure: true,
       );
     } finally {

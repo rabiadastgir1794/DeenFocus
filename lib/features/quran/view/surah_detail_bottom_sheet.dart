@@ -11,6 +11,7 @@ import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../tajweed/tajweed_entry_point.dart';
 import '../data/quran_local_repository.dart';
+import '../reading_engine/mushaf_metadata.dart';
 import '../reading_engine/quran_audio_handler.dart';
 import '../reading_engine/quran_layout_theme.dart';
 import '../reading_engine/quran_reading_color_theme.dart';
@@ -21,6 +22,8 @@ import '../reading_engine/quran_display_prefs.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
+import 'mushaf_page_screen.dart';
+import 'widgets/quran_surah_view_mode_button.dart';
 import 'widgets/ayah_card.dart';
 import 'widgets/quran_audio_bar.dart';
 import 'widgets/quran_reader_theme.dart';
@@ -189,6 +192,37 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
   Future<void> _leaveScreen() async {
     await _engine.flush();
     if (mounted) Navigator.of(context).pop();
+  }
+
+  int _focusedAyahNumber() {
+    if (_playingAyahIndex >= 0 && _playingAyahIndex < _ayahs.length) {
+      return _ayahs[_playingAyahIndex].ayahNumber;
+    }
+    return widget.initialAyah ?? 1;
+  }
+
+  Future<void> _prepareViewSwitch() async {
+    await _player.stop();
+    await _engine.flush();
+  }
+
+  Future<void> _switchToPageView() async {
+    await _prepareViewSwitch();
+    if (!mounted) return;
+    final metadata = await MushafMetadata.load();
+    final page = metadata.pageForAyah(
+      widget.surah.number,
+      _focusedAyahNumber(),
+    );
+    if (!mounted) return;
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => MushafPageScreen(
+          surah: widget.surah,
+          initialPage: page,
+        ),
+      ),
+    );
   }
 
   Widget _buildAyahCard(int index) {
@@ -565,9 +599,18 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
                   subtitle: subtitle,
                   backLabel: l10n.calendarBack,
                   onBack: () => unawaited(_leaveScreen()),
-                  trailing: QuranReadingSettingsLauncher.appBarAction(
-                    context,
-                    onReturn: () => unawaited(_reloadDisplayPrefs()),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      QuranSurahViewModeButton(
+                        showPageView: true,
+                        onTap: () => unawaited(_switchToPageView()),
+                      ),
+                      QuranReadingSettingsLauncher.appBarAction(
+                        context,
+                        onReturn: () => unawaited(_reloadDisplayPrefs()),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(

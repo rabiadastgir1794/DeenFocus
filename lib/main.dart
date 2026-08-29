@@ -15,7 +15,9 @@ import 'core/logger/app_logging.dart';
 import 'core/logger/logger_service.dart';
 import 'core/logger/startup_handoff.dart';
 import 'core/logger/startup_probe.dart';
+import 'core/logger/timed_app_localizations_delegate.dart';
 import 'core/logger/trace_helpers.dart';
+import 'core/services/storage_service.dart';
 import 'core/services/app_notification_service.dart';
 import 'core/services/daily_refresh_service.dart';
 import 'core/services/locale_service.dart';
@@ -49,8 +51,16 @@ Future<void> main() async {
       );
       final docs = await getApplicationDocumentsDirectory();
       StartupProbe.detail('Hive: path_provider OK path=${docs.path}');
-      await Hive.initFlutter();
+      final hive = Hive.initFlutter();
+      final onboarding = StorageService.warmOnboardingCompleted();
+      await hive;
       StartupProbe.mark('3_Hive.initFlutter done');
+      try {
+        await onboarding;
+        StartupProbe.mark('onboardingCompleted warmed');
+      } catch (e) {
+        debugPrint('[STARTUP] onboardingCompleted warm failed: $e');
+      }
     } catch (e, st) {
       debugPrint('[STARTUP] Hive.initFlutter / path_provider FAILED: $e');
       debugPrint('[STARTUP] stack:\n$st');
@@ -69,20 +79,28 @@ Future<void> main() async {
       StartupProbe.dumpSummary();
     });
 
-    // Superwall / alarms / translations wait until Home (or onboarding)
-    // has painted. Starting them at context.go() starved HomeRouteGate.
+    // Alarms / translations after the first Home (or onboarding) paint.
+    // Superwall.configure spawns WKWebView — wait one extra frame so it does
+    // not race Home layout (see firstDestinationIdle).
     unawaited(
       StartupHandoff.firstDestinationFrame.then((_) {
-        StartupProbe.detail('_initializeServices: after first destination frame');
+        StartupProbe.detail(
+          '_initializeServices: after first destination frame',
+        );
+        unawaited(_initializeServices());
+      }),
+    );
+    unawaited(
+      StartupHandoff.firstDestinationIdle.then((_) {
+        StartupProbe.mark('Superwall.configure scheduled (after Home idle)');
         unawaited(
           TraceHelpers.traceAsync(
             'STARTUP',
-            'AppSuperwall.configure (after destination frame)',
+            'AppSuperwall.configure (after destination idle)',
             AppSuperwall.configure,
             logSuccess: true,
           ),
         );
-        unawaited(_initializeServices());
       }),
     );
   }, AppLogging.recordZoneError);
@@ -161,6 +179,11 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
           '_AppLifecycleObserver: FocusController.initialize after Home',
         );
         unawaited(context.read<FocusController>().initialize());
+      }),
+    );
+    unawaited(
+      StartupHandoff.firstDestinationIdle.then((_) {
+        if (!mounted) return;
         unawaited(_syncSubscriptionAndDisableFocusModesIfNeeded());
       }),
     );
@@ -284,9 +307,18 @@ class _DeenlyMaterialApp extends StatelessWidget {
           darkTheme: theme,
           themeMode: themeMode,
           locale: locale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: [
+            const TimedAppLocalizationsDelegate(),
+            ...AppLocalizations.localizationsDelegates.skip(1),
+          ],
           supportedLocales: kSupportedLocales,
           routerConfig: router,
+          builder: (context, child) {
+            StartupProbe.markOnce(
+              'MaterialApp.builder (after l10n; before/with router child)',
+            );
+            return child ?? const SizedBox.shrink();
+          },
         );
       },
     );

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../core/logger/startup_handoff.dart';
+import '../../../core/logger/startup_probe.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/app_review_service.dart';
 import '../../../core/services/daily_refresh_service.dart';
@@ -24,6 +26,7 @@ import '../helpers/home_daily_verse_helper.dart';
 import '../helpers/home_islamic_events_helper.dart';
 import '../helpers/home_prayer_times_helper.dart';
 import '../helpers/insights_streak_delta.dart';
+import '../helpers/prayer_reminder_prompt_keys.dart';
 import '../model/home_models.dart';
 import '../services/achievements_service.dart';
 import '../services/cycle_mode_policy.dart';
@@ -187,12 +190,13 @@ class HomeTabViewModel extends ChangeNotifier {
 
   List<int> prayerCountsForDates(List<DateTime> dates) {
     final history = _mergedStatusHistory();
+    final now = DateTime.now();
     return [
       for (final date in dates)
         WeeklyCalculator.completedCountOnDate(
           date,
           history,
-          cyclePolicy.shouldExcludeFromStatistics,
+          (d) => cyclePolicy.shouldExcludeFromStatistics(d, now: now),
         ),
     ];
   }
@@ -209,7 +213,7 @@ class HomeTabViewModel extends ChangeNotifier {
         RestoreCalculator.findTarget(
           now: now,
           statusHistory: _mergedStatusHistory(),
-          isCycleDay: (d) => !cyclePolicy.shouldAllowRestore(d),
+          isCycleDay: (d) => !cyclePolicy.shouldAllowRestore(d, now: now),
           prayerStartTime: prayerDateTimeFor,
         );
     if (target == null) return false;
@@ -263,6 +267,9 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   bool get cycleModeEnabled => _cycleMode.isEnabled;
+
+  /// True when Cycle Mode is enabled **and** today is inside the active window.
+  bool get cycleModeRunning => cyclePolicy.isRunningOn(DateTime.now());
   CycleModeData get cycleModeData => _cycleMode;
   CycleModePolicy get cyclePolicy => CycleModePolicy(_cycleMode);
 
@@ -301,7 +308,8 @@ class HomeTabViewModel extends ChangeNotifier {
   int get todayQuranPercent => _todayQuranPercent;
   int get todayDhikrPercent => _todayDhikrPercent;
   int get todayDistractionPercent => _todayDistractionPercent;
-  int get cycleModeDaysRemaining => _cycleMode.daysRemainingOn(DateTime.now());
+  int get cycleModeDaysRemaining =>
+      cyclePolicy.daysRemaining(now: DateTime.now());
   int get cycleModeLength => _cycleMode.cycleLength;
 
   Timer? _ticker;
@@ -434,13 +442,23 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
+    StartupProbe.mark('HomeTabViewModel.initialize begin');
     await _syncCycleModeFromStorage();
     await _loadAll();
+    StartupProbe.mark('HomeTabViewModel.initialize after _loadAll');
     _startTicker();
     // Review / Live Activity after first home frame — not on the critical path.
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      StartupProbe.markOnce('HomeTabViewModel first frame callback');
       unawaited(_loadDeferredAfterFirstFrame());
     });
+    unawaited(
+      StartupHandoff.firstDestinationIdle.then((_) async {
+        StartupProbe.mark('HomeTabViewModel Superwall sync after idle');
+        await _loadSubscriptionStatus();
+        notifyListeners();
+      }),
+    );
   }
 
   /// Pause/resume the minute ticker when the Home tab is not visible.
@@ -534,7 +552,7 @@ class HomeTabViewModel extends ChangeNotifier {
       longitude = profile[4] as double?;
       _lastAppliedSect = profile[5] as String?;
 
-      await _loadSubscriptionStatus();
+      _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
       await _loadPrayerSettings();
       await refreshPrayerAlarmGate();
       await _loadPrayerTimes();
@@ -567,6 +585,7 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadSubscriptionStatus() async {
+    StartupProbe.detail('HomeTabViewModel._loadSubscriptionStatus (network)');
     await AppSuperwall.syncSubscriptionState();
 
     _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
@@ -1362,6 +1381,15 @@ class HomeTabViewModel extends ChangeNotifier {
     }
     notifyListeners();
     await _persistPrayerStreak();
+    if (status != PrayerMarkStatus.none) {
+      try {
+        await StorageService.markPrayerReminderPrompted(
+          PrayerReminderPromptKeys.forPrayer(prayer),
+        );
+      } catch (_) {
+        // Prefs unavailable in some unit tests — marking still succeeded.
+      }
+    }
     await _computeFocusScore();
     await _refreshAchievements();
     notifyListeners();
@@ -1413,8 +1441,8 @@ class HomeTabViewModel extends ChangeNotifier {
     analytics = PrayerAnalyticsService.calculate(
       now: now,
       statusHistory: _mergedStatusHistory(),
-      isPausedStreakDay: policy.shouldPauseStreaks,
-      isExcludedStatsDay: policy.shouldExcludeFromStatistics,
+      isPausedStreakDay: (d) => policy.shouldPauseStreaks(d, now: now),
+      isExcludedStatsDay: (d) => policy.shouldExcludeFromStatistics(d, now: now),
       prayerStartTime: prayerDateTimeFor,
     );
     prayerStreak = analytics.prayerStreak;
@@ -1477,6 +1505,8 @@ class HomeTabViewModel extends ChangeNotifier {
           cycleProtectedDays: protected,
           currentLevel: currentLevel,
           journeyStartDate: userProgress.journeyStartDate,
+          isExcludedProgressDay: (d) =>
+              cyclePolicy.shouldExcludeFromPrayerProgress(d, now: now),
         );
       },
     );
@@ -1490,9 +1520,16 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   int _completedPrayerCount() {
+    final now = DateTime.now();
+    final policy = cyclePolicy;
     var count = 0;
-    for (final day in _mergedStatusHistory().values) {
-      for (final status in day.values) {
+    for (final entry in _mergedStatusHistory().entries) {
+      final parsed = DateTime.tryParse(entry.key);
+      if (parsed != null &&
+          policy.shouldExcludeFromPrayerProgress(parsed, now: now)) {
+        continue;
+      }
+      for (final status in entry.value.values) {
         if (PrayerAnalyticsService.countsForPrayerStreak(status)) count += 1;
       }
     }

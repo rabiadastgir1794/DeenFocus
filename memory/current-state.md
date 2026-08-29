@@ -1,6 +1,275 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-28 — Merged lock-screen-style into PrayerEditButton (paywall gating, Focus diagnostic, share, Lock Screen Style, centered headers).
+> Last updated: 2026-08-29 — Child/Salah restricted dark palettes.
+
+## Status: Restricted child/salah dark mode (2026-08-29)
+Night overlay stays navy. Child and Salah use forest/olive dark canvases and
+light text when `Theme.brightness` is dark. iOS shield reads
+`focus_shield_app_theme_is_dark` for Child/Salah (Night always dark).
+
+## Status: Shield default hourglass (2026-08-29)
+Root cause: `FocusShieldConfiguration` Compile Sources listed **no Swift
+files**, so the appex executable was a ~50KB stub (`_NSExtensionMain` only).
+iOS loaded PlugIns/FocusShieldConfiguration.appex, could not find
+`FocusShieldConfiguration.FocusShieldConfigurationExtension`, and showed
+the stock Restricted UI. Restored
+`FocusShieldConfigurationExtension.swift` in the Sources phase. Rebuilt
+binary is ~296KB and contains `Salah Time` + the ObjC class.
+
+## Status: Shield extension not loading (2026-08-29)
+Default hourglass = iOS never instantiated our data source. Fixes: remove
+`@objc(FocusShieldConfigurationExtension)` (plist looks up
+`FocusShieldConfiguration.FocusShieldConfigurationExtension`); drop unused
+`FamilyControls`; return config without image rasterization; match appex
+`CFBundleShortVersionString`/`CFBundleVersion` to the app (32.1.2 / 45);
+log `init` via os.Logger + app-group `focus_debug.log`.
+
+## Status: Shield default UI (2026-08-29)
+Runner only depended on DeenlyWidgets, so FocusShieldConfiguration could stay
+stale and iOS showed the stock Screen Time shield. Runner now also depends on
+FocusShieldConfiguration and FocusDeviceActivityMonitor. Principal class is
+`$(PRODUCT_MODULE_NAME).FocusShieldConfigurationExtension`.
+
+## Status: Shield extension default fallback (2026-08-29)
+Apple shows the stock Screen Time shield when the configuration
+extension does not load. Principal class is now `@objc` + plist name
+without module prefix; orb PNGs load from the appex bundle and are
+cached. Build/run **Runner**, not the extension scheme.
+
+> Last updated: 2026-08-29 — Shield extension linker entry point.
+
+## Status: FocusShieldConfiguration `_NSExtensionMain` (2026-08-29)
+Standalone Xcode build of the shield target failed because Xcode 16’s debug
+dylib omitted the extension entry. Target now uses `ENABLE_DEBUG_DYLIB=NO`
+and `-e _NSExtensionMain`. Prefer the **Runner** scheme for day-to-day runs.
+
+> Last updated: 2026-08-29 — Night navy + real orb PNGs.
+
+## Status: Restricted screens (2026-08-29)
+Original orb art restored (outer black only). Flutter Night is navy with
+white text. Heroes ~92% width. Shield extension bundles the same PNGs.
+
+> Last updated: 2026-08-29 — Restricted overlay matches mock.
+
+## Status: RestrictedModeScreen mock layout (2026-08-29)
+Salah / Child / Night overlay: leaf-flanked title, glow hero, circular info
+badge, quote marks + sparkles, forest pill CTA. Spacing scales from screen
+height (SE→Max), no ScreenUtil stretch. Copy and `onPrimary` unchanged.
+
+> Last updated: 2026-08-29 — Splash onboarding flag + l10n probes.
+
+## Status: Launch onboarding flag (2026-08-29)
+Removed 2s timeout on `onboardingCompleted`. Flag is warmed from
+SharedPreferences in `main()` (parallel with Hive) and cached. Splash awaits
+the cache. Probes: `TimedAppLocalizationsDelegate`, first GoRouter.redirect,
+MaterialApp.builder.
+
+## Status: Recommended pill clears header (2026-08-29)
+Picker mini-preview has extra top inset so Default/Recommended pills no longer
+cover "It's time to pray".
+
+> Last updated: 2026-08-29 — Tasbih 33/33/33/34 + Recommended pill.
+
+## Status: Lock tasbih counts + Recommended pill (2026-08-29)
+Astaghfirullah / SubhanAllah / Alhamdulillah targets are 33; Allahu Akbar is
+34. Recommended uses the same corner pill as Default, in red.
+
+> Last updated: 2026-08-29 — Prayer reminder not after mark.
+
+## Status: Reminder after already marking (2026-08-29)
+Asr (or any tip prayer) confirmation sheet must not reappear after a successful
+mark. `markPrayerStatus` writes the per-prayer reminder prompt key; Home
+re-checks unmarked + target after async gaps; popup aborts if already marked.
+
+> Last updated: 2026-08-29 — Lock widget countdown TimelineView.
+
+## Status: Lock widget countdown ticks (2026-08-29)
+`LockPrayerView` uses `TimelineView(.periodic(..., by: 60))` like the home
+widget. Countdown/prayer selection use `timeline.date`, not a one-shot `Date()`.
+No extra WidgetKit minute entries; App Group / `DeenlyProvider` unchanged.
+
+> Last updated: 2026-08-29 — Cycle Mode zero contribution to streaks/XP.
+
+## Status: Cycle Mode × Prayer Streaks (2026-08-29)
+Cycle Mode days contribute ZERO to prayer/day streaks, Insights %, Home bars,
+prayer XP, and prayer achievements, while bridging (not resetting) a pre-cycle
+tip. Same-day Cycle ON no longer counts today's marks. Tip-only-on-cycle days
+are 0 until a non-cycle day is logged. Canonical progress exclude helper:
+`CycleModePolicy.shouldExcludeFromPrayerProgress`.
+
+> Last updated: 2026-08-29 — iOS startup: defer Superwall WKWebView.
+
+## Status: Superwall / first-frame (2026-08-29)
+Superwall.configure and post-onboarding paywall wait for `firstDestinationIdle`
+(one vsync after Home/onboarding first paint). Home `_loadAll` uses cached
+entitlement only; `syncSubscriptionState` after idle. Splash brand wait is
+400ms (was 1100). Measure first-frame vs splash UI with
+`--dart-define=STARTUP_SIMPLE_SPLASH=true`. Impeller: diagnostic only
+`flutter run --no-enable-impeller` — not shipped.
+
+> Last updated: 2026-08-29 — Localize lock widget countdown.
+
+## Status: Lock widget l10n (2026-08-29)
+Countdown “In 2h 34m” and fallback Fajr name come from app locale via
+`widget_timeline_json` (`widgetLockCountdown*` + `homePrayerFajr`). Prayer
+names/times already used `l10n` in `WidgetSyncService`. Locale change already
+calls `syncTimeline`.
+
+> Last updated: 2026-08-29 — Revert lock widget extras.
+
+## Status: Lock widget restored (2026-08-29)
+Removed moon badge, dots, tick dial, and forced full-width columns. Rectangular
+is again Fajr + countdown | sunrise + time only.
+
+> Last updated: 2026-08-29 — Lock widget 3-column layout.
+
+## Status: Lock rectangular matches mock (2026-08-29)
+Left: moon badge, name, countdown, 5 salah dots. Center: sunrise + time.
+Right: Canvas tick dial with Arabic name + crescent (no glow/shadow).
+
+> Last updated: 2026-08-29 — Center lock widget sun/time.
+
+## Status: Lock rectangular hero centered (2026-08-29)
+Sunrise + salah time overlay the widget midpoint; Fajr / countdown stay leading.
+
+> Last updated: 2026-08-29 — Lock screen widget gallery fix.
+
+## Status: Lock widgets missing from Add Widget (2026-08-29)
+Accessory UI lived on the home widget (`contentMarginsDisabled`, Gauge,
+Color.clear background) so snapshots failed and iOS hid lock families.
+`LockPrayerWidget` is a separate accessory-only widget (simple Text/Image,
+`AccessoryWidgetBackground`). Runner now depends on DeenlyWidgets and embeds
+with RemoveHeadersOnCopy. Bundle no longer uses `if #available`.
+
+> Last updated: 2026-08-29 — Restore addable lock widgets.
+
+## Status: Lock widgets not addable (2026-08-29)
+Tick-dial + glow/shadow + `contentMarginsDisabled` on accessory families made
+the extension fail snapshots, so Lock Screen Add Widget hid them. Split
+`DeenlyLockWidgets` (accessory only, iOS 17 `containerBackground`), lighter
+rectangular layout (icon + time in the middle, Gauge on the right).
+
+> Last updated: 2026-08-29 — Lock widget middle icon+time.
+
+## Status: Lock rectangular middle column (2026-08-29)
+Center is sunrise (or prayer) icon stacked over salah time, not a lone timer.
+Left keeps name + countdown + dots; right is a tick dial.
+
+> Last updated: 2026-08-29 — Lock widget Fajr/Dhuhr pairing.
+
+## Status: Lock widget mixed Fajr time + Dhuhr name (2026-08-29)
+Rectangular trailing column showed current salah time under the *next* name
+(Fajr 4:12 AM + Dhuhr). Trailing is time only. Before Fajr, countdown is to
+Fajr, not Dhuhr.
+
+> Last updated: 2026-08-29 — Beautify lock screen widgets.
+
+## Status: Lock Screen widget layout (2026-08-29)
+Rectangular/circular/inline accessories: prayer icon + ring progress, remaining
+time, 5 salah dots, next prayer. Removed sparse “Deen Focus” brand in the
+middle of the rectangular slot.
+
+> Last updated: 2026-08-29 — Enable iOS lock screen widgets.
+
+## Status: Lock Screen WidgetKit families (2026-08-29)
+`DeenlyWidgets` was Home Screen only (`systemSmall/Medium/Large`). Added
+`accessoryCircular`, `accessoryRectangular`, `accessoryInline` so prayer
+widgets appear in Lock Screen Customize. Extension was already embedded;
+Live Activity (`NSSupportsLiveActivities`) is separate.
+
+> Last updated: 2026-08-29 — Localize Screen Time snackbars.
+
+## Status: Screen Time auth snackbars localized (2026-08-29)
+Cancel/fail toasts used hardcoded English in `ScreenTimeAuthorizationResult`.
+Now mapped by error code through `AppLocalizations` (`focusScreenTimeAuth*`).
+Script: `tool/l10n_screen_time_auth.py`.
+
+> Last updated: 2026-08-29 — Focus paywall on toggle only.
+
+## Status: Focus app pick before paywall (2026-08-29)
+Selecting blocked apps no longer opens Superwall. Paywall runs only when a
+Focus mode switch is turned on (`focus:enable_mode:*`). Removed
+`focus:load_apps` from `kPremiumGateDebugContexts`.
+
+> Last updated: 2026-08-29 — Localize Rate DeenFocus.
+
+## Status: settingsRateDeenFocus localized (2026-08-29)
+Settings row was English-only (`Rate DeenFocus ⭐`). Translations in all 13
+`app_*.arb` files; `flutter gen-l10n`. Script: `tool/l10n_settings_rate_deenfocus.py`.
+
+> Last updated: 2026-08-29 — Tasbih RTL list padding.
+
+## Status: Tasbih Arabic text flush with card (2026-08-29)
+List tiles used `EdgeInsets.only(left: 16, right: 0)`, so in RTL the dhikr sat
+on the card edge. Switched to `EdgeInsetsDirectional` start/end (and pin gap).
+
+> Last updated: 2026-08-28 — Home next-prayer wall-clock fix.
+
+## Status: Dhuhr stuck highlight near Isha (2026-08-28)
+Home could keep **Dhuhr** green after Maghrib when that slot's DateTime had a
+wrong/future date (cache/UTC). `_buildData` used `slot.time.isAfter(now)` on
+the full DateTime. Fix: wall-clock only via `nextPrayerOnDay` / `isUpcomingOnDay`;
+tiles + countdown recompute live. Regression in
+`test/prayer_notification_schedule_test.dart`.
+
+> Last updated: 2026-08-28 — RTL home card arrow fix.
+
+## Status: RTL home card arrows (2026-08-28)
+Arabic home cards showed forward arrows pointing right (→). Cause: manual
+RTL swap to `arrow_back` / `chevron_left` double-flipped because those
+IconData already set `matchTextDirection`. Fix: always use
+`arrow_forward_rounded` / `chevron_right` in `home_card_open_arrow.dart`.
+
+> Last updated: 2026-08-28 — Fajr alarm AM/PM edit fix.
+
+## Status: Fajr alarm 12h offset fix (2026-08-28)
+Report: Fajr shown 4:11 AM but native alarm fired 4:11 PM. Root cause: custom
+prayer time edit sheet used 12-hour `CupertinoDatePicker`, which can flip AM→PM
+(Flutter #27755). Fix: 24-hour wheels (`MediaQuery.alwaysUse24HourFormat`),
+persist initial slot time until user scrolls picker, regression test for 4:11 AM
+override. If user had a bad override stored, reset Fajr via edit sheet → Reset.
+
+> Last updated: 2026-08-28 — Settings About Deen Focus screen redesign.
+
+## Status: Settings About screen v2 (2026-08-28)
+`SettingsAboutScreen` redesigned: offers list with icons/New badges, 4-card
+library grid, footer heart card. L10n: `settingsAboutOffer*` / `settingsAboutGrid*`
+(`tool/l10n_settings_about_v2.py`).
+
+## Status: Localization pass (2026-08-28)
+Focus Diagnostic (`focusDiagnostic*`) translated in all 13 locales
+(`tool/l10n_focus_diagnostic.py`). Home promo preview city localized
+(`homePromoPreviewCity`). `ShareableCard` share icon mirrors for RTL;
+home card arrows use `matchTextDirection`.
+
+## Status: Quran surah ↔ page view toggle (2026-08-28)
+Surah detail (verse list) and surah-scoped `MushafPageScreen` swap via header
+icon (book ↔ list). Preserves ayah/page position; l10n `quranSwitchTo*`
+(`tool/l10n_quran_view_mode_switch.py`).
+
+## Status: Home Read Quran promo (2026-08-28)
+`HomeReadQuranPromoCard` sits below **Today's Prayers** (before promo carousel).
+Book icon, green **New** badge, subtitle, **Open Quran →** CTA. Whole card tap
+→ `QuranReaderScreen`. L10n: `homeReadQuranPromo*` (`tool/l10n_home_read_quran_promo.py`).
+
+## Status: Cycle Mode start-date fix (2026-08-28)
+`CycleModeData.isRunningOn(now)` = toggle ON **and** today ∈ [start, plannedEnd].
+Before start or after window: inactive (no pink, no banner, no streak protection).
+`CycleModePolicy` streak/stats rules use reference `now` (analytics bound in VM).
+Home banner + streak pink theme use `cycleModeRunning`, not `cycleModeEnabled`.
+Tests: `test/cycle_mode_calendar_test.dart` (Aug 28–31 / 2-day start Aug 29).
+
+## Status: Home Lock Screen Styles promo (2026-08-28)
+Fourth carousel slide: **Lock Screen Styles** (three mini phone previews: Hold / Type /
+Tasbih). CTA **Explore Styles** → `LockScreenOptionsPopup.show`. Dismiss persists
+`StorageService.homeLockScreenPromoDismissed`. L10n: `homeLockScreenPromo*`
+(`tool/l10n_home_lock_screen_promo.py`).
+
+## Status: Home Tajweed promo card (2026-08-28)
+`HomeLiveActivityPromoCard` carousel now has a third slide: **Quran AI Tajweed**
+(mint card, mic CTA → `TajweedEntryPoint.openFreePreview`, layered practice +
+AI feedback mockup). Dismiss via X persists `StorageService.homeTajweedPromoDismissed`.
+L10n: `homeTajweedPromo*` in all `app_*.arb` (script `tool/l10n_home_tajweed_promo.py`).
 
 ## Status: Lock Screen Style (2026-08-27)
 Focus (below Child Mode) and Settings (below Live Activity, above Dark Mode)

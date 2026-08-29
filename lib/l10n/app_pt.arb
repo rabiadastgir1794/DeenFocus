@@ -283,8 +283,8 @@
   "calendarUpcomingEvents": "Próximos eventos islâmicos",
   "cycleModeTitle": "Modo ciclo",
   "cycleModeSubtitle": "Para a menstruação — pause as orações, mantenha a sequência",
-  "cycleModeActiveTitle": "«Allah deseja para vós a facilidade e não deseja para vós a dificuldade.» — Alcorão 2:185",
-  "cycleModeActiveSubtitle": "Durante este período, a sua sequência está protegida. Os dias do ciclo ficam destacados a rosa e o Modo ciclo desliga-se automaticamente no fim do ciclo.",
+  "cycleModeActiveTitle": "O teu ciclo é uma pausa, não uma paragem.",
+  "cycleModeActiveSubtitle": "Dhikr • Tasbih • Ouvir o Alcorão",
   "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
   "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
   "cycleModeAutoEndInfo": "{days, plural, =0{Termina hoje} =1{Termina automaticamente amanhã} other{Termina automaticamente em {days} dias}}",
@@ -292,7 +292,7 @@
   "cycleModeStartDateLabel": "Data de início",
   "cycleModeLengthLabel": "Duração do ciclo",
   "cycleModeLengthValue": "{count, plural, =1{1 dia} other{{count} dias}}",
-  "cycleModePauseStreaksLabel": "Pausar sequências",
+  "cycleModePauseStreaksLabel": "Proteger sequência de oração",
   "cycleModeExcludeFromStatisticsLabel": "Excluir das estatísticas",
   "cycleModeSaveButton": "Guardar",
   "cycleModeEditButton": "Editar",
@@ -465,7 +465,36 @@
   "settingsAboutFeature4": "Mesquitas próximas",
   "settingsAboutFeature5": "Modos de foco inteligentes para Salah, sono e tempo em família",
   "settingsAboutFocusDescription": "Os modos de foco inteligentes ajudam você a bloquear distrações durante Salah, sono e momentos importantes, para que você possa permanecer presente e disciplinado.",
-  "settingsAboutFooter": "Permaneça consistente. Permaneça atento.\nPermaneça conectado ao seu Deen.",
+  "settingsAboutFooter": "Mantenha a consistência. Mantenha a atenção plena. Mantenha-se conectado ao seu Deen.",
+  "settingsAboutOffersHeading": "O que o Deen Focus oferece",
+  "settingsAboutNewBadge": "Novo",
+  "settingsAboutFooterCard": "Ferramentas inteligentes para ajudá-lo a manter a atenção plena, a consistência e a conexão com seu Deen — todos os dias.",
+  "settingsAboutOfferPrayerTimesTitle": "Horários de oração precisos",
+  "settingsAboutOfferPrayerTimesSubtitle": "Alertas oportunos de oração e widgets bonitos para mantê-lo no caminho certo.",
+  "settingsAboutOfferPrayerStreaksTitle": "Sequências de oração",
+  "settingsAboutOfferPrayerStreaksSubtitle": "Construa consistência e cresça no seu Deen com rastreamento de sequências diárias e totais.",
+  "settingsAboutOfferCycleModeTitle": "Modo ciclo",
+  "settingsAboutOfferCycleModeSubtitle": "Para menstruação — pause as orações, mantenha sua sequência e continue sua jornada.",
+  "settingsAboutOfferQuranTajweedTitle": "Tajweed do Alcorão",
+  "settingsAboutOfferQuranTajweedSubtitle": "Leia, ouça e pratique tajweed com nosso feedback em tempo real com IA.",
+  "settingsAboutOfferLiveActivitiesTitle": "Live Activities",
+  "settingsAboutOfferLiveActivitiesSubtitle": "Mantenha-se atualizado com orações em andamento e sessões de foco direto da tela de bloqueio.",
+  "settingsAboutOfferQiblaTitle": "Qibla e buscador de mesquitas",
+  "settingsAboutOfferQiblaSubtitle": "Encontre a direção da Qibla a qualquer momento e descubra mesquitas próximas.",
+  "settingsAboutOfferFocusModesTitle": "Modos de foco",
+  "settingsAboutOfferFocusModesSubtitle": "Bloqueie apps distratores durante Salah, sono, estudo ou tempo em família.",
+  "settingsAboutOfferTasbihTitle": "Tasbih e dhikr",
+  "settingsAboutOfferTasbihSubtitle": "Tasbih digital para ajudá-lo a lembrar de Allah ao longo do dia.",
+  "settingsAboutOfferCalendarTitle": "Calendário islâmico",
+  "settingsAboutOfferCalendarSubtitle": "Calendário hijri com datas islâmicas importantes e lembretes.",
+  "settingsAboutGridNamesTitle": "99 Nomes de Allah",
+  "settingsAboutGridNamesSubtitle": "Aprenda e reflita sobre Asma ul-Husna.",
+  "settingsAboutGridDuasTitle": "Duas e adhkar",
+  "settingsAboutGridDuasSubtitle": "Duas da manhã, da tarde e diárias.",
+  "settingsAboutGridPrayerTitle": "Oração e métodos",
+  "settingsAboutGridPrayerSubtitle": "Aprenda Salah, Wudu, Hajj e mais.",
+  "settingsAboutGridFiqhTitle": "Fiqh e tradições",
+  "settingsAboutGridFiqhSubtitle": "Explore conhecimento islâmico autêntico.",
   "settingsEnableSystemNotifications": "Ative as notificações do sistema para ativar isso.",
   "appDemoTitle": "Demonstração do aplicativo",
   "appDemoLoadFailed": "Não foi possível carregar o vídeo de demonstração.",
@@ -567,11 +596,10 @@
   "tasbihDelete": "Excluir",
   "focusAndroidBlockingNotReady": "O bloqueio de apps no Android ainda não está pronto. Mantenha a acessibilidade ativada e aguarde a conexão.",
   "focusNoAppsSelectedSnack": "Nenhum app selecionado. Escolha primeiro os apps a bloquear.",
-
-  "focusDiagnosticButton": "Diagnostic",
-  "focusDiagnosticTitle": "Test App Lock",
-  "focusDiagnosticIntro": "Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.",
-  "focusDiagnosticIntroWithApp": "Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.",
+  "focusDiagnosticButton": "Diagnóstico",
+  "focusDiagnosticTitle": "Testar bloqueio de apps",
+  "focusDiagnosticIntro": "Bloqueie temporariamente os apps selecionados por 60 segundos com o mesmo bloqueio do modo Foco. Abra um app bloqueado para confirmar a tela de bloqueio do DeenFocus.",
+  "focusDiagnosticIntroWithApp": "Bloqueie temporariamente os apps selecionados por 60 segundos. Tente abrir {appName} para confirmar a tela de bloqueio do DeenFocus.",
   "@focusDiagnosticIntroWithApp": {
     "placeholders": {
       "appName": {
@@ -579,9 +607,9 @@
       }
     }
   },
-  "focusDiagnosticStart": "Start Test",
-  "focusDiagnosticEndEarly": "End Test",
-  "focusDiagnosticRunning": "App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.",
+  "focusDiagnosticStart": "Iniciar teste",
+  "focusDiagnosticEndEarly": "Encerrar teste",
+  "focusDiagnosticRunning": "Bloqueio ativo por {seconds}s. Mude para um app selecionado para testar a tela de bloqueio.",
   "@focusDiagnosticRunning": {
     "placeholders": {
       "seconds": {
@@ -589,18 +617,18 @@
       }
     }
   },
-  "focusDiagnosticSuccessTitle": "Test completed",
-  "focusDiagnosticSuccessBody": "App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.",
-  "focusDiagnosticCancelledTitle": "Test ended",
-  "focusDiagnosticCancelledBody": "The diagnostic lock was turned off. Your Focus modes and schedules were not changed.",
-  "focusDiagnosticMissingAppsTitle": "Select apps first",
-  "focusDiagnosticMissingAppsBody": "Choose at least one app to block before running the App Lock test.",
-  "focusDiagnosticMissingPermissionTitle": "Permission needed",
-  "focusDiagnosticMissingPermissionBodyIos": "Screen Time access is required to block apps. Allow Screen Time, then try again.",
-  "focusDiagnosticMissingPermissionBodyAndroid": "Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.",
-  "focusDiagnosticFailedTitle": "Could not start test",
-  "focusDiagnosticFailedBody": "App Lock did not activate. Check permissions and selected apps, then try again.",
-  "focusDiagnosticClose": "Done",
+  "focusDiagnosticSuccessTitle": "Teste concluído",
+  "focusDiagnosticSuccessBody": "O bloqueio foi ativado com seus apps selecionados. Se você viu a tela do DeenFocus, o bloqueio está funcionando.",
+  "focusDiagnosticCancelledTitle": "Teste encerrado",
+  "focusDiagnosticCancelledBody": "O bloqueio de diagnóstico foi desativado. Seus modos Foco e horários não foram alterados.",
+  "focusDiagnosticMissingAppsTitle": "Selecione apps primeiro",
+  "focusDiagnosticMissingAppsBody": "Escolha pelo menos um app para bloquear antes de iniciar o teste.",
+  "focusDiagnosticMissingPermissionTitle": "Permissão necessária",
+  "focusDiagnosticMissingPermissionBodyIos": "É necessário acesso ao Tempo de Uso. Permita e tente novamente.",
+  "focusDiagnosticMissingPermissionBodyAndroid": "A acessibilidade do Android deve estar ativada para o DeenFocus bloquear apps.",
+  "focusDiagnosticFailedTitle": "Não foi possível iniciar o teste",
+  "focusDiagnosticFailedBody": "O bloqueio não foi ativado. Verifique permissões e apps selecionados e tente novamente.",
+  "focusDiagnosticClose": "Concluir",
   "focusScreenTimeRequiredBlockIphone": "É necessário acesso ao Tempo de Uso para bloquear apps no iPhone.",
   "focusModeUpdateFailedSnack": "Algo deu errado ao atualizar o modo Foco. Tente novamente.",
   "focusLoadingInstalledApps": "Carregando apps instalados...",
@@ -1230,6 +1258,8 @@
   "quranModeSurah": "Sura",
   "quranModeJuz": "Juz",
   "quranModePage": "Página",
+  "quranSwitchToPageView": "Vista de página",
+  "quranSwitchToSurahView": "Vista de sura",
   "readingSettingsTitle": "Definições de leitura",
   "featureDemoContinue": "Continuar",
   "featureDemoSampleStatusTime": "9:41",
@@ -1696,5 +1726,86 @@
   "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
   "lockScreenDhikrSubhanAllah": "SubhanAllah",
   "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
-  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar",
+  "homeTajweedPromoTitle": "Tajweed do Alcorão com IA",
+  "homeTajweedPromoBody": "Recite qualquer versículo e receba feedback instantâneo de IA sobre seu tajweed.",
+  "homeTajweedPromoCta": "Praticar tajweed",
+  "homeTajweedPromoAiFeedback": "Feedback de IA",
+  "homeTajweedPromoWordAccuracy": "{percent}% precisão de palavras",
+  "@homeTajweedPromoWordAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockScreenPromoTitle": "Estilos de tela de bloqueio",
+  "homeLockScreenPromoBody": "Personalize sua tela de bloqueio com belos designs islâmicos e lembretes úteis.",
+  "homeLockScreenPromoCta": "Explorar estilos",
+  "homePromoNewBadge": "NOVO",
+  "homeReadQuranPromoTitle": "Ler o Alcorão",
+  "homeReadQuranPromoSubtitle": "Leia, ouça e pratique tajweed",
+  "homeReadQuranPromoCta": "Abrir Alcorão",
+  "homeReadQuranPromoNewBadge": "Novo",
+  "cycleModeActiveStatus": "{days, plural, =0{Sequência protegida • Termina hoje} =1{Sequência protegida • Termina amanhã} other{Sequência protegida • Termina em {days} dias}}",
+  "@cycleModeActiveStatus": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeProtectPrayerStreakSubtitle": "Mantém a tua sequência intacta durante os dias do ciclo",
+  "cycleModeExcludeFromStatisticsSubtitle": "Não contar os dias do ciclo nas estatísticas de oração",
+  "homePromoPreviewCity": "Lahore",
+  "settingsRateDeenFocus": "Avaliar DeenFocus ⭐",
+  "focusScreenTimeAuthPasscodeRequired": "Este iPhone precisa de um código do dispositivo antes da Apple permitir o acesso ao Tempo de Uso. Defina-o em Ajustes e tente de novo.",
+  "focusScreenTimeAuthCanceled": "O acesso ao Tempo de Uso foi cancelado antes da Apple concedê-lo. Tente de novo e conclua o aviso da Apple.",
+  "focusScreenTimeAuthConflict": "Outro app já gerencia os Controles parentais neste iPhone. Desative-o primeiro e tente de novo.",
+  "focusScreenTimeAuthInvalidAccount": "Entre com uma conta iCloud válida neste iPhone e tente o acesso ao Tempo de Uso novamente.",
+  "focusScreenTimeAuthNetwork": "Este iPhone precisa de internet para a Apple conceder o acesso ao Tempo de Uso.",
+  "focusScreenTimeAuthRestricted": "Os Controles parentais estão restritos neste iPhone, então o DeenFocus não pode solicitar o acesso ao Tempo de Uso aqui.",
+  "focusScreenTimeAuthUnavailable": "Os Controles parentais estão indisponíveis neste iPhone no momento.",
+  "focusScreenTimeAuthIosVersion": "O bloqueio de apps com Tempo de Uso exige iOS 16 ou posterior.",
+  "focusScreenTimeAuthInvalidArgument": "A solicitação de autorização do Tempo de Uso é inválida. Tente de novo.",
+  "focusScreenTimeAuthFailedGeneric": "Não foi possível conceder o acesso ao Tempo de Uso neste iPhone.",
+  "widgetLockCountdownHoursMinutes": "Em {hours} h {minutes} min",
+  "widgetLockCountdownMinutes": "Em {minutes} min",
+  "@widgetLockCountdownHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "@widgetLockCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRecommendedBadge": "Recomendado",
+  "restrictedModeSalahTitle": "Hora do Salah",
+  "restrictedModeSalahMessage": "Afaste-se das distrações e atenda ao chamado à oração.",
+  "restrictedModeSalahInfo": "Aproveite este momento para se conectar com Allah.",
+  "restrictedModeSalahQuote": "Estabelece a oração para a Minha lembrança.",
+  "restrictedModeSalahQuoteSource": "Alcorão 20:14",
+  "restrictedModeSalahCta": "Começar Salah",
+  "restrictedModeChildTitle": "Modo foco infantil",
+  "restrictedModeChildMessage": "Um espaço mais seguro e equilibrado para o tempo de tela focado.",
+  "restrictedModeChildInfo": "Alguns apps estão temporariamente indisponíveis.",
+  "restrictedModeChildQuote": "Ensinai vossos filhos a oração aos sete anos.",
+  "restrictedModeChildQuoteSource": "Hadith - Abu Dawud",
+  "restrictedModeChildCta": "Fique protegido",
+  "restrictedModeNightTitle": "Modo foco noturno",
+  "restrictedModeNightMessage": "É hora de descansar e desligar das distrações digitais.",
+  "restrictedModeNightInfo": "Deixe o dispositivo de lado e aproveite uma noite tranquila.",
+  "restrictedModeNightQuote": "E fizemos do vosso sono um descanso.",
+  "restrictedModeNightQuoteSource": "Alcorão 78:9",
+  "restrictedModeNightCta": "Boa noite",
+  "restrictedModeAppsUnavailable": "Alguns apps estão temporariamente indisponíveis."
 }

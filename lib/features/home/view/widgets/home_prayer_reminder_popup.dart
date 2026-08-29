@@ -34,6 +34,11 @@ class PrayerReminderPopup {
       homeVm = null;
     }
 
+    if (homeVm != null &&
+        homeVm.statusForToday(prayer) != PrayerMarkStatus.none) {
+      return null;
+    }
+
     return showDialog<bool>(
       context: context,
       barrierDismissible: true,

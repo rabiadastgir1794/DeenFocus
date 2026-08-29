@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/share/shareable_card.dart';
+import '../../../core/share/content_share_payload.dart';
+import '../../../core/share/content_share_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
@@ -31,6 +34,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
 
   late TasbihItem _item;
   bool _saving = false;
+  bool _sharing = false;
 
   int _goal = 33;
   int _countInLoop = 0;
@@ -164,6 +168,31 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     }
   }
 
+  Future<void> _shareSession() async {
+    if (_sharing) return;
+    setState(() => _sharing = true);
+    try {
+      await ContentShareService.shareCard(
+        context: context,
+        boundaryKey: _shareKey,
+        payload: const ContentSharePayload(title: ''),
+      );
+    } finally {
+      if (mounted) setState(() => _sharing = false);
+    }
+  }
+
+  Future<void> _onDetailMenuSelected(_TasbihDetailOption option) async {
+    switch (option) {
+      case _TasbihDetailOption.share:
+        await _shareSession();
+      case _TasbihDetailOption.restart:
+        _restartSession();
+      case _TasbihDetailOption.resetTotal:
+        await _resetTotal();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -184,41 +213,54 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                   subtitle: l10n.tasbihLoopLabel(_loopsCompleted + 1),
                   backLabel: l10n.calendarBack,
                   onBack: () => Navigator.of(context).pop(),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CardShareIconButton(
-                        boundaryKey: _shareKey,
-                        iconSize: 22,
-                      ),
-                      IconButton(
-                        tooltip: l10n.tasbihRestart,
-                        onPressed: _restartSession,
-                        visualDensity: VisualDensity.compact,
-                        icon: Icon(
-                          Icons.refresh_rounded,
-                          color: colorScheme.primary,
+                  trailing: PopupMenuButton<_TasbihDetailOption>(
+                    padding: EdgeInsets.zero,
+                    tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+                    onSelected: (option) =>
+                        unawaited(_onDetailMenuSelected(option)),
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        value: _TasbihDetailOption.share,
+                        enabled: !_sharing,
+                        child: ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(
+                            Icons.share_outlined,
+                            color: colorScheme.primary,
+                          ),
+                          title: Text(l10n.libraryShare),
                         ),
                       ),
-                      PopupMenuButton<_TasbihDetailOption>(
-                        padding: EdgeInsets.zero,
-                        onSelected: (option) async {
-                          if (option == _TasbihDetailOption.resetTotal) {
-                            await _resetTotal();
-                          }
-                        },
-                        itemBuilder: (_) => [
-                          PopupMenuItem(
-                            value: _TasbihDetailOption.resetTotal,
-                            child: Text(l10n.tasbihResetTotal),
+                      PopupMenuItem(
+                        value: _TasbihDetailOption.restart,
+                        child: ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(
+                            Icons.refresh_rounded,
+                            color: colorScheme.primary,
                           ),
-                        ],
-                        icon: Icon(
-                          Icons.more_horiz_rounded,
-                          color: colorScheme.primary,
+                          title: Text(l10n.tasbihRestart),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: _TasbihDetailOption.resetTotal,
+                        child: ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(
+                            Icons.delete_outline_rounded,
+                            color: colorScheme.primary,
+                          ),
+                          title: Text(l10n.tasbihResetTotal),
                         ),
                       ),
                     ],
+                    icon: Icon(
+                      Icons.more_horiz_rounded,
+                      color: colorScheme.primary,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -572,7 +614,7 @@ class _DhikrCard extends StatelessWidget {
   }
 }
 
-enum _TasbihDetailOption { resetTotal }
+enum _TasbihDetailOption { share, restart, resetTotal }
 
 class _CustomGoalDialog extends StatefulWidget {
   const _CustomGoalDialog({required this.initialGoal});

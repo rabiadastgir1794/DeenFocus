@@ -25,11 +25,13 @@ class ShareableCard extends StatefulWidget {
     required this.child,
     this.alignment = Alignment.topRight,
     this.padding = const EdgeInsets.all(4),
+    this.shareIconSize = 22,
   });
 
   final Widget child;
   final Alignment alignment;
   final EdgeInsets padding;
+  final double shareIconSize;
 
   @override
   State<ShareableCard> createState() => _ShareableCardState();
@@ -41,14 +43,20 @@ class _ShareableCardState extends State<ShareableCard> {
   @override
   Widget build(BuildContext context) {
     final pinBottom = widget.alignment.y > 0;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final horizontalInset = widget.padding.right;
     return Stack(
       children: [
         RepaintBoundary(key: _boundaryKey, child: widget.child),
         Positioned(
           top: pinBottom ? null : widget.padding.top,
           bottom: pinBottom ? widget.padding.bottom : null,
-          right: widget.padding.right,
-          child: CardShareIconButton(boundaryKey: _boundaryKey),
+          right: isRtl ? null : horizontalInset,
+          left: isRtl ? horizontalInset : null,
+          child: CardShareIconButton(
+            boundaryKey: _boundaryKey,
+            iconSize: widget.shareIconSize,
+          ),
         ),
       ],
     );
@@ -120,11 +128,21 @@ class _CardShareIconButtonState extends State<CardShareIconButton> {
       );
     }
 
+    final compact = widget.iconSize <= 16;
+
     return IconButton(
       tooltip: l10n.libraryShare,
       visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.all(6),
-      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+      padding: compact ? EdgeInsets.zero : const EdgeInsets.all(6),
+      constraints: BoxConstraints(
+        minWidth: compact ? 20 : 32,
+        minHeight: compact ? 20 : 32,
+      ),
+      style: compact
+          ? IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            )
+          : null,
       icon: glyph,
       onPressed: onShare,
     );

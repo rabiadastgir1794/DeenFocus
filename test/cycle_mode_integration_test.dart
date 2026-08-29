@@ -8,6 +8,22 @@ void main() {
         for (final p in TrackablePrayer.values) p: PrayerMarkStatus.onTime,
       };
 
+  String dayKey(DateTime d) => PrayerAnalyticsService.dayKey(d);
+
+  /// Mirrors [HomeTabViewModel._recomputeAnalytics] policy wiring.
+  PrayerAnalyticsSnapshot analyticsWithPolicy({
+    required DateTime now,
+    required CycleModePolicy policy,
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> history,
+  }) =>
+      PrayerAnalyticsService.calculate(
+        now: now,
+        statusHistory: history,
+        isPausedStreakDay: (d) => policy.shouldPauseStreaks(d, now: now),
+        isExcludedStatsDay: (d) =>
+            policy.shouldExcludeFromStatistics(d, now: now),
+      );
+
   group('CycleModePolicy — single source of truth', () {
     test('active cycle Aug 1–6 delegates consistently', () {
       final data = CycleModeData(
@@ -80,11 +96,10 @@ void main() {
 
     test('Case 1 — active cycle pauses streaks and excludes stats', () {
       final policy = activePolicy();
-      final snap = PrayerAnalyticsService.calculate(
+      final snap = analyticsWithPolicy(
         now: now,
-        statusHistory: history(),
-        isPausedStreakDay: policy.shouldPauseStreaks,
-        isExcludedStatsDay: policy.shouldExcludeFromStatistics,
+        policy: policy,
+        history: history(),
       );
 
       // Friday counts; Saturday (cycle) skipped → streak continues from Friday.
@@ -94,7 +109,9 @@ void main() {
       expect(snap.weeklyPossible, 5);
 
       final weekDates = WeeklyCalculator.insightsWeekDates(now);
-      final highlights = weekDates.map(policy.isHighlightable).toList();
+      final highlights = weekDates
+          .map((d) => policy.isHighlightable(d, now: now))
+          .toList();
       // Fri–Thu in insights week: Sat Aug 1 through Thu Aug 6 are in-window.
       expect(highlights[1], isTrue); // Sat Aug 1
       expect(highlights[2], isTrue); // Sun Aug 2
@@ -111,11 +128,10 @@ void main() {
           cycleLength: 6,
         ),
       );
-      final withDraft = PrayerAnalyticsService.calculate(
+      final withDraft = analyticsWithPolicy(
         now: now,
-        statusHistory: history(),
-        isPausedStreakDay: draft.shouldPauseStreaks,
-        isExcludedStatsDay: draft.shouldExcludeFromStatistics,
+        policy: draft,
+        history: history(),
       );
       final baseline = PrayerAnalyticsService.calculate(
         now: now,
@@ -138,11 +154,10 @@ void main() {
       expect(historical.isHighlightable(saturday), isFalse);
       expect(historical.shouldPauseStreaks(saturday), isTrue);
 
-      final snap = PrayerAnalyticsService.calculate(
+      final snap = analyticsWithPolicy(
         now: now,
-        statusHistory: history(),
-        isPausedStreakDay: historical.shouldPauseStreaks,
-        isExcludedStatsDay: historical.shouldExcludeFromStatistics,
+        policy: historical,
+        history: history(),
       );
       expect(snap.prayerStreak, 5);
     });
@@ -176,13 +191,12 @@ void main() {
       final achievements = AchievementCalculator.calculate(
         now: now,
         statusHistory: statusHistory,
-        isPausedStreakDay: policy.shouldPauseStreaks,
+        isPausedStreakDay: (d) => policy.shouldPauseStreaks(d, now: now),
       );
-      final snap = PrayerAnalyticsService.calculate(
+      final snap = analyticsWithPolicy(
         now: now,
-        statusHistory: statusHistory,
-        isPausedStreakDay: policy.shouldPauseStreaks,
-        isExcludedStatsDay: policy.shouldExcludeFromStatistics,
+        policy: policy,
+        history: statusHistory,
       );
       expect(achievements.prayerStreak, snap.prayerStreak);
       expect(achievements.dayStreak, snap.dayStreak);
@@ -199,6 +213,217 @@ void main() {
       expect(policy.isTodayProtected(now: now), isTrue);
       expect(policy.protectsFocusScore(now: now), isTrue);
     });
+  });
+
+  group('Cycle Mode flags — pause streaks & exclude statistics', () {
+    test('before start: protect prayer streak has no effect', () {
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 29),
+        cycleLength: 2,
+        pauseStreaks: true,
+        excludeFromStatistics: true,
+      );
+      final now = DateTime(2026, 8, 28, 20, 0);
+      final policy = CycleModePolicy(data);
+      final history = {
+        dayKey(DateTime(2026, 8, 27)): allFive(),
+        dayKey(DateTime(2026, 8, 28)): {
+          for (final p in TrackablePrayer.values) p: PrayerMarkStatus.missed,
+        },
+      };
+      expect(
+        policy.shouldPauseStreaks(DateTime(2026, 8, 29), now: now),
+        isFalse,
+      );
+      expect(
+        policy.shouldExcludeFromStatistics(DateTime(2026, 8, 29), now: now),
+        isFalse,
+      );
+
+      final withFutureCycle = analyticsWithPolicy(
+        now: now,
+        policy: policy,
+        history: history,
+      );
+      final withoutCycle = analyticsWithPolicy(
+        now: now,
+        policy: CycleModePolicy(CycleModeData.disabled()),
+        history: history,
+      );
+      // Cycle has not started — same streak outcome as no Cycle Mode at all.
+      expect(withFutureCycle.prayerStreak, withoutCycle.prayerStreak);
+      expect(withFutureCycle.prayerStreak, 0);
+      expect(withFutureCycle.weeklyPossible, withoutCycle.weeklyPossible);
+    });
+
+    test('during cycle: protect prayer streak bridges misses on cycle days', () {
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 29),
+        cycleLength: 2,
+        pauseStreaks: true,
+      );
+      final now = DateTime(2026, 8, 30, 20, 0);
+      final policy = CycleModePolicy(data);
+
+      final result = analyticsWithPolicy(
+        now: now,
+        policy: policy,
+        history: {
+          dayKey(DateTime(2026, 8, 27)): allFive(),
+          dayKey(DateTime(2026, 8, 28)): allFive(),
+          dayKey(DateTime(2026, 8, 29)): {
+            TrackablePrayer.fajr: PrayerMarkStatus.missed,
+          },
+          dayKey(DateTime(2026, 8, 30)): allFive(),
+        },
+      );
+      expect(result.prayerStreak, 10); // Aug 28 (5) + skip Aug 29 + Aug 30 (5)
+      expect(result.dayStreak, 2);
+    });
+
+    test('during cycle: protect prayer streak off — miss breaks streak', () {
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 29),
+        cycleLength: 2,
+        pauseStreaks: false,
+        excludeFromStatistics: true,
+      );
+      final now = DateTime(2026, 8, 30, 20, 0);
+      final policy = CycleModePolicy(data);
+
+      final result = analyticsWithPolicy(
+        now: now,
+        policy: policy,
+        history: {
+          dayKey(DateTime(2026, 8, 27)): allFive(),
+          dayKey(DateTime(2026, 8, 28)): allFive(),
+          dayKey(DateTime(2026, 8, 29)): {
+            TrackablePrayer.fajr: PrayerMarkStatus.missed,
+          },
+          dayKey(DateTime(2026, 8, 30)): allFive(),
+        },
+      );
+      expect(result.prayerStreak, 5); // broken at Aug 29; only Aug 30 counts
+      expect(result.dayStreak, 1);
+    });
+
+    test('during cycle: excludeFromStatistics=true shrinks weekly possible', () {
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 29),
+        cycleLength: 2,
+        pauseStreaks: true,
+        excludeFromStatistics: true,
+      );
+      final now = DateTime(2026, 8, 30, 20, 0);
+      final week = WeeklyCalculator.insightsWeekDates(now);
+      final policy = CycleModePolicy(data);
+
+      final result = analyticsWithPolicy(
+        now: now,
+        policy: policy,
+        history: {for (final d in week) dayKey(d): allFive()},
+      );
+      expect(result.weeklyPossible, 25); // 5 normal days × 5 prayers
+      expect(result.weeklyCompleted, 25);
+    });
+
+    test('during cycle: excludeFromStatistics=false keeps cycle days in stats', () {
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 29),
+        cycleLength: 2,
+        pauseStreaks: true,
+        excludeFromStatistics: false,
+      );
+      final now = DateTime(2026, 8, 30, 20, 0);
+      final week = WeeklyCalculator.insightsWeekDates(now);
+      final policy = CycleModePolicy(data);
+
+      final result = analyticsWithPolicy(
+        now: now,
+        policy: policy,
+        history: {for (final d in week) dayKey(d): allFive()},
+      );
+      expect(result.weeklyPossible, 35); // full week × 5 prayers
+      expect(result.weeklyCompleted, 35);
+    });
+
+    test('pause and exclude flags are independent per interval', () {
+      final now = DateTime(2026, 8, 29, 20, 0);
+      final policy = CycleModePolicy(
+        CycleModeData(
+          isEnabled: true,
+          startDate: DateTime(2026, 8, 29),
+          cycleLength: 1,
+          pauseStreaks: false,
+          excludeFromStatistics: false,
+        ),
+      );
+      expect(
+        policy.shouldPauseStreaks(DateTime(2026, 8, 29), now: now),
+        isFalse,
+      );
+      expect(
+        policy.shouldExcludeFromStatistics(DateTime(2026, 8, 29), now: now),
+        isFalse,
+      );
+    });
+
+    test(
+      'protect prayer streak bridges existing streak across cycle without reset',
+      () {
+        final data = CycleModeData(
+          isEnabled: true,
+          startDate: DateTime(2026, 8, 29),
+          cycleLength: 2,
+          pauseStreaks: true,
+          excludeFromStatistics: true,
+        );
+        final policy = CycleModePolicy(data);
+        final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+          dayKey(DateTime(2026, 8, 28)): allFive(),
+        };
+        final aug28Evening = DateTime(2026, 8, 28, 20, 0);
+
+        final aug28 = analyticsWithPolicy(
+          now: aug28Evening,
+          policy: policy,
+          history: history,
+        );
+        expect(aug28.prayerStreak, 5);
+        expect(policy.isRunningOn(aug28Evening), isFalse);
+        expect(
+          policy.shouldPauseStreaks(DateTime(2026, 8, 29), now: aug28Evening),
+          isFalse,
+        );
+
+        final aug30 = analyticsWithPolicy(
+          now: DateTime(2026, 8, 30, 20, 0),
+          policy: policy,
+          history: history,
+        );
+        expect(aug30.prayerStreak, 5);
+        expect(aug30.prayerStreak, isNot(0));
+
+        final aug31History = {
+          ...history,
+          dayKey(DateTime(2026, 8, 31)): {
+            TrackablePrayer.fajr: PrayerMarkStatus.onTime,
+          },
+        };
+        final aug31 = analyticsWithPolicy(
+          now: DateTime(2026, 8, 31, 10, 0),
+          policy: policy,
+          history: aug31History,
+        );
+        expect(aug31.prayerStreak, 6);
+        expect(policy.isRunningOn(DateTime(2026, 8, 31)), isFalse);
+      },
+    );
   });
 
   group('Lifecycle — disable, enable, expiry, restart', () {

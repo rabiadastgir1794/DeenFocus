@@ -57,6 +57,9 @@ private struct WidgetUiStrings: Decodable {
   let prayerProgressTitle: String?
   let prayersCompletedSubtitle: String?
   let defaultProgressCountLabel: String?
+  let lockCountdownHoursMinutes: String?
+  let lockCountdownMinutes: String?
+  let fallbackPrayerName: String?
 }
 
 private struct WidgetPayloadEntry: Decodable {
@@ -245,9 +248,9 @@ private struct DeenlyWidgetView: View {
   private var horizontalContentInsetRatio: CGFloat { 0.075 }
 
   var body: some View {
-    GeometryReader { geo in
-      let horizontalInset = geo.size.width * horizontalContentInsetRatio
-      TimelineView(.periodic(from: Date(), by: 60)) { timeline in
+    TimelineView(.periodic(from: Date(), by: 60)) { timeline in
+      GeometryReader { geo in
+        let horizontalInset = geo.size.width * horizontalContentInsetRatio
         Group {
           switch family {
           case .systemSmall:
@@ -683,12 +686,140 @@ struct DeenlyWidgets: Widget {
   }
 }
 
+struct LockPrayerWidget: Widget {
+  let kind = "LockPrayerWidget"
+
+  var body: some WidgetConfiguration {
+    StaticConfiguration(kind: kind, provider: DeenlyProvider()) { entry in
+      LockPrayerView(entry: entry)
+    }
+    .configurationDisplayName("Prayer")
+    .description("Current prayer and time on the Lock Screen.")
+    .supportedFamilies([
+      .accessoryCircular,
+      .accessoryRectangular,
+      .accessoryInline,
+    ])
+  }
+}
+
+private struct LockPrayerView: View {
+  @Environment(\.widgetFamily) private var family
+  let entry: DeenlyWidgetEntry
+
+  var body: some View {
+    TimelineView(.periodic(from: Date(), by: 60)) { timeline in
+      let prayer = lockCurrentPrayer(from: entry, now: timeline.date)
+      let countdown = lockCountdownText(from: entry, now: timeline.date)
+      let fallbackName = entry.ui?.fallbackPrayerName ?? "Fajr"
+      Group {
+        switch family {
+        case .accessoryCircular:
+          VStack(spacing: 1) {
+            Text(prayer?.label ?? fallbackName)
+              .font(.headline)
+              .minimumScaleFactor(0.6)
+              .lineLimit(1)
+            Text(prayer?.timeLabel ?? "")
+              .font(.caption2)
+              .monospacedDigit()
+              .minimumScaleFactor(0.6)
+              .lineLimit(1)
+          }
+        case .accessoryInline:
+          Text("\(prayer?.label ?? fallbackName)  \(prayer?.timeLabel ?? "")")
+        default:
+          HStack(alignment: .center, spacing: 8) {
+            VStack(alignment: .leading, spacing: 2) {
+              Text(prayer?.label ?? fallbackName)
+                .font(.headline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+              if !countdown.isEmpty {
+                Text(countdown)
+                  .font(.caption2)
+                  .lineLimit(1)
+                  .minimumScaleFactor(0.7)
+              }
+            }
+            VStack(spacing: 2) {
+              Image(systemName: lockHeroSymbol(prayer?.id))
+                .font(.title3)
+              Text(prayer?.timeLabel ?? "")
+                .font(.caption)
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            }
+          }
+        }
+      }
+    }
+    .containerBackground(for: .widget) {
+      AccessoryWidgetBackground()
+    }
+  }
+}
+
+private func lockSalahPrayers(from entry: DeenlyWidgetEntry) -> [(WidgetPrayer, Date)] {
+  entry.payload.prayers
+    .filter { $0.id != "sunrise" }
+    .compactMap { prayer -> (WidgetPrayer, Date)? in
+      guard let start = WidgetDateParser.parse(prayer.isoTime) else { return nil }
+      return (prayer, start)
+    }
+    .sorted { $0.1 < $1.1 }
+}
+
+private func lockCurrentPrayer(from entry: DeenlyWidgetEntry, now: Date) -> WidgetPrayer? {
+  let parsed = lockSalahPrayers(from: entry)
+  guard !parsed.isEmpty else { return nil }
+  if now < parsed[0].1 { return parsed[0].0 }
+  return parsed.last(where: { $0.1 <= now })?.0 ?? parsed[0].0
+}
+
+private func lockCountdownText(from entry: DeenlyWidgetEntry, now: Date) -> String {
+  let parsed = lockSalahPrayers(from: entry)
+  guard !parsed.isEmpty else { return "" }
+  let end: Date?
+  if now < parsed[0].1 {
+    end = parsed[0].1
+  } else if let index = parsed.lastIndex(where: { $0.1 <= now }) {
+    end = parsed.dropFirst(index + 1).first?.1
+  } else {
+    end = nil
+  }
+  guard let end else { return "" }
+  let seconds = Int(end.timeIntervalSince(now))
+  guard seconds > 0 else { return "" }
+  let hours = seconds / 3600
+  let minutes = (seconds % 3600) / 60
+  if hours > 0 {
+    let pattern = entry.ui?.lockCountdownHoursMinutes ?? "In {hours}h {minutes}m"
+    return pattern
+      .replacingOccurrences(of: "{hours}", with: "\(hours)")
+      .replacingOccurrences(of: "{minutes}", with: "\(minutes)")
+  }
+  let pattern = entry.ui?.lockCountdownMinutes ?? "In {minutes}m"
+  return pattern.replacingOccurrences(of: "{minutes}", with: "\(max(minutes, 1))")
+}
+
+private func lockHeroSymbol(_ id: String?) -> String {
+  switch id {
+  case "fajr": return "sunrise.fill"
+  case "dhuhr": return "sun.max.fill"
+  case "asr": return "sun.haze.fill"
+  case "maghrib": return "sunset.fill"
+  case "isha": return "moon.stars.fill"
+  default: return "sunrise.fill"
+  }
+}
+
 @main
 struct DeenlyWidgetsBundle: WidgetBundle {
   var body: some Widget {
     DeenlyWidgets()
-    if #available(iOS 16.2, *) {
-      PrayerLiveActivityWidget()
-    }
+    LockPrayerWidget()
+    PrayerLiveActivityWidget()
   }
 }

@@ -254,10 +254,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       if (result.granted) return true;
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
         SnackBar(
-          content: Text(
-            result.userFacingMessage() ??
-                l10n.focusScreenTimeRequiredBlockIphone,
-          ),
+          content: Text(result.userFacingMessage(l10n)),
         ),
       );
       return false;
@@ -395,19 +392,8 @@ class _FocusTabScreenState extends State<FocusTabScreen>
     await _runSelectAppsFlow(vm, l10n);
   }
 
-  /// Premium is required only when fetching/opening the installed-app list, not
-  /// when toggling individual apps or showing an already-loaded grid.
-  Future<void> _requestInstalledAppsAfterPremium(FocusController vm) async {
-    await PremiumGate.presentIfNeeded(
-      context: context,
-      onAccess: () {
-        if (!mounted) return;
-        unawaited(vm.requestInstalledApps());
-      },
-      debugContext: 'focus:load_apps',
-    );
-  }
-
+  /// Opens Screen Time / installed apps so the user can pick blocked apps.
+  /// Paywall is not shown here — it runs when a Focus mode is toggled on.
   Future<void> _runSelectAppsFlow(
     FocusController vm,
     AppLocalizations l10n,
@@ -426,14 +412,13 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         messenger?.showSnackBar(
           SnackBar(
             content: Text(
-              authResult.userFacingMessage() ??
-                  l10n.focusScreenTimeRequiredSelectApps,
+              authResult.userFacingMessage(l10n),
             ),
           ),
         );
         return;
       }
-      await _requestInstalledAppsAfterPremium(vm);
+      await vm.requestInstalledApps();
       return;
     }
     final acceptedDisclosure =
@@ -444,29 +429,13 @@ class _FocusTabScreenState extends State<FocusTabScreen>
       );
       return;
     }
-    // Hiding the selector — no gate needed.
     if (_showGlobalSelector) {
       setState(() => _showGlobalSelector = false);
       return;
     }
 
-    // Always verify subscription before opening the selector. The warm
-    // cache may have pre-loaded apps without icons, so requestInstalledApps()
-    // inside onAccess ensures icons are loaded and subscription is confirmed.
-    await _openSelectorAfterPremium(vm);
-  }
-
-  Future<void> _openSelectorAfterPremium(FocusController vm) async {
-    if (!mounted) return;
-    await PremiumGate.presentIfNeeded(
-      context: context,
-      onAccess: () {
-        if (!mounted) return;
-        setState(() => _showGlobalSelector = true);
-        unawaited(vm.requestInstalledApps());
-      },
-      debugContext: 'focus:load_apps',
-    );
+    setState(() => _showGlobalSelector = true);
+    await vm.requestInstalledApps();
   }
 
   Future<void> _enableModeAfterPremium(
@@ -488,8 +457,7 @@ class _FocusTabScreenState extends State<FocusTabScreen>
         messenger?.showSnackBar(
           SnackBar(
             content: Text(
-              authResult.userFacingMessage() ??
-                  l10n.focusScreenTimeRequiredBlockIphone,
+              authResult.userFacingMessage(l10n),
             ),
           ),
         );

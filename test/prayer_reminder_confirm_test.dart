@@ -1,3 +1,5 @@
+import 'package:deenly/core/services/storage_service.dart';
+import 'package:deenly/features/home/helpers/prayer_reminder_prompt_keys.dart';
 import 'package:deenly/features/home/model/home_models.dart';
 import 'package:deenly/features/home/viewmodel/home_tab_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -150,6 +152,22 @@ void main() {
     expect(raw, isNotNull);
     expect(raw!, contains(tip.name));
     expect(raw, contains('onTime'));
+  });
+
+  test('marking a prayer records reminder prompt key so the sheet stays dismissed',
+      () async {
+    final now = DateTime.now();
+    final tip = _tipPrayer(now);
+    if (tip == null) return;
+
+    final vm = HomeTabViewModel();
+    await vm.markPrayerStatus(now, tip, PrayerMarkStatus.onTime);
+
+    expect(vm.statusForToday(tip), PrayerMarkStatus.onTime);
+    expect(vm.getPrayerReminderTarget(now: now), isNull);
+
+    final prompted = await StorageService.prayerReminderPromptedKeys;
+    expect(prompted.contains(PrayerReminderPromptKeys.forPrayer(tip)), isTrue);
   });
 
   test('marking first then next prayer grows streak 1 then 2', () async {

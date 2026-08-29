@@ -960,6 +960,120 @@ abstract class AppLocalizations {
   /// **'Peace of mind, every time'**
   String get focusChildModeBullet3;
 
+  /// No description provided for @restrictedModeSalahTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salah Time'**
+  String get restrictedModeSalahTitle;
+
+  /// No description provided for @restrictedModeSalahMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time to step away from distractions and answer the call to prayer.'**
+  String get restrictedModeSalahMessage;
+
+  /// No description provided for @restrictedModeSalahInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Take this moment to connect with Allah.'**
+  String get restrictedModeSalahInfo;
+
+  /// No description provided for @restrictedModeSalahQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Establish prayer for My remembrance.'**
+  String get restrictedModeSalahQuote;
+
+  /// No description provided for @restrictedModeSalahQuoteSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran 20:14'**
+  String get restrictedModeSalahQuoteSource;
+
+  /// No description provided for @restrictedModeSalahCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Salah'**
+  String get restrictedModeSalahCta;
+
+  /// No description provided for @restrictedModeChildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Child Focus Mode'**
+  String get restrictedModeChildTitle;
+
+  /// No description provided for @restrictedModeChildMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A safer, more balanced space for focused screen time.'**
+  String get restrictedModeChildMessage;
+
+  /// No description provided for @restrictedModeChildInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Some apps are temporarily unavailable.'**
+  String get restrictedModeChildInfo;
+
+  /// No description provided for @restrictedModeChildQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Teach your children prayer when they are seven.'**
+  String get restrictedModeChildQuote;
+
+  /// No description provided for @restrictedModeChildQuoteSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith - Abu Dawood'**
+  String get restrictedModeChildQuoteSource;
+
+  /// No description provided for @restrictedModeChildCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay Protected'**
+  String get restrictedModeChildCta;
+
+  /// No description provided for @restrictedModeNightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Focus Mode'**
+  String get restrictedModeNightTitle;
+
+  /// No description provided for @restrictedModeNightMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time to rest and disconnect from digital distractions.'**
+  String get restrictedModeNightMessage;
+
+  /// No description provided for @restrictedModeNightInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Put your device aside and enjoy a peaceful night.'**
+  String get restrictedModeNightInfo;
+
+  /// No description provided for @restrictedModeNightQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'And We made your sleep a means for rest.'**
+  String get restrictedModeNightQuote;
+
+  /// No description provided for @restrictedModeNightQuoteSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran 78:9'**
+  String get restrictedModeNightQuoteSource;
+
+  /// No description provided for @restrictedModeNightCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Night'**
+  String get restrictedModeNightCta;
+
+  /// No description provided for @restrictedModeAppsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Some apps are temporarily unavailable.'**
+  String get restrictedModeAppsUnavailable;
+
   /// No description provided for @focusModeGotIt.
   ///
   /// In en, this message translates to:
@@ -1845,13 +1959,13 @@ abstract class AppLocalizations {
   /// No description provided for @cycleModeActiveTitle.
   ///
   /// In en, this message translates to:
-  /// **'\"Allah intends ease for you and does not intend hardship for you.\" — Quran 2:185'**
+  /// **'Your cycle is a pause, not a stop.'**
   String get cycleModeActiveTitle;
 
   /// No description provided for @cycleModeActiveSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'During this period, your prayer streak is protected. Your cycle days are highlighted in pink, and Cycle Mode turns off automatically when the cycle ends.'**
+  /// **'Dhikr • Tasbih • Quran listening'**
   String get cycleModeActiveSubtitle;
 
   /// No description provided for @cycleModeStreakProtected.
@@ -1899,7 +2013,7 @@ abstract class AppLocalizations {
   /// No description provided for @cycleModePauseStreaksLabel.
   ///
   /// In en, this message translates to:
-  /// **'Pause streaks'**
+  /// **'Protect prayer streak'**
   String get cycleModePauseStreaksLabel;
 
   /// No description provided for @cycleModeExcludeFromStatisticsLabel.
@@ -3112,6 +3226,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Page'**
   String get quranModePage;
+
+  /// No description provided for @quranSwitchToPageView.
+  ///
+  /// In en, this message translates to:
+  /// **'Page view'**
+  String get quranSwitchToPageView;
+
+  /// No description provided for @quranSwitchToSurahView.
+  ///
+  /// In en, this message translates to:
+  /// **'Surah view'**
+  String get quranSwitchToSurahView;
 
   /// No description provided for @quranJuzLabel.
   ///
@@ -4478,8 +4604,182 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAboutFooter.
   ///
   /// In en, this message translates to:
-  /// **'Stay consistent. Stay mindful.\nStay connected to your Deen.'**
+  /// **'Stay consistent. Stay mindful. Stay connected to your Deen.'**
   String get settingsAboutFooter;
+
+  /// No description provided for @settingsAboutOffersHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'What Deen Focus offers'**
+  String get settingsAboutOffersHeading;
+
+  /// No description provided for @settingsAboutNewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get settingsAboutNewBadge;
+
+  /// No description provided for @settingsAboutFooterCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart tools to help you stay mindful, consistent, and connected to your Deen — every day.'**
+  String get settingsAboutFooterCard;
+
+  /// No description provided for @settingsAboutOfferPrayerTimesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accurate Prayer Times'**
+  String get settingsAboutOfferPrayerTimesTitle;
+
+  /// No description provided for @settingsAboutOfferPrayerTimesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Timely prayer alerts and beautiful widgets to keep you on track.'**
+  String get settingsAboutOfferPrayerTimesSubtitle;
+
+  /// No description provided for @settingsAboutOfferPrayerStreaksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Streaks'**
+  String get settingsAboutOfferPrayerStreaksTitle;
+
+  /// No description provided for @settingsAboutOfferPrayerStreaksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build consistency and grow in your Deen with daily and overall streak tracking.'**
+  String get settingsAboutOfferPrayerStreaksSubtitle;
+
+  /// No description provided for @settingsAboutOfferCycleModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Mode'**
+  String get settingsAboutOfferCycleModeTitle;
+
+  /// No description provided for @settingsAboutOfferCycleModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For menstruation — pause prayers, keep your streak, and maintain your journey.'**
+  String get settingsAboutOfferCycleModeSubtitle;
+
+  /// No description provided for @settingsAboutOfferQuranTajweedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Al Quran Tajweed'**
+  String get settingsAboutOfferQuranTajweedTitle;
+
+  /// No description provided for @settingsAboutOfferQuranTajweedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read, listen, and practice Tajweed with our AI-powered real-time feedback.'**
+  String get settingsAboutOfferQuranTajweedSubtitle;
+
+  /// No description provided for @settingsAboutOfferLiveActivitiesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Activities'**
+  String get settingsAboutOfferLiveActivitiesTitle;
+
+  /// No description provided for @settingsAboutOfferLiveActivitiesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated with ongoing prayers and focus sessions right from your Lock Screen.'**
+  String get settingsAboutOfferLiveActivitiesSubtitle;
+
+  /// No description provided for @settingsAboutOfferQiblaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Qibla & Masjid Finder'**
+  String get settingsAboutOfferQiblaTitle;
+
+  /// No description provided for @settingsAboutOfferQiblaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Qibla direction anytime and discover nearby mosques wherever you are.'**
+  String get settingsAboutOfferQiblaSubtitle;
+
+  /// No description provided for @settingsAboutOfferFocusModesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Modes'**
+  String get settingsAboutOfferFocusModesTitle;
+
+  /// No description provided for @settingsAboutOfferFocusModesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block distracting apps during Salah, sleep, study, or family time.'**
+  String get settingsAboutOfferFocusModesSubtitle;
+
+  /// No description provided for @settingsAboutOfferTasbihTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih & Dhikr'**
+  String get settingsAboutOfferTasbihTitle;
+
+  /// No description provided for @settingsAboutOfferTasbihSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Tasbih to help you remember Allah throughout the day.'**
+  String get settingsAboutOfferTasbihSubtitle;
+
+  /// No description provided for @settingsAboutOfferCalendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic Calendar'**
+  String get settingsAboutOfferCalendarTitle;
+
+  /// No description provided for @settingsAboutOfferCalendarSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hijri calendar with important Islamic dates and reminders.'**
+  String get settingsAboutOfferCalendarSubtitle;
+
+  /// No description provided for @settingsAboutGridNamesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'99 Names of Allah'**
+  String get settingsAboutGridNamesTitle;
+
+  /// No description provided for @settingsAboutGridNamesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn and reflect on Asma ul-Husna.'**
+  String get settingsAboutGridNamesSubtitle;
+
+  /// No description provided for @settingsAboutGridDuasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duas & Adhkar'**
+  String get settingsAboutGridDuasTitle;
+
+  /// No description provided for @settingsAboutGridDuasSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning, evening and daily duas.'**
+  String get settingsAboutGridDuasSubtitle;
+
+  /// No description provided for @settingsAboutGridPrayerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer & Methods'**
+  String get settingsAboutGridPrayerTitle;
+
+  /// No description provided for @settingsAboutGridPrayerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn Salah, Wudu, Hajj and more.'**
+  String get settingsAboutGridPrayerSubtitle;
+
+  /// No description provided for @settingsAboutGridFiqhTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fiqh & Traditions'**
+  String get settingsAboutGridFiqhTitle;
+
+  /// No description provided for @settingsAboutGridFiqhSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore authentic Islamic knowledge.'**
+  String get settingsAboutGridFiqhSubtitle;
 
   /// No description provided for @settingsEnableSystemNotifications.
   ///
@@ -8788,6 +9088,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Allahu Akbar'**
   String get lockScreenDhikrAllahuAkbar;
+
+  /// No description provided for @homeTajweedPromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran AI Tajweed'**
+  String get homeTajweedPromoTitle;
+
+  /// No description provided for @homeTajweedPromoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite any verse and get instant AI feedback on your Tajweed.'**
+  String get homeTajweedPromoBody;
+
+  /// No description provided for @homeTajweedPromoCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Tajweed'**
+  String get homeTajweedPromoCta;
+
+  /// No description provided for @homeTajweedPromoAiFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Feedback'**
+  String get homeTajweedPromoAiFeedback;
+
+  /// No description provided for @homeTajweedPromoWordAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% Word Accuracy'**
+  String homeTajweedPromoWordAccuracy(int percent);
+
+  /// No description provided for @homeLockScreenPromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Screen Styles'**
+  String get homeLockScreenPromoTitle;
+
+  /// No description provided for @homeLockScreenPromoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalize your lock screen with beautiful Islamic designs and helpful reminders.'**
+  String get homeLockScreenPromoBody;
+
+  /// No description provided for @homeLockScreenPromoCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Styles'**
+  String get homeLockScreenPromoCta;
+
+  /// No description provided for @homePromoNewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get homePromoNewBadge;
+
+  /// No description provided for @homeReadQuranPromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read Quran'**
+  String get homeReadQuranPromoTitle;
+
+  /// No description provided for @homeReadQuranPromoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read, listen & practice tajweed'**
+  String get homeReadQuranPromoSubtitle;
+
+  /// No description provided for @homeReadQuranPromoCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Quran'**
+  String get homeReadQuranPromoCta;
+
+  /// No description provided for @homeReadQuranPromoNewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get homeReadQuranPromoNewBadge;
+
+  /// No description provided for @cycleModeActiveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Streak protected • Ends today} =1{Streak protected • Ends tomorrow} other{Streak protected • Ends in {days} days}}'**
+  String cycleModeActiveStatus(int days);
+
+  /// No description provided for @cycleModeProtectPrayerStreakSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your streak intact during cycle days'**
+  String get cycleModeProtectPrayerStreakSubtitle;
+
+  /// No description provided for @cycleModeExcludeFromStatisticsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t count cycle days in your prayer stats'**
+  String get cycleModeExcludeFromStatisticsSubtitle;
+
+  /// No description provided for @homePromoPreviewCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Lahore'**
+  String get homePromoPreviewCity;
+
+  /// No description provided for @focusScreenTimeAuthPasscodeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This iPhone needs a device passcode before Apple will allow Screen Time access. Set a passcode in iPhone Settings, then try again.'**
+  String get focusScreenTimeAuthPasscodeRequired;
+
+  /// No description provided for @focusScreenTimeAuthCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time access was canceled before Apple finished granting it. Please try again and complete the Apple prompt.'**
+  String get focusScreenTimeAuthCanceled;
+
+  /// No description provided for @focusScreenTimeAuthConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Another app is already managing Family Controls on this iPhone. Turn that off first, then try again.'**
+  String get focusScreenTimeAuthConflict;
+
+  /// No description provided for @focusScreenTimeAuthInvalidAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with a valid iCloud account on this iPhone, then try Screen Time access again.'**
+  String get focusScreenTimeAuthInvalidAccount;
+
+  /// No description provided for @focusScreenTimeAuthNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'This iPhone needs an internet connection before Apple can grant Screen Time access.'**
+  String get focusScreenTimeAuthNetwork;
+
+  /// No description provided for @focusScreenTimeAuthRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Controls is restricted on this iPhone, so DeenFocus cannot request Screen Time access here.'**
+  String get focusScreenTimeAuthRestricted;
+
+  /// No description provided for @focusScreenTimeAuthUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Family Controls is currently unavailable on this iPhone.'**
+  String get focusScreenTimeAuthUnavailable;
+
+  /// No description provided for @focusScreenTimeAuthIosVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time app blocking requires iOS 16 or later.'**
+  String get focusScreenTimeAuthIosVersion;
+
+  /// No description provided for @focusScreenTimeAuthInvalidArgument.
+  ///
+  /// In en, this message translates to:
+  /// **'The Screen Time authorization request was invalid. Please try again.'**
+  String get focusScreenTimeAuthInvalidArgument;
+
+  /// No description provided for @focusScreenTimeAuthFailedGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Time access could not be granted on this iPhone.'**
+  String get focusScreenTimeAuthFailedGeneric;
+
+  /// No description provided for @widgetLockCountdownHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'In {hours}h {minutes}m'**
+  String widgetLockCountdownHoursMinutes(String hours, String minutes);
+
+  /// No description provided for @widgetLockCountdownMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'In {minutes}m'**
+  String widgetLockCountdownMinutes(String minutes);
+
+  /// No description provided for @lockScreenRecommendedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get lockScreenRecommendedBadge;
 }
 
 class _AppLocalizationsDelegate

@@ -842,9 +842,24 @@ class CycleModeData {
     return true;
   }
 
+  /// Toggle ON **and** [now] falls inside the configured active window
+  /// (inclusive start → planned end). Before start or after the window ends,
+  /// Cycle Mode is configured but not *running*.
+  bool isRunningOn(DateTime now) {
+    if (!isEnabled) return false;
+    final today = dateOnly(now);
+    final start = dateOnly(startDate);
+    final end = plannedEndDate;
+    return !today.isBefore(start) && !today.isAfter(end);
+  }
+
   int daysRemainingOn(DateTime now) {
-    final elapsed = dateOnly(now).difference(dateOnly(startDate)).inDays;
-    return (cycleLength - elapsed).clamp(0, cycleLength);
+    if (!isEnabled) return 0;
+    final today = dateOnly(now);
+    final start = dateOnly(startDate);
+    final end = plannedEndDate;
+    if (today.isBefore(start) || today.isAfter(end)) return 0;
+    return end.difference(today).inDays + 1;
   }
 
   bool hasExpiredOn(DateTime now) {

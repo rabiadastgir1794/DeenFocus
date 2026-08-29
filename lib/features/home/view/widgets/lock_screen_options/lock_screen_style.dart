@@ -52,6 +52,8 @@ extension LockScreenStyleCopy on LockScreenStyle {
 
   bool get isDefault => this == LockScreenStyle.classic;
 
+  bool get isRecommended => this == LockScreenStyle.tasbih;
+
   /// Classic prayer reminder stays free; every other style is premium.
   bool get requiresPremium => this != LockScreenStyle.classic;
 }

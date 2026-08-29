@@ -91,5 +91,55 @@ void main() {
       expect(policy.isHighlightable(DateTime(2026, 8, 2), now: aug1), isFalse);
       expect(policy.isCycleMember(DateTime(2026, 8, 1)), isTrue);
     });
+
+    test('future start: inactive before start, active during window, inactive after', () {
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: DateTime(2026, 8, 29),
+        cycleLength: 2,
+      );
+      final policy = CycleModePolicy(data);
+      final aug28 = DateTime(2026, 8, 28);
+      final aug29 = DateTime(2026, 8, 29);
+      final aug30 = DateTime(2026, 8, 30);
+      final aug31 = DateTime(2026, 8, 31);
+
+      expect(data.isRunningOn(aug28), isFalse);
+      expect(data.isRunningOn(aug29), isTrue);
+      expect(data.isRunningOn(aug30), isTrue);
+      expect(data.isRunningOn(aug31), isFalse);
+
+      expect(data.daysRemainingOn(aug28), 0);
+      expect(data.daysRemainingOn(aug29), 2);
+      expect(data.daysRemainingOn(aug30), 1);
+      expect(data.daysRemainingOn(aug31), 0);
+
+      expect(policy.isHighlightable(aug28, now: aug28), isFalse);
+      expect(policy.isHighlightable(aug29, now: aug28), isFalse);
+      expect(policy.isHighlightable(aug30, now: aug28), isFalse);
+
+      expect(policy.isHighlightable(aug29, now: aug29), isTrue);
+      expect(policy.isHighlightable(aug30, now: aug29), isTrue);
+      expect(policy.isHighlightable(aug28, now: aug29), isFalse);
+
+      expect(policy.isHighlightable(aug29, now: aug30), isTrue);
+      expect(policy.isHighlightable(aug30, now: aug30), isTrue);
+
+      expect(policy.isHighlightable(aug29, now: aug31), isFalse);
+      expect(policy.isHighlightable(aug30, now: aug31), isFalse);
+      expect(policy.isHighlightable(aug31, now: aug31), isFalse);
+
+      expect(policy.isTodayProtected(now: aug28), isFalse);
+      expect(policy.isTodayProtected(now: aug29), isTrue);
+      expect(policy.isTodayProtected(now: aug30), isTrue);
+      expect(policy.isTodayProtected(now: aug31), isFalse);
+
+      expect(policy.shouldPauseStreaks(aug28, now: aug28), isFalse);
+      expect(policy.shouldPauseStreaks(aug29, now: aug28), isFalse);
+      expect(policy.shouldPauseStreaks(aug29, now: aug29), isTrue);
+      expect(policy.shouldPauseStreaks(aug30, now: aug30), isTrue);
+      expect(policy.shouldPauseStreaks(aug29, now: aug31), isTrue);
+      expect(policy.shouldPauseStreaks(aug31, now: aug31), isFalse);
+    });
   });
 }

@@ -118,6 +118,7 @@ flutter:
     - assets/app_icon.png
     - assets/onboarding/widgets_preview.png
     - assets/onboarding/live_activity_preview.png
+    - assets/restricted/
     - assets/support/
     - assets/islamic_library/names_of_allah.json
     - assets/islamic_library/duas_adhkar.json

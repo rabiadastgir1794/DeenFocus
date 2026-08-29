@@ -283,8 +283,8 @@
   "calendarUpcomingEvents": "Aankomende islamitische gebeurtenissen",
   "cycleModeTitle": "Cyclusmodus",
   "cycleModeSubtitle": "Voor menstruatie — pauzeer gebeden, behoud je reeks",
-  "cycleModeActiveTitle": "„Allah wil voor jullie gemak en wil voor jullie geen moeilijkheid.” — Koran 2:185",
-  "cycleModeActiveSubtitle": "In deze periode is je reeks beschermd. Cyclusdagen zijn roze gemarkeerd en Cyclusmodus schakelt automatisch uit wanneer de cyclus eindigt.",
+  "cycleModeActiveTitle": "Je cyclus is een pauze, geen stop.",
+  "cycleModeActiveSubtitle": "Dhikr • Tasbih • Koran luisteren",
   "cycleModeStreakProtected": "Prayer streak is protected during your cycle",
   "cycleModeCalendarHighlighted": "Calendar days are highlighted in pink",
   "cycleModeAutoEndInfo": "{days, plural, =0{Eindigt vandaag} =1{Eindigt automatisch morgen} other{Eindigt automatisch over {days} dagen}}",
@@ -292,7 +292,7 @@
   "cycleModeStartDateLabel": "Startdatum",
   "cycleModeLengthLabel": "Cyclusduur",
   "cycleModeLengthValue": "{count, plural, =1{1 dag} other{{count} dagen}}",
-  "cycleModePauseStreaksLabel": "Reeksen pauzeren",
+  "cycleModePauseStreaksLabel": "Gebedsreeks beschermen",
   "cycleModeExcludeFromStatisticsLabel": "Uitsluiten van statistieken",
   "cycleModeSaveButton": "Opslaan",
   "cycleModeEditButton": "Bewerken",
@@ -465,7 +465,36 @@
   "settingsAboutFeature4": "Nabijgelegen moskeeën",
   "settingsAboutFeature5": "Slimme focusmodi voor Salah, slaap en familietijd",
   "settingsAboutFocusDescription": "Slimme focusmodi helpen je afleidingen te blokkeren tijdens Salah, slaap en belangrijke momenten, zodat je aanwezig en gedisciplineerd kunt blijven.",
-  "settingsAboutFooter": "Blijf consistent. Blijf bewust.\nBlijf verbonden met je Deen.",
+  "settingsAboutFooter": "Blijf consistent. Blijf mindful. Blijf verbonden met je Deen.",
+  "settingsAboutOffersHeading": "Wat Deen Focus biedt",
+  "settingsAboutNewBadge": "Nieuw",
+  "settingsAboutFooterCard": "Slimme tools om je mindful, consistent en verbonden met je Deen te houden — elke dag.",
+  "settingsAboutOfferPrayerTimesTitle": "Nauwkeurige gebedstijden",
+  "settingsAboutOfferPrayerTimesSubtitle": "Tijdige gebedsmeldingen en mooie widgets om je op koers te houden.",
+  "settingsAboutOfferPrayerStreaksTitle": "Gebedsstreaks",
+  "settingsAboutOfferPrayerStreaksSubtitle": "Bouw consistentie op en groei in je Deen met dagelijkse en totale streak-tracking.",
+  "settingsAboutOfferCycleModeTitle": "Cyclusmodus",
+  "settingsAboutOfferCycleModeSubtitle": "Voor menstruatie — pauzeer gebeden, behoud je streak en zet je reis voort.",
+  "settingsAboutOfferQuranTajweedTitle": "Al-Quran Tajweed",
+  "settingsAboutOfferQuranTajweedSubtitle": "Lees, luister en oefen tajweed met onze AI-gestuurde realtime feedback.",
+  "settingsAboutOfferLiveActivitiesTitle": "Live Activities",
+  "settingsAboutOfferLiveActivitiesSubtitle": "Blijf op de hoogte van lopende gebeden en focussessies vanaf je vergrendelscherm.",
+  "settingsAboutOfferQiblaTitle": "Qibla- & moskee-zoeker",
+  "settingsAboutOfferQiblaSubtitle": "Vind de Qibla-richting op elk moment en ontdek moskeeën in de buurt.",
+  "settingsAboutOfferFocusModesTitle": "Focusmodi",
+  "settingsAboutOfferFocusModesSubtitle": "Blokkeer afleidende apps tijdens Salah, slaap, studie of familietijd.",
+  "settingsAboutOfferTasbihTitle": "Tasbih & dhikr",
+  "settingsAboutOfferTasbihSubtitle": "Digitale tasbih om je te helpen Allah de hele dag te gedenken.",
+  "settingsAboutOfferCalendarTitle": "Islamitische kalender",
+  "settingsAboutOfferCalendarSubtitle": "Hijri-kalender met belangrijke islamitische data en herinneringen.",
+  "settingsAboutGridNamesTitle": "99 Namen van Allah",
+  "settingsAboutGridNamesSubtitle": "Leer en reflecteer op Asma ul-Husna.",
+  "settingsAboutGridDuasTitle": "Duas & adhkar",
+  "settingsAboutGridDuasSubtitle": "Ochtend-, avond- en dagelijkse duas.",
+  "settingsAboutGridPrayerTitle": "Gebed & methoden",
+  "settingsAboutGridPrayerSubtitle": "Leer Salah, Wudu, Hajj en meer.",
+  "settingsAboutGridFiqhTitle": "Fiqh & tradities",
+  "settingsAboutGridFiqhSubtitle": "Ontdek authentieke islamitische kennis.",
   "settingsEnableSystemNotifications": "Schakel systeemmeldingen in om dit in te schakelen.",
   "appDemoTitle": "App-demo",
   "appDemoLoadFailed": "Kan de demovideo niet laden.",
@@ -567,11 +596,10 @@
   "tasbihDelete": "Verwijderen",
   "focusAndroidBlockingNotReady": "Android-appblokkering is nog niet klaar. Houd toegankelijkheid aan en wacht even op de verbinding.",
   "focusNoAppsSelectedSnack": "Geen apps geselecteerd. Kies eerst apps om te blokkeren.",
-
-  "focusDiagnosticButton": "Diagnostic",
-  "focusDiagnosticTitle": "Test App Lock",
-  "focusDiagnosticIntro": "Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.",
-  "focusDiagnosticIntroWithApp": "Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.",
+  "focusDiagnosticButton": "Diagnose",
+  "focusDiagnosticTitle": "App-vergrendeling testen",
+  "focusDiagnosticIntro": "Vergrendel je geselecteerde apps tijdelijk 60 seconden met dezelfde app-vergrendeling als in Focusmodus. Open een geblokkeerde app om te controleren of het DeenFocus vergrendelscherm verschijnt.",
+  "focusDiagnosticIntroWithApp": "Vergrendel je geselecteerde apps tijdelijk 60 seconden. Open {appName} om te controleren of het DeenFocus vergrendelscherm verschijnt.",
   "@focusDiagnosticIntroWithApp": {
     "placeholders": {
       "appName": {
@@ -579,9 +607,9 @@
       }
     }
   },
-  "focusDiagnosticStart": "Start Test",
-  "focusDiagnosticEndEarly": "End Test",
-  "focusDiagnosticRunning": "App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.",
+  "focusDiagnosticStart": "Test starten",
+  "focusDiagnosticEndEarly": "Test beëindigen",
+  "focusDiagnosticRunning": "App-vergrendeling staat {seconds}s aan. Schakel naar een geselecteerde app om het vergrendelscherm te testen.",
   "@focusDiagnosticRunning": {
     "placeholders": {
       "seconds": {
@@ -589,18 +617,18 @@
       }
     }
   },
-  "focusDiagnosticSuccessTitle": "Test completed",
-  "focusDiagnosticSuccessBody": "App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.",
-  "focusDiagnosticCancelledTitle": "Test ended",
-  "focusDiagnosticCancelledBody": "The diagnostic lock was turned off. Your Focus modes and schedules were not changed.",
-  "focusDiagnosticMissingAppsTitle": "Select apps first",
-  "focusDiagnosticMissingAppsBody": "Choose at least one app to block before running the App Lock test.",
-  "focusDiagnosticMissingPermissionTitle": "Permission needed",
-  "focusDiagnosticMissingPermissionBodyIos": "Screen Time access is required to block apps. Allow Screen Time, then try again.",
-  "focusDiagnosticMissingPermissionBodyAndroid": "Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.",
-  "focusDiagnosticFailedTitle": "Could not start test",
-  "focusDiagnosticFailedBody": "App Lock did not activate. Check permissions and selected apps, then try again.",
-  "focusDiagnosticClose": "Done",
+  "focusDiagnosticSuccessTitle": "Test voltooid",
+  "focusDiagnosticSuccessBody": "App-vergrendeling is geactiveerd met je geselecteerde apps. Als je het DeenFocus-vergrendelscherm zag, werkt het.",
+  "focusDiagnosticCancelledTitle": "Test beëindigd",
+  "focusDiagnosticCancelledBody": "De diagnostische vergrendeling is uitgeschakeld. Je Focusmodi en schema's zijn niet gewijzigd.",
+  "focusDiagnosticMissingAppsTitle": "Selecteer eerst apps",
+  "focusDiagnosticMissingAppsBody": "Kies minstens één app om te blokkeren voordat je de test start.",
+  "focusDiagnosticMissingPermissionTitle": "Toestemming vereist",
+  "focusDiagnosticMissingPermissionBodyIos": "Schermtijd-toegang is vereist. Sta Schermtijd toe en probeer opnieuw.",
+  "focusDiagnosticMissingPermissionBodyAndroid": "Android-toegankelijkheid moet voor DeenFocus zijn ingeschakeld om apps te blokkeren.",
+  "focusDiagnosticFailedTitle": "Test kon niet starten",
+  "focusDiagnosticFailedBody": "App-vergrendeling is niet geactiveerd. Controleer toestemmingen en geselecteerde apps en probeer opnieuw.",
+  "focusDiagnosticClose": "Klaar",
   "focusScreenTimeRequiredBlockIphone": "Schermtijd-toegang is vereist om apps op de iPhone te blokkeren.",
   "focusModeUpdateFailedSnack": "Er ging iets mis bij het bijwerken van de Focus-modus. Probeer het opnieuw.",
   "focusLoadingInstalledApps": "Geïnstalleerde apps laden...",
@@ -1230,6 +1258,8 @@
   "quranModeSurah": "Soera",
   "quranModeJuz": "Djoez",
   "quranModePage": "Pagina",
+  "quranSwitchToPageView": "Paginaweergave",
+  "quranSwitchToSurahView": "Soeraweergave",
   "readingSettingsTitle": "Leesinstellingen",
   "featureDemoContinue": "Doorgaan",
   "featureDemoSampleStatusTime": "9:41",
@@ -1696,5 +1726,86 @@
   "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
   "lockScreenDhikrSubhanAllah": "SubhanAllah",
   "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
-  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar",
+  "homeTajweedPromoTitle": "Koran AI Tajweed",
+  "homeTajweedPromoBody": "Reciteer een willekeurige ayah en krijg direct AI-feedback op je tajweed.",
+  "homeTajweedPromoCta": "Tajweed oefenen",
+  "homeTajweedPromoAiFeedback": "AI-feedback",
+  "homeTajweedPromoWordAccuracy": "{percent}% woordnauwkeurigheid",
+  "@homeTajweedPromoWordAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockScreenPromoTitle": "Vergrendelschermstijlen",
+  "homeLockScreenPromoBody": "Personaliseer je vergrendelscherm met mooie islamitische designs en nuttige herinneringen.",
+  "homeLockScreenPromoCta": "Stijlen verkennen",
+  "homePromoNewBadge": "NIEUW",
+  "homeReadQuranPromoTitle": "Lees de Koran",
+  "homeReadQuranPromoSubtitle": "Lees, luister & oefen tajweed",
+  "homeReadQuranPromoCta": "Open Koran",
+  "homeReadQuranPromoNewBadge": "Nieuw",
+  "cycleModeActiveStatus": "{days, plural, =0{Reeks beschermd • Eindigt vandaag} =1{Reeks beschermd • Eindigt morgen} other{Reeks beschermd • Eindigt over {days} dagen}}",
+  "@cycleModeActiveStatus": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeProtectPrayerStreakSubtitle": "Behoud je reeks tijdens cyclusdagen",
+  "cycleModeExcludeFromStatisticsSubtitle": "Cyclusdagen niet meerekenen in je gebedstatistieken",
+  "homePromoPreviewCity": "Lahore",
+  "settingsRateDeenFocus": "Beoordeel DeenFocus ⭐",
+  "focusScreenTimeAuthPasscodeRequired": "Deze iPhone heeft een toegangscode nodig voordat Apple Schermtijd-toegang toestaat. Stel die in bij Instellingen en probeer opnieuw.",
+  "focusScreenTimeAuthCanceled": "Schermtijd-toegang is geannuleerd voordat Apple deze verleende. Probeer opnieuw en rond de Apple-prompt af.",
+  "focusScreenTimeAuthConflict": "Een andere app beheert al Gezinscontroles op deze iPhone. Zet die eerst uit en probeer opnieuw.",
+  "focusScreenTimeAuthInvalidAccount": "Meld je aan met een geldig iCloud-account op deze iPhone en probeer Schermtijd-toegang opnieuw.",
+  "focusScreenTimeAuthNetwork": "Deze iPhone heeft internet nodig voordat Apple Schermtijd-toegang kan verlenen.",
+  "focusScreenTimeAuthRestricted": "Gezinscontroles zijn beperkt op deze iPhone, dus DeenFocus kan hier geen Schermtijd-toegang aanvragen.",
+  "focusScreenTimeAuthUnavailable": "Gezinscontroles zijn momenteel niet beschikbaar op deze iPhone.",
+  "focusScreenTimeAuthIosVersion": "Apps blokkeren via Schermtijd vereist iOS 16 of nieuwer.",
+  "focusScreenTimeAuthInvalidArgument": "Het Schermtijd-autorisatieverzoek was ongeldig. Probeer opnieuw.",
+  "focusScreenTimeAuthFailedGeneric": "Schermtijd-toegang kon niet worden verleend op deze iPhone.",
+  "widgetLockCountdownHoursMinutes": "Over {hours} u {minutes} m",
+  "widgetLockCountdownMinutes": "Over {minutes} m",
+  "@widgetLockCountdownHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "@widgetLockCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRecommendedBadge": "Aanbevolen",
+  "restrictedModeSalahTitle": "Salah-tijd",
+  "restrictedModeSalahMessage": "Stap weg van afleiding en beantwoord de oproep tot gebed.",
+  "restrictedModeSalahInfo": "Neem dit moment om je met Allah te verbinden.",
+  "restrictedModeSalahQuote": "Verricht het gebed tot Mijn gedachtenis.",
+  "restrictedModeSalahQuoteSource": "Koran 20:14",
+  "restrictedModeSalahCta": "Start Salah",
+  "restrictedModeChildTitle": "Kind-focusmodus",
+  "restrictedModeChildMessage": "Een veiligere, evenwichtigere ruimte voor gerichte schermtijd.",
+  "restrictedModeChildInfo": "Sommige apps zijn tijdelijk niet beschikbaar.",
+  "restrictedModeChildQuote": "Leer uw kinderen het gebed wanneer ze zeven zijn.",
+  "restrictedModeChildQuoteSource": "Hadith - Aboe Dawoed",
+  "restrictedModeChildCta": "Blijf beschermd",
+  "restrictedModeNightTitle": "Nacht-focusmodus",
+  "restrictedModeNightMessage": "Het is tijd om te rusten en digitale afleiding los te laten.",
+  "restrictedModeNightInfo": "Leg je apparaat weg en geniet van een rustige nacht.",
+  "restrictedModeNightQuote": "En Wij maakten jullie slaap tot rust.",
+  "restrictedModeNightQuoteSource": "Koran 78:9",
+  "restrictedModeNightCta": "Welterusten",
+  "restrictedModeAppsUnavailable": "Sommige apps zijn tijdelijk niet beschikbaar."
 }

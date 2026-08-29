@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
+import '../logger/startup_probe.dart';
 import '../logger/trace_helpers.dart';
 import 'app_superwall.dart';
 import 'premium_access_policy.dart';
@@ -226,6 +227,9 @@ class PremiumGate {
           placement,
           handler: PaywallPresentationHandler()
             ..onPresent((info) {
+              StartupProbe.mark(
+                'PremiumGate paywall presented $debugContext',
+              );
               _log('paywall presented context=$debugContext');
               if (!presented.isCompleted) presented.complete();
             })

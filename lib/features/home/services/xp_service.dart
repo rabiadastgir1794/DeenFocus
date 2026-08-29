@@ -98,12 +98,16 @@ abstract class XpService {
   }
 
   /// Deterministic XP from recorded activity. Safe to call repeatedly.
+  ///
+  /// [isExcludedProgressDay] must come from [CycleModePolicy.shouldExcludeFromPrayerProgress]
+  /// so Cycle Mode days never award prayer / Fajr / five-daily XP.
   static List<XpEvent> collectFromActivity({
     required DateTime now,
     required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
     required Map<String, Set<DailyChecklistItem>> checklistHistory,
     required Iterable<DateTime> cycleProtectedDays,
     required int bestPrayerStreak,
+    bool Function(DateTime date)? isExcludedProgressDay,
   }) {
     final createdAt = now;
     final events = <XpEvent>[];
@@ -113,42 +117,55 @@ abstract class XpService {
       ...checklistHistory.keys,
     };
 
-    for (final key in keys) {
-      final prayers = statusHistory[key] ?? const <TrackablePrayer, PrayerMarkStatus>{};
-    var completedCount = 0;
-    for (final prayer in TrackablePrayer.values) {
-      final status = prayers[prayer] ?? PrayerMarkStatus.none;
-      if (!PrayerAnalyticsService.countsForPrayerStreak(status)) continue;
-      completedCount += 1;
-      if (prayer == TrackablePrayer.fajr) {
-        events.add(
-          XpEvent(
-            sourceId: 'prayer:$key:fajr',
-            type: XpEventType.fajr,
-            amount: fajrXp,
-            createdAt: createdAt,
-          ),
-        );
-      } else {
-        events.add(
-          XpEvent(
-            sourceId: 'prayer:$key:${prayer.name}',
-            type: XpEventType.prayer,
-            amount: prayerXp,
-            createdAt: createdAt,
-          ),
-        );
-      }
+    bool isExcludedKey(String key) {
+      if (isExcludedProgressDay == null) return false;
+      final parsed = DateTime.tryParse(key);
+      if (parsed == null) return false;
+      return isExcludedProgressDay(
+        DateTime(parsed.year, parsed.month, parsed.day),
+      );
     }
-      if (completedCount >= TrackablePrayer.values.length) {
-        events.add(
-          XpEvent(
-            sourceId: 'five_daily_prayers:$key',
-            type: XpEventType.fiveDailyPrayers,
-            amount: fiveDailyBonusXp,
-            createdAt: createdAt,
-          ),
-        );
+
+    for (final key in keys) {
+      final prayers =
+          statusHistory[key] ?? const <TrackablePrayer, PrayerMarkStatus>{};
+      final excludePrayerXp = isExcludedKey(key);
+      var completedCount = 0;
+      if (!excludePrayerXp) {
+        for (final prayer in TrackablePrayer.values) {
+          final status = prayers[prayer] ?? PrayerMarkStatus.none;
+          if (!PrayerAnalyticsService.countsForPrayerStreak(status)) continue;
+          completedCount += 1;
+          if (prayer == TrackablePrayer.fajr) {
+            events.add(
+              XpEvent(
+                sourceId: 'prayer:$key:fajr',
+                type: XpEventType.fajr,
+                amount: fajrXp,
+                createdAt: createdAt,
+              ),
+            );
+          } else {
+            events.add(
+              XpEvent(
+                sourceId: 'prayer:$key:${prayer.name}',
+                type: XpEventType.prayer,
+                amount: prayerXp,
+                createdAt: createdAt,
+              ),
+            );
+          }
+        }
+        if (completedCount >= TrackablePrayer.values.length) {
+          events.add(
+            XpEvent(
+              sourceId: 'five_daily_prayers:$key',
+              type: XpEventType.fiveDailyPrayers,
+              amount: fiveDailyBonusXp,
+              createdAt: createdAt,
+            ),
+          );
+        }
       }
 
       final checklist =

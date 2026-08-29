@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/routes/route_names.dart';
 import '../../../core/constants/spacing.dart';
+import '../../../core/logger/startup_diagnostics.dart';
 import '../../../core/logger/startup_probe.dart';
 import '../../../core/logger/trace_helpers.dart';
 import '../../../core/services/storage_service.dart';
@@ -37,18 +38,23 @@ class _SplashScreenState extends State<SplashScreen>
     StartupProbe.mark('SplashScreen.initState begin');
     _controller = AnimationController(
       vsync: this,
-      // 1100ms keeps icon → title → tagline readable without feeling stuck.
-      duration: const Duration(milliseconds: 1100),
+      duration: StartupDiagnostics.simpleSplash
+          ? Duration.zero
+          : const Duration(milliseconds: 400),
     );
     _iconScale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 0.72, end: 1.06)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
+        tween: Tween(
+          begin: 0.72,
+          end: 1.06,
+        ).chain(CurveTween(curve: Curves.easeOutCubic)),
         weight: 55,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.06, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: 1.06,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 45,
       ),
     ]).animate(_controller);
@@ -79,7 +85,8 @@ class _SplashScreenState extends State<SplashScreen>
       end: Offset.zero,
     ).animate(taglineCurve);
     _controller.forward();
-    // Resolve destination while the first frame + brand animation run.
+    StartupProbe.mark('SplashScreen animation start');
+    // Destination is warmed in main() before runApp — no timeout.
     // Do not preload Home+Onboarding here — deferred JIT starves this isolate.
     final destinationFuture = _resolveDestination();
 
@@ -96,7 +103,8 @@ class _SplashScreenState extends State<SplashScreen>
     await TraceHelpers.traceScreen('SplashScreen', () async {
       // Wait for the branded animation that is already running — never an
       // arbitrary wall-clock delay that outlasts the animation.
-      if (_controller.status != AnimationStatus.completed) {
+      if (!StartupDiagnostics.simpleSplash &&
+          _controller.status != AnimationStatus.completed) {
         StartupProbe.detail('SplashScreen awaiting brand animation');
         await _controller.forward();
       }
@@ -114,14 +122,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<String> _resolveDestination() async {
     StartupProbe.detail('SplashScreen resolveDestination begin');
-    var completed = false;
-    try {
-      completed = await StorageService.onboardingCompleted.timeout(
-        const Duration(seconds: 2),
-      );
-    } catch (e) {
-      debugPrint('[Splash] onboardingCompleted timed out/failed: $e');
-    }
+    final completed = await StorageService.onboardingCompleted;
     StartupProbe.detail(
       'SplashScreen resolveDestination done onboardingCompleted=$completed',
     );
@@ -137,6 +138,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     StartupProbe.mark('SplashScreen.build begin');
+    if (StartupDiagnostics.simpleSplash) {
+      StartupProbe.mark('SplashScreen.build end (simple ColoredBox)');
+      return const ColoredBox(color: Color(0xFF0F1F1A));
+    }
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;

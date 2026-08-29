@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -7,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/superwall/premium_gate.dart';
 import '../../../l10n/app_localizations.dart';
 import '../view/focus_apps_picker_sheet.dart';
 import '../viewmodel/focus_controller.dart';
@@ -25,7 +23,6 @@ class FocusAppSelectionFlow {
   /// Presents the picker. Returns after the user dismisses it (or cancels auth).
   static Future<void> open({
     required BuildContext context,
-    bool requirePremium = true,
     bool requireAccessibilityDisclosure = true,
   }) async {
     final l10n = AppLocalizations.of(context)!;
@@ -40,28 +37,14 @@ class FocusAppSelectionFlow {
         messenger?.showSnackBar(
           SnackBar(
             content: Text(
-              authResult.userFacingMessage() ??
-                  l10n.focusScreenTimeRequiredSelectApps,
+              authResult.userFacingMessage(l10n),
             ),
           ),
         );
         return;
       }
 
-      Future<void> openIosPicker() async {
-        if (!context.mounted) return;
-        await controller.requestInstalledApps();
-      }
-
-      if (requirePremium) {
-        await PremiumGate.presentIfNeeded(
-          context: context,
-          onAccess: () => unawaited(openIosPicker()),
-          debugContext: 'focus:load_apps',
-        );
-      } else {
-        await openIosPicker();
-      }
+      await controller.requestInstalledApps();
       return;
     }
 
@@ -77,23 +60,9 @@ class FocusAppSelectionFlow {
       }
     }
     if (!context.mounted) return;
-
-    Future<void> openAndroidPicker() async {
-      if (!context.mounted) return;
-      await controller.requestInstalledApps();
-      if (!context.mounted) return;
-      await FocusAppsPickerSheet.show(context);
-    }
-
-    if (requirePremium) {
-      await PremiumGate.presentIfNeeded(
-        context: context,
-        onAccess: () => unawaited(openAndroidPicker()),
-        debugContext: 'focus:load_apps',
-      );
-    } else {
-      await openAndroidPicker();
-    }
+    await controller.requestInstalledApps();
+    if (!context.mounted) return;
+    await FocusAppsPickerSheet.show(context);
   }
 
   static Future<bool> _ensureAccessibilityDisclosureAccepted(

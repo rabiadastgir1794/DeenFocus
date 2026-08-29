@@ -360,7 +360,10 @@ class LockScreenMiniPreview extends StatelessWidget {
       child: SizedBox(
         width: _designWidth,
         height: _designHeight,
-        child: IgnorePointer(child: child),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 52),
+          child: IgnorePointer(child: child),
+        ),
       ),
     );
   }

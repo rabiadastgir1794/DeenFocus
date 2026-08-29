@@ -20,7 +20,7 @@ class LockScreenTasbihViewModel extends ChangeNotifier {
     LockScreenTasbihStep(
       arabic: 'أَسْتَغْفِرُ اللّٰهَ',
       transliteration: 'Astaghfirullah',
-      target: 3,
+      target: 33,
     ),
     LockScreenTasbihStep(
       arabic: 'سُبْحَانَ اللّٰهِ',
@@ -35,7 +35,7 @@ class LockScreenTasbihViewModel extends ChangeNotifier {
     LockScreenTasbihStep(
       arabic: 'اللّٰهُ أَكْبَرُ',
       transliteration: 'Allahu Akbar',
-      target: 33,
+      target: 34,
     ),
   ];
 

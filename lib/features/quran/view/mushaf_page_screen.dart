@@ -19,11 +19,13 @@ import '../reading_engine/quran_repeat_mode.dart';
 import '../reading_engine/quran_script.dart';
 import '../reading_engine/reading_engine.dart';
 import '../reading_engine/reading_mode.dart';
+import 'surah_detail_bottom_sheet.dart';
 import 'widgets/mushaf_ayah_selection_chrome.dart';
 import 'widgets/mushaf_page_text.dart';
 import 'widgets/quran_audio_bar.dart';
 import 'widgets/quran_mushaf_page_frame.dart';
 import 'widgets/quran_reader_theme.dart';
+import 'widgets/quran_surah_view_mode_button.dart';
 import 'quran_reading_settings_launcher.dart';
 
 /// Surah-scoped Mushaf Page View. Opens one [surah] and swipes only the
@@ -430,6 +432,32 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
     });
   }
 
+  int? _focusedAyahNumber() {
+    final ayahs = _currentAyahs;
+    if (_selectedIndex >= 0 && _selectedIndex < ayahs.length) {
+      return ayahs[_selectedIndex].ayahNumber;
+    }
+    return ayahs.isEmpty ? null : ayahs.first.ayahNumber;
+  }
+
+  Future<void> _prepareViewSwitch() async {
+    await _audio.player.stop();
+    await _engine.flush();
+  }
+
+  Future<void> _switchToSurahView() async {
+    await _prepareViewSwitch();
+    if (!mounted) return;
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => SurahDetailBottomSheet(
+          surah: widget.surah,
+          initialAyah: _focusedAyahNumber(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -475,6 +503,10 @@ class _MushafPageScreenState extends State<MushafPageScreen> {
       appBar: CustomAppBar(
         title: '${widget.surah.name} · ${l10n.quranPageLabel} $mushafPage',
         actions: [
+          QuranSurahViewModeButton(
+            showPageView: false,
+            onTap: () => unawaited(_switchToSurahView()),
+          ),
           IconButton(
             tooltip: l10n.quranPreviousPage,
             icon: const Icon(Icons.chevron_left_rounded),

@@ -37,8 +37,8 @@ void main() {
     return PrayerAnalyticsService.calculate(
       now: now,
       statusHistory: history,
-      isPausedStreakDay: policy.shouldPauseStreaks,
-      isExcludedStatsDay: policy.shouldExcludeFromStatistics,
+      isPausedStreakDay: (d) => policy.shouldPauseStreaks(d, now: now),
+      isExcludedStatsDay: (d) => policy.shouldExcludeFromStatistics(d, now: now),
     );
   }
 
@@ -60,7 +60,7 @@ void main() {
 
   group('Cycle Mode streak lifecycle regression', () {
     test(
-      'streak tip on today preserved: ON → 4 paused days → OFF (bug regression)',
+      'streak tip only on today: Cycle ON → zero; sealed history stays zero',
       () {
         final today = DateTime(2026, 8, 11);
         final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
@@ -79,7 +79,7 @@ void main() {
           dayStreak: 0,
         );
 
-        // Cycle ON for 4 days starting today — streak must stay 2 (pink UI).
+        // Cycle ON for 4 days starting today — tip on cycle day contributes 0.
         var data = CycleModeData(
           isEnabled: true,
           startDate: today,
@@ -90,11 +90,11 @@ void main() {
           now: DateTime(2026, 8, 11, 13),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Across remaining paused days with no new marks — still 2.
+        // Across remaining paused days with no new marks — still 0.
         for (final day in [
           DateTime(2026, 8, 12),
           DateTime(2026, 8, 13),
@@ -104,12 +104,12 @@ void main() {
             now: eve(day),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
         }
 
-        // Manual OFF after the window — sealed pause history; tip preserved.
+        // Manual OFF after the window — sealed pause history; tip still excluded.
         data = data.disableOn(DateTime(2026, 8, 15));
         expect(data.isEnabled, isFalse);
         expect(data.history, hasLength(1));
@@ -124,12 +124,12 @@ void main() {
           isFalse,
         );
 
-        // Early morning before Fajr tip rules: preserved tip still 2.
+        // Early morning after sealed cycle: tip lived only on paused days → 0.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
       },
@@ -155,7 +155,7 @@ void main() {
         now: DateTime(2026, 8, 11, 13),
         history: history,
         data: data,
-        prayerStreak: 2,
+        prayerStreak: 0,
         dayStreak: 0,
       );
 
@@ -214,7 +214,7 @@ void main() {
           now: now,
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
@@ -233,7 +233,7 @@ void main() {
       },
     );
 
-    test('auto-expiry preserves tip that lived on paused days', () {
+    test('auto-expiry: tip only on paused days contributes zero', () {
       final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
         key(DateTime(2026, 8, 11)): {
           TrackablePrayer.fajr: PrayerMarkStatus.onTime,
@@ -252,12 +252,12 @@ void main() {
         now: DateTime(2026, 8, 15, 4),
         history: history,
         data: coldStart(data),
-        prayerStreak: 2,
+        prayerStreak: 0,
         dayStreak: 0,
       );
     });
 
-    group('after Cycle Mode ends — preserve streak; miss breaks; On Time continues',
+    group('after Cycle Mode ends — bridge pre-cycle tip; cycle marks never tip',
         () {
       Map<String, Map<TrackablePrayer, PrayerMarkStatus>> tipOnPausedDay() => {
             key(DateTime(2026, 8, 11)): {
@@ -281,40 +281,39 @@ void main() {
         return active.expireFully();
       }
 
-      void expectPreservedThroughUnmarkedThenNormalRules({
+      void expectZeroTipThenNormalRulesAfterEnd({
         required CycleModeData ended,
         required bool coldRestart,
       }) {
         final history = tipOnPausedDay();
         final data = coldRestart ? coldStart(ended) : ended;
 
-        // Before any post-cycle tip — preserved.
+        // Tip lived only on sealed cycle days → 0.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Started-but-unmarked after Cycle Mode must NOT wipe the streak
-        // (Cycle days are exempt — unmarked ≠ missed).
+        // Started-but-unmarked after Cycle Mode must NOT invent a break from 0.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 6),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 13),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Explicit Missed after end → breaks.
+        // Explicit Missed after end → still 0.
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.missed,
         };
@@ -326,7 +325,7 @@ void main() {
           dayStreak: 0,
         );
 
-        // On Time / Qadha after end continues the preserved tip (2 + new).
+        // On Time / Qadha after end starts a new tip (cycle marks stay excluded).
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.onTime,
           TrackablePrayer.dhuhr: PrayerMarkStatus.qada,
@@ -335,29 +334,26 @@ void main() {
           now: DateTime(2026, 8, 15, 13),
           history: history,
           data: data,
-          prayerStreak: 4, // Aug 15 Fajr+Dhuhr + Aug 11 Fajr+Dhuhr
+          prayerStreak: 2, // Aug 15 only — Aug 11 sealed/excluded
           dayStreak: 0,
         );
       }
 
-      test('manual OFF → preserve through unmarked; miss breaks; On Time continues',
-          () {
-        expectPreservedThroughUnmarkedThenNormalRules(
+      test('manual OFF → cycle tip zero; On Time after end starts fresh', () {
+        expectZeroTipThenNormalRulesAfterEnd(
           ended: fourDayCycleEnded(manualOff: true),
           coldRestart: false,
         );
       });
 
-      test(
-          'auto-expiry → preserve through unmarked; miss breaks; On Time continues',
-          () {
-        expectPreservedThroughUnmarkedThenNormalRules(
+      test('auto-expiry → cycle tip zero; On Time after end starts fresh', () {
+        expectZeroTipThenNormalRulesAfterEnd(
           ended: fourDayCycleEnded(manualOff: false),
           coldRestart: false,
         );
       });
 
-      test('app restart while Cycle Mode active keeps tip; unmarked after end preserves',
+      test('app restart while Cycle Mode active keeps zero tip-only-on-cycle',
           () {
         final history = tipOnPausedDay();
         var data = CycleModeData(
@@ -371,7 +367,7 @@ void main() {
           now: eve(DateTime(2026, 8, 13)),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
@@ -381,7 +377,7 @@ void main() {
           now: eve(DateTime(2026, 8, 13)),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
@@ -391,20 +387,20 @@ void main() {
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 6),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
       });
 
-      test('app restart after expiry keeps tip through unmarked; miss breaks', () {
-        expectPreservedThroughUnmarkedThenNormalRules(
+      test('app restart after expiry: cycle tip zero; miss stays zero', () {
+        expectZeroTipThenNormalRulesAfterEnd(
           ended: fourDayCycleEnded(manualOff: false),
           coldRestart: true,
         );
@@ -516,7 +512,7 @@ void main() {
           cycleLength: 4,
           pauseStreaks: true,
         );
-        // Empty paused days must not become "valid" prayers.
+        // Empty paused days must not become "valid" prayers; tip on cycle = 0.
         for (final day in [
           DateTime(2026, 8, 12),
           DateTime(2026, 8, 13),
@@ -527,7 +523,7 @@ void main() {
             now: eve(day),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
         }
@@ -636,16 +632,16 @@ void main() {
           pauseStreaks: true,
         ).expireFully();
 
-        // Still only the two counting marks from Aug 11.
+        // Cycle marks contribute zero after seal.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Post-cycle On Time continues from those 2 only (misses stay ignored).
+        // Post-cycle On Time starts a fresh tip (cycle marks stay ignored).
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.onTime,
         };
@@ -653,7 +649,7 @@ void main() {
           now: DateTime(2026, 8, 15, 10),
           history: history,
           data: data,
-          prayerStreak: 3,
+          prayerStreak: 1,
           dayStreak: 0,
         );
       });
@@ -814,8 +810,8 @@ void main() {
           now: eve(DateTime(2026, 8, 8)),
           history: history,
           data: data,
-          prayerStreak: 15, // Aug 8+7+6 preserved when Cycle starts today
-          dayStreak: 3, // Aug 8–7–6 preserved when Cycle starts today
+          prayerStreak: 10, // Aug 7+6 only; Aug 8 cycle day contributes 0
+          dayStreak: 2,
         );
 
       history[key(DateTime(2026, 8, 9))] = {

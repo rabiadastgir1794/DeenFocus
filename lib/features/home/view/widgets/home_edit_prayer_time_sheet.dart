@@ -49,6 +49,12 @@ class _EditPrayerTimeSheetContent extends StatefulWidget {
 class _EditPrayerTimeSheetContentState
     extends State<_EditPrayerTimeSheetContent> {
   late DateTime _selectedTime;
+  late DateTime _initialTime;
+
+  /// CupertinoDatePicker in 12-hour mode can report the wrong meridiem when the
+  /// wheels move (Flutter #27755). Prefer 24-hour wheels; only persist picker
+  /// output after the user actually scrolls.
+  bool _pickerTouched = false;
 
   @override
   void initState() {
@@ -57,7 +63,13 @@ class _EditPrayerTimeSheetContentState
     final slot = vm.prayerTimes?.slots
         .where((item) => item.id == widget.prayer.homePrayerId)
         .firstOrNull;
-    _selectedTime = slot?.time ?? DateTime.now();
+    _initialTime = slot?.time ?? DateTime.now();
+    _selectedTime = _initialTime;
+  }
+
+  int _minutesSinceMidnight(DateTime time) {
+    final local = time.isUtc ? time.toLocal() : time;
+    return local.hour * 60 + local.minute;
   }
 
   @override
@@ -72,6 +84,7 @@ class _EditPrayerTimeSheetContentState
     final borderColor = isDark
         ? colorScheme.outlineVariant.withValues(alpha: 0.35)
         : AppColors.outlineVariantLight.withValues(alpha: 0.35);
+    final use24h = MediaQuery.of(context).alwaysUse24HourFormat;
 
     return SafeArea(
       top: false,
@@ -144,10 +157,12 @@ class _EditPrayerTimeSheetContentState
                       ),
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.time,
-                        use24hFormat: false,
-                        initialDateTime: _selectedTime,
-                        onDateTimeChanged: (value) =>
-                            setState(() => _selectedTime = value),
+                        use24hFormat: use24h,
+                        initialDateTime: _initialTime,
+                        onDateTimeChanged: (value) => setState(() {
+                          _pickerTouched = true;
+                          _selectedTime = value;
+                        }),
                       ),
                     ),
                   ),
@@ -164,8 +179,8 @@ class _EditPrayerTimeSheetContentState
                     label: l10n.homeEditPrayerTimeSave,
                     showTrailingIcon: false,
                     onPressed: () async {
-                      final minutes =
-                          _selectedTime.hour * 60 + _selectedTime.minute;
+                      final source = _pickerTouched ? _selectedTime : _initialTime;
+                      final minutes = _minutesSinceMidnight(source);
                       await vm.setPrayerCustomTime(widget.prayer, minutes);
                       if (context.mounted) Navigator.of(context).pop();
                     },

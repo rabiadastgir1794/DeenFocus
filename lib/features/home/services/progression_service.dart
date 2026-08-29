@@ -81,6 +81,7 @@ abstract class ProgressionService {
       checklistHistory: activityForXp.checklistHistory,
       cycleProtectedDays: activityForXp.cycleProtectedDays,
       bestPrayerStreak: activityForXp.bestPrayerStreak,
+      isExcludedProgressDay: activityForXp.isExcludedProgressDay,
     );
     final events = XpService.merge(
       previous: previousEvents,
@@ -108,6 +109,7 @@ abstract class ProgressionService {
       cycleProtectedDays: activityForXp.cycleProtectedDays,
       currentLevel: level.currentLevel,
       journeyStartDate: journeyStart,
+      isExcludedProgressDay: activityForXp.isExcludedProgressDay,
     );
 
     final previouslyUnlocked = previousAchievements

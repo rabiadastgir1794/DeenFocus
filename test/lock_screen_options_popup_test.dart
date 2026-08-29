@@ -378,16 +378,22 @@ void main() {
     expect(find.text('AL'), findsOneWidget);
   });
 
+  test('classic is default and tasbih is recommended', () {
+    expect(LockScreenStyle.classic.isDefault, isTrue);
+    expect(LockScreenStyle.classic.isRecommended, isFalse);
+    expect(LockScreenStyle.tasbih.isRecommended, isTrue);
+    expect(LockScreenStyle.tasbih.isDefault, isFalse);
+  });
+
   test('tasbih sequence advances and reset returns to start', () {
     final vm = LockScreenTasbihViewModel();
     expect(vm.current.transliteration, 'Astaghfirullah');
-    expect(vm.current.target, 3);
+    expect(vm.current.target, 33);
     expect(vm.hasStarted, isFalse);
 
-    vm
-      ..tap()
-      ..tap()
-      ..tap();
+    for (var i = 0; i < 33; i++) {
+      vm.tap();
+    }
     expect(vm.current.transliteration, 'SubhanAllah');
     expect(vm.count, 0);
     expect(vm.current.target, 33);
@@ -401,12 +407,13 @@ void main() {
       vm.tap();
     }
     expect(vm.current.transliteration, 'Allahu Akbar');
+    expect(vm.current.target, 34);
 
-    for (var i = 0; i < 33; i++) {
+    for (var i = 0; i < 34; i++) {
       vm.tap();
     }
     expect(vm.sequenceComplete, isTrue);
-    expect(vm.count, 33);
+    expect(vm.count, 34);
     expect(vm.consumeSequenceCompletion(), isTrue);
     expect(vm.consumeSequenceCompletion(), isFalse);
 

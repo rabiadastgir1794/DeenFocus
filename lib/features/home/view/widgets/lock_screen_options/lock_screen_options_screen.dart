@@ -204,6 +204,16 @@ class _StyleOptionCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (style.isRecommended)
+                    PositionedDirectional(
+                      top: 10,
+                      start: 10,
+                      child: _Badge(
+                        label: l10n.lockScreenRecommendedBadge,
+                        color: const Color(0xFFC62828),
+                        onColor: Colors.white,
+                      ),
+                    ),
                   if (style.isDefault)
                     PositionedDirectional(
                       top: 10,

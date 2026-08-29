@@ -16,6 +16,8 @@ import '../../../core/superwall/premium_gate.dart';
 import '../../../core/services/user_profile_service.dart';
 import '../../../core/widgets/app_permission_dialog.dart';
 import '../../focus/viewmodel/focus_controller.dart';
+import '../../quran/data/quran_local_repository.dart';
+import '../../quran/view/surah_detail_bottom_sheet.dart';
 import '../../../l10n/app_localizations.dart';
 import '../cycle_mode_entry_intent.dart';
 import '../helpers/home_daily_verse_helper.dart';
@@ -25,6 +27,7 @@ import '../services/prayer_settings_service.dart';
 import '../viewmodel/home_tab_view_model.dart';
 import 'widgets/home_calendar_screen.dart';
 import 'widgets/home_circle_icon_button.dart';
+import 'widgets/home_card_open_arrow.dart';
 import 'widgets/home_cycle_mode_banner.dart';
 import 'widgets/home_cycle_mode_settings_sheet.dart';
 import 'widgets/home_daily_checklist_section.dart';
@@ -36,6 +39,7 @@ import 'widgets/home_live_activity_promo_card.dart';
 import 'widgets/home_nearby_mosques_screen.dart';
 import 'widgets/home_prayer_completion_popup.dart';
 import 'widgets/home_prayer_reminder_popup.dart';
+import 'widgets/home_read_quran_promo_card.dart';
 import 'widgets/home_insights_screen.dart';
 import 'widgets/home_prayer_streak_section.dart';
 import 'widgets/home_prayer_times_section.dart';
@@ -400,6 +404,7 @@ class _HomeTabViewState extends State<_HomeTabView>
       // Tip must still be the same most-recent started prayer.
       final stillTarget = vm.getPrayerReminderTarget();
       if (stillTarget != target) return;
+      if (vm.statusForToday(target) != PrayerMarkStatus.none) return;
 
       // Persist only when we are about to present — inFlight blocks duplicates.
       await StorageService.markPrayerReminderPrompted(promptKey);
@@ -408,6 +413,9 @@ class _HomeTabViewState extends State<_HomeTabView>
       );
 
       if (!mounted) return;
+      if (vm.getPrayerReminderTarget() != target) return;
+      if (vm.statusForToday(target) != PrayerMarkStatus.none) return;
+
       final confirmed = await PrayerReminderPopup.show(
         context: context,
         prayer: target,
@@ -525,8 +533,8 @@ class _HomeTabViewState extends State<_HomeTabView>
               const SizedBox(height: 12),
               _FocusLockCard(focusVm: focusVm),
             ],
-            // Banner = activeCycle only (same gate as highlight's activeCycle term).
-            if (vm.cycleModeEnabled) ...[
+            // Banner = running cycle only (not merely toggle ON).
+            if (vm.cycleModeRunning) ...[
               const SizedBox(height: 12),
               HomeCycleModeActiveBanner(
                 daysRemaining: vm.cycleModeDaysRemaining,
@@ -539,6 +547,8 @@ class _HomeTabViewState extends State<_HomeTabView>
               backgroundColor: softCardColor,
               isActive: widget.isTabActive,
             ),
+            const SizedBox(height: 12),
+            HomeReadQuranPromoCard(backgroundColor: softCardColor),
             const HomeLiveActivityPromoCard(),
             const SizedBox(height: 12),
             _FocusModeCard(
@@ -564,7 +574,7 @@ class _HomeTabViewState extends State<_HomeTabView>
               weekPrayerCounts: vm.weekPrayerCounts,
               weekCycleModeDays: weekCycleModeDays,
               backgroundColor: softCardColor,
-              isCycleThemeActive: vm.cycleModeEnabled,
+              isCycleThemeActive: vm.cycleModeRunning,
               canRestoreStreak: vm.canRestoreStreak,
               onTap: () => unawaited(_openInsights(context, vm)),
               onInsightsTap: () => unawaited(_openInsights(context, vm)),
@@ -606,29 +616,39 @@ class _HomeTabViewState extends State<_HomeTabView>
             ),
             if (vm.isFriday) ...[
               const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.10),
+              Material(
+                color: colorScheme.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(18),
+                child: InkWell(
+                  onTap: () => unawaited(_openAlKahfSurah(context)),
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: colorScheme.primary.withValues(alpha: 0.20),
-                  ),
-                ),
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      l10n.homeJummahMubarak,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w700,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.20),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(l10n.homeJummahReminder, textAlign: TextAlign.center),
-                  ],
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.homeJummahMubarak,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.homeJummahReminder,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -651,6 +671,18 @@ class _HomeTabViewState extends State<_HomeTabView>
       useArabic: useArabic,
     );
     return '"$quote" — $source';
+  }
+
+  Future<void> _openAlKahfSurah(BuildContext context) async {
+    const alKahfSurahNumber = 18;
+    final surah =
+        await QuranLocalRepository.instance.getSurah(alKahfSurahNumber);
+    if (surah == null || !context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SurahDetailBottomSheet(surah: surah),
+      ),
+    );
   }
 
   Future<void> _openQiblaScreen(
@@ -1065,8 +1097,7 @@ class _FocusModeCard extends StatelessWidget {
               ),
               const SizedBox(width: 4),
             ],
-            Icon(
-              Icons.arrow_forward_rounded,
+            HomeDirectionalForwardIcon(
               color: onPrimary.withValues(alpha: 0.95),
               size: 22,
             ),

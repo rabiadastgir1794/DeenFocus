@@ -208,13 +208,10 @@ abstract class PrayerAnalyticsService {
 ///   later prayer has already started (home sheet, popup, or alarm).
 /// * Upcoming (not started, unmarked) slots are ignored — they never break
 ///   the streak.
-/// * Paused Cycle Mode days ([isCycleDay]) bridge the tip chain:
-///   - Missed / unmarked slots on paused days never tip-break.
-///   - When an older non-paused tip exists, pause-day marks are skipped so they
-///     neither inflate nor break a pre-cycle streak.
-///   - When the tip lives only on paused day(s), counting marks there are kept
-///     so Cycle Mode never resets the streak — and after Cycle Mode ends those
-///     marks still continue the chain behind new On Time/Qadha.
+/// * Paused Cycle Mode days ([isCycleDay]) are a pure bridge:
+///   - They never add to the streak count (marks contribute zero).
+///   - They never break the streak (missed/unmarked on paused days ignored).
+///   - The pre-cycle tip is preserved until a non-paused On Time/Qadha or Missed.
 abstract class PrayerStreakCalculator {
   static int calculate({
     required DateTime now,
@@ -236,26 +233,9 @@ abstract class PrayerStreakCalculator {
 
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
-      final paused = isCycleDay(date);
-
-      if (paused) {
-        // Same-day Cycle Mode start: keep today's counting marks even when an
-        // older non-paused tip exists (yesterday not paused). Mid-cycle paused
-        // days still bridge without inflating the streak.
-        final sameDayCycleStart = dayOffset == 0 &&
-            !isCycleDay(date.subtract(const Duration(days: 1)));
-        if (!sameDayCycleStart &&
-            _nonPausedTipExists(
-              fromDayOffset: dayOffset + 1,
-              today: today,
-              now: now,
-              statusHistory: statusHistory,
-              isCycleDay: isCycleDay,
-              prayerStartTime: prayerStartTime,
-            )) {
-          continue;
-        }
-        // No older non-paused tip — counting marks preserve / continue the tip.
+      if (isCycleDay(date)) {
+        // Pure bridge — zero contribution, not a miss.
+        continue;
       }
 
       final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
@@ -273,26 +253,13 @@ abstract class PrayerStreakCalculator {
             slotIndex: i,
           );
           if (!started && status == PrayerMarkStatus.none) break;
-          if (paused) {
-            if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
-              slots.add(status);
-            }
-          } else if (softBridgeUnmarkedToday &&
-              status == PrayerMarkStatus.none) {
+          if (softBridgeUnmarkedToday && status == PrayerMarkStatus.none) {
             // Returning from Cycle Mode — unmarked ≠ missed.
             continue;
-          } else {
-            slots.add(status);
           }
+          slots.add(status);
         }
         _dropTrailingUnmarkedCatchUp(slots);
-      } else if (paused) {
-        for (final prayer in order) {
-          final status = statuses[prayer] ?? PrayerMarkStatus.none;
-          if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
-            slots.add(status);
-          }
-        }
       } else {
         for (final prayer in order) {
           slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
@@ -331,58 +298,6 @@ abstract class PrayerStreakCalculator {
     return isCycleDay(yesterday);
   }
 
-  /// True when walking older days (skipping paused) would find a counting tip
-  /// before a tip-breaking slot — i.e. the streak can bridge past [fromDayOffset].
-  static bool _nonPausedTipExists({
-    required int fromDayOffset,
-    required DateTime today,
-    required DateTime now,
-    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
-    required bool Function(DateTime date) isCycleDay,
-    required DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
-  }) {
-    final order = TrackablePrayer.values;
-    for (var dayOffset = fromDayOffset; dayOffset < 400; dayOffset++) {
-      final date = today.subtract(Duration(days: dayOffset));
-      if (isCycleDay(date)) continue;
-
-      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
-          const <TrackablePrayer, PrayerMarkStatus>{};
-      final slots = <PrayerMarkStatus>[];
-      if (dayOffset == 0) {
-        for (var i = 0; i < order.length; i++) {
-          final prayer = order[i];
-          final status = statuses[prayer] ?? PrayerMarkStatus.none;
-          final started = _hasStarted(
-            now: now,
-            prayer: prayer,
-            prayerStartTime: prayerStartTime,
-            slotIndex: i,
-          );
-          if (!started && status == PrayerMarkStatus.none) break;
-          slots.add(status);
-        }
-        _dropTrailingUnmarkedCatchUp(slots);
-      } else {
-        for (final prayer in order) {
-          slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
-        }
-      }
-
-      if (slots.isEmpty) continue;
-      for (var i = slots.length - 1; i >= 0; i--) {
-        final status = slots[i];
-        if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
-          return true;
-        }
-        if (status != PrayerMarkStatus.none) {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-
   /// After the user has logged On Time/Qada today, later started-but-unmarked
   /// slots are catch-up — trim them so they are not treated as a breaking tip.
   static void _dropTrailingUnmarkedCatchUp(List<PrayerMarkStatus> slots) {
@@ -410,9 +325,8 @@ abstract class PrayerStreakCalculator {
 /// Consecutive calendar days with all five prayers completed (onTime or qada).
 ///
 /// Today's incomplete day is skipped (does not break a prior day streak).
-/// Separate from [PrayerStreakCalculator]. Paused Cycle Mode days are bridged:
-/// incomplete paused days never break; a fully completed **today** while paused
-/// still counts so enabling Cycle Mode on the same day does not zero the streak.
+/// Separate from [PrayerStreakCalculator]. Paused Cycle Mode days are a pure
+/// bridge: they never count as completed and never break the day streak.
 abstract class DayStreakCalculator {
   static int calculate({
     required DateTime now,
@@ -425,15 +339,7 @@ abstract class DayStreakCalculator {
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
       if (isCycleDay(date)) {
-        // Bridge incomplete paused days. A fully completed today counts only
-        // when Cycle Mode also starts today (yesterday not paused) so same-day
-        // enable preserves the streak without extending it mid-cycle later.
-        if (dayOffset == 0 && isDayFullyCompleted(date, statusHistory)) {
-          final yesterday = date.subtract(const Duration(days: 1));
-          if (!isCycleDay(yesterday)) {
-            count += 1;
-          }
-        }
+        // Pure bridge — zero contribution, not a miss.
         continue;
       }
 

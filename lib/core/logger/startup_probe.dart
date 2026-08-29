@@ -91,6 +91,13 @@ abstract final class StartupProbe {
         '[STARTUP]   gap runApp → first frame: ${first - runApp}ms',
       );
     }
+    final homeFrame = _marks['HomeRouteGate.Dashboard first frame'];
+    if (homeFrame != null && first != null) {
+      buf.writeln(
+        '[STARTUP]   gap first Flutter frame → Home first frame: '
+        '${homeFrame - first}ms',
+      );
+    }
     if (maxGapName.isNotEmpty) {
       buf.writeln(
         '[STARTUP]   largest mark gap: +${maxGap}ms ending at "$maxGapName"',

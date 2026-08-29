@@ -284,8 +284,8 @@
   "calendarUpcomingEvents": "الأحداث الإسلامية القادمة",
   "cycleModeTitle": "وضع الدورة",
   "cycleModeSubtitle": "للحيض — أوقف الصلوات واحفظ سلسلتك",
-  "cycleModeActiveTitle": "«يريد الله بكم اليسر ولا يريد بكم العسر» — القرآن ٢:١٨٥",
-  "cycleModeActiveSubtitle": "خلال هذه الفترة، سلسلتك محمية. أيام الدورة مميزة بالوردي، ويتوقف وضع الدورة تلقائياً عند انتهاء الدورة.",
+  "cycleModeActiveTitle": "دورتكِ استراحة، لا توقف.",
+  "cycleModeActiveSubtitle": "ذكر • تسبيح • الاستماع للقرآن",
   "cycleModeStreakProtected": "سلسلة الصلاة محمية خلال فترتك",
   "cycleModeCalendarHighlighted": "أيام التقويم مميزة باللون الوردي",
   "cycleModeAutoEndInfo": "{days, plural, =0{ينتهي اليوم} =1{ينتهي تلقائياً غداً} other{ينتهي تلقائياً خلال {days} أيام}}",
@@ -293,7 +293,7 @@
   "cycleModeStartDateLabel": "تاريخ البدء",
   "cycleModeLengthLabel": "مدة الدورة",
   "cycleModeLengthValue": "{count, plural, =1{يوم واحد} other{{count} أيام}}",
-  "cycleModePauseStreaksLabel": "إيقاف السلاسل مؤقتاً",
+  "cycleModePauseStreaksLabel": "حماية سلسلة الصلاة",
   "cycleModeExcludeFromStatisticsLabel": "استبعاد من الإحصائيات",
   "cycleModeSaveButton": "حفظ",
   "cycleModeEditButton": "تعديل",
@@ -466,7 +466,36 @@
   "settingsAboutFeature4": "المساجد القريبة",
   "settingsAboutFeature5": "أوضاع تركيز ذكية للصلاة والنوم ووقت العائلة",
   "settingsAboutFocusDescription": "تساعدك أوضاع التركيز الذكية على حظر المشتتات أثناء الصلاة والنوم واللحظات المهمة، حتى تتمكن من البقاء حاضرًا ومنضبطًا.",
-  "settingsAboutFooter": "ابق متسقًا. ابق يقظًا.\nابق على اتصال بدينك.",
+  "settingsAboutFooter": "ابقَ ثابتًا. كن واعيًا. ابقَ متصلاً بدينك.",
+  "settingsAboutOffersHeading": "ما يقدمه دين فوكس",
+  "settingsAboutNewBadge": "جديد",
+  "settingsAboutFooterCard": "أدوات ذكية لمساعدتك على البقاء واعيًا وثابتًا ومتصلاً بدينك — كل يوم.",
+  "settingsAboutOfferPrayerTimesTitle": "أوقات صلاة دقيقة",
+  "settingsAboutOfferPrayerTimesSubtitle": "تنبيهات صلاة في الوقت المناسب وأدوات جميلة لتبقيك على المسار.",
+  "settingsAboutOfferPrayerStreaksTitle": "سلسلة الصلاة",
+  "settingsAboutOfferPrayerStreaksSubtitle": "ابنِ الاستمرارية ونمّ في دينك مع تتبع السلاسل اليومية والإجمالية.",
+  "settingsAboutOfferCycleModeTitle": "وضع الدورة",
+  "settingsAboutOfferCycleModeSubtitle": "للحيض — أوقفي الصلاة، احتفظي بسلسلتك، وواصلي رحلتك.",
+  "settingsAboutOfferQuranTajweedTitle": "تجويد القرآن",
+  "settingsAboutOfferQuranTajweedSubtitle": "اقرأ واستمع وتدرّب على التجويد مع ملاحظات فورية مدعومة بالذكاء الاصطناعي.",
+  "settingsAboutOfferLiveActivitiesTitle": "الأنشطة المباشرة",
+  "settingsAboutOfferLiveActivitiesSubtitle": "ابقَ على اطلاع بالصلوات الجارية وجلسات التركيز مباشرة من شاشة القفل.",
+  "settingsAboutOfferQiblaTitle": "القبلة واكتشاف المساجد",
+  "settingsAboutOfferQiblaSubtitle": "اعثر على اتجاه القبلة في أي وقت واكتشف المساجد القريبة أينما كنت.",
+  "settingsAboutOfferFocusModesTitle": "أوضاع التركيز",
+  "settingsAboutOfferFocusModesSubtitle": "احجب التطبيقات المشتتة أثناء الصلاة أو النوم أو الدراسة أو وقت العائلة.",
+  "settingsAboutOfferTasbihTitle": "التسبيح والذكر",
+  "settingsAboutOfferTasbihSubtitle": "تسبيح رقمي لمساعدتك على ذكر الله طوال اليوم.",
+  "settingsAboutOfferCalendarTitle": "التقويم الإسلامي",
+  "settingsAboutOfferCalendarSubtitle": "تقويم هجري مع تواريخ إسلامية مهمة وتذكيرات.",
+  "settingsAboutGridNamesTitle": "أسماء الله الحسنى",
+  "settingsAboutGridNamesSubtitle": "تعلّم وتأمل في الأسماء الحسنى.",
+  "settingsAboutGridDuasTitle": "الأدعية والأذكار",
+  "settingsAboutGridDuasSubtitle": "أدعية الصباح والمساء واليومية.",
+  "settingsAboutGridPrayerTitle": "الصلاة والأحكام",
+  "settingsAboutGridPrayerSubtitle": "تعلّم الصلاة والوضوء والحج والمزيد.",
+  "settingsAboutGridFiqhTitle": "الفقه والسنن",
+  "settingsAboutGridFiqhSubtitle": "استكشف المعرفة الإسلامية الأصيلة.",
   "settingsEnableSystemNotifications": "قم بتمكين إشعارات النظام لتشغيل هذا.",
   "appDemoTitle": "عرض التطبيق",
   "appDemoLoadFailed": "تعذر تحميل الفيديو التجريبي.",
@@ -568,11 +597,10 @@
   "tasbihDelete": "يمسح",
   "focusAndroidBlockingNotReady": "حظر التطبيقات على أندرويد ما زال يجهّز. أبقِ خدمات إمكانية الوصول مفعّلة وانتظر قليلًا حتى يكتمل الاتصال.",
   "focusNoAppsSelectedSnack": "لم يُحدَّد أي تطبيق. اختر أولًا التطبيقات التي تريد حظرها.",
-
-  "focusDiagnosticButton": "Diagnostic",
-  "focusDiagnosticTitle": "Test App Lock",
-  "focusDiagnosticIntro": "Temporarily lock your selected apps for 60 seconds using the same App Lock used by Focus mode. Open a blocked app to confirm the DeenFocus lock screen appears.",
-  "focusDiagnosticIntroWithApp": "Temporarily lock your selected apps for 60 seconds. Try opening {appName} to confirm the DeenFocus lock screen appears.",
+  "focusDiagnosticButton": "تشخيص",
+  "focusDiagnosticTitle": "اختبار قفل التطبيقات",
+  "focusDiagnosticIntro": "اقفلي التطبيقات المحددة مؤقتًا لمدة 60 ثانية باستخدام نفس قفل التطبيقات في وضع التركيز. افتحي تطبيقًا محظورًا للتأكد من ظهور شاشة قفل DeenFocus.",
+  "focusDiagnosticIntroWithApp": "اقفلي التطبيقات المحددة مؤقتًا لمدة 60 ثانية. جرّبي فتح {appName} للتأكد من ظهور شاشة قفل DeenFocus.",
   "@focusDiagnosticIntroWithApp": {
     "placeholders": {
       "appName": {
@@ -580,9 +608,9 @@
       }
     }
   },
-  "focusDiagnosticStart": "Start Test",
-  "focusDiagnosticEndEarly": "End Test",
-  "focusDiagnosticRunning": "App Lock is on for {seconds}s. Switch to a selected app to test the lock screen.",
+  "focusDiagnosticStart": "بدء الاختبار",
+  "focusDiagnosticEndEarly": "إنهاء الاختبار",
+  "focusDiagnosticRunning": "قفل التطبيقات مفعّل لمدة {seconds} ثانية. انتقلي إلى أحد التطبيقات المحددة لاختبار شاشة القفل.",
   "@focusDiagnosticRunning": {
     "placeholders": {
       "seconds": {
@@ -590,18 +618,18 @@
       }
     }
   },
-  "focusDiagnosticSuccessTitle": "Test completed",
-  "focusDiagnosticSuccessBody": "App Lock was activated with your selected apps. If you saw the DeenFocus lock screen, App Lock is working.",
-  "focusDiagnosticCancelledTitle": "Test ended",
-  "focusDiagnosticCancelledBody": "The diagnostic lock was turned off. Your Focus modes and schedules were not changed.",
-  "focusDiagnosticMissingAppsTitle": "Select apps first",
-  "focusDiagnosticMissingAppsBody": "Choose at least one app to block before running the App Lock test.",
-  "focusDiagnosticMissingPermissionTitle": "Permission needed",
-  "focusDiagnosticMissingPermissionBodyIos": "Screen Time access is required to block apps. Allow Screen Time, then try again.",
-  "focusDiagnosticMissingPermissionBodyAndroid": "Android Accessibility must be enabled for DeenFocus so App Lock can block selected apps.",
-  "focusDiagnosticFailedTitle": "Could not start test",
-  "focusDiagnosticFailedBody": "App Lock did not activate. Check permissions and selected apps, then try again.",
-  "focusDiagnosticClose": "Done",
+  "focusDiagnosticSuccessTitle": "اكتمل الاختبار",
+  "focusDiagnosticSuccessBody": "تم تفعيل قفل التطبيقات للتطبيقات المحددة. إذا ظهرت شاشة قفل DeenFocus، فالقفل يعمل بشكل صحيح.",
+  "focusDiagnosticCancelledTitle": "انتهى الاختبار",
+  "focusDiagnosticCancelledBody": "تم إيقاف قفل التشخيص. لم تتغير أوضاع التركيز أو الجداول.",
+  "focusDiagnosticMissingAppsTitle": "اختر التطبيقات أولًا",
+  "focusDiagnosticMissingAppsBody": "اختر تطبيقًا واحدًا على الأقل للحظر قبل تشغيل اختبار قفل التطبيقات.",
+  "focusDiagnosticMissingPermissionTitle": "يلزم إذن",
+  "focusDiagnosticMissingPermissionBodyIos": "يلزم الوصول إلى وقت الشاشة لحظر التطبيقات. اسمحي بوقت الشاشة ثم حاولي مرة أخرى.",
+  "focusDiagnosticMissingPermissionBodyAndroid": "يجب تفعيل إمكانية الوصول لـ DeenFocus على Android حتى يعمل قفل التطبيقات.",
+  "focusDiagnosticFailedTitle": "تعذر بدء الاختبار",
+  "focusDiagnosticFailedBody": "لم يُفعَّل قفل التطبيقات. تحققي من الأذونات والتطبيقات المحددة ثم حاولي مرة أخرى.",
+  "focusDiagnosticClose": "تم",
   "focusScreenTimeRequiredBlockIphone": "يلزم الوصول إلى «وقت الشاشة» لحظر التطبيقات على آيفون.",
   "focusModeUpdateFailedSnack": "حدث خطأ أثناء تحديث وضع التركيز. حاول مرة أخرى.",
   "focusLoadingInstalledApps": "جارٍ تحميل التطبيقات المثبتة...",
@@ -1413,6 +1441,8 @@
   "libraryFiqhCommonGround": "القواسم المشتركة",
   "quranModeJuz": "جزء",
   "quranModePage": "صفحة",
+  "quranSwitchToPageView": "عرض الصفحة",
+  "quranSwitchToSurahView": "عرض السورة",
   "quranModeSurah": "سورة",
   "quranReadingToolsHint": "التفسير وتجويد الألوان وكلمة بكلمة وقراء إضافيون قريبًا.",
   "quranReadingToolsTitle": "أدوات القراءة",
@@ -1711,5 +1741,86 @@
   "lockScreenDhikrAstaghfirullah": "Astaghfirullah",
   "lockScreenDhikrSubhanAllah": "SubhanAllah",
   "lockScreenDhikrAlhamdulillah": "Alhamdulillah",
-  "lockScreenDhikrAllahuAkbar": "Allahu Akbar"
+  "lockScreenDhikrAllahuAkbar": "Allahu Akbar",
+  "homeTajweedPromoTitle": "تجويد القرآن بالذكاء الاصطناعي",
+  "homeTajweedPromoBody": "رتّل أي آية واحصل على ملاحظات فورية من الذكاء الاصطناعي على تجويدك.",
+  "homeTajweedPromoCta": "تمرّن على التجويد",
+  "homeTajweedPromoAiFeedback": "ملاحظات الذكاء الاصطناعي",
+  "homeTajweedPromoWordAccuracy": "{percent}٪ دقة الكلمات",
+  "@homeTajweedPromoWordAccuracy": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockScreenPromoTitle": "أنماط شاشة القفل",
+  "homeLockScreenPromoBody": "خصّص شاشة القفل بتصاميم إسلامية جميلة وتذكيرات مفيدة.",
+  "homeLockScreenPromoCta": "استكشف الأنماط",
+  "homePromoNewBadge": "جديد",
+  "homeReadQuranPromoTitle": "اقرأ القرآن",
+  "homeReadQuranPromoSubtitle": "اقرأ واستمع وتدرّب على التجويد",
+  "homeReadQuranPromoCta": "افتح القرآن",
+  "homeReadQuranPromoNewBadge": "جديد",
+  "cycleModeActiveStatus": "{days, plural, =0{السلسلة محمية • ينتهي اليوم} =1{السلسلة محمية • ينتهي غداً} other{السلسلة محمية • ينتهي خلال {days} أيام}}",
+  "@cycleModeActiveStatus": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleModeProtectPrayerStreakSubtitle": "حافظي على سلسلتك خلال أيام الدورة",
+  "cycleModeExcludeFromStatisticsSubtitle": "لا تُحسب أيام الدورة في إحصائيات صلاتك",
+  "homePromoPreviewCity": "لاہور",
+  "settingsRateDeenFocus": "قيّم دين فوكس ⭐",
+  "focusScreenTimeAuthPasscodeRequired": "يحتاج هذا الآيفون إلى رمز مرور قبل أن تسمح آبل بالوصول إلى مدة استخدام الجهاز. عيّن رمزًا في الإعدادات ثم أعد المحاولة.",
+  "focusScreenTimeAuthCanceled": "أُلغي الوصول إلى مدة استخدام الجهاز قبل أن تُكمل آبل منحه. أعد المحاولة وأكمل مطالبة آبل.",
+  "focusScreenTimeAuthConflict": "تطبيق آخر يدير عناصر التحكم العائلية على هذا الآيفون. أوقف ذلك أولاً ثم أعد المحاولة.",
+  "focusScreenTimeAuthInvalidAccount": "سجّل الدخول بحساب آي كلاود صالح على هذا الآيفون ثم أعد محاولة الوصول إلى مدة استخدام الجهاز.",
+  "focusScreenTimeAuthNetwork": "يحتاج هذا الآيفون إلى اتصال بالإنترنت قبل أن تمنح آبل الوصول إلى مدة استخدام الجهاز.",
+  "focusScreenTimeAuthRestricted": "عناصر التحكم العائلية مقيّدة على هذا الآيفون، لذلك لا يمكن لـ DeenFocus طلب الوصول إلى مدة استخدام الجهاز هنا.",
+  "focusScreenTimeAuthUnavailable": "عناصر التحكم العائلية غير متاحة حاليًا على هذا الآيفون.",
+  "focusScreenTimeAuthIosVersion": "حظر التطبيقات عبر مدة استخدام الجهاز يتطلب iOS 16 أو أحدث.",
+  "focusScreenTimeAuthInvalidArgument": "طلب تفويض مدة استخدام الجهاز غير صالح. أعد المحاولة.",
+  "focusScreenTimeAuthFailedGeneric": "تعذّر منح الوصول إلى مدة استخدام الجهاز على هذا الآيفون.",
+  "widgetLockCountdownHoursMinutes": "خلال {hours} س و {minutes} د",
+  "widgetLockCountdownMinutes": "خلال {minutes} د",
+  "@widgetLockCountdownHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "@widgetLockCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "lockScreenRecommendedBadge": "مُوصى به",
+  "restrictedModeSalahTitle": "وقت الصلاة",
+  "restrictedModeSalahMessage": "ابتعد عن المشتتات وأجب نداء الصلاة.",
+  "restrictedModeSalahInfo": "اغتنم هذه اللحظة للتواصل مع الله.",
+  "restrictedModeSalahQuote": "أقم الصلاة لذكري.",
+  "restrictedModeSalahQuoteSource": "القرآن 20:14",
+  "restrictedModeSalahCta": "ابدأ الصلاة",
+  "restrictedModeChildTitle": "وضع تركيز الطفل",
+  "restrictedModeChildMessage": "مساحة أكثر أماناً وتوازناً لوقت الشاشة المركّز.",
+  "restrictedModeChildInfo": "بعض التطبيقات غير متاحة مؤقتاً.",
+  "restrictedModeChildQuote": "مروا أولادكم بالصلاة وهم أبناء سبع سنين.",
+  "restrictedModeChildQuoteSource": "حديث - أبو داود",
+  "restrictedModeChildCta": "ابقَ محمياً",
+  "restrictedModeNightTitle": "وضع التركيز الليلي",
+  "restrictedModeNightMessage": "حان وقت الراحة والانفصال عن المشتتات الرقمية.",
+  "restrictedModeNightInfo": "ضع جهازك جانباً واستمتع بليلة هادئة.",
+  "restrictedModeNightQuote": "وَجَعَلْنَا نَوْمَكُمْ سُبَاتًا",
+  "restrictedModeNightQuoteSource": "القرآن 78:9",
+  "restrictedModeNightCta": "تصبح على خير",
+  "restrictedModeAppsUnavailable": "بعض التطبيقات غير متاحة مؤقتاً."
 }

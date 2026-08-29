@@ -261,6 +261,7 @@ class AchievementActivitySnapshot {
     required this.cycleProtectedDays,
     required this.currentLevel,
     this.journeyStartDate,
+    this.isExcludedProgressDay,
   });
 
   final DateTime now;
@@ -271,6 +272,10 @@ class AchievementActivitySnapshot {
   final List<DateTime> cycleProtectedDays;
   final int currentLevel;
   final DateTime? journeyStartDate;
+
+  /// From [CycleModePolicy.shouldExcludeFromPrayerProgress] — Cycle Mode days
+  /// must not count toward prayer-related achievement progress.
+  final bool Function(DateTime date)? isExcludedProgressDay;
 }
 
 /// Centralized achievement evaluation + persistence.
@@ -354,21 +359,21 @@ abstract class AchievementsService {
   ) {
     switch (id) {
       case AchievementId.firstPrayer:
-        return _hasAnyCountedPrayer(activity.statusHistory) ? 1 : 0;
+        return _hasAnyCountedPrayer(activity) ? 1 : 0;
       case AchievementId.sevenPrayerStreak:
         return _streakProgress(activity, 7);
       case AchievementId.thirtyPrayerStreak:
         return _streakProgress(activity, 30);
       case AchievementId.fajrWarrior:
-        return _uniqueFajrDays(activity.statusHistory).clamp(0, 14);
+        return _uniqueFajrDays(activity).clamp(0, 14);
       case AchievementId.fajrChampion:
-        return _uniqueFajrDays(activity.statusHistory).clamp(0, 30);
+        return _uniqueFajrDays(activity).clamp(0, 30);
       case AchievementId.fiveADay:
-        return _perfectDayCount(activity.statusHistory) >= 1 ? 1 : 0;
+        return _perfectDayCount(activity) >= 1 ? 1 : 0;
       case AchievementId.perfectWeek:
-        return _longestPerfectStreak(activity.statusHistory).clamp(0, 7);
+        return _longestPerfectStreak(activity).clamp(0, 7);
       case AchievementId.perfectMonth:
-        return _longestPerfectStreak(activity.statusHistory).clamp(0, 30);
+        return _longestPerfectStreak(activity).clamp(0, 30);
       case AchievementId.quranReader:
         return _uniqueChecklistDays(
           activity.checklistHistory,
@@ -426,23 +431,32 @@ abstract class AchievementsService {
     return best.clamp(0, cap);
   }
 
-  static bool _hasAnyCountedPrayer(
-    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> history,
+  static bool _isExcludedDayKey(
+    AchievementActivitySnapshot activity,
+    String key,
   ) {
-    for (final day in history.values) {
-      for (final status in day.values) {
+    final excluded = activity.isExcludedProgressDay;
+    if (excluded == null) return false;
+    final parsed = DateTime.tryParse(key);
+    if (parsed == null) return false;
+    return excluded(DateTime(parsed.year, parsed.month, parsed.day));
+  }
+
+  static bool _hasAnyCountedPrayer(AchievementActivitySnapshot activity) {
+    for (final entry in activity.statusHistory.entries) {
+      if (_isExcludedDayKey(activity, entry.key)) continue;
+      for (final status in entry.value.values) {
         if (PrayerAnalyticsService.countsForPrayerStreak(status)) return true;
       }
     }
     return false;
   }
 
-  static int _uniqueFajrDays(
-    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> history,
-  ) {
+  static int _uniqueFajrDays(AchievementActivitySnapshot activity) {
     var count = 0;
-    for (final day in history.values) {
-      final fajr = day[TrackablePrayer.fajr] ?? PrayerMarkStatus.none;
+    for (final entry in activity.statusHistory.entries) {
+      if (_isExcludedDayKey(activity, entry.key)) continue;
+      final fajr = entry.value[TrackablePrayer.fajr] ?? PrayerMarkStatus.none;
       if (PrayerAnalyticsService.countsForPrayerStreak(fajr)) count += 1;
     }
     return count;
@@ -456,21 +470,19 @@ abstract class AchievementsService {
     return true;
   }
 
-  static int _perfectDayCount(
-    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> history,
-  ) {
+  static int _perfectDayCount(AchievementActivitySnapshot activity) {
     var count = 0;
-    for (final day in history.values) {
-      if (_isPerfectDay(day)) count += 1;
+    for (final entry in activity.statusHistory.entries) {
+      if (_isExcludedDayKey(activity, entry.key)) continue;
+      if (_isPerfectDay(entry.value)) count += 1;
     }
     return count;
   }
 
-  static int _longestPerfectStreak(
-    Map<String, Map<TrackablePrayer, PrayerMarkStatus>> history,
-  ) {
+  static int _longestPerfectStreak(AchievementActivitySnapshot activity) {
     final days = <DateTime>[];
-    for (final entry in history.entries) {
+    for (final entry in activity.statusHistory.entries) {
+      if (_isExcludedDayKey(activity, entry.key)) continue;
       final parsed = DateTime.tryParse(entry.key);
       if (parsed == null) continue;
       if (_isPerfectDay(entry.value)) {
@@ -509,6 +521,7 @@ abstract class AchievementsService {
   ) {
     final days = <String>{};
     for (final entry in activity.statusHistory.entries) {
+      if (_isExcludedDayKey(activity, entry.key)) continue;
       final counted = entry.value.values.any(
         PrayerAnalyticsService.countsForPrayerStreak,
       );
