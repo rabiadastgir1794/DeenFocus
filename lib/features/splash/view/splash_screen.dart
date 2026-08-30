@@ -25,12 +25,8 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _iconScale;
-  late final Animation<double> _iconOpacity;
-  late final Animation<double> _glowOpacity;
   late final Animation<Offset> _titleSlide;
-  late final Animation<double> _titleOpacity;
   late final Animation<Offset> _taglineSlide;
-  late final Animation<double> _taglineOpacity;
 
   @override
   void initState() {
@@ -38,9 +34,10 @@ class _SplashScreenState extends State<SplashScreen>
     StartupProbe.mark('SplashScreen.initState begin');
     _controller = AnimationController(
       vsync: this,
+      // Keep the brand motion within the brief splash dwell (~160ms).
       duration: StartupDiagnostics.simpleSplash
           ? Duration.zero
-          : const Duration(milliseconds: 400),
+          : const Duration(milliseconds: 160),
     );
     _iconScale = TweenSequence<double>([
       TweenSequenceItem(
@@ -58,36 +55,28 @@ class _SplashScreenState extends State<SplashScreen>
         weight: 45,
       ),
     ]).animate(_controller);
-    _iconOpacity = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.0, 0.32, curve: Curves.easeOut),
-    );
-    _glowOpacity = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.04, 0.48, curve: Curves.easeOut),
-    );
-    final titleCurve = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.28, 0.62, curve: Curves.easeOutCubic),
-    );
-    _titleOpacity = titleCurve;
+    // Slide only — nested FadeTransitions trigger Impeller
+    // SetInheritedOpacity validation errors during the splash→Home handoff.
     _titleSlide = Tween<Offset>(
       begin: const Offset(0, 0.35),
       end: Offset.zero,
-    ).animate(titleCurve);
-    final taglineCurve = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.44, 0.82, curve: Curves.easeOutCubic),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.28, 0.62, curve: Curves.easeOutCubic),
+      ),
     );
-    _taglineOpacity = taglineCurve;
     _taglineSlide = Tween<Offset>(
       begin: const Offset(0, 0.4),
       end: Offset.zero,
-    ).animate(taglineCurve);
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.44, 0.82, curve: Curves.easeOutCubic),
+      ),
+    );
     _controller.forward();
     StartupProbe.mark('SplashScreen animation start');
-    // Destination is warmed in main() before runApp — no timeout.
-    // Do not preload Home+Onboarding here — deferred JIT starves this isolate.
     final destinationFuture = _resolveDestination();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -101,14 +90,14 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateNext(Future<String> destinationFuture) async {
     await TraceHelpers.traceScreen('SplashScreen', () async {
-      // Wait for the branded animation that is already running — never an
-      // arbitrary wall-clock delay that outlasts the animation.
-      if (!StartupDiagnostics.simpleSplash &&
-          _controller.status != AnimationStatus.completed) {
-        StartupProbe.detail('SplashScreen awaiting brand animation');
-        await _controller.forward();
+      if (!StartupDiagnostics.simpleSplash) {
+        StartupProbe.detail('SplashScreen brief brand dwell');
+        await Future.wait<void>([
+          destinationFuture.then((_) {}),
+          Future<void>.delayed(const Duration(milliseconds: 160)),
+        ]);
       }
-      StartupProbe.mark('SplashScreen animation complete');
+      StartupProbe.mark('SplashScreen brand dwell complete');
 
       final path = await StartupProbe.timeAsync(
         'SplashScreen destination resolved',
@@ -162,29 +151,23 @@ class _SplashScreenState extends State<SplashScreen>
                     OverflowBox(
                       maxWidth: 188.w,
                       maxHeight: 188.w,
-                      child: FadeTransition(
-                        opacity: _glowOpacity,
-                        child: Container(
-                          width: 188.w,
-                          height: 188.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                colorScheme.primary.withValues(alpha: 0.22),
-                                colorScheme.primary.withValues(alpha: 0.0),
-                              ],
-                            ),
+                      child: Container(
+                        width: 188.w,
+                        height: 188.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              colorScheme.primary.withValues(alpha: 0.18),
+                              colorScheme.primary.withValues(alpha: 0.0),
+                            ],
                           ),
                         ),
                       ),
                     ),
                     ScaleTransition(
                       scale: _iconScale,
-                      child: FadeTransition(
-                        opacity: _iconOpacity,
-                        child: const _SplashAppIcon(),
-                      ),
+                      child: const _SplashAppIcon(),
                     ),
                   ],
                 ),
@@ -192,35 +175,29 @@ class _SplashScreenState extends State<SplashScreen>
               SizedBox(height: 12.h),
               SlideTransition(
                 position: _titleSlide,
-                child: FadeTransition(
-                  opacity: _titleOpacity,
-                  child: Text(
-                    l10n?.appTitle ?? 'Deen Focus',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 36.sp,
-                      height: 1.08,
-                      letterSpacing: -0.6,
-                      color: colorScheme.onSurface,
-                    ),
+                child: Text(
+                  l10n?.appTitle ?? 'Deen Focus',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 36.sp,
+                    height: 1.08,
+                    letterSpacing: -0.6,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
               SizedBox(height: Spacing.sm.h),
               SlideTransition(
                 position: _taglineSlide,
-                child: FadeTransition(
-                  opacity: _taglineOpacity,
-                  child: Text(
-                    l10n?.appTagline ?? '',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15.sp,
-                      letterSpacing: 0.4,
-                      color: colorScheme.primary,
-                    ),
+                child: Text(
+                  l10n?.appTagline ?? '',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15.sp,
+                    letterSpacing: 0.4,
+                    color: colorScheme.primary,
                   ),
                 ),
               ),

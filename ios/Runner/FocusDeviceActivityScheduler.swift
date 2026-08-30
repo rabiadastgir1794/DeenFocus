@@ -91,6 +91,9 @@ enum FocusDeviceActivityScheduler {
   static let appGroupId = "group.com.rnr.deenfocus"
   /// Wall-clock millis (since 1970) when a Home temporary unlock ends; used by the monitor extension.
   static let tempUnlockUntilMsKey = "focus_temp_unlock_until_ms"
+  /// Exclusive epoch ms: while wall clock is before this, Cycle Mode owns a hard
+  /// app-lock bypass (no shields / no lock schedule edges).
+  static let cycleAppLockBypassUntilMsKey = "focus_cycle_app_lock_bypass_until_ms"
   static let shieldActiveModeKey = "focus_shield_active_mode"
   static let shieldLockReasonKey = "focus_shield_lock_reason"
   static let shieldFlutterLockedKey = "focus_flutter_is_locked"
@@ -245,23 +248,34 @@ enum FocusDeviceActivityScheduler {
     nightStartHour: Int,
     nightStartMinute: Int,
     nightEndHour: Int,
-    nightEndMinute: Int
+    nightEndMinute: Int,
+    cycleAppLockBypassUntilMs: Double = 0
   ) {
     let defaults = UserDefaults(suiteName: appGroupId)
+    if cycleAppLockBypassUntilMs > 0 {
+      defaults?.set(cycleAppLockBypassUntilMs, forKey: cycleAppLockBypassUntilMsKey)
+    } else {
+      defaults?.removeObject(forKey: cycleAppLockBypassUntilMsKey)
+    }
+    let nowMs = Date().timeIntervalSince1970 * 1000
+    let cycleBypassActive = cycleAppLockBypassUntilMs > nowMs
+    // While Cycle Mode bypass is active, do not keep/register repeating night
+    // locks — they would re-shield every evening mid-cycle.
+    let effectiveNightEnabled = nightDisciplineEnabled && !cycleBypassActive
     let trackModes =
       activeMode == "salah" || activeMode == "nightDiscipline" || !transitions.isEmpty ||
-      nightDisciplineEnabled
+      effectiveNightEnabled
     let hasSchedulingInputs = trackModes && (encodedSelection?.isEmpty == false)
     let scheduleSignature = makeScheduleSignature(
       activeMode: activeMode,
       encodedSelection: encodedSelection,
       transitions: transitions,
-      nightDisciplineEnabled: nightDisciplineEnabled,
+      nightDisciplineEnabled: effectiveNightEnabled,
       nightStartHour: nightStartHour,
       nightStartMinute: nightStartMinute,
       nightEndHour: nightEndHour,
       nightEndMinute: nightEndMinute
-    )
+    ) + "|cycleBypass=\(Int(cycleAppLockBypassUntilMs))"
     let previousSignature = defaults?.string(forKey: activityScheduleSignatureKey)
     let existingNames = defaults?.stringArray(forKey: activityNamesKey) ?? []
 
@@ -292,7 +306,7 @@ enum FocusDeviceActivityScheduler {
       == extractSleepWakeSegment(from: scheduleSignature)
     let preserveRepeatingNight =
       !registrationDrift
-      && nightDisciplineEnabled
+      && effectiveNightEnabled
       && isOvernightNightRange
       && sleepWakeUnchanged
       && existingNames.contains(repeatingNightLockActivityName)
@@ -313,7 +327,7 @@ enum FocusDeviceActivityScheduler {
 
     FocusIOSDebugLogger.append(
       "ios.scheduler.sync",
-      "activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute)) preserveRepeatingNight=\(preserveRepeatingNight)"
+      "activeMode=\(activeMode ?? "nil") nightEnabled=\(effectiveNightEnabled) cycleBypass=\(cycleBypassActive) transitions=\(transitions.count) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute)) preserveRepeatingNight=\(preserveRepeatingNight)"
     )
     guard trackModes, let enc = encodedSelection, !enc.isEmpty else {
       defaults?.removeObject(forKey: selectionKey)
@@ -349,7 +363,7 @@ enum FocusDeviceActivityScheduler {
         "ios.scheduler.register",
         "preserved repeating night lock name=\(repeatingNightLockActivityName) sleep=\(String(format: "%02d:%02d", nightStartHour, nightStartMinute)) wake=\(String(format: "%02d:%02d", nightEndHour, nightEndMinute))"
       )
-    } else if nightDisciplineEnabled && isOvernightNightRange {
+    } else if effectiveNightEnabled && isOvernightNightRange {
       let lockStart = DateComponents(
         hour: nightStartHour,
         minute: nightStartMinute,

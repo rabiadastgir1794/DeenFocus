@@ -592,6 +592,10 @@
     }
   },
   "nearbyMosquesDirections": "Route",
+  "nearbyMosquesDenominationSunni": "Soenniet",
+  "nearbyMosquesDenominationShia": "Sjiiet",
+  "nearbyMosquesDenominationAhlEHadith": "Ahl-e-Hadith",
+  "nearbyMosquesDenominationNotSpecified": "Gezindte niet opgegeven",
   "tasbihDeleteDhikrTitle": "Dikr verwijderen?",
   "tasbihDelete": "Verwijderen",
   "focusAndroidBlockingNotReady": "Android-appblokkering is nog niet klaar. Houd toegankelijkheid aan en wacht even op de verbinding.",

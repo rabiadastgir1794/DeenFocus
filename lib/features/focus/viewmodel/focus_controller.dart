@@ -14,14 +14,27 @@ import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/helpers/home_prayer_times_helper.dart';
 import '../../home/model/home_models.dart';
+import '../../home/services/cycle_mode_policy.dart';
 import '../../home/services/prayer_settings_service.dart';
 import '../model/focus_models.dart';
 
 class FocusController extends ChangeNotifier {
   FocusController() {
+    _activeInstance = this;
     PrayerSettingsService.customTimeRevision.addListener(
       _onCustomPrayerTimesChanged,
     );
+  }
+
+  /// Latest live controller (Provider). Used so Cycle Mode saves can refresh
+  /// enforcement without Home depending on Focus internals.
+  static FocusController? _activeInstance;
+
+  /// Recompute locks after Cycle Mode enable / edit / expire / disable.
+  static Future<void> recomputeForCycleModeChange() async {
+    final active = _activeInstance;
+    if (active == null) return;
+    await active.refresh();
   }
   // TEMP: Salah test mode (keep code, disable for production)
   // static const bool _salahTestModeEnabled = true;
@@ -981,6 +994,16 @@ class FocusController extends ChangeNotifier {
       ),
     );
     final recomputeNow = DateTime.now();
+    final cyclePolicy = CycleModePolicy(await StorageService.cycleModeData);
+    final cycleBypassUntil = cyclePolicy.appLockBypassUntil(now: recomputeNow);
+    if (cyclePolicy.shouldBypassAppLocking(now: recomputeNow)) {
+      unawaited(
+        FocusEnforcementService.appendDebugLog(
+          'focus.cycleBypass',
+          'app locking disabled until=${cycleBypassUntil?.toIso8601String()}',
+        ),
+      );
+    }
     final updatedSettings = _normalizeSettings(_settings, recomputeNow);
     Future<List<SalahWindow>>? memoizedSalahWindows;
     Future<List<SalahWindow>> salahWindowsOnce() {
@@ -1003,6 +1026,12 @@ class FocusController extends ChangeNotifier {
       recomputeNow,
       await salahWindowsOnce(),
     );
+    // Drop Salah latch while Cycle Mode owns the bypass — native must not
+    // re-shield from a stale latch after Flutter unlocks.
+    if (cyclePolicy.shouldBypassAppLocking(now: recomputeNow) &&
+        work.iosSalahShieldLatchEpochMillis != null) {
+      work = work.copyWith(clearIosSalahShieldLatch: true);
+    }
     FocusLockState updatedLockState;
     var latchIter = 0;
     while (true) {
@@ -1010,6 +1039,7 @@ class FocusController extends ChangeNotifier {
         work,
         recomputeNow,
         salahWindowsOnce,
+        cyclePolicy: cyclePolicy,
       );
       final windowsList = await salahWindowsOnce();
       final merged = _mergeIosSalahShieldLatch(
@@ -1029,6 +1059,7 @@ class FocusController extends ChangeNotifier {
           work,
           recomputeNow,
           salahWindowsOnce,
+          cyclePolicy: cyclePolicy,
         );
         break;
       }
@@ -1038,6 +1069,7 @@ class FocusController extends ChangeNotifier {
       work,
       recomputeNow,
       salahWindowsOnce,
+      cyclePolicy: cyclePolicy,
     );
     _settings = work;
     _lockState = updatedLockState;
@@ -1061,6 +1093,7 @@ class FocusController extends ChangeNotifier {
     await _syncNativeFocusEnforcement(
       scheduledTransitions,
       await salahWindowsOnce(),
+      cycleAppLockBypassUntil: cycleBypassUntil,
     );
     final scheduleSignature = await AppNotificationService.instance
         .buildFocusScheduleSignature(
@@ -1089,8 +1122,9 @@ class FocusController extends ChangeNotifier {
 
   Future<void> _syncNativeFocusEnforcement(
     List<Map<String, dynamic>> scheduledTransitions,
-    List<SalahWindow> salahWindows,
-  ) async {
+    List<SalahWindow> salahWindows, {
+    DateTime? cycleAppLockBypassUntil,
+  }) async {
     try {
       final now = DateTime.now();
       final salahPausedUntil =
@@ -1102,6 +1136,7 @@ class FocusController extends ChangeNotifier {
         lockState: _lockState,
         scheduledTransitions: scheduledTransitions,
         salahPausedUntil: salahPausedUntil,
+        cycleAppLockBypassUntil: cycleAppLockBypassUntil,
       );
     } catch (e, st) {
       assert(() {
@@ -1203,8 +1238,18 @@ class FocusController extends ChangeNotifier {
   Future<FocusLockState> _computeLockState(
     FocusSettings settings,
     DateTime now,
-    Future<List<SalahWindow>> Function() getSalahWindows,
-  ) async {
+    Future<List<SalahWindow>> Function() getSalahWindows, {
+    required CycleModePolicy cyclePolicy,
+  }) async {
+    if (cyclePolicy.shouldBypassAppLocking(now: now)) {
+      return FocusLockState(
+        isLocked: false,
+        activeMode: null,
+        reason: 'Cycle Mode is active — app locking is paused.',
+        nextChangeAt: cyclePolicy.appLockBypassUntil(now: now),
+        isTemporarilyUnlocked: false,
+      );
+    }
     if (!settings.hasSelectedApps) return const FocusLockState.unlocked();
 
     final diagnostic = _diagnosticLockStateIfActive(now);
@@ -1228,7 +1273,12 @@ class FocusController extends ChangeNotifier {
     final windows = settings.salahModeEnabled
         ? await getSalahWindows()
         : const <SalahWindow>[];
-    return _lockStateAtInstant(settings, now, windows);
+    return _lockStateAtInstant(
+      settings,
+      now,
+      windows,
+      cyclePolicy: cyclePolicy,
+    );
   }
 
   FocusLockState? _diagnosticLockStateIfActive(DateTime at) {
@@ -1248,8 +1298,18 @@ class FocusController extends ChangeNotifier {
   FocusLockState _lockStateAtInstant(
     FocusSettings settings,
     DateTime at,
-    List<SalahWindow> windows,
-  ) {
+    List<SalahWindow> windows, {
+    CycleModePolicy? cyclePolicy,
+  }) {
+    if (cyclePolicy != null && cyclePolicy.shouldBypassAppLocking(now: at)) {
+      return FocusLockState(
+        isLocked: false,
+        activeMode: null,
+        reason: 'Cycle Mode is active — app locking is paused.',
+        nextChangeAt: cyclePolicy.appLockBypassUntil(now: at),
+        isTemporarilyUnlocked: false,
+      );
+    }
     if (!settings.hasSelectedApps) return const FocusLockState.unlocked();
 
     final diagnostic = _diagnosticLockStateIfActive(at);
@@ -1854,8 +1914,9 @@ class FocusController extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> _buildScheduledTransitions(
     FocusSettings settings,
     DateTime now,
-    Future<List<SalahWindow>> Function() getSalahWindows,
-  ) async {
+    Future<List<SalahWindow>> Function() getSalahWindows, {
+    required CycleModePolicy cyclePolicy,
+  }) async {
     final windows = settings.salahModeEnabled
         ? await getSalahWindows()
         : const <SalahWindow>[];
@@ -1887,7 +1948,12 @@ class FocusController extends ChangeNotifier {
     final diagnosticUntil = _diagnosticLockUntil;
     if (diagnosticUntil != null && diagnosticUntil.isAfter(now)) {
       // End-of-test edge: compute what lock should be once diagnostic expires.
-      final after = _lockStateAtInstant(settings, diagnosticUntil, windows);
+      final after = _lockStateAtInstant(
+        settings,
+        diagnosticUntil,
+        windows,
+        cyclePolicy: cyclePolicy,
+      );
       events.add(
         _scheduledTransition(
           at: diagnosticUntil,
@@ -1904,7 +1970,29 @@ class FocusController extends ChangeNotifier {
         a['at'] as String,
       ).compareTo(DateTime.parse(b['at'] as String)),
     );
-    return _dedupeTransitionsByTimestamp(events);
+    return _filterTransitionsForCycleBypass(
+      _dedupeTransitionsByTimestamp(events),
+      cyclePolicy,
+    );
+  }
+
+  /// Removes lock edges that would fire on Cycle Mode running days so native
+  /// one-shots cannot re-restrict apps mid-cycle. Unlocks stay; post-cycle
+  /// locks remain so enforcement resumes without waiting for Flutter.
+  List<Map<String, dynamic>> _filterTransitionsForCycleBypass(
+    List<Map<String, dynamic>> events,
+    CycleModePolicy cyclePolicy,
+  ) {
+    return events
+        .where((event) {
+          if (event['isLocked'] != true) return true;
+          final atRaw = event['at'] as String?;
+          if (atRaw == null) return true;
+          final at = DateTime.tryParse(atRaw);
+          if (at == null) return true;
+          return !cyclePolicy.shouldBypassAppLocking(now: at);
+        })
+        .toList(growable: false);
   }
 
   /// When night and salah overlap, transitions can share the same instant.
@@ -2410,6 +2498,9 @@ class FocusController extends ChangeNotifier {
 
   @override
   void dispose() {
+    if (identical(_activeInstance, this)) {
+      _activeInstance = null;
+    }
     PrayerSettingsService.customTimeRevision.removeListener(
       _onCustomPrayerTimesChanged,
     );

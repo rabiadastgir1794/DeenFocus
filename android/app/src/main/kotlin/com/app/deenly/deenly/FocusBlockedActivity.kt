@@ -18,7 +18,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * Native restricted overlay. Must stay independent of Flutter:
+ * - Own taskAffinity / singleInstance (never clears MainActivity)
+ * - Opaque theme windowBackground (no white/transparent flash)
+ * - Paint UI before any debug I/O
+ */
 class FocusBlockedActivity : Activity() {
     companion object {
         @Volatile
@@ -48,38 +55,39 @@ class FocusBlockedActivity : Activity() {
         val quote: String,
     )
 
+    private val actionInFlight = AtomicBoolean(false)
+    private var blockedPackage: String? = null
+    private var activeMode: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lastShownAtElapsedMillis = SystemClock.elapsedRealtime()
-        FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate")
+        // Paint immediately — logging is async and must not delay first frame.
         renderContent(intent)
+        FocusDebugLogger.append(applicationContext, "blocked.activity", "onCreate")
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         lastShownAtElapsedMillis = SystemClock.elapsedRealtime()
         setIntent(intent)
-        FocusDebugLogger.append(applicationContext, "blocked.activity", "onNewIntent")
+        actionInFlight.set(false)
         renderContent(intent)
+        FocusDebugLogger.append(applicationContext, "blocked.activity", "onNewIntent")
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        navigateHome()
+        dismissToLauncher()
     }
 
     private fun renderContent(intent: Intent) {
-        val blockedPackage = intent.getStringExtra("blockedPackage")
+        blockedPackage = intent.getStringExtra("blockedPackage")
         val blockedAppName = intent.getStringExtra("blockedAppName")
         val lockReason = intent.getStringExtra("lockReason")
         val nextChangeAt = intent.getStringExtra("nextChangeAt")
         val activeModeRaw = intent.getStringExtra("activeMode")
-        FocusDebugLogger.append(
-            applicationContext,
-            "blocked.view.displayed",
-            "package=$blockedPackage appName=$blockedAppName activeMode=$activeModeRaw lockReason=$lockReason nextChangeAt=$nextChangeAt",
-        )
-        val activeMode = normalizeMode(activeModeRaw)
+        activeMode = normalizeMode(activeModeRaw)
         val content = modeContent(activeMode)
         val palette = themePalette()
 
@@ -193,7 +201,7 @@ class FocusBlockedActivity : Activity() {
                 cornerRadius = dpF(18)
             }
             setPadding(dp(20), dp(16), dp(20), dp(16))
-            setOnClickListener { navigateHome() }
+            setOnClickListener { onPrimaryAction() }
         }
 
         card.addView(modeBadge)
@@ -230,6 +238,11 @@ class FocusBlockedActivity : Activity() {
         )
 
         setContentView(scrollView)
+        FocusDebugLogger.append(
+            applicationContext,
+            "blocked.view.displayed",
+            "package=$blockedPackage appName=$blockedAppName activeMode=$activeModeRaw lockReason=$lockReason nextChangeAt=$nextChangeAt",
+        )
     }
 
     private fun infoCard(label: String, value: String, palette: ThemePalette): View {
@@ -345,22 +358,63 @@ class FocusBlockedActivity : Activity() {
             "child" -> "Stay Protected"
             "nightDiscipline" -> "Good Night"
             "salah" -> "Start My Salah"
-            else -> "Start My Salah"
+            else -> "Open DeenFocus"
         }
     }
 
-    private fun navigateHome() {
+    /**
+     * CTA must never destroy/recreate MainActivity's Flutter task.
+     * Suppress accessibility re-show briefly so return/open is not fought.
+     */
+    private fun onPrimaryAction() {
+        if (!actionInFlight.compareAndSet(false, true)) return
+        FocusAccessibilityService.noteUserDismissedOverlay(blockedPackage)
         FocusDebugLogger.append(
             applicationContext,
             "blocked.view.action",
-            "goHome tapped",
+            "primary tapped mode=$activeMode package=$blockedPackage",
         )
-        startActivity(
-            Intent(Intent.ACTION_MAIN).apply {
-                addCategory(Intent.CATEGORY_HOME)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            },
-        )
+        when (activeMode) {
+            "nightDiscipline", "child" -> dismissToLauncher()
+            else -> openMainActivitySafely()
+        }
+    }
+
+    private fun openMainActivitySafely() {
+        runCatching {
+            startActivity(
+                Intent(this, MainActivity::class.java).apply {
+                    // Bring existing Flutter task forward; do not CLEAR_TOP (that
+                    // destroys the engine mid-lifecycle and caused crash loops).
+                    addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                            Intent.FLAG_ACTIVITY_REORDER_TO_FRONT,
+                    )
+                },
+            )
+        }.onFailure { error ->
+            FocusDebugLogger.append(
+                applicationContext,
+                "blocked.view.action.error",
+                "openMain failed: ${error.message}",
+            )
+            dismissToLauncher()
+            return
+        }
+        finish()
+    }
+
+    private fun dismissToLauncher() {
+        FocusAccessibilityService.noteUserDismissedOverlay(blockedPackage)
+        runCatching {
+            startActivity(
+                Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_HOME)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                },
+            )
+        }
         finish()
     }
 

@@ -592,6 +592,10 @@
     }
   },
   "nearbyMosquesDirections": "路线",
+  "nearbyMosquesDenominationSunni": "逊尼",
+  "nearbyMosquesDenominationShia": "什叶",
+  "nearbyMosquesDenominationAhlEHadith": "圣训派",
+  "nearbyMosquesDenominationNotSpecified": "未指定教派",
   "tasbihDeleteDhikrTitle": "删除迪克尔？",
   "tasbihDelete": "删除",
   "focusAndroidBlockingNotReady": "Android 应用拦截仍在准备中。请保持无障碍已开启，稍等片刻以完成连接。",

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -28,9 +29,12 @@ class ThemeService extends ChangeNotifier {
       _themeMode = saved ? ThemeMode.dark : ThemeMode.light;
     }
     notifyListeners();
+    // Native shield theme can wait — do not block first MaterialApp paint.
     if (Platform.isIOS) {
-      await FocusEnforcementService.persistIosShieldTheme(
-        isDark: _themeMode == ThemeMode.dark,
+      unawaited(
+        FocusEnforcementService.persistIosShieldTheme(
+          isDark: _themeMode == ThemeMode.dark,
+        ),
       );
     }
   }

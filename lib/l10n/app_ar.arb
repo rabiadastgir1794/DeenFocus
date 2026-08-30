@@ -593,6 +593,10 @@
     }
   },
   "nearbyMosquesDirections": "الاتجاهات",
+  "nearbyMosquesDenominationSunni": "سني",
+  "nearbyMosquesDenominationShia": "شيعي",
+  "nearbyMosquesDenominationAhlEHadith": "أهل الحديث",
+  "nearbyMosquesDenominationNotSpecified": "المذهب غير محدد",
   "tasbihDeleteDhikrTitle": "حذف الذكر؟",
   "tasbihDelete": "يمسح",
   "focusAndroidBlockingNotReady": "حظر التطبيقات على أندرويد ما زال يجهّز. أبقِ خدمات إمكانية الوصول مفعّلة وانتظر قليلًا حتى يكتمل الاتصال.",

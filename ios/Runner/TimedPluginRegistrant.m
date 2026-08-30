@@ -92,6 +92,12 @@
 @import permission_handler_apple;
 #endif
 
+#if __has_include(<share_plus/FPPSharePlusPlugin.h>)
+#import <share_plus/FPPSharePlusPlugin.h>
+#else
+@import share_plus;
+#endif
+
 #if __has_include(<shared_preferences_foundation/SharedPreferencesPlugin.h>)
 #import <shared_preferences_foundation/SharedPreferencesPlugin.h>
 #else
@@ -126,8 +132,8 @@ static void DeenFocusTimePlugin(NSString *name, void (^block)(void)) {
   CFAbsoluteTime t0 = CFAbsoluteTimeGetCurrent();
   block();
   double ms = (CFAbsoluteTimeGetCurrent() - t0) * 1000.0;
-  if (ms >= 100.0) {
-    NSLog(@"[DeenFocus][Startup] plugin %-36s %6.1f ms  *** SLOW (>100ms)",
+  if (ms >= 50.0) {
+    NSLog(@"[DeenFocus][Startup] plugin %-36s %6.1f ms  *** SLOW (>50ms)",
           name.UTF8String, ms);
   } else {
     NSLog(@"[DeenFocus][Startup] plugin %-36s %6.1f ms",
@@ -185,6 +191,9 @@ static void DeenFocusTimePlugin(NSString *name, void (^block)(void)) {
   DeenFocusTimePlugin(@"PermissionHandlerPlugin", ^{
     [PermissionHandlerPlugin
         registerWithRegistrar:[registry registrarForPlugin:@"PermissionHandlerPlugin"]];
+  });
+  DeenFocusTimePlugin(@"FPPSharePlusPlugin", ^{
+    [FPPSharePlusPlugin registerWithRegistrar:[registry registrarForPlugin:@"FPPSharePlusPlugin"]];
   });
   DeenFocusTimePlugin(@"SharedPreferencesPlugin", ^{
     [SharedPreferencesPlugin

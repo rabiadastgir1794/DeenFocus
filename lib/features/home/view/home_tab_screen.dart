@@ -455,22 +455,35 @@ class _HomeTabViewState extends State<_HomeTabView>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final vm = context.watch<HomeTabViewModel>();
-    final focusVm = context.watch<FocusController>();
-    final profile = context.watch<UserProfileService>();
+    final isLoading = context.select<HomeTabViewModel, bool>(
+      (vm) => vm.isLoading,
+    );
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Rebuild only when visible Home fields change — not on dailyVerse /
+    // Superwall-only notifies (those would stutter the marquee).
+    final snap = context.select<HomeTabViewModel, _HomeUiSnap>(
+      _HomeUiSnap.from,
+    );
+    final vm = context.read<HomeTabViewModel>();
+    final focusSnap = context.select<FocusController, _FocusUiSnap>(
+      _FocusUiSnap.from,
+    );
+    final focusVm = context.read<FocusController>();
+    final userName = context.select<UserProfileService, String>(
+      (p) => p.userName,
+    );
     final isDarkModeEnabled = context.select<ThemeService, bool>(
       (service) => service.isDarkModeEnabled,
     );
     final softCardColor = colorScheme.surfaceContainerHighest.withValues(
       alpha: 0.20,
     );
-    if (vm.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
     final showHomeFocusLockCard =
-        focusVm.isAppsLocked || focusVm.isTemporarilyUnlocked;
-    final weekCycleModeDays = vm.weekCycleHighlights;
+        focusSnap.isAppsLocked || focusSnap.isTemporarilyUnlocked;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -479,7 +492,7 @@ class _HomeTabViewState extends State<_HomeTabView>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HomeIslamicDateHeader(
-              userName: profile.userName,
+              userName: userName,
               onTapCalendar: () => _openCalendarScreen(context, vm),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -525,25 +538,22 @@ class _HomeTabViewState extends State<_HomeTabView>
               ),
             ),
             const SizedBox(height: 8),
-            HomeVerseMarquee(
-              text: _verseText(l10n, vm.dailyVerse),
-              color: colorScheme.primary,
-            ),
+            const _HomeVerseBanner(),
             if (showHomeFocusLockCard) ...[
               const SizedBox(height: 12),
               _FocusLockCard(focusVm: focusVm),
             ],
             // Banner = running cycle only (not merely toggle ON).
-            if (vm.cycleModeRunning) ...[
+            if (snap.cycleModeRunning) ...[
               const SizedBox(height: 12),
               HomeCycleModeActiveBanner(
-                daysRemaining: vm.cycleModeDaysRemaining,
+                daysRemaining: snap.cycleModeDaysRemaining,
                 onTap: () => unawaited(_openCycleModeSettings(context, vm)),
               ),
             ],
             const SizedBox(height: 12),
             HomePrayerTimesSection(
-              prayerTimes: vm.prayerTimes,
+              prayerTimes: snap.prayerTimes,
               backgroundColor: softCardColor,
               isActive: widget.isTabActive,
             ),
@@ -554,13 +564,13 @@ class _HomeTabViewState extends State<_HomeTabView>
             _FocusModeCard(
               onTap: widget.onOpenFocusTab,
               subtitle: focusVm.homeFocusModeCardSubtitle(l10n),
-              showLock: focusVm.isAnyModeEnabled,
-              isAppsLocked: focusVm.isAppsLocked,
-              isTemporarilyUnlocked: focusVm.isTemporarilyUnlocked,
+              showLock: focusSnap.isAnyModeEnabled,
+              isAppsLocked: focusSnap.isAppsLocked,
+              isTemporarilyUnlocked: focusSnap.isTemporarilyUnlocked,
               onLockPressed: () {
-                if (focusVm.isTemporarilyUnlocked) {
+                if (focusSnap.isTemporarilyUnlocked) {
                   unawaited(focusVm.relockNowFromHome());
-                } else if (focusVm.isAppsLocked) {
+                } else if (focusSnap.isAppsLocked) {
                   unawaited(focusVm.unlockFromHome());
                 } else {
                   widget.onOpenFocusTab();
@@ -569,20 +579,20 @@ class _HomeTabViewState extends State<_HomeTabView>
             ),
             const SizedBox(height: 12),
             HomePrayerStreakSection(
-              prayerStreak: vm.prayerStreak,
-              dayStreak: vm.streakDays,
-              weekPrayerCounts: vm.weekPrayerCounts,
-              weekCycleModeDays: weekCycleModeDays,
+              prayerStreak: snap.prayerStreak,
+              dayStreak: snap.streakDays,
+              weekPrayerCounts: snap.weekPrayerCounts,
+              weekCycleModeDays: snap.weekCycleModeDays,
               backgroundColor: softCardColor,
-              isCycleThemeActive: vm.cycleModeRunning,
-              canRestoreStreak: vm.canRestoreStreak,
+              isCycleThemeActive: snap.cycleModeRunning,
+              canRestoreStreak: snap.canRestoreStreak,
               onTap: () => unawaited(_openInsights(context, vm)),
               onInsightsTap: () => unawaited(_openInsights(context, vm)),
               onRestoreStreak: () => unawaited(vm.restoreStreakLast7Days()),
             ),
             const SizedBox(height: 10),
             _CycleModeToggleCard(
-              isEnabled: vm.cycleModeEnabled,
+              isEnabled: snap.cycleModeEnabled,
               onToggle: () => unawaited(_onCycleModeToggle(context, vm)),
               onEdit: () => unawaited(_openCycleModeSettings(context, vm)),
             ),
@@ -600,21 +610,21 @@ class _HomeTabViewState extends State<_HomeTabView>
             const SizedBox(height: 12),
             HomeDailyChecklistSection(
               backgroundColor: softCardColor,
-              completedCount: vm.dailyChecklistCompletedCount,
-              totalCount: vm.dailyChecklistTotalCount,
+              completedCount: snap.dailyChecklistCompletedCount,
+              totalCount: snap.dailyChecklistTotalCount,
               onOpen: () => unawaited(showDailyChecklistSheet(context)),
             ),
             const SizedBox(height: 10),
             HomeFocusScoreSection(
               backgroundColor: softCardColor,
-              score: vm.todayFocusScore,
-              prayerPercent: vm.todayPrayerPercent,
-              quranPercent: vm.todayQuranPercent,
-              dhikrPercent: vm.todayDhikrPercent,
-              distractionPercent: vm.todayDistractionPercent,
+              score: snap.todayFocusScore,
+              prayerPercent: snap.todayPrayerPercent,
+              quranPercent: snap.todayQuranPercent,
+              dhikrPercent: snap.todayDhikrPercent,
+              distractionPercent: snap.todayDistractionPercent,
               onTap: () => unawaited(_openInsights(context, vm)),
             ),
-            if (vm.isFriday) ...[
+            if (snap.isFriday) ...[
               const SizedBox(height: 12),
               Material(
                 color: colorScheme.primary.withValues(alpha: 0.10),
@@ -656,21 +666,6 @@ class _HomeTabViewState extends State<_HomeTabView>
         ),
       ),
     );
-  }
-
-  String _verseText(AppLocalizations l10n, HomeDailyVerse? verse) {
-    if (verse == null) return l10n.homeDailyVerseFallback;
-    final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
-    final quote = HomeDailyVerseHelper.localizedText(
-      verse,
-      useArabic: useArabic,
-    );
-    final source = HomeDailyVerseHelper.localizedSource(
-      verse,
-      l10n: l10n,
-      useArabic: useArabic,
-    );
-    return '"$quote" — $source';
   }
 
   Future<void> _openAlKahfSurah(BuildContext context) async {
@@ -783,6 +778,206 @@ class _HomeTabViewState extends State<_HomeTabView>
       ),
     );
   }
+}
+
+/// Isolated verse strip — listens only to [HomeTabViewModel.verseListenable]
+/// so streak/XP/Superwall notifies never rebuild this subtree or Dashboard.
+class _HomeVerseBanner extends StatelessWidget {
+  const _HomeVerseBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final color = Theme.of(context).colorScheme.primary;
+    final verseListenable = context.read<HomeTabViewModel>().verseListenable;
+
+    return ValueListenableBuilder<HomeDailyVerse?>(
+      valueListenable: verseListenable,
+      builder: (context, verse, _) {
+        final text = _homeVerseDisplayText(l10n, verse);
+        return RepaintBoundary(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 280),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            child: HomeVerseMarquee(
+              key: ValueKey<String>(text),
+              text: text,
+              color: color,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Display fields for Home — equality excludes [HomeTabViewModel.dailyVerse]
+/// so verse updates do not rebuild the scroll tree.
+@immutable
+class _HomeUiSnap {
+  const _HomeUiSnap({
+    required this.cycleModeRunning,
+    required this.cycleModeDaysRemaining,
+    required this.cycleModeEnabled,
+    required this.prayerTimes,
+    required this.prayerStreak,
+    required this.streakDays,
+    required this.weekPrayerCounts,
+    required this.weekCycleModeDays,
+    required this.canRestoreStreak,
+    required this.dailyChecklistCompletedCount,
+    required this.dailyChecklistTotalCount,
+    required this.todayFocusScore,
+    required this.todayPrayerPercent,
+    required this.todayQuranPercent,
+    required this.todayDhikrPercent,
+    required this.todayDistractionPercent,
+    required this.isFriday,
+  });
+
+  factory _HomeUiSnap.from(HomeTabViewModel vm) {
+    return _HomeUiSnap(
+      cycleModeRunning: vm.cycleModeRunning,
+      cycleModeDaysRemaining: vm.cycleModeDaysRemaining,
+      cycleModeEnabled: vm.cycleModeEnabled,
+      prayerTimes: vm.prayerTimes,
+      prayerStreak: vm.prayerStreak,
+      streakDays: vm.streakDays,
+      weekPrayerCounts: List<int>.unmodifiable(vm.weekPrayerCounts),
+      weekCycleModeDays: List<bool>.unmodifiable(vm.weekCycleHighlights),
+      canRestoreStreak: vm.canRestoreStreak,
+      dailyChecklistCompletedCount: vm.dailyChecklistCompletedCount,
+      dailyChecklistTotalCount: vm.dailyChecklistTotalCount,
+      todayFocusScore: vm.todayFocusScore,
+      todayPrayerPercent: vm.todayPrayerPercent,
+      todayQuranPercent: vm.todayQuranPercent,
+      todayDhikrPercent: vm.todayDhikrPercent,
+      todayDistractionPercent: vm.todayDistractionPercent,
+      isFriday: vm.isFriday,
+    );
+  }
+
+  final bool cycleModeRunning;
+  final int cycleModeDaysRemaining;
+  final bool cycleModeEnabled;
+  final HomePrayerTimesData? prayerTimes;
+  final int prayerStreak;
+  final int streakDays;
+  final List<int> weekPrayerCounts;
+  final List<bool> weekCycleModeDays;
+  final bool canRestoreStreak;
+  final int dailyChecklistCompletedCount;
+  final int dailyChecklistTotalCount;
+  final int todayFocusScore;
+  final int todayPrayerPercent;
+  final int todayQuranPercent;
+  final int todayDhikrPercent;
+  final int todayDistractionPercent;
+  final bool isFriday;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _HomeUiSnap &&
+        other.cycleModeRunning == cycleModeRunning &&
+        other.cycleModeDaysRemaining == cycleModeDaysRemaining &&
+        other.cycleModeEnabled == cycleModeEnabled &&
+        identical(other.prayerTimes, prayerTimes) &&
+        other.prayerStreak == prayerStreak &&
+        other.streakDays == streakDays &&
+        _listEquals(other.weekPrayerCounts, weekPrayerCounts) &&
+        _listEquals(other.weekCycleModeDays, weekCycleModeDays) &&
+        other.canRestoreStreak == canRestoreStreak &&
+        other.dailyChecklistCompletedCount == dailyChecklistCompletedCount &&
+        other.dailyChecklistTotalCount == dailyChecklistTotalCount &&
+        other.todayFocusScore == todayFocusScore &&
+        other.todayPrayerPercent == todayPrayerPercent &&
+        other.todayQuranPercent == todayQuranPercent &&
+        other.todayDhikrPercent == todayDhikrPercent &&
+        other.todayDistractionPercent == todayDistractionPercent &&
+        other.isFriday == isFriday;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+        cycleModeRunning,
+        cycleModeDaysRemaining,
+        cycleModeEnabled,
+        prayerTimes,
+        prayerStreak,
+        streakDays,
+        Object.hashAll(weekPrayerCounts),
+        Object.hashAll(weekCycleModeDays),
+        canRestoreStreak,
+        dailyChecklistCompletedCount,
+        dailyChecklistTotalCount,
+        todayFocusScore,
+        todayPrayerPercent,
+        todayQuranPercent,
+        todayDhikrPercent,
+        todayDistractionPercent,
+        isFriday,
+      ]);
+}
+
+@immutable
+class _FocusUiSnap {
+  const _FocusUiSnap({
+    required this.isAppsLocked,
+    required this.isTemporarilyUnlocked,
+    required this.isAnyModeEnabled,
+  });
+
+  factory _FocusUiSnap.from(FocusController vm) {
+    return _FocusUiSnap(
+      isAppsLocked: vm.isAppsLocked,
+      isTemporarilyUnlocked: vm.isTemporarilyUnlocked,
+      isAnyModeEnabled: vm.isAnyModeEnabled,
+    );
+  }
+
+  final bool isAppsLocked;
+  final bool isTemporarilyUnlocked;
+  final bool isAnyModeEnabled;
+
+  @override
+  bool operator ==(Object other) {
+    return other is _FocusUiSnap &&
+        other.isAppsLocked == isAppsLocked &&
+        other.isTemporarilyUnlocked == isTemporarilyUnlocked &&
+        other.isAnyModeEnabled == isAnyModeEnabled;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(isAppsLocked, isTemporarilyUnlocked, isAnyModeEnabled);
+}
+
+bool _listEquals<T>(List<T> a, List<T> b) {
+  if (identical(a, b)) return true;
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) return false;
+  }
+  return true;
+}
+
+String _homeVerseDisplayText(AppLocalizations l10n, HomeDailyVerse? verse) {
+  if (verse == null) return l10n.homeDailyVerseFallback;
+  final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
+  final quote = HomeDailyVerseHelper.localizedText(
+    verse,
+    useArabic: useArabic,
+  );
+  final source = HomeDailyVerseHelper.localizedSource(
+    verse,
+    l10n: l10n,
+    useArabic: useArabic,
+  );
+  return '"$quote" — $source';
 }
 
 class _QuickActionsCard extends StatelessWidget {

@@ -80,8 +80,8 @@ Future<void> main() async {
     });
 
     // Alarms / translations after the first Home (or onboarding) paint.
-    // Superwall.configure spawns WKWebView — wait one extra frame so it does
-    // not race Home layout (see firstDestinationIdle).
+    // Superwall.configure spawns WKWebView — wait until Home secondary + verse
+    // transition frames have drained (homeUiQuiet), not merely first idle.
     unawaited(
       StartupHandoff.firstDestinationFrame.then((_) {
         StartupProbe.detail(
@@ -91,16 +91,19 @@ Future<void> main() async {
       }),
     );
     unawaited(
-      StartupHandoff.firstDestinationIdle.then((_) {
-        StartupProbe.mark('Superwall.configure scheduled (after Home idle)');
-        unawaited(
-          TraceHelpers.traceAsync(
+      StartupHandoff.homeUiQuiet.then((_) async {
+        StartupProbe.mark('Superwall.configure scheduled (after home UI quiet)');
+        try {
+          await TraceHelpers.traceAsync(
             'STARTUP',
-            'AppSuperwall.configure (after destination idle)',
+            'AppSuperwall.configure (after home UI quiet)',
             AppSuperwall.configure,
             logSuccess: true,
-          ),
-        );
+          );
+        } finally {
+          StartupHandoff.notifyHomeChromeAnimationsAllowed();
+          StartupProbe.mark('Home chrome animations allowed (post-Superwall)');
+        }
       }),
     );
   }, AppLogging.recordZoneError);
@@ -182,7 +185,7 @@ class _AppLifecycleObserverState extends State<_AppLifecycleObserver>
       }),
     );
     unawaited(
-      StartupHandoff.firstDestinationIdle.then((_) {
+      StartupHandoff.homeUiQuiet.then((_) {
         if (!mounted) return;
         unawaited(_syncSubscriptionAndDisableFocusModesIfNeeded());
       }),

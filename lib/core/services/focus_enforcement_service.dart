@@ -95,6 +95,7 @@ abstract class FocusEnforcementService {
     List<Map<String, dynamic>> scheduledTransitions =
         const <Map<String, dynamic>>[],
     DateTime? salahPausedUntil,
+    DateTime? cycleAppLockBypassUntil,
   }) async {
     if (!Platform.isAndroid && !Platform.isIOS) return;
 
@@ -103,9 +104,10 @@ abstract class FocusEnforcementService {
       // `shieldThemeIsDark` is applied inside native `syncFocusState` (before any early return) so
       // the shield extension never reads a stale app-group flag when the app is in light mode.
       final shieldUiIsDark = await StorageService.darkModeEnabled ?? false;
+      final bypassUntilMs = cycleAppLockBypassUntil?.millisecondsSinceEpoch ?? 0;
       await appendDebugLog(
         'flutter.sync',
-        'selected=${settings.selectedApps.length} mode=${lockState.activeMode?.name} isLocked=${lockState.isLocked} nextChangeAt=${lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length}',
+        'selected=${settings.selectedApps.length} mode=${lockState.activeMode?.name} isLocked=${lockState.isLocked} nextChangeAt=${lockState.nextChangeAt?.toIso8601String()} transitions=${scheduledTransitions.length} cycleBypassUntilMs=$bypassUntilMs',
       );
       await _channel.invokeMethod<void>('syncFocusState', <String, dynamic>{
         'selectedPackages': settings.selectedApps.keys.toList(growable: false),
@@ -127,11 +129,13 @@ abstract class FocusEnforcementService {
         'iosSalahShieldLatchEpochMillis':
             settings.iosSalahShieldLatchEpochMillis ?? 0,
         'clearIosSalahShieldLatch':
-            settings.iosSalahShieldLatchEpochMillis == null,
+            settings.iosSalahShieldLatchEpochMillis == null ||
+            bypassUntilMs > 0,
         'nightDisciplineLastEndedEpochMillis':
             settings.nightDisciplineLastEndedAt?.millisecondsSinceEpoch ?? 0,
         'salahPausedUntilEpochMillis':
             salahPausedUntil?.millisecondsSinceEpoch ?? 0,
+        'cycleAppLockBypassUntilEpochMillis': bypassUntilMs,
         // iOS: applied inside `syncFocusState` before any early return so the shield extension
         // never reads a stale `focus_shield_app_theme_is_dark` while the app is in light mode.
         'shieldThemeIsDark': shieldUiIsDark,

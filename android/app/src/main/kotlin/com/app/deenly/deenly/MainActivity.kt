@@ -23,12 +23,23 @@ class MainActivity : AudioServiceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        FocusDebugLogger.append(
+            applicationContext,
+            "main.activity",
+            "onCreate savedInstance=${savedInstanceState != null}",
+        )
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Required so warm-start "I've Prayed" extras are visible to MethodChannel.
         setIntent(intent)
+        FocusDebugLogger.append(applicationContext, "main.activity", "onNewIntent")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        FocusDebugLogger.append(applicationContext, "main.activity", "onResume")
     }
     private val focusMethodChannelName = "com.app.deenly.deenly/focus"
     private val prayerAlarmChannelName = "com.app.deenly.deenly/prayer_alarm"
@@ -304,12 +315,14 @@ class MainActivity : AudioServiceActivity() {
                     call.argument<Number>("nightDisciplineLastEndedEpochMillis")?.toLong()
                 val salahPausedUntilMs =
                     call.argument<Number>("salahPausedUntilEpochMillis")?.toLong()
+                val cycleBypassUntilMs =
+                    call.argument<Number>("cycleAppLockBypassUntilEpochMillis")?.toLong() ?: 0L
                 val scheduledTransitions =
                     call.argument<List<Map<String, Any?>>>("scheduledTransitions").orEmpty()
                 FocusDebugLogger.append(
                     applicationContext,
                     "channel.syncFocusState",
-                    "selected=${selectedPackages.size} isLocked=$isLocked isTempUnlock=$isTemporarilyUnlocked activeMode=$activeMode nextChangeAt=$nextChangeAt transitions=${scheduledTransitions.size}",
+                    "selected=${selectedPackages.size} isLocked=$isLocked isTempUnlock=$isTemporarilyUnlocked activeMode=$activeMode nextChangeAt=$nextChangeAt transitions=${scheduledTransitions.size} cycleBypassUntilMs=$cycleBypassUntilMs",
                 )
                 FocusBlockerStore.save(
                     context = applicationContext,
@@ -329,6 +342,7 @@ class MainActivity : AudioServiceActivity() {
                     nightDisciplineLastEndedEpochMillis = nightLastEndedMs,
                     salahPausedUntilEpochMillis = salahPausedUntilMs,
                     tempUnlockUntilEpochMillis = tempUnlockUntilEpochMillis,
+                    cycleAppLockBypassUntilEpochMillis = cycleBypassUntilMs,
                 )
                 FocusScheduleManager.sync(
                     context = applicationContext,

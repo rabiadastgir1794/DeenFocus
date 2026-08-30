@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 /// Measurement-only startup markers for the Flutter side of cold launch.
 /// Does not change control flow.
@@ -63,6 +64,43 @@ abstract final class StartupProbe {
     final line = '[STARTUP][detail] $message (abs ${ms}ms)';
     _detailLog.add(line);
     debugPrint(line);
+  }
+
+  static TimingsCallback? _frameBudgetCallback;
+  static int _slowFramesLogged = 0;
+
+  /// Logs frames whose build+raster exceed 16.67ms while [active].
+  static void setFrameBudgetMonitor({required bool active, String label = ''}) {
+    final binding = WidgetsBinding.instance;
+    if (!active) {
+      if (_frameBudgetCallback != null) {
+        binding.removeTimingsCallback(_frameBudgetCallback!);
+        _frameBudgetCallback = null;
+        detail(
+          'frame budget monitor off ($label) slowFrames=$_slowFramesLogged',
+        );
+        _slowFramesLogged = 0;
+      }
+      return;
+    }
+    if (_frameBudgetCallback != null) return;
+    _slowFramesLogged = 0;
+    detail('frame budget monitor on ($label)');
+    _frameBudgetCallback = (List<FrameTiming> timings) {
+      for (final t in timings) {
+        final totalMs = t.totalSpan.inMicroseconds / 1000.0;
+        if (totalMs <= 16.67) continue;
+        _slowFramesLogged++;
+        final buildMs = t.buildDuration.inMicroseconds / 1000.0;
+        final rasterMs = t.rasterDuration.inMicroseconds / 1000.0;
+        detail(
+          'SLOW FRAME $label total=${totalMs.toStringAsFixed(1)}ms '
+          'build=${buildMs.toStringAsFixed(1)}ms '
+          'raster=${rasterMs.toStringAsFixed(1)}ms',
+        );
+      }
+    };
+    binding.addTimingsCallback(_frameBudgetCallback!);
   }
 
   /// Print a compact table once the first frame lands.

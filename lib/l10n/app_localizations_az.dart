@@ -2783,6 +2783,18 @@ class AppLocalizationsAz extends AppLocalizations {
   String get nearbyMosquesDirections => 'Marşrut';
 
   @override
+  String get nearbyMosquesDenominationSunni => 'Sünni';
+
+  @override
+  String get nearbyMosquesDenominationShia => 'Şiə';
+
+  @override
+  String get nearbyMosquesDenominationAhlEHadith => 'Əhl-i Hədis';
+
+  @override
+  String get nearbyMosquesDenominationNotSpecified => 'Məzhəb göstərilməyib';
+
+  @override
   String get tasbihDeleteDhikrTitle => 'Zikr silinsin?';
 
   @override

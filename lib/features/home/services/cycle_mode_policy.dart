@@ -146,4 +146,23 @@ class CycleModePolicy {
 
   /// Focus score prayer component is protected while Cycle Mode is running.
   bool protectsFocusScore({DateTime? now}) => isRunningOn(now ?? DateTime.now());
+
+  /// Hard bypass for app locking / restricted screens while Cycle Mode is
+  /// *running* (toggle ON and [now] inside the active window).
+  ///
+  /// Streak / stats rules stay on [shouldPauseStreaks] /
+  /// [shouldExcludeFromStatistics] — this only gates Focus enforcement.
+  bool shouldBypassAppLocking({DateTime? now}) =>
+      isRunningOn(now ?? DateTime.now());
+
+  /// Exclusive end of the app-lock bypass window: local midnight after the
+  /// planned end day. Native schedules must not re-lock before this instant.
+  /// Null when Cycle Mode is not currently running.
+  DateTime? appLockBypassUntil({DateTime? now}) {
+    final at = now ?? DateTime.now();
+    if (!isRunningOn(at)) return null;
+    return CycleModeData.dateOnly(data.plannedEndDate).add(
+      const Duration(days: 1),
+    );
+  }
 }

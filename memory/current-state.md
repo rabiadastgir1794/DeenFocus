@@ -1,6 +1,76 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-29 — Child/Salah restricted dark palettes.
+> Last updated: 2026-08-30 — Home verse jank vs Superwall.
+
+## Status: Home verse frame jank (2026-08-30)
+Root cause: Superwall.configure (~905–1927ms) ran on `firstDestinationIdle`
+(one frame after Home paint), overlapping secondary load + continuous verse
+marquee + WKWebView/GPU spawn → dropped frames during verse motion.
+
+Fixes:
+1. **Superwall / paywall / subscription sync** wait for `homeUiQuiet`
+   (secondary metrics + isolated verse publish + drained frames). Marquee
+   scroll starts only after configure finishes (`allowHomeChromeAnimations`).
+2. **Verse isolation**: `verseListenable` ValueNotifier — verse changes do not
+   call `notifyListeners` / rebuild Dashboard. `AnimatedSwitcher`+`FadeTransition`
+   for text change; scroll deferred until chrome gate.
+3. **Secondary load**: metrics `notifyListeners` first, then verse publish,
+   with `StartupProbe` frame-budget monitor during the transition
+   (`SLOW FRAME verse-transition …`).
+4. Home body still uses `_HomeUiSnap` so subscription-only notifies skip
+   full scroll rebuilds when snap fields unchanged.
+
+Measure Release: before = Superwall during verse; after = markers
+`verse published` → `home content settled` → `Superwall.configure scheduled`
+→ `Home chrome animations allowed`; watch `SLOW FRAME verse-transition` count.
+
+## Status: iOS launch regression fix (2026-08-30)
+Previous attempt deferred MediaKit/audio/Superwallkit until Home first frame via
+a sync MethodChannel — that made launch/Home worse. Reverted full plugin
+registration at launch. Native ~2s is FlutterEngine-dominated.
+
+## Status: iOS splash → Home launch (2026-08-30)
+Root delays: (1) Splash waited for full ~400ms brand animation before
+`context.go`; (2) Home showed only a spinner until `_loadAll` finished
+streak/checklist/XP/verse **and** forced notification+alarm reschedule;
+(3) ThemeService awaited iOS shield MethodChannel before first theme paint.
+
+Fixes: ~160ms splash dwell; split Home load into essentials (profile + prayer
+times + cycle) then post-paint secondary; defer notification reschedule to
+`StartupHandoff.firstDestinationIdle`; non-blocking shield theme persist.
+
+## Status: OSM Masjid Finder denomination (2026-08-30)
+Reads OSM `denomination` (sunni/shia/aliases + Ahl-e-Hadith tokens). When OSM
+is missing or only generic `sunni` but the mosque **name** clearly contains
+Ahle Hadees / Ahl-e-Hadith markers, display **Ahl-e-Hadith** instead of Sunni
+(OSM commonly tags those masajid as sunni). No loose name guessing. Cache
+re-resolves with name on decode.
+
+## Status: Cycle Mode disables app locking (2026-08-30)
+While Cycle Mode is *running* (`isRunningOn`), Focus enforcement is hard-bypassed
+on iOS + Android: Flutter lock state unlocked, lock schedule edges during the
+window dropped, native `cycleAppLockBypassUntil` blocks DeviceActivity /
+AlarmManager / accessibility re-locks, repeating night lock cancelled for the
+bypass window. Post-window locks still scheduled so blocking resumes without
+waiting on Flutter. Streak/stats/XP rules unchanged. `saveCycleMode` triggers
+`FocusController.recomputeForCycleModeChange()`.
+
+## Status: Android FocusBlocked crash / white-screen / launch loop (2026-08-30)
+Root causes (native path; not Flutter `RestrictedModeScreen`):
+1. **White screen**: `FocusBlockedTheme` used transparent/`Theme.Light` window
+   background; `FocusDebugLogger.append` did sync MediaStore I/O on the UI /
+   a11y path before first paint; aggressive HOME + multi-retries delayed show.
+2. **CTA crash**: overlay shared `taskAffinity=""` with `MainActivity` and used
+   `CLEAR_TOP`/`REORDER_TO_FRONT` that could destroy the Flutter engine;
+   accessibility then re-fought the open/dismiss.
+3. **Post-crash loop**: engine death + overlay retries + HOME race left cold
+   start fighting `FocusBlockedActivity` until process churn.
+
+Fixes: opaque `#F7F5F0`/`#111B14` theme; async debug logger; overlay
+`singleInstance` + affinity `com.rnr.deenfocus.focus_blocked`; CTA opens
+`MainActivity` with `NEW_TASK|SINGLE_TOP|REORDER_TO_FRONT` (no `CLEAR_TOP`);
+3s post-CTA overlay suppress; one PendingIntent retry @450ms (no HOME hammer).
+iOS unchanged.
 
 ## Status: Restricted child/salah dark mode (2026-08-29)
 Night overlay stays navy. Child and Salah use forest/olive dark canvases and

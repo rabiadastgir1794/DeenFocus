@@ -13,4 +13,13 @@
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <style name="FocusBlockedTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <!-- Matches FocusBlockedActivity dark canvas — no white/transparent flash. -->
+        <item name="android:windowBackground">#111B14</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
 </resources>

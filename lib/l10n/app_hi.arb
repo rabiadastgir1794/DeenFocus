@@ -592,6 +592,10 @@
     }
   },
   "nearbyMosquesDirections": "दिशा-निर्देश",
+  "nearbyMosquesDenominationSunni": "सुन्नी",
+  "nearbyMosquesDenominationShia": "शिया",
+  "nearbyMosquesDenominationAhlEHadith": "अहले हदीस",
+  "nearbyMosquesDenominationNotSpecified": "मज़हब निर्दिष्ट नहीं",
   "tasbihDeleteDhikrTitle": "धिक्कार हटाओ?",
   "tasbihDelete": "मिटाना",
   "focusAndroidBlockingNotReady": "Android ऐप ब्लॉकिंग अभी तैयार हो रही है। एक्सेसिबिलिटी चालू रखें और कनेक्ट होने तक थोड़ा इंतज़ार करें।",

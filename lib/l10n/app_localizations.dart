@@ -5105,6 +5105,30 @@ abstract class AppLocalizations {
   /// **'Directions'**
   String get nearbyMosquesDirections;
 
+  /// No description provided for @nearbyMosquesDenominationSunni.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunni'**
+  String get nearbyMosquesDenominationSunni;
+
+  /// No description provided for @nearbyMosquesDenominationShia.
+  ///
+  /// In en, this message translates to:
+  /// **'Shia'**
+  String get nearbyMosquesDenominationShia;
+
+  /// No description provided for @nearbyMosquesDenominationAhlEHadith.
+  ///
+  /// In en, this message translates to:
+  /// **'Ahl-e-Hadith'**
+  String get nearbyMosquesDenominationAhlEHadith;
+
+  /// No description provided for @nearbyMosquesDenominationNotSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Denomination not specified'**
+  String get nearbyMosquesDenominationNotSpecified;
+
   /// No description provided for @tasbihDeleteDhikrTitle.
   ///
   /// In en, this message translates to:

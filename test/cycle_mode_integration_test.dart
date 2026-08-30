@@ -213,6 +213,35 @@ void main() {
       expect(policy.isTodayProtected(now: now), isTrue);
       expect(policy.protectsFocusScore(now: now), isTrue);
     });
+
+    test('shouldBypassAppLocking while running; ends after planned window', () {
+      final policy = activePolicy();
+      expect(policy.shouldBypassAppLocking(now: now), isTrue);
+      // start Aug 1, length 6 → planned end Aug 6 → bypass until Aug 7 00:00
+      expect(
+        policy.appLockBypassUntil(now: now),
+        DateTime(2026, 8, 7),
+      );
+      expect(
+        policy.shouldBypassAppLocking(now: DateTime(2026, 8, 6, 23)),
+        isTrue,
+      );
+      expect(
+        policy.shouldBypassAppLocking(now: DateTime(2026, 8, 7, 9)),
+        isFalse,
+      );
+      expect(
+        policy.appLockBypassUntil(now: DateTime(2026, 8, 7, 9)),
+        isNull,
+      );
+    });
+
+    test('app locking bypass does not change streak pause membership', () {
+      final policy = activePolicy();
+      expect(policy.shouldBypassAppLocking(now: now), isTrue);
+      expect(policy.shouldPauseStreaks(saturday, now: now), isTrue);
+      expect(policy.isCycleMember(saturday), isTrue);
+    });
   });
 
   group('Cycle Mode flags — pause streaks & exclude statistics', () {

@@ -592,6 +592,10 @@
     }
   },
   "nearbyMosquesDirections": "Маршрут",
+  "nearbyMosquesDenominationSunni": "Суннитский",
+  "nearbyMosquesDenominationShia": "Шиитский",
+  "nearbyMosquesDenominationAhlEHadith": "Ахль-е-Хадис",
+  "nearbyMosquesDenominationNotSpecified": "Мазхаб не указан",
   "tasbihDeleteDhikrTitle": "Удалить зикр?",
   "tasbihDelete": "Удалить",
   "focusAndroidBlockingNotReady": "Блокировка приложений на Android ещё готова не полностью. Оставьте спецвозможности включёнными и подождите подключения.",

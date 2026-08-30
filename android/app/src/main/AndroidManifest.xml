@@ -57,8 +57,8 @@
             android:name=".FocusBlockedActivity"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:taskAffinity=""
+            android:launchMode="singleInstance"
+            android:taskAffinity="com.rnr.deenfocus.focus_blocked"
             android:theme="@style/FocusBlockedTheme" />
         <activity
             android:name=".PrayerAlarmActivity"

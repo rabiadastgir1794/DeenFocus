@@ -35,6 +35,7 @@ import '../services/prayer_analytics_service.dart';
 import '../services/prayer_settings_service.dart';
 import '../services/progression_service.dart';
 import '../services/xp_service.dart';
+import '../../focus/viewmodel/focus_controller.dart';
 
 class HomeTabViewModel extends ChangeNotifier {
   HomeTabViewModel({PrayerSettingsService? prayerSettings})
@@ -52,6 +53,11 @@ class HomeTabViewModel extends ChangeNotifier {
   double? longitude;
 
   HomeDailyVerse? dailyVerse;
+
+  /// Isolated from [notifyListeners] — verse UI must not rebuild all of Home.
+  final ValueNotifier<HomeDailyVerse?> verseListenable =
+      ValueNotifier<HomeDailyVerse?>(null);
+
   HomePrayerTimesData? prayerTimes;
   List<HomeIslamicEvent> allIslamicEvents = const <HomeIslamicEvent>[];
   List<HomeIslamicEvent> monthEvents = const <HomeIslamicEvent>[];
@@ -381,10 +387,13 @@ class HomeTabViewModel extends ChangeNotifier {
 
   void _onPrayerSettingsChanged() => notifyListeners();
 
-  Future<void> refreshPrayerAlarmGate({bool rescheduleIfReady = false}) async {
+  Future<void> refreshPrayerAlarmGate({
+    bool rescheduleIfReady = false,
+    bool forceCapabilityRefresh = false,
+  }) async {
     final master = await StorageService.prayerAlarmsEnabled;
     final capabilities = await PrayerAlarmService.instance.getCapabilities(
-      forceRefresh: true,
+      forceRefresh: forceCapabilityRefresh,
     );
     final auth = await PrayerAlarmService.instance.getAuthorizationStatus();
 
@@ -443,7 +452,6 @@ class HomeTabViewModel extends ChangeNotifier {
     if (_initialized) return;
     _initialized = true;
     StartupProbe.mark('HomeTabViewModel.initialize begin');
-    await _syncCycleModeFromStorage();
     await _loadAll();
     StartupProbe.mark('HomeTabViewModel.initialize after _loadAll');
     _startTicker();
@@ -453,8 +461,9 @@ class HomeTabViewModel extends ChangeNotifier {
       unawaited(_loadDeferredAfterFirstFrame());
     });
     unawaited(
-      StartupHandoff.firstDestinationIdle.then((_) async {
-        StartupProbe.mark('HomeTabViewModel Superwall sync after idle');
+      StartupHandoff.homeUiQuiet.then((_) async {
+        StartupProbe.mark('HomeTabViewModel Superwall sync after home UI quiet');
+        await AppSuperwall.configure();
         await _loadSubscriptionStatus();
         notifyListeners();
       }),
@@ -489,7 +498,7 @@ class HomeTabViewModel extends ChangeNotifier {
   Future<void> _onAppResumedBody() async {
     await _loadSubscriptionStatus();
     await _loadPrayerSettings();
-    await refreshPrayerAlarmGate();
+    await refreshPrayerAlarmGate(forceCapabilityRefresh: true);
     await _loadPrayerTimes();
     // Reload cycle state (restart / overnight) and auto-expire if needed.
     await _syncCycleModeFromStorage();
@@ -537,26 +546,51 @@ class HomeTabViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final profile = await Future.wait<Object?>([
-        StorageService.userName,
-        StorageService.locationName,
-        StorageService.locationSubtitle,
-        StorageService.locationLatitude,
-        StorageService.locationLongitude,
-        StorageService.sect,
-      ]);
-      userName = (profile[0] as String?) ?? 'User';
-      locationName = profile[1] as String?;
-      locationSubtitle = profile[2] as String?;
-      latitude = profile[3] as double?;
-      longitude = profile[4] as double?;
-      _lastAppliedSect = profile[5] as String?;
+      await _loadEssentialHomeData();
+    } catch (_) {
+      // Keep last good state and always release loading to avoid stuck spinner.
+    } finally {
+      isLoading = false;
+      notifyListeners();
+      StartupProbe.mark('HomeTabViewModel essentials ready (Home can paint)');
+    }
 
-      _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
-      await _loadPrayerSettings();
+    // Streak / checklist / XP / verse / notification reschedule must not block
+    // the first Home frame — schedule after this frame's layout.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      unawaited(_loadSecondaryHomeData());
+    });
+  }
+
+  /// Profile + prayer times — enough to paint Home without a blank spinner.
+  Future<void> _loadEssentialHomeData() async {
+    final profile = await Future.wait<Object?>([
+      StorageService.userName,
+      StorageService.locationName,
+      StorageService.locationSubtitle,
+      StorageService.locationLatitude,
+      StorageService.locationLongitude,
+      StorageService.sect,
+    ]);
+    userName = (profile[0] as String?) ?? 'User';
+    locationName = profile[1] as String?;
+    locationSubtitle = profile[2] as String?;
+    latitude = profile[3] as double?;
+    longitude = profile[4] as double?;
+    _lastAppliedSect = profile[5] as String?;
+
+    _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
+    await _loadPrayerSettings();
+    await _loadPrayerTimes();
+    await _syncCycleModeFromStorage();
+    await _ensureCycleModeNotExpired();
+  }
+
+  /// Analytics, verse, and OS notification schedules after Home is visible.
+  Future<void> _loadSecondaryHomeData() async {
+    StartupProbe.detail('HomeTabViewModel._loadSecondaryHomeData begin');
+    try {
       await refreshPrayerAlarmGate();
-      await _loadPrayerTimes();
-      await _syncCycleModeFromStorage();
       await _loadPrayerStreak();
       await _loadDailyChecklist();
       await _loadChecklistHistory();
@@ -566,22 +600,47 @@ class HomeTabViewModel extends ChangeNotifier {
       await _computeFocusScore();
       await _refreshAchievements();
       _loadEvents();
-      // Ensure soft prayer reminders exist even if DailyRefresh raced/failed.
-      await _rescheduleNotificationsIfPossible();
-    } catch (_) {
-      // Keep last good state and always release loading to avoid stuck spinner.
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
 
-    try {
-      // Daily verse can seed the full Quran Hive store on first launch.
-      // Load after Home has painted prayer times so seed CPU does not freeze
-      // the first home frame.
-      await _loadVerse();
+      // Publish metrics without the verse so Home snap rebuilds once, then the
+      // verse ValueNotifier drives an isolated AnimatedSwitcher.
       notifyListeners();
-    } catch (_) {}
+      StartupProbe.mark('HomeTabViewModel secondary metrics ready');
+
+      StartupProbe.setFrameBudgetMonitor(active: true, label: 'verse-transition');
+      try {
+        await _loadVerse();
+        StartupProbe.mark('HomeTabViewModel verse published (isolated)');
+      } catch (_) {
+        // Keep fallback text; still settle so Superwall is not blocked forever.
+      } finally {
+        // Two frames for AnimatedSwitcher, then stop monitoring.
+        await WidgetsBinding.instance.endOfFrame;
+        await WidgetsBinding.instance.endOfFrame;
+        StartupProbe.setFrameBudgetMonitor(
+          active: false,
+          label: 'verse-transition',
+        );
+        StartupHandoff.notifyHomeContentSettled();
+        StartupProbe.mark('HomeTabViewModel home content settled');
+      }
+
+      // Soft reminders / alarms after quiet so they do not compete with verse.
+      unawaited(
+        StartupHandoff.homeUiQuiet.then((_) async {
+          StartupProbe.detail(
+            'HomeTabViewModel reschedule notifications after home UI quiet',
+          );
+          try {
+            await _rescheduleNotificationsIfPossible();
+          } catch (_) {}
+        }),
+      );
+    } catch (_) {
+      // Secondary failure must not affect already-painted essentials.
+      StartupHandoff.notifyHomeContentSettled();
+    } finally {
+      StartupProbe.detail('HomeTabViewModel._loadSecondaryHomeData end');
+    }
   }
 
   Future<void> _loadSubscriptionStatus() async {
@@ -669,7 +728,9 @@ class HomeTabViewModel extends ChangeNotifier {
 
   Future<void> _loadVerse() async {
     final ref = await HomeDailyVerseHelper.getOrGenerateDailyVerseRef();
-    dailyVerse = await HomeDailyVerseHelper.loadDailyVerse(ref);
+    final verse = await HomeDailyVerseHelper.loadDailyVerse(ref);
+    dailyVerse = verse;
+    verseListenable.value = verse;
   }
 
   Future<void> _loadPrayerTimes() {
@@ -1027,6 +1088,8 @@ class HomeTabViewModel extends ChangeNotifier {
     await _computeFocusScore();
     await _refreshAchievements();
     notifyListeners();
+    // Unlock / re-schedule Focus immediately when Cycle Mode starts or ends.
+    unawaited(FocusController.recomputeForCycleModeChange());
     unawaited(_syncNightlyWrapUpIfPossible());
     unawaited(
       AppNotificationService.instance.syncCycleModeExpiryNotification(
@@ -1682,6 +1745,7 @@ class HomeTabViewModel extends ChangeNotifier {
   void dispose() {
     _prayerSettingsService.removeListener(_onPrayerSettingsChanged);
     _ticker?.cancel();
+    verseListenable.dispose();
     super.dispose();
   }
 }

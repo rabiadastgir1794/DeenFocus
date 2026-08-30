@@ -2796,6 +2796,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nearbyMosquesDirections => 'Маршрут';
 
   @override
+  String get nearbyMosquesDenominationSunni => 'Суннитский';
+
+  @override
+  String get nearbyMosquesDenominationShia => 'Шиитский';
+
+  @override
+  String get nearbyMosquesDenominationAhlEHadith => 'Ахль-е-Хадис';
+
+  @override
+  String get nearbyMosquesDenominationNotSpecified => 'Мазхаб не указан';
+
+  @override
   String get tasbihDeleteDhikrTitle => 'Удалить зикр?';
 
   @override

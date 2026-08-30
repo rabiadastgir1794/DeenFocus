@@ -43,15 +43,18 @@ class _HomeRouteGateState extends State<HomeRouteGate> {
       StartupProbe.detail('HomeRouteGate.loadLibrary failed: $e');
       if (!mounted) return;
       setState(() => _error = e);
-      _notifyDestinationReady();
+      _notifyDestinationReady(settleHomeContent: true);
     }
   }
 
-  void _notifyDestinationReady() {
+  void _notifyDestinationReady({bool settleHomeContent = false}) {
     StartupHandoff.notifyFirstDestinationFrame();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       StartupProbe.markOnce('HomeRouteGate destination idle');
       StartupHandoff.notifyFirstDestinationIdle();
+      if (settleHomeContent) {
+        StartupHandoff.notifyHomeContentSettled();
+      }
     });
   }
 
@@ -126,6 +129,8 @@ class _OnboardingRouteGateState extends State<OnboardingRouteGate> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       StartupProbe.markOnce('OnboardingRouteGate destination idle');
       StartupHandoff.notifyFirstDestinationIdle();
+      // No Home secondary path — still unblock Superwall quiet gate.
+      StartupHandoff.notifyHomeContentSettled();
     });
   }
 

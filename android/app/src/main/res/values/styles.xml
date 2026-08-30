@@ -12,8 +12,13 @@
     </style>
 
     <style name="FocusBlockedTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- Opaque canvas so the window is never a transparent/white flash while
+             the native overlay inflates. Must match FocusBlockedActivity light bg. -->
+        <item name="android:windowBackground">#F7F5F0</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
     <style name="PrayerAlarmTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">

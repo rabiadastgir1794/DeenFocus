@@ -960,6 +960,34 @@ class _MosqueTile extends StatelessWidget {
                           ],
                         ),
                       ],
+                      if (mosque.denomination.isSpecified) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.groups_outlined,
+                              size: 15,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                mosque.denomination.joinedDisplayLabel(
+                                  sunniLabel: l10n.nearbyMosquesDenominationSunni,
+                                  shiaLabel: l10n.nearbyMosquesDenominationShia,
+                                  ahlEHadithLabel:
+                                      l10n.nearbyMosquesDenominationAhlEHadith,
+                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                       if (showAddress) ...[
                         const SizedBox(height: 4),
                         Text(

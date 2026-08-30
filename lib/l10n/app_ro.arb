@@ -592,6 +592,10 @@
     }
   },
   "nearbyMosquesDirections": "Indicații",
+  "nearbyMosquesDenominationSunni": "Sunit",
+  "nearbyMosquesDenominationShia": "Șiit",
+  "nearbyMosquesDenominationAhlEHadith": "Ahl-e-Hadith",
+  "nearbyMosquesDenominationNotSpecified": "Denominație nespecificată",
   "tasbihDeleteDhikrTitle": "Ștergeți dhikr?",
   "tasbihDelete": "Şterge",
   "focusAndroidBlockingNotReady": "Blocarea aplicațiilor pe Android nu e încă gata. Păstrează accesibilitatea activă și așteaptă conectarea.",

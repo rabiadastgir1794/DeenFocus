@@ -6,7 +6,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Registers the same plugins as GeneratedPluginRegistrant, logging ms per plugin.
+/// Registers Flutter plugins with per-plugin wall-clock timing (DEBUG/Release).
 @interface TimedPluginRegistrant : NSObject
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry> *)registry;
 @end

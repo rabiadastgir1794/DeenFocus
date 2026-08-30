@@ -59,6 +59,7 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
   private static let nightDisciplineLastEndedMsKey = "focus_night_discipline_last_ended_ms"
   private static let monitorLastWallClockMsKey = "focus_monitor_last_wall_ms"
   private static let monitorLastUptimeMsKey = "focus_monitor_last_uptime_ms"
+  private static let cycleAppLockBypassUntilMsKey = "focus_cycle_app_lock_bypass_until_ms"
   private static let clockJumpThresholdMs: Double = 90_000
   private static let sleepWakeGapSlackMs: Double = 5_000
   private static let repeatingNightLockActivityName = "deenly_focus_night_lock_daily"
@@ -147,6 +148,20 @@ final class FocusDeviceActivityMonitor: DeviceActivityMonitor {
     }
 
     if effectiveAction == "lock" {
+      let bypassUntilMs = defaults?.double(forKey: Self.cycleAppLockBypassUntilMsKey) ?? 0
+      let nowMsForBypass = Date().timeIntervalSince1970 * 1000
+      if bypassUntilMs > nowMsForBypass {
+        FocusMonitorDebugLogger.append(
+          "ios.monitor.lock",
+          "skip scheduled lock during Cycle Mode bypass untilMs=\(Int(bypassUntilMs)) activity=\(activity.rawValue)"
+        )
+        defaults?.set(false, forKey: Self.shieldNativeLockedKey)
+        defaults?.removeObject(forKey: Self.shieldActiveModeKey)
+        defaults?.removeObject(forKey: Self.shieldLockReasonKey)
+        defaults?.removeObject(forKey: Self.salahShieldLatchEpochMsKey)
+        store.clearAllSettings()
+        return
+      }
       let tempUntilMs = defaults?.double(forKey: Self.tempUnlockUntilMsKey) ?? 0
       let isNightLock =
         mode == "nightDiscipline"

@@ -52,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _onCycleModeOpenRequested();
     });
     unawaited(
-      StartupHandoff.firstDestinationIdle.then((_) {
+      StartupHandoff.homeUiQuiet.then((_) {
         unawaited(_maybePresentPostOnboardingPaywall());
       }),
     );

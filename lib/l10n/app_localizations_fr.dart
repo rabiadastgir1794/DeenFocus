@@ -2813,6 +2813,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nearbyMosquesDirections => 'Itinéraire';
 
   @override
+  String get nearbyMosquesDenominationSunni => 'Sunnite';
+
+  @override
+  String get nearbyMosquesDenominationShia => 'Chiite';
+
+  @override
+  String get nearbyMosquesDenominationAhlEHadith => 'Ahl-e-Hadith';
+
+  @override
+  String get nearbyMosquesDenominationNotSpecified =>
+      'Dénomination non précisée';
+
+  @override
   String get tasbihDeleteDhikrTitle => 'Supprimer le dhikr ?';
 
   @override

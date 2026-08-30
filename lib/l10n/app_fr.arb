@@ -592,6 +592,10 @@
     }
   },
   "nearbyMosquesDirections": "Itinéraire",
+  "nearbyMosquesDenominationSunni": "Sunnite",
+  "nearbyMosquesDenominationShia": "Chiite",
+  "nearbyMosquesDenominationAhlEHadith": "Ahl-e-Hadith",
+  "nearbyMosquesDenominationNotSpecified": "Dénomination non précisée",
   "tasbihDeleteDhikrTitle": "Supprimer le dhikr ?",
   "tasbihDelete": "Supprimer",
   "focusAndroidBlockingNotReady": "Le blocage d’apps Android n’est pas encore prêt. Gardez l’accessibilité activée et attendez un instant la connexion.",

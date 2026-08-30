@@ -2626,6 +2626,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nearbyMosquesDirections => '路线';
 
   @override
+  String get nearbyMosquesDenominationSunni => '逊尼';
+
+  @override
+  String get nearbyMosquesDenominationShia => '什叶';
+
+  @override
+  String get nearbyMosquesDenominationAhlEHadith => '圣训派';
+
+  @override
+  String get nearbyMosquesDenominationNotSpecified => '未指定教派';
+
+  @override
   String get tasbihDeleteDhikrTitle => '删除迪克尔？';
 
   @override

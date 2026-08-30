@@ -1170,6 +1170,10 @@
     }
   },
   "nearbyMosquesDirections": "Directions",
+  "nearbyMosquesDenominationSunni": "Sunni",
+  "nearbyMosquesDenominationShia": "Shia",
+  "nearbyMosquesDenominationAhlEHadith": "Ahl-e-Hadith",
+  "nearbyMosquesDenominationNotSpecified": "Denomination not specified",
   "tasbihDeleteDhikrTitle": "Delete dhikr?",
   "tasbihDelete": "Delete",
   "focusAndroidBlockingNotReady": "Android app blocking is still getting ready. Keep accessibility enabled and give it a moment to connect.",

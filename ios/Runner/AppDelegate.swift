@@ -55,16 +55,12 @@ private enum ManagedSettingsStoreHolder {
 
     PrayerLiveActivityBridge.registerBackgroundTasks()
 
-    // CRITICAL: plugins MUST register before any Dart code that uses
-    // SharedPreferences / path_provider / etc. Commenting this out leaves the
-    // process on the white LaunchScreen while MethodChannels hang.
+    // All plugins before the engine entrypoint — deferring media/Superwall onto
+    // Home's first frame previously made launch feel worse (main-thread +load
+    // competing with first paint). Keep timing logs to find slow registrars.
     let pluginsT0 = CFAbsoluteTimeGetCurrent()
-    #if DEBUG
     TimedPluginRegistrant.register(with: self)
-    #else
-    GeneratedPluginRegistrant.register(with: self)
-    #endif
-    logPhase("1_GeneratedPluginRegistrant done", since: pluginsT0)
+    logPhase("1_plugins done", since: pluginsT0)
 
     // Required for Lock Screen / Control Center Now Playing. audio_service
     // registers MPRemoteCommandCenter targets; iOS still needs this flag.
@@ -228,7 +224,10 @@ private enum ManagedSettingsStoreHolder {
 
   override func applicationDidBecomeActive(_ application: UIApplication) {
     super.applicationDidBecomeActive(application)
-    PrayerLiveActivityBridge.refreshFromStorage()
+    // Live Activity refresh can wait — do not block activation / first frames.
+    DispatchQueue.global(qos: .utility).async {
+      PrayerLiveActivityBridge.refreshFromStorage()
+    }
   }
 
   private func setNowPlayingArtwork(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -621,9 +620,23 @@ private enum ManagedSettingsStoreHolder {
     } else {
       sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.tempUnlockUntilMsKey)
     }
+    let cycleBypassUntilMs: Double = {
+      if let n = args["cycleAppLockBypassUntilEpochMillis"] as? NSNumber {
+        return n.doubleValue
+      }
+      if let i = args["cycleAppLockBypassUntilEpochMillis"] as? Int {
+        return Double(i)
+      }
+      if let i = args["cycleAppLockBypassUntilEpochMillis"] as? Int64 {
+        return Double(i)
+      }
+      return 0
+    }()
+    let cycleBypassActive =
+      cycleBypassUntilMs > Date().timeIntervalSince1970 * 1000
     FocusIOSDebugLogger.append(
       "ios.sync",
-      "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
+      "isLocked=\(isLocked) activeMode=\(activeMode ?? "nil") nightEnabled=\(nightDisciplineEnabled) cycleBypass=\(cycleBypassActive) transitions=\(transitions.count) nextChange=\(args["nextChangeAt"] as? String ?? "nil")"
     )
 
     // Always apply Flutter sync: it runs only after a full focus recompute, so `isLocked`
@@ -639,17 +652,20 @@ private enum ManagedSettingsStoreHolder {
       nightStartHour: nightStartHour,
       nightStartMinute: nightStartMinute,
       nightEndHour: nightEndHour,
-      nightEndMinute: nightEndMinute
+      nightEndMinute: nightEndMinute,
+      cycleAppLockBypassUntilMs: cycleBypassUntilMs
     )
     let store = ManagedSettingsStoreHolder.shared
 
     if !isLocked {
       let latchMs = sharedDefaults?.double(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey) ?? 0
       let nativeStillLocked = sharedDefaults?.bool(forKey: FocusDeviceActivityScheduler.shieldNativeLockedKey) ?? false
-      if clearLatch {
+      if clearLatch || cycleBypassActive {
         sharedDefaults?.removeObject(forKey: FocusDeviceActivityScheduler.salahShieldLatchEpochMsKey)
       }
-      if salahModeEnabled && latchMs > 0 && nativeStillLocked && !isTemporarilyUnlocked && !clearLatch {
+      if !cycleBypassActive
+        && salahModeEnabled && latchMs > 0 && nativeStillLocked && !isTemporarilyUnlocked && !clearLatch
+      {
         FocusIOSDebugLogger.append(
           "ios.sync",
           "skipped clear because native salah latch is active latchMs=\(Int(latchMs)) activeMode=\(sharedDefaults?.string(forKey: FocusDeviceActivityScheduler.shieldActiveModeKey) ?? "nil")"
@@ -664,7 +680,9 @@ private enum ManagedSettingsStoreHolder {
       store.clearAllSettings()
       FocusIOSDebugLogger.append(
         "ios.sync",
-        "cleared managed settings because flutter state is unlocked"
+        cycleBypassActive
+          ? "cleared managed settings because Cycle Mode bypass is active"
+          : "cleared managed settings because flutter state is unlocked"
       )
       result(nil)
       return

@@ -37,6 +37,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import java.util.concurrent.Executors
 import kotlin.math.abs
 
 private const val focusPrefsName = "focus_enforcement"
@@ -67,6 +68,7 @@ private const val focusScheduleSignatureKey = "focus_schedule_signature"
 private const val salahShieldLatchEpochMsKey = "focus_salah_shield_latch_epoch_ms"
 private const val nightDisciplineLastEndedMsKey = "focus_night_discipline_last_ended_ms"
 private const val salahPausedUntilMillisKey = "salah_paused_until_millis"
+private const val cycleAppLockBypassUntilMsKey = "cycle_app_lock_bypass_until_ms"
 
 object FocusDebugLogger {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
@@ -74,6 +76,12 @@ object FocusDebugLogger {
     private val hourKeyFormat = SimpleDateFormat("yyyy-MM-dd-HH", Locale.US)
     private val dateBannerFormat = SimpleDateFormat("dd MMMM, yyyy", Locale.US)
     private val hourBannerFormat = SimpleDateFormat("HH:mm", Locale.US)
+
+    /** Serializes all file/MediaStore writes off the UI / accessibility critical path. */
+    private val logExecutor =
+        Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "deenly-focus-debug-log").apply { isDaemon = true }
+        }
 
     /** Canonical copy — always writable, survives MediaStore quirks. */
     private fun logFile(context: Context): File = File(context.filesDir, focusDebugFileName)
@@ -249,9 +257,17 @@ object FocusDebugLogger {
 
     /**
      * Builds optional date / hour banners, then the log line. Appends to existing file or creates it.
+     * Never blocks the caller — MediaStore/file I/O runs on [logExecutor].
      */
-    @Synchronized
     fun append(context: Context, tag: String, message: String) {
+        val appContext = context.applicationContext
+        logExecutor.execute {
+            appendSync(appContext, tag, message)
+        }
+    }
+
+    @Synchronized
+    private fun appendSync(context: Context, tag: String, message: String) {
         runCatching {
             val now = Date()
             val prefs = sectionPrefs(context)
@@ -286,8 +302,15 @@ object FocusDebugLogger {
         }
     }
 
-    @Synchronized
     fun clear(context: Context) {
+        val appContext = context.applicationContext
+        logExecutor.execute {
+            clearSync(appContext)
+        }
+    }
+
+    @Synchronized
+    private fun clearSync(context: Context) {
         runCatching {
             sectionPrefs(context).edit()
                 .remove(focusDebugKeyLastDate)
@@ -387,6 +410,8 @@ object FocusBlockerStore {
          * Pass `0L` (or `<= 0`) to clear. Pass `null` from alarm handlers so the key is unchanged.
          */
         tempUnlockUntilEpochMillis: Long? = null,
+        /** Exclusive epoch ms for Cycle Mode app-lock bypass; `0` clears. */
+        cycleAppLockBypassUntilEpochMillis: Long? = null,
     ) {
         val syncGeneration = System.currentTimeMillis()
         val p = prefs(context)
@@ -395,7 +420,7 @@ object FocusBlockerStore {
         FocusDebugLogger.append(
             context,
             "store.save",
-            "packages=${selectedPackages.size} activeMode=$activeMode isLocked=$isLocked nextChangeAt=$nextChangeAt reason=$lockReason tempUnlockUntil=${tempUnlockUntilEpochMillis ?: "unchanged"}",
+            "packages=${selectedPackages.size} activeMode=$activeMode isLocked=$isLocked nextChangeAt=$nextChangeAt reason=$lockReason tempUnlockUntil=${tempUnlockUntilEpochMillis ?: "unchanged"} cycleBypassUntil=${cycleAppLockBypassUntilEpochMillis ?: "unchanged"}",
         )
         val edit =
             p.edit()
@@ -410,6 +435,13 @@ object FocusBlockerStore {
                 edit.putLong(tempUnlockUntilMillisKey, tempUnlockUntilEpochMillis)
             } else {
                 edit.remove(tempUnlockUntilMillisKey)
+            }
+        }
+        if (cycleAppLockBypassUntilEpochMillis != null) {
+            if (cycleAppLockBypassUntilEpochMillis > 0L) {
+                edit.putLong(cycleAppLockBypassUntilMsKey, cycleAppLockBypassUntilEpochMillis)
+            } else {
+                edit.remove(cycleAppLockBypassUntilMsKey)
             }
         }
         if (nightDisciplineEnabled != null) {
@@ -489,7 +521,35 @@ object FocusBlockerStore {
         }
         val resolved = resolveScheduledState(context, storedState)
         val withPause = applySalahPauseAfterNightOverride(context, resolved)
-        return correctNightDisciplineNextChangeOnAndroid(context, withPause)
+        return applyCycleAppLockBypass(context, correctNightDisciplineNextChangeOnAndroid(context, withPause))
+    }
+
+    fun isCycleAppLockBypassActive(context: Context, nowMillis: Long = System.currentTimeMillis()): Boolean {
+        val until = prefs(context).getLong(cycleAppLockBypassUntilMsKey, 0L)
+        return until > nowMillis
+    }
+
+    private fun applyCycleAppLockBypass(
+        context: Context,
+        state: FocusBlockState,
+    ): FocusBlockState {
+        if (!isCycleAppLockBypassActive(context)) return state
+        if (!state.isLocked) return state
+        FocusDebugLogger.append(
+            context,
+            "store.cycleBypass",
+            "override locked->unlocked (Cycle Mode app-lock bypass)",
+        )
+        prefs(context).edit()
+            .putBoolean(isLockedKey, false)
+            .remove(activeModeKey)
+            .remove(lockReasonKey)
+            .commit()
+        return state.copy(
+            isLocked = false,
+            activeMode = null,
+            lockReason = "Cycle Mode is active — app locking is paused.",
+        )
     }
 
     fun readBridgeState(context: Context): Map<String, Any?> {
@@ -950,13 +1010,44 @@ class FocusAccessibilityService : AccessibilityService() {
         @Volatile
         var isConnected: Boolean = false
             private set
+
+        /** After the user taps the restricted CTA, briefly suppress re-show so
+         * opening DeenFocus / leaving the blocked app is not fought by retries. */
+        @Volatile
+        private var suppressOverlayUntilElapsed: Long = 0L
+
+        @Volatile
+        private var suppressOverlayPackage: String? = null
+
+        fun noteUserDismissedOverlay(blockedPackage: String?) {
+            suppressOverlayPackage = blockedPackage
+            suppressOverlayUntilElapsed = SystemClock.elapsedRealtime() + 3_000L
+        }
+
+        fun isOverlaySuppressed(packageName: String): Boolean {
+            val until = suppressOverlayUntilElapsed
+            if (until <= 0L) return false
+            if (SystemClock.elapsedRealtime() >= until) {
+                suppressOverlayUntilElapsed = 0L
+                suppressOverlayPackage = null
+                return false
+            }
+            val suppressed = suppressOverlayPackage
+            return suppressed == null || suppressed == packageName
+        }
+
+        /** Test-only: clears the post-CTA suppress window. */
+        fun clearOverlaySuppressForTest() {
+            suppressOverlayUntilElapsed = 0L
+            suppressOverlayPackage = null
+        }
     }
 
     private var lastBlockedPackage: String? = null
     private var lastBlockedAtMillis: Long = 0L
     private var lastSeenSyncGeneration: Long = 0L
     private val mainHandler = Handler(Looper.getMainLooper())
-    private var pendingOverlayAfterHome: Runnable? = null
+    private var pendingOverlayRetry: Runnable? = null
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -964,16 +1055,15 @@ class FocusAccessibilityService : AccessibilityService() {
         FocusDebugLogger.append(applicationContext, "service.connected", "accessibility service connected")
         serviceInfo = serviceInfo.apply {
             eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or
-                AccessibilityEvent.TYPE_WINDOWS_CHANGED or
-                AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+                AccessibilityEvent.TYPE_WINDOWS_CHANGED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             notificationTimeout = 100
         }
     }
 
     override fun onDestroy() {
-        pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
-        pendingOverlayAfterHome = null
+        pendingOverlayRetry?.let { mainHandler.removeCallbacks(it) }
+        pendingOverlayRetry = null
         isConnected = false
         FocusDebugLogger.append(applicationContext, "service.destroy", "accessibility service destroyed")
         super.onDestroy()
@@ -985,17 +1075,12 @@ class FocusAccessibilityService : AccessibilityService() {
         if (packageName == "com.android.settings") return
 
         val state = FocusBlockerStore.currentState(applicationContext)
-        FocusDebugLogger.append(
-            applicationContext,
-            "service.event",
-            "type=${event.eventType} package=$packageName locked=${state.isLocked} selected=${state.selectedPackages.contains(packageName)} mode=${state.activeMode}",
-        )
         if (state.syncGeneration != lastSeenSyncGeneration) {
             lastSeenSyncGeneration = state.syncGeneration
             lastBlockedPackage = null
             lastBlockedAtMillis = 0L
-            pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
-            pendingOverlayAfterHome = null
+            pendingOverlayRetry?.let { mainHandler.removeCallbacks(it) }
+            pendingOverlayRetry = null
         }
 
         if (!state.isLocked || !state.selectedPackages.contains(packageName)) {
@@ -1006,24 +1091,22 @@ class FocusAccessibilityService : AccessibilityService() {
             return
         }
 
+        if (isOverlaySuppressed(packageName)) {
+            return
+        }
+
         val now = System.currentTimeMillis()
         if (lastBlockedPackage == packageName && now - lastBlockedAtMillis < 900) return
         lastBlockedPackage = packageName
         lastBlockedAtMillis = now
 
         val blockedLabel = FocusBlockerStore.appLabel(applicationContext, packageName)
-        FocusDebugLogger.append(
-            applicationContext,
-            "service.block.attempt",
-            "userOpenedBlockedApp package=$packageName label=$blockedLabel mode=${state.activeMode} reason=${state.lockReason} nextChangeAt=${state.nextChangeAt} eventType=${event.eventType}",
-        )
-
+        // Launch the overlay first — logging/MediaStore must not delay first paint.
         val intent = Intent(applicationContext, FocusBlockedActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                    Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
                     Intent.FLAG_ACTIVITY_NO_ANIMATION or
                     Intent.FLAG_ACTIVITY_NO_USER_ACTION or
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS,
@@ -1036,6 +1119,7 @@ class FocusAccessibilityService : AccessibilityService() {
         }
 
         fun launchBlockingActivity(reason: String, viaPendingIntent: Boolean = false) {
+            if (isOverlaySuppressed(packageName)) return
             FocusDebugLogger.append(
                 applicationContext,
                 "service.block.show",
@@ -1081,58 +1165,36 @@ class FocusAccessibilityService : AccessibilityService() {
             }
         }
 
-        // Start the restricted screen immediately while the accessibility event is
-        // fresh. Several OEMs (MIUI/XOS) drop delayed background starts after HOME.
-        pendingOverlayAfterHome?.let { mainHandler.removeCallbacks(it) }
+        pendingOverlayRetry?.let { mainHandler.removeCallbacks(it) }
         val launchAttemptAt = SystemClock.elapsedRealtime()
         fun blockedActivityShown(): Boolean {
             return FocusBlockedActivity.lastShownAtElapsedMillis >= launchAttemptAt
         }
         fun stillBlocked(): Boolean {
-            return FocusBlockerStore.isPackageBlocked(applicationContext, packageName)
+            return FocusBlockerStore.isPackageBlocked(applicationContext, packageName) &&
+                !isOverlaySuppressed(packageName)
         }
         fun retryBlockingActivity(reason: String, viaPendingIntent: Boolean = false) {
             if (blockedActivityShown() || !stillBlocked()) return
             launchBlockingActivity(reason, viaPendingIntent)
         }
+
+        FocusDebugLogger.append(
+            applicationContext,
+            "service.block.attempt",
+            "userOpenedBlockedApp package=$packageName label=$blockedLabel mode=${state.activeMode} reason=${state.lockReason} nextChangeAt=${state.nextChangeAt} eventType=${event.eventType}",
+        )
         launchBlockingActivity("accessibility_event")
+
+        // One short retry only. Do NOT send GLOBAL_ACTION_HOME — that races MainActivity
+        // launches and was a major source of white-screen / crash loops on OEMs.
         val refreshOverlay =
             Runnable {
-                pendingOverlayAfterHome = null
-                retryBlockingActivity("accessibility_event_direct_retry")
+                pendingOverlayRetry = null
+                retryBlockingActivity("accessibility_event_retry", viaPendingIntent = true)
             }
-        pendingOverlayAfterHome = refreshOverlay
-        mainHandler.postDelayed(refreshOverlay, 220L)
-        mainHandler.postDelayed(
-            { retryBlockingActivity("accessibility_event_pending_intent", viaPendingIntent = true) },
-            520L,
-        )
-        mainHandler.postDelayed(
-            {
-                if (blockedActivityShown() || !stillBlocked()) {
-                    return@postDelayed
-                }
-                FocusDebugLogger.append(
-                    applicationContext,
-                    "service.block.retry",
-                    "FocusBlockedActivity launch not observed; sending HOME then retrying activity package=$packageName label=$blockedLabel",
-                )
-                performGlobalAction(GLOBAL_ACTION_HOME)
-                mainHandler.postDelayed(
-                    { retryBlockingActivity("after_home_pending_intent", viaPendingIntent = true) },
-                    260L,
-                )
-                mainHandler.postDelayed(
-                    { retryBlockingActivity("after_home_direct_retry") },
-                    700L,
-                )
-                mainHandler.postDelayed(
-                    { retryBlockingActivity("after_home_pending_intent_retry", viaPendingIntent = true) },
-                    1300L,
-                )
-            },
-            1000L,
-        )
+        pendingOverlayRetry = refreshOverlay
+        mainHandler.postDelayed(refreshOverlay, 450L)
     }
 
     override fun onInterrupt() {
@@ -1372,6 +1434,22 @@ class FocusScheduleReceiver : BroadcastReceiver() {
             "alarmWantsLocked=$alarmWantsLocked at=${intent.getStringExtra("at")} mode=$alarmMode reason=$alarmReason nextChangeAt=$alarmNext beforeLocked=${before.isLocked} beforeMode=${before.activeMode}",
         )
         val prefs = context.getSharedPreferences(focusPrefsName, Context.MODE_PRIVATE)
+        if (alarmWantsLocked && FocusBlockerStore.isCycleAppLockBypassActive(context)) {
+            FocusDebugLogger.append(
+                context,
+                "schedule.fire",
+                "skipped lock alarm during Cycle Mode bypass at=${intent.getStringExtra("at")}",
+            )
+            FocusBlockerStore.save(
+                context = context,
+                selectedPackages = before.selectedPackages.toList(),
+                activeMode = null,
+                isLocked = false,
+                lockReason = "Cycle Mode is active — app locking is paused.",
+                nextChangeAt = before.nextChangeAt,
+            )
+            return
+        }
         if (alarmWantsLocked && alarmMode == "nightDiscipline") {
             prefs.edit()
                 .remove(tempUnlockUntilMillisKey)

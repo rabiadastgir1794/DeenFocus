@@ -90,6 +90,7 @@ abstract class NearbyMosquesCache {
             'distanceMeters': m.distanceMeters,
             'confidence': m.confidence.name,
             'openingHours': m.openingHours,
+            'denomination': m.denomination.rawValues,
             'googleMapsUri': m.googleMapsUri,
           },
         )
@@ -112,6 +113,10 @@ abstract class NearbyMosquesCache {
               distanceMeters: (map['distanceMeters'] as num?)?.toDouble() ?? 0,
               confidence: _decodeConfidence(map['confidence'] as String?),
               openingHours: map['openingHours'] as String?,
+              denomination: NearbyMosqueDenomination.resolve(
+                osmTag: _denominationRawForResolve(map['denomination']),
+                name: map['name'] as String?,
+              ),
               googleMapsUri: map['googleMapsUri'] as String?,
             );
           })
@@ -119,6 +124,21 @@ abstract class NearbyMosquesCache {
     } catch (_) {
       return const [];
     }
+  }
+
+  static String? _denominationRawForResolve(Object? raw) {
+    if (raw is List) {
+      final joined = raw
+          .map((e) => e?.toString() ?? '')
+          .where((s) => s.trim().isNotEmpty)
+          .join(';');
+      return joined.isEmpty ? null : joined;
+    }
+    if (raw is String) {
+      final trimmed = raw.trim();
+      return trimmed.isEmpty ? null : trimmed;
+    }
+    return null;
   }
 
   static NearbyMosqueConfidence _decodeConfidence(String? raw) {
