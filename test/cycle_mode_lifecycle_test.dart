@@ -87,8 +87,7 @@ void main() {
         isPausedStreakDay: policy.shouldPauseStreaks,
         isExcludedStatsDay: policy.shouldExcludeFromStatistics,
       );
-      // Cycle day marks contribute zero; Jul 31 tip bridges across Aug 1.
-      expect(snap.prayerStreak, 5);
+      expect(snap.prayerStreak, 6); // Jul 31 + Aug 1 Fajr when Cycle starts today
       expect(snap.weeklyCompleted, 5);
       expect(snap.weeklyPossible, 5);
 

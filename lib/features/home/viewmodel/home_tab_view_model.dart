@@ -1515,13 +1515,11 @@ class HomeTabViewModel extends ChangeNotifier {
       completedDateKeys: completedDates,
       statusHistory: history,
     );
+    // Calculator is the only source of truth — never bump past
+    // [PrayerAnalyticsService] (paused Cycle days must not inflate Home /
+    // achievements relative to Insights after reopen).
     _recomputeAnalytics(DateTime.now());
-    final newlyCounts =
-        PrayerAnalyticsService.countsForPrayerStreak(status) &&
-        !PrayerAnalyticsService.countsForPrayerStreak(previousStatus);
-    if (newlyCounts && prayerStreak < previousPrayerStreak + 1) {
-      prayerStreak = previousPrayerStreak + 1;
-    }
+    final streakGrew = prayerStreak > previousPrayerStreak;
     notifyListeners();
     await _persistPrayerStreak();
     if (status != PrayerMarkStatus.none) {
@@ -1543,7 +1541,7 @@ class HomeTabViewModel extends ChangeNotifier {
       );
     }
 
-    final celebrated = newlyCounts;
+    final celebrated = streakGrew;
     // Every on-time "I prayed" path goes through here — unlock Salah lock so
     // Home's Unlock Apps card clears without duplicating unlock in each popup.
     if (status == PrayerMarkStatus.onTime) {

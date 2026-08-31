@@ -1,6 +1,33 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-31 — AlarmKit I've Prayed no duplicate reminder.
+> Last updated: 2026-08-31 — Cycle Mode toggle streak preservation.
+
+## Status: Cycle Mode toggle must not wipe streak (2026-08-31)
+Root cause: `9751dd3` made paused Cycle days a pure zero-contribution bridge, so
+same-day Cycle ON dropped today's tip (and tip-only-on-cycle stayed 0 after
+seal). Toggling OFF same-day restored the tip → streak appeared to jump.
+
+Fix (restore prior product rules in `PrayerStreakCalculator` /
+`DayStreakCalculator`):
+- Same-day Cycle start (yesterday not paused): today's counting marks still
+  count; full today still counts for day streak.
+- Mid-cycle paused days: bridge only (skip marks when an older non-paused tip
+  exists).
+- Tip living only on paused/sealed days: counting marks preserved.
+- `pauseStreaks=false` unchanged (days count normally).
+- Marks in `statusHistory` are never mutated by Cycle Mode toggles.
+
+Consumer audit: Home, Insights, completion popup, restore, achievements streak
+badges, and XP milestones all read `HomeTabViewModel.prayerStreak` /
+`streakDays` / `bestPrayerStreak` after `_recomputeAnalytics` →
+`PrayerAnalyticsService` → same calculators + `shouldPauseStreaks`. Removed
+post-mark streak bump that could inflate Home/achievements vs calculator on
+paused Cycle days. Perfect-week/month / Fajr day counters use
+`shouldExcludeFromPrayerProgress` (stats exclusion) — intentional different
+metric, not a second prayer-streak calculator.
+
+Tests: `test/cycle_mode_toggle_streak_test.dart` + restored expectations in
+`cycle_mode_streak_regression_test.dart` / `prayer_streak_rules_test.dart`.
 
 ## Status: AlarmKit I've Prayed → no soft reminder (2026-08-31)
 Root causes when AlarmKit already recorded "I've Prayed" but Home asked again:
