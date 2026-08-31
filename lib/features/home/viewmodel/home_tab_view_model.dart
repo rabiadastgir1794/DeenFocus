@@ -375,6 +375,8 @@ class HomeTabViewModel extends ChangeNotifier {
   PrayerAlarmCapabilities? _prayerAlarmCapabilities;
   PrayerAlarmAuthorizationStatus _prayerAlarmAuthorization =
       PrayerAlarmAuthorizationStatus.unavailable;
+  /// Soft FLN prayer reminders — OS notification permission (not alarm auth).
+  bool _notificationPermissionGranted = false;
 
   bool get prayerAlarmsMasterEnabled => _prayerAlarmsMasterEnabled;
 
@@ -383,6 +385,8 @@ class HomeTabViewModel extends ChangeNotifier {
 
   PrayerAlarmAuthorizationStatus get prayerAlarmAuthorization =>
       _prayerAlarmAuthorization;
+
+  bool get notificationPermissionGranted => _notificationPermissionGranted;
 
   /// True when native (or fallback) scheduling is actually allowed.
   bool get canSchedulePrayerAlarms => PrayerAlarmEnablement.canSchedule(
@@ -401,7 +405,19 @@ class HomeTabViewModel extends ChangeNotifier {
     );
   }
 
+  /// Soft notification toggle — never ON when OS notification permission is off.
+  bool effectiveNotificationEnabledFor(TrackablePrayer prayer) {
+    return settingsFor(prayer).notificationsEnabled &&
+        _notificationPermissionGranted;
+  }
+
   void _onPrayerSettingsChanged() => notifyListeners();
+
+  Future<void> refreshNotificationPermissionGate() async {
+    _notificationPermissionGranted =
+        await PermissionService.checkNotification();
+    notifyListeners();
+  }
 
   Future<void> refreshPrayerAlarmGate({
     bool rescheduleIfReady = false,
@@ -515,6 +531,7 @@ class HomeTabViewModel extends ChangeNotifier {
     await _loadSubscriptionStatus();
     await _loadPrayerSettings();
     await refreshPrayerAlarmGate(forceCapabilityRefresh: true);
+    await refreshNotificationPermissionGate();
     await _loadPrayerTimes();
     // Reload cycle state (restart / overnight) and auto-expire if needed.
     await _syncCycleModeFromStorage();
@@ -872,7 +889,11 @@ class HomeTabViewModel extends ChangeNotifier {
   ) async {
     if (enabled) {
       final ok = await PermissionService.requestNotification();
-      if (!ok) return false;
+      _notificationPermissionGranted = ok;
+      if (!ok) {
+        notifyListeners();
+        return false;
+      }
     }
     await _prayerSettingsService.setNotificationsEnabled(prayer, enabled);
     notifyListeners();

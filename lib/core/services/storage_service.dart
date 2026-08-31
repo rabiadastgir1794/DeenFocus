@@ -106,6 +106,8 @@ abstract class StorageService {
       'home_tajweed_promo_dismissed';
   static const String _keyHomeLockScreenPromoDismissed =
       'home_lock_screen_promo_dismissed';
+  static const String _keyHomeFullScreenAlarmPromoDismissed =
+      'home_full_screen_alarm_promo_dismissed';
   static const String _keyLockScreenStyle = 'lock_screen_style';
   static const int defaultPrayerAlarmSnoozeMinutes = 10;
 
@@ -484,14 +486,30 @@ abstract class StorageService {
 
   /// Master switch for native Prayer Alarms (AlarmKit / full-screen intent).
   /// Defaults to off so existing users keep soft notifications only.
+  ///
+  /// [prayerAlarmsEnabledListenable] notifies Home promo / Settings listeners
+  /// when the master switch changes.
+  static final ValueNotifier<bool> prayerAlarmsEnabledListenable =
+      ValueNotifier<bool>(false);
+
   static Future<bool> get prayerAlarmsEnabled async {
     final prefs = await _prefs;
-    return prefs.getBool(_keyPrayerAlarmsEnabled) ?? false;
+    final value = prefs.getBool(_keyPrayerAlarmsEnabled) ?? false;
+    if (prayerAlarmsEnabledListenable.value != value) {
+      prayerAlarmsEnabledListenable.value = value;
+    }
+    return value;
   }
 
   static Future<void> setPrayerAlarmsEnabled(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyPrayerAlarmsEnabled, value);
+    // Turning alarms off should bring the Home promo slide back (even if the
+    // user previously dismissed it with X while alarms were off / on).
+    if (!value) {
+      await prefs.setBool(_keyHomeFullScreenAlarmPromoDismissed, false);
+    }
+    prayerAlarmsEnabledListenable.value = value;
   }
 
   /// Master switch for Prayer Live Activity (iOS ActivityKit / Android ongoing).
@@ -551,6 +569,16 @@ abstract class StorageService {
   static Future<void> setHomeLockScreenPromoDismissed(bool value) async {
     final prefs = await _prefs;
     await prefs.setBool(_keyHomeLockScreenPromoDismissed, value);
+  }
+
+  static Future<bool> get homeFullScreenAlarmPromoDismissed async {
+    final prefs = await _prefs;
+    return prefs.getBool(_keyHomeFullScreenAlarmPromoDismissed) ?? false;
+  }
+
+  static Future<void> setHomeFullScreenAlarmPromoDismissed(bool value) async {
+    final prefs = await _prefs;
+    await prefs.setBool(_keyHomeFullScreenAlarmPromoDismissed, value);
   }
 
   static Future<int> get prayerAlarmSnoozeMinutes async {

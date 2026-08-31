@@ -30,6 +30,51 @@ void main() {
   }
 
   group('Cycle Mode toggle vs prayer streak', () {
+    test(
+      'same-day ON/OFF: Maghrib-only tip stays 1 (unmarked gaps not elided)',
+      () {
+        final today = DateTime(2026, 8, 31);
+        final now = DateTime(2026, 8, 31, 18, 30);
+        final history = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+          key(today): {
+            TrackablePrayer.maghrib: PrayerMarkStatus.onTime,
+          },
+          key(DateTime(2026, 8, 30)): allFive(),
+          key(DateTime(2026, 8, 29)): allFive(),
+          key(DateTime(2026, 8, 28)): {
+            TrackablePrayer.isha: PrayerMarkStatus.onTime,
+          },
+        };
+
+        final onData = CycleModeData(
+          isEnabled: true,
+          startDate: today,
+          cycleLength: 4,
+          pauseStreaks: true,
+        );
+        final on = calc(now: now, history: history, data: onData);
+        expect(on.prayerStreak, 1);
+        expect(on.dayStreak, 2);
+
+        final off = calc(
+          now: now,
+          history: history,
+          data: CycleModeData.disabled(),
+        );
+        expect(off.prayerStreak, 1);
+        expect(off.dayStreak, 2);
+
+        final toggledOff = calc(
+          now: now,
+          history: history,
+          data: onData.disableOn(today),
+        );
+        expect(toggledOff.prayerStreak, 1);
+        expect(toggledOff.dayStreak, 2);
+        expect(history[key(today)]![TrackablePrayer.maghrib], PrayerMarkStatus.onTime);
+      },
+    );
+
     test('OFF → ON → OFF same day: streak X unchanged; marks untouched', () {
       final today = DateTime(2026, 8, 11);
       final now = DateTime(2026, 8, 11, 21);

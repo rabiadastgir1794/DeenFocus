@@ -5117,6 +5117,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Посмотреть стили';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Полноэкранный будильник на время намаза';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Не сбивайтесь с пути — спокойное полноэкранное оповещение без отвлечений, когда наступает время молитвы.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Включить будильники намаза';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop =>
+      'Сдвиньте, чтобы остановить';
+
+  @override
   String get homePromoNewBadge => 'НОВОЕ';
 
   @override

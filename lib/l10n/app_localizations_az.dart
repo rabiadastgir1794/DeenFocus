@@ -5099,6 +5099,19 @@ class AppLocalizationsAz extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Stilləri kəşf et';
 
   @override
+  String get homeFullScreenAlarmPromoTitle => 'Namaz vaxtında tam ekran siqnal';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Namaz vaxtı çatanda sakit, diqqəti yayındırmayan tam ekran xəbərdarlıqla yolunuzda qalın.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Namaz siqnallarını aktiv et';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Dayandırmaq üçün sürüşdür';
+
+  @override
   String get homePromoNewBadge => 'YENİ';
 
   @override

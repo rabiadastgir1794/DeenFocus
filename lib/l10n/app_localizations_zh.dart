@@ -4834,6 +4834,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeLockScreenPromoCta => '探索样式';
 
   @override
+  String get homeFullScreenAlarmPromoTitle => '礼拜时全屏闹钟';
+
+  @override
+  String get homeFullScreenAlarmPromoBody => '礼拜时间到时，通过安静、无干扰的全屏提醒保持节奏。';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => '启用礼拜闹钟';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => '滑动停止';
+
+  @override
   String get homePromoNewBadge => '新';
 
   @override

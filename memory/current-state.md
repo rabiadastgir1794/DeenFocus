@@ -1,6 +1,53 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-31 — Cycle Mode toggle streak preservation.
+> Last updated: 2026-08-31 — Lock Screen Style reminder used persisted selection.
+
+## Status: Lock Screen Style reminder ignored selection (2026-08-31)
+“Did you pray?” always showed Classic even when Tasbih (or another style) was
+Selected. `resolveForReminder()` re-checked `subscriptionActiveNotifier` and
+fell back to Classic when Superwall had not configured / hydrated yet (reminder
+fires ~2.5s after Home; Superwall waits for home UI quiet). Picker already
+gates paid styles via `PremiumGate`. Fix: reminder uses the persisted style.
+Tests in `test/lock_screen_options_popup_test.dart`.
+
+## Status: Prayer Alarms promo returns when master turned off (2026-08-31)
+Home Full Screen Alarm slide hides while prayer alarms are enabled. Turning
+the master switch OFF clears `homeFullScreenAlarmPromoDismissed` and notifies
+`prayerAlarmsEnabledListenable` so the carousel refreshes and the slide can
+show again without needing an app restart.
+
+Bug follow-up: promo required `supportsNativeAlarm && supportsFullScreen`, but
+iOS AlarmKit reports `supportsFullScreen: false` (FSI is Android-only), so the
+slide never appeared on iPhone even with the Settings toggle off. Visibility
+now matches Settings: `supportsNativeAlarm` only (AlarmKit / Android FSI).
+
+## Status: Home Full Screen Alarm promo slide (2026-08-31)
+Added a new carousel slide on Home for Full Screen AlarmKit at Prayer Time:
+title/body/CTA/slide-to-stop localized in all 13 `app_*.arb` locales, phone
+mockup, dismiss persistence (`homeFullScreenAlarmPromoDismissed`), CTA opens
+`SettingsPrayerAlarmsScreen`. Visible only when native full-screen prayer
+alarms are supported (`supportsNativeAlarm && supportsFullScreen`) and master
+prayer alarms are off; hides once enabled + authorized. Refreshes on app resume
+and after returning from Prayer Alarms settings.
+
+## Status: Soft notification toggle off without OS permission (2026-08-31)
+Prayer notification sheet showed Enable Notification ON from stored preference
+even when system notification permission was denied.
+
+Fix: `effectiveNotificationEnabledFor` = stored preference AND
+`PermissionService.checkNotification()`. Sheet uses that for the switch;
+turning ON still calls `requestNotification()`. Gate refreshes on sheet open
+and app resume.
+
+## Status: Same-day Cycle ON must not inflate past unmarked gaps (2026-08-31)
+Bug: Maghrib-only today + 2 full prior days → Cycle ON prayer 12 / OFF 1
+(day streak 2 both). Same-day pause built today from counting marks only,
+eliding unmarked Fajr–Asr so Maghrib glued onto yesterday.
+
+Fix: same-day Cycle start keeps every already-started unmarked/counting
+slot so gaps terminate like Cycle OFF; explicit Missed is still omitted
+so pause does not tip-break. Mid-cycle bridge, tip-only paused/sealed
+days, `pauseStreaks=false`, and DayStreakCalculator unchanged.
 
 ## Status: Cycle Mode toggle must not wipe streak (2026-08-31)
 Root cause: `9751dd3` made paused Cycle days a pure zero-contribution bridge, so
@@ -9,8 +56,8 @@ seal). Toggling OFF same-day restored the tip → streak appeared to jump.
 
 Fix (restore prior product rules in `PrayerStreakCalculator` /
 `DayStreakCalculator`):
-- Same-day Cycle start (yesterday not paused): today's counting marks still
-  count; full today still counts for day streak.
+- Same-day Cycle start (yesterday not paused): today's started slots still
+  count (including unmarked gaps); full today still counts for day streak.
 - Mid-cycle paused days: bridge only (skip marks when an older non-paused tip
   exists).
 - Tip living only on paused/sealed days: counting marks preserved.
@@ -419,9 +466,12 @@ Superwall. Choice is stored in `StorageService.lockScreenStyle`.
 
 The in-app “Did you pray?” reminder is a centered `AlertDialog`
 (`PrayerReminderPopup` / `showDialog`). Inner content is the selected style
-(tasbih, verse, quiz, countdown, hold, type, minimal); unpaid/invalid
-falls back to Classic. Yes / Later / hold / type / tasbih-complete return
-`true`/`false`/`null` so Home can mark via `_confirmReminderPrayerOnTime`.
+(tasbih, verse, quiz, countdown, hold, type, minimal). Paid styles are gated
+at picker save (`PremiumGate`); the reminder uses the persisted selection and
+does not re-check Superwall (cold start used to fall back to Classic because
+`subscriptionActiveNotifier` was still false). Yes / Later / hold / type /
+tasbih-complete return `true`/`false`/`null` so Home can mark via
+`_confirmReminderPrayerOnTime`.
 Prayer labels come from the current `TrackablePrayer`, not hardcoded Asr.
 `HomeTabViewModel` is provided at `DashboardScreen`. Copy is localized in
 all `app_*.arb` locales. Tests: `test/lock_screen_options_popup_test.dart`.

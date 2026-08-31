@@ -209,11 +209,15 @@ abstract class PrayerAnalyticsService {
 /// * Upcoming (not started, unmarked) slots are ignored — they never break
 ///   the streak.
 /// * Paused Cycle Mode days ([isCycleDay]) bridge the tip chain:
-///   - Missed / unmarked slots on paused days never tip-break.
+///   - Missed / unmarked slots on mid-cycle / sealed paused days never
+///     tip-break when those days are skipped or tip-only.
 ///   - When an older non-paused tip exists, mid-cycle pause-day marks are
 ///     skipped so they neither inflate nor break a pre-cycle streak.
-///   - Same-day Cycle Mode start (yesterday not paused): today's counting
-///     marks still count so toggling ON does not wipe an existing tip.
+///   - Same-day Cycle Mode start (yesterday not paused): keep every
+///     already-started unmarked and counting slot so gaps still terminate
+///     the tip like Cycle OFF; explicit Missed is still omitted so a pause
+///     day does not tip-break. Counting marks are not wiped, and unmarked
+///     gaps are not elided into prior days.
 ///   - When the tip lives only on paused day(s), counting marks there are
 ///     kept so Cycle Mode never resets the streak — including after seal.
 abstract class PrayerStreakCalculator {
@@ -238,13 +242,13 @@ abstract class PrayerStreakCalculator {
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
       final paused = isCycleDay(date);
+      final sameDayCycleStart = dayOffset == 0 &&
+          paused &&
+          !isCycleDay(date.subtract(const Duration(days: 1)));
 
       if (paused) {
-        // Same-day Cycle Mode start: keep today's counting marks even when an
-        // older non-paused tip exists (yesterday not paused). Mid-cycle paused
-        // days still bridge without inflating the streak.
-        final sameDayCycleStart =
-            dayOffset == 0 && !isCycleDay(date.subtract(const Duration(days: 1)));
+        // Mid-cycle paused days still bridge without inflating the streak.
+        // Same-day start keeps today's slots (below) instead of skipping.
         if (!sameDayCycleStart &&
             _nonPausedTipExists(
               fromDayOffset: dayOffset + 1,
@@ -274,8 +278,15 @@ abstract class PrayerStreakCalculator {
             slotIndex: i,
           );
           if (!started && status == PrayerMarkStatus.none) break;
-          if (paused) {
+          if (paused && !sameDayCycleStart) {
+            // Mid-cycle today (tip-only): counting marks only.
             if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
+              slots.add(status);
+            }
+          } else if (sameDayCycleStart) {
+            // Keep unmarked gaps (match Cycle OFF). Omit Missed so pause
+            // still protects against tip-break on an explicit miss.
+            if (status != PrayerMarkStatus.missed) {
               slots.add(status);
             }
           } else if (softBridgeUnmarkedToday && status == PrayerMarkStatus.none) {

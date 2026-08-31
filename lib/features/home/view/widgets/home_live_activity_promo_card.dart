@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/services/prayer_alarm_service.dart';
 import '../../../../core/services/prayer_live_activity_service.dart';
 import '../../../../core/services/prayer_live_activity_toggle.dart';
 import '../../../../core/services/storage_service.dart';
@@ -12,10 +15,11 @@ import '../../../tajweed/tajweed_entry_point.dart';
 import '../../../tajweed/tajweed_free_preview.dart';
 import '../../../onboarding/view/widgets/feature_demo/feature_demo_kind.dart';
 import '../settings/settings_app_demo_screen.dart';
+import '../settings/settings_prayer_alarms_screen.dart';
 import 'lock_screen_options/lock_screen_options_popup.dart';
 import 'home_card_open_arrow.dart';
 
-/// Home promo carousel: Live Activity, Widgets, Quran AI Tajweed, Lock Screen Styles.
+/// Home promo carousel: Full Screen Alarm, Live Activity, Widgets, Tajweed, Lock Screen.
 class HomeLiveActivityPromoCard extends StatefulWidget {
   const HomeLiveActivityPromoCard({super.key});
 
@@ -24,9 +28,11 @@ class HomeLiveActivityPromoCard extends StatefulWidget {
       _HomeLiveActivityPromoCardState();
 }
 
-class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
+class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard>
+    with WidgetsBindingObserver {
   static const Duration _autoSlideInterval = Duration(seconds: 5);
 
+  bool _fullScreenAlarmVisible = false;
   bool _liveVisible = false;
   bool _widgetsVisible = false;
   bool _tajweedVisible = false;
@@ -40,8 +46,12 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _pageController = PageController();
     PrayerLiveActivityService.instance.preferenceListenable.addListener(
+      _onPreferenceChanged,
+    );
+    StorageService.prayerAlarmsEnabledListenable.addListener(
       _onPreferenceChanged,
     );
     unawaited(_refreshVisibility());
@@ -49,9 +59,13 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _stopAutoSlide();
     _pageController.dispose();
     PrayerLiveActivityService.instance.preferenceListenable.removeListener(
+      _onPreferenceChanged,
+    );
+    StorageService.prayerAlarmsEnabledListenable.removeListener(
       _onPreferenceChanged,
     );
     super.dispose();
@@ -59,6 +73,13 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
 
   void _onPreferenceChanged() {
     unawaited(_refreshVisibility());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshVisibility());
+    }
   }
 
   Future<void> _refreshVisibility() async {
@@ -69,13 +90,34 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
       supported = caps['supportsLiveActivity'] == true;
       enabled = await PrayerLiveActivityService.instance.resolveEnabled();
     }
+
+    var fullScreenAlarmSupported = false;
+    var prayerAlarmsEnabled = false;
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      // Match Settings: native prayer alarms = AlarmKit (iOS) or FSI (Android).
+      // Do NOT require supportsFullScreen — iOS AlarmKit reports that false
+      // because FSI is an Android-only API, which hid this slide on every iPhone.
+      final alarmCaps = await PrayerAlarmService.instance.getCapabilities(
+        forceRefresh: true,
+      );
+      fullScreenAlarmSupported = alarmCaps.supportsNativeAlarm;
+      if (fullScreenAlarmSupported) {
+        prayerAlarmsEnabled = await StorageService.prayerAlarmsEnabled;
+      }
+    }
+
     final liveDismissed = await StorageService.homeLiveActivityPromoDismissed;
     final widgetsDismissed = await StorageService.homeWidgetsPromoDismissed;
     final tajweedDismissed = await StorageService.homeTajweedPromoDismissed;
     final lockScreenDismissed =
         await StorageService.homeLockScreenPromoDismissed;
+    final fullScreenAlarmDismissed =
+        await StorageService.homeFullScreenAlarmPromoDismissed;
     if (!mounted) return;
     setState(() {
+      _fullScreenAlarmVisible = fullScreenAlarmSupported &&
+          !prayerAlarmsEnabled &&
+          !fullScreenAlarmDismissed;
       _liveVisible = PrayerLiveActivityService.visibleOnThisPlatform &&
           supported &&
           !enabled &&
@@ -120,6 +162,7 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
 
   int get _slideCount {
     var count = 0;
+    if (_fullScreenAlarmVisible) count++;
     if (_liveVisible) count++;
     if (_widgetsVisible) count++;
     if (_tajweedVisible) count++;
@@ -171,6 +214,17 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
     _syncAutoSlide(_slideCount);
   }
 
+  Future<void> _dismissFullScreenAlarm() async {
+    await StorageService.setHomeFullScreenAlarmPromoDismissed(true);
+    if (!mounted) return;
+    setState(() {
+      _fullScreenAlarmVisible = false;
+      _page = 0;
+    });
+    _resetPageController();
+    _syncAutoSlide(_slideCount);
+  }
+
   void _resetPageController() {
     if (_pageController.hasClients) {
       _pageController.jumpToPage(0);
@@ -209,6 +263,16 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
     await LockScreenOptionsPopup.show(context);
   }
 
+  Future<void> _openFullScreenAlarmSettings() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const SettingsPrayerAlarmsScreen(),
+      ),
+    );
+    if (!mounted) return;
+    unawaited(_refreshVisibility());
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading || _slideCount == 0) {
@@ -218,6 +282,17 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard> {
 
     final l10n = AppLocalizations.of(context)!;
     final slides = <Widget>[
+      if (_fullScreenAlarmVisible)
+        _HomePromoSlide(
+          icon: Icons.notifications_active_rounded,
+          title: l10n.homeFullScreenAlarmPromoTitle,
+          body: l10n.homeFullScreenAlarmPromoBody,
+          cta: l10n.homeFullScreenAlarmPromoCta,
+          ctaLeadingIcon: Icons.notifications_active_rounded,
+          mockup: _PromoFullScreenAlarmMockup(l10n: l10n),
+          onTap: () => unawaited(_openFullScreenAlarmSettings()),
+          onDismiss: () => unawaited(_dismissFullScreenAlarm()),
+        ),
       if (_liveVisible)
         _HomePromoSlide(
           icon: Icons.graphic_eq_rounded,
@@ -413,10 +488,13 @@ class _HomePromoSlide extends StatelessWidget {
                         Expanded(
                           child: Text(
                             title,
+                            maxLines: 3,
+                            softWrap: true,
                             style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(
                                   color: titleColor,
                                   fontWeight: FontWeight.w800,
+                                  height: 1.2,
                                 ),
                           ),
                         ),
@@ -452,6 +530,8 @@ class _HomePromoSlide extends StatelessWidget {
                                 children: [
                                   Text(
                                     body,
+                                    maxLines: 4,
+                                    softWrap: true,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -468,25 +548,25 @@ class _HomePromoSlide extends StatelessWidget {
                                     ),
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                        horizontal: 14.w,
+                                        horizontal: 12.w,
                                         vertical: 8.h,
                                       ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          if (ctaLeadingIcon != null) ...[
-                                            Icon(
-                                              ctaLeadingIcon,
-                                              size: 16.sp,
-                                              color: colorScheme.onPrimary,
-                                            ),
-                                            SizedBox(width: 6.w),
-                                          ],
-                                          Flexible(
-                                            child: Text(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (ctaLeadingIcon != null) ...[
+                                              Icon(
+                                                ctaLeadingIcon,
+                                                size: 16.sp,
+                                                color: colorScheme.onPrimary,
+                                              ),
+                                              SizedBox(width: 6.w),
+                                            ],
+                                            Text(
                                               cta,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .labelLarge
@@ -496,13 +576,13 @@ class _HomePromoSlide extends StatelessWidget {
                                                     fontWeight: FontWeight.w700,
                                                   ),
                                             ),
-                                          ),
-                                          SizedBox(width: 6.w),
-                                          HomeDirectionalForwardIcon(
-                                            size: 16.sp,
-                                            color: colorScheme.onPrimary,
-                                          ),
-                                        ],
+                                            SizedBox(width: 6.w),
+                                            HomeDirectionalForwardIcon(
+                                              size: 16.sp,
+                                              color: colorScheme.onPrimary,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1988,6 +2068,161 @@ class _PromoProgressCurvePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PromoProgressCurvePainter oldDelegate) =>
       oldDelegate.progress != progress;
+}
+
+class _PromoFullScreenAlarmMockup extends StatelessWidget {
+  const _PromoFullScreenAlarmMockup({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  static const Color _accentGreen = Color(0xFF2E7D32);
+  static const Color _phoneBorder = Color(0xFF2A3D34);
+
+  @override
+  Widget build(BuildContext context) {
+    final phoneWidth = 92.w;
+    final phoneHeight = 146.h;
+
+    return SizedBox(
+      width: phoneWidth,
+      height: phoneHeight,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: _phoneBorder, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.22),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(8.w, 10.h, 8.w, 8.h),
+          child: Column(
+            children: [
+              Icon(
+                Icons.lock_rounded,
+                size: 10.sp,
+                color: Colors.white.withValues(alpha: 0.85),
+              ),
+              SizedBox(height: 6.h),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.access_time_rounded,
+                        size: 7.sp,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                      SizedBox(width: 3.w),
+                      Text(
+                        l10n.prayerAlarmTitle(l10n.homePrayerMaghrib),
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.92),
+                          fontSize: 6.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                '18:40',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w600,
+                  height: 1,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              SizedBox(height: 3.h),
+              Text(
+                l10n.appTitle,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.75),
+                  fontSize: 7.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 4.w),
+                decoration: BoxDecoration(
+                  color: _accentGreen,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                alignment: Alignment.center,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    l10n.prayerAlarmIvePrayed,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 7.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 6.h),
+              Container(
+                height: 16.h,
+                padding: EdgeInsets.only(right: 4.w),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 14.w,
+                      margin: EdgeInsets.all(1.5.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          l10n.homeFullScreenAlarmPromoSlideToStop,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.45),
+                            fontSize: 6.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _DottedArcPainter extends CustomPainter {

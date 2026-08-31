@@ -5130,6 +5130,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Stile entdecken';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Vollbild-AlarmKit zur Gebetszeit';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Bleib dran mit einer ruhigen, ablenkungsfreien Vollbild-Warnung, wenn es Zeit zum Beten ist.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Gebetsalarme aktivieren';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Zum Stoppen wischen';
+
+  @override
   String get homePromoNewBadge => 'NEU';
 
   @override

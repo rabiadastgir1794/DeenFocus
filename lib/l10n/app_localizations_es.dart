@@ -5135,6 +5135,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Explorar estilos';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Alarma a pantalla completa a la hora de orar';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Mantente al día con una alerta a pantalla completa, tranquila y sin distracciones, cuando sea hora de orar.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Activar alarmas de oración';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Desliza para detener';
+
+  @override
   String get homePromoNewBadge => 'NUEVO';
 
   @override

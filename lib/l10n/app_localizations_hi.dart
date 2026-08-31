@@ -5078,6 +5078,20 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeLockScreenPromoCta => 'शैलियाँ देखें';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'नमाज़ के समय फ़ुल स्क्रीन अलार्म';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'नमाज़ का समय होने पर शांत, बिना विकर्षण के फ़ुल स्क्रीन अलर्ट के साथ अपने लक्ष्य पर बने रहें।';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'नमाज़ अलार्म चालू करें';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'रोकने के लिए स्लाइड करें';
+
+  @override
   String get homePromoNewBadge => 'नया';
 
   @override

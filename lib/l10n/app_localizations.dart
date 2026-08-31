@@ -9161,6 +9161,30 @@ abstract class AppLocalizations {
   /// **'Explore Styles'**
   String get homeLockScreenPromoCta;
 
+  /// No description provided for @homeFullScreenAlarmPromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Screen AlarmKit at Prayer Time'**
+  String get homeFullScreenAlarmPromoTitle;
+
+  /// No description provided for @homeFullScreenAlarmPromoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on track with a calm, distraction-free full screen alert when it\'s time to pray.'**
+  String get homeFullScreenAlarmPromoBody;
+
+  /// No description provided for @homeFullScreenAlarmPromoCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Prayer Alarms'**
+  String get homeFullScreenAlarmPromoCta;
+
+  /// No description provided for @homeFullScreenAlarmPromoSlideToStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide to stop'**
+  String get homeFullScreenAlarmPromoSlideToStop;
+
   /// No description provided for @homePromoNewBadge.
   ///
   /// In en, this message translates to:

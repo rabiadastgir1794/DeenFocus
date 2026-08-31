@@ -5031,6 +5031,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeLockScreenPromoCta => 'استكشف الأنماط';
 
   @override
+  String get homeFullScreenAlarmPromoTitle => 'منبّه ملء الشاشة عند وقت الصلاة';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'ابقَ على المسار مع تنبيه ملء الشاشة الهادئ الخالي من المشتتات عند وقت الصلاة.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'تفعيل منبهات الصلاة';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'اسحب للإيقاف';
+
+  @override
   String get homePromoNewBadge => 'جديد';
 
   @override

@@ -57,10 +57,12 @@ class _PrayerNotificationSheetContentState
   @override
   void initState() {
     super.initState();
-    // Pick up master/auth changes made on the Prayer Alarms settings page.
+    // Pick up OS permission + master/auth changes made elsewhere.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      unawaited(context.read<HomeTabViewModel>().refreshPrayerAlarmGate());
+      final vm = context.read<HomeTabViewModel>();
+      unawaited(vm.refreshPrayerAlarmGate());
+      unawaited(vm.refreshNotificationPermissionGate());
     });
   }
 
@@ -262,7 +264,9 @@ class _PrayerNotificationSheetContentState
                           ),
                         ),
                         Switch.adaptive(
-                          value: settings.notificationsEnabled,
+                          value: vm.effectiveNotificationEnabledFor(
+                            widget.prayer,
+                          ),
                           onChanged: _busy
                               ? null
                               : (value) => unawaited(

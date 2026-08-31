@@ -5108,6 +5108,20 @@ class AppLocalizationsNl extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Stijlen verkennen';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Volledig scherm-alarm bij gebedstijd';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Blijf op koers met een rustige, afleidingsvrije melding op volledig scherm wanneer het tijd is om te bidden.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Gebedsalarmen inschakelen';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Veeg om te stoppen';
+
+  @override
   String get homePromoNewBadge => 'NIEUW';
 
   @override

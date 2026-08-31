@@ -1,5 +1,4 @@
 import '../../../core/services/storage_service.dart';
-import '../../../core/superwall/app_superwall.dart';
 import '../view/widgets/lock_screen_options/lock_screen_style.dart';
 
 /// Load / save / resolve the user's Lock Screen Style preference.
@@ -21,12 +20,13 @@ abstract final class LockScreenStylePreference {
     return LockScreenStyle.classic;
   }
 
-  /// Style used for the live prayer reminder. Invalid, empty, or unpaid
-  /// premium selections fall back to Classic without presenting a paywall.
-  static Future<LockScreenStyle> resolveForReminder() async {
-    final stored = await ensureSelected();
-    if (!stored.requiresPremium) return stored;
-    if (AppSuperwall.subscriptionActiveNotifier.value) return stored;
-    return LockScreenStyle.classic;
+  /// Style used for the live prayer reminder.
+  ///
+  /// Paid styles are gated when saving in the picker (`PremiumGate`). Do not
+  /// re-check Superwall here: the reminder can fire on cold start before
+  /// configure / cache hydrate, which used to silently swap Tasbih (etc.)
+  /// for Classic.
+  static Future<LockScreenStyle> resolveForReminder() {
+    return ensureSelected();
   }
 }

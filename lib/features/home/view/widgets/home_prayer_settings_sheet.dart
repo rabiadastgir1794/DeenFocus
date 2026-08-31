@@ -88,11 +88,11 @@ class _PrayerSettingsSheetContent extends StatelessWidget {
                   ),
                   SizedBox(height: Spacing.md.h),
                   _SettingsCard(
-                    icon: settings.notificationsEnabled
+                    icon: vm.effectiveNotificationEnabledFor(prayer)
                         ? Iconsax.notification
                         : Iconsax.notification_bing,
                     title: l10n.homePrayerSettingsNotification,
-                    subtitle: settings.notificationsEnabled
+                    subtitle: vm.effectiveNotificationEnabledFor(prayer)
                         ? soundLabel
                         : l10n.homeNotificationSoundMute,
                     onTap: () => showPrayerNotificationSheet(context, prayer),

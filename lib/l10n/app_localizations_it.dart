@@ -5142,6 +5142,20 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Esplora stili';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Sveglia a schermo intero all\'ora della preghiera';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Resta in carreggiata con un avviso a schermo intero, calmo e senza distrazioni, quando è ora di pregare.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Attiva sveglie di preghiera';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Scorri per fermare';
+
+  @override
   String get homePromoNewBadge => 'NUOVO';
 
   @override

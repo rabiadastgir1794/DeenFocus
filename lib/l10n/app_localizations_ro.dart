@@ -5139,6 +5139,20 @@ class AppLocalizationsRo extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Explorează stiluri';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Alarmă pe tot ecranul la ora rugăciunii';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Rămâi pe drumul cel bun cu o alertă calmă, fără distrageri, pe tot ecranul când e timpul să te rogi.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Activează alarmele de rugăciune';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Glisează pentru oprire';
+
+  @override
   String get homePromoNewBadge => 'NOU';
 
   @override

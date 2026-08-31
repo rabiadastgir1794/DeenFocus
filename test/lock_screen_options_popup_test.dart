@@ -108,7 +108,7 @@ void main() {
     );
   });
 
-  test('reminder falls back to classic for unpaid premium styles', () async {
+  test('reminder keeps a paid style even before Superwall hydrates', () async {
     SharedPreferences.setMockInitialValues({'lock_screen_style': 'tasbih'});
     final previous = AppSuperwall.subscriptionActiveNotifier.value;
     AppSuperwall.subscriptionActiveNotifier.value = false;
@@ -118,7 +118,7 @@ void main() {
 
     expect(
       await LockScreenStylePreference.resolveForReminder(),
-      LockScreenStyle.classic,
+      LockScreenStyle.tasbih,
     );
   });
 
@@ -241,6 +241,52 @@ void main() {
     await tester.tap(find.text('Yes, Alhamdulillah'));
     await tester.pumpAndSettle();
     expect(await future, isTrue);
+  });
+
+  testWidgets('Did you pray uses the stored Tasbih layout, not Classic', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({'lock_screen_style': 'tasbih'});
+    final previous = AppSuperwall.subscriptionActiveNotifier.value;
+    AppSuperwall.subscriptionActiveNotifier.value = false;
+    addTearDown(() {
+      AppSuperwall.subscriptionActiveNotifier.value = previous;
+    });
+
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    late BuildContext ctx;
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            ctx = context;
+            return const Scaffold(body: SizedBox.shrink());
+          },
+        ),
+      ),
+    );
+
+    final future = PrayerReminderPopup.show(
+      context: ctx,
+      prayer: TrackablePrayer.isha,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.textContaining('Did you pray Isha?'), findsNothing);
+    expect(find.textContaining('0 of 33'), findsOneWidget);
+    expect(find.text('Astaghfirullah'), findsWidgets);
+    expect(find.text('Yes, Alhamdulillah'), findsOneWidget);
+
+    await tester.tap(find.text("I'll mark later"));
+    await tester.pumpAndSettle();
+    expect(await future, isFalse);
   });
 
   testWidgets('Did you pray later returns false', (tester) async {

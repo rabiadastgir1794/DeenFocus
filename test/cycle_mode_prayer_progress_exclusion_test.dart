@@ -5,9 +5,10 @@ import 'package:deenly/features/home/services/prayer_analytics_service.dart';
 import 'package:deenly/features/home/services/xp_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Product rule: Cycle Mode days contribute ZERO to streaks / Insights /
-/// prayer XP / prayer achievements, while bridging (never resetting) a
-/// pre-cycle tip.
+/// Product rules: mid-cycle / sealed Cycle days bridge streaks (zero mid-cycle
+/// inflation) and exclude Insights/XP/achievement day counters when configured.
+/// Same-day Cycle start keeps today's started slots (unmarked gaps still
+/// terminate; Missed does not tip-break).
 void main() {
   Map<TrackablePrayer, PrayerMarkStatus> allFive([
     PrayerMarkStatus status = PrayerMarkStatus.onTime,
@@ -174,8 +175,9 @@ void main() {
         excludeFromStatistics: true,
       );
       final during = analytics(now: eve(today), history: history, data: data);
-      expect(during.prayerStreak, 10);
-      expect(during.dayStreak, 2);
+      // Same-day start keeps today's completed tip; stats bars still exclude.
+      expect(during.prayerStreak, 15);
+      expect(during.dayStreak, 3);
       expect(
         during.homeWeekDayCounts[
             WeeklyCalculator.mondayWeekDates(today).indexOf(today)],
@@ -183,7 +185,7 @@ void main() {
       );
     });
 
-    test('5. Partial prayers on a Cycle Mode day contribute zero', () {
+    test('5. Partial prayers on same-day Cycle keep tip; unmarked gaps apply', () {
       final today = DateTime(2026, 8, 11);
       final history = {
         key(DateTime(2026, 8, 10)): allFive(),
@@ -204,7 +206,8 @@ void main() {
         history: history,
         data: data,
       );
-      expect(snap.prayerStreak, 5);
+      // Fajr+Dhuhr tip (Asr not started) continues into yesterday.
+      expect(snap.prayerStreak, 7);
       expect(snap.dayStreak, 1);
       final xp = prayerXpEvents(history: history, data: data, now: eve(today));
       expect(
@@ -213,7 +216,7 @@ void main() {
       );
     });
 
-    test('6. All prayers completed on a Cycle Mode day still contribute zero',
+    test('6. All prayers completed on same-day Cycle still count for streak',
         () {
       final today = DateTime(2026, 8, 11);
       final history = {
@@ -228,11 +231,11 @@ void main() {
         excludeFromStatistics: true,
       );
       final snap = analytics(now: eve(today), history: history, data: data);
-      expect(snap.prayerStreak, 5);
-      expect(snap.dayStreak, 1);
+      expect(snap.prayerStreak, 10);
+      expect(snap.dayStreak, 2);
 
       expect(fajrAchievementProgress(history: history, data: data, now: eve(today)), 1);
-      // Only Aug 10 Fajr counts — cycle day Fajr excluded.
+      // Only Aug 10 Fajr counts for achievement progress — cycle day Fajr excluded.
     });
 
     test('7. Cycle Mode disabled same day restores normal streak behavior', () {
@@ -247,7 +250,7 @@ void main() {
       );
       expect(
         analytics(now: eve(today), history: history, data: data).prayerStreak,
-        0,
+        5,
       );
 
       data = data.disableOn(today);
@@ -296,7 +299,7 @@ void main() {
       expect(CycleModePolicy(data).shouldPauseStreaks(DateTime(2026, 8, 9)), isTrue);
     });
 
-    test('9. App restart (JSON round-trip) keeps zero-contribution rules', () {
+    test('9. App restart (JSON round-trip) keeps same-day tip rules', () {
       final history = {
         key(DateTime(2026, 8, 8)): allFive(),
         key(DateTime(2026, 8, 9)): allFive(),
@@ -314,8 +317,8 @@ void main() {
         history: history,
         data: data,
       );
-      expect(snap.prayerStreak, 5);
-      expect(snap.dayStreak, 1);
+      expect(snap.prayerStreak, 10);
+      expect(snap.dayStreak, 2);
     });
 
     test('10. Cycle Mode expiry seals history; pre-cycle tip continues', () {

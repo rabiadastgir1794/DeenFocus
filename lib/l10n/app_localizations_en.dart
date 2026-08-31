@@ -5077,6 +5077,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeLockScreenPromoCta => 'Explore Styles';
 
   @override
+  String get homeFullScreenAlarmPromoTitle =>
+      'Full Screen AlarmKit at Prayer Time';
+
+  @override
+  String get homeFullScreenAlarmPromoBody =>
+      'Stay on track with a calm, distraction-free full screen alert when it\'s time to pray.';
+
+  @override
+  String get homeFullScreenAlarmPromoCta => 'Enable Prayer Alarms';
+
+  @override
+  String get homeFullScreenAlarmPromoSlideToStop => 'Slide to stop';
+
+  @override
   String get homePromoNewBadge => 'NEW';
 
   @override
