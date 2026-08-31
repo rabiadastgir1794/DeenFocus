@@ -11,9 +11,9 @@ import 'lock_screen_options/lock_screen_style_interactive.dart';
 /// Prayer reminder shown when the app opens if the most recent prayer
 /// hasn't been marked.
 ///
-/// Returns `true` when the user confirms on-time, `false` for Later, and
-/// `null` if dismissed. Callers should mark the prayer on-time when the
-/// result is `true`.
+/// Returns `true` when the user confirms on-time (mark + unlock happen inside
+/// [LockScreenPrayerActions.confirmOnTime]), `false` for Later, and `null` if
+/// dismissed.
 ///
 /// Presentation is always the original centered [AlertDialog] (barrier,
 /// 24px card, default fade/scale). Inner content follows the selected
@@ -39,6 +39,7 @@ class PrayerReminderPopup {
       return null;
     }
 
+    // Prefer shared confirm path so mark + unlock stay centralized.
     return showDialog<bool>(
       context: context,
       barrierDismissible: true,
@@ -84,8 +85,10 @@ class PrayerReminderStyleDialog extends StatelessWidget {
               style: style,
               prayer: prayer,
               compact: true,
-              onConfirm: () =>
-                  LockScreenPrayerActions.completeReminder(context),
+              onConfirm: () => LockScreenPrayerActions.confirmOnTime(
+                context,
+                prayer: prayer,
+              ),
               onLater: () => LockScreenPrayerActions.deferReminder(context),
             ),
           ),

@@ -36,6 +36,38 @@ class FocusController extends ChangeNotifier {
     if (active == null) return;
     await active.refresh();
   }
+
+  /// After "Yes, I prayed" / on-time mark: unlock the current prayer lock using
+  /// the same Home unlock path (temp unlock until next window). No-ops when
+  /// apps are not locked. Shared by every mark-on-time entry point.
+  static Future<void> unlockAppsAfterPrayerMarked() async {
+    try {
+      final debugHook = debugUnlockAppsAfterPrayerMarked;
+      if (debugHook != null) {
+        await debugHook();
+        return;
+      }
+      final active = _activeInstance;
+      if (active == null) return;
+      if (!active.isAppsLocked) return;
+      await active.unlockFromHome();
+    } catch (e, st) {
+      assert(() {
+        debugPrint('focus.unlockAppsAfterPrayerMarked failed: $e\n$st');
+        return true;
+      }());
+    }
+  }
+
+  /// Test-only hook so prayer-mark tests can assert unlock without native Focus.
+  @visibleForTesting
+  static Future<void> Function()? debugUnlockAppsAfterPrayerMarked;
+
+  /// When true, [_recomputeAndPersistBody] updates lock state + prefs and
+  /// notifies listeners, but skips native enforcement / notification plugins
+  /// (those hang under `flutter test` on desktop).
+  @visibleForTesting
+  static bool debugSkipEnforcementSideEffects = false;
   // TEMP: Salah test mode (keep code, disable for production)
   // static const bool _salahTestModeEnabled = true;
   static const bool _salahTestModeEnabled = false;
@@ -1088,6 +1120,10 @@ class FocusController extends ChangeNotifier {
       StorageService.setFocusScheduleJson(jsonEncode(scheduledTransitions)),
     ]);
     notifyListeners();
+    if (debugSkipEnforcementSideEffects) {
+      _scheduleNextRefresh();
+      return;
+    }
     // Native sync always runs so lock state / temp-unlock stay aligned with the OS.
     // Focus notifications skip cancel+reschedule internally when the signature is unchanged.
     await _syncNativeFocusEnforcement(

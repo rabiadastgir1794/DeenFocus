@@ -112,12 +112,9 @@ class _HomeTabViewState extends State<_HomeTabView>
     CycleModeEntryIntent.pendingOpenSettings.addListener(
       _onCycleModeOpenSettingsRequested,
     );
-    // Check on launch — delay 2s so profile finishes loading from storage.
-    // Serialize I've Prayed before the "Did you pray?" reminder so the alarm
-    // confirm path never races a duplicate prompt.
+    // Soft reminder / AlarmKit consume need streak history — wait briefly for
+    // essentials, then gate on ensurePrayerStreakReady (not a fixed 2s race).
     Future.delayed(const Duration(seconds: 2), () async {
-      if (!mounted) return;
-      await _consumePendingPrayerAlarmAction();
       if (!mounted) return;
       unawaited(_checkLocationChange());
       unawaited(_checkAndShowPrayerReminder());
@@ -221,25 +218,33 @@ class _HomeTabViewState extends State<_HomeTabView>
     // Load streak/settings first so "I've Prayed" marks against fresh state.
     await context.read<HomeTabViewModel>().onAppResumed();
     if (!mounted) return;
-    await _consumePendingPrayerAlarmAction();
-    if (!mounted) return;
     await _consumePendingCycleModeOpenSettings();
     if (!mounted) return;
     unawaited(_checkLocationChange());
+    // Consumes AlarmKit pending (if any) before soft "Did you pray?".
     unawaited(_checkAndShowPrayerReminder());
   }
 
   /// Handles "I've Prayed" from native Prayer Alarm (AlarmKit / FSI activity).
-  Future<void> _consumePendingPrayerAlarmAction() async {
+  /// Persists via [HomeTabViewModel.applyAlarmPrayedAction] before celebration.
+  Future<PrayerMarkResult?> _consumePendingPrayerAlarmAction() async {
     final prayer = await PrayerAlarmService.instance
         .consumePendingPrayedAction();
-    if (!mounted || prayer == null) return;
-    await _confirmReminderPrayerOnTime(prayer);
-    if (!mounted) return;
-    // Suppress the soft "Did you pray?" popup for this prayer today.
-    await StorageService.markPrayerReminderPrompted(
-      PrayerReminderPromptKeys.forPrayer(prayer),
-    );
+    if (!mounted || prayer == null) return null;
+    final vm = context.read<HomeTabViewModel>();
+    final result = await vm.applyAlarmPrayedAction(prayer);
+    if (!mounted) return result;
+    if (result != null && result.celebrated) {
+      final remaining = vm.prayerTimes?.nextPrayerTime?.difference(
+        DateTime.now(),
+      );
+      await showPrayerCompletionPopup(
+        context,
+        result: result,
+        nextPrayerIn: remaining,
+      );
+    }
+    return result;
   }
 
   Future<void> _checkLocationChange() async {
@@ -380,6 +385,15 @@ class _HomeTabViewState extends State<_HomeTabView>
       if (!mounted) return;
 
       final vm = context.read<HomeTabViewModel>();
+      // Streak must be loaded before AlarmKit mark or soft reminder — otherwise
+      // an empty in-memory history / concurrent reload can drop the mark.
+      await vm.ensurePrayerStreakReady();
+      if (!mounted) return;
+
+      // AlarmKit / FSI "I've Prayed" always wins over "Did you pray?".
+      await _consumePendingPrayerAlarmAction();
+      if (!mounted) return;
+
       // Wait until schedule is ready — otherwise we miss Maghrib on cold start.
       if (vm.isLoading || vm.prayerTimes == null) return;
 
@@ -422,8 +436,11 @@ class _HomeTabViewState extends State<_HomeTabView>
       );
       if (!mounted || confirmed != true) return;
 
-      // Yes, Alhamdulillah → mark on-time immediately (no second status sheet).
-      await _confirmReminderPrayerOnTime(target);
+      // Popup confirm already marks on-time (and unlocks). Re-enter only if
+      // the mark did not land (e.g. Provider missing inside the dialog).
+      if (vm.statusForToday(target) == PrayerMarkStatus.none) {
+        await _confirmReminderPrayerOnTime(target);
+      }
     } finally {
       _prayerReminderCheckInFlight = false;
     }
@@ -541,7 +558,11 @@ class _HomeTabViewState extends State<_HomeTabView>
             const _HomeVerseBanner(),
             if (showHomeFocusLockCard) ...[
               const SizedBox(height: 12),
-              _FocusLockCard(focusVm: focusVm),
+              _FocusLockCard(
+                isTemporarilyUnlocked: focusSnap.isTemporarilyUnlocked,
+                onUnlock: () => unawaited(focusVm.unlockFromHome()),
+                onRelock: () => unawaited(focusVm.relockNowFromHome()),
+              ),
             ],
             // Banner = running cycle only (not merely toggle ON).
             if (snap.cycleModeRunning) ...[
@@ -1106,20 +1127,26 @@ class _QuickActionItem extends StatelessWidget {
 }
 
 class _FocusLockCard extends StatelessWidget {
-  const _FocusLockCard({required this.focusVm});
+  const _FocusLockCard({
+    required this.isTemporarilyUnlocked,
+    required this.onUnlock,
+    required this.onRelock,
+  });
 
-  final FocusController focusVm;
+  /// Driven by Home's [FocusController] select snap so Unlock → Relock (or
+  /// hide) updates as soon as [FocusController.unlockAppsAfterPrayerMarked]
+  /// / [FocusController.unlockFromHome] notifies — no tab switch required.
+  final bool isTemporarilyUnlocked;
+  final VoidCallback onUnlock;
+  final VoidCallback onRelock;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final isTemporarilyUnlocked = focusVm.isTemporarilyUnlocked;
 
     return InkWell(
-      onTap: () => isTemporarilyUnlocked
-          ? focusVm.relockNowFromHome()
-          : focusVm.unlockFromHome(),
+      onTap: isTemporarilyUnlocked ? onRelock : onUnlock,
       borderRadius: BorderRadius.circular(22),
       child: Ink(
         width: double.infinity,

@@ -10,7 +10,8 @@ import 'prayer_label_helper.dart';
 /// Shared confirm / defer actions for lock-screen prayer styles.
 ///
 /// Delegates marking to [HomeTabViewModel.markPrayerStatus] — the same path
-/// as the in-app reminder popup.
+/// as in-app reminder, AlarmKit / FSI "I've Prayed", and the mark sheet. That
+/// path also unlocks apps via [FocusController.unlockAppsAfterPrayerMarked].
 abstract final class LockScreenPrayerActions {
   static TrackablePrayer? targetOf(BuildContext context) {
     try {

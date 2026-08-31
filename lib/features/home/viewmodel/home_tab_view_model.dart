@@ -329,7 +329,23 @@ class HomeTabViewModel extends ChangeNotifier {
   /// does not briefly flip (e.g. Fajr vs current) when async work completes out of order.
   Future<void> _prayerTimesSerial = Future<void>.value();
 
+  /// Serializes streak load + mark so AlarmKit "I've Prayed" cannot be wiped by
+  /// a concurrent [_loadPrayerStreak] that read disk before the mark persisted.
+  Future<void> _prayerStreakSerial = Future<void>.value();
+
   Future<void>? _resumeInFlight;
+  Future<void>? _secondaryHomeDataFuture;
+  bool _prayerStreakReady = false;
+
+  /// True after the first successful streak hydrate (secondary load or explicit).
+  bool get isPrayerStreakReady => _prayerStreakReady;
+
+  /// Test-only: install a schedule so [getPrayerReminderTarget] can resolve tips.
+  @visibleForTesting
+  void debugSetPrayerTimesForTest(HomePrayerTimesData data) {
+    prayerTimes = data;
+    isLoading = false;
+  }
 
   String? _cachedQiblaInfo;
   double? _qiblaCacheLat;
@@ -557,9 +573,39 @@ class HomeTabViewModel extends ChangeNotifier {
 
     // Streak / checklist / XP / verse / notification reschedule must not block
     // the first Home frame — schedule after this frame's layout.
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      unawaited(_loadSecondaryHomeData());
+    _secondaryHomeDataFuture = null;
+    final secondary = Completer<void>();
+    _secondaryHomeDataFuture = secondary.future;
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await _loadSecondaryHomeData();
+        if (!secondary.isCompleted) secondary.complete();
+      } catch (e, st) {
+        if (!secondary.isCompleted) secondary.completeError(e, st);
+      }
     });
+  }
+
+  /// Waits until prayer streak history is loaded so AlarmKit marks and soft
+  /// reminders do not race an empty in-memory streak (or a clobbering reload).
+  Future<void> ensurePrayerStreakReady() async {
+    if (_prayerStreakReady) return;
+    final secondary = _secondaryHomeDataFuture;
+    if (secondary != null) {
+      try {
+        await secondary;
+      } catch (_) {
+        // Secondary failure — fall through to a direct streak load.
+      }
+    }
+    if (_prayerStreakReady) return;
+    await _loadPrayerStreak();
+  }
+
+  Future<T> _withPrayerStreakMutation<T>(Future<T> Function() body) {
+    final run = _prayerStreakSerial.then((_) => body());
+    _prayerStreakSerial = run.then<void>((_) {}, onError: (_) {});
+    return run;
   }
 
   /// Profile + prayer times — enough to paint Home without a blank spinner.
@@ -650,43 +696,46 @@ class HomeTabViewModel extends ChangeNotifier {
     _subscriptionActive = AppSuperwall.subscriptionActiveNotifier.value;
   }
 
-  Future<void> _loadPrayerStreak() async {
-    final now = DateTime.now();
-    final weekStart = _startOfWeek(now);
-    final weekStartKey = _dayKeyFormat.format(weekStart);
-    final raw = await StorageService.homePrayerStreakJson;
-    var state = raw == null
-        ? HomePrayerStreakState.empty(weekStartDateKey: weekStartKey)
-        : HomePrayerStreakState.fromJson(raw);
+  Future<void> _loadPrayerStreak() {
+    return _withPrayerStreakMutation(() async {
+      final now = DateTime.now();
+      final weekStart = _startOfWeek(now);
+      final weekStartKey = _dayKeyFormat.format(weekStart);
+      final raw = await StorageService.homePrayerStreakJson;
+      var state = raw == null
+          ? HomePrayerStreakState.empty(weekStartDateKey: weekStartKey)
+          : HomePrayerStreakState.fromJson(raw);
 
-    if (state.weekStartDateKey != weekStartKey) {
-      state = state.copyWith(
-        weekStartDateKey: weekStartKey,
-        weekDays: const <HomePrayerChecklistDay>[],
-      );
-    }
-
-    _prayerStreakState = _ensureWeekDays(state, weekStart);
-    // Sync weekDays into persistent status history (single source of truth).
-    final history = Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
-      _prayerStreakState.statusHistory.map(
-        (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
-      ),
-    );
-    for (final day in _prayerStreakState.weekDays) {
-      final confirmed = <TrackablePrayer, PrayerMarkStatus>{
-        for (final p in TrackablePrayer.values)
-          if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
-      };
-      if (confirmed.isNotEmpty) {
-        history[day.dateKey] = confirmed;
+      if (state.weekStartDateKey != weekStartKey) {
+        state = state.copyWith(
+          weekStartDateKey: weekStartKey,
+          weekDays: const <HomePrayerChecklistDay>[],
+        );
       }
-    }
 
-    _prayerStreakState = _prayerStreakState.copyWith(statusHistory: history);
-    _prayerStreakState = _hydrateWeekDaysFromHistory(_prayerStreakState);
-    _recomputeAnalytics(now);
-    await _persistPrayerStreak();
+      _prayerStreakState = _ensureWeekDays(state, weekStart);
+      // Sync weekDays into persistent status history (single source of truth).
+      final history = Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
+        _prayerStreakState.statusHistory.map(
+          (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
+        ),
+      );
+      for (final day in _prayerStreakState.weekDays) {
+        final confirmed = <TrackablePrayer, PrayerMarkStatus>{
+          for (final p in TrackablePrayer.values)
+            if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
+        };
+        if (confirmed.isNotEmpty) {
+          history[day.dateKey] = confirmed;
+        }
+      }
+
+      _prayerStreakState = _prayerStreakState.copyWith(statusHistory: history);
+      _prayerStreakState = _hydrateWeekDaysFromHistory(_prayerStreakState);
+      _recomputeAnalytics(now);
+      await _persistPrayerStreak();
+      _prayerStreakReady = true;
+    });
   }
 
   Future<bool> ensureLocationAvailableForFeature() async {
@@ -1152,6 +1201,27 @@ class HomeTabViewModel extends ChangeNotifier {
     );
   }
 
+  /// Applies AlarmKit / FSI "I've Prayed" via the shared [markPrayerStatus] path.
+  /// Call only after [ensurePrayerStreakReady]. Returns null when already marked
+  /// (no second celebration). Always suppresses the soft reminder for [prayer].
+  Future<PrayerMarkResult?> applyAlarmPrayedAction(TrackablePrayer prayer) async {
+    await ensurePrayerStreakReady();
+    if (statusForToday(prayer) != PrayerMarkStatus.none) {
+      try {
+        await StorageService.markPrayerReminderPrompted(
+          PrayerReminderPromptKeys.forPrayer(prayer),
+        );
+      } catch (_) {}
+      return null;
+    }
+    // markPrayerStatus persists streak + reminder prompt key before returning.
+    return markPrayerStatus(
+      DateTime.now(),
+      prayer,
+      PrayerMarkStatus.onTime,
+    );
+  }
+
   /// Reminder target: the most recent started prayer, only if it is unmarked.
   /// If that prayer is already marked, returns null — older prayers are ignored.
   /// Suppressed on Cycle Mode days (including historical sealed days).
@@ -1363,6 +1433,16 @@ class HomeTabViewModel extends ChangeNotifier {
     DateTime date,
     TrackablePrayer prayer,
     PrayerMarkStatus status,
+  ) {
+    return _withPrayerStreakMutation(
+      () => _markPrayerStatusBody(date, prayer, status),
+    );
+  }
+
+  Future<PrayerMarkResult?> _markPrayerStatusBody(
+    DateTime date,
+    TrackablePrayer prayer,
+    PrayerMarkStatus status,
   ) async {
     if (!isPrayerDayEditable(date)) return null;
 
@@ -1464,6 +1544,11 @@ class HomeTabViewModel extends ChangeNotifier {
     }
 
     final celebrated = newlyCounts;
+    // Every on-time "I prayed" path goes through here — unlock Salah lock so
+    // Home's Unlock Apps card clears without duplicating unlock in each popup.
+    if (status == PrayerMarkStatus.onTime) {
+      await FocusController.unlockAppsAfterPrayerMarked();
+    }
     return PrayerMarkResult(
       prayer: prayer,
       status: status,

@@ -1,6 +1,45 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-30 — Home verse jank vs Superwall.
+> Last updated: 2026-08-31 — AlarmKit I've Prayed no duplicate reminder.
+
+## Status: AlarmKit I've Prayed → no soft reminder (2026-08-31)
+Root causes when AlarmKit already recorded "I've Prayed" but Home asked again:
+1. Soft reminder / VM listener could run before pending AlarmKit consume.
+2. Mark could race `_loadPrayerStreak` (read unmarked → persist → wipe mark).
+
+Fixes:
+- Serialize streak load + `markPrayerStatus` via `_prayerStreakSerial`.
+- `ensurePrayerStreakReady()` before AlarmKit mark / soft reminder.
+- `_checkAndShowPrayerReminder` always `consumePending` →
+  `applyAlarmPrayedAction` → then soft reminder (target null if marked).
+- Celebration only when `PrayerMarkResult.celebrated` (duplicate apply → null).
+
+Test: `test/alarmkit_prayed_no_reminder_test.dart`.
+
+## Status: Yes-I-prayed unlocks apps (2026-08-31)
+When apps are locked for Salah and the user confirms on-time ("Yes, I prayed"
+/ "I've Prayed") from any entry point, unlock runs in the shared mark path:
+
+1. `HomeTabViewModel.markPrayerStatus(..., onTime)` → existing mark + streak
+2. then `FocusController.unlockAppsAfterPrayerMarked()` → `unlockFromHome`
+   when locked (temp unlock; clears Salah latch; persists settings; notifies)
+
+Home Unlock card: `_FocusLockCard` is driven by `context.select` Focus snap
+(`isAppsLocked` / `isTemporarilyUnlocked`), so Unlock → Relock (or hide when
+fully unlocked) updates immediately without restart/navigation. Reopening Home
+reloads persisted `temporarilyUnlockedUntil` via FocusController.initialize.
+
+Entry points (no duplicated unlock logic):
+- Soft Home reminder + Lock Screen Styles → `LockScreenPrayerActions.confirmOnTime`
+- Native AlarmKit / Android FSI → `_confirmReminderPrayerOnTime` → mark
+- Mark prayer sheet on-time → `markPrayerStatus` directly
+
+Tests: `test/prayer_reminder_confirm_test.dart`,
+`test/lock_screen_prayer_confirm_unlock_test.dart`,
+`test/home_unlock_card_after_prayer_test.dart` (UI notify + persistence).
+`WidgetSyncService.debugDisableTimelineSync` /
+`FocusController.debugSkipEnforcementSideEffects` keep unit tests off Hive /
+notification plugins.
 
 ## Status: Home verse frame jank (2026-08-30)
 Root cause: Superwall.configure (~905–1927ms) ran on `firstDestinationIdle`

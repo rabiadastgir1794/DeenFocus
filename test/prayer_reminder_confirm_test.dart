@@ -1,4 +1,6 @@
 import 'package:deenly/core/services/storage_service.dart';
+import 'package:deenly/core/services/widget_sync_service.dart';
+import 'package:deenly/features/focus/viewmodel/focus_controller.dart';
 import 'package:deenly/features/home/helpers/prayer_reminder_prompt_keys.dart';
 import 'package:deenly/features/home/model/home_models.dart';
 import 'package:deenly/features/home/viewmodel/home_tab_view_model.dart';
@@ -22,6 +24,14 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    WidgetSyncService.debugDisableTimelineSync = true;
+    // Avoid Focus/native side effects from on-time mark unlock in unit tests.
+    FocusController.debugUnlockAppsAfterPrayerMarked = () async {};
+  });
+
+  tearDown(() {
+    FocusController.debugUnlockAppsAfterPrayerMarked = null;
+    WidgetSyncService.debugDisableTimelineSync = false;
   });
 
   test('Yes-equivalent on-time mark celebrates once when tip streak increases',
@@ -195,5 +205,65 @@ void main() {
     expect(second!.celebrated, isTrue);
     expect(second.prayerStreak, 2);
     expect(vm.prayerStreak, 2);
+  });
+
+  group('on-time mark unlocks apps (all Yes-I-prayed entry points)', () {
+    test('onTime mark invokes FocusController.unlockAppsAfterPrayerMarked',
+        () async {
+      final now = DateTime.now();
+      final tip = _tipPrayer(now);
+      if (tip == null) return;
+
+      var unlockCalls = 0;
+      FocusController.debugUnlockAppsAfterPrayerMarked = () async {
+        unlockCalls++;
+      };
+
+      final vm = HomeTabViewModel();
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.onTime);
+      expect(unlockCalls, 1);
+
+      // Re-confirm on-time (mark sheet / second popup) unlocks again if still locked.
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.onTime);
+      expect(unlockCalls, 2);
+    });
+
+    test('qada / missed / unmark do not unlock via the onTime path', () async {
+      final now = DateTime.now();
+      final tip = _tipPrayer(now);
+      if (tip == null) return;
+
+      var unlockCalls = 0;
+      FocusController.debugUnlockAppsAfterPrayerMarked = () async {
+        unlockCalls++;
+      };
+
+      final vm = HomeTabViewModel();
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.qada);
+      expect(unlockCalls, 0);
+
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.missed);
+      expect(unlockCalls, 0);
+
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.none);
+      expect(unlockCalls, 0);
+    });
+
+    test('onTime after other status still unlocks', () async {
+      final now = DateTime.now();
+      final tip = _tipPrayer(now);
+      if (tip == null) return;
+
+      var unlockCalls = 0;
+      FocusController.debugUnlockAppsAfterPrayerMarked = () async {
+        unlockCalls++;
+      };
+
+      final vm = HomeTabViewModel();
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.missed);
+      expect(unlockCalls, 0);
+      await vm.markPrayerStatus(now, tip, PrayerMarkStatus.onTime);
+      expect(unlockCalls, 1);
+    });
   });
 }

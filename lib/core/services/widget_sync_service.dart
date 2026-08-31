@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Locale;
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,12 @@ class WidgetSyncService {
     'com.app.deenly.deenly/widgets',
   );
   static const int _timelineDays = 2;
+
+  /// When true, [syncTimeline] is a no-op. Unit tests set this so prayer-mark
+  /// flows do not touch Hive/Quran (Hive Completer errors still fail Flutter
+  /// tests even when caught by try/catch).
+  @visibleForTesting
+  static bool debugDisableTimelineSync = false;
 
   static Locale _localeFromPrefsCode(String? code) {
     if (code == null || code.isEmpty) return const Locale('en');
@@ -45,6 +52,7 @@ class WidgetSyncService {
   }
 
   Future<void> syncTimeline({DateTime? fromDate}) async {
+    if (debugDisableTimelineSync) return;
     try {
       await _syncTimelineBody(fromDate: fromDate);
     } catch (_) {
