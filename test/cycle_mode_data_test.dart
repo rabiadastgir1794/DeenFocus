@@ -410,7 +410,7 @@ void main() {
       expect(activePolicy.shouldExcludeFromStatistics(DateTime(2026, 8, 1)), isTrue);
     });
 
-    test('Historical: sealed for analytics; toggle OFF → no pink UI', () {
+    test('Historical: sealed for analytics; toggle OFF → pink UI stays', () {
       final historical = CycleModeData(
         isEnabled: true,
         startDate: DateTime(2026, 8, 12),
@@ -425,13 +425,13 @@ void main() {
       // Analytics still see sealed days.
       expect(historical.containsDate(DateTime(2026, 8, 15)), isTrue);
       expect(historical.containsDate(DateTime(2026, 8, 18)), isFalse);
-      // UI pink requires toggle ON.
+      // UI pink uses sealed history even while toggle is OFF.
       expect(
         policy(historical).isHighlightable(
           DateTime(2026, 8, 15),
           now: DateTime(2026, 8, 20),
         ),
-        isFalse,
+        isTrue,
       );
     });
 
@@ -619,7 +619,7 @@ void main() {
       );
     });
 
-    test('historical sealed days are not pink while toggle is OFF', () {
+    test('historical sealed days stay pink while toggle is OFF', () {
       final stopped = CycleModeData(
         isEnabled: true,
         startDate: DateTime(2026, 8, 1),
@@ -631,7 +631,7 @@ void main() {
           DateTime(2026, 8, 2),
           now: DateTime(2026, 8, 10),
         ),
-        isFalse,
+        isTrue,
       );
     });
 

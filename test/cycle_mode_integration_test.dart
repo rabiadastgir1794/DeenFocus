@@ -58,7 +58,7 @@ void main() {
       expect(policy.shouldExcludeFromStatistics(day), isFalse);
     });
 
-    test('historical OFF — no highlight, analytics still apply', () {
+    test('historical OFF — sealed days stay pink; analytics still apply', () {
       final data = CycleModeData(
         isEnabled: true,
         startDate: DateTime(2026, 8, 1),
@@ -66,7 +66,7 @@ void main() {
       ).disableOn(DateTime(2026, 8, 4));
       final policy = CycleModePolicy(data);
 
-      expect(policy.isHighlightable(DateTime(2026, 8, 2)), isFalse);
+      expect(policy.isHighlightable(DateTime(2026, 8, 2)), isTrue);
       expect(policy.shouldPauseStreaks(DateTime(2026, 8, 2)), isTrue);
       expect(policy.shouldExcludeFromStatistics(DateTime(2026, 8, 2)), isTrue);
       expect(policy.isHighlightable(DateTime(2026, 8, 4)), isFalse);
@@ -143,7 +143,7 @@ void main() {
       expect(withDraft.weeklyCompleted, baseline.weeklyCompleted);
     });
 
-    test('Case 3 — historical keeps analytics, no UI highlight', () {
+    test('Case 3 — historical keeps analytics and UI highlight', () {
       final historical = CycleModePolicy(
         CycleModeData(
           isEnabled: true,
@@ -151,7 +151,7 @@ void main() {
           cycleLength: 6,
         ).disableOn(DateTime(2026, 8, 4)),
       );
-      expect(historical.isHighlightable(saturday), isFalse);
+      expect(historical.isHighlightable(saturday), isTrue);
       expect(historical.shouldPauseStreaks(saturday), isTrue);
 
       final snap = analyticsWithPolicy(
@@ -465,7 +465,7 @@ void main() {
         cycleLength: 6,
       ).disableOn(DateTime(2026, 8, 4));
       final stopped = CycleModePolicy(data);
-      expect(stopped.isHighlightable(DateTime(2026, 8, 2)), isFalse);
+      expect(stopped.isHighlightable(DateTime(2026, 8, 2)), isTrue);
       expect(stopped.shouldPauseStreaks(DateTime(2026, 8, 2)), isTrue);
 
       data = data.enableWith(startDate: DateTime(2026, 8, 10), cycleLength: 6);
@@ -488,7 +488,7 @@ void main() {
       ).expireFully();
       final policy = CycleModePolicy(expired);
       expect(policy.isActive, isFalse);
-      expect(policy.isHighlightable(DateTime(2026, 8, 3)), isFalse);
+      expect(policy.isHighlightable(DateTime(2026, 8, 3)), isTrue);
       expect(policy.shouldPauseStreaks(DateTime(2026, 8, 3)), isTrue);
       expect(expired.expireFully().history, expired.history);
     });

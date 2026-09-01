@@ -1306,7 +1306,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'Vezi datele islamice';
 
   @override
-  String get quickActionsSupportUs => 'Sprijină-ne';
+  String get quickActionsSupportUs => 'Donații';
 
   @override
   String get quickActionsSupportUsSubtitle => 'Ajută-ne să creștem';

@@ -10,25 +10,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Mirrors Home's Unlock Apps card visibility / label driven by Focus select.
+/// Home no longer shows a dedicated Unlock/Relock banner; lock actions live on
+/// the Focus Mode card.
 class _HomeUnlockCardProbe extends StatelessWidget {
   const _HomeUnlockCardProbe();
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final locked = context.select<FocusController, bool>((c) => c.isAppsLocked);
-    final temp = context.select<FocusController, bool>(
-      (c) => c.isTemporarilyUnlocked,
-    );
-    final showCard = locked || temp;
-    if (!showCard) {
-      return const SizedBox.shrink(key: Key('unlock_card_hidden'));
-    }
-    return Text(
-      temp ? l10n.homeRelock : l10n.homeUnlock,
-      key: const Key('unlock_card_label'),
-    );
+    return const SizedBox.shrink(key: Key('unlock_card_hidden'));
   }
 }
 
@@ -71,7 +60,7 @@ void main() {
   });
 
   testWidgets(
-    'unlockAppsAfterPrayerMarked clears Unlock label immediately via Focus notify',
+    'unlockAppsAfterPrayerMarked updates Focus without Home Relock banner',
     (tester) async {
       final now = DateTime.now();
       SharedPreferences.setMockInitialValues({
@@ -94,24 +83,23 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('Unlock'), findsOneWidget);
+      expect(find.text('Unlock'), findsNothing);
+      expect(find.text('Relock'), findsNothing);
 
       await FocusController.unlockAppsAfterPrayerMarked();
       await tester.pump();
 
       expect(focus.isAppsLocked, isFalse);
-      expect(find.text('Unlock'), findsNothing);
-      // Existing unlockFromHome UX: Relock card while temp-unlocked.
-      expect(find.text('Relock'), findsOneWidget);
       expect(focus.isTemporarilyUnlocked, isTrue);
+      expect(find.text('Unlock'), findsNothing);
+      expect(find.text('Relock'), findsNothing);
 
-      // Cancel refresh timer before test binding checks pending timers.
       focus.dispose();
     },
   );
 
   testWidgets(
-    'on-time mark (all Yes-I-prayed entry points) unlocks and drops Unlock label',
+    'on-time mark (all Yes-I-prayed entry points) unlocks without Home banner',
     (tester) async {
       final now = DateTime.now();
       final tip = _tipPrayer(now);
@@ -141,15 +129,16 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.text('Unlock'), findsOneWidget);
+      expect(find.text('Unlock'), findsNothing);
+      expect(find.text('Relock'), findsNothing);
 
-      // Same central path used by reminder, lock-screen, AlarmKit/FSI, mark sheet.
       await homeVm.markPrayerStatus(now, tip, PrayerMarkStatus.onTime);
       await tester.pump();
 
       expect(homeVm.statusForToday(tip), PrayerMarkStatus.onTime);
       expect(focus.isAppsLocked, isFalse);
       expect(find.text('Unlock'), findsNothing);
+      expect(find.text('Relock'), findsNothing);
 
       focus.dispose();
     },
@@ -177,7 +166,6 @@ void main() {
       expect(saved.temporarilyUnlockedUntil, isNotNull);
       expect(saved.temporarilyUnlockedUntil!.isAfter(now), isTrue);
 
-      // Simulate leaving Home / process and opening again.
       first.dispose();
       final second = FocusController();
       await second.initialize();

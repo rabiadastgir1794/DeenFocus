@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -688,7 +688,7 @@
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			packageReferences = (
-				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
 			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
@@ -767,9 +767,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -859,9 +863,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1093,9 +1101,10 @@
 				DEVELOPMENT_TEAM = DUU697NT67;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
-				FLUTTER_BUILD_NAME = 32.1.2;
-				FLUTTER_BUILD_NUMBER = 44;
+				FLUTTER_BUILD_NAME = 32.1.3;
+				FLUTTER_BUILD_NUMBER = 50;
 				INFOPLIST_FILE = Runner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1288,9 +1297,10 @@
 				DEVELOPMENT_TEAM = DUU697NT67;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
-				FLUTTER_BUILD_NAME = 32.1.2;
-				FLUTTER_BUILD_NUMBER = 44;
+				FLUTTER_BUILD_NAME = 32.1.3;
+				FLUTTER_BUILD_NUMBER = 50;
 				INFOPLIST_FILE = Runner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1319,9 +1329,10 @@
 				DEVELOPMENT_TEAM = DUU697NT67;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
-				FLUTTER_BUILD_NAME = 32.1.2;
-				FLUTTER_BUILD_NUMBER = 44;
+				FLUTTER_BUILD_NAME = 32.1.3;
+				FLUTTER_BUILD_NUMBER = 50;
 				INFOPLIST_FILE = Runner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1505,7 +1516,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = FocusShieldConfiguration/FocusShieldConfiguration.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 50;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = DUU697NT67;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -1518,7 +1529,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 32.1.2;
+				MARKETING_VERSION = 32.1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1547,7 +1558,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = FocusShieldConfiguration/FocusShieldConfiguration.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 50;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = DUU697NT67;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -1560,7 +1571,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 32.1.2;
+				MARKETING_VERSION = 32.1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1588,7 +1599,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = FocusShieldConfiguration/FocusShieldConfiguration.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 50;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = DUU697NT67;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -1601,7 +1612,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 32.1.2;
+				MARKETING_VERSION = 32.1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1689,7 +1700,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
 		};

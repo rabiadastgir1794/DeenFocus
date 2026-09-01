@@ -1300,7 +1300,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'Ver datas islâmicas';
 
   @override
-  String get quickActionsSupportUs => 'Apoie-nos';
+  String get quickActionsSupportUs => 'Doações';
 
   @override
   String get quickActionsSupportUsSubtitle => 'Ajude-nos a crescer';

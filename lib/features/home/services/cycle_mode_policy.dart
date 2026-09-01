@@ -76,40 +76,40 @@ class CycleModePolicy {
     return false;
   }
 
-  /// Pink highlight — **toggle must be ON** (intentional product rule).
+  /// Pink highlight for Cycle Mode calendar / graph days.
   ///
-  /// When the toggle is OFF, nothing is pink — including sealed historical days.
-  /// History still drives streaks / stats via [isCycleMember]; only UI colour
-  /// is suppressed so draft/historical states look inactive.
-  ///
-  /// When ON:
-  /// * Active window: every day start → planned end once the cycle has started
-  ///   (future days inside the window count, e.g. Aug 1–2 when today is Aug 1).
-  /// * Historical: sealed days ≤ today (shown while a new cycle is active).
+  /// * Sealed [CycleModeData.history] days ≤ today stay pink even when the
+  ///   toggle is OFF or the cycle period has ended (canonical history only —
+  ///   draft-only dates never highlight).
+  /// * Active window (toggle ON): every day start → planned end once the cycle
+  ///   has started (future days inside the window count while running). After
+  ///   the planned end, past/today members of that window stay pink until sealed.
   bool isHighlightable(DateTime date, {DateTime? now}) {
-    if (!data.isEnabled) return false;
-
     final day = _day(date);
     final today = _day(now ?? DateTime.now());
-
-    if (_isActiveWindowHighlight(day, today)) return true;
 
     for (final interval in data.history) {
       if (interval.containsDate(day) && !day.isAfter(today)) {
         return true;
       }
     }
+
+    if (_isActiveWindowHighlight(day, today)) return true;
     return false;
   }
 
-  /// Every calendar day in the configured active window, inclusive, once the
-  /// cycle has started — including today and future days still inside the window.
+  /// Active-window pink: cycle must have started and [day] must belong to the
+  /// configured window. Future in-window days only while the period is still
+  /// running; past/today stay pink after the planned end (until sealed).
   bool _isActiveWindowHighlight(DateTime day, DateTime today) {
     final active = data.activeInterval;
     if (active == null) return false;
     if (today.isBefore(_day(data.startDate))) return false;
-    if (today.isAfter(_day(data.plannedEndDate))) return false;
-    return active.containsDate(day);
+    if (!active.containsDate(day)) return false;
+    if (day.isAfter(today)) {
+      return !today.isAfter(_day(data.plannedEndDate));
+    }
+    return true;
   }
 
   /// Prayer / day / Fajr streaks — bridge only (zero contribution).

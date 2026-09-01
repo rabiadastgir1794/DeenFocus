@@ -628,7 +628,8 @@ class CycleModeInterval {
 ///
 /// * [draft] — values configured, toggle OFF. No pink, no analytics impact.
 /// * [active] — toggle ON. Rules apply; valid days may highlight.
-/// * [historical] — toggle OFF after a cycle was sealed into [CycleModeData.history].
+/// * [historical] — toggle OFF after a cycle was sealed into [CycleModeData.history]
+///   (sealed days still show pink via [CycleModePolicy.isHighlightable]).
 ///
 /// A device may have draft preferences **and** historical intervals at once
 /// (next-cycle draft + past sealed windows). Draft fields never create an

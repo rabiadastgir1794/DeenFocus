@@ -1294,7 +1294,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'इस्लामी तिथियाँ देखें';
 
   @override
-  String get quickActionsSupportUs => 'हमारा समर्थन करें';
+  String get quickActionsSupportUs => 'दान';
 
   @override
   String get quickActionsSupportUsSubtitle => 'हमें बढ़ने में मदद करें';

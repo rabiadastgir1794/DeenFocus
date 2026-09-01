@@ -1294,7 +1294,7 @@ class AppLocalizationsAz extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'İslam tarixlərinə baxın';
 
   @override
-  String get quickActionsSupportUs => 'Bizi dəstəkləyin';
+  String get quickActionsSupportUs => 'Bağışlar';
 
   @override
   String get quickActionsSupportUsSubtitle => 'Böyüməyimizə kömək edin';

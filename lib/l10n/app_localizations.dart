@@ -2456,7 +2456,7 @@ abstract class AppLocalizations {
   /// No description provided for @quickActionsSupportUs.
   ///
   /// In en, this message translates to:
-  /// **'Support Us'**
+  /// **'Donations'**
   String get quickActionsSupportUs;
 
   /// No description provided for @quickActionsSupportUsSubtitle.

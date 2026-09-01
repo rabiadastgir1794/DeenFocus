@@ -295,7 +295,7 @@ void main() {
       );
       expect(snap.prayerStreak, 10); // Aug 11 + Aug 8
       expect(snap.dayStreak, 2);
-      expect(CycleModePolicy(data).isHighlightable(DateTime(2026, 8, 9)), isFalse);
+      expect(CycleModePolicy(data).isHighlightable(DateTime(2026, 8, 9)), isTrue);
       expect(CycleModePolicy(data).shouldPauseStreaks(DateTime(2026, 8, 9)), isTrue);
     });
 

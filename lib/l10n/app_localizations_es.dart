@@ -1302,7 +1302,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'Ver fechas islámicas';
 
   @override
-  String get quickActionsSupportUs => 'Apóyanos';
+  String get quickActionsSupportUs => 'Donaciones';
 
   @override
   String get quickActionsSupportUsSubtitle => 'Ayúdanos a crecer';

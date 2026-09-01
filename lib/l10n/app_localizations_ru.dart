@@ -1300,7 +1300,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'Смотреть исламские даты';
 
   @override
-  String get quickActionsSupportUs => 'Поддержите нас';
+  String get quickActionsSupportUs => 'Пожертвования';
 
   @override
   String get quickActionsSupportUsSubtitle => 'Помогите нам расти';

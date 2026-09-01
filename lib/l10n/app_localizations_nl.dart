@@ -1296,7 +1296,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickActionsCalendarSubtitle => 'Islamitische datums bekijken';
 
   @override
-  String get quickActionsSupportUs => 'Steun ons';
+  String get quickActionsSupportUs => 'Donaties';
 
   @override
   String get quickActionsSupportUsSubtitle => 'Help ons groeien';

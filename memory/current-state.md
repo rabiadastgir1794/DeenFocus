@@ -1,6 +1,18 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-08-31 — Lock Screen Style reminder used persisted selection.
+> Last updated: 2026-09-01 — Cycle Mode historical pink highlight.
+
+## Status: Cycle Mode historical days stay pink (2026-09-01)
+`CycleModePolicy.isHighlightable` no longer requires the toggle to be ON.
+Sealed `CycleModeData.history` days (and past active-window days after the
+period ends) stay pink on Insights, Home prayer-streak bars, and Calendar —
+all via `HomeTabViewModel.isCycleHighlight` / `weekCycleHighlights`. Draft-only
+dates still do not highlight. Streaks / stats / Cycle behavior unchanged.
+
+## Status: Android Play release build 32.1.3+47 (2026-08-31)
+Bumped `pubspec.yaml` `32.1.2+46` → `32.1.3+47`. Signed release App Bundle:
+`build/app/outputs/bundle/release/app-release.aab` (~149.6MB), release keystore
+from `android/local.properties`. Ready for Google Play upload.
 
 ## Status: Lock Screen Style reminder ignored selection (2026-08-31)
 “Did you pray?” always showed Classic even when Tasbih (or another style) was
@@ -98,10 +110,10 @@ When apps are locked for Salah and the user confirms on-time ("Yes, I prayed"
 2. then `FocusController.unlockAppsAfterPrayerMarked()` → `unlockFromHome`
    when locked (temp unlock; clears Salah latch; persists settings; notifies)
 
-Home Unlock card: `_FocusLockCard` is driven by `context.select` Focus snap
-(`isAppsLocked` / `isTemporarilyUnlocked`), so Unlock → Relock (or hide when
-fully unlocked) updates immediately without restart/navigation. Reopening Home
-reloads persisted `temporarilyUnlockedUntil` via FocusController.initialize.
+Home no longer shows a dedicated Unlock/Relock banner (`_FocusLockCard`
+removed). Lock/unlock/relock from Home uses the Focus Mode card lock button.
+Unlock-after-prayer still runs via `FocusController.unlockAppsAfterPrayerMarked()`
+(persisted `temporarilyUnlockedUntil`; Focus snap updates without restart).
 
 Entry points (no duplicated unlock logic):
 - Soft Home reminder + Lock Screen Styles → `LockScreenPrayerActions.confirmOnTime`

@@ -1227,7 +1227,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quickActionsCalendarSubtitle => '查看伊斯兰日期';
 
   @override
-  String get quickActionsSupportUs => '支持我们';
+  String get quickActionsSupportUs => '捐赠';
 
   @override
   String get quickActionsSupportUsSubtitle => '帮助我们成长';

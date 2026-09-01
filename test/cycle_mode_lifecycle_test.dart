@@ -13,7 +13,7 @@ void main() {
       };
 
   group('Policy verification', () {
-    test('toggle OFF — no pink on historical days (intentional)', () {
+    test('toggle OFF — sealed historical days stay pink', () {
       final data = CycleModeData(
         isEnabled: true,
         startDate: DateTime(2026, 8, 1),
@@ -24,7 +24,7 @@ void main() {
       expect(policy.isActive, isFalse);
       expect(policy.isCycleMember(DateTime(2026, 8, 2)), isTrue);
       expect(policy.shouldPauseStreaks(DateTime(2026, 8, 2)), isTrue);
-      expect(policy.isHighlightable(DateTime(2026, 8, 2)), isFalse);
+      expect(policy.isHighlightable(DateTime(2026, 8, 2)), isTrue);
     });
 
     test('active window — future days inside range are highlightable', () {
@@ -95,7 +95,7 @@ void main() {
       data = data.disableOn(DateTime(2026, 8, 2));
       policy = CycleModePolicy(data);
       expect(data.history, hasLength(1));
-      expect(policy.isHighlightable(DateTime(2026, 8, 1)), isFalse);
+      expect(policy.isHighlightable(DateTime(2026, 8, 1)), isTrue);
       expect(policy.isCycleMember(DateTime(2026, 8, 1)), isTrue);
 
       statusHistory = {

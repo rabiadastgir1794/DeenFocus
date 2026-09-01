@@ -83,12 +83,23 @@ void main() {
       expect(policy.isHighlightable(DateTime(2026, 8, 3), now: aug1), isFalse);
     });
 
-    test('toggle OFF removes all pink including active window', () {
+    test('toggle OFF keeps sealed days pink; disable day stays normal', () {
+      final disableDay = DateTime(2026, 8, 3);
       final policy = CycleModePolicy(
-        twoDayPolicy().data.disableOn(DateTime(2026, 8, 3)),
+        twoDayPolicy().data.disableOn(disableDay),
       );
-      expect(policy.isHighlightable(DateTime(2026, 8, 1), now: aug1), isFalse);
-      expect(policy.isHighlightable(DateTime(2026, 8, 2), now: aug1), isFalse);
+      expect(
+        policy.isHighlightable(DateTime(2026, 8, 1), now: disableDay),
+        isTrue,
+      );
+      expect(
+        policy.isHighlightable(DateTime(2026, 8, 2), now: disableDay),
+        isTrue,
+      );
+      expect(
+        policy.isHighlightable(DateTime(2026, 8, 3), now: disableDay),
+        isFalse,
+      );
       expect(policy.isCycleMember(DateTime(2026, 8, 1)), isTrue);
     });
 
@@ -125,8 +136,9 @@ void main() {
       expect(policy.isHighlightable(aug29, now: aug30), isTrue);
       expect(policy.isHighlightable(aug30, now: aug30), isTrue);
 
-      expect(policy.isHighlightable(aug29, now: aug31), isFalse);
-      expect(policy.isHighlightable(aug30, now: aug31), isFalse);
+      // Period ended (toggle still ON, not yet sealed) — past window days stay pink.
+      expect(policy.isHighlightable(aug29, now: aug31), isTrue);
+      expect(policy.isHighlightable(aug30, now: aug31), isTrue);
       expect(policy.isHighlightable(aug31, now: aug31), isFalse);
 
       expect(policy.isTodayProtected(now: aug28), isFalse);
@@ -140,6 +152,24 @@ void main() {
       expect(policy.shouldPauseStreaks(aug30, now: aug30), isTrue);
       expect(policy.shouldPauseStreaks(aug29, now: aug31), isTrue);
       expect(policy.shouldPauseStreaks(aug31, now: aug31), isFalse);
+    });
+
+    test('ON Monday → OFF later → Monday stays pink everywhere', () {
+      final monday = DateTime(2026, 8, 31); // Monday
+      final tuesday = DateTime(2026, 9, 1);
+      final data = CycleModeData(
+        isEnabled: true,
+        startDate: monday,
+        cycleLength: 6,
+      ).disableOn(tuesday);
+      final policy = CycleModePolicy(data);
+
+      expect(data.history, hasLength(1));
+      expect(data.history.single.startDate, monday);
+      expect(data.history.single.endDate, monday);
+      expect(policy.isHighlightable(monday, now: tuesday), isTrue);
+      expect(policy.isHighlightable(tuesday, now: tuesday), isFalse);
+      expect(policy.isCycleMember(monday), isTrue);
     });
   });
 }
