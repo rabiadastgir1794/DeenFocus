@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.rnr.deenfocus.prayer-live-activity-refresh</string>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -30,16 +34,35 @@
 		<string>whatsapp</string>
 		<string>whatsapp-business</string>
 	</array>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>NSAlarmKitUsageDescription</key>
+	<string>DeenFocus schedules prayer alarms so you are gently reminded at each salah time, even in Silent Mode or Focus.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartVmService._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Allow Flutter tools on your computer to connect and debug your application. This prompt will not appear for release builds.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We use your location to show accurate prayer times and Qibla direction.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to show accurate prayer times and Qibla direction.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>DeenFocus needs microphone access so you can practice Quran recitation and receive on-device tajweed feedback. Audio stays on your device.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>SKIncludeConsumableInAppPurchaseHistory</key>
+	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -49,39 +72,13 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>SKIncludeConsumableInAppPurchaseHistory</key>
-	<true/>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>DeenFocus needs microphone access so you can practice Quran recitation and receive on-device tajweed feedback. Audio stays on your device.</string>
-	<key>NSAlarmKitUsageDescription</key>
-	<string>DeenFocus schedules prayer alarms so you are gently reminded at each salah time, even in Silent Mode or Focus.</string>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-		<string>fetch</string>
-	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.rnr.deenfocus.prayer-live-activity-refresh</string>
-	</array>
-	<!-- Required for Flutter debug attach / hot reload on a physical device. -->
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Allow Flutter tools on your computer to connect and debug your application. This prompt will not appear for release builds.</string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_dartVmService._tcp</string>
 	</array>
 </dict>
 </plist>

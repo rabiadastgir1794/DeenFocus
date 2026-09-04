@@ -434,6 +434,16 @@ abstract class StorageService {
     await prefs.setString(_keyHomePrayerCacheJson, serializedTimes);
   }
 
+  /// Drop cached calculated times so the next load recomputes for new coords.
+  static Future<void> clearHomePrayerCache() async {
+    final prefs = await _prefs;
+    await prefs.remove(_keyHomePrayerCacheDate);
+    await prefs.remove(_keyHomePrayerCacheLat);
+    await prefs.remove(_keyHomePrayerCacheLng);
+    await prefs.remove(_keyHomePrayerCacheSect);
+    await prefs.remove(_keyHomePrayerCacheJson);
+  }
+
   static Future<bool> get homeNotificationPrompted async {
     final prefs = await _prefs;
     return prefs.getBool(_keyHomeNotificationPrompted) ?? false;

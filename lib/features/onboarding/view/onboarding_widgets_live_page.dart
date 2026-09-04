@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/spacing.dart';
 import '../../../core/services/prayer_live_activity_service.dart';
+import '../../../core/utils/responsive_layout.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/onboarding_widgets_live_phone_frames.dart';
 
@@ -21,6 +22,9 @@ class OnboardingWidgetsLivePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final showLive = PrayerLiveActivityService.visibleOnThisPlatform;
     final l10n = AppLocalizations.of(context)!;
+    final subtitle = showLive
+        ? l10n.onboardingWidgetsLiveSubtitle
+        : l10n.onboardingWidgetsLiveSubtitleAndroid;
     final textTheme = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final titleColor =
@@ -63,7 +67,7 @@ class OnboardingWidgetsLivePage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: compact ? 0 : 4.w),
                 child: Text(
-                  l10n.onboardingWidgetsLiveSubtitle,
+                  subtitle,
                   textAlign: TextAlign.center,
                   style: textTheme.bodyLarge?.copyWith(
                     color: bodyColor,
@@ -76,13 +80,18 @@ class OnboardingWidgetsLivePage extends StatelessWidget {
               SizedBox(height: compact ? 20.h : 32.h),
               Expanded(
                 flex: showLive ? 11 : 1,
-                child: _WidgetsSection(
-                  compact: compact,
-                  iconCircle: iconCircle,
-                  accentGreen: accentGreen,
-                  bodyColor: bodyColor,
-                  titleColor: titleColor,
-                  l10n: l10n,
+                child: Align(
+                  alignment: showLive
+                      ? Alignment.topCenter
+                      : Alignment.center,
+                  child: _WidgetsSection(
+                    compact: compact,
+                    iconCircle: iconCircle,
+                    accentGreen: accentGreen,
+                    bodyColor: bodyColor,
+                    titleColor: titleColor,
+                    l10n: l10n,
+                  ),
                 ),
               ),
               if (showLive) ...[
@@ -133,27 +142,29 @@ class _WidgetsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = _SectionCopy(
+      compact: compact,
+      iconCircle: iconCircle,
+      accentGreen: accentGreen,
+      bodyColor: bodyColor,
+      titleColor: titleColor,
+      icon: Icons.widgets_rounded,
+      title: l10n.onboardingWidgetsSectionTitle,
+      body: _EmphasisBodyText(
+        prefix: l10n.onboardingWidgetsSectionBodyPrefix,
+        emphasis: l10n.onboardingWidgetsSectionBodyEmphasis,
+        bodyColor: bodyColor,
+        emphasisColor: accentGreen,
+        fontSize: compact ? 12.5.sp : 13.5.sp,
+      ),
+    );
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 11,
-          child: _SectionCopy(
-            compact: compact,
-            iconCircle: iconCircle,
-            accentGreen: accentGreen,
-            bodyColor: bodyColor,
-            titleColor: titleColor,
-            icon: Icons.widgets_rounded,
-            title: l10n.onboardingWidgetsSectionTitle,
-            body: _EmphasisBodyText(
-              prefix: l10n.onboardingWidgetsSectionBodyPrefix,
-              emphasis: l10n.onboardingWidgetsSectionBodyEmphasis,
-              bodyColor: bodyColor,
-              emphasisColor: accentGreen,
-              fontSize: compact ? 12.5.sp : 13.5.sp,
-            ),
-          ),
+          child: _scrollableSectionCopy(context, copy),
         ),
         SizedBox(width: compact ? 6.w : 10.w),
         Expanded(
@@ -188,6 +199,24 @@ class _LiveActivitiesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = _SectionCopy(
+      compact: compact,
+      iconCircle: iconCircle,
+      accentGreen: accentGreen,
+      bodyColor: bodyColor,
+      titleColor: titleColor,
+      icon: Icons.schedule_rounded,
+      title: l10n.onboardingLiveActivitiesSectionTitle,
+      body: _EmphasisBodyText(
+        prefix: l10n.onboardingLiveActivitiesSectionBodyPrefix,
+        emphasis: l10n.onboardingLiveActivitiesSectionBodyEmphasis,
+        suffix: l10n.onboardingLiveActivitiesSectionBodySuffix,
+        bodyColor: bodyColor,
+        emphasisColor: accentGreen,
+        fontSize: compact ? 12.5.sp : 13.5.sp,
+      ),
+    );
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -202,27 +231,21 @@ class _LiveActivitiesSection extends StatelessWidget {
         SizedBox(width: compact ? 6.w : 10.w),
         Expanded(
           flex: 11,
-          child: _SectionCopy(
-            compact: compact,
-            iconCircle: iconCircle,
-            accentGreen: accentGreen,
-            bodyColor: bodyColor,
-            titleColor: titleColor,
-            icon: Icons.schedule_rounded,
-            title: l10n.onboardingLiveActivitiesSectionTitle,
-            body: _EmphasisBodyText(
-              prefix: l10n.onboardingLiveActivitiesSectionBodyPrefix,
-              emphasis: l10n.onboardingLiveActivitiesSectionBodyEmphasis,
-              suffix: l10n.onboardingLiveActivitiesSectionBodySuffix,
-              bodyColor: bodyColor,
-              emphasisColor: accentGreen,
-              fontSize: compact ? 12.5.sp : 13.5.sp,
-            ),
-          ),
+          child: _scrollableSectionCopy(context, copy),
         ),
       ],
     );
   }
+}
+
+/// On iPad the side-by-side rows stay, but section copy scrolls if vertical
+/// space is tight (prevents RenderFlex overflow without changing phone layout).
+Widget _scrollableSectionCopy(BuildContext context, Widget copy) {
+  if (!ResponsiveLayout.isTablet(context)) return copy;
+  return SingleChildScrollView(
+    physics: const ClampingScrollPhysics(),
+    child: copy,
+  );
 }
 
 class _SectionCopy extends StatelessWidget {

@@ -86,6 +86,10 @@ class UserProfileService extends ChangeNotifier {
   }
 
   Future<void> setLocation(LocationSuggestion value) async {
+    if (value.latitude == null || value.longitude == null) {
+      // Refuse name-only updates — Home would show the new city with old times.
+      return;
+    }
     _locationName = value.title.trim();
     _locationSubtitle = value.subtitle.trim();
     if (_locationSubtitle!.toLowerCase() == _locationName!.toLowerCase() ||
@@ -102,9 +106,9 @@ class UserProfileService extends ChangeNotifier {
       latitude: _latitude,
       longitude: _longitude,
     );
-    if (_latitude != null && _longitude != null) {
-      await DailyRefreshService.instance.refreshNow();
-    }
+    // Custom wall-clock overrides and cached times belong to the previous city.
+    await StorageService.clearHomePrayerCache();
+    await DailyRefreshService.instance.refreshNow();
     notifyListeners();
   }
 

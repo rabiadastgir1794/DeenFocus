@@ -107,7 +107,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get locationOrDivider => 'या';
 
   @override
-  String get locationPrivacyNote => 'आपके डिवाइस पर ही रहता है';
+  String get locationPrivacyTitle => 'हम आपकी गोपनीयता का सम्मान करते हैं';
+
+  @override
+  String get locationPrivacyBody =>
+      'हम आपके स्थान का उपयोग केवल सटीक क़िबला दिशा, नमाज़ के समय और नज़दीकी मस्जिदों के लिए करते हैं।\nहम आपका स्थान कभी संग्रहीत या साझा नहीं करते।';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'नमाज़ के समय';
@@ -345,6 +349,10 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'सबसे ज़रूरी चीज़ से जुड़े रहें — होम स्क्रीन या लॉक स्क्रीन से ही।';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'सबसे ज़रूरी चीज़ से जुड़े रहें — होम स्क्रीन से ही।';
 
   @override
   String get onboardingWidgetsSectionTitle => 'विजेट';

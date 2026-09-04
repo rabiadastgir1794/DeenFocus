@@ -109,7 +109,11 @@ class AppLocalizationsRo extends AppLocalizations {
   String get locationOrDivider => 'sau';
 
   @override
-  String get locationPrivacyNote => 'Rămâne pe dispozitivul tău';
+  String get locationPrivacyTitle => 'Respectăm confidențialitatea ta';
+
+  @override
+  String get locationPrivacyBody =>
+      'Folosim locația ta doar pentru Qibla, orele de rugăciune și moscheile din apropiere.\nNu stocăm și nu partajăm niciodată locația ta.';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'Ore de rugăciune';
@@ -349,6 +353,10 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'Rămâi conectat la ce contează cel mai mult — de pe ecranul principal sau de blocare.';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'Rămâi conectat la ce contează cel mai mult — de pe ecranul principal.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'Widgeturi';

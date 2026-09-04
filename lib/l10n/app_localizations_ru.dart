@@ -106,7 +106,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get locationOrDivider => 'или';
 
   @override
-  String get locationPrivacyNote => 'Остаётся на вашем устройстве';
+  String get locationPrivacyTitle => 'Мы уважаем вашу конфиденциальность';
+
+  @override
+  String get locationPrivacyBody =>
+      'Мы используем ваше местоположение только для точной киблы, времён намаза и ближайших мечетей.\nМы никогда не сохраняем и не передаём ваше местоположение.';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'Время намаза';
@@ -346,6 +350,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'Будьте на связи с самым важным — прямо с домашнего экрана или экрана блокировки.';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'Будьте на связи с самым важным — прямо с домашнего экрана.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'Виджеты';

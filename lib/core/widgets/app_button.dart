@@ -45,7 +45,6 @@ class AppButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 56.h,
       child: ElevatedButton(
         onPressed: _isDisabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
@@ -55,12 +54,14 @@ class AppButton extends StatelessWidget {
           disabledForegroundColor: foregroundColor,
           elevation: 2,
           shadowColor: Colors.black.withValues(alpha: 0.1),
+          minimumSize: Size(double.infinity, 56.h),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
           padding: EdgeInsets.symmetric(
             horizontal: Spacing.lg.w,
-            vertical: Spacing.md.h,
+            vertical: 14.h,
           ),
         ),
         child: loading

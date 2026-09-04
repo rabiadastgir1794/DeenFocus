@@ -29,6 +29,8 @@ import '../../../../features/tajweed/view/tajweed_asset_debug_screen.dart'
 import '../../../../l10n/app_localizations.dart';
 import '../../../focus/model/focus_models.dart';
 import '../../helpers/lock_screen_style_preference.dart';
+import '../../services/prayer_settings_service.dart';
+import '../../viewmodel/home_tab_view_model.dart';
 import '../widgets/lock_screen_options/lock_screen_options_popup.dart';
 import '../widgets/lock_screen_options/lock_screen_style.dart';
 import 'settings_about_screen.dart';
@@ -781,7 +783,10 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initialSelection;
+    // Do not pre-select the saved row for Save — a stale name/coords pair
+    // (e.g. "Lahore" label with Singapore lat/lng) must not be re-persisted.
+    // User must pick GPS or a city search result with fresh coordinates.
+    _selectedLocation = null;
   }
 
   @override
@@ -805,6 +810,16 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
                     _selectedLocation = value;
                   });
                 },
+                onPermissionLocationResolved: (value) {
+                  setState(() {
+                    _selectedLocation = value;
+                  });
+                },
+                onManualLocationResolved: (value) {
+                  setState(() {
+                    _selectedLocation = value;
+                  });
+                },
               ),
             ),
             if (!keyboardOpen)
@@ -813,13 +828,34 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _selectedLocation == null || _saving
+                    onPressed: _selectedLocation == null ||
+                            _selectedLocation!.latitude == null ||
+                            _selectedLocation!.longitude == null ||
+                            _saving
                         ? null
                         : () async {
                             setState(() => _saving = true);
-                            await context
-                                .read<UserProfileService>()
-                                .setLocation(_selectedLocation!);
+                            final selected = _selectedLocation!;
+                            final profile =
+                                context.read<UserProfileService>();
+                            final prayerSettings =
+                                context.read<PrayerSettingsService>();
+                            await prayerSettings.clearAllCustomTimes();
+                            await profile.setLocation(selected);
+                            if (!context.mounted) return;
+                            // Home may not be under this route — try to refresh.
+                            try {
+                              await context
+                                  .read<HomeTabViewModel>()
+                                  .syncLocationIfChanged(
+                                    selected.latitude,
+                                    selected.longitude,
+                                    selected.title,
+                                    selected.subtitle,
+                                  );
+                            } on ProviderNotFoundException {
+                              // Opened from a context without Home VM.
+                            }
                             if (context.mounted) Navigator.of(context).pop();
                           },
                     child: Text(

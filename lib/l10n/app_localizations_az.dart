@@ -106,7 +106,11 @@ class AppLocalizationsAz extends AppLocalizations {
   String get locationOrDivider => 'və ya';
 
   @override
-  String get locationPrivacyNote => 'Cihazınızda qalır';
+  String get locationPrivacyTitle => 'Məxfiliyinizə hörmət edirik';
+
+  @override
+  String get locationPrivacyBody =>
+      'Məkanınızı yalnız dəqiq Qiblə istiqaməti, namaz vaxtları və yaxın məscidlər üçün istifadə edirik.\nMəkanınızı heç vaxt saxlamırıq və paylaşmırıq.';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'Namaz vaxtları';
@@ -345,6 +349,10 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'Ən vacib olanla bağlı qalın — birbaşa Ana Ekrandan və ya Kilid Ekranından.';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'Ən vacib olanla bağlı qalın — birbaşa Ana Ekrandan.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'Vidjetlər';

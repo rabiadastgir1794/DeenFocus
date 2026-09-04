@@ -732,20 +732,11 @@ class HomeTabViewModel extends ChangeNotifier {
 
       _prayerStreakState = _ensureWeekDays(state, weekStart);
       // Sync weekDays into persistent status history (single source of truth).
-      final history = Map<String, Map<TrackablePrayer, PrayerMarkStatus>>.from(
-        _prayerStreakState.statusHistory.map(
-          (k, v) => MapEntry(k, Map<TrackablePrayer, PrayerMarkStatus>.from(v)),
-        ),
+      // Union — never replace a fuller history day with a partial week row.
+      final history = HomePrayerStreakState.mergeWeekDaysIntoHistory(
+        statusHistory: _prayerStreakState.statusHistory,
+        weekDays: _prayerStreakState.weekDays,
       );
-      for (final day in _prayerStreakState.weekDays) {
-        final confirmed = <TrackablePrayer, PrayerMarkStatus>{
-          for (final p in TrackablePrayer.values)
-            if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
-        };
-        if (confirmed.isNotEmpty) {
-          history[day.dateKey] = confirmed;
-        }
-      }
 
       _prayerStreakState = _prayerStreakState.copyWith(statusHistory: history);
       _prayerStreakState = _hydrateWeekDaysFromHistory(_prayerStreakState);
@@ -1290,15 +1281,44 @@ class HomeTabViewModel extends ChangeNotifier {
     String? newLocationName,
     String? newLocationSubtitle,
   ) async {
-    if (newLatitude == null || newLongitude == null) return;
-    if (newLatitude == latitude && newLongitude == longitude) return;
-    latitude = newLatitude;
-    longitude = newLongitude;
+    final nameChanged = newLocationName != locationName ||
+        newLocationSubtitle != locationSubtitle;
+    final coordsChanged = !_sameCoord(newLatitude, latitude) ||
+        !_sameCoord(newLongitude, longitude);
+    if (!nameChanged && !coordsChanged) return;
+
     locationName = newLocationName;
     locationSubtitle = newLocationSubtitle;
+
+    // Label must never get ahead of coordinates — that shows City A with
+    // times for City B (or stale GPS).
+    if (newLatitude == null || newLongitude == null) {
+      if (coordsChanged) {
+        latitude = null;
+        longitude = null;
+        prayerTimes = null;
+        notifyListeners();
+      } else if (nameChanged) {
+        notifyListeners();
+      }
+      return;
+    }
+
+    latitude = newLatitude;
+    longitude = newLongitude;
+    // Masjid-specific wall-clock edits must not follow the user to a new city.
+    if (coordsChanged) {
+      await _prayerSettingsService.clearAllCustomTimes();
+      await StorageService.clearHomePrayerCache();
+    }
     await _loadPrayerTimes();
     await _rescheduleNotificationsIfPossible();
     notifyListeners();
+  }
+
+  static bool _sameCoord(double? a, double? b) {
+    if (a == null || b == null) return a == b;
+    return (a - b).abs() < 0.0001;
   }
 
   Future<void> _loadEvents() async {
@@ -1586,20 +1606,10 @@ class HomeTabViewModel extends ChangeNotifier {
   }
 
   Map<String, Map<TrackablePrayer, PrayerMarkStatus>> _mergedStatusHistory() {
-    final merged = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
-      for (final e in _prayerStreakState.statusHistory.entries)
-        e.key: Map<TrackablePrayer, PrayerMarkStatus>.from(e.value),
-    };
-    for (final day in _prayerStreakState.weekDays) {
-      final dayStatuses = <TrackablePrayer, PrayerMarkStatus>{
-        for (final p in TrackablePrayer.values)
-          if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
-      };
-      if (dayStatuses.isNotEmpty) {
-        merged[day.dateKey] = dayStatuses;
-      }
-    }
-    return merged;
+    return HomePrayerStreakState.mergeWeekDaysIntoHistory(
+      statusHistory: _prayerStreakState.statusHistory,
+      weekDays: _prayerStreakState.weekDays,
+    );
   }
 
   /// Always recalculate from [PrayerAnalyticsService] — never mutate streaks.

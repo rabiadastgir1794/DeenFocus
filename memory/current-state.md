@@ -1,6 +1,76 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-09-01 — Cycle Mode historical pink highlight.
+> Last updated: 2026-09-04 — location change clears Singapore-stale times.
+
+## Status: Location change keeps old city prayer times (2026-09-04)
+Symptom: label Lahore, times still Singapore. Causes: (1) custom wall-clock
+overrides from previous city; (2) Settings Save could re-persist a stale
+name/coords pair; (3) prayer cache not always invalidated.
+
+Fix: clear all custom times + home prayer cache on coords change; Settings
+Save requires a fresh GPS/search pick (not pre-selected stale row); force
+Home `syncLocationIfChanged` after save.
+
+## Status: Prayer times mismatched location label (2026-09-04)
+City could be saved/shown without lat/lng (manual tap applied name-only).
+Home UI used `profile.locationName` but times from VM lat/lng — sync
+bailed when coords were null, so new city label + old prayer times.
+
+Fix: geocode before apply; refuse save/onboarding persist without coords;
+`syncLocationIfChanged` updates name and clears stale times when coords
+missing; Settings Save disabled until lat/lng present.
+
+## Status: Cycle Mode streak restore 5+2→6 / day 0 (2026-09-04)
+Root cause: `_loadPrayerStreak` / `_mergedStatusHistory` **replaced**
+`statusHistory[day]` with a partial `weekDays` row. A stale week row
+missing Fajr on Day1 dropped that mark permanently on save. With Day2
+correctly Cycle-paused, tip walk counted today's 2 + Day1's remaining 4
+(=6) and Day streak broke at incomplete Day1 (=0). Expected 7 / 1.
+
+Fix: `HomePrayerStreakState.mergeWeekDaysIntoHistory` unions week marks
+onto history (never deletes history-only prayers). Load + live merge use
+it; hydrate then heals weekDays from the fuller history.
+
+Cycle Mode pause/bridge rules unchanged. Tests:
+`test/cycle_mode_day1_bridge_restore_test.dart`.
+
+## Status: Location onboarding App Store 5.1.1(iv) (2026-09-04)
+Location permission step: removed Skip; removed separate “Allow Location
+Access”; sole primary CTA is Continue on the page (bottom chrome Continue
+hidden on this step). Continue immediately calls
+`PermissionService.requestLocationStatus()`. Manual city entry always
+visible; denial keeps the screen and manual path. Privacy copy updated to
+title + body (purpose + never store/share). Manual city selection
+auto-advances via `applyManualLocation`.
+
+## Status: Onboarding widgets/live layout restored (2026-09-01)
+iPad overflow fix had switched phones to stacked scroll layout when height
+< 760px (always true under onboarding chrome). Restored original side-by-side
+phone layout (text+mockup rows, Expanded flex). iPad keeps same layout; section
+copy scrolls only on tablet when vertical space is tight. Live Activities
+section hidden on Android via `PrayerLiveActivityService.visibleOnThisPlatform`;
+Android uses `onboardingWidgetsLiveSubtitleAndroid` (Home Screen only). All
+strings via l10n.
+
+## Status: iPad App Store orientation validation (2026-09-01)
+multitasking requires all four `UISupportedInterfaceOrientations` and Info.plist
+only listed Portrait. Fix: keep iPhone portrait-only; add
+`UISupportedInterfaceOrientations~ipad` with Portrait, UpsideDown, LandscapeLeft,
+LandscapeRight. App already targets iPhone+iPad (`TARGETED_DEVICE_FAMILY=1,2`).
+
+## Status: iPad home promo carousel overflow (2026-09-01)
+Home promo slide mockups (Live Activity, Widgets, Tajweed, Lock Screen, Alarm)
+showed yellow right-overflow on iPad because decorative phone art used full-screen
+ScreenUtil `.w`/`.sp` inside tiny fixed mockups. All carousel mockups now render
+on a `_PromoMockupCanvas` (124×154 design, FittedBox scale) with fixed design
+pixels; slide row uses `Flexible` for the mockup slot.
+
+## Status: iPad layout overflow fixes (2026-09-01)
+Onboarding + Home promo carousel overflowed on iPad (ScreenUtil `.w` vs `.h`
+mismatch + fixed heights). Fixes: `ResponsiveLayout` helper; `AppButton`
+uses `minimumSize` not rigid height; welcome + widgets/live pages scroll /
+stack on tablet; focus-mode tiles use `.h` + minHeight; home promo carousel
+taller on tablet with flex body + height-scaled mockups.
 
 ## Status: Cycle Mode historical days stay pink (2026-09-01)
 `CycleModePolicy.isHighlightable` no longer requires the toggle to be ON.

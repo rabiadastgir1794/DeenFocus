@@ -132,6 +132,9 @@ class _HomeTabViewState extends State<_HomeTabView>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isTabActive != widget.isTabActive) {
       context.read<HomeTabViewModel>().setTabActive(widget.isTabActive);
+      if (widget.isTabActive) {
+        unawaited(context.read<FocusController>().refresh());
+      }
     }
   }
 
@@ -344,9 +347,16 @@ class _HomeTabViewState extends State<_HomeTabView>
             FilledButton(
               onPressed: () {
                 Navigator.of(ctx).maybePop();
-                unawaited(
-                  context.read<UserProfileService>().setLocation(newLocation),
-                );
+                unawaited(() async {
+                  if (!context.mounted) return;
+                  await context
+                      .read<PrayerSettingsService>()
+                      .clearAllCustomTimes();
+                  if (!context.mounted) return;
+                  await context.read<UserProfileService>().setLocation(
+                    newLocation,
+                  );
+                }());
               },
               style: FilledButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -499,6 +509,9 @@ class _HomeTabViewState extends State<_HomeTabView>
       alpha: 0.20,
     );
 
+    // Unlock banner whenever Focus reports apps locked (Salah, Night, Child, etc.).
+    final showHomeFocusLockCard = focusSnap.isAppsLocked;
+
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
@@ -553,6 +566,14 @@ class _HomeTabViewState extends State<_HomeTabView>
             ),
             const SizedBox(height: 8),
             const _HomeVerseBanner(),
+            if (showHomeFocusLockCard) ...[
+              const SizedBox(height: 12),
+              _FocusLockCard(
+                isTemporarilyUnlocked: focusSnap.isTemporarilyUnlocked,
+                onUnlock: () => unawaited(focusVm.unlockFromHome()),
+                onRelock: () => unawaited(focusVm.relockNowFromHome()),
+              ),
+            ],
             // Banner = running cycle only (not merely toggle ON).
             if (snap.cycleModeRunning) ...[
               const SizedBox(height: 12),
@@ -1109,6 +1130,100 @@ class _QuickActionItem extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FocusLockCard extends StatelessWidget {
+  const _FocusLockCard({
+    required this.isTemporarilyUnlocked,
+    required this.onUnlock,
+    required this.onRelock,
+  });
+
+  /// Driven by Home's [FocusController] select snap so Unlock → Relock (or
+  /// hide) updates as soon as [FocusController.unlockAppsAfterPrayerMarked]
+  /// / [FocusController.unlockFromHome] notifies — no tab switch required.
+  final bool isTemporarilyUnlocked;
+  final VoidCallback onUnlock;
+  final VoidCallback onRelock;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      onTap: isTemporarilyUnlocked ? onRelock : onUnlock,
+      borderRadius: BorderRadius.circular(22),
+      child: Ink(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: colorScheme.error.withValues(alpha: 0.3)),
+          color: colorScheme.errorContainer.withValues(alpha: 0.32),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: Theme.of(
+                  context,
+                ).colorScheme.surface.withValues(alpha: 0.72),
+              ),
+              child: Icon(Icons.lock_outline, color: colorScheme.error),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isTemporarilyUnlocked
+                        ? l10n.homeAppsUnlocked
+                        : l10n.homeAppsLocked,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isTemporarilyUnlocked
+                        ? l10n.homeTapToRelock
+                        : l10n.homeTapToUnlock,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(999),
+                color: colorScheme.error.withValues(alpha: 0.1),
+              ),
+              child: Text(
+                isTemporarilyUnlocked ? l10n.homeRelock : l10n.homeUnlock,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: colorScheme.error,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

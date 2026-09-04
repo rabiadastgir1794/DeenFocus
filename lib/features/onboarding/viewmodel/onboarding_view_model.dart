@@ -57,10 +57,10 @@ class OnboardingViewModel extends ChangeNotifier {
   String _selectedLanguageCode = 'en';
 
   /// Screens that show Skip on top right.
+  /// Location step omits Skip (App Store 5.1.1(iv) — no dismiss of permission purpose).
   bool get showLanguageChangeOption => _currentIndex == 0;
   bool get showSkip =>
       _currentIndex < 3 ||
-      _currentIndex == locationStepIndex ||
       _currentIndex == notificationStepIndex ||
       _currentIndex == screenTimeStepIndex ||
       _currentIndex == selectAppsStepIndex ||
@@ -156,29 +156,28 @@ class OnboardingViewModel extends ChangeNotifier {
     if (_selectedSect != null) {
       await StorageService.setSect(_selectedSect!.name);
     }
-    if (_selectedLocation != null) {
+    if (_selectedLocation != null &&
+        _selectedLocation!.latitude != null &&
+        _selectedLocation!.longitude != null) {
       await StorageService.setUserLocation(
         name: _selectedLocation!.title,
         subtitle: _selectedLocation!.subtitle,
         latitude: _selectedLocation!.latitude,
         longitude: _selectedLocation!.longitude,
       );
-      if (_selectedLocation!.latitude != null &&
-          _selectedLocation!.longitude != null) {
-        // Do not await: refresh loads prayer data, notifications, widgets and can
-        // take multiple seconds. Home tab loads the same data on open anyway.
-        unawaited(
-          DailyRefreshService.instance.refreshNow().catchError((
-            Object e,
-            StackTrace st,
-          ) {
-            assert(() {
-              debugPrint('Onboarding: refresh after location failed: $e\n$st');
-              return true;
-            }());
-          }),
-        );
-      }
+      // Do not await: refresh loads prayer data, notifications, widgets and can
+      // take multiple seconds. Home tab loads the same data on open anyway.
+      unawaited(
+        DailyRefreshService.instance.refreshNow().catchError((
+          Object e,
+          StackTrace st,
+        ) {
+          assert(() {
+            debugPrint('Onboarding: refresh after location failed: $e\n$st');
+            return true;
+          }());
+        }),
+      );
     }
     _didComplete = true;
     notifyListeners();
@@ -215,6 +214,13 @@ class OnboardingViewModel extends ChangeNotifier {
   /// Saves a GPS-resolved location after permission grant and requests auto-advance.
   void applyPermissionLocation(LocationSuggestion location) {
     _locationGranted = true;
+    _selectedLocation = location;
+    _pendingLocationAutoAdvance = true;
+    notifyListeners();
+  }
+
+  /// Saves a manually chosen city and requests auto-advance (no GPS permission).
+  void applyManualLocation(LocationSuggestion location) {
     _selectedLocation = location;
     _pendingLocationAutoAdvance = true;
     notifyListeners();

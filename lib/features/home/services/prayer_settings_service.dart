@@ -96,4 +96,24 @@ class PrayerSettingsService extends ChangeNotifier {
     await replaceEntry(prayer, entry);
     customTimeRevision.value++;
   }
+
+  /// Clears every per-prayer wall-clock override (e.g. after a city change).
+  Future<void> clearAllCustomTimes() async {
+    await ensureLoaded();
+    var changed = false;
+    var next = _state;
+    for (final prayer in TrackablePrayer.values) {
+      if (next.forPrayer(prayer).customTimeMinutes == null) continue;
+      next = next.copyWithEntry(
+        prayer,
+        next.forPrayer(prayer).copyWith(clearCustomTime: true),
+      );
+      changed = true;
+    }
+    if (!changed) return;
+    _state = next;
+    await _persist();
+    customTimeRevision.value++;
+    notifyListeners();
+  }
 }

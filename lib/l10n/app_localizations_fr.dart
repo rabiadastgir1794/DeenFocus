@@ -107,7 +107,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get locationOrDivider => 'ou';
 
   @override
-  String get locationPrivacyNote => 'Reste sur votre appareil';
+  String get locationPrivacyTitle => 'Nous respectons votre vie privée';
+
+  @override
+  String get locationPrivacyBody =>
+      'Nous utilisons votre position uniquement pour afficher la Qibla, les horaires de prière et les mosquées à proximité.\nNous ne stockons ni ne partageons jamais votre position.';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'Horaires de prière';
@@ -346,6 +350,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'Restez connecté à l’essentiel — depuis l’écran d’accueil ou l’écran de verrouillage.';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'Restez connecté à l’essentiel — depuis l’écran d’accueil.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'Widgets';

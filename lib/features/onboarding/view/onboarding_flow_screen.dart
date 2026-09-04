@@ -416,8 +416,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
   }
 
   Future<void> _onSkipPressed(OnboardingViewModel vm) async {
-    if (vm.isLocationStep ||
-        vm.isNotificationStep ||
+    if (vm.isNotificationStep ||
         vm.isScreenTimeStep ||
         vm.isSelectAppsStep ||
         vm.isAppLockDemoStep) {
@@ -500,7 +499,6 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
               style: TextButton.styleFrom(
                 foregroundColor:
                     isWelcomeStep ||
-                        vm.isLocationStep ||
                         vm.isNotificationStep ||
                         vm.isScreenTimeStep ||
                         vm.isSelectAppsStep ||
@@ -603,6 +601,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                           onPermissionChanged: vm.setLocationGranted,
                           onPermissionLocationResolved:
                               vm.applyPermissionLocation,
+                          onManualLocationResolved: vm.applyManualLocation,
                         ),
                         OnboardingNotificationsPage(
                           onEnableTap: () =>
@@ -703,6 +702,12 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                   currentIndex: vm.currentIndex,
                 ),
               ] else if (vm.currentIndex == vm.totalSteps - 1) ...[
+                AppProgressIndicator(
+                  totalSteps: vm.totalSteps,
+                  currentIndex: vm.currentIndex,
+                ),
+              ] else if (vm.isLocationStep) ...[
+                // Continue lives on the location page and triggers the OS prompt.
                 AppProgressIndicator(
                   totalSteps: vm.totalSteps,
                   currentIndex: vm.currentIndex,

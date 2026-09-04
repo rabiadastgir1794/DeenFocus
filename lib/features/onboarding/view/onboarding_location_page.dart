@@ -53,6 +53,7 @@ class OnboardingLocationPage extends StatefulWidget {
     required this.onLocationSelected,
     this.onPermissionChanged,
     this.onPermissionLocationResolved,
+    this.onManualLocationResolved,
     this.initialSelection,
   });
 
@@ -61,6 +62,9 @@ class OnboardingLocationPage extends StatefulWidget {
 
   /// Called when GPS location is saved after permission grant (triggers auto-advance).
   final ValueChanged<LocationSuggestion>? onPermissionLocationResolved;
+
+  /// Called when a city is chosen via manual search (triggers auto-advance).
+  final ValueChanged<LocationSuggestion>? onManualLocationResolved;
   final LocationSuggestion? initialSelection;
 
   @override
@@ -117,7 +121,8 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
     }
   }
 
-  Future<void> _onAllowLocationTap() async {
+  /// Primary CTA: request native location permission immediately (App Store 5.1.1(iv)).
+  Future<void> _onContinueTap() async {
     _cityFocusNode.unfocus();
     final status = await PermissionService.requestLocationStatus();
     if (!mounted) return;
@@ -130,6 +135,7 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
 
     widget.onPermissionChanged?.call(false);
 
+    // Denial keeps this screen open; manual city entry remains available.
     if (status.isPermanentlyDenied) {
       final l10n = AppLocalizations.of(context)!;
       await AppPermissionDialog.show(
@@ -233,6 +239,14 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
       }
     }
 
+    if (!fromPermissionGrant) {
+      final manualResolved = widget.onManualLocationResolved;
+      if (manualResolved != null) {
+        manualResolved(location);
+        return;
+      }
+    }
+
     widget.onLocationSelected(location);
   }
 
@@ -246,8 +260,18 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
 
     setState(() => _isResolvingLocation = true);
     try {
+      final resolved = await LocationService.resolveCoordinates(item);
       if (!mounted) return;
-      _applySelectedLocation(item);
+      if (resolved == null) {
+        // Never apply a city without coordinates — prayer times would stay on
+        // the previous location (or go blank) while the label shows the new city.
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.onboardingNoLocationsFound)),
+        );
+        return;
+      }
+      _applySelectedLocation(resolved);
     } finally {
       if (mounted) {
         setState(() => _isResolvingLocation = false);
@@ -368,11 +392,12 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
             _LocationBenefitChips(compact: compact),
             SizedBox(height: Spacing.lg.h),
             _LocationActionButton(
-              label: l10n.locationButton,
-              onPressed: _isResolvingLocation ? null : _onAllowLocationTap,
+              label: l10n.continueButton,
+              onPressed: _isResolvingLocation ? null : _onContinueTap,
               loading: _isResolvingLocation,
               primary: true,
               icon: CupertinoIcons.location_solid,
+              showTrailingChevron: true,
             ),
             SizedBox(height: Spacing.md.h),
             _OrDivider(label: l10n.locationOrDivider),
@@ -384,7 +409,10 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
               icon: CupertinoIcons.building_2_fill,
             ),
             SizedBox(height: Spacing.md.h),
-            _PrivacyNote(label: l10n.locationPrivacyNote),
+            _PrivacyNote(
+              title: l10n.locationPrivacyTitle,
+              body: l10n.locationPrivacyBody,
+            ),
             SizedBox(height: Spacing.md.h),
           ],
         ),
@@ -434,14 +462,6 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
             ],
           ),
           SizedBox(height: Spacing.sm.h),
-          _LocationActionButton(
-            label: l10n.locationButton,
-            onPressed: _isResolvingLocation ? null : _onAllowLocationTap,
-            loading: _isResolvingLocation,
-            primary: true,
-            icon: CupertinoIcons.location_solid,
-          ),
-          SizedBox(height: Spacing.sm.h),
           SizedBox(
             height: _kLocationActionHeight.h,
             child: ValueListenableBuilder<bool>(
@@ -474,7 +494,10 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
             ),
           ),
           SizedBox(height: Spacing.sm.h),
-          _PrivacyNote(label: l10n.locationPrivacyNote),
+          _PrivacyNote(
+            title: l10n.locationPrivacyTitle,
+            body: l10n.locationPrivacyBody,
+          ),
         ],
       ),
     );
@@ -482,30 +505,50 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
 }
 
 class _PrivacyNote extends StatelessWidget {
-  const _PrivacyNote({required this.label});
+  const _PrivacyNote({required this.title, required this.body});
 
-  final String label;
+  final String title;
+  final String body;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        Icon(
-          Icons.lock_rounded,
-          size: 13.sp,
-          color: colorScheme.onSurfaceVariant,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.lock_rounded,
+              size: 14.sp,
+              color: colorScheme.primary,
+            ),
+            SizedBox(width: 6.w),
+            Flexible(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                  height: 1.3,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
+          ],
         ),
-        SizedBox(width: 6.w),
+        SizedBox(height: 4.h),
         Text(
-          label,
+          body,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
             fontSize: 11.sp,
-            height: 1.35,
+            height: 1.4,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ],
@@ -820,6 +863,7 @@ class _LocationActionButton extends StatelessWidget {
     required this.primary,
     this.icon,
     this.loading = false,
+    this.showTrailingChevron = false,
   });
 
   final String label;
@@ -827,6 +871,7 @@ class _LocationActionButton extends StatelessWidget {
   final bool primary;
   final IconData? icon;
   final bool loading;
+  final bool showTrailingChevron;
 
   @override
   Widget build(BuildContext context) {
@@ -847,6 +892,32 @@ class _LocationActionButton extends StatelessWidget {
               strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
             ),
+          )
+        : showTrailingChevron
+        ? Row(
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18.sp, color: foregroundColor),
+                SizedBox(width: Spacing.sm.w),
+              ],
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SizedBox(width: Spacing.sm.w),
+              Icon(
+                CupertinoIcons.chevron_forward,
+                size: 16.sp,
+                color: foregroundColor,
+              ),
+            ],
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,

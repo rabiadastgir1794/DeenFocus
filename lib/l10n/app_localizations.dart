@@ -306,11 +306,17 @@ abstract class AppLocalizations {
   /// **'or'**
   String get locationOrDivider;
 
-  /// No description provided for @locationPrivacyNote.
+  /// No description provided for @locationPrivacyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Stays on your device'**
-  String get locationPrivacyNote;
+  /// **'We respect your privacy'**
+  String get locationPrivacyTitle;
+
+  /// No description provided for @locationPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We use your location only to show accurate Qibla direction, prayer times and nearby masjids.\nWe never store or share your location.'**
+  String get locationPrivacyBody;
 
   /// No description provided for @locationFeaturePrayerTimesTitle.
   ///
@@ -743,6 +749,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stay connected with what matters most — right from your Home Screen or Lock Screen.'**
   String get onboardingWidgetsLiveSubtitle;
+
+  /// No description provided for @onboardingWidgetsLiveSubtitleAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay connected with what matters most — right from your Home Screen.'**
+  String get onboardingWidgetsLiveSubtitleAndroid;
 
   /// No description provided for @onboardingWidgetsSectionTitle.
   ///

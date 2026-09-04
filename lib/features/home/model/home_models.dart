@@ -434,6 +434,33 @@ class HomePrayerStreakState {
   final int bestPrayerStreak;
   final int bestDayStreak;
 
+  /// Unions [weekDays] marks into [statusHistory] without dropping history-only
+  /// prayers. A stale/partial week row must never replace a fuller history day
+  /// (that previously turned Day1's 5 + Cycle bridge + today 2 into 6 / 0).
+  static Map<String, Map<TrackablePrayer, PrayerMarkStatus>>
+  mergeWeekDaysIntoHistory({
+    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
+    required Iterable<HomePrayerChecklistDay> weekDays,
+  }) {
+    final merged = <String, Map<TrackablePrayer, PrayerMarkStatus>>{
+      for (final e in statusHistory.entries)
+        e.key: Map<TrackablePrayer, PrayerMarkStatus>.from(e.value),
+    };
+    for (final day in weekDays) {
+      final overlays = <TrackablePrayer, PrayerMarkStatus>{
+        for (final p in TrackablePrayer.values)
+          if (day.statusFor(p) != PrayerMarkStatus.none) p: day.statusFor(p),
+      };
+      if (overlays.isEmpty) continue;
+      final next = Map<TrackablePrayer, PrayerMarkStatus>.from(
+        merged[day.dateKey] ?? const <TrackablePrayer, PrayerMarkStatus>{},
+      );
+      next.addAll(overlays);
+      merged[day.dateKey] = next;
+    }
+    return merged;
+  }
+
   HomePrayerStreakState copyWith({
     String? weekStartDateKey,
     List<HomePrayerChecklistDay>? weekDays,

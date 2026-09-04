@@ -10,14 +10,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Home no longer shows a dedicated Unlock/Relock banner; lock actions live on
-/// the Focus Mode card.
+/// Mirrors Home Unlock card visibility (any active app lock — no Relock banner).
 class _HomeUnlockCardProbe extends StatelessWidget {
   const _HomeUnlockCardProbe();
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.shrink(key: Key('unlock_card_hidden'));
+    final l10n = AppLocalizations.of(context)!;
+    final locked = context.select<FocusController, bool>((c) => c.isAppsLocked);
+    if (!locked) {
+      return const SizedBox.shrink(key: Key('unlock_card_hidden'));
+    }
+    return Text(
+      l10n.homeUnlock,
+      key: const Key('unlock_card_label'),
+    );
   }
 }
 
@@ -60,7 +67,7 @@ void main() {
   });
 
   testWidgets(
-    'unlockAppsAfterPrayerMarked updates Focus without Home Relock banner',
+    'unlockAppsAfterPrayerMarked clears Unlock label without Relock banner',
     (tester) async {
       final now = DateTime.now();
       SharedPreferences.setMockInitialValues({
@@ -83,7 +90,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('Unlock'), findsNothing);
+      expect(find.text('Unlock'), findsOneWidget);
       expect(find.text('Relock'), findsNothing);
 
       await FocusController.unlockAppsAfterPrayerMarked();
@@ -99,7 +106,7 @@ void main() {
   );
 
   testWidgets(
-    'on-time mark (all Yes-I-prayed entry points) unlocks without Home banner',
+    'on-time mark unlocks and drops Unlock label without Relock banner',
     (tester) async {
       final now = DateTime.now();
       final tip = _tipPrayer(now);
@@ -129,7 +136,7 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.text('Unlock'), findsNothing);
+      expect(find.text('Unlock'), findsOneWidget);
       expect(find.text('Relock'), findsNothing);
 
       await homeVm.markPrayerStatus(now, tip, PrayerMarkStatus.onTime);

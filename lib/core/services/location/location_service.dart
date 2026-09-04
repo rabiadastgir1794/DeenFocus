@@ -92,7 +92,36 @@ abstract class LocationService {
     );
   }
 
-/// Distance in kilometres between two coordinates.
+  /// Resolve coordinates for a city name when the suggestion has none.
+  /// Returns null if geocoding fails.
+  static Future<LocationSuggestion?> resolveCoordinates(
+    LocationSuggestion suggestion,
+  ) async {
+    if (suggestion.latitude != null && suggestion.longitude != null) {
+      return suggestion;
+    }
+
+    final query = <String>[
+      suggestion.title.trim(),
+      suggestion.subtitle.trim(),
+    ].where((part) => part.isNotEmpty).join(', ');
+    if (query.isEmpty) return null;
+
+    try {
+      final results = await locationFromAddress(query).timeout(
+        const Duration(seconds: 12),
+      );
+      if (results.isEmpty) return null;
+      return suggestion.copyWith(
+        latitude: results.first.latitude,
+        longitude: results.first.longitude,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Distance in kilometres between two coordinates.
   static double distanceBetweenKm(
     double lat1,
     double lng1,

@@ -104,7 +104,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get locationOrDivider => '或';
 
   @override
-  String get locationPrivacyNote => '仅保存在你的设备上';
+  String get locationPrivacyTitle => '我们尊重你的隐私';
+
+  @override
+  String get locationPrivacyBody =>
+      '我们仅将你的位置用于准确的朝拜方向、礼拜时间和附近清真寺。\n我们从不存储或分享你的位置。';
 
   @override
   String get locationFeaturePrayerTimesTitle => '礼拜时间';
@@ -328,6 +332,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get onboardingWidgetsLiveSubtitle => '与最重要的事保持连接——就在主屏幕或锁屏上。';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid => '与最重要的事保持连接——就在主屏幕上。';
 
   @override
   String get onboardingWidgetsSectionTitle => '小组件';

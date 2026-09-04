@@ -106,7 +106,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get locationOrDivider => 'أو';
 
   @override
-  String get locationPrivacyNote => 'يبقى على جهازك';
+  String get locationPrivacyTitle => 'نحن نحترم خصوصيتك';
+
+  @override
+  String get locationPrivacyBody =>
+      'نستخدم موقعك فقط لإظهار اتجاه القبلة وأوقات الصلاة والمساجد القريبة بدقة.\nلا نخزّن موقعك ولا نشاركه أبدًا.';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'أوقات الصلاة';
@@ -344,6 +348,10 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'ابقَ على تواصل مع ما يهمك أكثر — مباشرة من الشاشة الرئيسية أو شاشة القفل.';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'ابقَ على تواصل مع ما يهمك أكثر — مباشرة من الشاشة الرئيسية.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'الأدوات';

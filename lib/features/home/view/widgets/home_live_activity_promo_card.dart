@@ -10,6 +10,7 @@ import '../../../../core/services/prayer_live_activity_service.dart';
 import '../../../../core/services/prayer_live_activity_toggle.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../tajweed/tajweed_entry_point.dart';
 import '../../../tajweed/tajweed_free_preview.dart';
@@ -338,12 +339,15 @@ class _HomeLiveActivityPromoCardState extends State<HomeLiveActivityPromoCard>
         ),
     ];
 
+    final carouselHeight =
+        ResponsiveLayout.isTablet(context) ? 280.h : 248.h;
+
     return Padding(
       padding: EdgeInsets.only(top: 12.h),
       child: Column(
         children: [
           SizedBox(
-            height: 236.h,
+            height: carouselHeight,
             child: Padding(
               padding: EdgeInsets.only(top: 8.h),
               child: slides.length == 1
@@ -528,17 +532,22 @@ class _HomePromoSlide extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    body,
-                                    maxLines: 4,
-                                    softWrap: true,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: bodyColor,
-                                          height: 1.35,
-                                        ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        body,
+                                        maxLines: 4,
+                                        softWrap: true,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: bodyColor,
+                                              height: 1.35,
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(height: 12.h),
                                   DecoratedBox(
@@ -590,7 +599,13 @@ class _HomePromoSlide extends StatelessWidget {
                               ),
                             ),
                           ),
-                          mockup,
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: mockup,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -660,6 +675,39 @@ class _PromoNewBadge extends StatelessWidget {
   }
 }
 
+/// Scales decorative carousel mockups from a fixed design canvas so full-screen
+/// ScreenUtil `.w` / `.sp` never blow up mini phone art on iPad.
+class _PromoMockupCanvas extends StatelessWidget {
+  const _PromoMockupCanvas({
+    this.designWidth = 124,
+    this.designHeight = 154,
+    required this.child,
+  });
+
+  final double designWidth;
+  final double designHeight;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final displayHeight = ResponsiveLayout.isTablet(context) ? 136.h : 154.h;
+    final displayWidth = displayHeight * (designWidth / designHeight);
+    return SizedBox(
+      width: displayWidth,
+      height: displayHeight,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+          width: designWidth,
+          height: designHeight,
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class _PromoWidgetsMockup extends StatelessWidget {
   const _PromoWidgetsMockup();
 
@@ -668,25 +716,22 @@ class _PromoWidgetsMockup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final phoneWidth = 92.w;
-    final liveWidth = 124.w;
-    final hang = (liveWidth - phoneWidth) / 2;
+    const phoneWidth = 92.0;
+    const hang = (124 - phoneWidth) / 2;
 
-    return SizedBox(
-      width: liveWidth,
-      height: 154.h,
+    return _PromoMockupCanvas(
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         children: [
           Positioned(
             top: 0,
             left: hang,
             width: phoneWidth,
-            bottom: 8.h,
+            bottom: 8,
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFF1A3328),
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: const Color(0xFF2A3D34), width: 2),
                 boxShadow: [
                   BoxShadow(
@@ -703,35 +748,35 @@ class _PromoWidgetsMockup extends StatelessWidget {
                     child: CustomPaint(painter: _GreenLockWallpaperPainter()),
                   ),
                   Positioned(
-                    top: 8.h,
+                    top: 8,
                     left: 0,
                     right: 0,
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           '9:41',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.sp,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 1,
                           ),
                         ),
-                        SizedBox(height: 10.h),
+                        const SizedBox(height: 10),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Wrap(
-                            spacing: 6.w,
-                            runSpacing: 6.h,
+                            spacing: 6,
+                            runSpacing: 6,
                             alignment: WrapAlignment.center,
                             children: List.generate(
                               6,
                               (i) => Container(
-                                width: 16.w,
-                                height: 16.w,
+                                width: 16,
+                                height: 16,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(alpha: 0.22),
-                                  borderRadius: BorderRadius.circular(4.r),
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
                               ),
                             ),
@@ -749,10 +794,10 @@ class _PromoWidgetsMockup extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Container(
-              padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 8.h),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: _widgetGreen,
-                borderRadius: BorderRadius.circular(14.r),
+                borderRadius: BorderRadius.circular(14),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.2),
@@ -769,9 +814,9 @@ class _PromoWidgetsMockup extends StatelessWidget {
                     children: [
                       Text(
                         l10n.widgetDailyVerseTitle,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 7.sp,
+                          fontSize: 7,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -780,33 +825,33 @@ class _PromoWidgetsMockup extends StatelessWidget {
                         l10n.appTitle,
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.9),
-                          fontSize: 7.sp,
+                          fontSize: 7,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
-                  Text(
+                  const SizedBox(height: 4),
+                  const Text(
                     'وَإِيَّاكَ نَسْتَعِينُ',
                     textDirection: TextDirection.rtl,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 9.sp,
+                      fontSize: 9,
                       fontWeight: FontWeight.w600,
                       height: 1.2,
                     ),
                   ),
-                  SizedBox(height: 6.h),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
                       for (final label in [
                         l10n.homePrayerFajr,
                         l10n.homePrayerDhuhr,
                         l10n.homePrayerAsr,
-                      ]) ...[
+                      ])
                         Expanded(
                           child: Text(
                             label,
@@ -815,12 +860,11 @@ class _PromoWidgetsMockup extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 6.sp,
+                              fontSize: 6,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                      ],
                     ],
                   ),
                 ],
@@ -847,24 +891,20 @@ class _PromoTajweedMockup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mockupWidth = 124.w;
-
-    return SizedBox(
-      width: mockupWidth,
-      height: 154.h,
+    return _PromoMockupCanvas(
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         children: [
           Positioned(
             top: 0,
             left: 0,
-            right: 8.w,
-            bottom: 18.h,
+            right: 8,
+            bottom: 18,
             child: Container(
-              padding: EdgeInsets.fromLTRB(8.w, 6.h, 8.w, 6.h),
+              padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
               decoration: BoxDecoration(
                 color: _practiceBg,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: _practiceBorder),
                 boxShadow: [
                   BoxShadow(
@@ -881,89 +921,88 @@ class _PromoTajweedMockup extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       _MiniCircleIcon(Icons.tune_rounded),
-                      SizedBox(width: 4.w),
+                      const SizedBox(width: 4),
                       _MiniCircleIcon(Icons.volume_up_rounded),
                     ],
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   Text(
                     TajweedFreePreview.fallbackArabic,
                     textDirection: TextDirection.rtl,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 8.sp,
+                    style: const TextStyle(
+                      fontSize: 8,
                       fontWeight: FontWeight.w600,
                       height: 1.25,
-                      color: const Color(0xFF1A3328),
+                      color: Color(0xFF1A3328),
                     ),
                   ),
-                  SizedBox(height: 2.h),
-                  Text(
+                  const SizedBox(height: 2),
+                  const Text(
                     'bsm allh alrhman alrhym',
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 5.sp,
-                      color: const Color(0xFF6B7C74),
+                      fontSize: 5,
+                      color: Color(0xFF6B7C74),
                       height: 1.2,
                     ),
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   Text(
                     l10n.readingSettingsTajweedFreePreviewTranslation,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 4.5.sp,
-                      color: const Color(0xFF6B7C74),
+                    style: const TextStyle(
+                      fontSize: 4.5,
+                      color: Color(0xFF6B7C74),
                       height: 1.2,
                     ),
                   ),
                   const Spacer(),
                   Center(
                     child: Container(
-                      width: 24.w,
-                      height: 24.w,
+                      width: 24,
+                      height: 24,
                       decoration: const BoxDecoration(
                         color: _primaryGreen,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.mic_rounded,
-                        size: 12.sp,
+                        size: 12,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  SizedBox(height: 3.h),
+                  const SizedBox(height: 3),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      for (final h in [3.0, 6.0, 4.0, 7.0, 3.0]) ...[
+                      for (final h in [3.0, 6.0, 4.0, 7.0, 3.0])
                         Container(
-                          width: 2.w,
-                          height: h.h,
-                          margin: EdgeInsets.symmetric(horizontal: 0.5.w),
+                          width: 2,
+                          height: h,
+                          margin: const EdgeInsets.symmetric(horizontal: 0.5),
                           decoration: BoxDecoration(
                             color: _accentMint.withValues(alpha: 0.85),
-                            borderRadius: BorderRadius.circular(1.r),
+                            borderRadius: BorderRadius.circular(1),
                           ),
                         ),
-                      ],
                     ],
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   Text(
                     l10n.tajweedStartReciting,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 5.sp,
+                    style: const TextStyle(
+                      fontSize: 5,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF245C48),
+                      color: Color(0xFF245C48),
                     ),
                   ),
                 ],
@@ -973,12 +1012,12 @@ class _PromoTajweedMockup extends StatelessWidget {
           Positioned(
             right: 0,
             bottom: 0,
-            width: 88.w,
+            width: 88,
             child: Container(
-              padding: EdgeInsets.fromLTRB(8.w, 6.h, 8.w, 6.h),
+              padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
               decoration: BoxDecoration(
                 color: _feedbackBg,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _feedbackBorder.withValues(alpha: 0.7),
                 ),
@@ -997,24 +1036,24 @@ class _PromoTajweedMockup extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5.w,
-                          vertical: 1.5.h,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 1.5,
                         ),
                         decoration: BoxDecoration(
                           color: _primaryGreen.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: Text(
+                        child: const Text(
                           '0%',
                           style: TextStyle(
                             color: _accentMint,
-                            fontSize: 5.sp,
+                            fontSize: 5,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                      SizedBox(width: 4.w),
+                      const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           l10n.homeTajweedPromoAiFeedback,
@@ -1022,55 +1061,55 @@ class _PromoTajweedMockup extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 5.sp,
+                            fontSize: 5,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  const SizedBox(height: 4),
                   Text(
                     l10n.homeTajweedPromoWordAccuracy(0),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 7.sp,
+                      fontSize: 7,
                       fontWeight: FontWeight.w700,
                       height: 1.1,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  const SizedBox(height: 4),
                   _FeedbackStatRow(
                     color: _primaryGreen,
                     label: l10n.featureDemoTajweedStatCorrect,
                     count: '0',
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   _FeedbackStatRow(
                     color: const Color(0xFFF9A825),
                     label: l10n.featureDemoTajweedStatPronunciation,
                     count: '0',
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   _FeedbackStatRow(
                     color: const Color(0xFFE53935),
                     label: l10n.featureDemoTajweedStatWrong,
                     count: '1',
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   _FeedbackStatRow(
                     color: const Color(0xFF9E9E9E),
                     label: l10n.featureDemoTajweedStatMissed,
                     count: '3',
                   ),
-                  SizedBox(height: 5.h),
+                  const SizedBox(height: 5),
                   Center(
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 3.h,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(999),
@@ -1081,17 +1120,17 @@ class _PromoTajweedMockup extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.refresh_rounded,
-                            size: 6.sp,
+                            size: 6,
                             color: _accentMint,
                           ),
-                          SizedBox(width: 3.w),
+                          const SizedBox(width: 3),
                           Text(
                             l10n.tajweedDownloadTryAgain,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: _accentMint,
-                              fontSize: 5.sp,
+                              fontSize: 5,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1117,15 +1156,15 @@ class _MiniCircleIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 12.w,
-      height: 12.w,
-      decoration: BoxDecoration(
-        color: const Color(0xFFE8F0EB),
+      width: 12,
+      height: 12,
+      decoration: const BoxDecoration(
+        color: Color(0xFFE8F0EB),
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
-        size: 6.sp,
+        size: 6,
         color: const Color(0xFF245C48),
       ),
     );
@@ -1148,11 +1187,11 @@ class _FeedbackStatRow extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 4.w,
-          height: 4.w,
+          width: 4,
+          height: 4,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        SizedBox(width: 4.w),
+        const SizedBox(width: 4),
         Expanded(
           child: Text(
             label,
@@ -1160,7 +1199,7 @@ class _FeedbackStatRow extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 4.5.sp,
+              fontSize: 4.5,
               height: 1.1,
             ),
           ),
@@ -1169,7 +1208,7 @@ class _FeedbackStatRow extends StatelessWidget {
           count,
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.9),
-            fontSize: 4.5.sp,
+            fontSize: 4.5,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -1185,13 +1224,13 @@ class _PromoLockScreenStylesMockup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mockupWidth = 124.w;
-    final sideWidth = 34.w;
-    final sideHeight = 106.h;
-    final centerWidth = 44.w;
-    final centerHeight = 130.h;
-    final overlap = 9.w;
-    final centerLift = 8.h;
+    const mockupWidth = 124.0;
+    const sideWidth = 34.0;
+    const sideHeight = 106.0;
+    const centerWidth = 44.0;
+    const centerHeight = 130.0;
+    const overlap = 9.0;
+    const centerLift = 8.0;
 
     final groupWidth = (2 * sideWidth) + centerWidth - (2 * overlap);
     final inset = (mockupWidth - groupWidth) / 2;
@@ -1199,11 +1238,9 @@ class _PromoLockScreenStylesMockup extends StatelessWidget {
     final centerX = leftX + sideWidth - overlap;
     final rightX = centerX + centerWidth - overlap;
 
-    return SizedBox(
-      width: mockupWidth,
-      height: 154.h,
+    return _PromoMockupCanvas(
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         children: [
           Positioned(
             left: leftX,
@@ -1648,26 +1685,22 @@ class _PromoPhoneMockup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final phoneWidth = 92.w;
-    final liveWidth = 124.w;
-    final hang = (liveWidth - phoneWidth) / 2;
+    const phoneWidth = 92.0;
+    const hang = (124 - phoneWidth) / 2;
 
-    return SizedBox(
-      width: liveWidth,
-      height: 154.h,
+    return _PromoMockupCanvas(
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         children: [
-          // Phone frame — green lock-screen wallpaper like the real device.
           Positioned(
             top: 0,
             left: hang,
             width: phoneWidth,
-            bottom: 8.h,
-            child: Container(
+            bottom: 8,
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color(0xFF0A1A14),
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: const Color(0xFF2A3D34), width: 2),
                 boxShadow: [
                   BoxShadow(
@@ -1677,93 +1710,95 @@ class _PromoPhoneMockup extends StatelessWidget {
                   ),
                 ],
               ),
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                children: [
-                  const Positioned.fill(
-                    child: CustomPaint(painter: _GreenLockWallpaperPainter()),
-                  ),
-                  // Mini Dynamic Island.
-                  Positioned(
-                    top: 5.h,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 7.w,
-                          vertical: 2.5.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.88),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.graphic_eq_rounded,
-                              size: 7.sp,
-                              color: _accentMint,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Stack(
+                  children: [
+                    const Positioned.fill(
+                      child: CustomPaint(painter: _GreenLockWallpaperPainter()),
+                    ),
+                    Positioned(
+                      top: 5,
+                      left: 4,
+                      right: 4,
+                      child: Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2.5,
                             ),
-                            SizedBox(width: 3.w),
-                            Text(
-                              l10n.homePrayerAsr,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 6.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.88),
+                              borderRadius: BorderRadius.circular(999),
                             ),
-                            SizedBox(width: 3.w),
-                            Text(
-                              '3:42 PM',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.9),
-                                fontSize: 6.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.graphic_eq_rounded,
+                                  size: 7,
+                                  color: _accentMint,
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  l10n.homePrayerAsr,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 6,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(width: 3),
+                                const Text(
+                                  '3:42 PM',
+                                  style: TextStyle(
+                                    color: Color(0xE6FFFFFF),
+                                    fontSize: 6,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 26.h,
-                    left: 6.w,
-                    right: 6.w,
-                    child: Column(
-                      children: [
-                        Text(
-                          '18:07',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.w600,
-                            height: 1,
+                    Positioned(
+                      top: 26,
+                      left: 6,
+                      right: 6,
+                      child: Column(
+                        children: [
+                          const Text(
+                            '18:07',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              height: 1,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 2.h),
-                        Text(
-                          l10n.featureDemoLiveActivityLockHint,
-                          maxLines: 1,
-                          overflow: TextOverflow.visible,
-                          softWrap: false,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 5.sp,
+                          const SizedBox(height: 2),
+                          Text(
+                            l10n.featureDemoLiveActivityLockHint,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 5,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-          // Wider than the phone so the Live Activity peeks past the bezel.
           Positioned(
             left: 0,
             right: 0,
@@ -2080,16 +2115,13 @@ class _PromoFullScreenAlarmMockup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final phoneWidth = 92.w;
-    final phoneHeight = 146.h;
-
-    return SizedBox(
-      width: phoneWidth,
-      height: phoneHeight,
-      child: Container(
+    return _PromoMockupCanvas(
+      designWidth: 92,
+      designHeight: 146,
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: Colors.black,
-          borderRadius: BorderRadius.circular(18.r),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(color: _phoneBorder, width: 2),
           boxShadow: [
             BoxShadow(
@@ -2099,125 +2131,129 @@ class _PromoFullScreenAlarmMockup extends StatelessWidget {
             ),
           ],
         ),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(8.w, 10.h, 8.w, 8.h),
-          child: Column(
-            children: [
-              Icon(
-                Icons.lock_rounded,
-                size: 10.sp,
-                color: Colors.white.withValues(alpha: 0.85),
-              ),
-              SizedBox(height: 6.h),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.lock_rounded,
+                  size: 10,
+                  color: Colors.white.withValues(alpha: 0.85),
+                ),
+                const SizedBox(height: 6),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.access_time_rounded,
+                          size: 7,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          l10n.prayerAlarmTitle(l10n.homePrayerMaghrib),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.92),
+                            fontSize: 6,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  '18:40',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    height: 1,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  l10n.appTitle,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.75),
+                    fontSize: 7,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: _accentGreen,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  alignment: Alignment.center,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      l10n.prayerAlarmIvePrayed,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 7,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  height: 16,
+                  padding: const EdgeInsets.only(right: 4),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.access_time_rounded,
-                        size: 7.sp,
-                        color: Colors.white.withValues(alpha: 0.9),
+                      Container(
+                        width: 14,
+                        margin: const EdgeInsets.all(1.5),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
                       ),
-                      SizedBox(width: 3.w),
-                      Text(
-                        l10n.prayerAlarmTitle(l10n.homePrayerMaghrib),
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          fontSize: 6.sp,
-                          fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            l10n.homeFullScreenAlarmPromoSlideToStop,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.45),
+                              fontSize: 6,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              Text(
-                '18:40',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w600,
-                  height: 1,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              SizedBox(height: 3.h),
-              Text(
-                l10n.appTitle,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.75),
-                  fontSize: 7.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 4.w),
-                decoration: BoxDecoration(
-                  color: _accentGreen,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                alignment: Alignment.center,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    l10n.prayerAlarmIvePrayed,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 7.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 6.h),
-              Container(
-                height: 16.h,
-                padding: EdgeInsets.only(right: 4.w),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 14.w,
-                      margin: EdgeInsets.all(1.5.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                    ),
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          l10n.homeFullScreenAlarmPromoSlideToStop,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.45),
-                            fontSize: 6.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

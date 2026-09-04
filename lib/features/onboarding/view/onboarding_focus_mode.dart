@@ -567,7 +567,7 @@ class _FocusModeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final badgeSize = compact ? 40.w : 44.w;
+    final badgeSize = compact ? 40.h : 44.h;
 
     return Material(
       color: colorScheme.surfaceContainerLowest,
@@ -576,7 +576,7 @@ class _FocusModeTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(18.r),
         child: Container(
-          height: compact ? 104.h : 116.h,
+          constraints: BoxConstraints(minHeight: compact ? 104.h : 116.h),
           padding: EdgeInsets.symmetric(
             horizontal: 8.w,
             vertical: compact ? 12.h : 14.h,
@@ -591,6 +591,7 @@ class _FocusModeTile extends StatelessWidget {
             ),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _FocusModeIconBadge(

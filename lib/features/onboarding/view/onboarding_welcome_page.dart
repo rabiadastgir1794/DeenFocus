@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/spacing.dart';
+import '../../../core/utils/responsive_layout.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/onboarding_welcome_theme.dart';
 
@@ -23,11 +24,14 @@ class OnboardingWelcomePage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact = constraints.maxHeight < 640;
+        final scrollable =
+            ResponsiveLayout.isTablet(context) || compact;
 
-        return Padding(
+        final content = Padding(
           padding: EdgeInsets.symmetric(horizontal: Spacing.lg.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               _WelcomeLogo(compact: compact),
               SizedBox(height: compact ? 20.h : 28.h),
@@ -72,6 +76,20 @@ class OnboardingWelcomePage extends StatelessWidget {
             ],
           ),
         );
+
+        if (scrollable) {
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(child: content),
+            ),
+          );
+        }
+
+        return content;
       },
     );
   }

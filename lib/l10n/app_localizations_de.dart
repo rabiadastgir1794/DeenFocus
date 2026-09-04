@@ -106,7 +106,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get locationOrDivider => 'oder';
 
   @override
-  String get locationPrivacyNote => 'Bleibt auf deinem Gerät';
+  String get locationPrivacyTitle => 'Wir respektieren deine Privatsphäre';
+
+  @override
+  String get locationPrivacyBody =>
+      'Wir nutzen deinen Standort nur für genaue Qibla-Richtung, Gebetszeiten und nahe Moscheen.\nWir speichern oder teilen deinen Standort nie.';
 
   @override
   String get locationFeaturePrayerTimesTitle => 'Gebetszeiten';
@@ -345,6 +349,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get onboardingWidgetsLiveSubtitle =>
       'Bleib verbunden mit dem, was am wichtigsten ist — direkt vom Home- oder Sperrbildschirm.';
+
+  @override
+  String get onboardingWidgetsLiveSubtitleAndroid =>
+      'Bleib verbunden mit dem, was am wichtigsten ist — direkt vom Home-Bildschirm.';
 
   @override
   String get onboardingWidgetsSectionTitle => 'Widgets';
