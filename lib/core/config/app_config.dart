@@ -6,6 +6,36 @@ abstract class AppConfig {
     'SUPERWALL_API_KEY_IOS',
   );
 
+  /// Google Play / package App ID used by TikTok (defaults applied in service).
+  static const String tiktokAppId = String.fromEnvironment(
+    'TIKTOK_APP_ID',
+    defaultValue: 'com.rnr.deenfocus',
+  );
+
+  /// TikTok App ID from Events Manager (not the Play package name).
+  static const String tiktokTtAppId = String.fromEnvironment(
+    'TIKTOK_TT_APP_ID',
+  );
+
+  /// TikTok App Secret from Events Manager — never commit this value.
+  static const String tiktokAppSecret = String.fromEnvironment(
+    'TIKTOK_APP_SECRET',
+  );
+
+  /// Meta / Facebook App ID from Meta App Dashboard.
+  static const String metaAppId = String.fromEnvironment('META_APP_ID');
+
+  /// Meta Client Token (Settings → Advanced) — required by current Meta SDK.
+  static const String metaClientToken = String.fromEnvironment(
+    'META_CLIENT_TOKEN',
+  );
+
+  /// Display name shown to Meta (Info.plist FacebookDisplayName).
+  static const String metaDisplayName = String.fromEnvironment(
+    'META_DISPLAY_NAME',
+    defaultValue: 'Deen Focus',
+  );
+
   static String get mapTilesUrlTemplate {
     const raw = String.fromEnvironment('MAP_TILES_URL');
     return raw.isEmpty

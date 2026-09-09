@@ -10,6 +10,8 @@ import 'package:media_kit/media_kit.dart';
 import 'package:provider/provider.dart';
 
 import 'app/routes/app_router.dart';
+import 'core/analytics/meta_app_events_service.dart';
+import 'core/analytics/tiktok_app_events_service.dart';
 import 'core/constants/app_languages.dart';
 import 'core/logger/app_logging.dart';
 import 'core/logger/logger_service.dart';
@@ -65,6 +67,16 @@ Future<void> main() async {
           logSuccess: true,
         ),
       );
+
+      // TikTok App Events (Android). Never blocks startup; no-ops without creds.
+      unawaited(TikTokAppEventsService.initialize());
+      // Meta / Facebook App Events (Android + iOS). Non-blocking.
+      unawaited(() async {
+        final ok = await MetaAppEventsService.initialize();
+        if (ok) {
+          await MetaAppEventsService.trackAppLaunch();
+        }
+      }());
 
       runApp(const DeenlyApp());
       LoggerService.instance.info(

@@ -30,6 +30,8 @@ target 'Runner' do
   use_frameworks!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  # Official Meta / Facebook App Events SDK (iOS).
+  pod 'FBSDKCoreKit', '~> 18.0'
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -44,6 +46,7 @@ post_install do |installer|
         '$(inherited)',
         'PERMISSION_LOCATION=1',
         'PERMISSION_NOTIFICATIONS=1',
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
       ]
       # media_kit: Mpv framework has no arm64 simulator slice.
       # Exclude arm64 for simulator so the linker uses x86_64 (via Rosetta).

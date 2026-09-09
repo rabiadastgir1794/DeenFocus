@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
+import '../analytics/meta_app_events_service.dart';
+import '../analytics/tiktok_app_events_service.dart';
 import '../config/app_config.dart';
 import '../services/billing_service.dart';
 import '../services/storage_service.dart';
@@ -516,7 +518,112 @@ class _AppSuperwallDelegate extends SuperwallDelegate {
   }
 
   @override
-  void handleSuperwallEvent(SuperwallEventInfo eventInfo) {}
+  void handleSuperwallEvent(SuperwallEventInfo eventInfo) {
+    // Fire conversion events only after Superwall confirms success.
+    // Never on paywall open / button tap. Restores are ignored to avoid dupes.
+    try {
+      final event = eventInfo.event;
+      switch (event.type) {
+        case EventType.freeTrialStart:
+          unawaited(_trackStartTrial(event));
+          break;
+        case EventType.subscriptionStart:
+          unawaited(_trackSubscribe(event));
+          break;
+        case EventType.nonRecurringProductPurchase:
+          unawaited(_trackPurchase(event));
+          break;
+        case EventType.transactionComplete:
+          // Paid subscription revenue: Superwall also emits subscriptionStart /
+          // freeTrialStart; Purchase is deduped by transaction id.
+          unawaited(_trackPurchase(event));
+          break;
+        case EventType.transactionRestore:
+        case EventType.restoreComplete:
+          // Do not attribute restored purchases as new conversions.
+          break;
+        default:
+          break;
+      }
+    } catch (e, st) {
+      debugPrint('[Superwall] Analytics event hook failed safely: $e');
+      debugPrintStack(stackTrace: st);
+    }
+  }
+
+  static String _conversionEventId(SuperwallEvent event, String suffix) {
+    final txn = event.transaction;
+    final productId = event.product?.productIdentifier ?? 'unknown';
+    final txnId =
+        txn?.storeTransactionId ??
+        txn?.originalTransactionIdentifier ??
+        '';
+    if (txnId.isNotEmpty) {
+      return '$suffix:$txnId:$productId';
+    }
+    // Fallback — still stable within a session for the same product.
+    return '$suffix:$productId:${DateTime.now().millisecondsSinceEpoch ~/ 60000}';
+  }
+
+  static Future<void> _trackStartTrial(SuperwallEvent event) async {
+    final product = event.product;
+    final eventId = _conversionEventId(event, 'StartTrial');
+    await TikTokAppEventsService.trackStartTrial(
+      eventId: eventId,
+      contentId: product?.productIdentifier,
+      currency: product?.currencyCode,
+      value: product?.price,
+    );
+    await MetaAppEventsService.trackStartTrial(
+      eventId: eventId,
+      contentId: product?.productIdentifier,
+      currency: product?.currencyCode,
+      value: product?.price,
+    );
+  }
+
+  static Future<void> _trackSubscribe(SuperwallEvent event) async {
+    final product = event.product;
+    final eventId = _conversionEventId(event, 'Subscribe');
+    await TikTokAppEventsService.trackSubscribe(
+      eventId: eventId,
+      contentId: product?.productIdentifier,
+      currency: product?.currencyCode,
+      value: product?.price,
+    );
+    await MetaAppEventsService.trackSubscribe(
+      eventId: eventId,
+      contentId: product?.productIdentifier,
+      currency: product?.currencyCode,
+      value: product?.price,
+    );
+  }
+
+  static Future<void> _trackPurchase(SuperwallEvent event) async {
+    final product = event.product;
+    final eventId = _conversionEventId(event, 'Purchase');
+    final currency = product?.currencyCode;
+    final value = product?.price;
+    await TikTokAppEventsService.trackPurchase(
+      eventId: eventId,
+      contentId: product?.productIdentifier,
+      contentType: 'product',
+      description: product?.productIdentifier,
+      currency: currency,
+      value: value,
+    );
+    if (currency != null &&
+        currency.trim().isNotEmpty &&
+        value != null) {
+      await MetaAppEventsService.trackPurchase(
+        eventId: eventId,
+        contentId: product?.productIdentifier,
+        contentType: 'product',
+        currency: currency,
+        value: value,
+      );
+    }
+  }
 
   @override
   void willDismissPaywall(PaywallInfo paywallInfo) {}
