@@ -836,14 +836,14 @@ void main() {
         5,
       );
 
-      // On Aug 4: not a cycle day → miss breaks streak to 0.
+      // On Aug 4: Fajr Missed contributes 0; sealed pause bridges to Jul 31 (5).
       expect(
         PrayerStreakCalculator.calculate(
           now: DateTime(2026, 8, 4, 23, 0),
           statusHistory: history,
           isCycleDay: cyclePolicy.shouldPauseStreaks,
         ),
-        0,
+        5,
       );
 
       // Weekly possible excludes only sealed Aug 1–3, not Aug 4–5.

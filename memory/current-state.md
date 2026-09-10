@@ -1,6 +1,14 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-09-04 — location change clears Singapore-stale times.
+> Last updated: 2026-09-10 — Prayer Count daily aggregation (not tip-walk).
+
+## Status: Prayer Count replaces tip-walk streak (2026-09-10)
+Primary `snapshot.prayerStreak` is now a **per-calendar-day completion sum**:
+`onTime`/`qada` = +1, `Missed`/`none` = 0 (position-independent). Always
+include today's 0–5; walk older days adding 5 for each full day; stop on a
+past non-paused day with <5; Cycle-paused days bridge (0). Same-day Cycle
+start still includes today's partial count. `DayStreakCalculator` unchanged.
+UI: "Prayer count" / "Completed prayers" (removed "in a row"). Not committed.
 
 ## Status: Location change keeps old city prayer times (2026-09-04)
 Symptom: label Lahore, times still Singapore. Causes: (1) custom wall-clock

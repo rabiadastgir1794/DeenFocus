@@ -250,7 +250,7 @@
   "homeFindMasjid": "Find Masjid Near Me",
   "quickActionsMasjidFinder": "Masjid Finder",
   "homeSearchNearbyMosques": "Search nearby mosques.",
-  "homePrayerStreak": "Prayer Streak",
+  "homePrayerStreak": "Prayer Progress",
   "homePrayersInARow": "{count} prayers in a row",
   "@homePrayersInARow": {
     "placeholders": {
@@ -1257,7 +1257,7 @@
       }
     }
   },
-  "insightsPrayerStreak": "Prayer streak",
+  "insightsPrayerStreak": "Prayer count",
   "insightsPrayerStreakCount": "{count} prayers",
   "@insightsPrayerStreakCount": {
     "placeholders": {
@@ -1266,7 +1266,7 @@
       }
     }
   },
-  "insightsPrayersInARow": "Prayers in a row",
+  "insightsPrayersInARow": "Completed prayers",
   "insightsDaysInARow": "Days in a row",
   "insightsChipUpToday": "↑ {count}",
   "@insightsChipUpToday": {
@@ -1305,7 +1305,7 @@
   "insightsPrayersCompletedLabel": "Prayers completed — Alhamdulillah!",
   "insightsCycleModeActiveLabel": "Cycle mode active",
   "insightsProtectedByCycleMode": "Your streak is protected.",
-  "insightsCurrentPrayerStreak": "Current prayer streak",
+  "insightsCurrentPrayerStreak": "Current prayer count",
   "insightsBestPrayerStreak": "Best prayer streak",
   "insightsCurrentDayStreak": "Current day streak",
   "insightsCycleProtectedDays": "Cycle protected days",
@@ -1403,7 +1403,7 @@
       }
     }
   },
-  "prayerCompletionStreakIncreased": "Your prayer streak has increased",
+  "prayerCompletionStreakIncreased": "Your prayer count has increased",
   "prayerCompletionKeepGoing": "Every prayer brings you closer to Allah. Keep going!",
   "prayerCompletionContinue": "Continue",
   "prayerCompletionNextPrayer": "Next prayer in {when}",
@@ -1507,7 +1507,7 @@
   "appLockDemoIvePrayed": "I’ve prayed {prayerName}",
   "appLockDemoAlhamdulillah": "Alhamdulillah",
   "appLockDemoPrayerCompleted": "{prayerName} completed",
-  "appLockDemoStreakIncreased": "Your prayer streak increased",
+  "appLockDemoStreakIncreased": "Your prayer count increased",
   "appLockDemoPrayerStreakLabel": "PRAYER STREAK",
   "appLockDemoDayStreakLabel": "DAY STREAK",
   "appLockDemoNextPrayerIn": "Next prayer in {minutes} minutes",
@@ -1796,7 +1796,7 @@
   "appLockDemoOfferChildCta": "Enable Child Mode",
   "appLockDemoOfferNotNow": "Not now",
   "nightlyWrapUpPrayersTitle": "Finish today's prayers",
-  "nightlyWrapUpPrayersBody": "Mark any unfinished or missed prayers to protect your Prayer Streak.",
+  "nightlyWrapUpPrayersBody": "Mark any unfinished or missed prayers to protect your Prayer Count.",
   "nightlyWrapUpChecklistTitle": "Complete your Daily Checklist",
   "nightlyWrapUpChecklistBody": "A few checklist items are still open — wrap up your day with intention.",
   "nightlyWrapUpBothTitle": "Wrap up your day",

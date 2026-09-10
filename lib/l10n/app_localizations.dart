@@ -1515,7 +1515,7 @@ abstract class AppLocalizations {
   /// No description provided for @homePrayerStreak.
   ///
   /// In en, this message translates to:
-  /// **'Prayer Streak'**
+  /// **'Prayer Progress'**
   String get homePrayerStreak;
 
   /// No description provided for @homePrayersInARow.
@@ -5444,7 +5444,7 @@ abstract class AppLocalizations {
   /// No description provided for @insightsPrayerStreak.
   ///
   /// In en, this message translates to:
-  /// **'Prayer streak'**
+  /// **'Prayer count'**
   String get insightsPrayerStreak;
 
   /// No description provided for @insightsPrayerStreakCount.
@@ -5456,7 +5456,7 @@ abstract class AppLocalizations {
   /// No description provided for @insightsPrayersInARow.
   ///
   /// In en, this message translates to:
-  /// **'Prayers in a row'**
+  /// **'Completed prayers'**
   String get insightsPrayersInARow;
 
   /// No description provided for @insightsDaysInARow.
@@ -5588,7 +5588,7 @@ abstract class AppLocalizations {
   /// No description provided for @insightsCurrentPrayerStreak.
   ///
   /// In en, this message translates to:
-  /// **'Current prayer streak'**
+  /// **'Current prayer count'**
   String get insightsCurrentPrayerStreak;
 
   /// No description provided for @insightsBestPrayerStreak.
@@ -5828,7 +5828,7 @@ abstract class AppLocalizations {
   /// No description provided for @prayerCompletionStreakIncreased.
   ///
   /// In en, this message translates to:
-  /// **'Your prayer streak has increased'**
+  /// **'Your prayer count has increased'**
   String get prayerCompletionStreakIncreased;
 
   /// No description provided for @prayerCompletionKeepGoing.
@@ -6062,7 +6062,7 @@ abstract class AppLocalizations {
   /// No description provided for @appLockDemoStreakIncreased.
   ///
   /// In en, this message translates to:
-  /// **'Your prayer streak increased'**
+  /// **'Your prayer count increased'**
   String get appLockDemoStreakIncreased;
 
   /// No description provided for @appLockDemoPrayerStreakLabel.
@@ -7400,7 +7400,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightlyWrapUpPrayersBody.
   ///
   /// In en, this message translates to:
-  /// **'Mark any unfinished or missed prayers to protect your Prayer Streak.'**
+  /// **'Mark any unfinished or missed prayers to protect your Prayer Count.'**
   String get nightlyWrapUpPrayersBody;
 
   /// No description provided for @nightlyWrapUpChecklistTitle.

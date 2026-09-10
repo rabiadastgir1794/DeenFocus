@@ -758,7 +758,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSearchNearbyMosques => 'Search nearby mosques.';
 
   @override
-  String get homePrayerStreak => 'Prayer Streak';
+  String get homePrayerStreak => 'Prayer Progress';
 
   @override
   String homePrayersInARow(int count) {
@@ -2959,7 +2959,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeYourNewLocation => 'your new location';
 
   @override
-  String get insightsPrayerStreak => 'Prayer streak';
+  String get insightsPrayerStreak => 'Prayer count';
 
   @override
   String insightsPrayerStreakCount(int count) {
@@ -2967,7 +2967,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get insightsPrayersInARow => 'Prayers in a row';
+  String get insightsPrayersInARow => 'Completed prayers';
 
   @override
   String get insightsDaysInARow => 'Days in a row';
@@ -3038,7 +3038,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insightsProtectedByCycleMode => 'Your streak is protected.';
 
   @override
-  String get insightsCurrentPrayerStreak => 'Current prayer streak';
+  String get insightsCurrentPrayerStreak => 'Current prayer count';
 
   @override
   String get insightsBestPrayerStreak => 'Best prayer streak';
@@ -3174,7 +3174,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prayerCompletionStreakIncreased =>
-      'Your prayer streak has increased';
+      'Your prayer count has increased';
 
   @override
   String get prayerCompletionKeepGoing =>
@@ -3319,7 +3319,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get appLockDemoStreakIncreased => 'Your prayer streak increased';
+  String get appLockDemoStreakIncreased => 'Your prayer count increased';
 
   @override
   String get appLockDemoPrayerStreakLabel => 'PRAYER STREAK';
@@ -4084,7 +4084,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nightlyWrapUpPrayersBody =>
-      'Mark any unfinished or missed prayers to protect your Prayer Streak.';
+      'Mark any unfinished or missed prayers to protect your Prayer Count.';
 
   @override
   String get nightlyWrapUpChecklistTitle => 'Complete your Daily Checklist';

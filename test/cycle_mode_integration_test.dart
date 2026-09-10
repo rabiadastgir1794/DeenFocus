@@ -282,7 +282,8 @@ void main() {
       );
       // Cycle has not started — same streak outcome as no Cycle Mode at all.
       expect(withFutureCycle.prayerStreak, withoutCycle.prayerStreak);
-      expect(withFutureCycle.prayerStreak, 0);
+      // Today all Missed (0) + yesterday full (5) = 5 under daily-count model.
+      expect(withFutureCycle.prayerStreak, 5);
       expect(withFutureCycle.weeklyPossible, withoutCycle.weeklyPossible);
     });
 

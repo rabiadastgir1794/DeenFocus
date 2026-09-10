@@ -198,28 +198,21 @@ abstract class PrayerAnalyticsService {
   }
 }
 
-/// Consecutive individual prayer slots (not days).
+/// Current prayer count: sum of completed obligatory prayers by calendar day.
 ///
-/// Rules:
-/// * [PrayerMarkStatus.onTime] and [PrayerMarkStatus.qada] both count.
-/// * Explicit [PrayerMarkStatus.missed] at the tip → streak 0.
-/// * Unmarked slots are not a miss: skip them until a logged prayer or an
-///   explicit Missed. So the first On Time/Qada always adds 1, even when a
-///   later prayer has already started (home sheet, popup, or alarm).
-/// * Upcoming (not started, unmarked) slots are ignored — they never break
-///   the streak.
-/// * Paused Cycle Mode days ([isCycleDay]) bridge the tip chain:
-///   - Missed / unmarked slots on mid-cycle / sealed paused days never
-///     tip-break when those days are skipped or tip-only.
-///   - When an older non-paused tip exists, mid-cycle pause-day marks are
-///     skipped so they neither inflate nor break a pre-cycle streak.
-///   - Same-day Cycle Mode start (yesterday not paused): keep every
-///     already-started unmarked and counting slot so gaps still terminate
-///     the tip like Cycle OFF; explicit Missed is still omitted so a pause
-///     day does not tip-break. Counting marks are not wiped, and unmarked
-///     gaps are not elided into prior days.
-///   - When the tip lives only on paused day(s), counting marks there are
-///     kept so Cycle Mode never resets the streak — including after seal.
+/// Not a consecutive-slot tip-walk. Each day scores 0–5:
+/// * [PrayerMarkStatus.onTime] / [PrayerMarkStatus.qada] → +1
+/// * [PrayerMarkStatus.missed] / [PrayerMarkStatus.none] → +0
+/// Missed/unmarked **position** within a day never changes the daily total.
+///
+/// Aggregation:
+/// * Always add today's partial count (0–5).
+/// * Walk older days: add 5 for each full day; stop on a past non-paused day
+///   with fewer than 5 completions (that day's partial is not added).
+/// * Cycle-paused days ([isCycleDay]) bridge — contribute 0, do not break.
+///
+/// [prayerStartTime] is accepted for call-site compatibility and ignored;
+/// daily counts come only from [statusHistory].
 abstract class PrayerStreakCalculator {
   static int calculate({
     required DateTime now,
@@ -227,194 +220,47 @@ abstract class PrayerStreakCalculator {
     required bool Function(DateTime date) isCycleDay,
     DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
   }) {
-    var streak = 0;
-    var foundTip = false;
+    var total = 0;
     final today = DateTime(now.year, now.month, now.day);
-    final order = TrackablePrayer.values;
-    // First calendar day after a paused Cycle Mode window: do not tip-break on
-    // started-but-unmarked slots. Cycle days are exempt (she does not pray), so
-    // the preserved streak must remain until she marks On Time/Qadha or Missed.
-    final softBridgeUnmarkedToday = _previousCalendarDayIsPaused(
-      today,
-      isCycleDay,
-    );
+    // Counting helper returns 0 on paused days; we skip those explicitly so
+    // a paused today still bridges into prior full days.
+    bool neverPaused(DateTime _) => false;
 
     for (var dayOffset = 0; dayOffset < 400; dayOffset++) {
       final date = today.subtract(Duration(days: dayOffset));
-      final paused = isCycleDay(date);
-      final sameDayCycleStart = dayOffset == 0 &&
-          paused &&
-          !isCycleDay(date.subtract(const Duration(days: 1)));
-
-      if (paused) {
-        // Mid-cycle paused days still bridge without inflating the streak.
-        // Same-day start keeps today's slots (below) instead of skipping.
-        if (!sameDayCycleStart &&
-            _nonPausedTipExists(
-              fromDayOffset: dayOffset + 1,
-              today: today,
-              now: now,
-              statusHistory: statusHistory,
-              isCycleDay: isCycleDay,
-              prayerStartTime: prayerStartTime,
-            )) {
-          continue;
-        }
-        // No older non-paused tip — counting marks preserve / continue the tip.
-      }
-
-      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
-          const <TrackablePrayer, PrayerMarkStatus>{};
-
-      final slots = <PrayerMarkStatus>[];
-      if (dayOffset == 0) {
-        for (var i = 0; i < order.length; i++) {
-          final prayer = order[i];
-          final status = statuses[prayer] ?? PrayerMarkStatus.none;
-          final started = _hasStarted(
-            now: now,
-            prayer: prayer,
-            prayerStartTime: prayerStartTime,
-            slotIndex: i,
+      if (isCycleDay(date)) {
+        // Same-day Cycle Mode start: keep today's partial count (toggle must
+        // not drop marks). Mid-cycle / sealed paused days bridge with 0.
+        final sameDayCycleStart = dayOffset == 0 &&
+            !isCycleDay(date.subtract(const Duration(days: 1)));
+        if (sameDayCycleStart) {
+          total += WeeklyCalculator.completedCountOnDate(
+            date,
+            statusHistory,
+            neverPaused,
           );
-          if (!started && status == PrayerMarkStatus.none) break;
-          if (paused && !sameDayCycleStart) {
-            // Mid-cycle today (tip-only): counting marks only.
-            if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
-              slots.add(status);
-            }
-          } else if (sameDayCycleStart) {
-            // Keep unmarked gaps (match Cycle OFF). Omit Missed so pause
-            // still protects against tip-break on an explicit miss.
-            if (status != PrayerMarkStatus.missed) {
-              slots.add(status);
-            }
-          } else if (softBridgeUnmarkedToday && status == PrayerMarkStatus.none) {
-            // Returning from Cycle Mode — unmarked ≠ missed.
-            continue;
-          } else {
-            slots.add(status);
-          }
         }
-        _dropTrailingUnmarkedCatchUp(slots);
-      } else if (paused) {
-        for (final prayer in order) {
-          final status = statuses[prayer] ?? PrayerMarkStatus.none;
-          if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
-            slots.add(status);
-          }
-        }
-      } else {
-        for (final prayer in order) {
-          slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
-        }
+        continue;
       }
 
-      for (var i = slots.length - 1; i >= 0; i--) {
-        final status = slots[i];
-        final counts = PrayerAnalyticsService.countsForPrayerStreak(status);
-        if (!foundTip) {
-          if (counts) {
-            foundTip = true;
-            streak = 1;
-          } else if (status == PrayerMarkStatus.none) {
-            // Not logged yet — keep walking older slots. Marking Fajr first
-            // must count even if Dhuhr/Asr have already started.
-            continue;
-          } else {
-            return 0;
-          }
-        } else if (counts) {
-          streak += 1;
-        } else {
-          return streak;
-        }
-      }
-    }
-    return streak;
-  }
+      final count = WeeklyCalculator.completedCountOnDate(
+        date,
+        statusHistory,
+        neverPaused,
+      );
 
-  static bool _previousCalendarDayIsPaused(
-    DateTime today,
-    bool Function(DateTime date) isCycleDay,
-  ) {
-    final yesterday = today.subtract(const Duration(days: 1));
-    return isCycleDay(yesterday);
-  }
-
-  /// True when walking older days (skipping paused) would find a counting tip
-  /// before a tip-breaking slot — i.e. the streak can bridge past [fromDayOffset].
-  static bool _nonPausedTipExists({
-    required int fromDayOffset,
-    required DateTime today,
-    required DateTime now,
-    required Map<String, Map<TrackablePrayer, PrayerMarkStatus>> statusHistory,
-    required bool Function(DateTime date) isCycleDay,
-    required DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
-  }) {
-    final order = TrackablePrayer.values;
-    for (var dayOffset = fromDayOffset; dayOffset < 400; dayOffset++) {
-      final date = today.subtract(Duration(days: dayOffset));
-      if (isCycleDay(date)) continue;
-
-      final statuses = statusHistory[PrayerAnalyticsService.dayKey(date)] ??
-          const <TrackablePrayer, PrayerMarkStatus>{};
-      final slots = <PrayerMarkStatus>[];
       if (dayOffset == 0) {
-        for (var i = 0; i < order.length; i++) {
-          final prayer = order[i];
-          final status = statuses[prayer] ?? PrayerMarkStatus.none;
-          final started = _hasStarted(
-            now: now,
-            prayer: prayer,
-            prayerStartTime: prayerStartTime,
-            slotIndex: i,
-          );
-          if (!started && status == PrayerMarkStatus.none) break;
-          slots.add(status);
-        }
-        _dropTrailingUnmarkedCatchUp(slots);
+        total += count;
+        continue;
+      }
+
+      if (count == PrayerAnalyticsService.prayersPerDay) {
+        total += count;
       } else {
-        for (final prayer in order) {
-          slots.add(statuses[prayer] ?? PrayerMarkStatus.none);
-        }
-      }
-
-      if (slots.isEmpty) continue;
-      for (var i = slots.length - 1; i >= 0; i--) {
-        final status = slots[i];
-        if (PrayerAnalyticsService.countsForPrayerStreak(status)) {
-          return true;
-        }
-        if (status != PrayerMarkStatus.none) {
-          return false;
-        }
+        break;
       }
     }
-    return false;
-  }
-
-  /// After the user has logged On Time/Qada today, later started-but-unmarked
-  /// slots are catch-up — trim them so they are not treated as a breaking tip.
-  static void _dropTrailingUnmarkedCatchUp(List<PrayerMarkStatus> slots) {
-    if (!slots.any(PrayerAnalyticsService.countsForPrayerStreak)) return;
-    while (slots.isNotEmpty && slots.last == PrayerMarkStatus.none) {
-      slots.removeLast();
-    }
-  }
-
-  static bool _hasStarted({
-    required DateTime now,
-    required TrackablePrayer prayer,
-    required DateTime? Function(TrackablePrayer prayer)? prayerStartTime,
-    required int slotIndex,
-  }) {
-    final start = prayerStartTime?.call(prayer);
-    if (start != null) {
-      return HomePrayerTimesHelper.hasStartedOnDay(start, now);
-    }
-    const hours = [5, 12, 15, 18, 20];
-    return now.hour >= hours[slotIndex];
+    return total;
   }
 }
 

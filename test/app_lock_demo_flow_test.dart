@@ -92,7 +92,7 @@ void main() {
       await tester.tap(find.textContaining('I’ve prayed'));
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.text('Your prayer streak increased'), findsOneWidget);
+      expect(find.text('Your prayer count increased'), findsOneWidget);
       await tester.tap(find.text('Continue'));
       await tester.pump(const Duration(milliseconds: 500));
 

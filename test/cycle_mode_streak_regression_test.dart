@@ -94,7 +94,7 @@ void main() {
           dayStreak: 0,
         );
 
-        // Across remaining paused days with no new marks — still 2.
+        // Mid-cycle paused days bridge with 0; tip marks on Aug 11 are paused.
         for (final day in [
           DateTime(2026, 8, 12),
           DateTime(2026, 8, 13),
@@ -104,7 +104,7 @@ void main() {
             now: eve(day),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
         }
@@ -124,12 +124,12 @@ void main() {
           isFalse,
         );
 
-        // Early morning before Fajr tip rules: preserved tip still 2.
+        // After seal, Aug 11 remains paused — partial tip on paused day is not counted.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
       },
@@ -248,11 +248,12 @@ void main() {
       );
       expect(data.hasExpiredOn(DateTime(2026, 8, 15)), isTrue);
       data = data.expireFully();
+      // Sealed pause on Aug 11 excludes its partial tip under daily-count model.
       expectStableRecalc(
         now: DateTime(2026, 8, 15, 4),
         history: history,
         data: coldStart(data),
-        prayerStreak: 2,
+        prayerStreak: 0,
         dayStreak: 0,
       );
     });
@@ -288,33 +289,31 @@ void main() {
         final history = tipOnPausedDay();
         final data = coldRestart ? coldStart(ended) : ended;
 
-        // Before any post-cycle tip — preserved.
+        // Partial tip lived only on sealed paused Aug 11 → not counted.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Started-but-unmarked after Cycle Mode must NOT wipe the streak
-        // (Cycle days are exempt — unmarked ≠ missed).
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 6),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 13),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Explicit Missed after end → breaks.
+        // Explicit Missed today still contributes 0.
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.missed,
         };
@@ -326,7 +325,7 @@ void main() {
           dayStreak: 0,
         );
 
-        // On Time / Qadha after end continues the preserved tip (2 + new).
+        // New marks after end start the daily count (paused Aug 11 still excluded).
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.onTime,
           TrackablePrayer.dhuhr: PrayerMarkStatus.qada,
@@ -335,7 +334,7 @@ void main() {
           now: DateTime(2026, 8, 15, 13),
           history: history,
           data: data,
-          prayerStreak: 4, // Aug 15 Fajr+Dhuhr + Aug 11 Fajr+Dhuhr
+          prayerStreak: 2,
           dayStreak: 0,
         );
       }
@@ -371,7 +370,7 @@ void main() {
           now: eve(DateTime(2026, 8, 13)),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
@@ -381,7 +380,7 @@ void main() {
           now: eve(DateTime(2026, 8, 13)),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
@@ -391,14 +390,14 @@ void main() {
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 6),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
       });
@@ -435,18 +434,19 @@ void main() {
             prayerStreak: 2,
             dayStreak: 0,
           );
+          // Paused days add 0; Aug 13 incomplete (2) is not added while bridging.
           expectStableRecalc(
             now: eve(DateTime(2026, 8, 14)),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
           expectStableRecalc(
             now: eve(DateTime(2026, 8, 15)),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
 
@@ -460,7 +460,7 @@ void main() {
             history: history,
             data: data,
           );
-          expect(after.prayerStreak, 2);
+          expect(after.prayerStreak, 0);
           expect(after.dayStreak, 0);
           expect(
             CycleModePolicy(data).shouldExcludeFromStatistics(
@@ -479,30 +479,30 @@ void main() {
             now: DateTime(2026, 8, 16, 4),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
           expectStableRecalc(
             now: DateTime(2026, 8, 16, 6),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
           expectStableRecalc(
             now: DateTime(2026, 8, 16, 21),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
 
-          // Next normal day: unmarked Aug 16 is skipped; Maghrib+Isha still count.
+          // Empty/incomplete past days stop; Aug 13's partial tip is not glued across.
           expectStableRecalc(
             now: DateTime(2026, 8, 17, 6),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
         },
@@ -527,7 +527,7 @@ void main() {
             now: eve(day),
             history: history,
             data: data,
-            prayerStreak: 2,
+            prayerStreak: 0,
             dayStreak: 0,
           );
         }
@@ -579,7 +579,7 @@ void main() {
           now: DateTime(2026, 8, 12, 13),
           history: history,
           data: data,
-          prayerStreak: 0, // normal tip rules: miss breaks prayer streak
+          prayerStreak: 10, // today Missed adds 0; prior full days remain
           dayStreak: 2, // incomplete today does not break prior day streak
         );
       });
@@ -636,16 +636,16 @@ void main() {
           pauseStreaks: true,
         ).expireFully();
 
-        // Still only the two counting marks from Aug 11.
+        // Sealed paused days contribute 0 under daily-count model.
         expectStableRecalc(
           now: DateTime(2026, 8, 15, 4),
           history: history,
           data: data,
-          prayerStreak: 2,
+          prayerStreak: 0,
           dayStreak: 0,
         );
 
-        // Post-cycle On Time continues from those 2 only (misses stay ignored).
+        // Post-cycle On Time starts a new daily count (paused marks stay excluded).
         history[key(DateTime(2026, 8, 15))] = {
           TrackablePrayer.fajr: PrayerMarkStatus.onTime,
         };
@@ -653,7 +653,7 @@ void main() {
           now: DateTime(2026, 8, 15, 10),
           history: history,
           data: data,
-          prayerStreak: 3,
+          prayerStreak: 1,
           dayStreak: 0,
         );
       });

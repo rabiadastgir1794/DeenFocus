@@ -150,7 +150,8 @@ void main() {
           }
         }
         final broken = calc(now: nowDay3, history: overwritten, data: data);
-        expect(broken.prayerStreak, 6);
+        // Daily-count model: today 2; Day1 incomplete (4) stops without adding.
+        expect(broken.prayerStreak, 2);
         expect(broken.dayStreak, 0);
 
         // Fixed union merge (load + live recalc path).

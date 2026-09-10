@@ -31,7 +31,7 @@ void main() {
       );
     });
 
-    test('missed tip → streak 0', () {
+    test('Isha Missed keeps earlier completed prayers in the daily count', () {
       final now = DateTime(2026, 8, 1, 23, 0);
       final key = PrayerAnalyticsService.dayKey(now);
       expect(
@@ -45,11 +45,11 @@ void main() {
           },
           isCycleDay: neverCycle,
         ),
-        0,
+        4,
       );
     });
 
-    test('unmarked tip → streak 0', () {
+    test('empty day → prayer count 0', () {
       final now = DateTime(2026, 8, 1, 19, 30);
       expect(
         PrayerStreakCalculator.calculate(
@@ -273,7 +273,7 @@ void main() {
         statusHistory: history,
         isCycleDay: neverCycle,
       );
-      expect(snap.prayerStreak, 0);
+      expect(snap.prayerStreak, 4);
       expect(snap.canRestoreStreak, isTrue);
       expect(snap.restoreTarget!.prayer, TrackablePrayer.isha);
     });
@@ -685,7 +685,7 @@ void main() {
         ),
         5,
       );
-      // Unmarked started slots no longer reset a prior chain (only Missed does).
+      // Unmarked today does not erase prior full days (daily count model).
       expect(
         PrayerStreakCalculator.calculate(
           now: now,
@@ -697,13 +697,14 @@ void main() {
       history[PrayerAnalyticsService.dayKey(today)] = {
         TrackablePrayer.fajr: PrayerMarkStatus.missed,
       };
+      // Today contributes 0; yesterday remains a full day → 5.
       expect(
         PrayerStreakCalculator.calculate(
           now: now,
           statusHistory: history,
           isCycleDay: neverCycle,
         ),
-        0,
+        5,
       );
     });
 

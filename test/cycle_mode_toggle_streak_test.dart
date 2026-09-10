@@ -31,7 +31,7 @@ void main() {
 
   group('Cycle Mode toggle vs prayer streak', () {
     test(
-      'same-day ON/OFF: Maghrib-only tip stays 1 (unmarked gaps not elided)',
+      'same-day ON/OFF: Maghrib tip bridges today unmarked like OFF (unmarked ≠ Missed)',
       () {
         final today = DateTime(2026, 8, 31);
         final now = DateTime(2026, 8, 31, 18, 30);
@@ -46,6 +46,10 @@ void main() {
           },
         };
 
+        // Maghrib (1) + Aug 30 (5) + Aug 29 (5) = 11;
+        // Aug 28 incomplete (1) stops without adding its partial.
+        const expectedPrayerStreak = 11;
+
         final onData = CycleModeData(
           isEnabled: true,
           startDate: today,
@@ -53,7 +57,7 @@ void main() {
           pauseStreaks: true,
         );
         final on = calc(now: now, history: history, data: onData);
-        expect(on.prayerStreak, 1);
+        expect(on.prayerStreak, expectedPrayerStreak);
         expect(on.dayStreak, 2);
 
         final off = calc(
@@ -61,7 +65,7 @@ void main() {
           history: history,
           data: CycleModeData.disabled(),
         );
-        expect(off.prayerStreak, 1);
+        expect(off.prayerStreak, expectedPrayerStreak);
         expect(off.dayStreak, 2);
 
         final toggledOff = calc(
@@ -69,7 +73,7 @@ void main() {
           history: history,
           data: onData.disableOn(today),
         );
-        expect(toggledOff.prayerStreak, 1);
+        expect(toggledOff.prayerStreak, expectedPrayerStreak);
         expect(toggledOff.dayStreak, 2);
         expect(history[key(today)]![TrackablePrayer.maghrib], PrayerMarkStatus.onTime);
       },

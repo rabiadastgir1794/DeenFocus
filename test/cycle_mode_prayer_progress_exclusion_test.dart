@@ -349,8 +349,8 @@ void main() {
         history: history,
         data: data,
       );
-      // Soft-bridge: unmarked after cycle does not wipe; Fajr continues tip 2.
-      expect(snap.prayerStreak, 3); // Fajr + Maghrib + Isha from Aug 10
+      // Daily count: today Fajr (1); Aug 10 incomplete (2) stops without adding.
+      expect(snap.prayerStreak, 1);
       expect(snap.dayStreak, 0);
 
       final xp = prayerXpEvents(
