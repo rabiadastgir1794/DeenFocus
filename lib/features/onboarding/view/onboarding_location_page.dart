@@ -397,7 +397,6 @@ class _OnboardingLocationPageState extends State<OnboardingLocationPage> {
               loading: _isResolvingLocation,
               primary: true,
               icon: CupertinoIcons.location_solid,
-              showTrailingChevron: true,
             ),
             SizedBox(height: Spacing.md.h),
             _OrDivider(label: l10n.locationOrDivider),
@@ -905,6 +904,7 @@ class _LocationActionButton extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
