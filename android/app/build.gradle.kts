@@ -181,7 +181,7 @@ dependencies {
     implementation("com.superwall.sdk:superwall-android:2.7.11")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     // Tajweed (ADR-006/007): on-device ASR + pronunciation-head inference.
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.19.2")
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.23.2")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("androidx.test:core:1.6.1")
