@@ -32,6 +32,8 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   # Official Meta / Facebook App Events SDK (iOS).
   pod 'FBSDKCoreKit', '~> 18.0'
+  # Official TikTok App Events SDK (iOS).
+  pod 'TikTokBusinessSDK', :modular_headers => true
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -46,6 +48,7 @@ post_install do |installer|
         '$(inherited)',
         'PERMISSION_LOCATION=1',
         'PERMISSION_NOTIFICATIONS=1',
+        'PERMISSION_MICROPHONE=1',
         'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
       ]
       # media_kit: Mpv framework has no arm64 simulator slice.

@@ -42,12 +42,19 @@ private enum ManagedSettingsStoreHolder {
       application,
       didFinishLaunchingWithOptions: launchOptions
     )
+    
+    // TikTok App Events — optional early call for auto-events.
+    TikTokAppEventsBridge.application(
+      application,
+      didFinishLaunchingWithOptions: launchOptions
+    )
 
     GeneratedPluginRegistrant.register(with: self)
 
     if let registrar = self.registrar(forPlugin: "QiblaCompassPlugin") {
       let messenger = registrar.messenger()
       MetaAppEventsBridge.register(with: messenger)
+      TikTokAppEventsBridge.register(with: messenger)
 
       let focusMethodChannel = FlutterMethodChannel(
         name: focusMethodChannelName,

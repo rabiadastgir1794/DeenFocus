@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../config/app_config.dart';
 
-/// Flutter facade for the official TikTok App Events Android SDK.
+/// Flutter facade for the official TikTok App Events SDK (Android + iOS).
 ///
 /// UI / paywall code must not call native TikTok APIs directly — route through
 /// this service. Purchase / Subscribe / StartTrial should only be invoked after
@@ -26,14 +26,14 @@ class TikTokAppEventsService {
 
   static bool get isInitialized => _initialized;
 
-  /// Initializes the native TikTok SDK when Android credentials are present.
+  /// Initializes the native TikTok SDK when credentials are present.
   /// Safe to call multiple times; never throws.
   static Future<bool> initialize() {
     return _initializeFuture ??= _initializeInternal();
   }
 
   static Future<bool> _initializeInternal() async {
-    if (!Platform.isAndroid) return false;
+    if (!Platform.isAndroid && !Platform.isIOS) return false;
 
     final ttAppId = AppConfig.tiktokTtAppId.trim();
     final appSecret = AppConfig.tiktokAppSecret.trim();
@@ -45,7 +45,7 @@ class TikTokAppEventsService {
       debugPrint(
         '[TikTok] Skipping Flutter init; provide TIKTOK_TT_APP_ID and '
         'TIKTOK_APP_SECRET via --dart-define / dart_defines.json '
-        '(or android/local.properties for early Application init)',
+        '(Android: android/local.properties for early Application init)',
       );
       return false;
     }
@@ -135,7 +135,7 @@ class TikTokAppEventsService {
     required String eventId,
     required Future<dynamic> Function() invoke,
   }) async {
-    if (!Platform.isAndroid) return;
+    if (!Platform.isAndroid && !Platform.isIOS) return;
 
     final key = '$eventName:${eventId.trim()}';
     if (eventId.trim().isEmpty || _sentEventIds.contains(key)) {
