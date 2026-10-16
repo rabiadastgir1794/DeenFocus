@@ -1,0 +1,19 @@
+{
+  "version": "1.0.3",
+  "packId": "quran-translation-fr-rashid",
+  "kind": "translation_pack",
+  "minimumAppVersion": "1.0.0",
+  "artifactBaseUrl": "https://pub-470cb85af0ad4c5f92edb5094b8a7dbb.r2.dev/translations/fr-rashid/1.0.3/",
+  "filesDir": "../staging/quran-translation-fr-rashid/1.0.3",
+  "files": {
+    "translation": "translation.json"
+  },
+  "extra": {
+    "language": "fr",
+    "displayName": "French (Rachid Maach)",
+    "source": "QuranEnc.com",
+    "sourceKey": "french_rashid",
+    "sourceVersion": "1.0.3",
+    "translator": "Rachid Maach"
+  }
+}
