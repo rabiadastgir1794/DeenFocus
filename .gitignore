@@ -1,6 +1,7 @@
 # Secret keys — never commit
 dart_defines.json
 ios/Flutter/DartDefines.xcconfig
+ios/Flutter/MetaSecrets.xcconfig
 
 # Miscellaneous
 *.class

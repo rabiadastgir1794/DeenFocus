@@ -43,6 +43,11 @@ private enum ManagedSettingsStoreHolder {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Meta App Events — must run early for install/launch attribution.
+    MetaAppEventsBridge.application(
+      application,
+      didFinishLaunchingWithOptions: launchOptions
+    )
     let launchT0 = CFAbsoluteTimeGetCurrent()
     func logPhase(_ name: String, since: CFAbsoluteTime = launchT0) {
       let deltaMs = (CFAbsoluteTimeGetCurrent() - since) * 1000
@@ -70,6 +75,8 @@ private enum ManagedSettingsStoreHolder {
     let channelsT0 = CFAbsoluteTimeGetCurrent()
     if let registrar = self.registrar(forPlugin: "DeenFocusAppChannels") {
       let messenger = registrar.messenger()
+      MetaAppEventsBridge.register(with: messenger)
+
       let focusMethodChannel = FlutterMethodChannel(
         name: focusMethodChannelName,
         binaryMessenger: messenger
@@ -249,6 +256,16 @@ private enum ManagedSettingsStoreHolder {
   override func applicationDidEnterBackground(_ application: UIApplication) {
     super.applicationDidEnterBackground(application)
     PrayerLiveActivityBridge.scheduleBackgroundRefresh()
+  }
+
+  override func application(
+    _ app: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+  ) -> Bool {
+    let metaHandled = MetaAppEventsBridge.application(app, open: url, options: options)
+    let superHandled = super.application(app, open: url, options: options)
+    return metaHandled || superHandled
   }
 
   private func appendFocusDebugLog(call: FlutterMethodCall, result: @escaping FlutterResult) {

@@ -60,6 +60,18 @@ class MainActivity : AudioServiceActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        TikTokAppEventsBridge.attach(applicationContext)
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            TikTokAppEventsBridge.CHANNEL,
+        ).setMethodCallHandler(TikTokAppEventsBridge)
+
+        MetaAppEventsBridge.attach(applicationContext)
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            MetaAppEventsBridge.CHANNEL,
+        ).setMethodCallHandler(MetaAppEventsBridge)
+
         val headingStreamHandler = QiblaHeadingStreamHandler(
             sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager,
         )
