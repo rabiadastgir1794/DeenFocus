@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,7 +27,6 @@
 		F20000000000000000000001 /* FocusDeviceActivityMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000011 /* FocusDeviceActivityMonitor.swift */; };
 		F20000000000000000000002 /* FocusDeviceActivityMonitor.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F20000000000000000000010 /* FocusDeviceActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */; };
-		F40000000000000000000001 /* MetaAppEventsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* MetaAppEventsBridge.swift */; };
 		F21000000000000000000001 /* IosAppUsageBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21000000000000000000011 /* IosAppUsageBridge.swift */; };
 		F30000000000000000000001 /* FocusShieldConfigurationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */; };
 		F30000000000000000000002 /* FocusShieldConfiguration.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F30000000000000000000010 /* FocusShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -36,6 +35,7 @@
 		F30000000000000000000005 /* night.png in Resources */ = {isa = PBXBuildFile; fileRef = F30000000000000000000023 /* night.png */; };
 		F40000000000000000000001 /* azan.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000011 /* azan.caf */; };
 		F40000000000000000000002 /* beep.caf in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* beep.caf */; };
+		F41000000000000000000001 /* MetaAppEventsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41000000000000000000011 /* MetaAppEventsBridge.swift */; };
 		F4A1B00100000000000000001 /* TajweedErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00100000000000000001 /* TajweedErrors.swift */; };
 		F4A1B00200000000000000001 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00200000000000000001 /* AudioRecorder.swift */; };
 		F4A1B00300000000000000001 /* MelFrontend.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A1F00300000000000000001 /* MelFrontend.swift */; };
@@ -187,7 +187,6 @@
 		F20000000000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F20000000000000000000013 /* FocusDeviceActivityMonitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusDeviceActivityMonitor.entitlements; sourceTree = "<group>"; };
 		F20000000000000000000014 /* FocusDeviceActivityScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusDeviceActivityScheduler.swift; sourceTree = "<group>"; };
-		F40000000000000000000011 /* MetaAppEventsBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaAppEventsBridge.swift; sourceTree = "<group>"; };
 		F21000000000000000000011 /* IosAppUsageBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosAppUsageBridge.swift; sourceTree = "<group>"; };
 		F30000000000000000000010 /* FocusShieldConfiguration.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusShieldConfiguration.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F30000000000000000000011 /* FocusShieldConfigurationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusShieldConfigurationExtension.swift; sourceTree = "<group>"; };
@@ -198,6 +197,7 @@
 		F30000000000000000000023 /* night.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = night.png; sourceTree = "<group>"; };
 		F40000000000000000000011 /* azan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = azan.caf; sourceTree = "<group>"; };
 		F40000000000000000000012 /* beep.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = beep.caf; sourceTree = "<group>"; };
+		F41000000000000000000011 /* MetaAppEventsBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaAppEventsBridge.swift; sourceTree = "<group>"; };
 		F4A1F00100000000000000001 /* TajweedErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TajweedErrors.swift; sourceTree = "<group>"; };
 		F4A1F00200000000000000001 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		F4A1F00300000000000000001 /* MelFrontend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MelFrontend.swift; sourceTree = "<group>"; };
@@ -372,7 +372,7 @@
 				F4A1F02000000000000000001 /* TimedPluginRegistrant.h */,
 				F4A1F01F00000000000000001 /* TimedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
-				F40000000000000000000011 /* MetaAppEventsBridge.swift */,
+				F41000000000000000000011 /* MetaAppEventsBridge.swift */,
 				F4A1GTJW0000000000000001 /* Tajweed */,
 				F4B1GRP0000000000000001 /* QuranTranslation */,
 				F4A2GRP00000000000000001 /* AssetDownload */,
@@ -560,9 +560,6 @@
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
-			packageProductDependencies = (
-				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
-			);
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
@@ -647,9 +644,6 @@
 
 /* Begin PBXProject section */
 		97C146E61CF9000F007C117D /* Project object */ = {
-			packageReferences = (
-				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
-			);
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
@@ -697,7 +691,7 @@
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			packageReferences = (
-				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
 			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
@@ -776,13 +770,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -872,13 +862,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -945,7 +931,7 @@
 				F4A2B01000000000000000001 /* AIAssetPlugin.swift in Sources */,
 				F4A2B01100000000000000001 /* AIAssetManager.swift in Sources */,
 				F20000000000000000000003 /* FocusDeviceActivityScheduler.swift in Sources */,
-				F40000000000000000000001 /* MetaAppEventsBridge.swift in Sources */,
+				F41000000000000000000001 /* MetaAppEventsBridge.swift in Sources */,
 				F21000000000000000000001 /* IosAppUsageBridge.swift in Sources */,
 				F70000000000000000000001 /* SuperwallDonationBridge.swift in Sources */,
 				F50000000000000000000001 /* PrayerAlarmBridge.swift in Sources */,
@@ -1710,7 +1696,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */ = {
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
 		};
