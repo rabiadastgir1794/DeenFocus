@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/app_languages.dart';
 import 'app_notification_service.dart';
+import 'firebase_analytics_service.dart';
 import 'prayer_alarm_service.dart';
 import 'prayer_live_activity_service.dart';
 import 'storage_service.dart';
@@ -44,6 +45,12 @@ class LocaleService extends ChangeNotifier {
         ? '${normalized.languageCode}_${normalized.countryCode}'
         : normalized.languageCode;
     await StorageService.setLocaleCode(code);
+
+    // Track language change in analytics
+    unawaited(
+      FirebaseAnalyticsService.instance.logLanguageChanged(language: code),
+    );
+
     notifyListeners();
     // Widgets / live activity / scheduled notifications bake copy at write time.
     unawaited(_resyncLocalizedSurfaces());

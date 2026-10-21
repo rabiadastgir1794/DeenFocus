@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/config/app_config.dart';
+import '../../../../core/services/firebase_analytics_service.dart';
 import '../../../../core/services/nearby_mosques_cache.dart';
 import '../../../../core/services/nearby_mosques_service.dart';
 import '../../../../core/services/permission_service.dart';
@@ -39,10 +40,13 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
   double _searchRadiusMeters = 5000;
 
   bool _isLoading = true;
+
   /// True until [_ensureLocation] completes (success or failure). Drives full-screen location progress.
   bool _awaitingLocation = true;
+
   /// When [_errorSuggestOpenSettings], use system location screen instead of app settings.
   bool _errorOpenSystemLocationSettings = false;
+
   /// Set only for real failures (network, permission, location). Empty results use [_mosques.isEmpty] instead.
   String? _errorMessage;
   bool _errorSuggestOpenSettings = false;
@@ -145,12 +149,8 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
       }
       if (!mounted) return;
 
-      ({
-        double lat,
-        double lng,
-        DateTime fetched,
-        List<NearbyMosque> mosques,
-      })? fallback;
+      ({double lat, double lng, DateTime fetched, List<NearbyMosque> mosques})?
+      fallback;
       try {
         fallback = await NearbyMosquesCache.readLatest();
       } catch (_) {
@@ -162,8 +162,9 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
         _awaitingLocation = false;
         if (fallback != null && fallback.mosques.isNotEmpty) {
           _mosques = fallback.mosques;
-          _errorMessage =
-              AppLocalizations.of(context)!.nearbyMosquesLiveUpdateFailed;
+          _errorMessage = AppLocalizations.of(
+            context,
+          )!.nearbyMosquesLiveUpdateFailed;
           _errorSuggestOpenSettings = false;
           _errorOpenSystemLocationSettings = false;
         } else {
@@ -171,8 +172,9 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
             error,
             AppLocalizations.of(context)!,
           );
-          _errorSuggestOpenSettings =
-              _nearbyMosquesErrorSuggestsOpenSettings(error);
+          _errorSuggestOpenSettings = _nearbyMosquesErrorSuggestsOpenSettings(
+            error,
+          );
           _errorOpenSystemLocationSettings =
               _nearbyMosquesErrorUsesSystemLocationSettings(error);
         }
@@ -213,9 +215,12 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
         position.longitude,
       ).timeout(const Duration(seconds: 8));
       final p = placemarks.isNotEmpty ? placemarks.first : null;
-      title = ([p?.locality, p?.subAdministrativeArea, p?.administrativeArea]
-              .where((s) => s != null && s.trim().isNotEmpty)
-              .firstOrNull ?? '').toString();
+      title =
+          ([p?.locality, p?.subAdministrativeArea, p?.administrativeArea]
+                      .where((s) => s != null && s.trim().isNotEmpty)
+                      .firstOrNull ??
+                  '')
+              .toString();
       subtitle = p?.country?.trim() ?? '';
     } catch (_) {}
 
@@ -272,8 +277,9 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
                     return SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: ConstrainedBox(
-                        constraints:
-                            BoxConstraints(minHeight: constraints.maxHeight),
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
                         child: _buildBody(l10n, isDark),
                       ),
                     );
@@ -303,9 +309,9 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
               Text(
                 l10n.nearbyMosquesFetchingLocation,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      height: 1.35,
-                    ),
+                  fontWeight: FontWeight.w600,
+                  height: 1.35,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -315,9 +321,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
     }
 
     final hasCoords = _latitude != null && _longitude != null;
-    if (_errorMessage != null &&
-        !_isLoading &&
-        !hasCoords) {
+    if (_errorMessage != null && !_isLoading && !hasCoords) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -332,9 +336,9 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
             Text(
               _errorMessage!,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    height: 1.45,
-                    color: colorScheme.onSurface,
-                  ),
+                height: 1.45,
+                color: colorScheme.onSurface,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 28),
@@ -400,10 +404,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
             )
           else ...[
             for (final mosque in _mosques) ...[
-              _MosqueTile(
-                mosque: mosque,
-                onDirections: () => _openMap(mosque),
-              ),
+              _MosqueTile(mosque: mosque, onDirections: () => _openMap(mosque)),
               const SizedBox(height: 10),
             ],
           ],
@@ -418,6 +419,15 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
       await Geolocator.openLocationSettings();
     } else {
       await PermissionService.openLocationSettings();
+    }
+  }
+
+  Future<void> _launchMapAndTrack(Uri uri) async {
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (launched) {
+      unawaited(
+        FirebaseAnalyticsService.instance.logMasjidDirectionsRequested(),
+      );
     }
   }
 
@@ -442,18 +452,18 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
     final hasApple = await canLaunchUrl(appleAppUri);
 
     if (hasGoogle && !hasApple) {
-      await launchUrl(googleAppUri, mode: LaunchMode.externalApplication);
+      await _launchMapAndTrack(googleAppUri);
       return;
     }
     if (hasApple && !hasGoogle) {
-      await launchUrl(appleAppUri, mode: LaunchMode.externalApplication);
+      await _launchMapAndTrack(appleAppUri);
       return;
     }
     if (!hasGoogle && !hasApple) {
       final fallback = await canLaunchUrl(googleWebUri)
           ? googleWebUri
           : appleWebUri;
-      await launchUrl(fallback, mode: LaunchMode.externalApplication);
+      await _launchMapAndTrack(fallback);
       return;
     }
 
@@ -472,7 +482,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
                 onTap: () async {
                   Navigator.of(ctx).pop();
                   final uri = hasGoogle ? googleAppUri : googleWebUri;
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  await _launchMapAndTrack(uri);
                 },
               ),
               ListTile(
@@ -481,7 +491,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
                 onTap: () async {
                   Navigator.of(ctx).pop();
                   final uri = hasApple ? appleAppUri : appleWebUri;
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  await _launchMapAndTrack(uri);
                 },
               ),
             ],
@@ -531,8 +541,9 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
 
   String? _mapFooterSubtitle() {
     if (widget.mosques.isEmpty) return null;
-    return AppLocalizations.of(context)!
-        .nearbyMosquesResultsMeta(widget.radiusKm);
+    return AppLocalizations.of(
+      context,
+    )!.nearbyMosquesResultsMeta(widget.radiusKm);
   }
 
   @override
@@ -707,19 +718,21 @@ class _NearbyMosquesMapCardState extends State<_NearbyMosquesMapCard> {
                       children: [
                         Text(
                           _mapFooterCaption(),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: colorScheme.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                         if (_mapFooterSubtitle() case final subtitle?) ...[
                           const SizedBox(height: 2),
                           Text(
                             subtitle,
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ],
                       ],
@@ -766,10 +779,7 @@ class _MapPlaceholder extends StatelessWidget {
 }
 
 class _NoMosquesFoundCard extends StatelessWidget {
-  const _NoMosquesFoundCard({
-    required this.radiusKm,
-    required this.onRetry,
-  });
+  const _NoMosquesFoundCard({required this.radiusKm, required this.onRetry});
 
   final int radiusKm;
   final VoidCallback onRetry;
@@ -798,27 +808,27 @@ class _NoMosquesFoundCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             l10n.nearbyMosquesNoneWithinRadius(radiusKm),
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             l10n.nearbyMosquesEmptyHint(radiusKm),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  height: 1.4,
-                ),
+              color: colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             l10n.nearbyMosquesSearchRadius(radiusKm),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 16),
           FilledButton.tonal(
@@ -865,10 +875,7 @@ class _StatusCard extends StatelessWidget {
 }
 
 class _MosqueTile extends StatelessWidget {
-  const _MosqueTile({
-    required this.mosque,
-    required this.onDirections,
-  });
+  const _MosqueTile({required this.mosque, required this.onDirections});
 
   final NearbyMosque mosque;
   final VoidCallback onDirections;
@@ -931,10 +938,11 @@ class _MosqueTile extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             _distanceLabel(mosque.distanceMeters),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                         ],
                       ),
@@ -952,9 +960,10 @@ class _MosqueTile extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 mosque.openingHours!,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                             ),
                           ],
@@ -974,7 +983,8 @@ class _MosqueTile extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 mosque.denomination.joinedDisplayLabel(
-                                  sunniLabel: l10n.nearbyMosquesDenominationSunni,
+                                  sunniLabel:
+                                      l10n.nearbyMosquesDenominationSunni,
                                   shiaLabel: l10n.nearbyMosquesDenominationShia,
                                   ahlEHadithLabel:
                                       l10n.nearbyMosquesDenominationAhlEHadith,
@@ -992,9 +1002,8 @@ class _MosqueTile extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           mosque.address,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
                         ),
                       ],
                     ],

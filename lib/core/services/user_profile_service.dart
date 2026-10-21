@@ -7,6 +7,7 @@ import '../../features/onboarding/model/calculation_method_option.dart';
 import '../../features/onboarding/model/location_suggestion.dart';
 import '../../features/onboarding/model/sect_option.dart';
 import 'daily_refresh_service.dart';
+import 'firebase_analytics_service.dart';
 import 'storage_service.dart';
 
 class UserProfileService extends ChangeNotifier {
@@ -39,8 +40,7 @@ class UserProfileService extends ChangeNotifier {
     if (subtitle.isEmpty) return name;
     final nameLower = name.toLowerCase();
     final subtitleLower = subtitle.toLowerCase();
-    if (subtitleLower == nameLower ||
-        subtitleLower.startsWith('$nameLower,')) {
+    if (subtitleLower == nameLower || subtitleLower.startsWith('$nameLower,')) {
       return name;
     }
     return '$name, $subtitle';
@@ -118,10 +118,14 @@ class UserProfileService extends ChangeNotifier {
     // Keep calculation method in sync with sect selection.
     if (value == SectOption.shia) {
       _calculationMethod = CalculationMethodOption.tehran;
-      await StorageService.setCalculationMethod(CalculationMethodOption.tehran.name);
+      await StorageService.setCalculationMethod(
+        CalculationMethodOption.tehran.name,
+      );
     } else if (_calculationMethod.isShia) {
       _calculationMethod = CalculationMethodOption.karachi;
-      await StorageService.setCalculationMethod(CalculationMethodOption.karachi.name);
+      await StorageService.setCalculationMethod(
+        CalculationMethodOption.karachi.name,
+      );
     }
     notifyListeners();
     await StorageService.setSect(value.name);
@@ -137,6 +141,11 @@ class UserProfileService extends ChangeNotifier {
     await StorageService.setSect(_sect.name);
     notifyListeners();
     unawaited(DailyRefreshService.instance.refreshNow());
+    unawaited(
+      FirebaseAnalyticsService.instance.logCalculationMethodChanged(
+        method: value.name,
+      ),
+    );
   }
 
   Future<void> setAsrMethod(AsrCalculationOption value) async {

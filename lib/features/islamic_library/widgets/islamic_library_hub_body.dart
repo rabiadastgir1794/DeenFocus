@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/quran/view/quran_reader_screen.dart';
 import '../../../l10n/app_localizations.dart';
@@ -41,26 +42,25 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
   }
 
   void _openModule(BuildContext context, LibraryModule module) {
+    unawaited(
+      FirebaseAnalyticsService.instance.logIslamicLibraryTopicOpened(
+        topic: module.id.name,
+      ),
+    );
     switch (module.id) {
       case LibraryModuleId.quran:
         Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const QuranReaderScreen(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const QuranReaderScreen()),
         );
         return;
       case LibraryModuleId.namesOfAllah:
         Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const NamesOfAllahScreen(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const NamesOfAllahScreen()),
         );
         return;
       case LibraryModuleId.duasAdhkar:
         Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const DuasCategoriesScreen(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const DuasCategoriesScreen()),
         );
         return;
       case LibraryModuleId.hadith:
@@ -87,9 +87,7 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
         return;
       case LibraryModuleId.prayerMethods:
         Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const PrayerGuidesScreen(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const PrayerGuidesScreen()),
         );
         return;
       case LibraryModuleId.fiqhDifferences:
@@ -140,32 +138,34 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final softCardColor =
-        isDark ? colorScheme.surfaceContainerHighest : AppColors.surfaceLight;
+    final softCardColor = isDark
+        ? colorScheme.surfaceContainerHighest
+        : AppColors.surfaceLight;
     final q = _query.trim();
     final searching = q.isNotEmpty;
 
     final moduleResults = searching
         ? LibraryHubSearch.moduleHits(l10n, q, _openModule)
         : LibraryModule.all
-            .map(
-              (module) => LibraryHubSearchHit(
-                moduleId: module.id,
-                title: libraryModuleTitle(l10n, module.id),
-                subtitle: libraryModuleSubtitle(l10n, module.id),
-                icon: module.icon,
-                searchText: '',
-                isModule: true,
-                open: (ctx) => _openModule(ctx, module),
-              ),
-            )
-            .toList(growable: false);
+              .map(
+                (module) => LibraryHubSearchHit(
+                  moduleId: module.id,
+                  title: libraryModuleTitle(l10n, module.id),
+                  subtitle: libraryModuleSubtitle(l10n, module.id),
+                  icon: module.icon,
+                  searchText: '',
+                  isModule: true,
+                  open: (ctx) => _openModule(ctx, module),
+                ),
+              )
+              .toList(growable: false);
 
     final contentResults = searching && _contentIndex != null
         ? LibraryHubSearch.filterContent(_contentIndex!, q)
         : const <LibraryHubSearchHit>[];
 
-    final showEmpty = searching &&
+    final showEmpty =
+        searching &&
         !_indexLoading &&
         moduleResults.isEmpty &&
         contentResults.isEmpty;
@@ -217,8 +217,8 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
                     l10n.librarySearchEmpty,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 )
               : ListView(
@@ -231,9 +231,8 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
                     ..._mapHits(
                       moduleResults,
                       softCardColor,
-                      asModuleCards: !searching || moduleResults.every(
-                        (h) => h.isModule,
-                      ),
+                      asModuleCards:
+                          !searching || moduleResults.every((h) => h.isModule),
                     ),
                     if (contentResults.isNotEmpty) ...[
                       SizedBox(height: 16.h),
@@ -301,9 +300,9 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       label,
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w700,
-          ),
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        fontWeight: FontWeight.w700,
+      ),
     );
   }
 }

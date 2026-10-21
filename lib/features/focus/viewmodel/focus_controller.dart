@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/services/device_apps_service.dart';
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/focus_enforcement_service.dart';
 import '../../../core/services/prayer_alarm_service.dart';
@@ -333,6 +334,11 @@ class FocusController extends ChangeNotifier {
       clearIosSelectionData: true,
     );
     await _recomputeAndPersist();
+    unawaited(
+      FirebaseAnalyticsService.instance.logFocusAppsUpdated(
+        count: selected.length,
+      ),
+    );
   }
 
   Future<void> setChildLockType(ChildLockType value) async {
@@ -363,6 +369,12 @@ class FocusController extends ChangeNotifier {
     _invalidateEnforcedScheduleCaches();
     await _persist();
     await _recomputeAndPersist();
+    unawaited(
+      FirebaseAnalyticsService.instance.logNightModeScheduleSet(
+        startHour: start.hour,
+        endHour: end.hour,
+      ),
+    );
   }
 
   void _invalidateEnforcedScheduleCaches() {
@@ -393,6 +405,9 @@ class FocusController extends ChangeNotifier {
         'focus.enableMode',
         'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked} nextChangeAt=${_lockState.nextChangeAt?.toIso8601String()} reason=${_lockState.reason}',
       ),
+    );
+    unawaited(
+      FirebaseAnalyticsService.instance.logFocusModeEnabled(mode: mode.name),
     );
   }
 
@@ -483,6 +498,11 @@ class FocusController extends ChangeNotifier {
             'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
           ),
         );
+        unawaited(
+          FirebaseAnalyticsService.instance.logFocusModeDisabled(
+            mode: mode.name,
+          ),
+        );
         return;
       case FocusModeType.nightDiscipline:
         _settings = _settings.copyWith(
@@ -505,6 +525,9 @@ class FocusController extends ChangeNotifier {
         'focus.disableMode',
         'after mode=${mode.name} active=${_settings.enabledMode?.name} locked=${_lockState.isLocked}',
       ),
+    );
+    unawaited(
+      FirebaseAnalyticsService.instance.logFocusModeDisabled(mode: mode.name),
     );
   }
 
@@ -628,12 +651,18 @@ class FocusController extends ChangeNotifier {
       await _maybeRefillPrayerNotificationsAfterSalahHomeUnlock(
         hadActiveSalahWindow,
       );
+      unawaited(
+        FirebaseAnalyticsService.instance.logAppsUnlocked(source: 'home'),
+      );
       return;
     }
     if (until == null) {
       await temporarilyUnlock(clearIosSalahShieldLatch: true);
       await _maybeRefillPrayerNotificationsAfterSalahHomeUnlock(
         hadActiveSalahWindow,
+      );
+      unawaited(
+        FirebaseAnalyticsService.instance.logAppsUnlocked(source: 'home'),
       );
       return;
     }
@@ -651,6 +680,9 @@ class FocusController extends ChangeNotifier {
     await _recomputeAndPersist();
     await _maybeRefillPrayerNotificationsAfterSalahHomeUnlock(
       hadActiveSalahWindow,
+    );
+    unawaited(
+      FirebaseAnalyticsService.instance.logAppsUnlocked(source: 'home'),
     );
   }
 
@@ -1916,10 +1948,9 @@ class FocusController extends ChangeNotifier {
 
   static String _salahOverridesCacheKey(Map<TrackablePrayer, int> overrides) {
     if (overrides.isEmpty) return '';
-    final parts = overrides.entries
-        .map((e) => '${e.key.name}:${e.value}')
-        .toList()
-      ..sort();
+    final parts =
+        overrides.entries.map((e) => '${e.key.name}:${e.value}').toList()
+          ..sort();
     return parts.join(',');
   }
 

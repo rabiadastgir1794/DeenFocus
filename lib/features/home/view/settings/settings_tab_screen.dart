@@ -14,6 +14,7 @@ import '../../../../core/util/store_subscription_links.dart';
 import '../../../../core/superwall/app_superwall.dart';
 import '../../../../core/superwall/premium_gate.dart';
 import '../../../../core/services/app_review_service.dart';
+import '../../../../core/services/firebase_analytics_service.dart';
 import '../../../../core/services/locale_service.dart';
 import '../../../../core/services/prayer_live_activity_service.dart';
 import '../../../../core/services/prayer_live_activity_toggle.dart';
@@ -387,6 +388,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
 
   void _onAboutTapped(BuildContext context) {
     if (!context.mounted) return;
+    unawaited(FirebaseAnalyticsService.instance.logAboutOpened());
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const SettingsAboutScreen()),
     );
@@ -828,7 +830,8 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _selectedLocation == null ||
+                    onPressed:
+                        _selectedLocation == null ||
                             _selectedLocation!.latitude == null ||
                             _selectedLocation!.longitude == null ||
                             _saving
@@ -836,10 +839,9 @@ class _SettingsLocationScreenState extends State<SettingsLocationScreen> {
                         : () async {
                             setState(() => _saving = true);
                             final selected = _selectedLocation!;
-                            final profile =
-                                context.read<UserProfileService>();
-                            final prayerSettings =
-                                context.read<PrayerSettingsService>();
+                            final profile = context.read<UserProfileService>();
+                            final prayerSettings = context
+                                .read<PrayerSettingsService>();
                             await prayerSettings.clearAllCustomTimes();
                             await profile.setLocation(selected);
                             if (!context.mounted) return;

@@ -11,6 +11,7 @@ import '../analytics/meta_app_events_service.dart';
 import '../analytics/tiktok_app_events_service.dart';
 import '../config/app_config.dart';
 import '../logger/startup_probe.dart';
+import '../services/firebase_analytics_service.dart';
 import '../services/billing_service.dart';
 import '../services/storage_service.dart';
 import 'premium_access_policy.dart';
@@ -304,9 +305,9 @@ class AppSuperwall {
     // Delay sync so a lagging StoreKit/Play status cannot immediately
     // overwrite the confirmed purchase before billing catches up.
     unawaited(
-      Future<void>.delayed(const Duration(seconds: 5)).then(
-        (_) => syncSubscriptionState(),
-      ),
+      Future<void>.delayed(
+        const Duration(seconds: 5),
+      ).then((_) => syncSubscriptionState()),
     );
   }
 
@@ -418,16 +419,33 @@ class AppSuperwall {
               'Superwall paywall presented (WKWebView) $debugContext',
             );
             _log('Paywall presented');
+            unawaited(
+              FirebaseAnalyticsService.instance.logPaywallViewed(
+                source: debugContext.isEmpty ? placement : debugContext,
+              ),
+            );
           })
           ..onDismiss((info, result) async {
-            final dismissKind =
-                PremiumAccessPolicy.dismissKindFromResultType(result.runtimeType);
+            final dismissKind = PremiumAccessPolicy.dismissKindFromResultType(
+              result.runtimeType,
+            );
             _log(
               'Paywall dismissed result=$result dismissKind=${dismissKind.name} '
               'subscriptionActive=${subscriptionActiveNotifier.value}',
             );
+            unawaited(
+              FirebaseAnalyticsService.instance.logPaywallDismissed(
+                source: debugContext.isEmpty ? placement : debugContext,
+                dismissKind: dismissKind.name,
+              ),
+            );
             if (dismissKind == PaywallDismissKind.purchased ||
                 dismissKind == PaywallDismissKind.restored) {
+              unawaited(
+                FirebaseAnalyticsService.instance.logPremiumUnlocked(
+                  method: dismissKind.name,
+                ),
+              );
               const maxAttempts = 5;
               for (var attempt = 1; attempt <= maxAttempts; attempt++) {
                 await syncSubscriptionState();
@@ -957,9 +975,7 @@ class _AppSuperwallDelegate extends SuperwallDelegate {
     final txn = event.transaction;
     final productId = event.product?.productIdentifier ?? 'unknown';
     final txnId =
-        txn?.storeTransactionId ??
-        txn?.originalTransactionIdentifier ??
-        '';
+        txn?.storeTransactionId ?? txn?.originalTransactionIdentifier ?? '';
     if (txnId.isNotEmpty) {
       return '$suffix:$txnId:$productId';
     }
@@ -1014,9 +1030,7 @@ class _AppSuperwallDelegate extends SuperwallDelegate {
       currency: currency,
       value: value,
     );
-    if (currency != null &&
-        currency.trim().isNotEmpty &&
-        value != null) {
+    if (currency != null && currency.trim().isNotEmpty && value != null) {
       await MetaAppEventsService.trackPurchase(
         eventId: eventId,
         contentId: product?.productIdentifier,

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../support/view/support_us_screen.dart';
 import '../../support/viewmodel/support_view_model.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/prayer_alarm_service.dart';
@@ -677,10 +678,11 @@ class _HomeTabViewState extends State<_HomeTabView>
                       children: [
                         Text(
                           l10n.homeJummahMubarak,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                color: colorScheme.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -701,9 +703,15 @@ class _HomeTabViewState extends State<_HomeTabView>
 
   Future<void> _openAlKahfSurah(BuildContext context) async {
     const alKahfSurahNumber = 18;
-    final surah =
-        await QuranLocalRepository.instance.getSurah(alKahfSurahNumber);
+    final surah = await QuranLocalRepository.instance.getSurah(
+      alKahfSurahNumber,
+    );
     if (surah == null || !context.mounted) return;
+    unawaited(
+      FirebaseAnalyticsService.instance.logQuranSurahOpened(
+        surahNumber: alKahfSurahNumber,
+      ),
+    );
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => SurahDetailBottomSheet(surah: surah),
@@ -722,6 +730,7 @@ class _HomeTabViewState extends State<_HomeTabView>
       return;
     }
     if (!context.mounted) return;
+    unawaited(FirebaseAnalyticsService.instance.logQiblaCompassOpened());
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => HomeQiblaScreen(
@@ -744,6 +753,7 @@ class _HomeTabViewState extends State<_HomeTabView>
       return;
     }
     if (!context.mounted) return;
+    unawaited(FirebaseAnalyticsService.instance.logMasjidFinderOpened());
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const HomeNearbyMosquesScreen()),
     );
@@ -775,6 +785,7 @@ class _HomeTabViewState extends State<_HomeTabView>
       context: context,
       onAccess: () {
         if (!context.mounted) return;
+        unawaited(FirebaseAnalyticsService.instance.logInsightsOpened());
         Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
@@ -789,6 +800,7 @@ class _HomeTabViewState extends State<_HomeTabView>
   }
 
   void _openCalendarScreen(BuildContext context, HomeTabViewModel vm) {
+    unawaited(FirebaseAnalyticsService.instance.logCalendarOpened());
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ChangeNotifierProvider<HomeTabViewModel>.value(
@@ -800,6 +812,7 @@ class _HomeTabViewState extends State<_HomeTabView>
   }
 
   void _openSupportUs(BuildContext context) {
+    unawaited(FirebaseAnalyticsService.instance.logSupportOpened());
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ChangeNotifierProvider(
@@ -934,24 +947,24 @@ class _HomeUiSnap {
 
   @override
   int get hashCode => Object.hashAll([
-        cycleModeRunning,
-        cycleModeDaysRemaining,
-        cycleModeEnabled,
-        prayerTimes,
-        prayerStreak,
-        streakDays,
-        Object.hashAll(weekPrayerCounts),
-        Object.hashAll(weekCycleModeDays),
-        canRestoreStreak,
-        dailyChecklistCompletedCount,
-        dailyChecklistTotalCount,
-        todayFocusScore,
-        todayPrayerPercent,
-        todayQuranPercent,
-        todayDhikrPercent,
-        todayDistractionPercent,
-        isFriday,
-      ]);
+    cycleModeRunning,
+    cycleModeDaysRemaining,
+    cycleModeEnabled,
+    prayerTimes,
+    prayerStreak,
+    streakDays,
+    Object.hashAll(weekPrayerCounts),
+    Object.hashAll(weekCycleModeDays),
+    canRestoreStreak,
+    dailyChecklistCompletedCount,
+    dailyChecklistTotalCount,
+    todayFocusScore,
+    todayPrayerPercent,
+    todayQuranPercent,
+    todayDhikrPercent,
+    todayDistractionPercent,
+    isFriday,
+  ]);
 }
 
 @immutable
@@ -999,10 +1012,7 @@ bool _listEquals<T>(List<T> a, List<T> b) {
 String _homeVerseDisplayText(AppLocalizations l10n, HomeDailyVerse? verse) {
   if (verse == null) return l10n.homeDailyVerseFallback;
   final useArabic = l10n.localeName.toLowerCase().startsWith('ar');
-  final quote = HomeDailyVerseHelper.localizedText(
-    verse,
-    useArabic: useArabic,
-  );
+  final quote = HomeDailyVerseHelper.localizedText(verse, useArabic: useArabic);
   final source = HomeDailyVerseHelper.localizedSource(
     verse,
     l10n: l10n,

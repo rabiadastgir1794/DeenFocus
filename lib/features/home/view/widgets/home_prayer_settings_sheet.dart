@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -5,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/spacing.dart';
+import '../../../../core/services/firebase_analytics_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_centered_nav_header.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -24,6 +27,7 @@ Future<void> showPrayerSettingsSheet(
   // showModalBottomSheet mounts its builder under the root Navigator, so the
   // HomeTabViewModel from the Home tab's subtree must be re-supplied here.
   final vm = context.read<HomeTabViewModel>();
+  unawaited(FirebaseAnalyticsService.instance.logPrayerSettingsOpened());
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,

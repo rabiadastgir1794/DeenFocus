@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../services/firebase_analytics_service.dart';
 import 'content_share_payload.dart';
 import 'content_share_service.dart';
 
@@ -70,6 +73,7 @@ class CardShareIconButton extends StatefulWidget {
     this.iconSize = 22,
     this.color,
     this.circled = false,
+    this.contentType = 'card',
   });
 
   final GlobalKey boundaryKey;
@@ -78,6 +82,7 @@ class CardShareIconButton extends StatefulWidget {
 
   /// Light gray circle matching ayah `_ActionIcon` chrome.
   final bool circled;
+  final String contentType;
 
   @override
   State<CardShareIconButton> createState() => _CardShareIconButtonState();
@@ -90,11 +95,18 @@ class _CardShareIconButtonState extends State<CardShareIconButton> {
     if (_sharing) return;
     setState(() => _sharing = true);
     try {
-      await ContentShareService.shareCard(
+      final shared = await ContentShareService.shareCard(
         context: context,
         boundaryKey: widget.boundaryKey,
         payload: const ContentSharePayload(title: ''),
       );
+      if (shared) {
+        unawaited(
+          FirebaseAnalyticsService.instance.logContentShared(
+            contentType: widget.contentType,
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
@@ -119,10 +131,7 @@ class _CardShareIconButtonState extends State<CardShareIconButton> {
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: onShare,
-            child: Padding(
-              padding: const EdgeInsets.all(7),
-              child: glyph,
-            ),
+            child: Padding(padding: const EdgeInsets.all(7), child: glyph),
           ),
         ),
       );

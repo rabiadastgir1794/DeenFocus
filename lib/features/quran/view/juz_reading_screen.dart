@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
@@ -258,6 +259,13 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       await _audio.player.stop();
       await _audio.player.seek(Duration.zero, index: index);
       await _audio.player.play();
+      final ayah = _engine.ayahs[index];
+      unawaited(
+        FirebaseAnalyticsService.instance.logQuranRecitationPlayed(
+          surahNumber: ayah.surahNumber,
+          reciter: 'default',
+        ),
+      );
     } finally {
       _startingPlayback = false;
     }
@@ -342,15 +350,14 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
       style: AyahCardStyle.surahDetail,
       onTap: () => _onAyahTap(index),
       onPracticeTap: () => TajweedEntryPoint.open(
-            context,
-            surah: ayah.surahNumber,
-            ayah: ayah.ayahNumber,
-            arabicText: ayah.arabicText,
-            translation:
-                _showEnglish && ayah.englishText.trim().isNotEmpty
-                ? ayah.englishText
-                : null,
-          ),
+        context,
+        surah: ayah.surahNumber,
+        ayah: ayah.ayahNumber,
+        arabicText: ayah.arabicText,
+        translation: _showEnglish && ayah.englishText.trim().isNotEmpty
+            ? ayah.englishText
+            : null,
+      ),
     );
   }
 
@@ -386,7 +393,8 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final ayahs = _engine.ayahs;
-    final showAudioBar = _showAudioBar && _playingIndex >= 0 && _playingIndex < ayahs.length;
+    final showAudioBar =
+        _showAudioBar && _playingIndex >= 0 && _playingIndex < ayahs.length;
     final palette = QuranReaderPalette.resolve(
       _colorTheme,
       Theme.of(context).brightness,
@@ -395,94 +403,94 @@ class _JuzReadingScreenState extends State<JuzReadingScreen> {
     return QuranReaderThemeScope(
       palette: palette,
       child: Scaffold(
-      backgroundColor: palette.background,
-      appBar: CustomAppBar(
-        title: '${l10n.quranJuzLabel} ${_engine.unitNumber}',
-        actions: [
-          IconButton(
-            tooltip: l10n.quranPreviousJuz,
-            icon: const Icon(Icons.chevron_left_rounded),
-            onPressed: _engine.hasPreviousUnit ? _goToPreviousJuz : null,
-          ),
-          IconButton(
-            tooltip: l10n.quranNextJuz,
-            icon: const Icon(Icons.chevron_right_rounded),
-            onPressed: _engine.hasNextUnit ? _goToNextJuz : null,
-          ),
-          QuranReadingSettingsLauncher.appBarAction(
-            context,
-            onReturn: () => unawaited(_reloadDisplayPrefs()),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        top: false,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
-          children: [
-            _engine.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.separated(
-                    controller: _listController,
-                    padding: EdgeInsets.fromLTRB(
-                      16.w,
-                      16.h,
-                      16.w,
-                      16.h + (showAudioBar ? 200.h : 0),
-                    ),
-                    itemCount: ayahs.length,
-                    separatorBuilder: (_, _) => SizedBox(
-                      height: _layoutTheme == QuranLayoutTheme.simple
-                          ? 0
-                          : 10.h,
-                    ),
-                    itemBuilder: (context, index) {
-                      return _buildJuzAyahCard(context, l10n, ayahs, index);
-                    },
-                  ),
-            if (showAudioBar)
-              QuranAudioBar(
-                label:
-                    '${l10n.quranSurahLabel} ${ayahs[_playingIndex].surahNumber}:${ayahs[_playingIndex].ayahNumber}',
-                position: _position,
-                duration: _duration,
-                isPlaying: _isActivelyPlaying,
-                isLoading: _isAudioLoading,
-                speed: _speed,
-                volume: _volume,
-                repeatMode: _repeatMode,
-                onTogglePlayPause: _togglePlayPause,
-                onClose: _closeAudioBar,
-                onSeekStart: () => _isUserSeeking = true,
-                onSeekChanged: (value) {
-                  if (_duration.inMilliseconds <= 0) return;
-                  final ms = (_duration.inMilliseconds * value).toInt();
-                  setState(() => _position = Duration(milliseconds: ms));
-                },
-                onSeekEnd: (value) async {
-                  _isUserSeeking = false;
-                  if (_duration.inMilliseconds <= 0) return;
-                  final ms = (_duration.inMilliseconds * value).toInt();
-                  await _audio.player.seek(Duration(milliseconds: ms));
-                },
-                onSpeedChanged: (value) {
-                  setState(() => _speed = value);
-                  unawaited(_audio.setSpeed(value));
-                },
-                onVolumeChanged: (value) {
-                  setState(() => _volume = value);
-                  unawaited(_audio.setVolume(value));
-                },
-                onRepeatModeChanged: (value) {
-                  setState(() => _repeatMode = value);
-                  unawaited(_audio.setRepeatMode(value));
-                },
-              ),
+        backgroundColor: palette.background,
+        appBar: CustomAppBar(
+          title: '${l10n.quranJuzLabel} ${_engine.unitNumber}',
+          actions: [
+            IconButton(
+              tooltip: l10n.quranPreviousJuz,
+              icon: const Icon(Icons.chevron_left_rounded),
+              onPressed: _engine.hasPreviousUnit ? _goToPreviousJuz : null,
+            ),
+            IconButton(
+              tooltip: l10n.quranNextJuz,
+              icon: const Icon(Icons.chevron_right_rounded),
+              onPressed: _engine.hasNextUnit ? _goToNextJuz : null,
+            ),
+            QuranReadingSettingsLauncher.appBarAction(
+              context,
+              onReturn: () => unawaited(_reloadDisplayPrefs()),
+            ),
           ],
         ),
+        body: SafeArea(
+          top: false,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.bottomCenter,
+            children: [
+              _engine.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.separated(
+                      controller: _listController,
+                      padding: EdgeInsets.fromLTRB(
+                        16.w,
+                        16.h,
+                        16.w,
+                        16.h + (showAudioBar ? 200.h : 0),
+                      ),
+                      itemCount: ayahs.length,
+                      separatorBuilder: (_, _) => SizedBox(
+                        height: _layoutTheme == QuranLayoutTheme.simple
+                            ? 0
+                            : 10.h,
+                      ),
+                      itemBuilder: (context, index) {
+                        return _buildJuzAyahCard(context, l10n, ayahs, index);
+                      },
+                    ),
+              if (showAudioBar)
+                QuranAudioBar(
+                  label:
+                      '${l10n.quranSurahLabel} ${ayahs[_playingIndex].surahNumber}:${ayahs[_playingIndex].ayahNumber}',
+                  position: _position,
+                  duration: _duration,
+                  isPlaying: _isActivelyPlaying,
+                  isLoading: _isAudioLoading,
+                  speed: _speed,
+                  volume: _volume,
+                  repeatMode: _repeatMode,
+                  onTogglePlayPause: _togglePlayPause,
+                  onClose: _closeAudioBar,
+                  onSeekStart: () => _isUserSeeking = true,
+                  onSeekChanged: (value) {
+                    if (_duration.inMilliseconds <= 0) return;
+                    final ms = (_duration.inMilliseconds * value).toInt();
+                    setState(() => _position = Duration(milliseconds: ms));
+                  },
+                  onSeekEnd: (value) async {
+                    _isUserSeeking = false;
+                    if (_duration.inMilliseconds <= 0) return;
+                    final ms = (_duration.inMilliseconds * value).toInt();
+                    await _audio.player.seek(Duration(milliseconds: ms));
+                  },
+                  onSpeedChanged: (value) {
+                    setState(() => _speed = value);
+                    unawaited(_audio.setSpeed(value));
+                  },
+                  onVolumeChanged: (value) {
+                    setState(() => _volume = value);
+                    unawaited(_audio.setVolume(value));
+                  },
+                  onRepeatModeChanged: (value) {
+                    setState(() => _repeatMode = value);
+                    unawaited(_audio.setRepeatMode(value));
+                  },
+                ),
+            ],
+          ),
+        ),
       ),
-    ),
     );
   }
 }

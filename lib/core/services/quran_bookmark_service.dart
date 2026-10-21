@@ -71,7 +71,9 @@ abstract final class QuranBookmarkService {
     try {
       final decoded = jsonDecode(raw) as List<dynamic>;
       return decoded
-          .map((e) => QuranBookmark.fromMap(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) => QuranBookmark.fromMap(Map<String, dynamic>.from(e as Map)),
+          )
           .toList(growable: false);
     } catch (_) {
       return const [];
@@ -83,11 +85,12 @@ abstract final class QuranBookmarkService {
     await StorageService.setQuranBookmarksJson(payload);
   }
 
-  static Future<void> add(QuranBookmark bookmark) async {
+  static Future<bool> add(QuranBookmark bookmark) async {
     final items = await list();
-    if (items.any((b) => b.id == bookmark.id)) return;
+    if (items.any((b) => b.id == bookmark.id)) return false;
     await _save([bookmark, ...items]);
     _bumpRevision();
+    return true;
   }
 
   static Future<void> remove(String id) async {

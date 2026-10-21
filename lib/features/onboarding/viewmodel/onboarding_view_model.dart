@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/services/app_notification_service.dart';
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/daily_refresh_service.dart';
@@ -15,6 +16,7 @@ class OnboardingViewModel extends ChangeNotifier {
   OnboardingViewModel() {
     _totalSteps = 11;
     _selectedPlan = SubscriptionPlan.yearly;
+    unawaited(FirebaseAnalyticsService.instance.logOnboardingStarted());
   }
 
   /// PageView index for [OnboardingLocationPage] (compulsory).
@@ -181,6 +183,7 @@ class OnboardingViewModel extends ChangeNotifier {
     }
     _didComplete = true;
     notifyListeners();
+    unawaited(FirebaseAnalyticsService.instance.logOnboardingCompleted());
   }
 
   void setSelectedSect(SectOption? value) {

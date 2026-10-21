@@ -2,7 +2,10 @@
 
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'firebase_options.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -19,6 +22,9 @@ import 'core/logger/startup_handoff.dart';
 import 'core/logger/startup_probe.dart';
 import 'core/logger/timed_app_localizations_delegate.dart';
 import 'core/logger/trace_helpers.dart';
+import 'core/services/firebase_analytics_service.dart';
+import 'core/services/firebase_crashlytics_service.dart';
+import 'core/services/firebase_messaging_service.dart';
 import 'core/services/storage_service.dart';
 import 'core/services/app_notification_service.dart';
 import 'core/services/daily_refresh_service.dart';
@@ -37,78 +43,130 @@ import 'features/tasbih/data/tasbih_local_repository.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
-  runZonedGuarded(() async {
-    StartupProbe.start();
-    WidgetsFlutterBinding.ensureInitialized();
-    StartupProbe.mark('1_WidgetsFlutterBinding.ensureInitialized');
+  runZonedGuarded(
+    () async {
+      StartupProbe.start();
+      WidgetsFlutterBinding.ensureInitialized();
+      StartupProbe.mark('1_WidgetsFlutterBinding.ensureInitialized');
 
-    // Logger file I/O must not block first frame (see LoggerService.initialize).
-    unawaited(LoggerService.instance.initialize());
-    AppLogging.installFrameworkHooks();
-    StartupProbe.mark('2_logger hooks installed');
-
-    try {
-      StartupProbe.detail(
-        'Hive: probing path_provider.getApplicationDocumentsDirectory',
-      );
-      final docs = await getApplicationDocumentsDirectory();
-      StartupProbe.detail('Hive: path_provider OK path=${docs.path}');
-      final hive = Hive.initFlutter();
-      final onboarding = StorageService.warmOnboardingCompleted();
-      await hive;
-      StartupProbe.mark('3_Hive.initFlutter done');
+      // Firebase must initialize before any Firebase service is used.
       try {
-        await onboarding;
-        StartupProbe.mark('onboardingCompleted warmed');
-      } catch (e) {
-        debugPrint('[STARTUP] onboardingCompleted warm failed: $e');
-      }
-    } catch (e, st) {
-      debugPrint('[STARTUP] Hive.initFlutter / path_provider FAILED: $e');
-      debugPrint('[STARTUP] stack:\n$st');
-      rethrow;
-    }
-
-    // Pre-warm subscription notifier from local cache so premium gates can
-    // open immediately on cold start without showing the loader.
-    unawaited(AppSuperwall.loadCachedState());
-
-    runApp(const DeenlyApp());
-    StartupProbe.mark('4_runApp');
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      StartupProbe.mark('5_first Flutter frame');
-      StartupProbe.dumpSummary();
-    });
-
-    // Alarms / translations after the first Home (or onboarding) paint.
-    // Superwall.configure spawns WKWebView — wait until Home secondary + verse
-    // transition frames have drained (homeUiQuiet), not merely first idle.
-    unawaited(
-      StartupHandoff.firstDestinationFrame.then((_) {
-        StartupProbe.detail(
-          '_initializeServices: after first destination frame',
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
         );
-        unawaited(_initializeServices());
-      }),
-    );
-    unawaited(
-      StartupHandoff.homeUiQuiet.then((_) async {
-        StartupProbe.mark('Superwall.configure scheduled (after home UI quiet)');
+        StartupProbe.mark('1.5_Firebase.initializeApp done');
+        debugPrint('[Firebase] Core initialized successfully');
+
+        // Initialize Analytics immediately after Core
+        await FirebaseAnalyticsService.instance.initialize();
+        StartupProbe.mark('1.6_FirebaseAnalyticsService.initialize done');
+        debugPrint('[Firebase] Analytics initialized successfully');
+      } catch (e, st) {
+        debugPrint('[Firebase] Initialization FAILED: $e');
+        debugPrintStack(stackTrace: st);
+        // Continue startup — Firebase failure should not block the app
+      }
+
+      // Logger file I/O must not block first frame (see LoggerService.initialize).
+      unawaited(LoggerService.instance.initialize());
+      AppLogging.installFrameworkHooks();
+      StartupProbe.mark('2_logger hooks installed');
+
+      // Install Crashlytics error handlers after AppLogging so both can coexist.
+      unawaited(_installCrashlyticsHandlers());
+
+      try {
+        StartupProbe.detail(
+          'Hive: probing path_provider.getApplicationDocumentsDirectory',
+        );
+        final docs = await getApplicationDocumentsDirectory();
+        StartupProbe.detail('Hive: path_provider OK path=${docs.path}');
+        final hive = Hive.initFlutter();
+        final onboarding = StorageService.warmOnboardingCompleted();
+        await hive;
+        StartupProbe.mark('3_Hive.initFlutter done');
         try {
-          await TraceHelpers.traceAsync(
-            'STARTUP',
-            'AppSuperwall.configure (after home UI quiet)',
-            AppSuperwall.configure,
-            logSuccess: true,
-          );
-        } finally {
-          StartupHandoff.notifyHomeChromeAnimationsAllowed();
-          StartupProbe.mark('Home chrome animations allowed (post-Superwall)');
+          await onboarding;
+          StartupProbe.mark('onboardingCompleted warmed');
+        } catch (e) {
+          debugPrint('[STARTUP] onboardingCompleted warm failed: $e');
         }
-      }),
-    );
-  }, AppLogging.recordZoneError);
+      } catch (e, st) {
+        debugPrint('[STARTUP] Hive.initFlutter / path_provider FAILED: $e');
+        debugPrint('[STARTUP] stack:\n$st');
+        rethrow;
+      }
+
+      // Pre-warm subscription notifier from local cache so premium gates can
+      // open immediately on cold start without showing the loader.
+      unawaited(AppSuperwall.loadCachedState());
+
+      runApp(const DeenlyApp());
+      StartupProbe.mark('4_runApp');
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        StartupProbe.mark('5_first Flutter frame');
+        StartupProbe.dumpSummary();
+      });
+
+      // Alarms / translations after the first Home (or onboarding) paint.
+      // Superwall.configure spawns WKWebView — wait until Home secondary + verse
+      // transition frames have drained (homeUiQuiet), not merely first idle.
+      unawaited(
+        StartupHandoff.firstDestinationFrame.then((_) {
+          StartupProbe.detail(
+            '_initializeServices: after first destination frame',
+          );
+          unawaited(_initializeServices());
+        }),
+      );
+      unawaited(
+        StartupHandoff.homeUiQuiet.then((_) async {
+          StartupProbe.mark(
+            'Superwall.configure scheduled (after home UI quiet)',
+          );
+          try {
+            await TraceHelpers.traceAsync(
+              'STARTUP',
+              'AppSuperwall.configure (after home UI quiet)',
+              AppSuperwall.configure,
+              logSuccess: true,
+            );
+          } finally {
+            StartupHandoff.notifyHomeChromeAnimationsAllowed();
+            StartupProbe.mark(
+              'Home chrome animations allowed (post-Superwall)',
+            );
+          }
+        }),
+      );
+    },
+    (error, stack) {
+      // Route to LoggerService first (existing behavior)
+      AppLogging.recordZoneError(error, stack);
+      // Then send to Crashlytics
+      unawaited(FirebaseCrashlyticsService.instance.recordError(error, stack));
+    },
+  );
+}
+
+Future<void> _installCrashlyticsHandlers() async {
+  try {
+    await FirebaseCrashlyticsService.instance.initialize();
+
+    // Override FlutterError.onError to send errors to Crashlytics while
+    // preserving existing LoggerService error logging.
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = (FlutterErrorDetails details) {
+      // Call original handler first (LoggerService)
+      originalOnError?.call(details);
+      // Then send to Crashlytics
+      FirebaseCrashlyticsService.instance.recordFlutterError(details);
+    };
+    StartupProbe.mark('2.5_Crashlytics handlers installed');
+  } catch (e) {
+    debugPrint('[STARTUP] Crashlytics setup failed: $e');
+  }
 }
 
 Future<void> _initializeServices() async {
@@ -127,6 +185,11 @@ Future<void> _initializeServices() async {
   unawaited(PrayerAlarmService.instance.initialize());
   QuranTranslationService.attachLifecycleRetry();
   unawaited(QuranTranslationService.ensureDefaultTranslationInBackground());
+
+  // Firebase services — Analytics already initialized early in main()
+  unawaited(FirebaseMessagingService.instance.initialize());
+  unawaited(FirebaseAnalyticsService.instance.logAppOpen());
+
   StartupProbe.detail('_initializeServices: scheduled');
 }
 

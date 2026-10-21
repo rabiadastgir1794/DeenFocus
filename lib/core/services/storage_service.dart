@@ -97,6 +97,7 @@ abstract class StorageService {
       'needs_prayer_notification_reschedule';
   static const String _keyPrayerLiveActivityEnabled =
       'prayer_live_activity_enabled';
+  static const String _keyFcmToken = 'fcm_token';
   // v2: resets dismiss after layout fix so the Home promo can show again.
   static const String _keyHomeLiveActivityPromoDismissed =
       'home_live_activity_promo_dismissed_v2';
@@ -1324,5 +1325,22 @@ abstract class StorageService {
   static Future<void> setDigitalBalanceGoalMinutes(int minutes) async {
     final prefs = await _prefs;
     await prefs.setInt(_keyDigitalBalanceGoalMinutes, minutes);
+  }
+
+  // --- Firebase Cloud Messaging ---
+
+  static Future<String?> get fcmToken async {
+    final prefs = await _prefs;
+    return prefs.getString(_keyFcmToken);
+  }
+
+  static Future<void> setFcmToken(String token) async {
+    final prefs = await _prefs;
+    await prefs.setString(_keyFcmToken, token);
+  }
+
+  static Future<void> clearFcmToken() async {
+    final prefs = await _prefs;
+    await prefs.remove(_keyFcmToken);
   }
 }

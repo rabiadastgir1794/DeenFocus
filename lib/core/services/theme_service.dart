@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'firebase_analytics_service.dart';
 import 'focus_enforcement_service.dart';
 import 'storage_service.dart';
 import 'widget_sync_service.dart';
@@ -45,6 +46,14 @@ class ThemeService extends ChangeNotifier {
     _themeMode = nextMode;
     notifyListeners();
     await StorageService.setDarkModeEnabled(value);
+
+    // Track theme change in analytics
+    unawaited(
+      FirebaseAnalyticsService.instance.logThemeChanged(
+        theme: value ? 'dark' : 'light',
+      ),
+    );
+
     await WidgetSyncService.instance.syncTimeline();
     if (Platform.isIOS) {
       await FocusEnforcementService.persistIosShieldTheme(isDark: value);

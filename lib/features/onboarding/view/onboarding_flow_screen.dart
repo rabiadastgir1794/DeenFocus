@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../app/routes/route_names.dart';
 import '../../../core/constants/app_languages.dart';
 import '../../../core/constants/spacing.dart';
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/locale_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -416,6 +417,11 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
   }
 
   Future<void> _onSkipPressed(OnboardingViewModel vm) async {
+    unawaited(
+      FirebaseAnalyticsService.instance.logOnboardingSkipped(
+        step: 'step_${vm.currentIndex}',
+      ),
+    );
     if (vm.isNotificationStep ||
         vm.isScreenTimeStep ||
         vm.isSelectAppsStep ||
@@ -537,7 +543,8 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
     final isScreenTimeStep =
         vm.currentIndex == OnboardingViewModel.screenTimeStepIndex;
     final isBusyScreenTimeStep = isScreenTimeStep && vm.screenTimeRequesting;
-    final isBusySelectAppsStep = vm.isSelectAppsStep &&
+    final isBusySelectAppsStep =
+        vm.isSelectAppsStep &&
         (vm.selectAppsLoading || _selectAppsAutoAdvancing);
     final isWelcomeStep = vm.currentIndex == 0;
     final demoImmersive = vm.isAppLockDemoStep && _appLockDemoImmersive;
@@ -563,8 +570,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                       totalSteps: vm.totalSteps,
                       currentIndex: vm.currentIndex,
                     ),
-                  if (!demoImmersive)
-                    _buildTopBar(context, vm, localeService),
+                  if (!demoImmersive) _buildTopBar(context, vm, localeService),
                   Expanded(
                     child: PageView(
                       key: const ValueKey('onboarding_page_view'),
@@ -576,8 +582,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                             index != OnboardingViewModel.locationStepIndex) {
                           FocusManager.instance.primaryFocus?.unfocus();
                         }
-                        if (index !=
-                                OnboardingViewModel.appLockDemoStepIndex &&
+                        if (index != OnboardingViewModel.appLockDemoStepIndex &&
                             _appLockDemoImmersive) {
                           setState(() => _appLockDemoImmersive = false);
                         }
@@ -611,13 +616,11 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                           showEnableButton: !vm.notificationGranted,
                         ),
                         OnboardingScreenTimePage(
-                          onAllowTap: () =>
-                              _onScreenTimeAllowTap(context, vm),
+                          onAllowTap: () => _onScreenTimeAllowTap(context, vm),
                           isLoading: vm.screenTimeRequesting,
                         ),
                         OnboardingSelectAppsPage(
-                          onSelectAppsTap: () =>
-                              _onSelectAppsTap(context, vm),
+                          onSelectAppsTap: () => _onSelectAppsTap(context, vm),
                           onSkipForNowTap: () => _goToNextPage(vm),
                           onMaybeLater: () => _goToNextPage(vm),
                           isLoading: vm.selectAppsLoading,
@@ -634,9 +637,7 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               if (!mounted) return;
                               if (_appLockDemoImmersive == immersive) return;
-                              setState(
-                                () => _appLockDemoImmersive = immersive,
-                              );
+                              setState(() => _appLockDemoImmersive = immersive);
                             });
                           },
                         ),
@@ -684,74 +685,79 @@ class _OnboardingFlowContentState extends State<_OnboardingFlowContent>
       bottomNavigationBar: demoImmersive
           ? null
           : SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            Spacing.lg.w,
-            vm.isAppLockDemoStep ? 10 : 16,
-            Spacing.lg.w,
-            Spacing.md.h,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (vm.isAppLockDemoStep) ...[
-                // Intro / completion: shared onboarding stepper only.
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Spacing.lg.w,
+                  vm.isAppLockDemoStep ? 10 : 16,
+                  Spacing.lg.w,
+                  Spacing.md.h,
                 ),
-              ] else if (vm.currentIndex == vm.totalSteps - 1) ...[
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (vm.isAppLockDemoStep) ...[
+                      // Intro / completion: shared onboarding stepper only.
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ] else if (vm.currentIndex == vm.totalSteps - 1) ...[
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ] else if (vm.isLocationStep) ...[
+                      // Continue lives on the location page and triggers the OS prompt.
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ] else if (vm.isNotificationStep &&
+                        !vm.notificationGranted) ...[
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ] else if (vm.isSelectAppsStep) ...[
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ] else if (vm.isScreenTimeStep) ...[
+                      _OnboardingMaybeLaterButton(
+                        label: AppLocalizations.of(
+                          context,
+                        )!.notificationsMaybeLater,
+                        enabled:
+                            !(isBusyScreenTimeStep || isBusySelectAppsStep),
+                        onPressed: () => _goToNextPage(vm),
+                      ),
+                      SizedBox(height: Spacing.md.h),
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ] else ...[
+                      AppButton(
+                        label: AppLocalizations.of(context)!.continueButton,
+                        enabled:
+                            !vm.isContinueDisabled &&
+                            !isBusyScreenTimeStep &&
+                            !isBusySelectAppsStep,
+                        showTrailingIcon: true,
+                        onPressed: () => _goToNextPage(vm),
+                      ),
+                      SizedBox(height: Spacing.md.h),
+                      AppProgressIndicator(
+                        totalSteps: vm.totalSteps,
+                        currentIndex: vm.currentIndex,
+                      ),
+                    ],
+                  ],
                 ),
-              ] else if (vm.isLocationStep) ...[
-                // Continue lives on the location page and triggers the OS prompt.
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
-                ),
-              ] else if (vm.isNotificationStep && !vm.notificationGranted) ...[
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
-                ),
-              ] else if (vm.isSelectAppsStep) ...[
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
-                ),
-              ] else if (vm.isScreenTimeStep) ...[
-                _OnboardingMaybeLaterButton(
-                  label: AppLocalizations.of(context)!.notificationsMaybeLater,
-                  enabled: !(isBusyScreenTimeStep || isBusySelectAppsStep),
-                  onPressed: () => _goToNextPage(vm),
-                ),
-                SizedBox(height: Spacing.md.h),
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
-                ),
-              ] else ...[
-                AppButton(
-                  label: AppLocalizations.of(context)!.continueButton,
-                  enabled: !vm.isContinueDisabled &&
-                      !isBusyScreenTimeStep &&
-                      !isBusySelectAppsStep,
-                  showTrailingIcon: true,
-                  onPressed: () => _goToNextPage(vm),
-                ),
-                SizedBox(height: Spacing.md.h),
-                AppProgressIndicator(
-                  totalSteps: vm.totalSteps,
-                  currentIndex: vm.currentIndex,
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 }
@@ -790,10 +796,7 @@ class _OnboardingMaybeLaterButton extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
         ),
       ),
     );

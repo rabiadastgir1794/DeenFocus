@@ -32,6 +32,10 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   # Official Meta / Facebook App Events SDK (iOS).
   pod 'FBSDKCoreKit', '~> 18.0'
+  # Firebase SDK via FlutterFire plugins (Analytics, Crashlytics, Messaging).
+  pod 'FirebaseAnalytics'
+  pod 'FirebaseCrashlytics'
+  pod 'FirebaseMessaging'
   target 'RunnerTests' do
     inherit! :search_paths
   end

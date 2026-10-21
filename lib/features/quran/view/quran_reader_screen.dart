@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/quran_bookmark_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -504,10 +505,14 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     }
 
     if (!mounted) return;
+    final becameActive = !_searchActive;
     setState(() {
       _searchActive = true;
       _searchResults = results;
     });
+    if (becameActive) {
+      unawaited(FirebaseAnalyticsService.instance.logQuranSearchOpened());
+    }
   }
 
   Future<void> _openSearchResult(_SearchResult result) async {
@@ -525,16 +530,16 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
       case _SearchResultKind.page:
         await _openFullPage(result.page ?? 1);
       case _SearchResultKind.juz:
-        await Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => JuzReadingScreen(juzNumber: result.juz ?? 1),
-          ),
-        );
-        if (mounted) await _loadContinueReading();
+        await _openJuz(result.juz ?? 1);
     }
   }
 
   Future<void> _openSurahDetail(SurahSummary surah, {int? initialAyah}) async {
+    unawaited(
+      FirebaseAnalyticsService.instance.logQuranSurahOpened(
+        surahNumber: surah.number,
+      ),
+    );
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) =>
@@ -548,6 +553,9 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
   }
 
   Future<void> _openJuz(int juzNumber) async {
+    unawaited(
+      FirebaseAnalyticsService.instance.logQuranJuzOpened(juzNumber: juzNumber),
+    );
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => JuzReadingScreen(juzNumber: juzNumber),
@@ -561,7 +569,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
   }
 
   Future<void> _bookmarkSurah(SurahSummary surah) async {
-    await QuranBookmarkService.add(
+    final added = await QuranBookmarkService.add(
       QuranBookmark(
         id: QuranBookmarkService.idFor(
           kind: QuranBookmarkKind.surah,
@@ -573,6 +581,13 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
         createdAtMs: DateTime.now().millisecondsSinceEpoch,
       ),
     );
+    if (added) {
+      unawaited(
+        FirebaseAnalyticsService.instance.logQuranSurahBookmarked(
+          surahNumber: surah.number,
+        ),
+      );
+    }
     await _refreshCounts();
   }
 
@@ -804,7 +819,16 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
                   juz: juz.number,
                   createdAtMs: DateTime.now().millisecondsSinceEpoch,
                 ),
-              ).then((_) => _refreshCounts()),
+              ).then((added) async {
+                if (added) {
+                  unawaited(
+                    FirebaseAnalyticsService.instance.logQuranJuzBookmarked(
+                      juzNumber: juz.number,
+                    ),
+                  );
+                }
+                await _refreshCounts();
+              }),
             ),
           ),
         );

@@ -1,6 +1,27 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-09-10 — Prayer Count daily aggregation (not tip-walk).
+> Last updated: 2026-10-21 — Firebase analytics and crash reporting.
+
+## Status: Firebase analytics and crash reporting (2026-10-21)
+Temporary Crashlytics test controls removed. Collection stays off in debug.
+Analytics, Crashlytics, and FCM client integration remain. Crashlytics
+Console reporting is not device-verified.
+
+## Status: App Store Header + Search Results (2026-10-21)
+Premium App Store Connect assets in `marketing/app_store/`, Apple sizes:
+header `deen_focus_app_store_header.png` 3840×1646 RGB (cinematic dual-phone
+Salah lock + Home, widget/Live Activity); search
+`deen_focus_search_results.png` 3840×2560 RGB (top-copy mashrabiya room,
+Cosmic Orange Focus + Deep Blue Quran, no widgets). Distinct layouts. No commit.
+
+## Status: Firebase Analytics final audit (2026-10-21)
+Audit fixes: `tasbih_opened` (was misnamed preset), share/bookmark/directions
+only after success, unused catalog wrappers removed, bookmark coverage for
+surah/juz/tajweed ayah. `flutter analyze` has no new analytics issues.
+DebugView this branch previously confirmed `tab_switched` / `app_open` only;
+new events not re-confirmed in Console. No commit.
+
+## Status: Prayer Count replaces tip-walk streak (2026-09-10)
 
 ## Status: Prayer Count replaces tip-walk streak (2026-09-10)
 Primary `snapshot.prayerStreak` is now a **per-calendar-day completion sum**:

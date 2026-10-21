@@ -20,6 +20,30 @@
 @import audio_session;
 #endif
 
+#if __has_include(<firebase_analytics/FirebaseAnalyticsPlugin.h>)
+#import <firebase_analytics/FirebaseAnalyticsPlugin.h>
+#else
+@import firebase_analytics;
+#endif
+
+#if __has_include(<firebase_core/FLTFirebaseCorePlugin.h>)
+#import <firebase_core/FLTFirebaseCorePlugin.h>
+#else
+@import firebase_core;
+#endif
+
+#if __has_include(<firebase_crashlytics/FLTFirebaseCrashlyticsPlugin.h>)
+#import <firebase_crashlytics/FLTFirebaseCrashlyticsPlugin.h>
+#else
+@import firebase_crashlytics;
+#endif
+
+#if __has_include(<firebase_messaging/FLTFirebaseMessagingPlugin.h>)
+#import <firebase_messaging/FLTFirebaseMessagingPlugin.h>
+#else
+@import firebase_messaging;
+#endif
+
 #if __has_include(<flutter_local_notifications/FlutterLocalNotificationsPlugin.h>)
 #import <flutter_local_notifications/FlutterLocalNotificationsPlugin.h>
 #else
@@ -151,6 +175,22 @@ static void DeenFocusTimePlugin(NSString *name, void (^block)(void)) {
   });
   DeenFocusTimePlugin(@"AudioSessionPlugin", ^{
     [AudioSessionPlugin registerWithRegistrar:[registry registrarForPlugin:@"AudioSessionPlugin"]];
+  });
+  DeenFocusTimePlugin(@"FirebaseAnalyticsPlugin", ^{
+    [FirebaseAnalyticsPlugin
+        registerWithRegistrar:[registry registrarForPlugin:@"FirebaseAnalyticsPlugin"]];
+  });
+  DeenFocusTimePlugin(@"FLTFirebaseCorePlugin", ^{
+    [FLTFirebaseCorePlugin
+        registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
+  });
+  DeenFocusTimePlugin(@"FLTFirebaseCrashlyticsPlugin", ^{
+    [FLTFirebaseCrashlyticsPlugin
+        registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCrashlyticsPlugin"]];
+  });
+  DeenFocusTimePlugin(@"FLTFirebaseMessagingPlugin", ^{
+    [FLTFirebaseMessagingPlugin
+        registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseMessagingPlugin"]];
   });
   DeenFocusTimePlugin(@"FlutterLocalNotificationsPlugin", ^{
     [FlutterLocalNotificationsPlugin

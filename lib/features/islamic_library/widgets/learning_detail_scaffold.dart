@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/share/content_share_payload.dart';
 import '../../../core/share/content_share_service.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
@@ -47,11 +50,18 @@ class _LearningDetailScaffoldState extends State<LearningDetailScaffold> {
     if (payload == null || _sharing) return;
     setState(() => _sharing = true);
     try {
-      await ContentShareService.shareCard(
+      final shared = await ContentShareService.shareCard(
         context: context,
         boundaryKey: _cardKey,
         payload: payload,
       );
+      if (shared) {
+        unawaited(
+          FirebaseAnalyticsService.instance.logContentShared(
+            contentType: 'islamic_library',
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
@@ -73,10 +83,7 @@ class _LearningDetailScaffoldState extends State<LearningDetailScaffold> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: RepaintBoundary(
-                  key: _cardKey,
-                  child: widget.child,
-                ),
+                child: RepaintBoundary(key: _cardKey, child: widget.child),
               ),
             ),
             if (_hasActions)

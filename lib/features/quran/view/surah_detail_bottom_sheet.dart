@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/quran_bookmark_service.dart';
 import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -217,10 +218,8 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
-        builder: (_) => MushafPageScreen(
-          surah: widget.surah,
-          initialPage: page,
-        ),
+        builder: (_) =>
+            MushafPageScreen(surah: widget.surah, initialPage: page),
       ),
     );
   }
@@ -427,6 +426,12 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
       await _player.stop();
       await _player.seek(Duration.zero, index: position);
       await _player.play();
+      unawaited(
+        FirebaseAnalyticsService.instance.logQuranRecitationPlayed(
+          surahNumber: widget.surah.number,
+          reciter: 'default',
+        ),
+      );
     } finally {
       _startingPlayback = false;
     }
@@ -529,7 +534,7 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
     if (wasBookmarked) {
       await QuranBookmarkService.remove(id);
     } else {
-      await QuranBookmarkService.add(
+      final added = await QuranBookmarkService.add(
         QuranBookmark(
           id: id,
           kind: QuranBookmarkKind.ayah,
@@ -539,6 +544,14 @@ class _SurahDetailBottomSheetState extends State<SurahDetailBottomSheet> {
           createdAtMs: DateTime.now().millisecondsSinceEpoch,
         ),
       );
+      if (added) {
+        unawaited(
+          FirebaseAnalyticsService.instance.logQuranAyahBookmarked(
+            surahNumber: ayah.surahNumber,
+            ayahNumber: ayah.ayahNumber,
+          ),
+        );
+      }
     }
 
     if (!mounted) return;

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -48,6 +51,9 @@ class _JuzListScreenState extends State<JuzListScreen> {
   }
 
   Future<void> _openJuz(int juzNumber) async {
+    unawaited(
+      FirebaseAnalyticsService.instance.logQuranJuzOpened(juzNumber: juzNumber),
+    );
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => JuzReadingScreen(juzNumber: juzNumber),
@@ -64,9 +70,7 @@ class _JuzListScreenState extends State<JuzListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: l10n.quranModeJuz,
-        actions: [
-          QuranReadingSettingsLauncher.appBarAction(context),
-        ],
+        actions: [QuranReadingSettingsLauncher.appBarAction(context)],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

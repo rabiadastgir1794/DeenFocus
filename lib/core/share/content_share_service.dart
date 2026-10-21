@@ -47,7 +47,8 @@ class ContentShareService {
     }
   }
 
-  static Future<void> shareCard({
+  /// Returns true when the user completed a share, not dismiss or capture failure.
+  static Future<bool> shareCard({
     required BuildContext context,
     required GlobalKey boundaryKey,
     required ContentSharePayload payload,
@@ -58,7 +59,7 @@ class ContentShareService {
       final png = await _captureBrandedPng(boundaryKey);
       if (png == null) {
         if (context.mounted) _showFailed(context, l10n);
-        return;
+        return false;
       }
 
       final dir = await getTemporaryDirectory();
@@ -69,21 +70,23 @@ class ContentShareService {
 
       final message = composeShareMessage(l10n);
 
-      await SharePlus.instance.share(
+      final result = await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path, mimeType: 'image/png')],
           text: message,
         ),
       );
+      return result.status == ShareResultStatus.success;
     } catch (_) {
       if (context.mounted) _showFailed(context, l10n);
+      return false;
     }
   }
 
   static void _showFailed(BuildContext context, AppLocalizations l10n) {
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-      SnackBar(content: Text(l10n.contentShareFailed)),
-    );
+    ScaffoldMessenger.maybeOf(
+      context,
+    )?.showSnackBar(SnackBar(content: Text(l10n.contentShareFailed)));
   }
 
   static Future<Uint8List?> _captureBrandedPng(GlobalKey key) async {
@@ -161,12 +164,7 @@ class ContentShareService {
     );
     canvas.save();
     canvas.clipRRect(rrect);
-    paintImage(
-      canvas: canvas,
-      rect: iconRect,
-      image: logo,
-      fit: BoxFit.cover,
-    );
+    paintImage(canvas: canvas, rect: iconRect, image: logo, fit: BoxFit.cover);
     canvas.restore();
 
     final textX = iconX + iconSize + 10 * pixelRatio;

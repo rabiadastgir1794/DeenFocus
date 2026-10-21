@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+
+import '../../../core/services/firebase_analytics_service.dart';
 
 import '../helpers/lock_screen_style_preference.dart';
 import '../view/widgets/lock_screen_options/lock_screen_style.dart';
@@ -15,8 +19,14 @@ class LockScreenOptionsViewModel extends ChangeNotifier {
   }
 
   Future<void> select(LockScreenStyle style) async {
+    if (_selected == style) return;
     _selected = style;
     notifyListeners();
     await LockScreenStylePreference.save(style);
+    unawaited(
+      FirebaseAnalyticsService.instance.logLockScreenStyleChanged(
+        style: style.name,
+      ),
+    );
   }
 }

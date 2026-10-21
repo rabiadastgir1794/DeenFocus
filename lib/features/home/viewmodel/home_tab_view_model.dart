@@ -13,6 +13,7 @@ import '../../../core/logger/startup_probe.dart';
 import '../../../core/services/app_notification_service.dart';
 import '../../../core/services/app_review_service.dart';
 import '../../../core/services/daily_refresh_service.dart';
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/location/location_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/prayer_alarm_enablement.dart';
@@ -165,6 +166,7 @@ class HomeTabViewModel extends ChangeNotifier {
       isPausedToday: cyclePolicy.shouldPauseStreaks(now),
     );
   }
+
   List<bool> get weekCycleHighlights {
     final now = DateTime.now();
     return currentWeekDates
@@ -375,6 +377,7 @@ class HomeTabViewModel extends ChangeNotifier {
   PrayerAlarmCapabilities? _prayerAlarmCapabilities;
   PrayerAlarmAuthorizationStatus _prayerAlarmAuthorization =
       PrayerAlarmAuthorizationStatus.unavailable;
+
   /// Soft FLN prayer reminders — OS notification permission (not alarm auth).
   bool _notificationPermissionGranted = false;
 
@@ -494,7 +497,9 @@ class HomeTabViewModel extends ChangeNotifier {
     });
     unawaited(
       StartupHandoff.homeUiQuiet.then((_) async {
-        StartupProbe.mark('HomeTabViewModel Superwall sync after home UI quiet');
+        StartupProbe.mark(
+          'HomeTabViewModel Superwall sync after home UI quiet',
+        );
         await AppSuperwall.configure();
         await _loadSubscriptionStatus();
         notifyListeners();
@@ -669,7 +674,10 @@ class HomeTabViewModel extends ChangeNotifier {
       notifyListeners();
       StartupProbe.mark('HomeTabViewModel secondary metrics ready');
 
-      StartupProbe.setFrameBudgetMonitor(active: true, label: 'verse-transition');
+      StartupProbe.setFrameBudgetMonitor(
+        active: true,
+        label: 'verse-transition',
+      );
       try {
         await _loadVerse();
         StartupProbe.mark('HomeTabViewModel verse published (isolated)');
@@ -869,6 +877,11 @@ class HomeTabViewModel extends ChangeNotifier {
     await _prayerSettingsService.setSound(prayer, sound);
     notifyListeners();
     unawaited(_rescheduleNotificationsIfPossible());
+    unawaited(
+      FirebaseAnalyticsService.instance.logPrayerSoundChanged(
+        sound: sound.name,
+      ),
+    );
   }
 
   /// Sets soft notification preference only (does not change native alarm).
@@ -889,6 +902,11 @@ class HomeTabViewModel extends ChangeNotifier {
     await _prayerSettingsService.setNotificationsEnabled(prayer, enabled);
     notifyListeners();
     unawaited(_rescheduleNotificationsIfPossible());
+    unawaited(
+      FirebaseAnalyticsService.instance.logPrayerNotificationToggled(
+        enabled: enabled,
+      ),
+    );
     return true;
   }
 
@@ -904,6 +922,12 @@ class HomeTabViewModel extends ChangeNotifier {
       await _prayerSettingsService.setAlarmEnabled(prayer, false);
       notifyListeners();
       unawaited(_rescheduleNotificationsIfPossible());
+      unawaited(
+        FirebaseAnalyticsService.instance.logPrayerAlarmToggled(
+          prayer: prayer.name,
+          enabled: false,
+        ),
+      );
       return null;
     }
 
@@ -927,6 +951,12 @@ class HomeTabViewModel extends ChangeNotifier {
     await _prayerSettingsService.setAlarmEnabled(prayer, true);
     notifyListeners();
     unawaited(_rescheduleNotificationsIfPossible());
+    unawaited(
+      FirebaseAnalyticsService.instance.logPrayerAlarmToggled(
+        prayer: prayer.name,
+        enabled: true,
+      ),
+    );
     return result.status;
   }
 
@@ -1132,6 +1162,7 @@ class HomeTabViewModel extends ChangeNotifier {
 
   /// Persists full Cycle Mode settings and refreshes analytics / focus / achievements.
   Future<void> saveCycleMode(CycleModeData data) async {
+    final wasEnabled = _cycleMode.isEnabled;
     // Merge + normalize histories so disable→enable→disable never duplicates.
     final history = CycleModeData.mergeHistories(
       _cycleMode.history,
@@ -1157,6 +1188,15 @@ class HomeTabViewModel extends ChangeNotifier {
         cycleMode: _cycleMode,
       ),
     );
+    if (!wasEnabled && _cycleMode.isEnabled) {
+      unawaited(
+        FirebaseAnalyticsService.instance.logCycleModeStarted(
+          days: _cycleMode.cycleLength,
+        ),
+      );
+    } else if (wasEnabled && !_cycleMode.isEnabled) {
+      unawaited(FirebaseAnalyticsService.instance.logCycleModeDisabled());
+    }
   }
 
   /// Disables Cycle Mode on [onDate] (defaults to today). The disable day is
@@ -1216,7 +1256,9 @@ class HomeTabViewModel extends ChangeNotifier {
   /// Applies AlarmKit / FSI "I've Prayed" via the shared [markPrayerStatus] path.
   /// Call only after [ensurePrayerStreakReady]. Returns null when already marked
   /// (no second celebration). Always suppresses the soft reminder for [prayer].
-  Future<PrayerMarkResult?> applyAlarmPrayedAction(TrackablePrayer prayer) async {
+  Future<PrayerMarkResult?> applyAlarmPrayedAction(
+    TrackablePrayer prayer,
+  ) async {
     await ensurePrayerStreakReady();
     if (statusForToday(prayer) != PrayerMarkStatus.none) {
       try {
@@ -1227,11 +1269,7 @@ class HomeTabViewModel extends ChangeNotifier {
       return null;
     }
     // markPrayerStatus persists streak + reminder prompt key before returning.
-    return markPrayerStatus(
-      DateTime.now(),
-      prayer,
-      PrayerMarkStatus.onTime,
-    );
+    return markPrayerStatus(DateTime.now(), prayer, PrayerMarkStatus.onTime);
   }
 
   /// Reminder target: the most recent started prayer, only if it is unmarked.
@@ -1281,9 +1319,11 @@ class HomeTabViewModel extends ChangeNotifier {
     String? newLocationName,
     String? newLocationSubtitle,
   ) async {
-    final nameChanged = newLocationName != locationName ||
+    final nameChanged =
+        newLocationName != locationName ||
         newLocationSubtitle != locationSubtitle;
-    final coordsChanged = !_sameCoord(newLatitude, latitude) ||
+    final coordsChanged =
+        !_sameCoord(newLatitude, latitude) ||
         !_sameCoord(newLongitude, longitude);
     if (!nameChanged && !coordsChanged) return;
 
@@ -1583,11 +1623,18 @@ class HomeTabViewModel extends ChangeNotifier {
     }
 
     final celebrated = streakGrew;
+    unawaited(
+      FirebaseAnalyticsService.instance.logPrayerMarked(
+        prayer: prayer.name,
+        status: status.name,
+      ),
+    );
     // Every on-time "I prayed" path goes through here — unlock Salah lock so
     // Home's Unlock Apps card clears without duplicating unlock in each popup.
     if (status == PrayerMarkStatus.onTime) {
       await FocusController.unlockAppsAfterPrayerMarked();
     }
+
     return PrayerMarkResult(
       prayer: prayer,
       status: status,
@@ -1619,7 +1666,8 @@ class HomeTabViewModel extends ChangeNotifier {
       now: now,
       statusHistory: _mergedStatusHistory(),
       isPausedStreakDay: (d) => policy.shouldPauseStreaks(d, now: now),
-      isExcludedStatsDay: (d) => policy.shouldExcludeFromStatistics(d, now: now),
+      isExcludedStatsDay: (d) =>
+          policy.shouldExcludeFromStatistics(d, now: now),
       prayerStartTime: prayerDateTimeFor,
     );
     prayerStreak = analytics.prayerStreak;
@@ -1799,18 +1847,20 @@ class HomeTabViewModel extends ChangeNotifier {
   ) {
     final history = state.statusHistory;
     if (history.isEmpty) return state;
-    final hydrated = state.weekDays.map((day) {
-      final hist = history[day.dateKey];
-      if (hist == null || hist.isEmpty) return day;
-      final selected = <TrackablePrayer>{
-        for (final e in hist.entries)
-          if (PrayerAnalyticsService.countsForPrayerStreak(e.value)) e.key,
-      };
-      return day.copyWith(
-        selectedPrayers: selected,
-        prayerStatuses: Map<TrackablePrayer, PrayerMarkStatus>.from(hist),
-      );
-    }).toList(growable: false);
+    final hydrated = state.weekDays
+        .map((day) {
+          final hist = history[day.dateKey];
+          if (hist == null || hist.isEmpty) return day;
+          final selected = <TrackablePrayer>{
+            for (final e in hist.entries)
+              if (PrayerAnalyticsService.countsForPrayerStreak(e.value)) e.key,
+          };
+          return day.copyWith(
+            selectedPrayers: selected,
+            prayerStatuses: Map<TrackablePrayer, PrayerMarkStatus>.from(hist),
+          );
+        })
+        .toList(growable: false);
     return state.copyWith(weekDays: hydrated);
   }
 

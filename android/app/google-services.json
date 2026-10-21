@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "515473802830",
+    "project_id": "deen-focus",
+    "storage_bucket": "deen-focus.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515473802830:android:8de3d51a0b1cf4ba5ee51f",
+        "android_client_info": {
+          "package_name": "com.rnr.deenfocus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAAM_VIoeV76w_-Q36olfRy26zcwQudMg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

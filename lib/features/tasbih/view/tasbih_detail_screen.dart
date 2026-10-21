@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/share/content_share_payload.dart';
 import '../../../core/share/content_share_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -104,7 +105,12 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
   }
 
   void _setGoal(int goal) {
-    if (goal < 1 || !mounted) return;
+    if (goal < 1 || goal == _goal || !mounted) return;
+    unawaited(
+      FirebaseAnalyticsService.instance.logTasbihPresetSelected(
+        preset: '$goal',
+      ),
+    );
     setState(() {
       _goal = goal;
       if (_countInLoop > _goal) {
@@ -127,9 +133,10 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
   Future<void> _saveSession() async {
     if (_sessionTotal <= 0) return;
     await _withSaving(() async {
+      final sessionCount = _sessionTotal;
       final total = await TasbihLocalRepository.instance.recordSessionBatch(
         tasbihId: _item.id,
-        sessionCount: _sessionTotal,
+        sessionCount: sessionCount,
       );
       if (!mounted) return;
       setState(() {
@@ -142,12 +149,18 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.tasbihSessionSaved)));
+      unawaited(
+        FirebaseAnalyticsService.instance.logTasbihCounterUsed(
+          finalCount: sessionCount,
+        ),
+      );
     });
   }
 
   Future<void> _resetTotal() async {
     await _withSaving(() async {
       await TasbihLocalRepository.instance.resetTotal(_item.id);
+      unawaited(FirebaseAnalyticsService.instance.logTasbihReset());
       if (!mounted) return;
       setState(() {
         _item = _item.copyWith(totalCount: 0);
@@ -172,11 +185,18 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
     if (_sharing) return;
     setState(() => _sharing = true);
     try {
-      await ContentShareService.shareCard(
+      final shared = await ContentShareService.shareCard(
         context: context,
         boundaryKey: _shareKey,
         payload: const ContentSharePayload(title: ''),
       );
+      if (shared) {
+        unawaited(
+          FirebaseAnalyticsService.instance.logContentShared(
+            contentType: 'tasbih',
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
@@ -215,7 +235,9 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                   onBack: () => Navigator.of(context).pop(),
                   trailing: PopupMenuButton<_TasbihDetailOption>(
                     padding: EdgeInsets.zero,
-                    tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).moreButtonTooltip,
                     onSelected: (option) =>
                         unawaited(_onDetailMenuSelected(option)),
                     itemBuilder: (_) => [
@@ -300,8 +322,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                                           style: TextStyle(
                                             fontSize: 22.sp,
                                             fontWeight: FontWeight.w600,
-                                            color:
-                                                colorScheme.onSurfaceVariant,
+                                            color: colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         SizedBox(width: 6.w),
@@ -375,8 +396,7 @@ class _TasbihDetailScreenState extends State<TasbihDetailScreen> {
                           SizedBox(height: 12.h),
                           Expanded(
                             child: SingleChildScrollView(
-                              padding:
-                                  EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
+                              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
                               child: Column(
                                 children: [
                                   _DhikrCard(

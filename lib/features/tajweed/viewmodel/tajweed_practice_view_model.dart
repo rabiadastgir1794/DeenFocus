@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/permission_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/tajweed_service.dart';
@@ -173,7 +174,8 @@ class TajweedModelSession {
   static Future<({String version, String sha})> _readPackIdentity() async {
     try {
       final info = await TajweedService.getActiveCoreMlInfo();
-      final version = (info['version'] as String?) ??
+      final version =
+          (info['version'] as String?) ??
           (info['manifestVersion'] as String?) ??
           '';
       final sha = (info['encoderSha256'] as String?) ?? '';
@@ -405,13 +407,14 @@ class TajweedPracticeViewModel extends ChangeNotifier {
       _coreMlOverrideAllowed =
           await TajweedService.isDevCoreMlOverrideAllowed();
       final info = await TajweedService.getActiveCoreMlInfo();
-      final api = (info['encoderApi'] as String?) ??
+      final api =
+          (info['encoderApi'] as String?) ??
           (info['resolvedApi'] as String?) ??
           '';
       final encoder = (info['encoder'] as String?) ?? '';
       final version = (info['version'] as String?) ?? '';
-      _officialCoreMlActive = api != 'single_function_fixed' &&
-          !encoder.contains('diy-');
+      _officialCoreMlActive =
+          api != 'single_function_fixed' && !encoder.contains('diy-');
       _activeCoreMlLabel = _officialCoreMlActive
           ? 'Official HF CoreML  ·  $version'
           : 'DIY CoreML  ·  $version';
@@ -585,9 +588,7 @@ class TajweedPracticeViewModel extends ChangeNotifier {
       _referencePlayer = player;
       await player.setVolume(_referenceVolume);
       await player.setSpeed(_referenceSpeed);
-      await player.setUrl(
-        QuranRecitation.audioUrl(args.surah, args.ayah),
-      );
+      await player.setUrl(QuranRecitation.audioUrl(args.surah, args.ayah));
       // Apply after setUrl — some platforms reset loop mode on source load.
       await _applyReferenceLoopMode(player, _referenceRepeatMode);
       _referencePlayerSub = player.playerStateStream.listen((state) {
@@ -711,6 +712,14 @@ class TajweedPracticeViewModel extends ChangeNotifier {
             ayah: args.ayah,
             score: score,
           ),
+        ),
+      );
+      unawaited(
+        FirebaseAnalyticsService.instance.logTajweedPracticeCompleted(
+          surahNumber: args.surah,
+          ayahNumber: args.ayah,
+          accuracyPercent: (score.wordAccuracy.clamp(0.0, 1.0) * 100).round(),
+          exactMatch: score.exactMatch,
         ),
       );
     } on TajweedException catch (e) {

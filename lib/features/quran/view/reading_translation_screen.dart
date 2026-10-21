@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/quran_translation_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
@@ -99,9 +100,8 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
     ];
   }
 
-  List<QuranTranslationOption> get _availableOptions => _translationOptions
-      .where((o) => !o.installed)
-      .toList(growable: false);
+  List<QuranTranslationOption> get _availableOptions =>
+      _translationOptions.where((o) => !o.installed).toList(growable: false);
 
   _TranslationRowStatus _statusFor(QuranTranslationOption option) {
     if (_downloadingLanguage == option.languageCode) {
@@ -139,6 +139,11 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
       await QuranTranslationService.selectLanguage(option.languageCode);
       if (!mounted) return;
       setState(() => _selectedTranslation = option.languageCode);
+      unawaited(
+        FirebaseAnalyticsService.instance.logQuranTranslationChanged(
+          language: option.languageCode,
+        ),
+      );
     });
   }
 
@@ -164,6 +169,11 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
           _selectedTranslation = option.languageCode;
           _downloadingLanguage = null;
         });
+        unawaited(
+          FirebaseAnalyticsService.instance.logQuranTranslationChanged(
+            language: option.languageCode,
+          ),
+        );
         await _refresh();
       } on QuranTranslationException {
         if (!mounted) return;
@@ -226,8 +236,7 @@ class _ReadingTranslationScreenState extends State<ReadingTranslationScreen> {
                         ),
                       ),
                     ],
-                    if (_installedOptions.isEmpty &&
-                        _availableOptions.isEmpty)
+                    if (_installedOptions.isEmpty && _availableOptions.isEmpty)
                       Center(
                         child: Padding(
                           padding: EdgeInsets.only(top: 48.h),
@@ -355,16 +364,13 @@ class _TranslationOptionRow extends StatelessWidget {
     };
 
     final Widget leading = switch (status) {
-      _TranslationRowStatus.selected ||
-      _TranslationRowStatus.installed => Icon(
+      _TranslationRowStatus.selected || _TranslationRowStatus.installed => Icon(
         Icons.check_circle_rounded,
         size: 20.sp,
         color: colorScheme.primary,
       ),
       _TranslationRowStatus.download => Icon(
-        showPremiumBadge
-            ? Icons.lock_outline_rounded
-            : Icons.download_rounded,
+        showPremiumBadge ? Icons.lock_outline_rounded : Icons.download_rounded,
         size: 20.sp,
         color: colorScheme.onSurfaceVariant,
       ),
@@ -402,17 +408,17 @@ class _TranslationOptionRow extends StatelessWidget {
           ],
           Text(
             installedLabel,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: colorScheme.primary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium?.copyWith(color: colorScheme.primary),
           ),
         ],
       ),
       _TranslationRowStatus.installing => Text(
         installingLabel,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant),
       ),
       _TranslationRowStatus.download => Text(
         downloadLabel,
@@ -522,9 +528,9 @@ class _SettingsDivider extends StatelessWidget {
       height: 1,
       indent: 16.w,
       endIndent: 16.w,
-      color: Theme.of(context).colorScheme.outlineVariant.withValues(
-        alpha: 0.22,
-      ),
+      color: Theme.of(
+        context,
+      ).colorScheme.outlineVariant.withValues(alpha: 0.22),
     );
   }
 }

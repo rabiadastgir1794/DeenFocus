@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+
+import '../../../core/services/firebase_analytics_service.dart';
 
 import '../../../core/config/support_config.dart';
 import '../model/support_contribution_result.dart';
@@ -9,9 +13,9 @@ class SupportViewModel extends ChangeNotifier {
   SupportViewModel({
     SupportContactService? contactService,
     DonationPurchaser? donationPurchaser,
-  })  : _contactService = contactService ?? const SupportContactService(),
-        _donationPurchaser =
-            donationPurchaser ?? const SuperwallDonationPurchaser();
+  }) : _contactService = contactService ?? const SupportContactService(),
+       _donationPurchaser =
+           donationPurchaser ?? const SuperwallDonationPurchaser();
 
   final SupportContactService _contactService;
   final DonationPurchaser _donationPurchaser;
@@ -77,13 +81,18 @@ class SupportViewModel extends ChangeNotifier {
     _isSubmitting = false;
     _lastContributionResult = result;
     notifyListeners();
+    if (result == SupportContributionResult.purchased) {
+      unawaited(
+        FirebaseAnalyticsService.instance.logDonationCompleted(
+          status: result.name,
+        ),
+      );
+    }
     return result;
   }
 
   Future<SupportLaunchResult> openWhatsApp(String message) async {
-    return _openContact(
-      () => _contactService.openWhatsApp(message: message),
-    );
+    return _openContact(() => _contactService.openWhatsApp(message: message));
   }
 
   Future<SupportLaunchResult> openEmail({

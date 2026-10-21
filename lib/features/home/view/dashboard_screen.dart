@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/logger/startup_handoff.dart';
 import '../../../core/logger/startup_probe.dart';
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
 import '../../../core/theme/app_colors.dart';
@@ -102,11 +103,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Tabs are not gated by Superwall — paywalls are surfaced by the
     // individual premium features themselves (AI chat, prayer streak,
     // focus mode app/enable flows).
-    if (!mounted) return;
+    if (!mounted || index == _currentIndex) return;
     setState(() {
       _currentIndex = index;
       _visitedIndexes.add(index);
     });
+
+    final tabName = index < _tabs.length ? _tabs[index].id : 'unknown';
+    unawaited(FirebaseAnalyticsService.instance.logTabSwitched(tab: tabName));
   }
 
   void _openFocusAndRequestEnable(FocusModeType mode) {

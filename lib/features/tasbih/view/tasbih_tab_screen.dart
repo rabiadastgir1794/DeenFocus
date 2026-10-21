@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/services/firebase_analytics_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/view/widgets/home_rounded_icon_button.dart';
@@ -116,9 +119,11 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
   }
 
   Future<void> _openDetail(TasbihItem item) async {
+    unawaited(
+      FirebaseAnalyticsService.instance.logTasbihOpened(tasbihId: item.id),
+    );
     await Navigator.of(context).push<void>(
-      CupertinoPageRoute<void>(
-          builder: (_) => TasbihDetailScreen(item: item)),
+      CupertinoPageRoute<void>(builder: (_) => TasbihDetailScreen(item: item)),
     );
     if (!mounted) return;
     await _loadItems();
@@ -254,10 +259,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                           decoration: BoxDecoration(
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: borderColor,
-                              width: 1.1,
-                            ),
+                            border: Border.all(color: borderColor, width: 1.1),
                           ),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(
@@ -371,9 +373,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                             color: colorScheme.primary,
                                           ),
                                           const SizedBox(width: 10),
-                                          Text(
-                                            item.isPinned ? 'Unpin' : 'Pin',
-                                          ),
+                                          Text(item.isPinned ? 'Unpin' : 'Pin'),
                                         ],
                                       ),
                                     ),
@@ -382,10 +382,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                         value: _ItemAction.edit,
                                         child: const Row(
                                           children: [
-                                            Icon(
-                                              Icons.edit_outlined,
-                                              size: 18,
-                                            ),
+                                            Icon(Icons.edit_outlined, size: 18),
                                             SizedBox(width: 10),
                                             Text('Edit'),
                                           ],
@@ -457,8 +454,9 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
   void initState() {
     super.initState();
     _arabicCtrl = TextEditingController(text: widget.item?.label ?? '');
-    _translitCtrl =
-        TextEditingController(text: widget.item?.transliteration ?? '');
+    _translitCtrl = TextEditingController(
+      text: widget.item?.transliteration ?? '',
+    );
     _meaningCtrl = TextEditingController(text: widget.item?.meaning ?? '');
     _arabicFocus = FocusNode();
     _translitFocus = FocusNode();
@@ -505,8 +503,7 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
             enableSuggestions: false,
             textInputAction: TextInputAction.next,
             onSubmitted: (_) => _translitFocus.requestFocus(),
-            decoration:
-                InputDecoration(hintText: l10n.tasbihArabicOrDhikrHint),
+            decoration: InputDecoration(hintText: l10n.tasbihArabicOrDhikrHint),
           ),
           SizedBox(height: 10.h),
           TextField(
@@ -527,8 +524,9 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
             autocorrect: false,
             enableSuggestions: false,
             textInputAction: TextInputAction.done,
-            decoration:
-                InputDecoration(hintText: l10n.tasbihMeaningOptionalHint),
+            decoration: InputDecoration(
+              hintText: l10n.tasbihMeaningOptionalHint,
+            ),
           ),
           SizedBox(height: 16.h),
           Row(

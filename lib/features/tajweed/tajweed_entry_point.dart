@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes/route_names.dart';
+import '../../core/services/firebase_analytics_service.dart';
 import '../../core/services/storage_service.dart';
 import '../../core/superwall/premium_gate.dart';
 import '../../l10n/app_localizations.dart';
@@ -36,20 +37,18 @@ abstract final class TajweedEntryPoint {
         context: context,
         debugContext: 'tajweed:practice',
         onAccess: () {
-          unawaited(
-            () async {
-              await StorageService.setTajweedEnabled(true);
-              if (!context.mounted) return;
-              await _navigateAfterEntitlement(
-                context,
-                surah: surah,
-                ayah: ayah,
-                arabicText: arabicText,
-                surahName: surahName,
-                translation: translation,
-              );
-            }(),
-          );
+          unawaited(() async {
+            await StorageService.setTajweedEnabled(true);
+            if (!context.mounted) return;
+            await _navigateAfterEntitlement(
+              context,
+              surah: surah,
+              ayah: ayah,
+              arabicText: arabicText,
+              surahName: surahName,
+              translation: translation,
+            );
+          }());
         },
       ),
     );
@@ -98,8 +97,7 @@ abstract final class TajweedEntryPoint {
     final uthmaniCorpus = display.script == QuranScript.uthmani
         ? corpus
         : await QuranScriptTexts.load(QuranScript.uthmani);
-    final lexicalReference =
-        uthmaniCorpus.textFor(surah, ayah) ?? resolvedText;
+    final lexicalReference = uthmaniCorpus.textFor(surah, ayah) ?? resolvedText;
     if (!context.mounted) return;
     if (surahName != null) {
       unawaited(
@@ -110,14 +108,20 @@ abstract final class TajweedEntryPoint {
         ),
       );
     }
+    unawaited(
+      FirebaseAnalyticsService.instance.logTajweedPracticeOpened(
+        surahNumber: surah,
+        ayahNumber: ayah,
+        preview: freePreview,
+      ),
+    );
     context.push(
       RouteNames.tajweedPractice,
       extra: TajweedPracticeArgs(
         surah: surah,
         ayah: ayah,
         arabicText: resolvedText,
-        arabicFontFamily:
-            display.fontFamily ?? display.script.fontFamily,
+        arabicFontFamily: display.fontFamily ?? display.script.fontFamily,
         arabicFontFamilyFallback: display.fontFamilyFallback,
         lexicalReferenceArabic: lexicalReference,
         surahName: surahName,

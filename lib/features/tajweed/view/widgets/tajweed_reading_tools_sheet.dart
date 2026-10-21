@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/share/content_share_service.dart';
+import '../../../../core/services/firebase_analytics_service.dart';
 import '../../../../core/services/quran_bookmark_service.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -123,7 +124,7 @@ class _TajweedReadingToolsSheetState extends State<_TajweedReadingToolsSheet> {
     final args = widget.args;
     final label =
         '${args.surahName ?? l10n.quranSurahLabel} ${args.surah}:${args.ayah}';
-    await QuranBookmarkService.add(
+    final added = await QuranBookmarkService.add(
       QuranBookmark(
         id: QuranBookmarkService.idFor(
           kind: QuranBookmarkKind.ayah,
@@ -137,6 +138,14 @@ class _TajweedReadingToolsSheetState extends State<_TajweedReadingToolsSheet> {
         createdAtMs: DateTime.now().millisecondsSinceEpoch,
       ),
     );
+    if (added) {
+      unawaited(
+        FirebaseAnalyticsService.instance.logQuranAyahBookmarked(
+          surahNumber: args.surah,
+          ayahNumber: args.ayah,
+        ),
+      );
+    }
     if (mounted) _snack(l10n.quranBookmarkSaved);
   }
 
@@ -149,7 +158,9 @@ class _TajweedReadingToolsSheetState extends State<_TajweedReadingToolsSheet> {
       buffer.write(transliteration);
     }
     final translation = widget.args.translation;
-    if (_showTranslation && translation != null && translation.trim().isNotEmpty) {
+    if (_showTranslation &&
+        translation != null &&
+        translation.trim().isNotEmpty) {
       buffer.writeln();
       buffer.writeln();
       buffer.write(translation);
@@ -210,7 +221,9 @@ class _TajweedReadingToolsSheetState extends State<_TajweedReadingToolsSheet> {
           SizedBox(height: 16.h),
           Container(
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+              color: colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.35,
+              ),
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
                 color: colorScheme.outlineVariant.withValues(alpha: 0.25),

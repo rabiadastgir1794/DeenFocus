@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -5,6 +6,7 @@ import 'package:in_app_review/in_app_review.dart';
 
 import '../constants/store_listing.dart';
 import 'app_review_policy.dart';
+import 'firebase_analytics_service.dart';
 import 'storage_service.dart';
 
 /// Native in-app review ([InAppReview]) with session/achievement gating
@@ -100,6 +102,7 @@ class AppReviewService {
     final review = InAppReview.instance;
     if (await review.isAvailable()) {
       await review.requestReview();
+      unawaited(FirebaseAnalyticsService.instance.logAppReviewPrompted());
       return;
     }
     await _openStoreListing();
