@@ -56,6 +56,7 @@ Future<void> main() async {
         );
         StartupProbe.mark('1.5_Firebase.initializeApp done');
         debugPrint('[Firebase] Core initialized successfully');
+        FirebaseMessagingService.registerBackgroundHandler();
 
         // Initialize Analytics immediately after Core
         await FirebaseAnalyticsService.instance.initialize();

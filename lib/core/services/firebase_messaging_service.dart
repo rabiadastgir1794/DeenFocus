@@ -3,21 +3,20 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'storage_service.dart';
 
-/// Background message handler (top-level function required by FCM).
-/// Invoked when a message arrives while the app is terminated.
+const String _kFcmDefaultAndroidChannelId = 'fcm_default';
+
+/// Background isolate handler. Must be a top-level function registered before
+/// [runApp]. Do not add UI work here.
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Firebase.initializeApp() is called automatically by FCM plugin before
-  // this handler runs. Do not call it again.
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint(
     '[FCM] Background message: ${message.messageId} '
-    'notification=${message.notification?.title}',
+    'title=${message.notification?.title} dataKeys=${message.data.keys.toList()}',
   );
-  // Handle background message delivery tracking, if needed.
-  // Do NOT attempt UI operations here — this runs in an isolate.
 }
 
 /// Centralized Firebase Cloud Messaging service.
@@ -40,6 +39,11 @@ class FirebaseMessagingService {
   bool get isInitialized => _initialized;
   String? get currentToken => _cachedToken;
 
+  /// Call immediately after [Firebase.initializeApp], before [runApp].
+  static void registerBackgroundHandler() {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
+
   /// Initializes FCM and registers message handlers.
   /// Safe to call multiple times.
   Future<void> initialize() async {
@@ -48,50 +52,68 @@ class FirebaseMessagingService {
     try {
       _messaging = FirebaseMessaging.instance;
 
-      // Register the background message handler
-      FirebaseMessaging.onBackgroundMessage(
-        _firebaseMessagingBackgroundHandler,
+      final settings = await _messaging!.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      );
+      debugPrint(
+        '[FCM] Permission status: ${settings.authorizationStatus.name}',
       );
 
-      // Request notification permissions on iOS (idempotent)
-      if (Platform.isIOS) {
-        final settings = await _messaging!.requestPermission(
-          alert: true,
-          badge: true,
-          sound: true,
-          provisional: false,
-        );
-        debugPrint(
-          '[FCM] iOS permission status: ${settings.authorizationStatus.name}',
-        );
-      }
-
-      // Retrieve and cache the FCM token
+      await _ensureAndroidNotificationChannel();
+      await _waitForApnsToken();
       await _refreshToken();
 
-      // Listen for token refresh events
       _messaging!.onTokenRefresh.listen(_handleTokenRefresh);
-
-      // Set up message handlers
       _setupMessageHandlers();
 
       _initialized = true;
-      debugPrint('[FCM] Initialized successfully');
+      debugPrint(
+        '[FCM] Initialized successfully tokenReady=${_cachedToken != null}',
+      );
     } catch (e, st) {
       debugPrint('[FCM] Initialization failed: $e');
       debugPrintStack(stackTrace: st);
-      // Never block app startup on FCM failure
     }
   }
 
-  /// Refreshes the FCM token and stores it locally.
+  Future<void> _ensureAndroidNotificationChannel() async {
+    if (!Platform.isAndroid) return;
+    const channel = AndroidNotificationChannel(
+      _kFcmDefaultAndroidChannelId,
+      'Deen Focus',
+      description: 'Messages from Deen Focus',
+      importance: Importance.high,
+    );
+    await FlutterLocalNotificationsPlugin()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(channel);
+  }
+
+  Future<void> _waitForApnsToken() async {
+    if (!Platform.isIOS) return;
+    for (var attempt = 0; attempt < 5; attempt++) {
+      final apns = await _messaging!.getAPNSToken();
+      if (apns != null) {
+        debugPrint('[FCM] APNs token ready');
+        return;
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+    }
+    debugPrint('[FCM] APNs token not ready; iOS getToken may fail');
+  }
+
   Future<void> _refreshToken() async {
     try {
       final token = await _messaging!.getToken();
       if (token != null && token != _cachedToken) {
         _cachedToken = token;
         await _storeToken(token);
-        debugPrint('[FCM] Token refreshed: ${token.substring(0, 20)}...');
+        debugPrint('[FCM] Token refreshed');
       }
     } catch (e) {
       debugPrint('[FCM] Token refresh failed: $e');
@@ -111,7 +133,7 @@ class FirebaseMessagingService {
   void _handleTokenRefresh(String token) {
     _cachedToken = token;
     unawaited(_storeToken(token));
-    debugPrint('[FCM] Token refreshed: ${token.substring(0, 20)}...');
+    debugPrint('[FCM] Token refreshed');
   }
 
   /// Sets up foreground and background message handlers.
@@ -130,23 +152,8 @@ class FirebaseMessagingService {
   void _handleForegroundMessage(RemoteMessage message) {
     debugPrint(
       '[FCM] Foreground message: ${message.messageId} '
-      'notification=${message.notification?.title}',
+      'title=${message.notification?.title} dataKeys=${message.data.keys.toList()}',
     );
-
-    // Display a notification using flutter_local_notifications if needed
-    // (FCM notifications are auto-displayed on Android when in background,
-    // but NOT when in foreground — must handle manually if desired)
-
-    // Example: route to AppNotificationService to show local notification
-    // final notification = message.notification;
-    // if (notification != null) {
-    //   AppNotificationService.instance.showCustomNotification(
-    //     title: notification.title ?? '',
-    //     body: notification.body ?? '',
-    //   );
-    // }
-
-    // Handle data payload if present
     _handleMessageData(message.data);
   }
 
@@ -154,7 +161,7 @@ class FirebaseMessagingService {
   void _handleNotificationTap(RemoteMessage message) {
     debugPrint(
       '[FCM] Notification tapped: ${message.messageId} '
-      'data=${message.data}',
+      'dataKeys=${message.data.keys.toList()}',
     );
 
     // Route to the appropriate screen based on message.data

@@ -1,11 +1,12 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-21 — Firebase analytics and crash reporting.
+> Last updated: 2026-10-21 — FCM integration finalized.
 
-## Status: Firebase analytics and crash reporting (2026-10-21)
-Temporary Crashlytics test controls removed. Collection stays off in debug.
-Analytics, Crashlytics, and FCM client integration remain. Crashlytics
-Console reporting is not device-verified.
+## Status: Firebase Cloud Messaging (2026-10-21)
+Production FCM: background handler before runApp, APNs entitlement +
+`remote-notification`, Android `fcm_default` channel, token stored locally
+(not logged). Temporary full-token debug logs removed. Manually tested on
+Android and iOS by the user.
 
 ## Status: App Store Header + Search Results (2026-10-21)
 Premium App Store Connect assets in `marketing/app_store/`, Apple sizes:
