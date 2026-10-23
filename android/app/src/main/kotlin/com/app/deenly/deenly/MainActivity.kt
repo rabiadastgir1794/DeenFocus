@@ -123,8 +123,12 @@ class MainActivity : AudioServiceActivity() {
             when (call.method) {
                 "search" -> {
                     val query = call.argument<String>("query").orEmpty()
-                    val outcome = LocationSearchHelper.search(applicationContext, query)
-                    result.success(outcome.results)
+                    // Reply from the helper callback. It runs on the main thread
+                    // exactly once, so this Result is never completed twice and
+                    // the platform thread is not blocked on Geocoder.
+                    LocationSearchHelper.search(applicationContext, query) { outcome ->
+                        result.success(outcome.results)
+                    }
                 }
                 else -> result.notImplemented()
             }

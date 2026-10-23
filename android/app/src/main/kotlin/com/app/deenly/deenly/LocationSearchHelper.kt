@@ -1,10 +1,16 @@
 package com.rnr.deenfocus
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import java.util.Locale
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 data class LocationSearchOutcome(
     val results: List<Map<String, Any?>>,
@@ -12,78 +18,104 @@ data class LocationSearchOutcome(
 )
 
 object LocationSearchHelper {
+    private const val DEFAULT_TIMEOUT_MS = 25_000L
+    private const val MAX_RETRIES = 2
+    private const val INITIAL_RETRY_DELAY_MS = 500L
 
-    fun search(context: Context, query: String): LocationSearchOutcome {
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val worker: ExecutorService = Executors.newCachedThreadPool { runnable ->
+        Thread(runnable, "location-search").apply { isDaemon = true }
+    }
+
+    /**
+     * Geocodes [query] without blocking the caller.
+     *
+     * The callback runs on the main thread and is invoked exactly once, including
+     * empty queries, missing geocoder, errors, and timeout.
+     */
+    fun search(
+        context: Context,
+        query: String,
+        timeoutMs: Long = DEFAULT_TIMEOUT_MS,
+        callback: (LocationSearchOutcome) -> Unit,
+    ) {
+        val session = SearchSession(mainHandler, timeoutMs, callback)
         val trimmed = query.trim()
-        if (trimmed.isEmpty()) {
-            return LocationSearchOutcome(emptyList(), false)
+        if (trimmed.isEmpty() || !Geocoder.isPresent()) {
+            session.finish(LocationSearchOutcome(emptyList(), false))
+            return
         }
 
-        if (!Geocoder.isPresent()) {
-            return LocationSearchOutcome(emptyList(), false)
-        }
-
+        session.armTimeout()
         val appContext = context.applicationContext
-        val latch = CountDownLatch(1)
-        val holder = arrayOfNulls<LocationSearchOutcome>(1)
-
-        Thread {
-            holder[0] = performSearch(appContext, trimmed)
-            latch.countDown()
-        }.start()
-
-        try {
-            if (!latch.await(25, TimeUnit.SECONDS)) {
-                return LocationSearchOutcome(emptyList(), true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            searchAsync(appContext, trimmed, session, retry = 0, delayMs = INITIAL_RETRY_DELAY_MS)
+        } else {
+            worker.execute {
+                session.finish(performSearch(appContext, trimmed))
             }
-        } catch (_: InterruptedException) {
-            return LocationSearchOutcome(emptyList(), true)
         }
+    }
 
-        return holder[0] ?: LocationSearchOutcome(emptyList(), false)
+    @SuppressLint("NewApi")
+    private fun searchAsync(
+        context: Context,
+        query: String,
+        session: SearchSession,
+        retry: Int,
+        delayMs: Long,
+    ) {
+        if (session.isFinished()) return
+        try {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            geocoder.getFromLocationName(
+                query,
+                10,
+                object : Geocoder.GeocodeListener {
+                    override fun onGeocode(addresses: MutableList<Address>) {
+                        session.finish(LocationSearchOutcome(addressesToResults(addresses), false))
+                    }
+
+                    override fun onError(errorMessage: String?) {
+                        if (retry >= MAX_RETRIES || session.isFinished()) {
+                            session.finish(
+                                LocationSearchOutcome(emptyList(), isNetworkMessage(errorMessage)),
+                            )
+                            return
+                        }
+                        mainHandler.postDelayed({
+                            searchAsync(context, query, session, retry + 1, delayMs * 2)
+                        }, delayMs)
+                    }
+                },
+            )
+        } catch (e: Exception) {
+            if (retry >= MAX_RETRIES || session.isFinished()) {
+                session.finish(
+                    LocationSearchOutcome(emptyList(), isNetworkOrTimeoutError(e)),
+                )
+                return
+            }
+            mainHandler.postDelayed({
+                searchAsync(context, query, session, retry + 1, delayMs * 2)
+            }, delayMs)
+        }
     }
 
     private fun performSearch(context: Context, query: String): LocationSearchOutcome {
-        val results = mutableListOf<Map<String, Any?>>()
         var retryCount = 0
-        val maxRetries = 2
-        var currentDelay = 500L
+        var currentDelay = INITIAL_RETRY_DELAY_MS
         var lastWasNetworkError = false
 
-        while (retryCount <= maxRetries) {
+        while (retryCount <= MAX_RETRIES) {
             try {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 @Suppress("DEPRECATION")
                 val addresses = geocoder.getFromLocationName(query, 10)
-
-                addresses?.forEach { address ->
-                    val locationName =
-                        address.getAddressLine(0) ?: address.featureName ?: "Unknown"
-                    val locality = address.locality
-                    val country = address.countryName
-                    val latitude = address.latitude
-                    val longitude = address.longitude
-                    val subtitle = listOfNotNull(locality, country)
-                        .filter { it.isNotBlank() }
-                        .joinToString(", ")
-
-                    if (latitude != 0.0 && longitude != 0.0) {
-                        results.add(
-                            mapOf(
-                                "title" to locationName,
-                                "subtitle" to subtitle,
-                                "latitude" to latitude,
-                                "longitude" to longitude,
-                            ),
-                        )
-                    }
-                }
-                return LocationSearchOutcome(results, false)
+                return LocationSearchOutcome(addressesToResults(addresses), false)
             } catch (e: Exception) {
                 lastWasNetworkError = isNetworkOrTimeoutError(e)
-                if (retryCount >= maxRetries) {
-                    break
-                }
+                if (retryCount >= MAX_RETRIES) break
                 retryCount++
                 try {
                     Thread.sleep(currentDelay)
@@ -93,14 +125,73 @@ object LocationSearchHelper {
                 currentDelay *= 2
             }
         }
+        return LocationSearchOutcome(emptyList(), lastWasNetworkError)
+    }
 
-        return LocationSearchOutcome(results, lastWasNetworkError)
+    internal fun addressesToResults(addresses: List<Address>?): List<Map<String, Any?>> {
+        if (addresses == null) return emptyList()
+        val results = mutableListOf<Map<String, Any?>>()
+        for (address in addresses) {
+            val locationName = address.getAddressLine(0) ?: address.featureName ?: "Unknown"
+            val subtitle = listOfNotNull(address.locality, address.countryName)
+                .filter { it.isNotBlank() }
+                .joinToString(", ")
+            val latitude = address.latitude
+            val longitude = address.longitude
+            if (latitude != 0.0 && longitude != 0.0) {
+                results.add(
+                    mapOf(
+                        "title" to locationName,
+                        "subtitle" to subtitle,
+                        "latitude" to latitude,
+                        "longitude" to longitude,
+                    ),
+                )
+            }
+        }
+        return results
     }
 
     private fun isNetworkOrTimeoutError(e: Exception): Boolean {
-        val name = e.javaClass.simpleName
-        return name.contains("Network", ignoreCase = true) ||
-            name.contains("Timeout", ignoreCase = true) ||
-            name.contains("UnknownHost", ignoreCase = true)
+        return isNetworkMessage(e.javaClass.simpleName) || isNetworkMessage(e.message)
+    }
+
+    private fun isNetworkMessage(message: String?): Boolean {
+        if (message.isNullOrBlank()) return false
+        return message.contains("Network", ignoreCase = true) ||
+            message.contains("Timeout", ignoreCase = true) ||
+            message.contains("UnknownHost", ignoreCase = true)
+    }
+}
+
+/**
+ * Completes one location search exactly once, on the main thread.
+ * A late geocoder callback after timeout is ignored.
+ */
+internal class SearchSession(
+    private val handler: Handler,
+    private val timeoutMs: Long,
+    private val onResult: (LocationSearchOutcome) -> Unit,
+) {
+    private val delivered = AtomicBoolean(false)
+    private val timeoutRunnable = Runnable {
+        finish(LocationSearchOutcome(emptyList(), true))
+    }
+
+    fun isFinished(): Boolean = delivered.get()
+
+    fun armTimeout() {
+        if (timeoutMs <= 0L || isFinished()) return
+        handler.postDelayed(timeoutRunnable, timeoutMs)
+    }
+
+    fun finish(outcome: LocationSearchOutcome) {
+        if (!delivered.compareAndSet(false, true)) return
+        handler.removeCallbacks(timeoutRunnable)
+        if (Looper.myLooper() == handler.looper) {
+            onResult(outcome)
+        } else {
+            handler.post { onResult(outcome) }
+        }
     }
 }

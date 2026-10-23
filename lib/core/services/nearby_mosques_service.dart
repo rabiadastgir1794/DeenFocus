@@ -73,10 +73,7 @@ class NearbyMosqueDenomination {
   ///
   /// If the name clearly identifies Ahl-e-Hadith / Ahle Hadees and OSM is
   /// blank or only generic `sunni`, the more specific label wins.
-  static NearbyMosqueDenomination resolve({
-    String? osmTag,
-    String? name,
-  }) {
+  static NearbyMosqueDenomination resolve({String? osmTag, String? name}) {
     final fromOsm = NearbyMosqueDenomination.fromOsmTag(osmTag);
     final fromName = _ahlEHadithFromName(name);
     if (fromName == null) return fromOsm;
@@ -325,16 +322,18 @@ class NearbyMosquesService {
       'Deenly/com.rnr.deenfocus (nearby mosques; +https://www.openstreetmap.org/copyright)';
 
   /// Preferred first pass, then expand when OSM coverage is thin.
+  /// 25 km is only reached when 15 km is still sparse.
   static const List<double> defaultExpandRadiiMeters = <double>[
     5000,
     10000,
     15000,
+    25000,
   ];
 
   /// If fewer than this many mosques are found, try the next wider radius.
   static const int sparseResultThreshold = 12;
 
-  /// Stricter bar before expanding to the widest (15 km) radius in dense areas.
+  /// Stricter bar before expanding to the widest (25 km) radius in dense areas.
   static const int sparseResultThresholdForMaxRadius = 8;
 
   static const int defaultMaxResultCount = 100;
@@ -380,29 +379,44 @@ class NearbyMosquesService {
     double radiusMeters = 5000,
     int maxResultCount = defaultMaxResultCount,
   }) async {
-    // Broad OSM tagging coverage: amenity=mosque, building=mosque/musalla,
-    // and place_of_worship with muslim/islam religion (case-insensitive).
-    final query = '''
+    // Tagged mosques, plus name-only masajid that OSM never gave an amenity.
+    // Name hits are filtered in Dart so roads and shops do not appear.
+    // Overpass POSIX regex is byte-oriented and rejects multibyte characters,
+    // so the pattern stays ASCII. "mosqu..e" matches French "mosquée"
+    // (é is two bytes). Arabic names are matched in Dart on returned elements.
+    final around = 'around:$radiusMeters,$latitude,$longitude';
+    const namePattern =
+        'masjid|mosque|musalla|musallah|mosqu..e|'
+        'islamic cent(re|er)|muslim cent(re|er)|jamatkhana';
+    final query =
+        '''
 [out:json][timeout:35];
 (
-  node["amenity"="mosque"](around:$radiusMeters,$latitude,$longitude);
-  way["amenity"="mosque"](around:$radiusMeters,$latitude,$longitude);
-  relation["amenity"="mosque"](around:$radiusMeters,$latitude,$longitude);
-  node["building"="mosque"](around:$radiusMeters,$latitude,$longitude);
-  way["building"="mosque"](around:$radiusMeters,$latitude,$longitude);
-  relation["building"="mosque"](around:$radiusMeters,$latitude,$longitude);
-  node["building"="musalla"](around:$radiusMeters,$latitude,$longitude);
-  way["building"="musalla"](around:$radiusMeters,$latitude,$longitude);
-  node["amenity"="place_of_worship"]["religion"~"muslim|islam",i](around:$radiusMeters,$latitude,$longitude);
-  way["amenity"="place_of_worship"]["religion"~"muslim|islam",i](around:$radiusMeters,$latitude,$longitude);
-  relation["amenity"="place_of_worship"]["religion"~"muslim|islam",i](around:$radiusMeters,$latitude,$longitude);
+  nwr["amenity"="mosque"]($around);
+  nwr["building"="mosque"]($around);
+  nwr["amenity"="musalla"]($around);
+  nwr["building"="musalla"]($around);
+  nwr["amenity"="place_of_worship"]["religion"~"muslim|islam|moslem",i]($around);
+  nwr["building"]["religion"~"muslim|islam|moslem",i]($around);
+  nwr["name"~"$namePattern",i]($around);
+  nwr["name:en"~"$namePattern",i]($around);
+  nwr["name:fr"~"$namePattern",i]($around);
+  nwr["name:ur"~"$namePattern",i]($around);
+  nwr["name:ar"~"$namePattern",i]($around);
+  nwr["alt_name"~"$namePattern",i]($around);
+  nwr["official_name"~"$namePattern",i]($around);
 );
 out center tags;
 ''';
 
-    // Fire all endpoints in parallel — complete on the first 2xx response.
-    final completer = Completer<http.Response>();
-    int remaining = _overpassInterpreters.length;
+    // Prefer the first complete result. An empty timeout from a fast mirror
+    // must not hide a slower mirror that actually returned mosques.
+    final completer = Completer<Map<String, dynamic>>();
+    var remaining = _overpassInterpreters.length;
+    var sawRateLimit = false;
+    var sawQueryError = false;
+    Map<String, dynamic>? fallbackBody;
+    var fallbackCount = -1;
 
     for (final endpoint in _overpassInterpreters) {
       _client
@@ -420,8 +434,30 @@ out center tags;
             if (kDebugMode) {
               debugPrint('[NearbyMosques] $endpoint → HTTP ${r.statusCode}');
             }
-            if (r.statusCode >= 200 && r.statusCode < 300) {
-              if (!completer.isCompleted) completer.complete(r);
+            if (completer.isCompleted) return;
+            if (r.statusCode == 429) {
+              sawRateLimit = true;
+              return;
+            }
+            if (r.statusCode < 200 || r.statusCode >= 300) return;
+            final decoded = _decodeOverpassBody(r.body);
+            if (decoded == null) return;
+            final count = _elementCount(decoded);
+            final remark = decoded['remark']?.toString().toLowerCase() ?? '';
+            final incomplete =
+                remark.contains('timeout') || remark.contains('runtime error');
+            // A remark with no elements is a failed query, not an empty area.
+            if (incomplete && count == 0) {
+              sawQueryError = true;
+              return;
+            }
+            if (count > 0 && !incomplete) {
+              completer.complete(decoded);
+              return;
+            }
+            if (count > fallbackCount) {
+              fallbackCount = count;
+              fallbackBody = decoded;
             }
           })
           .catchError((Object e) {
@@ -429,52 +465,37 @@ out center tags;
           })
           .whenComplete(() {
             remaining--;
-            if (remaining == 0 && !completer.isCompleted) {
+            if (remaining > 0 || completer.isCompleted) return;
+            final fallback = fallbackBody;
+            if (fallback != null) {
+              completer.complete(fallback);
+              return;
+            }
+            if (sawRateLimit) {
               completer.completeError(
                 const NearbyMosquesException(
-                  'No internet connection or the map service is unreachable. Check your connection and try again.',
+                  'The public mosque data service is rate-limiting requests from your '
+                  'network (this can happen on the first try on shared Wi-Fi or '
+                  'cellular). Try again in a minute or switch network.',
                 ),
               );
+              return;
             }
+            completer.completeError(
+              NearbyMosquesException(
+                sawQueryError
+                    ? 'The map service could not return nearby mosques. Please try again.'
+                    : 'No internet connection or the map service is unreachable. Check your connection and try again.',
+              ),
+            );
           });
     }
 
-    final http.Response response;
+    final Map<String, dynamic> decoded;
     try {
-      response = await completer.future;
+      decoded = await completer.future;
     } on NearbyMosquesException {
       rethrow;
-    }
-
-    if (response.statusCode == 429) {
-      throw const NearbyMosquesException(
-        'The public mosque data service is rate-limiting requests from your '
-        'network (this can happen on the first try on shared Wi-Fi or '
-        'cellular). Try again in a minute or switch network.',
-      );
-    }
-    if (response.statusCode >= 500) {
-      throw const NearbyMosquesException(
-        'The mosque data service is temporarily unavailable. Please try again in a moment.',
-      );
-    }
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw const NearbyMosquesException(
-        'Could not load nearby mosques. Check your internet connection and try again.',
-      );
-    }
-
-    late final Map<String, dynamic> decoded;
-    try {
-      final raw = jsonDecode(response.body);
-      if (raw is! Map<String, dynamic>) {
-        throw const FormatException('not a map');
-      }
-      decoded = raw;
-    } on FormatException {
-      throw const NearbyMosquesException(
-        'We could not read the mosque list right now. Please try again later.',
-      );
     }
 
     final elements = decoded['elements'] as List<dynamic>? ?? const <dynamic>[];
@@ -501,6 +522,7 @@ out center tags;
       if (lat == null || lon == null) continue;
 
       final tags = raw['tags'] as Map<String, dynamic>? ?? const {};
+      if (!_acceptMosqueTags(tags)) continue;
       final name = _mosqueName(tags);
       final address = _formatAddress(tags);
       final osmId = '$type/$id';
@@ -536,26 +558,34 @@ out center tags;
       if (seenIds.add(m.id)) byId.add(m);
     }
 
-    final deduped = _dedupeNearbyDuplicates(byId);
+    final deduped = dedupeNearbyDuplicates(byId);
     if (deduped.length <= maxResultCount) return deduped;
     return deduped.sublist(0, maxResultCount);
   }
 
-  static bool _preferNearbyMosque(NearbyMosque candidate, NearbyMosque existing) {
+  static bool _preferNearbyMosque(
+    NearbyMosque candidate,
+    NearbyMosque existing,
+  ) {
     if (candidate.confidence.rank < existing.confidence.rank) return true;
     if (candidate.confidence.rank > existing.confidence.rank) return false;
     if (existing.name == 'Mosque' && candidate.name != 'Mosque') return true;
     if (candidate.name == 'Mosque' && existing.name != 'Mosque') return false;
-    if (candidate.denomination.isSpecified && !existing.denomination.isSpecified) {
+    if (candidate.denomination.isSpecified &&
+        !existing.denomination.isSpecified) {
       return true;
     }
-    if (!candidate.denomination.isSpecified && existing.denomination.isSpecified) {
+    if (!candidate.denomination.isSpecified &&
+        existing.denomination.isSpecified) {
       return false;
     }
     return candidate.distanceMeters < existing.distanceMeters;
   }
 
-  /// Merge OSM node/way duplicates of the same physical mosque (~40 m + similar name).
+  /// Merge duplicates of the same physical mosque (~40 m + similar name).
+  static List<NearbyMosque> dedupeNearbyDuplicates(List<NearbyMosque> sorted) =>
+      _dedupeNearbyDuplicates(sorted);
+
   static List<NearbyMosque> _dedupeNearbyDuplicates(List<NearbyMosque> sorted) {
     const clusterMeters = 40.0;
     final kept = <NearbyMosque>[];
@@ -566,7 +596,8 @@ out center tags;
       for (var i = 0; i < kept.length; i++) {
         final existing = kept[i];
         final existingKey = _normalizeNameKey(existing.name);
-        final similarName = candidateKey.isNotEmpty &&
+        final similarName =
+            candidateKey.isNotEmpty &&
             existingKey.isNotEmpty &&
             (candidateKey == existingKey ||
                 candidateKey.contains(existingKey) ||
@@ -592,18 +623,169 @@ out center tags;
     return kept;
   }
 
+  static final RegExp _mosqueNamePattern = RegExp(
+    r'masjid|mosque|musalla|musallah|masallaci|mosqu[eé]e|'
+    r'islamic\s+cent(?:re|er)|muslim\s+cent(?:re|er)|jamatkhana|مسجد',
+    caseSensitive: false,
+  );
+
+  static const Set<String> _otherFeatureKeys = <String>{
+    'highway',
+    'railway',
+    'waterway',
+    'aerialway',
+    'route',
+    'shop',
+    'office',
+    'craft',
+    'leisure',
+    'landuse',
+    'natural',
+    'tourism',
+    'man_made',
+    'power',
+    'barrier',
+  };
+
+  static const Set<String> _otherAmenities = <String>{
+    'restaurant',
+    'cafe',
+    'fast_food',
+    'food_court',
+    'bar',
+    'pub',
+    'school',
+    'college',
+    'university',
+    'kindergarten',
+    'hospital',
+    'clinic',
+    'pharmacy',
+    'fuel',
+    'bank',
+    'atm',
+    'parking',
+    'bus_station',
+  };
+
+  static Map<String, dynamic>? _decodeOverpassBody(String body) {
+    try {
+      final raw = jsonDecode(body);
+      if (raw is Map<String, dynamic>) return raw;
+      if (raw is Map) return Map<String, dynamic>.from(raw);
+    } on FormatException {
+      return null;
+    }
+    return null;
+  }
+
+  static int _elementCount(Map<String, dynamic> decoded) {
+    final elements = decoded['elements'];
+    return elements is List ? elements.length : 0;
+  }
+
+  static bool _acceptMosqueTags(Map<String, dynamic> tags) {
+    if (_isClosedFeature(tags)) return false;
+    if (_isTaggedMosque(tags)) return true;
+    return _nameLooksLikeMosque(tags) && !_isOtherFeature(tags);
+  }
+
+  static bool _isClosedFeature(Map<String, dynamic> tags) {
+    if (tags['ruins']?.toString() == 'yes') return true;
+    if (tags['historic']?.toString() == 'ruins') return true;
+    for (final key in tags.keys) {
+      final name = key.toString();
+      const prefixes = <String>[
+        'disused:',
+        'abandoned:',
+        'demolished:',
+        'razed:',
+        'removed:',
+        'was:',
+      ];
+      for (final prefix in prefixes) {
+        if (!name.startsWith(prefix)) continue;
+        final rest = name.substring(prefix.length);
+        if (rest == 'amenity' ||
+            rest == 'building' ||
+            rest == 'religion' ||
+            rest.startsWith('name')) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  static bool _isTaggedMosque(Map<String, dynamic> tags) {
+    final amenity = tags['amenity']?.toString().toLowerCase();
+    final building = tags['building']?.toString().toLowerCase() ?? '';
+    if (amenity == 'mosque' || amenity == 'musalla') return true;
+    if (building == 'mosque' || building == 'musalla') return true;
+    if (!_religionIsMuslim(tags['religion']?.toString())) return false;
+    return amenity == 'place_of_worship' ||
+        (building.isNotEmpty && building != 'no');
+  }
+
+  static bool _religionIsMuslim(String? religion) {
+    if (religion == null || religion.trim().isEmpty) return false;
+    final value = religion.toLowerCase();
+    return value.contains('muslim') ||
+        value.contains('islam') ||
+        value.contains('moslem');
+  }
+
+  static bool _nameLooksLikeMosque(Map<String, dynamic> tags) {
+    for (final key in const <String>[
+      'name',
+      'name:en',
+      'name:fr',
+      'name:ur',
+      'name:ar',
+      'alt_name',
+      'official_name',
+    ]) {
+      final value = tags[key]?.toString();
+      if (value != null && _mosqueNamePattern.hasMatch(value)) return true;
+    }
+    return false;
+  }
+
+  static bool _isOtherFeature(Map<String, dynamic> tags) {
+    for (final key in _otherFeatureKeys) {
+      if (!tags.containsKey(key)) continue;
+      if (key == 'landuse' &&
+          tags['landuse']?.toString().toLowerCase() == 'religious') {
+        continue;
+      }
+      return true;
+    }
+    final amenity = tags['amenity']?.toString().toLowerCase();
+    if (amenity == null) return false;
+    if (_otherAmenities.contains(amenity)) return true;
+    return amenity == 'place_of_worship' &&
+        !_religionIsMuslim(tags['religion']?.toString());
+  }
+
   static NearbyMosqueConfidence _confidenceFromTags(Map<String, dynamic> tags) {
     final amenity = tags['amenity']?.toString().toLowerCase();
-    final religion = tags['religion']?.toString().toLowerCase() ?? '';
     final building = tags['building']?.toString().toLowerCase();
 
     if (amenity == 'place_of_worship' &&
-        (religion.contains('muslim') || religion.contains('islam'))) {
+        _religionIsMuslim(tags['religion']?.toString())) {
       return NearbyMosqueConfidence.high;
     }
     if (amenity == 'mosque') return NearbyMosqueConfidence.high;
     if (building == 'mosque') return NearbyMosqueConfidence.medium;
-    if (building == 'musalla') return NearbyMosqueConfidence.low;
+    if (_religionIsMuslim(tags['religion']?.toString()) &&
+        building != null &&
+        building.isNotEmpty &&
+        building != 'no') {
+      return NearbyMosqueConfidence.medium;
+    }
+    if (building == 'musalla' || amenity == 'musalla') {
+      return NearbyMosqueConfidence.low;
+    }
     return NearbyMosqueConfidence.low;
   }
 
@@ -633,6 +815,7 @@ out center tags;
     for (final key in const [
       'name',
       'name:en',
+      'name:fr',
       'official_name',
       'alt_name',
       'name:ur',
@@ -649,7 +832,8 @@ out center tags;
     if (full is String && full.trim().isNotEmpty) return full.trim();
 
     final parts = <String>[
-      if (tags['addr:housenumber'] is String) tags['addr:housenumber'] as String,
+      if (tags['addr:housenumber'] is String)
+        tags['addr:housenumber'] as String,
       if (tags['addr:street'] is String) tags['addr:street'] as String,
       if (tags['addr:suburb'] is String) tags['addr:suburb'] as String,
       if (tags['addr:city'] is String) tags['addr:city'] as String,
@@ -665,13 +849,12 @@ out center tags;
     required double fromLng,
     required double toLat,
     required double toLng,
-  }) =>
-      _staticDistanceMeters(
-        fromLat: fromLat,
-        fromLng: fromLng,
-        toLat: toLat,
-        toLng: toLng,
-      );
+  }) => _staticDistanceMeters(
+    fromLat: fromLat,
+    fromLng: fromLng,
+    toLat: toLat,
+    toLng: toLng,
+  );
 
   static double _staticDistanceMeters({
     required double fromLat,

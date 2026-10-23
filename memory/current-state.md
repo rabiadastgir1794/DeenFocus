@@ -1,6 +1,40 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-09-10 — Prayer Count daily aggregation (not tip-walk).
+> Last updated: 2026-10-23 — Masjid Finder keeps a Canadian Islamic Centre that OSM did not tag as a mosque.
+
+## Status: Missing Canadian mosque (2026-10-23)
+Halifax way 462587947, Islamic Centre, is `building=yes` and `name=Islamic Centre`
+only. It sits 639 m from Ummah Masjid (way 596118328, `place_of_worship` +
+`religion=muslim`). The Overpass name pattern was `masjid|mosque|musalla|musallah|مسجد`,
+so the centre was never requested, and Dart would have dropped it if it had
+been. French `Mosquée` was also absent (`mosque` is not a substring, and
+`name:fr` was unread). An Overpass `remark` with empty `elements` was returned
+as a successful empty list. The query is now ASCII (`mosqu..e`, Islamic
+centre/center, `name:fr`). Empty error remarks throw.
+
+## Status: OSM Masjid Finder coverage (2026-10-23)
+Google Places was not adopted. Overpass now also asks for `amenity=musalla`,
+`religion` values `moslem`, Muslim `building`s, and names containing
+masjid/mosque/musalla/مسجد. Roads, shops, restaurants, and closed or ruined
+features are dropped. A timed-out empty mirror no longer beats a later
+complete response. Sparse areas can expand from 15 km to 25 km.
+
+## Status: Android location search deadlock (2026-10-21)
+`LocationSearchHelper.search` awaited a `CountDownLatch` on the Flutter
+platform thread while API 33+ `Geocoder.getFromLocationName` posted its
+listener back to that same thread, so the await ran until the 25s timeout.
+Search is now callback-based: async geocoder on API 33+, background sync
+below that, one main-thread completion per request (timeout included).
+`MainActivity` still replies with `result.success(results)` only.
+`LocationSearchHelperTest` (5 tests) passed.
+
+## Status: French Rashid translation pack (2026-10-20)
+Downloadable pack `quran-translation-fr-rashid` v1.0.3 is live on R2.
+Settings label: `French (Rashid Maash)`. Attribution metadata remains `frensh_rashid_Quranenc.com`. Verse text matches
+`french-rashid-translation.json` (114 surahs, 6236 ayahs, inline `[n]`
+footnotes). SHA-256 `c3b98070572b1521d9facf74077f7ed2d0f051979cd5439e9052b19f5308a19f`.
+Hamidullah was not published. `merge_catalog.py` rejects two translation packs
+with the same language. Existing packs stay language-keyed. Rashid uses `fr` alone.
 
 ## Status: Prayer Count replaces tip-walk streak (2026-09-10)
 Primary `snapshot.prayerStreak` is now a **per-calendar-day completion sum**:
