@@ -308,15 +308,18 @@ class NearbyMosquesService {
   NearbyMosquesService({http.Client? client})
     : _client = client ?? http.Client();
 
-  /// Prefer mirrors that are less often overloaded than the main FOSSGIS instance.
+  /// VK Maps answers when the FOSSGIS instance is at capacity.
+  /// kumi.systems is the old name of private.coffee, and
+  /// overpass.openstreetmap.ru was not connecting, so they are not queried.
   /// See: https://wiki.openstreetmap.org/wiki/Overpass_API
   static const _overpassInterpreters = <String>[
-    'https://overpass.private.coffee/api/interpreter',
-    'https://overpass.kumi.systems/api/interpreter',
-    'https://overpass-api.de/api/interpreter',
     'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
-    'https://overpass.openstreetmap.ru/api/interpreter',
+    'https://overpass.private.coffee/api/interpreter',
+    'https://overpass-api.de/api/interpreter',
   ];
+
+  static const _overpassRetryEndpoint =
+      'https://maps.mail.ru/osm/tools/overpass/api/interpreter';
 
   static const _overpassUserAgent =
       'Deenly/com.rnr.deenfocus (nearby mosques; +https://www.openstreetmap.org/copyright)';
@@ -379,46 +382,117 @@ class NearbyMosquesService {
     double radiusMeters = 5000,
     int maxResultCount = defaultMaxResultCount,
   }) async {
-    // Tagged mosques, plus name-only masajid that OSM never gave an amenity.
-    // Name hits are filtered in Dart so roads and shops do not appear.
-    // Overpass POSIX regex is byte-oriented and rejects multibyte characters,
-    // so the pattern stays ASCII. "mosqu..e" matches French "mosquée"
-    // (é is two bytes). Arabic names are matched in Dart on returned elements.
+    // Indexed tags first. A name scan of every object in a dense city makes
+    // Overpass time out, and the client used to report that as no internet.
+    final indexed = await _fetchOverpassJson(
+      _indexedMosqueQuery(
+        latitude: latitude,
+        longitude: longitude,
+        radiusMeters: radiusMeters,
+      ),
+    );
+    var mosques = _mosquesFromOverpass(
+      indexed,
+      latitude: latitude,
+      longitude: longitude,
+    );
+    if (mosques.length < sparseResultThreshold) {
+      try {
+        final named = await _fetchOverpassJson(
+          _nameMosqueQuery(
+            latitude: latitude,
+            longitude: longitude,
+            radiusMeters: radiusMeters,
+          ),
+          retryOnBusy: false,
+        );
+        mosques = _combineMosques(
+          mosques,
+          _mosquesFromOverpass(named, latitude: latitude, longitude: longitude),
+        );
+      } on NearbyMosquesException {
+        // Tagged mosques already in hand are more useful than a failed name scan.
+      }
+    }
+    if (mosques.length <= maxResultCount) return mosques;
+    return mosques.sublist(0, maxResultCount);
+  }
+
+  /// Overpass POSIX regex is byte-oriented and rejects multibyte characters.
+  /// "mosqu..e" matches French "mosquée" (é is two bytes).
+  static const _namePattern =
+      'masjid|mosque|musalla|musallah|mosqu..e|'
+      'islamic cent(re|er)|muslim cent(re|er)|jamatkhana';
+
+  static String _indexedMosqueQuery({
+    required double latitude,
+    required double longitude,
+    required double radiusMeters,
+  }) {
     final around = 'around:$radiusMeters,$latitude,$longitude';
-    const namePattern =
-        'masjid|mosque|musalla|musallah|mosqu..e|'
-        'islamic cent(re|er)|muslim cent(re|er)|jamatkhana';
-    final query =
-        '''
-[out:json][timeout:35];
+    return '''
+[out:json][timeout:20];
 (
   nwr["amenity"="mosque"]($around);
   nwr["building"="mosque"]($around);
   nwr["amenity"="musalla"]($around);
   nwr["building"="musalla"]($around);
   nwr["amenity"="place_of_worship"]["religion"~"muslim|islam|moslem",i]($around);
-  nwr["building"]["religion"~"muslim|islam|moslem",i]($around);
-  nwr["name"~"$namePattern",i]($around);
-  nwr["name:en"~"$namePattern",i]($around);
-  nwr["name:fr"~"$namePattern",i]($around);
-  nwr["name:ur"~"$namePattern",i]($around);
-  nwr["name:ar"~"$namePattern",i]($around);
-  nwr["alt_name"~"$namePattern",i]($around);
-  nwr["official_name"~"$namePattern",i]($around);
 );
 out center tags;
 ''';
+  }
 
+  static String _nameMosqueQuery({
+    required double latitude,
+    required double longitude,
+    required double radiusMeters,
+  }) {
+    final around = 'around:$radiusMeters,$latitude,$longitude';
+    return '''
+[out:json][timeout:20];
+(
+  nwr["building"]["religion"~"muslim|islam|moslem",i]($around);
+  nwr["name"~"$_namePattern",i]($around);
+  nwr["name:en"~"$_namePattern",i]($around);
+  nwr["name:fr"~"$_namePattern",i]($around);
+  nwr["name:ur"~"$_namePattern",i]($around);
+  nwr["name:ar"~"$_namePattern",i]($around);
+  nwr["alt_name"~"$_namePattern",i]($around);
+  nwr["official_name"~"$_namePattern",i]($around);
+);
+out center tags;
+''';
+  }
+
+  Future<Map<String, dynamic>> _fetchOverpassJson(
+    String query, {
+    bool retryOnBusy = true,
+  }) async {
+    try {
+      return await _raceOverpass(query, _overpassInterpreters);
+    } on NearbyMosquesException catch (error) {
+      if (!retryOnBusy || !error.retryable) rethrow;
+      await Future<void>.delayed(const Duration(seconds: 2));
+      return _raceOverpass(query, const <String>[_overpassRetryEndpoint]);
+    }
+  }
+
+  Future<Map<String, dynamic>> _raceOverpass(
+    String query,
+    List<String> endpoints,
+  ) {
     // Prefer the first complete result. An empty timeout from a fast mirror
     // must not hide a slower mirror that actually returned mosques.
     final completer = Completer<Map<String, dynamic>>();
-    var remaining = _overpassInterpreters.length;
+    var remaining = endpoints.length;
     var sawRateLimit = false;
     var sawQueryError = false;
+    var sawHttp = false;
     Map<String, dynamic>? fallbackBody;
     var fallbackCount = -1;
 
-    for (final endpoint in _overpassInterpreters) {
+    for (final endpoint in endpoints) {
       _client
           .post(
             Uri.parse(endpoint),
@@ -437,11 +511,19 @@ out center tags;
             if (completer.isCompleted) return;
             if (r.statusCode == 429) {
               sawRateLimit = true;
+              sawHttp = true;
               return;
             }
-            if (r.statusCode < 200 || r.statusCode >= 300) return;
+            if (r.statusCode < 200 || r.statusCode >= 300) {
+              sawHttp = true;
+              return;
+            }
             final decoded = _decodeOverpassBody(r.body);
-            if (decoded == null) return;
+            if (decoded == null) {
+              sawHttp = true;
+              return;
+            }
+            sawHttp = true;
             final count = _elementCount(decoded);
             final remark = decoded['remark']?.toString().toLowerCase() ?? '';
             final incomplete =
@@ -481,23 +563,33 @@ out center tags;
               );
               return;
             }
+            if (sawQueryError) {
+              completer.completeError(
+                const NearbyMosquesException(
+                  'The map service could not return nearby mosques. Please try again.',
+                ),
+              );
+              return;
+            }
             completer.completeError(
               NearbyMosquesException(
-                sawQueryError
-                    ? 'The map service could not return nearby mosques. Please try again.'
+                sawHttp
+                    ? 'The mosque service is busy right now. Please try again.'
                     : 'No internet connection or the map service is unreachable. Check your connection and try again.',
+                retryable: true,
               ),
             );
           });
     }
 
-    final Map<String, dynamic> decoded;
-    try {
-      decoded = await completer.future;
-    } on NearbyMosquesException {
-      rethrow;
-    }
+    return completer.future;
+  }
 
+  List<NearbyMosque> _mosquesFromOverpass(
+    Map<String, dynamic> decoded, {
+    required double latitude,
+    required double longitude,
+  }) {
     final elements = decoded['elements'] as List<dynamic>? ?? const <dynamic>[];
     final results = <NearbyMosque>[];
 
@@ -550,17 +642,23 @@ out center tags;
       );
     }
 
-    results.sort((a, b) => a.distanceMeters.compareTo(b.distanceMeters));
+    return _combineMosques(results, const <NearbyMosque>[]);
+  }
 
-    final byId = <NearbyMosque>[];
-    final seenIds = <String>{};
-    for (final m in results) {
-      if (seenIds.add(m.id)) byId.add(m);
+  List<NearbyMosque> _combineMosques(
+    List<NearbyMosque> first,
+    List<NearbyMosque> second,
+  ) {
+    final byId = <String, NearbyMosque>{};
+    for (final mosque in first) {
+      byId[mosque.id] = mosque;
     }
-
-    final deduped = dedupeNearbyDuplicates(byId);
-    if (deduped.length <= maxResultCount) return deduped;
-    return deduped.sublist(0, maxResultCount);
+    for (final mosque in second) {
+      byId.putIfAbsent(mosque.id, () => mosque);
+    }
+    final sorted = byId.values.toList()
+      ..sort((a, b) => a.distanceMeters.compareTo(b.distanceMeters));
+    return dedupeNearbyDuplicates(sorted);
   }
 
   static bool _preferNearbyMosque(
@@ -885,9 +983,12 @@ out center tags;
 }
 
 class NearbyMosquesException implements Exception {
-  const NearbyMosquesException(this.message);
+  const NearbyMosquesException(this.message, {this.retryable = false});
 
   final String message;
+
+  /// True when another attempt may succeed (capacity or a dropped connection).
+  final bool retryable;
 
   @override
   String toString() => message;

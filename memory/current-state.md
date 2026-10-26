@@ -1,6 +1,21 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-23 — Masjid Finder keeps a Canadian Islamic Centre that OSM did not tag as a mosque.
+> Last updated: 2026-10-26 — Masjid Finder’s first Overpass request no longer scans every Muslim building.
+
+## Status: Live mosque update failed with a saved list (2026-10-26)
+Lahore showed 95 cached mosques and “Live update failed”. The fresh query
+included every `building` with `religion=muslim`, which times out in a dense
+city, so the indexed mosque result never arrived. That clause now runs only
+when the tagged-mosque result is still sparse.
+
+## Status: Mosques not loading (2026-10-25)
+Lahore showed “no internet” while the map tiles and the city name had already
+loaded. Public Overpass was returning capacity errors or no body, and the
+client aborted at 25s while the query timeout was 35s. The name-regex scan was
+also in the first query, so a dense city never got the indexed `amenity=mosque`
+result. The first request is indexed tags only. Name matches run only when that
+result is still sparse, and a busy response is retried once. Map tiles default
+to OpenStreetMap because Carto’s raster URL now draws “API KEY REQUIRED”.
 
 ## Status: Missing Canadian mosque (2026-10-23)
 Halifax way 462587947, Islamic Centre, is `building=yes` and `name=Islamic Centre`

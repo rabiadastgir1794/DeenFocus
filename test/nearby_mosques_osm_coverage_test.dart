@@ -38,10 +38,10 @@ void main() {
   }
 
   test('query asks Overpass for musalla tags and masjid names', () async {
-    String? body;
+    final bodies = <String>[];
     final service = NearbyMosquesService(
       client: MockClient((request) async {
-        body ??= request.body;
+        bodies.add(request.body);
         return http.Response(
           jsonEncode(<String, dynamic>{'elements': <Object>[]}),
           200,
@@ -55,13 +55,19 @@ void main() {
       radiusMeters: 5000,
     );
 
-    expect(body, contains('nwr["amenity"="musalla"]'));
-    expect(body, contains('moslem'));
-    expect(body, contains('masjid|mosque|musalla|musallah|mosqu..e'));
-    expect(body, contains('islamic cent(re|er)'));
-    expect(body, contains('name:fr'));
-    expect(body, contains('name:ur'));
-    expect(body, isNot(contains('مسجد')));
+    final indexed = bodies.first;
+    final joined = bodies.join('\n');
+    expect(indexed, contains('nwr["amenity"="musalla"]'));
+    expect(indexed, isNot(contains('islamic cent')));
+    expect(joined, contains('moslem'));
+    expect(joined, contains('masjid|mosque|musalla|musallah|mosqu..e'));
+    expect(joined, contains('islamic cent(re|er)'));
+    expect(joined, contains('name:fr'));
+    expect(joined, contains('name:ur'));
+    expect(joined, isNot(contains('مسجد')));
+    expect(indexed, contains('[timeout:20]'));
+    expect(indexed, isNot(contains('["building"]["religion"')));
+    expect(joined, contains('["building"]["religion"'));
   });
 
   test(
@@ -161,59 +167,64 @@ void main() {
     () async {
       // Halifax: way 462587947 is building=yes / name=Islamic Centre,
       // 639 m from way 596118328 Ummah Masjid (place_of_worship, muslim).
+      final all = <Map<String, dynamic>>[
+        node(
+          id: 462587947,
+          lat: 44.65634,
+          lon: -63.59778,
+          tags: const {'building': 'yes', 'name': 'Islamic Centre'},
+        ),
+        node(
+          id: 596118328,
+          lat: 44.65059,
+          lon: -63.59764,
+          tags: const {
+            'amenity': 'place_of_worship',
+            'building': 'yes',
+            'name': 'Ummah Masjid',
+            'religion': 'muslim',
+          },
+        ),
+        node(
+          id: 3,
+          tags: const {
+            'amenity': 'school',
+            'building': 'yes',
+            'name': 'Islamic Centre School',
+          },
+        ),
+        node(
+          id: 4,
+          lat: 44.65650,
+          lon: -63.59790,
+          tags: const {'name': 'Mosquée Al-Rawdah'},
+        ),
+        node(
+          id: 5,
+          lat: 44.65660,
+          lon: -63.59800,
+          tags: const {'name:fr': 'Mosquée Tawuba'},
+        ),
+        node(
+          id: 6,
+          lat: 44.65620,
+          lon: -63.59760,
+          tags: const {'landuse': 'religious', 'name': 'Islamic Center'},
+        ),
+      ];
       final service = NearbyMosquesService(
         client: MockClient((request) async {
+          final elements = request.body.contains('islamic cent')
+              ? all
+              : all
+                    .where(
+                      (element) =>
+                          (element['tags'] as Map)['amenity'] ==
+                          'place_of_worship',
+                    )
+                    .toList();
           return http.Response(
-            jsonEncode(<String, dynamic>{
-              'elements': [
-                node(
-                  id: 462587947,
-                  lat: 44.65634,
-                  lon: -63.59778,
-                  tags: const {'building': 'yes', 'name': 'Islamic Centre'},
-                ),
-                node(
-                  id: 596118328,
-                  lat: 44.65059,
-                  lon: -63.59764,
-                  tags: const {
-                    'amenity': 'place_of_worship',
-                    'building': 'yes',
-                    'name': 'Ummah Masjid',
-                    'religion': 'muslim',
-                  },
-                ),
-                node(
-                  id: 3,
-                  tags: const {
-                    'amenity': 'school',
-                    'building': 'yes',
-                    'name': 'Islamic Centre School',
-                  },
-                ),
-                node(
-                  id: 4,
-                  lat: 44.65650,
-                  lon: -63.59790,
-                  tags: const {'name': 'Mosquée Al-Rawdah'},
-                ),
-                node(
-                  id: 5,
-                  lat: 44.65660,
-                  lon: -63.59800,
-                  tags: const {'name:fr': 'Mosquée Tawuba'},
-                ),
-                node(
-                  id: 6,
-                  lat: 44.65620,
-                  lon: -63.59760,
-                  tags: const {
-                    'landuse': 'religious',
-                    'name': 'Islamic Center',
-                  },
-                ),
-              ],
-            }),
+            jsonEncode(<String, dynamic>{'elements': elements}),
             200,
           );
         }),
@@ -267,4 +278,37 @@ void main() {
       ),
     );
   });
+
+  test(
+    'a busy Overpass mirror is retried instead of shown as no internet',
+    () async {
+      var calls = 0;
+      final service = NearbyMosquesService(
+        client: MockClient((request) async {
+          calls++;
+          if (calls <= 3) return http.Response('busy', 502);
+          return http.Response(
+            jsonEncode(<String, dynamic>{
+              'elements': [
+                node(
+                  id: 11,
+                  tags: const {'amenity': 'mosque', 'name': 'Badshahi Mosque'},
+                ),
+              ],
+            }),
+            200,
+          );
+        }),
+      );
+
+      final mosques = await service.fetchNearby(
+        latitude: 31.52,
+        longitude: 74.35,
+        radiusMeters: 5000,
+      );
+
+      expect(mosques.map((m) => m.name), contains('Badshahi Mosque'));
+      expect(calls, greaterThan(3));
+    },
+  );
 }

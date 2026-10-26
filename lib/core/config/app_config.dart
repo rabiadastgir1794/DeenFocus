@@ -1,6 +1,7 @@
 abstract class AppConfig {
   /// Must match the JSON key in repo-root `dart_defines.json`.
-  static const String superwallApiKeyAndroidDefine = 'SUPERWALL_API_KEY_ANDROID';
+  static const String superwallApiKeyAndroidDefine =
+      'SUPERWALL_API_KEY_ANDROID';
 
   /// Must match the JSON key in repo-root `dart_defines.json`.
   static const String superwallApiKeyIOSDefine = 'SUPERWALL_API_KEY_IOS';
@@ -44,9 +45,7 @@ abstract class AppConfig {
 
   static String get mapTilesUrlTemplate {
     const raw = String.fromEnvironment('MAP_TILES_URL');
-    return raw.isEmpty
-        ? 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png'
-        : raw;
+    return raw.isEmpty ? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' : raw;
   }
 
   static const String googleMapsApiKey = String.fromEnvironment(
@@ -56,6 +55,7 @@ abstract class AppConfig {
   static const String groqChatCompletionsUrl =
       'https://api.groq.com/openai/v1/chat/completions';
   static const String groqChatModel = 'openai/gpt-oss-120b';
+
   /// Completion budget for Groq `openai/gpt-oss-120b`. Reasoning models spend
   /// tokens thinking before they write `message.content`; 200 often yields an
   /// empty reply (`finish_reason: length`).
