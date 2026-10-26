@@ -1,6 +1,14 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-26 — Masjid Finder’s first Overpass request no longer scans every Muslim building.
+> Last updated: 2026-10-26 — Location search no longer starts Geocoder on the platform thread.
+
+## Status: Play ANR release 60 location search (2026-10-26)
+Release 60 blocked the Flutter platform thread in `CountDownLatch.await()` inside
+`Geocoder.getFromLocationName`. On API 33+ that call waits for a listener posted
+back to the same thread. `LocationSearchHelper.search` is callback-only: the
+geocoder binder runs on a worker, and `MainActivity` completes the MethodChannel
+result once from that callback. R8 stays off. Play release 60 still has the
+latch until a new Android build is uploaded.
 
 ## Status: Live mosque update failed with a saved list (2026-10-26)
 Lahore showed 95 cached mosques and “Live update failed”. The fresh query

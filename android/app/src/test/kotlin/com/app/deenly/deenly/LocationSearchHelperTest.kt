@@ -113,4 +113,21 @@ class LocationSearchHelperTest {
         shadowOf(Looper.getMainLooper()).idleFor(1, java.util.concurrent.TimeUnit.SECONDS)
         assertEquals(1, calls.get())
     }
+
+    @Test
+    fun search_fromMainLooper_doesNotBlockAndDeliversOnMain() {
+        assertEquals(Looper.getMainLooper(), Looper.myLooper())
+        var callbackOnMain = false
+        val started = System.nanoTime()
+        LocationSearchHelper.search(
+            ApplicationProvider.getApplicationContext(),
+            "Lahore",
+            timeoutMs = 400L,
+        ) {
+            callbackOnMain = Looper.myLooper() == Looper.getMainLooper()
+        }
+        assertTrue(System.nanoTime() - started < 1_000_000_000L)
+        shadowOf(Looper.getMainLooper()).idleFor(1, java.util.concurrent.TimeUnit.SECONDS)
+        assertTrue(callbackOnMain)
+    }
 }

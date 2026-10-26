@@ -48,10 +48,18 @@ object LocationSearchHelper {
 
         session.armTimeout()
         val appContext = context.applicationContext
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            searchAsync(appContext, trimmed, session, retry = 0, delayMs = INITIAL_RETRY_DELAY_MS)
-        } else {
-            worker.execute {
+        // The platform thread handles Flutter method calls. Geocoder's binder
+        // call, including the API 33+ listener API, runs on this worker.
+        worker.execute {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                searchAsync(
+                    appContext,
+                    trimmed,
+                    session,
+                    retry = 0,
+                    delayMs = INITIAL_RETRY_DELAY_MS,
+                )
+            } else {
                 session.finish(performSearch(appContext, trimmed))
             }
         }
@@ -83,9 +91,7 @@ object LocationSearchHelper {
                             )
                             return
                         }
-                        mainHandler.postDelayed({
-                            searchAsync(context, query, session, retry + 1, delayMs * 2)
-                        }, delayMs)
+                        scheduleRetry(context, query, session, retry + 1, delayMs)
                     }
                 },
             )
@@ -96,10 +102,22 @@ object LocationSearchHelper {
                 )
                 return
             }
-            mainHandler.postDelayed({
-                searchAsync(context, query, session, retry + 1, delayMs * 2)
-            }, delayMs)
+            scheduleRetry(context, query, session, retry + 1, delayMs)
         }
+    }
+
+    private fun scheduleRetry(
+        context: Context,
+        query: String,
+        session: SearchSession,
+        retry: Int,
+        delayMs: Long,
+    ) {
+        mainHandler.postDelayed({
+            worker.execute {
+                searchAsync(context, query, session, retry, delayMs * 2)
+            }
+        }, delayMs)
     }
 
     private fun performSearch(context: Context, query: String): LocationSearchOutcome {
