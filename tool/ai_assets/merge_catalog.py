@@ -56,6 +56,31 @@ def _normalize_pack(raw: dict | list) -> list[dict]:
     raise ValueError("Expected a pack object, {packs:[...]}, or a pack list.")
 
 
+def assert_unique_translation_languages(packs: list[dict]) -> None:
+    """The app installs, selects, and reads translations by language code.
+
+    Two `translation_pack` rows with the same `language` share one disk slot
+    (`<language>/active/translation.json`) and `entry(forLanguage:)` returns
+    whichever row appears first. Reject that before a catalog is written.
+    """
+    owner: dict[str, str] = {}
+    for pack in packs:
+        if pack.get("kind") != "translation_pack":
+            continue
+        language = pack.get("language")
+        if not isinstance(language, str) or not language:
+            continue
+        previous = owner.get(language)
+        pack_id = pack.get("packId", "")
+        if previous is not None and previous != pack_id:
+            raise ValueError(
+                f'translation_pack language "{language}" is used by both '
+                f'"{previous}" and "{pack_id}". Publish only one pack per '
+                "language; the app stores and selects translations by language code."
+            )
+        owner[language] = pack_id
+
+
 def merge_catalog(base: dict, additions: list[dict]) -> dict:
     packs = list(base.get("packs") or [])
     by_id = {p["packId"]: i for i, p in enumerate(packs)}
@@ -67,6 +92,7 @@ def merge_catalog(base: dict, additions: list[dict]) -> dict:
         else:
             by_id[pack["packId"]] = len(packs)
             packs.append(pack)
+    assert_unique_translation_languages(packs)
     return {
         "catalogVersion": base.get("catalogVersion", 1),
         "updatedAt": datetime.datetime.now(datetime.timezone.utc).strftime(
