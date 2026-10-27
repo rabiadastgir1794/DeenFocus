@@ -1674,10 +1674,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appLanguage => 'Lingua dell\'app';
 
   @override
-  String get tabHome => 'Casa';
+  String get tabHome => 'Home';
 
   @override
-  String get tabFocus => 'Messa a fuoco';
+  String get tabFocus => 'Focus';
 
   @override
   String get tabTasbih => 'Tasbih';
@@ -2950,6 +2950,44 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsCalculationMethodTitle => 'Metodo di Calcolo';
+
+  @override
+  String get calcMethodMuslimWorldLeague => 'Lega Musulmana Mondiale';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'Società Islamica del Nord America (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'Autorità egiziana generale di rilevamento';
+
+  @override
+  String get calcMethodUmmAlQura => 'Università Umm al-Qura, La Mecca';
+
+  @override
+  String get calcMethodKarachi => 'Università di Scienze Islamiche, Karachi';
+
+  @override
+  String get calcMethodTehran => 'Teheran';
+
+  @override
+  String get calcMethodKuwait => 'Kuwait';
+
+  @override
+  String get calcMethodQatar => 'Qatar';
+
+  @override
+  String get calcMethodDubai => 'Dubai';
+
+  @override
+  String get calcMethodTurkey => 'Turchia';
+
+  @override
+  String get calcMethodSingapore => 'Singapore';
+
+  @override
+  String get calcMethodMoonsighting =>
+      'Comitato mondiale di avvistamento della luna';
 
   @override
   String get settingsAsrCalculationTitle => 'Calcolo Asr';

@@ -1,0 +1,524 @@
+{
+  "categories": [
+    {
+      "items": [
+        {
+          "title": "Al despertar",
+          "translation": "Todas las alabanzas son para Alá, que nos dio la vida después de habérnosla quitado, y a Él pertenece la resurrección.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Recuerdo de la mañana",
+          "translation": "Hemos entrado en la mañana y el dominio pertenece a Alá, y todas las alabanzas son para Alá. No hay dios excepto Alá, solo, sin asociado. A Él pertenece el dominio y toda alabanza, y Él tiene poder sobre todas las cosas.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "El mejor istighfar",
+          "translation": "Oh Alá, Tú eres mi Señor. Nadie tiene derecho a ser adorado excepto Tú. Tú me creaste y yo soy Tu siervo. Me mantengo en Tu pacto y Tu promesa lo mejor que puedo. Me refugio en Ti del mal de lo que he hecho. Reconozco Tu favor sobre mí y reconozco mi pecado, así que perdóname, pues nadie perdona los pecados excepto Tú.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Versículo del Trono",
+          "translation": "Alá: no hay dios excepto Él, el Eternamente Vivo, el Sustentador de la existencia. No lo vence el sopor ni el sueño. A Él pertenece cuanto hay en los cielos y cuanto hay en la tierra. ¿Quién puede interceder ante Él excepto con Su permiso? Él sabe lo que hay ante ellos y lo que habrá después de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Kursi se extiende sobre los cielos y la tierra, y preservarlas no lo fatiga. Y Él es el Altísimo, el Más Grande.",
+          "reference": "Corán 2:255"
+        },
+        {
+          "title": "Sura Al-Ijlas",
+          "translation": "Di: Él es Alá, el Único. Alá, el Refugio eterno. No engendra ni es engendrado, y no hay nadie igual a Él. (Recítala 3 veces por la mañana.)",
+          "reference": "Corán 112; Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Sura Al-Falaq",
+          "translation": "Di: Me refugio en el Señor del alba del mal de lo que Él creó, del mal de la oscuridad cuando se asienta, del mal de las que soplan en los nudos y del mal del envidioso cuando envidia. (Recítala 3 veces por la mañana.)",
+          "reference": "Corán 113; Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Sura An-Nas",
+          "translation": "Di: Me refugio en el Señor de la humanidad, el Rey de la humanidad, el Dios de la humanidad, del mal del susurrador que se retira, el que susurra en los pechos de la humanidad, de entre los yinn y la humanidad. (Recítala 3 veces por la mañana.)",
+          "reference": "Corán 114; Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Protección de la mañana (3 veces)",
+          "translation": "En el nombre de Alá, con cuyo nombre nada en la tierra ni en el cielo puede causar daño, y Él es el que todo lo oye, el que todo lo sabe. (Recítala 3 veces.)",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Complacencia con Alá",
+          "translation": "Estoy complacido con Alá como mi Señor, con el islam como mi religión y con Muhammad ﷺ como mi Profeta. (Recítala 3 veces.)",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "La mañana con Alá",
+          "translation": "Oh Alá, por Ti entramos en la mañana, por Ti entramos en la tarde, por Ti vivimos, por Ti morimos, y a Ti es la resurrección.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Subhanallah wa bihamdihi (100 veces)",
+          "translation": "Gloria a Alá y alabanza a Él. (Recítala 100 veces por la mañana.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Tawhid (100 veces)",
+          "translation": "No hay dios excepto Alá, solo, sin asociado. A Él pertenece el dominio y toda alabanza, y Él tiene poder sobre todas las cosas. (Recítala 100 veces por la mañana.)",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Ya Hayyu, Ya Qayyum",
+          "translation": "Oh Eternamente Vivo, oh Sustentador, por Tu misericordia busco ayuda. Endereza para mí todos mis asuntos y no me dejes a mí mismo ni por un abrir y cerrar de ojos.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Hasbunallah",
+          "translation": "Alá me basta. No hay dios excepto Él. En Él me apoyo, y Él es el Señor del Trono Majestuoso. (Recítala 7 veces.)",
+          "reference": "Sunan Abu Dawud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Recuerdo de la tarde",
+          "translation": "Hemos entrado en la tarde y el dominio pertenece a Alá, y todas las alabanzas son para Alá. No hay dios excepto Alá, solo, sin asociado. A Él pertenece el dominio y toda alabanza, y Él tiene poder sobre todas las cosas.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "La tarde con Alá",
+          "translation": "Oh Alá, por Ti entramos en la tarde, por Ti entramos en la mañana, por Ti vivimos, por Ti morimos, y a Ti es el retorno final.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "El mejor istighfar",
+          "translation": "Oh Alá, Tú eres mi Señor. Nadie tiene derecho a ser adorado excepto Tú. Tú me creaste y yo soy Tu siervo. Me mantengo en Tu pacto y Tu promesa lo mejor que puedo. Me refugio en Ti del mal de lo que he hecho. Reconozco Tu favor sobre mí y reconozco mi pecado, así que perdóname, pues nadie perdona los pecados excepto Tú.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Versículo del Trono",
+          "translation": "Alá: no hay dios excepto Él, el Eternamente Vivo, el Sustentador de la existencia...",
+          "reference": "Corán 2:255"
+        },
+        {
+          "title": "Sura Al-Ijlas (3 veces)",
+          "translation": "Di: Él es Alá, el Único... (Recítala 3 veces por la tarde.)",
+          "reference": "Corán 112; Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Sura Al-Falaq (3 veces)",
+          "translation": "Di: Me refugio en el Señor del alba... (Recítala 3 veces por la tarde.)",
+          "reference": "Corán 113; Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Sura An-Nas (3 veces)",
+          "translation": "Di: Me refugio en el Señor de la humanidad... (Recítala 3 veces por la tarde.)",
+          "reference": "Corán 114; Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Protección de la tarde (3 veces)",
+          "translation": "En el nombre de Alá, con cuyo nombre nada en la tierra ni en el cielo puede causar daño, y Él es el que todo lo oye, el que todo lo sabe. (Recítala 3 veces.)",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Complacencia con Alá",
+          "translation": "Estoy complacido con Alá como mi Señor, con el islam como mi religión y con Muhammad ﷺ como mi Profeta. (Recítala 3 veces.)",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Refugio frente a la creación",
+          "translation": "Me refugio en las palabras perfectas de Alá del mal de lo que Él ha creado. (Recítala 3 veces por la tarde.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Subhanallah wa bihamdihi (100 veces)",
+          "translation": "Gloria a Alá y alabanza a Él. (Recítala 100 veces por la tarde.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bienestar del cuerpo y del oído",
+          "translation": "Oh Alá, concédeme bienestar en mi cuerpo. Oh Alá, concédeme bienestar en mi oído. Oh Alá, concédeme bienestar en mi vista. No hay dios excepto Tú. (Recítala 3 veces.)",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Ya Hayyu, Ya Qayyum",
+          "translation": "Oh Eternamente Vivo, oh Sustentador, por Tu misericordia busco ayuda. Endereza para mí todos mis asuntos y no me dejes a mí mismo ni por un abrir y cerrar de ojos.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Hasbunallah (7 veces)",
+          "translation": "Alá me basta. No hay dios excepto Él. En Él me apoyo, y Él es el Señor del Trono Majestuoso. (Recítala 7 veces.)",
+          "reference": "Sunan Abu Dawud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Antes de comer",
+          "translation": "En el nombre de Alá.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Si se olvida el Bismillah",
+          "translation": "En el nombre de Alá, en su comienzo y en su final.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Después de comer",
+          "translation": "Todas las alabanzas son para Alá, que me alimentó con esto y me lo proveyó sin fuerza ni poder de mi parte.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Al salir de casa",
+          "translation": "En el nombre de Alá, deposito mi confianza en Alá. No hay fuerza ni poder excepto con Alá.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Al entrar en casa",
+          "translation": "En el nombre de Alá entramos, en el nombre de Alá salimos, y en nuestro Señor depositamos nuestra confianza.",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Al entrar en la mezquita",
+          "translation": "Oh Alá, ábreme las puertas de Tu misericordia.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Al salir de la mezquita",
+          "translation": "Oh Alá, te pido de Tu favor.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Al entrar al baño",
+          "translation": "En el nombre de Alá. Oh Alá, me refugio en Ti de los espíritus impuros, masculinos y femeninos.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Al salir del baño",
+          "translation": "Busco Tu perdón.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Antes del Wudu",
+          "translation": "En el nombre de Alá.",
+          "reference": "Sunan Abu Dawud y Ibn Majah"
+        },
+        {
+          "title": "Después del Wudu",
+          "translation": "Doy testimonio de que no hay dios excepto Alá, solo, sin asociado, y doy testimonio de que Muhammad es Su siervo y Mensajero.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Al vestirse",
+          "translation": "Todas las alabanzas son para Alá, que me vistió con esto y me lo proveyó sin fuerza ni poder de mi parte.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Al mirarse al espejo",
+          "translation": "Oh Alá, así como has embellecido mi forma exterior, embellece mi carácter.",
+          "reference": "Musnad Ahmad"
+        },
+        {
+          "title": "Cuando hay enfado",
+          "translation": "Me refugio en Alá de Satanás, el maldito.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Al estornudar",
+          "translation": "Todas las alabanzas son para Alá. (Respuesta a quien estornuda: Yarhamukallah, que Alá tenga misericordia de ti. Luego quien estornudó dice: Yahdikumullahu wa yuslihu balakum.)",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Al oír un gallo",
+          "translation": "Oh Alá, te pido de Tu favor.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Cuando llueve",
+          "translation": "Oh Alá, haz que sea una lluvia beneficiosa.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "En la angustia",
+          "translation": "No hay dios excepto Alá, el Magnífico, el Tolerante. No hay dios excepto Alá, Señor del Trono Majestuoso. No hay dios excepto Alá, Señor de los cielos, Señor de la tierra y Señor del Trono Noble.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Al terminar la Salah",
+          "translation": "Busco el perdón de Alá (3 veces). Oh Alá, Tú eres la Paz y de Ti viene la paz. Bendito eres Tú, oh Poseedor de la majestad y el honor.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Tasbih después de la Salah",
+          "translation": "Gloria a Alá (33), todas las alabanzas son para Alá (33), Alá es el Más Grande (33), y luego se completa con la declaración del Tawhid una vez.",
+          "reference": "Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Antes de dormir",
+          "translation": "En Tu nombre, oh Alá, muero y vivo.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Dhikr al dormir",
+          "translation": "Gloria a Alá, todas las alabanzas son para Alá, Alá es el Más Grande: el tasbih de la noche que enseñó el Profeta ﷺ.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Versículo del Trono antes de dormir",
+          "translation": "Alá: no hay divinidad excepto Él, el Eternamente Vivo, el Sustentador de la existencia. No lo vence el sopor ni el sueño. A Él pertenece cuanto hay en los cielos y cuanto hay en la tierra. ¿Quién puede interceder ante Él excepto con Su permiso? Él sabe lo que está [ahora] ante ellos y lo que habrá después de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Kursi se extiende sobre los cielos y la tierra, y preservarlas no lo fatiga. Y Él es el Altísimo, el Más Grande. (Recita el versículo del Trono antes de dormir. Quien lo haga tendrá un guardián de parte de Alá hasta la mañana.)",
+          "reference": "Corán 2:255; auténtico al-Bujari"
+        },
+        {
+          "title": "Los dos últimos versículos de Al-Baqara",
+          "translation": "El Mensajero ha creído en lo que le fue revelado de su Señor, y [también] los creyentes. Todos han creído en Alá, en Sus ángeles, en Sus libros y en Sus mensajeros, [diciendo]: «No hacemos distinción entre ninguno de Sus mensajeros». Y dicen: «Oímos y obedecemos. [Buscamos] Tu perdón, Señor nuestro, y a Ti es el destino [final]». Alá no encarga a un alma sino [con aquello que está] dentro de su capacidad. Tendrá [la consecuencia de] lo [bueno] que haya ganado, y cargará [la consecuencia de] lo [malo] que haya cometido. «Señor nuestro, no nos tomes en cuenta si olvidamos o erramos. Señor nuestro, no pongas sobre nosotros una carga como la que pusiste sobre quienes nos precedieron. Señor nuestro, no nos cargues con lo que no tenemos capacidad de soportar. Perdónanos, absuélvenos y ten misericordia de nosotros. Tú eres nuestro protector, así que concédenos la victoria sobre la gente que no cree». (Recitar estos dos últimos versículos de Al-Baqara por la noche bastará a quien los lea.)",
+          "reference": "Corán 2:285-286; auténtico al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Las tres Qul antes de dormir",
+          "translation": "Sopla en las palmas y pásalas por el cuerpo después de recitar Al-Ijlas, Al-Falaq y An-Nas (tres veces cada una).",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Depositar la confianza antes de dormir",
+          "translation": "Oh Alá, me someto a Ti, te encomiendo mis asuntos, vuelvo mi rostro hacia Ti y apoyo mi espalda en Ti, con esperanza y temor de Ti. No hay refugio ni escape de Ti excepto hacia Ti. Creo en Tu Libro, que revelaste, y en Tu Profeta, a quien enviaste.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Al darse la vuelta por la noche",
+          "translation": "No hay dios excepto Alá, el Único, el que prevalece. Señor de los cielos y de la tierra y de lo que hay entre ellos, el Todopoderoso, el que perdona mucho.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Si uno despierta de pronto por la noche",
+          "translation": "No hay dios excepto Alá, solo, sin asociado... Todas las alabanzas son para Alá, gloria a Alá, no hay dios excepto Alá, Alá es el Más Grande, y no hay fuerza ni poder excepto con Alá. Luego haz duá.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Duá para interpretar un sueño",
+          "translation": "Me refugio en Alá de Satanás, el maldito, y del mal de este sueño. (Luego escupe suavemente a la izquierda tres veces y no se lo cuentes a otros.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Al levantarse para la oración nocturna",
+          "translation": "Oh Alá, a Ti pertenece toda alabanza. Tú eres el Sustentador de los cielos y de la tierra y de quien está en ellos...",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Antes de comer",
+          "translation": "En el nombre de Alá.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Si se olvida el Bismillah",
+          "translation": "En el nombre de Alá, en su comienzo y su final.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Después de comer",
+          "translation": "Todas las alabanzas son para Alá, que me alimentó con esto y me lo proveyó sin fuerza ni poder de mi parte.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Después de una comida (más larga)",
+          "translation": "Todas las alabanzas son para Alá: una alabanza abundante, pura y bendita, una alabanza que nunca basta, que nunca se abandona y de la que nunca se prescinde, Señor nuestro.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Al beber leche",
+          "translation": "Oh Alá, bendícela para nosotros y danos más de ella.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Cuando ofrecen comida durante el ayuno",
+          "translation": "Estoy ayunando.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Al comenzar un viaje",
+          "translation": "Gloria a Quien ha sometido esto para nosotros, y nosotros no habríamos podido hacerlo por nosotros mismos. A nuestro Señor hemos de volver sin duda.",
+          "reference": "Corán 43:13-14"
+        },
+        {
+          "title": "Súplica de viaje",
+          "translation": "Oh Alá, te pedimos en este viaje rectitud y piedad, y obras que te complazcan. Oh Alá, facilítanos este viaje y acorta su distancia. Oh Alá, Tú eres el Compañero en el viaje y el Guardián de la familia.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Al regresar del viaje",
+          "translation": "Volvemos arrepentidos, adorando y alabando a nuestro Señor.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Al entrar en una ciudad",
+          "translation": "Oh Alá, Señor de los siete cielos y de lo que ellos dan sombra... Te pido el bien de esta ciudad y de su gente, y me refugio en Ti de su mal y del mal de su gente.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Cuando el animal o el vehículo tropieza",
+          "translation": "En el nombre de Alá.",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Saludo de quien recibe al que llega",
+          "translation": "Oh Alá, bendícela para nosotros.",
+          "reference": "Duá general de los viajeros (Hisnul Muslim)"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Al visitar al enfermo",
+          "translation": "No hay mal; es una purificación, si Alá quiere.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Por el enfermo",
+          "translation": "Oh Alá, Señor de la humanidad, aparta el daño y cúralo, pues Tú eres el Sanador. No hay curación sino Tu curación: una curación que no deja enfermedad alguna.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Cuando hay dolor",
+          "translation": "En el nombre de Alá (3 veces). Me refugio en Alá y en Su poder del mal de lo que siento y temo (7 veces), poniendo la mano en el lugar del dolor.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Ruqya por la enfermedad",
+          "translation": "Aparta el daño, oh Señor de la humanidad. Cura, pues Tú eres el Sanador. No hay sanador sino Tú.",
+          "reference": "Sahih al-Bujari y Sahih Muslim"
+        },
+        {
+          "title": "Al visitar a un musulmán enfermo",
+          "translation": "Pido a Alá, el Magnífico, Señor del Trono Majestuoso, que te cure. (Recítala 7 veces.)",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "En el momento de la muerte",
+          "translation": "No hay dios excepto Alá. (Anima a quien está muriendo a decir esto.)",
+          "reference": "Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Buscar refugio",
+          "translation": "Me refugio en las palabras perfectas de Alá del mal de lo que Él ha creado.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Protección contra la ansiedad",
+          "translation": "Oh Alá, me refugio en Ti de la preocupación y la tristeza, de la incapacidad y la pereza, de la cobardía y la tacañería, y de verme vencido por las deudas y dominado por los hombres.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Protección al salir de casa",
+          "translation": "En el nombre de Alá, deposito mi confianza en Alá. No hay fuerza ni poder excepto con Alá.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Contra el mal de ojo",
+          "translation": "Me refugio en las palabras perfectas de Alá de todo demonio y criatura venenosa, y de todo mal de ojo.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Duá de Yunus",
+          "translation": "No hay dios excepto Tú. Gloria a Ti. En verdad, he sido de los que obran mal.",
+          "reference": "Corán 21:87; Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Cuando hay miedo",
+          "translation": "Me refugio en las palabras perfectas de Alá de Su ira y Su castigo, del mal de Sus siervos, de los susurros de los demonios y de su presencia.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Protección de los niños",
+          "translation": "Busco protección para vosotros dos en las palabras perfectas de Alá de todo demonio y criatura venenosa, y de todo mal de ojo.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Al ver que algo aflige a alguien",
+          "translation": "Todas las alabanzas son para Alá, que me libró de aquello con lo que te ha afligido y que me favoreció en gran manera sobre muchos de los que Él creó. (Dilo en voz baja, no en voz alta para herir a la persona.)",
+          "reference": "Sunan at-Tirmidhi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "El mejor istighfar",
+          "translation": "Oh Alá, Tú eres mi Señor. Nadie tiene derecho a ser adorado excepto Tú... así que perdóname, pues nadie perdona los pecados excepto Tú.",
+          "reference": "Sahih al-Bujari"
+        },
+        {
+          "title": "Pedir perdón",
+          "translation": "Señor mío, perdóname y acepta mi arrepentimiento. Tú eres Quien acepta el arrepentimiento, el Más Misericordioso.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Astaghfirullah",
+          "translation": "Busco el perdón de Alá.",
+          "reference": "Dhikr general"
+        },
+        {
+          "title": "Istighfar del Profeta",
+          "translation": "Busco el perdón de Alá, fuera de quien no hay dios, el Eternamente Vivo, el Sustentador, y me arrepiento ante Él.",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        },
+        {
+          "title": "Duá de Adam",
+          "translation": "Señor nuestro, hemos sido injustos con nosotros mismos. Si no nos perdonas y tienes misericordia de nosotros, estaremos ciertamente entre los perdedores.",
+          "reference": "Corán 7:23"
+        },
+        {
+          "title": "Perdón amplio",
+          "translation": "Oh Alá, perdóname todo mi pecado: el pequeño y el grande, el primero y el último, el público y el secreto.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "El mejor istighfar en una reunión",
+          "translation": "Gloria a Ti, oh Alá, y alabanza. Doy testimonio de que no hay dios excepto Tú. Busco Tu perdón y me arrepiento ante Ti. (Se dice al final de una reunión.)",
+          "reference": "Sunan Abu Dawud y at-Tirmidhi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Por los padres",
+          "translation": "Señor mío, ten misericordia de ellos como ellos me criaron cuando yo era pequeño.",
+          "reference": "Corán 17:24"
+        },
+        {
+          "title": "Por los padres creyentes",
+          "translation": "Señor nuestro, perdóname a mí, a mis padres y a los creyentes el Día en que se establezca la cuenta.",
+          "reference": "Corán 14:41"
+        },
+        {
+          "title": "Perdón para los padres",
+          "translation": "Señor mío, perdóname a mí, a mis padres, a quien entre en mi casa como creyente, y a los hombres creyentes y a las mujeres creyentes.",
+          "reference": "Corán 71:28"
+        },
+        {
+          "title": "Bondad después de que los padres fallecen",
+          "translation": "Oh Alá, perdóname a mí y a mis padres, y ten misericordia de ellos como me criaron cuando yo era pequeño.",
+          "reference": "Basado en el Corán 17:24"
+        },
+        {
+          "title": "El bien hacia los padres",
+          "translation": "Tu Señor ha decretado que no adoréis a nadie excepto a Él, y que seáis bondadosos con los padres.",
+          "reference": "Corán 17:23"
+        }
+      ]
+    }
+  ]
+}

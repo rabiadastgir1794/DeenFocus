@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadán",
+      "importance": "Ramadán es el mes en el que se reveló el Corán: una misericordia guiada y un criterio claro para la humanidad.",
+      "virtues": "Se abren las puertas del Paraíso, los demonios son encadenados y toda buena obra se multiplica.",
+      "recommendedActs": "Ayuna con sinceridad, aumenta la recitación del Corán, da caridad, reza el taraweeh y busca Laylatul Qadr en las últimas diez noches."
+    },
+    {
+      "title": "Eid ul-Fitr",
+      "importance": "El Eid al-Fitr marca la culminación de Ramadán y la gratitud a Alá por haber permitido el ayuno.",
+      "virtues": "Es un día de alegría, comunidad y agradecimiento después de un mes de adoración y disciplina personal.",
+      "recommendedActs": "Paga el Zakat al-Fitr, realiza la oración del Eid, viste tu mejor ropa, saluda a los demás y visita a la familia manteniendo los modales islámicos."
+    },
+    {
+      "title": "Eid ul-Adha",
+      "importance": "El Eid al-Adha conmemora la devoción de Ibrahim (AS) y los ritos del Hayy durante Dhul Hiyyah.",
+      "virtues": "Enseña el sacrificio, la obediencia a Alá y el cuidado de quienes lo necesitan por medio de la udhiyah (el sacrificio).",
+      "recommendedActs": "Realiza la oración del Eid, ofrece el sacrificio si puedes, comparte la carne con los pobres y aumenta el takbir en los primeros diez días de Dhul Hiyyah."
+    },
+    {
+      "title": "Temporada del Hayy",
+      "importance": "El Hayy es un pilar que se realiza una vez en la vida para quien tiene la capacidad: un viaje profundo de unidad y sumisión.",
+      "virtues": "Un Hayy aceptado trae el perdón de los pecados y la renovación del propósito. La llanura de Arafa es el corazón del Hayy.",
+      "recommendedActs": "Quienes no realizan el Hayy pueden ayunar el Día de Arafa, aumentar el dhikr y hacer duá por quienes están en los lugares sagrados."
+    },
+    {
+      "title": "Ashura",
+      "importance": "El 10 de Muharram es el día en que Alá salvó a Musa (AS) y a su pueblo del Faraón.",
+      "virtues": "Ayunar en Ashura expía los pecados del año anterior (cuando se combina con el ayuno de un día antes o después, según la Sunna).",
+      "recommendedActs": "Ayuna el 9 y el 10 de Muharram si es posible, reflexiona sobre la ayuda de Alá a los oprimidos y aumenta la gratitud."
+    },
+    {
+      "title": "Laylat al-Qadr",
+      "importance": "Laylatul Qadr es mejor que mil meses: es la noche en que comenzó la revelación del Corán.",
+      "virtues": "La adoración en esta sola noche puede superar décadas de recompensa. Los ángeles descienden con paz hasta el Fajr.",
+      "recommendedActs": "Búscala en las noches impares de los últimos diez días de Ramadán, con oración, Corán, duá e istighfar."
+    },
+    {
+      "title": "Yumu‘a (viernes)",
+      "importance": "El viernes es el mejor día en el que sale el sol. Incluye una oración congregacional semanal y un recordatorio semanal.",
+      "virtues": "Hay un momento el viernes en el que la duá es aceptada. Los pecados entre un viernes y otro se perdonan a quienes se bañan y asisten con sinceridad.",
+      "recommendedActs": "Realiza el Ghusl, viste ropa limpia, llega temprano a la mezquita, escucha con atención la jutba y aumenta el salawat sobre el Profeta ﷺ."
+    }
+  ]
+}

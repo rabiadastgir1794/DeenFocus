@@ -1,0 +1,109 @@
+{
+  "items": [
+    {
+      "title": "Fiqh nədir?",
+      "overview": "Fiqh Quran və sünnədən çıxarılan İslam hökmünün insan anlayışı və tətbiqidir. İbadəti, əqdləri, ailə hüququnu və gündəlik davranışı əhatə edir.",
+      "keyPoints": "Alimlər hökm çıxarmaq üçün Quran, səhih hədis, icma və qiyas kimi əsaslardan istifadə edirlər. Fiqh İslamı gündən-günə yaşamaq üçün əməli yönləndirmədir.",
+      "differences": "Müxtəlif məzhəblər və cəmiyyətlər eyni əsas mənbələri paylaşaraq ikinci dərəcəli məsələlərdə fərqli nəticələrə gələ bilər. Bu, İslam hüquq tarixində adidir.",
+      "commonGround": "Bütün müsəlmanlar Quranın Allahın kəlamı və Məhəmmədin ﷺ peyğəmbərliyi olduğunu təsdiq edir. Fiqh fərqləri adətən əməlin təfərrüatındadır, imanın əsaslarında yox."
+    },
+    {
+      "title": "Fərqlər niyə var",
+      "overview": "İslam alimləri bir çox hüquqi məsələdə həmişə müxtəlif rəylər saxlamışlar. Peyğəmbər ﷺ səhabələri arasında əsas olmayan məsələlərdə fərqliliyə izin vermişdir.",
+      "keyPoints": "Səbəblər arasında: müxtəlif hədislərin müxtəlif bölgələrə çatması, dil yozumlarının fərqlənməsi, yeni şərait və ixtisaslı alimlərin səmimi ictihadı vardır.",
+      "differences": "Bəzi cəmiyyətlər müəyyən məzhəbə ciddi əməl edir; başqaları rəyləri birləşdirir və ya yerli alimlərə tabe olur. Mədəni mühit də hökmlərin tətbiqini formalaşdırır.",
+      "commonGround": "Müsəlmanların böyük əksəriyyəti İslam və iman sütunlarında, halal qida prinsiplərində, namazın vacibliyində və Quranın əxlaq təlimində birləşir."
+    },
+    {
+      "title": "Əhli-sünnə — dörd məzhəb",
+      "overview": "Əhli-sünnə Quranı, sünnəni və ilk cəmiyyətin icmasını izləyir. Zamanla dörd böyük hüquq məktəbi (məzhəb) yaranmış, hər biri böyük bir imamın adı ilə tanınmışdır.",
+      "keyPoints": "Hənəfi, Maliki, Şafei və Hənbəli məzhəbləri Əhli-sünnə içində etibarlı yollardır. Əhli-sünnənin çoxu tarixən öz cəmiyyəti və ya bölgəsi vasitəsilə bir məzhəbə tabe olmuşdur.",
+      "differences": "Məzhəblər dəstəmazın təfərrüatında, namaz duruşunda, oruc qaydalarında və ya əqdlərdə fərqlənə bilər. Bunlar elmi fərqlərdir, əsas əqidədə bölünmə deyil.",
+      "commonGround": "Dörd məzhəb də imanın altı sütununu və İslamın beş sütununu eyni qəbul edir. Əsasən hüquqi istidlalın üsulu və nəticələrində fərqlənirlər."
+    },
+    {
+      "title": "Hənəfi məzhəbi",
+      "overview": "İmam Əbu Hənifə (v. 767) tərəfindən qurulmuşdur. Dünyada ən geniş izlənən məzhəbdir, xüsusilə Türkiyə, Orta və Cənubi Asiya və Balkanların bir hissəsində.",
+      "keyPoints": "Rəy, istihsan və örfü vurğulayır. Yeni vəziyyətlərdə çevikliyi ilə tanınır. Bir çox deobəndi və bərəlvi cəmiyyəti Hənəfi fiqhinə əməl edir.",
+      "differences": "Hənəfilər başqalarının cəm etmədiyi bəzi səfər və məşəqqət hallarında Məğrib və İşanı birləşdirə bilər. Namazda əl qoyuluşu və bəzi dəstəmaz təfərrüatı digər məzhəblərdən fərqlənir.",
+      "commonGround": "Hənəfilər Maliki, Şafei və Hənbəli alimləri ilə eyni Quranı, hədis məcmuəsini və Əhli-sünnə əqidəsinin özəyini paylaşır."
+    },
+    {
+      "title": "Maliki məzhəbi",
+      "overview": "İmam Malik ibn Ənəs (v. 795) tərəfindən Mədinədə qurulmuşdur. Şimali və Qərbi Afrikada, Körfəzin bir hissəsində və dünyadakı bir çox Afrika müsəlman cəmiyyətində üstündür.",
+      "keyPoints": "Hədislə yanaşı Mədinə əhlinin əməlinə (əməl əhl əl-Mədinə) güclü önəm verir. Hüquqi istidlalda məsalih-i mürsələdən istifadə edir.",
+      "differences": "Malikilər ənənəvi olaraq namazda əlləri qatlamaq əvəzinə yanlarda saxlayırlar. Yemək, əqd və corab üzərinə məsh barədə bəzi hökmlər Hənəfi və ya Şafei baxışından fərqlənir.",
+      "commonGround": "Maliki alimləri eyni iman sütunlarını təsdiq edir və digər Əhli-sünnə məzhəbləri ilə eyni əsas mənbələrdən istifadə edirlər."
+    },
+    {
+      "title": "Şafei məzhəbi",
+      "overview": "İmam əş-Şafei (v. 820) tərəfindən qurulmuşdur. Cənub-Şərqi Asiyada, Şərqi Afrikada, Yəməndə, Şamın və Qafqazın bir hissəsində geniş yayılmışdır.",
+      "keyPoints": "Sonrakı bütün məktəblərə təsir edən üsul əl-fiqhi sistemləşdirmişdir. Hədis, icma və qiyası ciddi üsulla tarazlaşdırır.",
+      "differences": "Şafeilər camaat namazında imamın arxasında Fatihəni oxuyurlar (Hənəfilər çox vaxt susur). Bəzi zəkat və miras təfərrüatı Hənəfi hökmlərindən fərqlənir.",
+      "commonGround": "Şafei məzhəbi tam Əhli-sünnə yoludur. Cənub-Şərqi Asiya müsəlmanlarının çoxu bu məzhəbə əməl edir və başqaları ilə məscid və cəmiyyəti bölüşür."
+    },
+    {
+      "title": "Hənbəli məzhəbi",
+      "overview": "İmam Əhməd ibn Hənbəl (v. 855) tərəfindən qurulmuşdur. Bu gün Səudiyyə Ərəbistanında və bir çox sələfi cəmiyyətində ən görkəmlidir, hərçənd bütün sələfilər özlərini Hənbəli saymır.",
+      "keyPoints": "Mətn dəlilinə (Quran və hədis) hərfi bağlılığı vurğulayır və nəzəri istidlalda ehtiyatlıdır. İmam Əhməd həm də böyük hədis alimi idi.",
+      "differences": "Hənbəli fiqhi bəzi məsələlərdə (məsələn, bəzi qidalar, musiqi və ya açıq əməllər) Hənəfi çevikliyi ilə müqayisədə daha sərt ola bilər. Namaz və dəstəmaz təfərrüatının öz hökmləri vardır.",
+      "commonGround": "Hənbəli dörd Əhli-sünnə məzhəbindən biridir. Ardıcılları tövhid, peyğəmbərlik və axirət barədə əqidəni digər Əhli-sünnə ilə paylaşır."
+    },
+    {
+      "title": "Şiə (onikiimamçı) İslam",
+      "overview": "Onikiimamçı şiələr Quranı və Peyğəmbərin ﷺ və Əhli-beytdən olan on iki imamın təlimini izləyir. Onlar dünyada ən böyük şiə cəmiyyətidir.",
+      "keyPoints": "İmamətə — Əlinin (RA) və sonrakı imamların mənəvi və ictimai rəhbərliyinə — ayrıca önəm verirlər. Fiqh imamlar və ixtisaslı alimlər (mərcə) vasitəsilə çıxarılır.",
+      "differences": "Bəzi namaz təcrübələri fərqlənir (məsələn, adi günlərdə namazların cəmi, səcdə üçün turbə və ya torpaq). Müvəqqəti nikah (mütə) onikiimamçı fiqhində caizdir, Əhli-sünnə isə onu rədd edir.",
+      "commonGround": "Onikiimamçı şiələr Quranı, Məhəmmədin ﷺ peyğəmbərliyini, namazı, orucu, zəkatı və həcci təsdiq edir. Əhli-sünnə ilə dialoq və birgəyaşayış bir çox cəmiyyətdə adidir."
+    },
+    {
+      "title": "Deobəndi ənənəsi",
+      "overview": "Hindistanda Darul-Ülum Deobənddən (1867) çıxmış Əhli-sünnə dirçəliş hərəkatıdır. Ayrı məzhəb deyil, Hənəfi elmi və təhsil ənənəsidir.",
+      "keyPoints": "Quranı, hədisi və klassik Hənəfi fiqhini vurğulayır. Mədrəsə təhsilinə, təbliğə və təsdiqlənməmiş bidət sayılan əməllərdən çəkinməyə güclü diqqət yetirir.",
+      "differences": "Deobəndilər ümumən Mövlud mərasimlərinə, bəzi ziyarətgah təcrübələrinə və bəzi sufi adətlərinə ehtiyatla yanaşır — hərçənd bir çox deobəndi alimi təsəvvüfü şərtlə hörmət edir.",
+      "commonGround": "Deobəndilər digər Hənəfilərlə əsas inancları paylaşan Əhli-sünnə Hənəfi müsəlmanlardır. Əsasən bərəlvilər və bəzi sufi qruplarla mədəni və ibadi təcrübələrdə fərqlənirlər."
+    },
+    {
+      "title": "Bərəlvi ənənəsi",
+      "overview": "Hindistanda Əhməd Rza Xan Bərəlvı (v. 1921) ilə bağlı Əhli-sünnə Hənəfi hərəkatıdır. Peyğəmbərə ﷺ məhəbbəti və övliyaya hörməti vurğulayır.",
+      "keyPoints": "Mövludu (Peyğəmbərin doğumunu qeyd etməyi), milad məclislərini və saleh alimlərin qəbirlərini ziyarəti dəstəkləyir. İbadət və əqdlərdə Hənəfi fiqhinə əməl edir.",
+      "differences": "Bərəlvilər deobəndi və sələfilərin çəkinə biləcəyi ibadi ifadələr tətbiq edir, məsələn, Peyğəmbərin ﷺ adı çəkiləndə ayağa qalxmaq (qiyam) və geniş Mövlud mərasimləri.",
+      "commonGround": "Bərəlvilər digər Əhli-sünnə Hənəfilər kimi eyni şəhadəti, Quranı və beş gündəlik namazı təsdiq edir. Deobəndilərlə fərqləri əsasən ibadi mədəniyyətdədir, əsas əqidədə yox."
+    },
+    {
+      "title": "Sələfi metodu",
+      "overview": "Sələfilər ilk müsəlman nəsillərin (sələf) anlayışına tabe olmağa çalışır. Bu, beşinci məzhəb deyil, metodoloji yanaşmadır.",
+      "keyPoints": "Qurana və sünnəyə birbaşa qayıdış; bir məzhəbin kor-koranə təqlidinə ehtiyat; çox vaxt Hənbəli fiqhi və Səudiyyə elmi müəssisələrinin təsiri.",
+      "differences": "Sələfilər bidət saydıqları əməlləri rədd edə bilər — bəzi Mövlud formaları, bəzi sufi təcrübələri və dəlilsiz yalnız məzhəbə bağlılıq da daxil olmaqla.",
+      "commonGround": "Sələfilər İslamın eyni sütunlarını təsdiq edən Əhli-sünnə müsəlmanlardır. Çoxu məzhəb ardıcılları ilə bir cəmiyyətdə yaşayır və ikinci dərəcəli hüquqi və mədəni məsələləri müzakirə edir."
+    },
+    {
+      "title": "Əhli-hədis",
+      "overview": "Əhli-hədis Pakistan, Hindistan və Banqladeşdə görkəmli Əhli-sünnə hərəkatıdır və adını səhih rəvayətləri önə çəkən ilk alimlərdən — hədis əhlindən — alır. Ayrı məzhəb deyil, Cənubi Asiyaya məxsus bir ənənədir.",
+      "keyPoints": "Bir məzhəbin kor-koranə təqlidindən çox Qurana və səhih hədisə birbaşa bağlılığı vurğulayır. Hökmlər mətn dəlilinin müstəqil elmi baxışı ilə çıxarılır, çox vaxt Hənbəli baxışına uyğun gəlir, lakin tək imama bağlı deyil.",
+      "differences": "Əhli-hədis alimləri Mövlud, ziyarətgah ziyarəti və bəzi namaz təfərrüatında deobəndi Hənəfilərdən fərqlənə bilər. Sələfi metodu ilə çox ortaq cəhətləri vardır, lakin altqitədə öz elmi müəssisələrini, məscidlərini və tarixi kimliyini saxlayırlar.",
+      "commonGround": "Əhli-hədis şəhadəti, beş sütunu və imanın altı sütununu təsdiq edən Əhli-sünnə müsəlmanlardır. Əsasən məzhəbə bağlı Hənəfilərlə (deobəndi/bərəlvi) hüquqi metod və bəzi ibadi təcrübələrdə fərqlənirlər — əsas əqidədə yox."
+    },
+    {
+      "title": "Namaz — yanaşmaların müqayisəsi",
+      "overview": "Bütün müsəlmanlar qibləyə tərəf beş gündəlik namaz qılır. Fərqlər dəstəmazın təfərrüatında, əllərin qaldırılmasında, imamın arxasında oxumaqda və namazların cəmində görünür.",
+      "keyPoints": "Hənəfilər: çox vaxt imamın arxasında susur, dəstəmazın xüsusi sırası vardır. Şafei/Maliki/Hənbəlilər: imamın arxasında Fatihə oxuyur. Şiələr: Zöhr-Əsr və Məğrib-İşanı mütəmadi cəm edə bilər.",
+      "differences": "Əllərin yeri, aminin ucadan deyilməsi və ayaqların yuyulmasına qarşı corab üzərinə məsh məzhəblər arasında adi fərq nöqtələridir.",
+      "commonGround": "Namaz ortaq bir vacibdir. Bütün qruplardan olan müsəlmanlar dünyanın məscidlərində ibadət edir və təfərrüat fərqli olsa da namazın müqəddəsliyinə hörmət edirlər."
+    },
+    {
+      "title": "Oruc və hilalın görünməsi",
+      "overview": "Ramazan orucu gücü çatan hər müsəlmana vacibdir. Fərq çox vaxt ayın necə başlayıb bitməsində yaranır — yerli müşahidə və ya qlobal hesablama.",
+      "keyPoints": "Bəzi cəmiyyətlər yerli hilal müşahidəsinə tabe olur; başqaları Səudiyyə elanlarından və ya astronomik hesablamadan istifadə edir. Hənəfi fiqhi orucu nəyin pozduğunda bir qədər çeviklik tanıyır.",
+      "differences": "Cəmiyyətlər müxtəlif alimlərə və ya milli hilal komitələrinə tabe olanda Ramazan və bayramın başlanğıcı və sonu eyni şəhərdə fərqli günlərə düşə bilər.",
+      "commonGround": "Ramazan orucunun vacibliyi ümumbəşəridir. Müsəlmanlar mübarək ayda təqva, Quran tilavəti və sədəqə kimi eyni mənəvi məqsədləri paylaşır."
+    },
+    {
+      "title": "Ortaq əsaslar",
+      "overview": "Fiqh və ənənə fərqlərinə baxmayaraq dünyadakı müsəlmanlar sarsılmaz bir özəyi paylaşır: tək Allaha iman, Peyğəmbər Məhəmmədin ﷺ son peyğəmbər olması və Qiyamət günü hesab.",
+      "keyPoints": "Quran və səhih sünnə ümməti birləşdirir. İkinci dərəcəli hökmlərdəki fərqlərə elm, təvazö və hörmətlə yanaşılmalıdır — bölünmə və düşmənçiliklə yox.",
+      "differences": "Cəmiyyətlər müxtəlif alimlərə və ya məzhəblərə tabe ola bilər. Bu fərqləri öyrənmək müsəlmanlara bir-birini anlamağa və lazımsız münaqişədən çəkinməyə kömək edir.",
+      "commonGround": "Allah buyurur: “Möminlər ancaq qardaşdırlar.” Elm axtarmaq, səmimi dua etmək və gözəl xarakter göstərmək hər fiqhi və mədəni sərhədi aşır."
+    }
+  ]
+}

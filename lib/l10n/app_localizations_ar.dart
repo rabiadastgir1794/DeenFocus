@@ -1631,10 +1631,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appLanguage => 'لغة التطبيق';
 
   @override
-  String get tabHome => 'بيت';
+  String get tabHome => 'الرئيسية';
 
   @override
-  String get tabFocus => 'ركز';
+  String get tabFocus => 'تركيز';
 
   @override
   String get tabTasbih => 'التسبيح';
@@ -2889,6 +2889,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsCalculationMethodTitle => 'طريقة الحساب';
+
+  @override
+  String get calcMethodMuslimWorldLeague => 'رابطة العالم الإسلامي';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'الجمعية الإسلامية لأمريكا الشمالية (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'الهيئة المصرية العامة للمساحة';
+
+  @override
+  String get calcMethodUmmAlQura => 'جامعة أم القرى، مكة';
+
+  @override
+  String get calcMethodKarachi => 'جامعة العلوم الإسلامية، كراتشي';
+
+  @override
+  String get calcMethodTehran => 'طهران';
+
+  @override
+  String get calcMethodKuwait => 'الكويت';
+
+  @override
+  String get calcMethodQatar => 'قطر';
+
+  @override
+  String get calcMethodDubai => 'دبي';
+
+  @override
+  String get calcMethodTurkey => 'تركيا';
+
+  @override
+  String get calcMethodSingapore => 'سنغافورة';
+
+  @override
+  String get calcMethodMoonsighting => 'لجنة استطلاع الهلال العالمية';
 
   @override
   String get settingsAsrCalculationTitle => 'حساب العصر';

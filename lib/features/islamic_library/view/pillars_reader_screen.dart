@@ -5,6 +5,7 @@ import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_module.dart';
 import '../model/library_pillar.dart';
 import '../widgets/learning_item_tile.dart';
@@ -28,7 +29,7 @@ class PillarsReaderScreen extends StatefulWidget {
 }
 
 class _PillarsReaderScreenState extends State<PillarsReaderScreen>
-    with LearningListController {
+    with LearningListController, LibraryLanguageReload {
   List<LibraryPillar> _pillars = const [];
 
   @override
@@ -40,24 +41,24 @@ class _PillarsReaderScreenState extends State<PillarsReaderScreen>
   @override
   int get itemCount => _pillars.length;
 
-  Future<List<LibraryPillar>> _loadPillars() {
+  Future<List<LibraryPillar>> _loadPillars(String languageCode) {
     return switch (widget.moduleId) {
       LibraryModuleId.pillarsOfIslam =>
-        IslamicLibraryRepository.instance.loadPillarsOfIslam(),
+        IslamicLibraryRepository.instance.loadPillarsOfIslam(
+          languageCode: languageCode,
+        ),
       LibraryModuleId.pillarsOfIman =>
-        IslamicLibraryRepository.instance.loadPillarsOfIman(),
+        IslamicLibraryRepository.instance.loadPillarsOfIman(
+          languageCode: languageCode,
+        ),
       _ => Future.value(const <LibraryPillar>[]),
     };
   }
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final pillars = await _loadPillars();
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final pillars = await _loadPillars(languageCode);
+    if (!isCurrentLibraryLoad(generation)) return;
     if (!mounted) return;
     setState(() => _pillars = pillars);
     await loadProgressAndFinish();

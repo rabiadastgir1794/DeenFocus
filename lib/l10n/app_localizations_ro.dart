@@ -78,7 +78,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get sectSunni => 'Sunniți';
 
   @override
-  String get sectShia => 'Shia';
+  String get sectShia => 'Șiiți';
 
   @override
   String get sectPreferNotToSay => 'Prefer să nu spun';
@@ -1677,7 +1677,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get tabHome => 'Acasă';
 
   @override
-  String get tabFocus => 'Concentrează-te';
+  String get tabFocus => 'Focus';
 
   @override
   String get tabTasbih => 'Tasbih';
@@ -2957,6 +2957,43 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsCalculationMethodTitle => 'Metodă de Calcul';
 
   @override
+  String get calcMethodMuslimWorldLeague => 'Liga Mondială Islamică';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'Societatea Islamică din America de Nord (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'Autoritatea egipteană de cadastru';
+
+  @override
+  String get calcMethodUmmAlQura => 'Universitatea Umm al-Qura, Mecca';
+
+  @override
+  String get calcMethodKarachi => 'Universitatea de Științe Islamice, Karachi';
+
+  @override
+  String get calcMethodTehran => 'Teheran';
+
+  @override
+  String get calcMethodKuwait => 'Kuweit';
+
+  @override
+  String get calcMethodQatar => 'Qatar';
+
+  @override
+  String get calcMethodDubai => 'Dubai';
+
+  @override
+  String get calcMethodTurkey => 'Turcia';
+
+  @override
+  String get calcMethodSingapore => 'Singapore';
+
+  @override
+  String get calcMethodMoonsighting => 'Comitetul mondial de observare a lunii';
+
+  @override
   String get settingsAsrCalculationTitle => 'Calcul Asr';
 
   @override
@@ -3753,15 +3790,15 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get settingsAppDemoWidgetsCardSubtitle =>
-      'Daily verse and prayer times on your Home Screen, always up to date.';
+      'Versetul zilei și orele de rugăciune pe ecranul principal, mereu actualizate.';
 
   @override
   String get settingsAppDemoLiveActivityCardSubtitle =>
-      'Current and next prayer on your Lock Screen and Dynamic Island.';
+      'Rugăciunea curentă și următoarea pe ecranul de blocare și Dynamic Island.';
 
   @override
   String get settingsAppDemoTajweedCardSubtitle =>
-      'Recite an ayah and get instant tajweed feedback.';
+      'Recită un verset și primește imediat feedback de tajwid.';
 
   @override
   String get featureDemoTajweedTitle => 'Tajwid';

@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "title": "Schahada",
+      "subtitle": "Glaubensbekenntnis",
+      "body": "Die Schahada ist das Bekenntnis, dass kein Gott außer Allah anbetungswürdig ist und dass Muhammad ﷺ Sein Gesandter ist. Sie ist das Fundament des Islam und der Schlüssel zum Eintritt in den Glauben.",
+      "reference": "Koran 3:18"
+    },
+    {
+      "title": "Salah",
+      "subtitle": "Gebet",
+      "body": "Salah sind die fünf täglichen Gebete zu festgelegten Zeiten. Sie verbindet den Gläubigen mit Allah, diszipliniert die Seele und ist die zweite Säule des Islam.",
+      "reference": "Koran 2:238"
+    },
+    {
+      "title": "Zakat",
+      "subtitle": "Pflichtabgabe",
+      "body": "Zakat ist die jährliche Abgabe eines festgelegten Teils des qualifizierenden Vermögens an Bedürftige. Sie reinigt das Vermögen, stützt die Gemeinschaft und drückt Dankbarkeit gegenüber Allah aus.",
+      "reference": "Koran 2:177"
+    },
+    {
+      "title": "Saum",
+      "subtitle": "Fasten",
+      "body": "Saum ist das Fasten im Monat Ramadan von der Morgendämmerung bis zum Sonnenuntergang. Es stärkt Taqwa, Mitgefühl mit Bedürftigen und Selbstbeherrschung.",
+      "reference": "Koran 2:183"
+    },
+    {
+      "title": "Hadsch",
+      "subtitle": "Wallfahrt",
+      "body": "Hadsch ist die Wallfahrt nach Mekka einmal im Leben für den, der dazu imstande ist. Er eint die Umma und erinnert an das Erbe Ibrahims (AS) und seiner Familie.",
+      "reference": "Koran 3:97"
+    }
+  ]
+}

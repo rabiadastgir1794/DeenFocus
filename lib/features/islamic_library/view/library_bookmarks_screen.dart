@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/library_bookmark_service.dart';
+import '../data/library_content_language.dart';
 import '../data/library_progress_service.dart';
 import '../helpers/library_bookmark_opener.dart';
 import '../model/library_bookmark_entry.dart';
@@ -23,6 +24,7 @@ class _LibraryBookmarksScreenState extends State<LibraryBookmarksScreen> {
   List<LibraryBookmarkEntry> _items = const [];
   bool _loading = true;
   bool _startedInitialLoad = false;
+  String? _languageCode;
 
   @override
   void initState() {
@@ -33,10 +35,18 @@ class _LibraryBookmarksScreenState extends State<LibraryBookmarksScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final code = libraryContentLanguageCode(
+      Localizations.localeOf(context).languageCode,
+    );
     if (!_startedInitialLoad) {
       _startedInitialLoad = true;
+      _languageCode = code;
       unawaited(_load());
+      return;
     }
+    if (_languageCode == code) return;
+    _languageCode = code;
+    unawaited(_load());
   }
 
   @override

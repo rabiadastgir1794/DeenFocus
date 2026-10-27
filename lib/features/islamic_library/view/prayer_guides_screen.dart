@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_guide.dart';
 import 'library_category_tile.dart';
 import 'prayer_guide_reader_screen.dart';
@@ -16,19 +17,17 @@ class PrayerGuidesScreen extends StatefulWidget {
   State<PrayerGuidesScreen> createState() => _PrayerGuidesScreenState();
 }
 
-class _PrayerGuidesScreenState extends State<PrayerGuidesScreen> {
+class _PrayerGuidesScreenState extends State<PrayerGuidesScreen>
+    with LibraryLanguageReload {
   bool _loading = true;
   List<PrayerGuide> _guides = const [];
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final guides = await IslamicLibraryRepository.instance.loadPrayerGuides();
-    if (!mounted) return;
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final guides = await IslamicLibraryRepository.instance.loadPrayerGuides(
+      languageCode: languageCode,
+    );
+    if (!isCurrentLibraryLoad(generation)) return;
     setState(() {
       _guides = guides;
       _loading = false;

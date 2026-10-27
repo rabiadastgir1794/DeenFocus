@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../model/allah_name.dart';
@@ -9,6 +10,8 @@ import '../model/prophet_story_card.dart';
 import '../model/library_fiqh.dart';
 import '../model/library_guide.dart';
 import '../model/library_pillar.dart';
+import 'library_content_language.dart';
+import 'library_locale_merge.dart';
 
 class IslamicLibraryRepository {
   IslamicLibraryRepository._();
@@ -16,145 +19,206 @@ class IslamicLibraryRepository {
   static final IslamicLibraryRepository instance =
       IslamicLibraryRepository._();
 
-  List<AllahName>? _cachedNames;
-  List<LibraryPillar>? _cachedPillarsIslam;
-  List<LibraryPillar>? _cachedPillarsIman;
-  List<DuaCategory>? _cachedDuas;
-  List<HadithCollection>? _cachedHadith;
-  List<ProphetStoryCard>? _cachedProphetMuhammad;
-  List<PrayerGuide>? _cachedPrayerGuides;
-  List<IslamicOccasion>? _cachedOccasions;
-  List<FiqhTopic>? _cachedFiqhTopics;
+  final Map<String, List<AllahName>> _namesByLanguage = {};
+  final Map<String, List<LibraryPillar>> _pillarsIslamByLanguage = {};
+  final Map<String, List<LibraryPillar>> _pillarsImanByLanguage = {};
+  final Map<String, List<DuaCategory>> _duasByLanguage = {};
+  final Map<String, List<HadithCollection>> _hadithByLanguage = {};
+  final Map<String, List<ProphetStoryCard>> _prophetByLanguage = {};
+  final Map<String, List<PrayerGuide>> _guidesByLanguage = {};
+  final Map<String, List<IslamicOccasion>> _occasionsByLanguage = {};
+  final Map<String, List<FiqhTopic>> _fiqhByLanguage = {};
 
-  Future<List<AllahName>> loadNamesOfAllah() async {
-    if (_cachedNames != null) return _cachedNames!;
-    final raw = await rootBundle.loadString(
+  Future<List<AllahName>> loadNamesOfAllah({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _namesByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/names_of_allah.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final items = decoded['items'] as List<dynamic>;
-    _cachedNames = items
+    final names = items
         .map((e) => AllahName.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedNames!;
+    _namesByLanguage[lang] = names;
+    return names;
   }
 
-  Future<List<LibraryPillar>> loadPillarsOfIslam() async {
+  Future<List<LibraryPillar>> loadPillarsOfIslam({
+    String languageCode = 'en',
+  }) {
     return _loadPillars(
       assetPath: 'assets/islamic_library/pillars_of_islam.json',
-      cache: () => _cachedPillarsIslam,
-      store: (v) => _cachedPillarsIslam = v,
+      languageCode: languageCode,
+      cache: _pillarsIslamByLanguage,
     );
   }
 
-  Future<List<LibraryPillar>> loadPillarsOfIman() async {
+  Future<List<LibraryPillar>> loadPillarsOfIman({
+    String languageCode = 'en',
+  }) {
     return _loadPillars(
       assetPath: 'assets/islamic_library/pillars_of_iman.json',
-      cache: () => _cachedPillarsIman,
-      store: (v) => _cachedPillarsIman = v,
+      languageCode: languageCode,
+      cache: _pillarsImanByLanguage,
     );
   }
 
   Future<List<LibraryPillar>> _loadPillars({
     required String assetPath,
-    required List<LibraryPillar>? Function() cache,
-    required void Function(List<LibraryPillar>?) store,
+    required String languageCode,
+    required Map<String, List<LibraryPillar>> cache,
   }) async {
-    final cached = cache();
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = cache[lang];
     if (cached != null) return cached;
-    final raw = await rootBundle.loadString(assetPath);
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
+    final decoded = await _loadLocalizedJson(assetPath, lang);
     final items = decoded['items'] as List<dynamic>;
     final pillars = items
         .map((e) => LibraryPillar.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    store(pillars);
+    cache[lang] = pillars;
     return pillars;
   }
 
-  Future<List<DuaCategory>> loadDuaCategories() async {
-    if (_cachedDuas != null) return _cachedDuas!;
-    final raw = await rootBundle.loadString(
+  Future<List<DuaCategory>> loadDuaCategories({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _duasByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/duas_adhkar.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final categories = decoded['categories'] as List<dynamic>;
-    _cachedDuas = categories
+    final duas = categories
         .map((e) => DuaCategory.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedDuas!;
+    _duasByLanguage[lang] = duas;
+    return duas;
   }
 
-  Future<DuaCategory?> loadDuaCategory(String categoryId) async {
-    final categories = await loadDuaCategories();
+  Future<DuaCategory?> loadDuaCategory(
+    String categoryId, {
+    String languageCode = 'en',
+  }) async {
+    final categories = await loadDuaCategories(languageCode: languageCode);
     for (final category in categories) {
       if (category.id == categoryId) return category;
     }
     return null;
   }
 
-  Future<List<HadithCollection>> loadHadithCollections() async {
-    if (_cachedHadith != null) return _cachedHadith!;
-    final raw = await rootBundle.loadString(
+  Future<List<HadithCollection>> loadHadithCollections({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _hadithByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/hadith.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final collections = decoded['collections'] as List<dynamic>;
-    _cachedHadith = collections
+    final hadith = collections
         .map((e) => HadithCollection.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedHadith!;
+    _hadithByLanguage[lang] = hadith;
+    return hadith;
   }
 
-  Future<List<ProphetStoryCard>> loadProphetMuhammad() async {
-    if (_cachedProphetMuhammad != null) return _cachedProphetMuhammad!;
-    final raw = await rootBundle.loadString(
+  Future<List<ProphetStoryCard>> loadProphetMuhammad({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _prophetByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/prophet_muhammad.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final items = decoded['items'] as List<dynamic>;
-    _cachedProphetMuhammad = items
+    final cards = items
         .map((e) => ProphetStoryCard.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedProphetMuhammad!;
+    _prophetByLanguage[lang] = cards;
+    return cards;
   }
 
-  Future<List<PrayerGuide>> loadPrayerGuides() async {
-    if (_cachedPrayerGuides != null) return _cachedPrayerGuides!;
-    final raw = await rootBundle.loadString(
+  Future<List<PrayerGuide>> loadPrayerGuides({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _guidesByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/prayer_methods.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
-    final guides = decoded['guides'] as List<dynamic>;
-    _cachedPrayerGuides = guides
+    final guidesJson = decoded['guides'] as List<dynamic>;
+    final guides = guidesJson
         .map((e) => PrayerGuide.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedPrayerGuides!;
+    _guidesByLanguage[lang] = guides;
+    return guides;
   }
 
-  Future<List<IslamicOccasion>> loadIslamicOccasions() async {
-    if (_cachedOccasions != null) return _cachedOccasions!;
-    final raw = await rootBundle.loadString(
+  Future<List<IslamicOccasion>> loadIslamicOccasions({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _occasionsByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/islamic_occasions.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final items = decoded['items'] as List<dynamic>;
-    _cachedOccasions = items
+    final occasions = items
         .map((e) => IslamicOccasion.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedOccasions!;
+    _occasionsByLanguage[lang] = occasions;
+    return occasions;
   }
 
-  Future<List<FiqhTopic>> loadFiqhTopics() async {
-    if (_cachedFiqhTopics != null) return _cachedFiqhTopics!;
-    final raw = await rootBundle.loadString(
+  Future<List<FiqhTopic>> loadFiqhTopics({
+    String languageCode = 'en',
+  }) async {
+    final lang = libraryContentLanguageCode(languageCode);
+    final cached = _fiqhByLanguage[lang];
+    if (cached != null) return cached;
+    final decoded = await _loadLocalizedJson(
       'assets/islamic_library/fiqh_differences.json',
+      lang,
     );
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final items = decoded['items'] as List<dynamic>;
-    _cachedFiqhTopics = items
+    final topics = items
         .map((e) => FiqhTopic.fromJson(e as Map<String, dynamic>))
         .toList(growable: false);
-    return _cachedFiqhTopics!;
+    _fiqhByLanguage[lang] = topics;
+    return topics;
+  }
+
+  Future<Map<String, dynamic>> _loadLocalizedJson(
+    String assetPath,
+    String languageCode,
+  ) async {
+    final raw = await rootBundle.loadString(assetPath);
+    final decoded = jsonDecode(raw) as Map<String, dynamic>;
+    final lang = libraryContentLanguageCode(languageCode);
+    if (lang == 'en') return decoded;
+    final fileName = assetPath.split('/').last;
+    final overlayPath = 'assets/islamic_library/l10n/$lang/$fileName';
+    try {
+      final overlayRaw = await rootBundle.loadString(overlayPath);
+      final overlay = jsonDecode(overlayRaw) as Map<String, dynamic>;
+      return mergeLibraryLocale(decoded, overlay);
+    } on FlutterError {
+      return decoded;
+    }
   }
 }

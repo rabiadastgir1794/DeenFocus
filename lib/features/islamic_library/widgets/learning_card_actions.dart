@@ -25,8 +25,10 @@ class LearningCardActions extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      runSpacing: 8,
       children: [
         _ActionChip(
           icon: isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
@@ -34,16 +36,13 @@ class LearningCardActions extends StatelessWidget {
           color: isBookmarked ? AppColors.primary : colorScheme.onSurfaceVariant,
           onTap: onBookmark,
         ),
-        if (showCopy) ...[
-          const SizedBox(width: 8),
+        if (showCopy)
           _ActionChip(
             icon: Icons.copy_outlined,
             label: l10n.libraryCopy,
             color: colorScheme.onSurfaceVariant,
             onTap: onCopy,
           ),
-        ],
-        const SizedBox(width: 8),
         _ActionChip(
           icon: Icons.share_outlined,
           label: l10n.libraryShare,
@@ -78,19 +77,24 @@ class _ActionChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: color),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ],
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 18, color: color),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

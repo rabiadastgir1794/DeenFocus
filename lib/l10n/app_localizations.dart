@@ -5363,6 +5363,78 @@ abstract class AppLocalizations {
   /// **'Calculation Method'**
   String get settingsCalculationMethodTitle;
 
+  /// No description provided for @calcMethodMuslimWorldLeague.
+  ///
+  /// In en, this message translates to:
+  /// **'Muslim World League'**
+  String get calcMethodMuslimWorldLeague;
+
+  /// No description provided for @calcMethodNorthAmerica.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic Society of North America (ISNA)'**
+  String get calcMethodNorthAmerica;
+
+  /// No description provided for @calcMethodEgyptian.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian General Authority of Survey'**
+  String get calcMethodEgyptian;
+
+  /// No description provided for @calcMethodUmmAlQura.
+  ///
+  /// In en, this message translates to:
+  /// **'Umm al-Qura University, Makkah'**
+  String get calcMethodUmmAlQura;
+
+  /// No description provided for @calcMethodKarachi.
+  ///
+  /// In en, this message translates to:
+  /// **'University of Islamic Sciences, Karachi'**
+  String get calcMethodKarachi;
+
+  /// No description provided for @calcMethodTehran.
+  ///
+  /// In en, this message translates to:
+  /// **'Tehran'**
+  String get calcMethodTehran;
+
+  /// No description provided for @calcMethodKuwait.
+  ///
+  /// In en, this message translates to:
+  /// **'Kuwait'**
+  String get calcMethodKuwait;
+
+  /// No description provided for @calcMethodQatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Qatar'**
+  String get calcMethodQatar;
+
+  /// No description provided for @calcMethodDubai.
+  ///
+  /// In en, this message translates to:
+  /// **'Dubai'**
+  String get calcMethodDubai;
+
+  /// No description provided for @calcMethodTurkey.
+  ///
+  /// In en, this message translates to:
+  /// **'Turkey'**
+  String get calcMethodTurkey;
+
+  /// No description provided for @calcMethodSingapore.
+  ///
+  /// In en, this message translates to:
+  /// **'Singapore'**
+  String get calcMethodSingapore;
+
+  /// No description provided for @calcMethodMoonsighting.
+  ///
+  /// In en, this message translates to:
+  /// **'Moonsighting Committee Worldwide'**
+  String get calcMethodMoonsighting;
+
   /// No description provided for @settingsAsrCalculationTitle.
   ///
   /// In en, this message translates to:

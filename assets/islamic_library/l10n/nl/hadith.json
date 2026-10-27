@@ -1,0 +1,588 @@
+{
+  "collections": [
+    {
+      "items": [
+        {
+          "title": "Daden worden beoordeeld naar intenties",
+          "translation": "Daden worden beoordeeld naar intenties, en ieder mens krijgt alleen wat hij heeft bedoeld.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "Sahih al-Bukhari 1"
+        },
+        {
+          "title": "De vijf zuilen van de islam",
+          "translation": "De islam is gebouwd op vijf: de geloofsgetuigenis, het verrichten van het gebed, het betalen van de Zakat, het vasten van Ramadan en het verrichten van de Hadj voor wie daartoe in staat is.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bukhari 8"
+        },
+        {
+          "title": "Halal en haram zijn duidelijk",
+          "translation": "Het geoorloofde is duidelijk en het ongeoorloofde is duidelijk, en daartussen liggen twijfelachtige zaken. Wie twijfelachtige zaken vermijdt, houdt zijn godsdienst en zijn eer zuiver.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih al-Bukhari 52"
+        },
+        {
+          "title": "Laat wat je doet twijfelen",
+          "translation": "Laat wat je doet twijfelen voor wat je niet doet twijfelen.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "Sahih al-Bukhari 52; Jami' at-Tirmidhi 2518"
+        },
+        {
+          "title": "Het geloof heeft ruim zeventig takken",
+          "translation": "Het geloof heeft ruim zeventig takken. De hoogste is het zeggen van 'La ilaha illallah' en de laagste is het verwijderen van hinder van de weg. Bescheidenheid is een tak van het geloof.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 9; Sahih Muslim 35"
+        },
+        {
+          "title": "De rechten van een moslim op een ander",
+          "translation": "Een moslim heeft vijf rechten op een andere moslim: de groet beantwoorden, de zieke bezoeken, de begrafenis volgen, een uitnodiging aannemen en 'Yarhamuk Allah' zeggen wanneer hij niest.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 1240"
+        },
+        {
+          "title": "Wie in Allah en de Laatste Dag gelooft",
+          "translation": "Wie in Allah en de Laatste Dag gelooft, moet het goede spreken of zwijgen.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6018; Sahih Muslim 47"
+        },
+        {
+          "title": "Benijd elkaar niet",
+          "translation": "Benijd elkaar niet, drijf de prijzen niet tegen elkaar op, haat elkaar niet en keer je niet van elkaar af. Wees dienaren van Allah als broeders.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6066; Sahih Muslim 2564"
+        },
+        {
+          "title": "De beste mensen",
+          "translation": "De beste mensen zijn zij die het meest tot nut van de mensen zijn.",
+          "narrator": "Jabir ibn Abdullah (RA)",
+          "source": "Sahih al-Bukhari (al-Adab al-Mufrad); geauthenticeerd"
+        },
+        {
+          "title": "Allah is mooi en houdt van schoonheid",
+          "translation": "Allah is Mooi en houdt van schoonheid.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "Sahih Muslim 91"
+        },
+        {
+          "title": "Maak de zaken gemakkelijk, niet moeilijk",
+          "translation": "Maak de zaken gemakkelijk en maak ze niet moeilijk; breng blijde tijding en wijs de mensen niet af.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bukhari 69; Sahih Muslim 1734"
+        },
+        {
+          "title": "De sterke is niet wie overwint",
+          "translation": "De sterke persoon is niet wie anderen overwint in het worstelen; de sterke persoon is wie zichzelf beheerst wanneer hij boos is.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6114; Sahih Muslim 2609"
+        },
+        {
+          "title": "Niemand van jullie gelooft werkelijk totdat hij voor zijn broeder liefheeft",
+          "translation": "Niemand van jullie gelooft werkelijk totdat hij voor zijn broeder liefheeft wat hij voor zichzelf liefheeft.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bukhari 13; Sahih Muslim 45"
+        },
+        {
+          "title": "De wereld is een gevangenis voor de gelovige",
+          "translation": "De wereld is een gevangenis voor de gelovige en een paradijs voor de ongelovige.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2956"
+        },
+        {
+          "title": "Wees in deze wereld als een vreemdeling",
+          "translation": "Wees in deze wereld alsof je een vreemdeling of een reiziger was.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bukhari 6416"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Broederschap in het geloof",
+          "translation": "Niemand van jullie gelooft werkelijk totdat hij voor zijn broeder liefheeft wat hij voor zichzelf liefheeft.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih Muslim 45"
+        },
+        {
+          "title": "Een vriendelijk woord is liefdadigheid",
+          "translation": "Een goed woord is liefdadigheid.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 1009"
+        },
+        {
+          "title": "Glimlachen is liefdadigheid",
+          "translation": "Jouw glimlach in het gezicht van je broeder is liefdadigheid voor jou.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "Sahih Muslim (Tirmidhi 1956)"
+        },
+        {
+          "title": "Wie een gelovige verlicht",
+          "translation": "Wie een gelovige een nood in deze wereld verlicht, hem zal Allah een nood verlichten op de Dag der Opstanding.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2580"
+        },
+        {
+          "title": "Reinheid is de helft van het geloof",
+          "translation": "Reinheid is de helft van het geloof.",
+          "narrator": "Abu Malik al-Ash'ari (RA)",
+          "source": "Sahih Muslim 223"
+        },
+        {
+          "title": "Kennis zoeken is verplicht",
+          "translation": "Kennis zoeken is een verplichting voor iedere moslim.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Ibn Majah 224; geauthenticeerd"
+        },
+        {
+          "title": "De beste liefdadigheid",
+          "translation": "De beste liefdadigheid is die welke je geeft terwijl je gezond bent en begeerte naar vermogen hebt, armoede vrezend en hopend rijk te worden.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 1419; Sahih Muslim 1031"
+        },
+        {
+          "title": "Allah kijkt niet naar jullie lichamen",
+          "translation": "Allah kijkt niet naar jullie lichamen of jullie vermogen, maar Hij kijkt naar jullie harten en jullie daden.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2564"
+        },
+        {
+          "title": "De gelovige jegens de gelovige",
+          "translation": "De gelovigen zijn in hun wederzijdse goedheid, mededogen en medeleven als één lichaam: wanneer één lid lijdt, antwoordt het hele lichaam met slapeloosheid en koorts.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih Muslim 2586"
+        },
+        {
+          "title": "Wie een wereldse moeilijkheid wegneemt",
+          "translation": "Wie voor iemand in deze wereld een moeilijkheid verlicht, voor hem zal Allah een moeilijkheid verlichten op de Dag der Opstanding.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2699"
+        },
+        {
+          "title": "De vijf dagelijkse gebeden",
+          "translation": "Wie de wassing goed verricht en de vijf dagelijkse gebeden bidt, met hem heeft Allah een verbond dat hij het Paradijs binnengaat.",
+          "narrator": "Uthman ibn Affan (RA)",
+          "source": "Sahih Muslim 228"
+        },
+        {
+          "title": "De besten onder jullie zijn de besten voor hun gezinnen",
+          "translation": "De besten onder jullie zijn zij die het best zijn voor hun gezinnen, en ik ben de beste onder jullie voor mijn gezin.",
+          "narrator": "Aisha (RA)",
+          "source": "Jami' at-Tirmidhi 3895; authentiek"
+        },
+        {
+          "title": "Bescheidenheid brengt niets dan goed",
+          "translation": "Bescheidenheid brengt niets dan goed.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6117; Sahih Muslim 37"
+        },
+        {
+          "title": "Allah is zachtmoedig en houdt van zachtheid",
+          "translation": "Allah is Zachtmoedig en houdt van zachtheid in alle zaken.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "Het Paradijs ligt aan de voeten van de moeders",
+          "translation": "Het Paradijs ligt aan de voeten van de moeders.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sunan an-Nasa'i 3104; geauthenticeerd"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Allah is zachtmoedig en houdt van zachtheid",
+          "translation": "Allah is Zachtmoedig en houdt van zachtheid in alle zaken.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "Zachtheid verfraait",
+          "translation": "Zachtheid is in niets zonder dat zij het verfraait.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2594"
+        },
+        {
+          "title": "De sterke gelovige",
+          "translation": "De sterke gelovige is beter en meer geliefd bij Allah dan de zwakke gelovige, hoewel er in beiden goed is.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2664"
+        },
+        {
+          "title": "Word niet boos",
+          "translation": "Word niet boos.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 6116"
+        },
+        {
+          "title": "De daden die Allah het meest liefheeft",
+          "translation": "De daden die Allah het meest liefheeft zijn die welke standvastig worden gedaan, ook al zijn zij klein.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih al-Bukhari 6464; Sahih Muslim 782"
+        },
+        {
+          "title": "Wie geen barmhartigheid toont",
+          "translation": "Wie geen barmhartigheid toont, hem zal geen barmhartigheid worden getoond.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 5997; Sahih Muslim 2318"
+        },
+        {
+          "title": "De besten onder jullie in karakter",
+          "translation": "De besten onder jullie zijn zij die het beste karakter hebben.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bukhari 3559"
+        },
+        {
+          "title": "Wissel geschenken uit en jullie zullen elkaar liefhebben",
+          "translation": "Wissel geschenken uit en jullie zullen elkaar liefhebben.",
+          "narrator": "Aisha (RA)",
+          "source": "Al-Adab al-Mufrad; geauthenticeerd"
+        },
+        {
+          "title": "De tong kan naar het Hellevuur leiden",
+          "translation": "De dingen die de mensen het meest naar het Paradijs leiden zijn bewustzijn van Allah en goed karakter.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Jami' at-Tirmidhi 2004"
+        },
+        {
+          "title": "Bezoek de zieke",
+          "translation": "Geen moslim bezoekt 's ochtends een zieke moslim of zeventigduizend engelen zenden zegeningen over hem tot de avond.",
+          "narrator": "Ali ibn Abi Talib (RA)",
+          "source": "Sahih Muslim 2569"
+        },
+        {
+          "title": "De rechten van de buren",
+          "translation": "Jibril bleef mij over de buurman aansporen totdat ik dacht dat hij hem een erfgenaam zou maken.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih al-Bukhari 6014; Sahih Muslim 2624"
+        },
+        {
+          "title": "Roddel is erger dan overspel",
+          "translation": "Weten jullie wat roddel is? Het is je broeder noemen op een wijze die hem mishaagt.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sunan Abu Dawud 4877; geauthenticeerd"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Daden worden beoordeeld naar intenties",
+          "translation": "Daden worden beoordeeld naar intenties, en ieder mens zal alleen hebben wat hij heeft bedoeld.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadith Nawawi, #1"
+        },
+        {
+          "title": "De vijf zuilen",
+          "translation": "De islam is gebouwd op vijf: de geloofsgetuigenis, het gebed, de Zakat, het vasten van Ramadan en de Hadj.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadith Nawawi, #2"
+        },
+        {
+          "title": "De zuilen van het geloof",
+          "translation": "Het geloof is geloven in Allah, Zijn engelen, Zijn boeken, Zijn boodschappers, de Laatste Dag en het goddelijk besluit, het goede ervan en het kwade ervan.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadith Nawawi, #3"
+        },
+        {
+          "title": "De schepping in de moederschoot",
+          "translation": "Ieder van jullie wordt veertig dagen in de moederschoot verzameld als een druppel, daarna als een klonter, daarna als een stuk vlees. Daarna blaast een engel de ziel in en schrijft vier zaken.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "40 Hadith Nawawi, #4"
+        },
+        {
+          "title": "Het kwaad afwijzen",
+          "translation": "Wie een kwaad ziet, laat hem het veranderen met zijn hand. Als hij dat niet kan, dan met zijn tong. Als hij dat niet kan, dan met zijn hart, en dat is de zwakste vorm van geloof.",
+          "narrator": "Abu Sa'id al-Khudri (RA)",
+          "source": "40 Hadith Nawawi, #5"
+        },
+        {
+          "title": "Halal, haram en twijfelachtige zaken",
+          "translation": "Het geoorloofde is duidelijk en het ongeoorloofde is duidelijk. Daartussen liggen twijfelachtige zaken die veel mensen niet kennen.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #6"
+        },
+        {
+          "title": "De godsdienst is oprecht advies",
+          "translation": "De godsdienst is oprecht advies. Wij zeiden: Aan wie? Hij zei: Aan Allah, Zijn Boek, Zijn Boodschapper, de leiders van de moslims en hun gewone mensen.",
+          "narrator": "Tamim ad-Dari (RA)",
+          "source": "40 Hadith Nawawi, #7"
+        },
+        {
+          "title": "Verboden bloed, vermogen en eer",
+          "translation": "Allah heeft jullie bloed, ongeoorloofd vermogen en oneervol handelen jegens jullie moeders verboden.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #8"
+        },
+        {
+          "title": "Vermijd wat je bevolen is te vermijden",
+          "translation": "Wat ik jullie heb verboden, vermijd het. Wat ik jullie heb bevolen, doe ervan zoveel als jullie kunnen.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #9"
+        },
+        {
+          "title": "Allah is rein en aanvaardt alleen wat rein is",
+          "translation": "Allah is Rein en aanvaardt alleen wat rein is. Hij heeft de gelovigen geboden wat Hij de boodschappers heeft geboden.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #10"
+        },
+        {
+          "title": "Laat wat jou niet aangaat",
+          "translation": "Een deel van iemands voortreffelijkheid in de islam is het laten van wat hem niet aangaat.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #11"
+        },
+        {
+          "title": "De voortreffelijkheid van samenkomen voor de Koran en dhikr",
+          "translation": "Geen mensen komen samen in een van de huizen van Allah, het Boek van Allah reciterend en het samen bestuderend, of de rust daalt op hen neer.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #12"
+        },
+        {
+          "title": "Heb voor je broeder lief wat je voor jezelf liefhebt",
+          "translation": "Niemand van jullie gelooft werkelijk totdat hij voor zijn broeder liefheeft wat hij voor zichzelf liefheeft.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "40 Hadith Nawawi, #13"
+        },
+        {
+          "title": "De heiligheid van een moslim",
+          "translation": "Kleineer geen enkele goede daad, zelfs niet je broeder ontmoeten met een opgewekt gezicht.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #14"
+        },
+        {
+          "title": "Spreek het goede of zwijg",
+          "translation": "Wie in Allah en de Laatste Dag gelooft, moet het goede spreken of zwijgen.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #15"
+        },
+        {
+          "title": "Word niet boos",
+          "translation": "Een man vroeg de Profeet om raad en hij zei: Word niet boos. De man herhaalde zijn verzoek meerdere keren en hij antwoordde: Word niet boos.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #16"
+        },
+        {
+          "title": "Allah heeft voortreffelijkheid in alles voorgeschreven",
+          "translation": "Allah heeft voortreffelijkheid (ihsan) in alle dingen voorgeschreven. Wanneer jullie doden, dood dan goed; en wanneer jullie slachten, slacht dan goed.",
+          "narrator": "Shaddad ibn Aws (RA)",
+          "source": "40 Hadith Nawawi, #17"
+        },
+        {
+          "title": "Vrees Allah waar je ook bent",
+          "translation": "Vrees Allah waar je ook bent, laat op een slechte daad een goede daad volgen die haar uitwist, en behandel de mensen met goed karakter.",
+          "narrator": "Abu Dharr en Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #18"
+        },
+        {
+          "title": "Houd vast aan de Soennah",
+          "translation": "Ik spoor jullie aan vast te houden aan mijn Soennah en de weg van de rechtgeleide kaliefen. Hoed je voor nieuw uitgevonden zaken, want iedere vernieuwing is dwaling.",
+          "narrator": "Irbad ibn Sariyah (RA)",
+          "source": "40 Hadith Nawawi, #19"
+        },
+        {
+          "title": "Elke dag zijn de gewrichten van een persoon liefdadigheid verschuldigd",
+          "translation": "Elk gewricht van een persoon moet elke dag liefdadigheid verrichten: recht doen tussen twee mensen is liefdadigheid; een persoon helpen met zijn dier is liefdadigheid.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #20"
+        },
+        {
+          "title": "Vraag Allah om vergeving en welzijn",
+          "translation": "Vraag Allah om vergeving en welzijn, want niemand wordt na zekerheid iets beters gegeven dan welzijn.",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #21"
+        },
+        {
+          "title": "De tekenen van een huichelaar",
+          "translation": "De tekenen van een huichelaar zijn drie: wanneer hij spreekt liegt hij, wanneer hij belooft breekt hij het, en wanneer hem iets wordt toevertrouwd verraadt hij.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #22"
+        },
+        {
+          "title": "Het reine hart",
+          "translation": "Er is een stuk vlees in het lichaam: als het gezond is, is het hele lichaam gezond; als het bedorven is, is het hele lichaam bedorven. Het is het hart.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #23"
+        },
+        {
+          "title": "Rechten van Allah en rechten van de mensen",
+          "translation": "Het recht van Allah op Zijn dienaren is dat zij Hem aanbidden en niets met Hem vereenzelvigen. Het recht van de dienaren op Allah is dat Hij hen niet straft die geen deelgenoten met Hem vereenzelvigen.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #24"
+        },
+        {
+          "title": "Het geoorloofde en het ongeoorloofde zijn duidelijk",
+          "translation": "Het geoorloofde is duidelijk en het ongeoorloofde is duidelijk. Daartussen liggen twijfelachtige zaken die velen niet kennen.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #25"
+        },
+        {
+          "title": "De deugd van goed karakter",
+          "translation": "De meest geliefden onder jullie bij mij en de dichtstbijzijnden bij mij op de Dag der Opstanding zijn zij met het beste karakter.",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "source": "40 Hadith Nawawi, #26"
+        },
+        {
+          "title": "Het recht van Allah op Zijn dienaren",
+          "translation": "O Mijn dienaren, Ik heb onrecht voor Mijzelf verboden en het onder jullie verboden gemaakt, dus doet elkaar geen onrecht aan.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "40 Hadith Nawawi, #27"
+        },
+        {
+          "title": "De wereld is de gevangenis van de gelovige",
+          "translation": "De wereld is een gevangenis voor de gelovige en een paradijs voor de ongelovige.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #28"
+        },
+        {
+          "title": "De schaduw van Allah op de Dag des Oordeels",
+          "translation": "Zeven zullen door Allah worden beschaduwd op de Dag waarop er geen schaduw is dan de Zijne: een rechtvaardige heerser, een jongere die opgroeide Allah aanbiddend, en anderen.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #29"
+        },
+        {
+          "title": "De toestand van het hart",
+          "translation": "Als het hart gezond is, is het hele lichaam gezond; als het hart bedorven is, is het hele lichaam bedorven.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #30"
+        },
+        {
+          "title": "Vermijd twijfelachtige zaken",
+          "translation": "Laat wat je doet twijfelen voor wat je niet doet twijfelen.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "40 Hadith Nawawi, #31"
+        },
+        {
+          "title": "Geen schade en geen wederkerige schade",
+          "translation": "Er mag noch schade noch wederkerige schade zijn.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #32"
+        },
+        {
+          "title": "De wereld is vervloekt behalve dhikr en kennis",
+          "translation": "De wereld is vervloekt en wat erin is is vervloekt, behalve de gedachtenis van Allah, wat haar helpt, de geleerde en de student.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #33"
+        },
+        {
+          "title": "Allah is goed en aanvaardt alleen het goede",
+          "translation": "Allah is Goed en aanvaardt alleen wat goed is.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #34"
+        },
+        {
+          "title": "Allah houdt van wie berouw tonen",
+          "translation": "Allah houdt van wie berouw tonen en houdt van wie zich reinigen.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #35"
+        },
+        {
+          "title": "Wees in de wereld als een vreemdeling",
+          "translation": "Wees in deze wereld alsof je een vreemdeling of een reiziger was.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadith Nawawi, #36"
+        },
+        {
+          "title": "De rechten van Allah op Zijn dienaren",
+          "translation": "Het recht van Allah op Zijn dienaren is dat zij Hem alleen aanbidden en niets met Hem vereenzelvigen.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #37"
+        },
+        {
+          "title": "Roep Allah aan met zekerheid",
+          "translation": "Roep Allah aan terwijl je zeker bent van het antwoord, en weet dat Allah geen smeekbede verhoort uit een onachtzaam, afgeleid hart.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadith Nawawi, #38"
+        },
+        {
+          "title": "Allah heeft mijn oemma vergiffenis geschonken voor vergissingen",
+          "translation": "Allah heeft mijn oemma vergiffenis geschonken voor hun vergissingen, hun vergetelheid en wat hun wordt opgedrongen.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #39"
+        },
+        {
+          "title": "Wees Allah indachtig en Hij zal je beschermen",
+          "translation": "Wees Allah indachtig en Hij zal je beschermen. Wees Allah indachtig en je zult Hem vóór je vinden.",
+          "narrator": "Abu Abbas Abdullah (RA)",
+          "source": "40 Hadith Nawawi, #40"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Vóór het inslapen",
+          "translation": "In Uw naam, o Allah, sterf ik en leef ik.",
+          "narrator": "Al-Bara' ibn Azib (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 6324"
+        },
+        {
+          "title": "Bij het ontwaken",
+          "translation": "Alle lof is voor Allah, die ons het leven gaf nadat Hij het van ons had genomen, en tot Hem is de opstanding.",
+          "narrator": "Hudhayfah ibn al-Yaman (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 6312"
+        },
+        {
+          "title": "Bij het binnengaan van de woning",
+          "translation": "In de naam van Allah gaan wij binnen, in de naam van Allah gaan wij weg, en op onze Heer vertrouwen wij.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5096"
+        },
+        {
+          "title": "Bij het verlaten van de woning",
+          "translation": "In de naam van Allah, ik stel mijn vertrouwen op Allah.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5095"
+        },
+        {
+          "title": "Vóór het eten",
+          "translation": "In de naam van Allah.",
+          "narrator": "Umar ibn Abi Salama (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 5376"
+        },
+        {
+          "title": "Na het eten",
+          "translation": "Alle lof is voor Allah, die mij dit heeft gevoed en het mij heeft gegeven zonder enige macht of kracht van mij.",
+          "narrator": "Muadh ibn Anas (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 4023"
+        },
+        {
+          "title": "Bij het binnengaan van de masjid",
+          "translation": "O Allah, open voor mij de deuren van Uw barmhartigheid.",
+          "narrator": "Abu Usayd as-Sa'idi (RA)",
+          "source": "Hisnul Muslim; Sahih Muslim 713"
+        },
+        {
+          "title": "Bij het verlaten van de masjid",
+          "translation": "O Allah, ik vraag U van Uw gunst.",
+          "narrator": "Abu Humaid of Abu Usayd (RA)",
+          "source": "Hisnul Muslim; Sahih Muslim 713"
+        },
+        {
+          "title": "Bij benauwdheid",
+          "translation": "Er is geen god dan Allah, de Prachtige, de Verdraagzame. Er is geen god dan Allah, Heer van de prachtige Troon.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 6345"
+        },
+        {
+          "title": "Om vergeving",
+          "translation": "Mijn Heer, vergeef mij en aanvaard mijn berouw, want U bent de Steeds Berouwaanvaardende, de Meest Barmhartige.",
+          "narrator": "Al-Agharr al-Muzani (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 1517"
+        },
+        {
+          "title": "Wanneer het regent",
+          "translation": "O Allah, laat het een weldadige stortbui zijn.",
+          "narrator": "Aisha (RA)",
+          "source": "Hisnul Muslim; Sahih al-Bukhari 1032"
+        },
+        {
+          "title": "Bij het horen van de donder",
+          "translation": "Glorie zij Hem die de donder verheerlijkt met Zijn lof, en de engelen uit vrees voor Hem.",
+          "narrator": "Abdullah ibn az-Zubayr (RA)",
+          "source": "Hisnul Muslim; Al-Muwatta"
+        }
+      ]
+    }
+  ]
+}

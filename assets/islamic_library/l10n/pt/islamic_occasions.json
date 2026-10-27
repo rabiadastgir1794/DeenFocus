@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadã",
+      "importance": "O Ramadã é o mês em que o Alcorão foi revelado: uma misericórdia guiada e um critério claro para a humanidade.",
+      "virtues": "Os portões do Paraíso são abertos, os demônios são acorrentados e cada boa ação é multiplicada.",
+      "recommendedActs": "Jejue com sinceridade, aumente a recitação do Alcorão, dê caridade, ore o Taraweeh e busque Laylatul Qadr nas últimas dez noites."
+    },
+    {
+      "title": "Eid al-Fitr",
+      "importance": "O Eid al-Fitr marca a conclusão do Ramadã e a gratidão a Allah por ter possibilitado o jejum.",
+      "virtues": "É um dia de alegria, comunidade e gratidão depois de um mês de adoração e autodisciplina.",
+      "recommendedActs": "Pague a Zakat al-Fitr, realize a oração do Eid, vista suas melhores roupas, cumprimente os outros e visite a família, mantendo os bons modos islâmicos."
+    },
+    {
+      "title": "Eid al-Adha",
+      "importance": "O Eid al-Adha comemora a devoção de Ibrahim (AS) e os ritos do Hajj durante Dhul Hijjah.",
+      "virtues": "Ensina o sacrifício, a obediência a Allah e o cuidado com quem precisa, por meio da udhiyah (sacrifício).",
+      "recommendedActs": "Realize a oração do Eid, ofereça o sacrifício se puder, compartilhe a carne com os pobres e aumente o takbir nos primeiros dez dias de Dhul Hijjah."
+    },
+    {
+      "title": "Temporada do Hajj",
+      "importance": "O Hajj é um pilar a ser cumprido uma vez na vida por quem tem condições: uma jornada profunda de unidade e submissão.",
+      "virtues": "Um Hajj aceito traz o perdão dos pecados e a renovação do propósito. A planície de Arafah é o coração do Hajj.",
+      "recommendedActs": "Quem não realiza o Hajj pode jejuar no Dia de Arafah, aumentar o dhikr e fazer du'a por quem está nos lugares sagrados."
+    },
+    {
+      "title": "Ashura",
+      "importance": "O dia 10 de Muharram é o dia em que Allah salvou Musa (AS) e seu povo do Faraó.",
+      "virtues": "O jejum de Ashura expia os pecados do ano anterior (quando combinado com o jejum de um dia antes ou depois, conforme a Sunnah).",
+      "recommendedActs": "Jejue nos dias 9 e 10 de Muharram se possível, reflita sobre a ajuda de Allah aos oprimidos e aumente a gratidão."
+    },
+    {
+      "title": "Laylatul Qadr",
+      "importance": "Laylatul Qadr é melhor do que mil meses: é a noite em que começou a revelação do Alcorão.",
+      "virtues": "A adoração nesta única noite pode superar décadas de recompensa. Os anjos descem com paz até o Fajr.",
+      "recommendedActs": "Busque-a nas noites ímpares dos últimos dez dias do Ramadã, com oração, Alcorão, du'a e istighfar."
+    },
+    {
+      "title": "Jumu'ah (sexta-feira)",
+      "importance": "A sexta-feira é o melhor dia em que o sol nasce. Ela inclui uma oração congregacional semanal e um lembrete semanal.",
+      "virtues": "Há um momento na sexta-feira em que a du'a é aceita. Os pecados entre uma sexta-feira e outra são perdoados a quem se banha e comparece com sinceridade.",
+      "recommendedActs": "Faça o Ghusl, use roupas limpas, chegue cedo à mesquita, ouça a khutbah com atenção e aumente as salawat sobre o Profeta ﷺ."
+    }
+  ]
+}

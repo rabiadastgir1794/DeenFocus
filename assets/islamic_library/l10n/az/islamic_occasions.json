@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramazan",
+      "importance": "Ramazan Quranın nazil olduğu aydır — bəşəriyyət üçün hidayət, rəhmət və açıq bir meyardır.",
+      "virtues": "Cənnətin qapıları açılır, şeytanlar zəncirlənir və hər yaxşı əməl qat-qat artır.",
+      "recommendedActs": "Səmimi oruc tut, Quran tilavətini artır, sədəqə ver, təraih qıl və son on gecədə Qədr gecəsini axtar."
+    },
+    {
+      "title": "Ramazan bayramı",
+      "importance": "Ramazan bayramı Ramazanın tamamlanmasını və orucu müyəssər etdiyinə görə Allaha şükrü bildirir.",
+      "virtues": "Bir ay ibadət və nəfs tərbiyəsindən sonra sevinc, cəmiyyət və şükür günüdür.",
+      "recommendedActs": "Fitre zəkatını ver, bayram namazını qıl, ən yaxşı paltarını geyin, başqalarını salamla və İslam ədəbini qoruyaraq ailəni ziyarət et."
+    },
+    {
+      "title": "Qurban bayramı",
+      "importance": "Qurban bayramı İbrahimin (AS) sədaqətini və Zülhiccədəki həcc mərasimlərini yad edir.",
+      "virtues": "Qurban vasitəsilə fədakarlığı, Allaha itaəti və ehtiyacı olana qayğını öyrədir.",
+      "recommendedActs": "Bayram namazını qıl, gücün çatırsa qurban kəs, əti yoxsullarla bölüş və Zülhiccənin ilk on günündə təkbiri artır."
+    },
+    {
+      "title": "Həcc mövsümü",
+      "importance": "Həcc gücü çatan üçün ömürdə bir dəfəlik sütundur — vəhdət və təslimçilik dolu dərin bir səfərdir.",
+      "virtues": "Qəbul olunmuş həcc günahların bağışlanmasını və məqsədin yenilənməsini gətirir. Ərəfat düzü həccin qəlbidir.",
+      "recommendedActs": "Həcc etməyənlər Ərəfə günü oruc tuta, zikri artıra və müqəddəs məkanlardakılar üçün dua edə bilərlər."
+    },
+    {
+      "title": "Aşura",
+      "importance": "Məhərrəmin 10-u Allahın Musanı (AS) və qövmünü Firondan xilas etdiyi gündür.",
+      "virtues": "Aşura orucu (sünnəyə görə bir gün əvvəl və ya sonra orucla birləşdiriləndə) ötən ilin günahlarına kəffarə olur.",
+      "recommendedActs": "Mümkünsə Məhərrəmin 9-u və 10-unu oruc tut, Allahın məzlumlara köməyi üzərində düşün və şükrü artır."
+    },
+    {
+      "title": "Qədr gecəsi",
+      "importance": "Qədr gecəsi min aydan xeyirlidir — Quranın nazil olmağa başladığı gecədir.",
+      "virtues": "Bu tək gecədəki ibadət onilliklərin savabını keçə bilər. Mələklər sübhə qədər salamla enirlər.",
+      "recommendedActs": "Onu Ramazanın son on gününün tək gecələrində namaz, Quran, dua və istiğfarla axtar."
+    },
+    {
+      "title": "Cümə",
+      "importance": "Cümə günəşin doğduğu ən xeyirli gündür. Onda həftəlik camaat namazı və həftəlik öyüd vardır.",
+      "virtues": "Cümə günü duanın qəbul olunduğu bir an vardır. Qüsl alıb səmimiyyətlə gələnlərin cümədən cüməyə günahları bağışlanır.",
+      "recommendedActs": "Qüsl al, təmiz paltar geyin, məscidə tez gəl, xütbəni diqqətlə dinlə və Peyğəmbərə ﷺ salavatı artır."
+    }
+  ]
+}

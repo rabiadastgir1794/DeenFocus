@@ -122,6 +122,7 @@ class _MethodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
@@ -132,7 +133,7 @@ class _MethodTile extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                method.label,
+                method.localizedLabel(l10n),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: selected ? colorScheme.primary : null,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w400,

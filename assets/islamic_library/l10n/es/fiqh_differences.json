@@ -1,0 +1,109 @@
+{
+  "items": [
+    {
+      "title": "¿Qué es el fiqh?",
+      "overview": "El fiqh es la comprensión y la aplicación humanas de la ley islámica, derivadas del Corán y la Sunna. Abarca la adoración, las transacciones, el derecho de familia y la conducta diaria.",
+      "keyPoints": "Los eruditos usan principios como el Corán, el hadiz auténtico, el consenso (ijma) y el razonamiento analógico (qiyas) para derivar normas. El fiqh es una guía práctica para vivir el islam día a día.",
+      "differences": "Distintas escuelas y comunidades pueden llegar a conclusiones diferentes en asuntos secundarios, aunque compartan las mismas fuentes fundamentales. Esto es normal en la historia jurídica islámica.",
+      "commonGround": "Todos los musulmanes afirman el Corán como palabra de Alá y la profecía de Muhammad ﷺ. Las diferencias en el fiqh suelen estar en los detalles de la práctica, no en los fundamentos de la fe."
+    },
+    {
+      "title": "Por qué existen diferencias",
+      "overview": "Los eruditos islámicos siempre han sostenido opiniones diversas sobre muchas cuestiones jurídicas. El Profeta ﷺ permitió la diferencia entre sus compañeros en asuntos no esenciales.",
+      "keyPoints": "Las razones incluyen: que distintos hadices llegaran a distintas regiones, interpretaciones lingüísticas variadas, circunstancias nuevas y un ijtihad sincero (esfuerzo erudito) de eruditos cualificados.",
+      "differences": "Algunas comunidades siguen un madhab concreto de forma estricta; otras combinan opiniones o siguen a eruditos locales. El contexto cultural también da forma a cómo se aplican las normas.",
+      "commonGround": "La gran mayoría de los musulmanes coincide en los pilares del islam y del iman, en los principios de la comida halal, en la oración como obligación y en las enseñanzas morales del Corán."
+    },
+    {
+      "title": "Islam suní: cuatro madhabs",
+      "overview": "Los musulmanes suníes siguen el Corán, la Sunna y el consenso de la comunidad primitiva. Con el tiempo surgieron cuatro grandes escuelas de derecho (madhabs), cada una con el nombre de un gran imam.",
+      "keyPoints": "Los madhabs hanafí, malikí, shafií y hanbalí son caminos válidos dentro del islam suní. La mayoría de los musulmanes suníes siguió históricamente un madhab a través de su comunidad o región.",
+      "differences": "Los madhabs pueden diferir en detalles del Wudu, la postura en la oración, las normas del ayuno o las transacciones comerciales. Son diferencias eruditas, no divisiones en la creencia fundamental.",
+      "commonGround": "Los cuatro madhabs aceptan los mismos seis pilares del iman y cinco pilares del islam. Difieren sobre todo en el método y en las conclusiones del razonamiento jurídico."
+    },
+    {
+      "title": "Madhab hanafí",
+      "overview": "Fundado por el imam Abu Hanifa (m. 767 e. c.). Es el madhab más seguido en el mundo, especialmente en Turquía, Asia Central y Meridional, y partes de los Balcanes.",
+      "keyPoints": "Destaca la razón (ra’y), el interés público (istihsan) y la costumbre (urf). Es conocido por su flexibilidad ante situaciones nuevas. Muchas comunidades deobandíes y barelvíes siguen el fiqh hanafí.",
+      "differences": "Los hanafíes pueden unir el Magrib y el Isha en ciertos casos de viaje o dificultad en los que otros no lo hacen. La colocación de las manos en la oración y algunos detalles del Wudu difieren de otros madhabs.",
+      "commonGround": "Los hanafíes comparten el mismo Corán, el mismo corpus de hadiz y el mismo credo suní fundamental que los eruditos malikíes, shafiíes y hanbalíes."
+    },
+    {
+      "title": "Madhab malikí",
+      "overview": "Fundado por el imam Malik ibn Anas (m. 795 e. c.) en Medina. Predomina en el norte y el oeste de África, en partes del Golfo y entre muchas comunidades musulmanas africanas en el mundo.",
+      "keyPoints": "Pone un fuerte acento en la práctica de la gente de Medina (amal ahl al-Madinah) junto al hadiz. Usa las masalih mursala (el beneficio público) en el razonamiento jurídico.",
+      "differences": "Los malikíes, por tradición, dejan los brazos a los lados en la oración en lugar de cruzarlos. Algunas normas sobre comida, contratos y pasar las manos sobre los calcetines difieren de las opiniones hanafí o shafií.",
+      "commonGround": "Los eruditos malikíes afirman los mismos pilares de la fe y usan las mismas fuentes fundamentales que los demás madhabs suníes."
+    },
+    {
+      "title": "Madhab shafií",
+      "overview": "Fundado por el imam al-Shafií (m. 820 e. c.). Está extendido en el sudeste asiático, África oriental, Yemen y partes del Levante y el Cáucaso.",
+      "keyPoints": "Sistematizó los usul al-fiqh (principios de la jurisprudencia) que influyeron en todas las escuelas posteriores. Equilibra el hadiz, el consenso y el qiyas con un método riguroso.",
+      "differences": "Los shafiíes recitan Al-Fatiha detrás del imam en la oración en congregación (donde los hanafíes a menudo permanecen en silencio). Algunos detalles del Zakat y de la herencia difieren de las normas hanafíes.",
+      "commonGround": "El shafií es plenamente ortodoxo suní. Muchos musulmanes del sudeste asiático siguen este madhab y comparten mezquitas y comunidades con otros."
+    },
+    {
+      "title": "Madhab hanbalí",
+      "overview": "Fundado por el imam Ahmad ibn Hanbal (m. 855 e. c.). Hoy es el más destacado en Arabia Saudí y entre muchas comunidades salafíes, aunque no todos los salafíes se identifican como hanbalíes.",
+      "keyPoints": "Destaca la adhesión literal a la prueba textual (el Corán y el hadiz) y es cauteloso con el razonamiento especulativo. El imam Ahmad fue también un gran erudito del hadiz.",
+      "differences": "El fiqh hanbalí puede ser más estricto en algunos asuntos (por ejemplo ciertos alimentos, la música o actos públicos) en comparación con la flexibilidad hanafí. La oración y el Wudu tienen normas distintas.",
+      "commonGround": "El hanbalí es uno de los cuatro madhabs suníes. Sus seguidores comparten la aqidah con otros suníes sobre el Tawhid, la profecía y el más allá."
+    },
+    {
+      "title": "Islam chií (duodecimano)",
+      "overview": "Los musulmanes chiíes duodecimanos siguen el Corán y las enseñanzas del Profeta ﷺ y de los doce imames de Ahl al-Bayt. Son la mayor comunidad chií del mundo.",
+      "keyPoints": "Ponen un acento distinto en el imamato: el liderazgo espiritual y comunitario de Ali (RA) y de los imames posteriores. La jurisprudencia se deriva a través de los imames y de eruditos cualificados (marya).",
+      "differences": "Algunas prácticas de la oración difieren (por ejemplo unir las oraciones en días ordinarios, o usar una turba o tierra para la postración). El matrimonio temporal (mut‘a) está permitido en el fiqh duodecimano, pero los suníes lo rechazan.",
+      "commonGround": "Los chiíes duodecimanos afirman el Corán, la profecía de Muhammad ﷺ, la oración, el ayuno, el Zakat y el Hayy. El diálogo y la convivencia con musulmanes suníes son habituales en muchas sociedades."
+    },
+    {
+      "title": "Tradición deobandí",
+      "overview": "Un movimiento suní de renovación originado en Darul Uloom Deoband, India (1867). No es un madhab aparte, sino una tradición erudita y educativa hanafí.",
+      "keyPoints": "Destaca el Corán, el hadiz y el fiqh hanafí clásico. Pone un fuerte acento en la educación de la madrasa, el tabligh (la divulgación) y en evitar prácticas vistas como innovaciones no verificadas.",
+      "differences": "Los deobandíes suelen ser cautelosos con las celebraciones del Mawlid, ciertas prácticas en los santuarios y algunas costumbres sufíes, aunque muchos eruditos deobandíes respetan el tasawwuf con condiciones.",
+      "commonGround": "Los deobandíes son musulmanes suníes hanafíes que comparten las creencias fundamentales con otros hanafíes. Difieren sobre todo de los barelvíes y de algunos grupos sufíes en prácticas culturales y devocionales."
+    },
+    {
+      "title": "Tradición barelví",
+      "overview": "Un movimiento suní hanafí asociado con Ahmad Raza Khan Barelvi (m. 1921) en India. Destaca el amor al Profeta ﷺ y la veneración de los awliya (santos).",
+      "keyPoints": "Apoya el Mawlid (celebrar el nacimiento del Profeta), las reuniones de milad y la visita a los santuarios de eruditos justos. Sigue el fiqh hanafí para la adoración y las transacciones.",
+      "differences": "Los barelvíes practican formas de expresión devocional que los deobandíes y los salafíes pueden evitar, como ponerse de pie al mencionar al Profeta ﷺ (qiyam) y actos elaborados de Mawlid.",
+      "commonGround": "Los barelvíes afirman la misma shahada, el mismo Corán y las mismas cinco oraciones diarias que otros hanafíes suníes. Las diferencias con los deobandíes están sobre todo en la cultura devocional, no en el credo fundamental."
+    },
+    {
+      "title": "Metodología salafí",
+      "overview": "Los salafíes buscan seguir la comprensión de las primeras generaciones musulmanas (el Salaf). Es un enfoque metodológico, no un quinto madhab.",
+      "keyPoints": "Vuelta directa al Corán y a la Sunna; cautela ante el taqlid (seguir a ciegas) de un solo madhab; a menudo influidos por el fiqh hanbalí y por instituciones eruditas saudíes.",
+      "differences": "Los salafíes pueden rechazar prácticas que consideran bid‘a (innovación), entre ellas algunas formas de Mawlid, ciertas prácticas sufíes y la adhesión exclusiva a un madhab sin prueba.",
+      "commonGround": "Los salafíes son musulmanes suníes que afirman los mismos pilares del islam. Muchos conviven en comunidades con quienes siguen un madhab, mientras debaten cuestiones jurídicas y culturales secundarias."
+    },
+    {
+      "title": "Ahl-e Hadiz (Ahle Hadiz)",
+      "overview": "Ahl-e Hadiz es un movimiento suní destacado en Pakistán, India y Bangladés que toma su nombre de la Gente del Hadiz, los primeros eruditos que dieron prioridad a las narraciones auténticas. Es una tradición distinta del sur de Asia, no un madhab aparte.",
+      "keyPoints": "Destaca la adhesión directa al Corán y al hadiz sahih por encima del taqlid ciego de un solo madhab. Las normas se derivan mediante la revisión erudita independiente de la prueba textual, a menudo en línea con opiniones hanbalíes, pero sin quedar atadas a un solo imam.",
+      "differences": "Los eruditos de Ahl-e Hadiz pueden diferir de los hanafíes deobandíes en el Mawlid, la visita a santuarios y algunos detalles de la oración. Comparten mucho con la metodología salafí, pero mantienen sus propias instituciones eruditas, mezquitas e identidad histórica en el subcontinente.",
+      "commonGround": "Los de Ahl-e Hadiz son musulmanes suníes que afirman la shahada, los cinco pilares y los seis pilares del iman. Difieren sobre todo de los hanafíes ligados a un madhab (deobandíes y barelvíes) en el método jurídico y en ciertas prácticas devocionales, no en el credo fundamental."
+    },
+    {
+      "title": "La oración: comparación de enfoques",
+      "overview": "Todos los musulmanes realizan cinco oraciones diarias orientados hacia la Qibla. Las diferencias aparecen en detalles del Wudu, alzar las manos, recitar detrás del imam y unir oraciones.",
+      "keyPoints": "Hanafíes: a menudo en silencio detrás del imam, con un orden concreto del Wudu. Shafiíes, malikíes y hanbalíes: recitan la Fatiha detrás del imam. Chiíes: pueden unir el Dhuhr con el Asr y el Magrib con el Isha de forma habitual.",
+      "differences": "Dónde se colocan las manos, decir amín en voz alta y pasar las manos sobre los calcetines frente a lavar los pies son puntos habituales de variación entre madhabs.",
+      "commonGround": "La oración es una obligación compartida. Musulmanes de todos los grupos adoran en mezquitas de todo el mundo y respetan la sacralidad de la Salah aunque los detalles difieran."
+    },
+    {
+      "title": "El ayuno y el avistamiento de la luna",
+      "overview": "El ayuno de Ramadán es obligatorio para todos los musulmanes que pueden realizarlo. Las diferencias suelen surgir sobre cómo empieza y termina el mes: avistamiento local frente a cálculo global.",
+      "keyPoints": "Algunas comunidades siguen el avistamiento local de la luna; otras usan los anuncios de Arabia Saudí o el cálculo astronómico. El fiqh hanafí permite cierta flexibilidad sobre lo que rompe el ayuno.",
+      "differences": "El inicio y el fin de Ramadán y del Eid pueden caer en días distintos en la misma ciudad cuando las comunidades siguen a eruditos diferentes o a comités nacionales de la luna.",
+      "commonGround": "La obligación de ayunar Ramadán es universal. Los musulmanes comparten los mismos objetivos espirituales de taqwa, recitación del Corán y caridad durante el mes bendito."
+    },
+    {
+      "title": "Fundamentos compartidos",
+      "overview": "Pese a las diferencias de fiqh y de tradición, los musulmanes del mundo comparten un núcleo inquebrantable: la creencia en un solo Alá, la finalidad del Profeta Muhammad ﷺ y la rendición de cuentas en el Día del Juicio.",
+      "keyPoints": "El Corán y la Sunna auténtica unen a la umma. Las diferencias en normas secundarias deben abordarse con conocimiento, humildad y respeto, no con división ni hostilidad.",
+      "differences": "Las comunidades pueden seguir a distintos eruditos o madhabs. Conocer estas diferencias ayuda a los musulmanes a comprenderse y a evitar conflictos innecesarios.",
+      "commonGround": "Alá dice: «Los creyentes no son sino hermanos». Buscar el conocimiento, hacer una duá sincera y mostrar buen carácter trascienden toda frontera de fiqh o de cultura."
+    }
+  ]
+}

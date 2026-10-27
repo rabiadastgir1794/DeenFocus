@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "title": "Creencia en Alá",
+      "subtitle": "Tawhid",
+      "body": "Creer en Alá como el único Dios verdadero: Su existencia, Sus nombres, Sus atributos y Su derecho a ser adorado solo, sin asociados.",
+      "reference": "Corán 2:163"
+    },
+    {
+      "title": "Creencia en los ángeles",
+      "subtitle": "Malaika",
+      "body": "Los ángeles son nobles criaturas de luz que adoran a Alá y cumplen Sus órdenes, entre ellas registrar las obras y transmitir la revelación.",
+      "reference": "Corán 2:98"
+    },
+    {
+      "title": "Creencia en los libros",
+      "subtitle": "Kutub",
+      "body": "Alá reveló escrituras para guiar a la humanidad. Los musulmanes creen en todos los libros enviados por Alá, y el Corán es la revelación final preservada.",
+      "reference": "Corán 4:136"
+    },
+    {
+      "title": "Creencia en los mensajeros",
+      "subtitle": "Rusul",
+      "body": "Alá envió profetas y mensajeros a cada pueblo para llamar a la gente a adorarlo solo a Él. Muhammad ﷺ es el sello de los profetas.",
+      "reference": "Corán 33:40"
+    },
+    {
+      "title": "Creencia en el Último Día",
+      "subtitle": "Yawm al-Ajirah",
+      "body": "La vida después de la muerte incluye la resurrección, la rendición de cuentas, el Paraíso y el Infierno. Esta creencia da forma a cómo viven los musulmanes, con propósito y responsabilidad.",
+      "reference": "Corán 99:6-8"
+    },
+    {
+      "title": "Creencia en el decreto divino",
+      "subtitle": "Al-Qadar",
+      "body": "El conocimiento y el decreto de Alá abarcan todas las cosas, las buenas y las difíciles. Los creyentes se esfuerzan, confían en Alá y aceptan los resultados con paciencia y gratitud.",
+      "reference": "Corán 57:22"
+    }
+  ]
+}

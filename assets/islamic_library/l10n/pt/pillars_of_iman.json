@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "title": "Crença em Allah",
+      "subtitle": "Tawhid",
+      "body": "Crer em Allah como o único Deus verdadeiro: Sua existência, Seus nomes, Seus atributos e o direito de ser adorado sozinho, sem parceiros.",
+      "reference": "Alcorão 2:163"
+    },
+    {
+      "title": "Crença nos anjos",
+      "subtitle": "Mala'ikah",
+      "body": "Os anjos são criações nobres de luz que adoram Allah e cumprem Seus mandamentos, inclusive registrando as ações e transmitindo a revelação.",
+      "reference": "Alcorão 2:98"
+    },
+    {
+      "title": "Crença nos Livros",
+      "subtitle": "Kutub",
+      "body": "Allah revelou escrituras para guiar a humanidade. Os muçulmanos creem em todos os livros enviados por Allah, sendo o Alcorão a revelação final preservada.",
+      "reference": "Alcorão 4:136"
+    },
+    {
+      "title": "Crença nos Mensageiros",
+      "subtitle": "Rusul",
+      "body": "Allah enviou profetas e mensageiros a cada nação para chamar as pessoas a adorá-Lo somente. Muhammad ﷺ é o selo dos profetas.",
+      "reference": "Alcorão 33:40"
+    },
+    {
+      "title": "Crença no Último Dia",
+      "subtitle": "Yawm al-Akhirah",
+      "body": "A vida após a morte inclui a ressurreição, a prestação de contas, o Paraíso e o Inferno. Essa crença molda como os muçulmanos vivem, com propósito e responsabilidade.",
+      "reference": "Alcorão 99:6-8"
+    },
+    {
+      "title": "Crença no Decreto Divino",
+      "subtitle": "Al-Qadar",
+      "body": "O conhecimento e o decreto de Allah abrangem todas as coisas, o bem e o que é difícil. Os crentes se esforçam, confiam em Allah e aceitam os desfechos com paciência e gratidão.",
+      "reference": "Alcorão 57:22"
+    }
+  ]
+}

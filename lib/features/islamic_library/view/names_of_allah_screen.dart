@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
+import '../helpers/library_language_reload.dart';
 import '../data/library_progress_service.dart';
 import '../model/allah_name.dart';
 import '../model/library_module.dart';
@@ -23,7 +24,8 @@ class NamesOfAllahScreen extends StatefulWidget {
   State<NamesOfAllahScreen> createState() => _NamesOfAllahScreenState();
 }
 
-class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
+class _NamesOfAllahScreenState extends State<NamesOfAllahScreen>
+    with LibraryLanguageReload {
   static const _sectionId = LibraryModuleId.namesOfAllah;
 
   bool _loading = true;
@@ -33,17 +35,14 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   bool _openedInitial = false;
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
     final results = await Future.wait([
-      IslamicLibraryRepository.instance.loadNamesOfAllah(),
+      IslamicLibraryRepository.instance.loadNamesOfAllah(
+        languageCode: languageCode,
+      ),
       LibraryProgressService.instance.getProgress(_sectionId.name),
     ]);
-    if (!mounted) return;
+    if (!isCurrentLibraryLoad(generation)) return;
     final names = results[0] as List<AllahName>;
     final progress = results[1] as LibrarySectionProgress;
     setState(() {

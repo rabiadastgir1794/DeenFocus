@@ -1,6 +1,28 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-26 — Location search no longer starts Geocoder on the platform thread.
+> Last updated: 2026-10-27 — Learn content is localized; tab and settings layout follows long translations.
+
+## Status: Tab labels and settings layout (2026-10-27)
+Bottom navigation keeps each label on one line and scales it down when the
+translation is long. Home and Focus labels are short nouns in every locale
+(French Focus is “Focus”, home is “Accueil”). Sect and prayer-calculation
+names come from ARB (`sect*` and `calcMethod*`). Settings rows keep the
+label and value on one line when they fit, and move the value under the
+label when they do not, so values are not cut mid-word. Learn bookmark,
+copy, and share actions scale down instead of overflowing at large text
+sizes. The surah header scales its two trailing icons so they stay inside
+the right edge. Quran text is unchanged. Quran UI strings that were already missing
+from non-English ARB files are still untranslated. A few Settings demo
+sentences that were still English in az, hi, ro, and ru are now translated,
+Romanian sect Shia is “Șiiți”, and the Dutch item count is “{count} elementen”.
+
+## Status: Learn tab content localization (2026-10-27)
+Every Learn section except Quran now follows the app language (ar, az, de, en,
+es, fr, hi, it, nl, pt, ro, ru, zh). English JSON stays the source for Arabic
+text and transliteration. Translations live in
+`assets/islamic_library/l10n/<lang>/`. `ar_SA`/`ar_EG` share `ar`; `pt_BR` uses
+`pt`. Screens reload when the locale changes. Quran is unchanged.
+`islamic_library_assets_test.dart` checks every language.
 
 ## Status: Play ANR release 60 location search (2026-10-26)
 Release 60 blocked the Flutter platform thread in `CountDownLatch.await()` inside

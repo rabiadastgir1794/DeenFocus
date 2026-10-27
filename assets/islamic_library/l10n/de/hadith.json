@@ -1,0 +1,588 @@
+{
+  "collections": [
+    {
+      "items": [
+        {
+          "title": "Die Taten richten sich nach den Absichten",
+          "translation": "Die Taten werden nach den Absichten beurteilt, und jeder erhält nur, was er beabsichtigt hat.",
+          "narrator": "Umar ibn al-Chattab (RA)",
+          "source": "Sahih al-Buchari 1"
+        },
+        {
+          "title": "Die fünf Säulen des Islam",
+          "translation": "Der Islam ist auf fünf gebaut: das Glaubenszeugnis, das Verrichten des Gebets, das Entrichten der Zakat, das Fasten im Ramadan und den Hadsch für den, der dazu imstande ist.",
+          "narrator": "Abdullah ibn ʿUmar (RA)",
+          "source": "Sahih al-Buchari 8"
+        },
+        {
+          "title": "Erlaubtes und Verbotenes sind klar",
+          "translation": "Das Erlaubte ist klar und das Verbotene ist klar, und dazwischen liegen zweifelhafte Dinge. Wer das Zweifelhafte meidet, hält seine Religion und seine Ehre rein.",
+          "narrator": "An-Nuʿmān ibn Baschīr (RA)",
+          "source": "Sahih al-Buchari 52"
+        },
+        {
+          "title": "Lass, was dich zweifeln lässt",
+          "translation": "Lass, was dich zweifeln lässt, zugunsten dessen, was dich nicht zweifeln lässt.",
+          "narrator": "Al-Hasan ibn ʿAlī (RA)",
+          "source": "Sahih al-Buchari 52; Dschami at-Tirmidhī 2518"
+        },
+        {
+          "title": "Der Glaube hat über siebzig Zweige",
+          "translation": "Der Glaube hat über siebzig Zweige. Der höchste ist das Sprechen von „Lā ilāha illallāh“, der niedrigste das Entfernen von Schaden vom Weg. Schamhaftigkeit ist ein Zweig des Glaubens.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 9; Sahih Muslim 35"
+        },
+        {
+          "title": "Die Rechte eines Muslims gegenüber einem anderen",
+          "translation": "Ein Muslim hat fünf Rechte über einen anderen Muslim: den Gruß erwidern, den Kranken besuchen, dem Begräbnis folgen, eine Einladung annehmen und „Yarhamukallāh“ sagen, wenn er niest.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 1240"
+        },
+        {
+          "title": "Wer an Allah und den Jüngsten Tag glaubt",
+          "translation": "Wer an Allah und den Jüngsten Tag glaubt, soll Gutes sprechen oder schweigen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 6018; Sahih Muslim 47"
+        },
+        {
+          "title": "Beneidet einander nicht",
+          "translation": "Beneidet einander nicht, treibt die Preise nicht gegeneinander hoch, hasst einander nicht und wendet euch nicht voneinander ab. Seid Diener Allahs als Brüder.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 6066; Sahih Muslim 2564"
+        },
+        {
+          "title": "Die besten Menschen",
+          "translation": "Die besten Menschen sind die, die den Menschen am meisten nützen.",
+          "narrator": "Dschābir ibn ʿAbdallāh (RA)",
+          "source": "Sahih al-Buchari (al-Adab al-Mufrad); als authentisch eingestuft"
+        },
+        {
+          "title": "Allah ist schön und liebt die Schönheit",
+          "translation": "Allah ist schön und liebt die Schönheit.",
+          "narrator": "Abdullah ibn Masʿūd (RA)",
+          "source": "Sahih Muslim 91"
+        },
+        {
+          "title": "Macht es leicht, nicht schwer",
+          "translation": "Macht es leicht und nicht schwer; bringt frohe Botschaft und schreckt die Menschen nicht ab.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Sahih al-Buchari 69; Sahih Muslim 1734"
+        },
+        {
+          "title": "Der Starke ist nicht, wer andere überwindet",
+          "translation": "Der Starke ist nicht, wer andere im Ringen überwindet; der Starke ist, wer sich beherrscht, wenn er zornig ist.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 6114; Sahih Muslim 2609"
+        },
+        {
+          "title": "Keiner von euch glaubt wahrhaft, bis er für seinen Bruder liebt",
+          "translation": "Keiner von euch glaubt wahrhaft, bis er für seinen Bruder liebt, was er für sich selbst liebt.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Sahih al-Buchari 13; Sahih Muslim 45"
+        },
+        {
+          "title": "Die Welt ist ein Gefängnis für den Gläubigen",
+          "translation": "Die Welt ist ein Gefängnis für den Gläubigen und ein Paradies für den Ungläubigen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih Muslim 2956"
+        },
+        {
+          "title": "Sei in dieser Welt wie ein Fremder",
+          "translation": "Sei in dieser Welt, als wärst du ein Fremder oder ein Reisender.",
+          "narrator": "Abdullah ibn ʿUmar (RA)",
+          "source": "Sahih al-Buchari 6416"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Brüderlichkeit im Glauben",
+          "translation": "Keiner von euch glaubt wahrhaft, bis er für seinen Bruder liebt, was er für sich selbst liebt.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Sahih Muslim 45"
+        },
+        {
+          "title": "Gütige Rede ist Almosen",
+          "translation": "Ein gutes Wort ist ein Almosen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih Muslim 1009"
+        },
+        {
+          "title": "Das Lächeln ist Almosen",
+          "translation": "Dein Lächeln ins Gesicht deines Bruders ist für dich ein Almosen.",
+          "narrator": "Abū Dharr (RA)",
+          "source": "Sahih Muslim (Tirmidhī 1956)"
+        },
+        {
+          "title": "Wer einem Gläubigen Erleichterung schafft",
+          "translation": "Wer einem Gläubigen eine Bedrängnis dieser Welt erleichtert, dem erleichtert Allah eine Bedrängnis am Tag der Auferstehung.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih Muslim 2580"
+        },
+        {
+          "title": "Reinheit ist die Hälfte des Glaubens",
+          "translation": "Reinheit ist die Hälfte des Glaubens.",
+          "narrator": "Abū Mālik al-Aschʿarī (RA)",
+          "source": "Sahih Muslim 223"
+        },
+        {
+          "title": "Wissen zu suchen ist Pflicht",
+          "translation": "Wissen zu suchen ist eine Pflicht für jeden Muslim.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Ibn Madscha 224; als authentisch eingestuft"
+        },
+        {
+          "title": "Das beste Almosen",
+          "translation": "Das beste Almosen ist das, das du gibst, während du gesund bist und am Besitz hängst, Armut fürchtest und Reichtum erhoffst.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 1419; Sahih Muslim 1031"
+        },
+        {
+          "title": "Allah sieht nicht auf eure Körper",
+          "translation": "Allah sieht nicht auf eure Körper oder euer Vermögen, sondern Er sieht auf eure Herzen und eure Taten.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih Muslim 2564"
+        },
+        {
+          "title": "Der Gläubige zum Gläubigen",
+          "translation": "Die Gläubigen sind in ihrer gegenseitigen Güte, ihrem Erbarmen und ihrem Mitgefühl wie ein Körper — leidet ein Glied, antwortet der ganze Körper mit Schlaflosigkeit und Fieber.",
+          "narrator": "An-Nuʿmān ibn Baschīr (RA)",
+          "source": "Sahih Muslim 2586"
+        },
+        {
+          "title": "Wer eine weltliche Härte nimmt",
+          "translation": "Wer jemandem in dieser Welt eine Härte erleichtert, dem erleichtert Allah eine Härte am Tag der Auferstehung.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih Muslim 2699"
+        },
+        {
+          "title": "Die fünf täglichen Gebete",
+          "translation": "Wer das Wudu gut verrichtet und die fünf täglichen Gebete betet, mit dem hat Allah einen Bund, ihn ins Paradies eingehen zu lassen.",
+          "narrator": "ʿUthmān ibn ʿAffān (RA)",
+          "source": "Sahih Muslim 228"
+        },
+        {
+          "title": "Die Besten von euch sind die Besten zu ihren Familien",
+          "translation": "Die Besten von euch sind die, die zu ihren Familien am besten sind, und ich bin der Beste von euch zu meiner Familie.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Dschami at-Tirmidhī 3895; als sahih eingestuft"
+        },
+        {
+          "title": "Schamhaftigkeit bringt nur Gutes",
+          "translation": "Schamhaftigkeit bringt nur Gutes.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 6117; Sahih Muslim 37"
+        },
+        {
+          "title": "Allah ist gütig und liebt die Güte",
+          "translation": "Allah ist gütig und liebt die Güte in allen Dingen.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "Das Paradies liegt zu Füßen der Mütter",
+          "translation": "Das Paradies liegt zu Füßen der Mütter.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Sunan an-Nasāʾī 3104; als authentisch eingestuft"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Allah ist gütig und liebt die Güte",
+          "translation": "Allah ist gütig und liebt die Güte in allen Dingen.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "Sanftmut verschönert",
+          "translation": "Sanftmut ist in nichts, ohne dass sie es verschönert.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Sahih Muslim 2594"
+        },
+        {
+          "title": "Der starke Gläubige",
+          "translation": "Der starke Gläubige ist besser und Allah lieber als der schwache Gläubige, obwohl in beiden Gutes ist.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih Muslim 2664"
+        },
+        {
+          "title": "Werde nicht zornig",
+          "translation": "Werde nicht zornig.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 6116"
+        },
+        {
+          "title": "Die Allah liebsten Taten",
+          "translation": "Die Allah liebsten Taten sind die, die beständig getan werden, auch wenn sie klein sind.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Sahih al-Buchari 6464; Sahih Muslim 782"
+        },
+        {
+          "title": "Wer kein Erbarmen zeigt",
+          "translation": "Wer kein Erbarmen zeigt, dem wird kein Erbarmen gezeigt.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 5997; Sahih Muslim 2318"
+        },
+        {
+          "title": "Die Besten von euch im Charakter",
+          "translation": "Die Besten unter euch sind die mit dem besten Charakter.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sahih al-Buchari 3559"
+        },
+        {
+          "title": "Tauscht Geschenke, und ihr werdet einander lieben",
+          "translation": "Tauscht Geschenke, und ihr werdet einander lieben.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Al-Adab al-Mufrad; als authentisch eingestuft"
+        },
+        {
+          "title": "Die Zunge kann ins Höllenfeuer führen",
+          "translation": "Was die Menschen am meisten ins Paradies führt, ist das Bewusstsein Allahs und guter Charakter.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Dschami at-Tirmidhī 2004"
+        },
+        {
+          "title": "Besuche den Kranken",
+          "translation": "Kein Muslim besucht morgens einen kranken Muslim, ohne dass siebzigtausend Engel ihn bis zum Abend segnen.",
+          "narrator": "ʿAlī ibn Abī Tālib (RA)",
+          "source": "Sahih Muslim 2569"
+        },
+        {
+          "title": "Die Rechte der Nachbarn",
+          "translation": "Dschibril ermahnte mich so oft wegen des Nachbarn, dass ich meinte, er würde ihn zum Erben machen.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Sahih al-Buchari 6014; Sahih Muslim 2624"
+        },
+        {
+          "title": "Üble Nachrede ist schlimmer als Ehebruch",
+          "translation": "Wisst ihr, was üble Nachrede ist? Es ist, deinen Bruder auf eine Weise zu erwähnen, die ihm missfällt.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "Sunan Abi Dawud 4877; als authentisch eingestuft"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Die Taten richten sich nach den Absichten",
+          "translation": "Die Taten werden nach den Absichten beurteilt, und jeder Mensch hat nur, was er beabsichtigt hat.",
+          "narrator": "Umar ibn al-Chattab (RA)",
+          "source": "40 Hadithe Nawawi, #1"
+        },
+        {
+          "title": "Die fünf Säulen",
+          "translation": "Der Islam ist auf fünf gebaut: das Glaubenszeugnis, das Gebet, die Zakat, das Fasten im Ramadan und den Hadsch.",
+          "narrator": "Abdullah ibn ʿUmar (RA)",
+          "source": "40 Hadithe Nawawi, #2"
+        },
+        {
+          "title": "Die Säulen des Glaubens",
+          "translation": "Glaube heißt, an Allah, Seine Engel, Seine Bücher, Seine Gesandten, den Jüngsten Tag und die Vorherbestimmung zu glauben — ihr Gutes und ihr Schlechtes.",
+          "narrator": "Umar ibn al-Chattab (RA)",
+          "source": "40 Hadithe Nawawi, #3"
+        },
+        {
+          "title": "Die Schöpfung im Mutterleib",
+          "translation": "Jeder von euch wird vierzig Tage im Mutterleib als Tropfen gesammelt, dann als Klumpen, dann als Fleischstück. Dann haucht ein Engel die Seele ein und schreibt vier Dinge auf.",
+          "narrator": "Abdullah ibn Masʿūd (RA)",
+          "source": "40 Hadithe Nawawi, #4"
+        },
+        {
+          "title": "Das Böse zurückweisen",
+          "translation": "Wer ein Übel sieht, ändere es mit seiner Hand. Kann er nicht, dann mit seiner Zunge. Kann er nicht, dann mit seinem Herzen — und das ist der schwächste Glaube.",
+          "narrator": "Abū Saʿīd al-Chudrī (RA)",
+          "source": "40 Hadithe Nawawi, #5"
+        },
+        {
+          "title": "Erlaubtes, Verbotenes und Zweifelhaftes",
+          "translation": "Das Erlaubte ist klar und das Verbotene ist klar. Dazwischen liegen zweifelhafte Dinge, die viele Menschen nicht kennen.",
+          "narrator": "An-Nuʿmān ibn Baschīr (RA)",
+          "source": "40 Hadithe Nawawi, #6"
+        },
+        {
+          "title": "Die Religion ist aufrichtiger Rat",
+          "translation": "Die Religion ist aufrichtiger Rat. Wir sagten: Wem? Er sagte: Allah, Seinem Buch, Seinem Gesandten, den Führern der Muslime und ihrer Allgemeinheit.",
+          "narrator": "Tamīm ad-Dārī (RA)",
+          "source": "40 Hadithe Nawawi, #7"
+        },
+        {
+          "title": "Verbotenes Blut, Vermögen und Ehre",
+          "translation": "Allah hat euch Blut, unrechtmäßiges Vermögen und unehrenhaftes Handeln gegenüber euren Müttern verboten.",
+          "narrator": "Ibn ʿAbbās (RA)",
+          "source": "40 Hadithe Nawawi, #8"
+        },
+        {
+          "title": "Meidet, was euch zu meiden geboten ist",
+          "translation": "Was ich euch verboten habe, meidet. Was ich euch geboten habe, tut davon, so viel ihr könnt.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #9"
+        },
+        {
+          "title": "Allah ist rein und nimmt nur Reines an",
+          "translation": "Allah ist rein und nimmt nur Reines an. Er hat den Gläubigen geboten, was Er den Gesandten geboten hat.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #10"
+        },
+        {
+          "title": "Lass, was dich nicht angeht",
+          "translation": "Zur Vorzüglichkeit des Islam eines Menschen gehört, dass er lässt, was ihn nicht angeht.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #11"
+        },
+        {
+          "title": "Der Vorzug der Versammlung für Koran und Gedenken",
+          "translation": "Keine Menschen versammeln sich in einem der Häuser Allahs, das Buch Allahs zu lesen und gemeinsam zu studieren, ohne dass Ruhe auf sie herabkommt.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #12"
+        },
+        {
+          "title": "Liebe für deinen Bruder, was du für dich liebst",
+          "translation": "Keiner von euch glaubt wahrhaft, bis er für seinen Bruder liebt, was er für sich selbst liebt.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "40 Hadithe Nawawi, #13"
+        },
+        {
+          "title": "Die Unantastbarkeit eines Muslims",
+          "translation": "Halte keine gute Tat für gering, selbst wenn du deinem Bruder mit heiterem Gesicht begegnest.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #14"
+        },
+        {
+          "title": "Sprich Gutes oder schweige",
+          "translation": "Wer an Allah und den Jüngsten Tag glaubt, soll Gutes sprechen oder schweigen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #15"
+        },
+        {
+          "title": "Werdet nicht zornig",
+          "translation": "Ein Mann bat den Propheten um Rat, und er sagte: Werde nicht zornig. Der Mann wiederholte seine Bitte mehrmals, und er antwortete: Werde nicht zornig.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #16"
+        },
+        {
+          "title": "Allah hat in allem Vortrefflichkeit vorgeschrieben",
+          "translation": "Allah hat Vortrefflichkeit (Ihsān) in allen Dingen vorgeschrieben. Wenn ihr tötet, so tötet gut; und wenn ihr schlachtet, so schlachtet gut.",
+          "narrator": "Schaddād ibn Aws (RA)",
+          "source": "40 Hadithe Nawawi, #17"
+        },
+        {
+          "title": "Fürchte Allah, wo immer du bist",
+          "translation": "Fürchte Allah, wo immer du bist, lass einer schlechten Tat eine gute folgen, die sie auslöscht, und behandle die Menschen mit gutem Charakter.",
+          "narrator": "Abū Dharr und Muʿādh ibn Dschabal (RA)",
+          "source": "40 Hadithe Nawawi, #18"
+        },
+        {
+          "title": "Haltet an der Sunna fest",
+          "translation": "Ich ermahne euch, an meiner Sunna und am Weg der rechtgeleiteten Kalifen festzuhalten. Hütet euch vor neu erfundenen Dingen, denn jede Neuerung ist Irrweg.",
+          "narrator": "ʿIrbād ibn Sāriya (RA)",
+          "source": "40 Hadithe Nawawi, #19"
+        },
+        {
+          "title": "Jedes Gelenk schuldet täglich Almosen",
+          "translation": "Jedes Gelenk eines Menschen muss täglich Almosen leisten: Gerechtigkeit zwischen zwei Menschen ist Almosen; einem Menschen bei seinem Tier zu helfen ist Almosen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #20"
+        },
+        {
+          "title": "Bittet Allah um Vergebung und Wohlergehen",
+          "translation": "Bittet Allah um Vergebung und Wohlergehen, denn nach der Gewissheit wird niemandem etwas Besseres gegeben als Wohlergehen.",
+          "narrator": "Abdullah ibn ʿAbbās (RA)",
+          "source": "40 Hadithe Nawawi, #21"
+        },
+        {
+          "title": "Die Zeichen eines Heuchlers",
+          "translation": "Die Zeichen eines Heuchlers sind drei: wenn er spricht, lügt er; wenn er verspricht, bricht er es; und wenn ihm anvertraut wird, verrät er.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #22"
+        },
+        {
+          "title": "Das lautere Herz",
+          "translation": "Im Körper ist ein Stück Fleisch — ist es heil, ist der ganze Körper heil; ist es verdorben, ist der ganze Körper verdorben. Es ist das Herz.",
+          "narrator": "An-Nuʿmān ibn Baschīr (RA)",
+          "source": "40 Hadithe Nawawi, #23"
+        },
+        {
+          "title": "Rechte Allahs und Rechte der Menschen",
+          "translation": "Das Recht Allahs über Seine Diener ist, dass sie Ihn anbeten und Ihm nichts beigesellen. Das Recht der Diener über Allah ist, dass Er die nicht bestraft, die Ihm keine Teilhaber geben.",
+          "narrator": "Muʿādh ibn Dschabal (RA)",
+          "source": "40 Hadithe Nawawi, #24"
+        },
+        {
+          "title": "Das Erlaubte und das Verbotene sind klar",
+          "translation": "Das Erlaubte ist klar und das Verbotene ist klar. Dazwischen liegen zweifelhafte Dinge, die viele nicht kennen.",
+          "narrator": "An-Nuʿmān ibn Baschīr (RA)",
+          "source": "40 Hadithe Nawawi, #25"
+        },
+        {
+          "title": "Der Vorzug guten Charakters",
+          "translation": "Die mir Liebsten und die mir am Tag der Auferstehung am nächsten sind, sind die mit dem besten Charakter.",
+          "narrator": "Abdullah ibn ʿAmr (RA)",
+          "source": "40 Hadithe Nawawi, #26"
+        },
+        {
+          "title": "Allahs Recht über Seine Diener",
+          "translation": "O Meine Diener, Ich habe Mir selbst Unrecht verboten und es unter euch verboten gemacht, so tut einander kein Unrecht.",
+          "narrator": "Abū Dharr (RA)",
+          "source": "40 Hadithe Nawawi, #27"
+        },
+        {
+          "title": "Die Welt ist das Gefängnis des Gläubigen",
+          "translation": "Die Welt ist ein Gefängnis für den Gläubigen und ein Paradies für den Ungläubigen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #28"
+        },
+        {
+          "title": "Allahs Schatten am Tag des Gerichts",
+          "translation": "Sieben wird Allah an dem Tag beschatten, an dem es keinen Schatten gibt außer Seinem: ein gerechter Herrscher, ein Jüngling, der in der Anbetung Allahs aufwuchs, und andere.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #29"
+        },
+        {
+          "title": "Der Zustand des Herzens",
+          "translation": "Ist das Herz heil, ist der ganze Körper heil; ist das Herz verdorben, ist der ganze Körper verdorben.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #30"
+        },
+        {
+          "title": "Meidet das Zweifelhafte",
+          "translation": "Lass, was dich zweifeln lässt, zugunsten dessen, was dich nicht zweifeln lässt.",
+          "narrator": "Al-Hasan ibn ʿAlī (RA)",
+          "source": "40 Hadithe Nawawi, #31"
+        },
+        {
+          "title": "Kein Schaden und kein Schaden als Vergeltung",
+          "translation": "Es soll weder Schaden noch Schaden als Vergeltung geben.",
+          "narrator": "Ibn ʿAbbās (RA)",
+          "source": "40 Hadithe Nawawi, #32"
+        },
+        {
+          "title": "Die Welt ist verflucht außer Gedenken und Wissen",
+          "translation": "Die Welt ist verflucht und was in ihr ist, ist verflucht, außer dem Gedenken Allahs, was ihm hilft, dem Gelehrten und dem Lernenden.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #33"
+        },
+        {
+          "title": "Allah ist gut und nimmt nur Gutes an",
+          "translation": "Allah ist gut und nimmt nur an, was gut ist.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #34"
+        },
+        {
+          "title": "Allah liebt die Reuigen",
+          "translation": "Allah liebt die, die reuig umkehren, und liebt die, die sich reinigen.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #35"
+        },
+        {
+          "title": "Sei in der Welt wie ein Fremder",
+          "translation": "Sei in dieser Welt, als wärst du ein Fremder oder ein Reisender.",
+          "narrator": "Abdullah ibn ʿUmar (RA)",
+          "source": "40 Hadithe Nawawi, #36"
+        },
+        {
+          "title": "Die Rechte Allahs über Seine Diener",
+          "translation": "Allahs Recht über Seine Diener ist, dass sie Ihn allein anbeten und Ihm nichts beigesellen.",
+          "narrator": "Muʿādh ibn Dschabal (RA)",
+          "source": "40 Hadithe Nawawi, #37"
+        },
+        {
+          "title": "Ruft Allah mit Gewissheit an",
+          "translation": "Ruft Allah an und seid der Erhörung gewiss, und wisst, dass Allah kein Bittgebet aus einem achtlosen, zerstreuten Herzen erhört.",
+          "narrator": "Abū Huraira (RA)",
+          "source": "40 Hadithe Nawawi, #38"
+        },
+        {
+          "title": "Allah hat meiner Umma die Fehler erlassen",
+          "translation": "Allah hat meiner Umma ihre Fehler, ihr Vergessen und das erlassen, wozu sie gezwungen werden.",
+          "narrator": "Ibn ʿAbbās (RA)",
+          "source": "40 Hadithe Nawawi, #39"
+        },
+        {
+          "title": "Sei Allahs eingedenk, und Er wird dich bewahren",
+          "translation": "Sei Allahs eingedenk, und Er wird dich bewahren. Sei Allahs eingedenk, und du wirst Ihn vor dir finden.",
+          "narrator": "Abū al-ʿAbbās ʿAbdallāh (RA)",
+          "source": "40 Hadithe Nawawi, #40"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Vor dem Einschlafen",
+          "translation": "In Deinem Namen, o Allah, sterbe ich und lebe ich.",
+          "narrator": "Al-Barāʾ ibn ʿĀzib (RA)",
+          "source": "Hisnul Muslim; Sahih al-Buchari 6324"
+        },
+        {
+          "title": "Beim Erwachen",
+          "translation": "Alles Lob gebührt Allah, der uns lebendig machte, nachdem Er uns das Leben genommen hatte, und zu Ihm ist die Auferstehung.",
+          "narrator": "Hudhaifa ibn al-Yamān (RA)",
+          "source": "Hisnul Muslim; Sahih al-Buchari 6312"
+        },
+        {
+          "title": "Das Haus betreten",
+          "translation": "Im Namen Allahs treten wir ein, im Namen Allahs gehen wir hinaus, und auf unseren Herrn vertrauen wir.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Hisnul Muslim; Abi Dawud 5096"
+        },
+        {
+          "title": "Das Haus verlassen",
+          "translation": "Im Namen Allahs setze ich mein Vertrauen auf Allah.",
+          "narrator": "Anas ibn Mālik (RA)",
+          "source": "Hisnul Muslim; Abi Dawud 5095"
+        },
+        {
+          "title": "Vor dem Essen",
+          "translation": "Im Namen Allahs.",
+          "narrator": "Umar ibn Abī Salama (RA)",
+          "source": "Hisnul Muslim; Sahih al-Buchari 5376"
+        },
+        {
+          "title": "Nach dem Essen",
+          "translation": "Alles Lob gebührt Allah, der mich dies speiste und es mir ohne Kraft oder Stärke von mir bescherte.",
+          "narrator": "Muʿādh ibn Anas (RA)",
+          "source": "Hisnul Muslim; Abi Dawud 4023"
+        },
+        {
+          "title": "Die Moschee betreten",
+          "translation": "O Allah, öffne mir die Tore Deiner Barmherzigkeit.",
+          "narrator": "Abū Usaid as-Sāʿidī (RA)",
+          "source": "Hisnul Muslim; Sahih Muslim 713"
+        },
+        {
+          "title": "Die Moschee verlassen",
+          "translation": "O Allah, ich bitte Dich aus Deiner Gunst.",
+          "narrator": "Abū Humaid oder Abū Usaid (RA)",
+          "source": "Hisnul Muslim; Sahih Muslim 713"
+        },
+        {
+          "title": "In der Bedrängnis",
+          "translation": "Es gibt keinen Gott außer Allah, dem Gewaltigen, dem Nachsichtigen. Es gibt keinen Gott außer Allah, dem Herrn des gewaltigen Thrones.",
+          "narrator": "Ibn ʿAbbās (RA)",
+          "source": "Hisnul Muslim; Sahih al-Buchari 6345"
+        },
+        {
+          "title": "Um Vergebung",
+          "translation": "Mein Herr, vergib mir und nimm meine Reue an, denn Du bist der immer wieder die Reue Annehmende, der Barmherzige.",
+          "narrator": "Al-Agharr al-Muzanī (RA)",
+          "source": "Hisnul Muslim; Abi Dawud 1517"
+        },
+        {
+          "title": "Wenn es regnet",
+          "translation": "O Allah, lass ihn ein nützlicher Regenguss sein.",
+          "narrator": "ʿĀʾischa (RA)",
+          "source": "Hisnul Muslim; Sahih al-Buchari 1032"
+        },
+        {
+          "title": "Wenn man den Donner hört",
+          "translation": "Preis sei Dem, den der Donner mit Seinem Lob preist, und die Engel aus Furcht vor Ihm.",
+          "narrator": "Abdullah ibn az-Zubair (RA)",
+          "source": "Hisnul Muslim; al-Muwatta"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "items": [
+    {
+      "title": "Was ist Fiqh?",
+      "overview": "Fiqh ist das menschliche Verstehen und Anwenden des islamischen Rechts, abgeleitet aus Koran und Sunna. Es umfasst Gottesdienst, Geschäfte, Familienrecht und das tägliche Verhalten.",
+      "keyPoints": "Gelehrte nutzen Grundsätze wie den Koran, authentischen Hadith, Konsens (Idschmāʿ) und Analogie (Qiyās), um Urteile abzuleiten. Fiqh ist praktische Leitung, den Islam Tag für Tag zu leben.",
+      "differences": "Verschiedene Schulen und Gemeinschaften können in Nebenfragen zu unterschiedlichen Schlüssen kommen und dabei dieselben Kernquellen teilen. Das ist in der Geschichte des islamischen Rechts gewöhnlich.",
+      "commonGround": "Alle Muslime bekennen den Koran als Wort Allahs und das Prophetentum Muhammads ﷺ. Unterschiede im Fiqh liegen meist in Einzelheiten der Praxis, nicht in den Grundlagen des Glaubens."
+    },
+    {
+      "title": "Warum es Unterschiede gibt",
+      "overview": "Islamische Gelehrte haben in vielen Rechtsfragen stets unterschiedliche Meinungen vertreten. Der Prophet ﷺ ließ unter seinen Gefährten Unterschied in nicht wesentlichen Fragen zu.",
+      "keyPoints": "Gründe sind unter anderem: verschiedene Hadithe, die verschiedene Gegenden erreichten, unterschiedliche sprachliche Deutungen, neue Umstände und aufrichtiger Idschtihād qualifizierter Gelehrter.",
+      "differences": "Manche Gemeinschaften folgen streng einem bestimmten Madhhab; andere verbinden Meinungen oder folgen örtlichen Gelehrten. Der kulturelle Zusammenhang prägt auch, wie Urteile angewandt werden.",
+      "commonGround": "Die große Mehrheit der Muslime ist sich einig über die Säulen des Islam und des Iman, die Grundsätze der erlaubten Speise, das Gebet als Pflicht und die sittliche Lehre des Koran."
+    },
+    {
+      "title": "Sunnitischer Islam — vier Madhhabs",
+      "overview": "Sunnitische Muslime folgen dem Koran, der Sunna und dem Konsens der frühen Gemeinschaft. Mit der Zeit entstanden vier große Rechtsschulen (Madhhabs), jede nach einem großen Imam benannt.",
+      "keyPoints": "Die hanafitischen, malikitischen, schafiitischen und hanbalitischen Madhhabs sind alle gültige Wege im sunnitischen Islam. Die meisten Sunniten folgten geschichtlich einem Madhhab über ihre Gemeinschaft oder Region.",
+      "differences": "Madhhabs können sich in Einzelheiten des Wudu, der Gebetshaltung, der Fastenregeln oder der Geschäfte unterscheiden. Das sind gelehrte Unterschiede, keine Spaltung im Kernglauben.",
+      "commonGround": "Alle vier Madhhabs erkennen dieselben sechs Säulen des Iman und fünf Säulen des Islam an. Sie unterscheiden sich vor allem in Methode und Ergebnissen der rechtlichen Begründung."
+    },
+    {
+      "title": "Hanafitischer Madhhab",
+      "overview": "Gegründet von Imam Abu Hanifa (gest. 767). Es ist weltweit der am weitesten verbreitete Madhhab, besonders in der Türkei, Zentral- und Südasien und Teilen des Balkans.",
+      "keyPoints": "Betont Vernunft (Raʾy), das öffentliche Wohl (Istihsān) und Brauch (ʿUrf). Bekannt für Beweglichkeit in neuen Lagen. Viele deobandische und barelwische Gemeinschaften folgen dem hanafitischen Fiqh.",
+      "differences": "Hanafiten dürfen Maghrib und Ischa in manchen Fällen von Reise oder Härte verbinden, wo andere es nicht tun. Die Handhaltung im Gebet und einige Wudu-Einzelheiten unterscheiden sich von anderen Madhhabs.",
+      "commonGround": "Hanafiten teilen denselben Koran, denselben Hadith-Bestand und das sunnitische Kernglaubensbekenntnis mit malikitischen, schafiitischen und hanbalitischen Gelehrten."
+    },
+    {
+      "title": "Malikitischer Madhhab",
+      "overview": "Gegründet von Imam Malik ibn Anas (gest. 795) in Medina. Vorherrschend in Nord- und Westafrika, Teilen des Golfs und unter vielen afrikanischen Muslimgemeinschaften weltweit.",
+      "keyPoints": "Starke Betonung der Praxis der Leute von Medina (ʿAmal ahl al-Madīna) neben dem Hadith. Nutzt die ungebundenen Gemeinwohlgründe (Maṣāliḥ mursala) in der rechtlichen Begründung.",
+      "differences": "Malikiten lassen die Arme im Gebet traditionell an den Seiten, statt sie zu falten. Manche Urteile zu Speisen, Verträgen und dem Wischen über die Socken unterscheiden sich von hanafitischen oder schafiitischen Ansichten.",
+      "commonGround": "Malikitische Gelehrte bekennen dieselben Glaubenssäulen und nutzen dieselben Grundquellen wie die anderen sunnitischen Madhhabs."
+    },
+    {
+      "title": "Schafiitischer Madhhab",
+      "overview": "Gegründet von Imam asch-Schāfiʿī (gest. 820). Weit verbreitet in Südostasien, Ostafrika, Jemen und Teilen der Levante und des Kaukasus.",
+      "keyPoints": "Er systematisierte die Uṣūl al-Fiqh, die alle späteren Schulen prägten. Er wägt Hadith, Konsens und Qiyās mit strenger Methode ab.",
+      "differences": "Schafiiten rezitieren im Gemeinschaftsgebet die Fātiha hinter dem Imam (wo Hanafiten oft schweigen). Manche Einzelheiten von Zakat und Erbe unterscheiden sich von hanafitischen Urteilen.",
+      "commonGround": "Der schafiitische Madhhab ist voll sunnitisch-orthodox. Viele Muslime Südostasiens folgen ihm und teilen Moscheen und Gemeinschaften mit anderen."
+    },
+    {
+      "title": "Hanbalitischer Madhhab",
+      "overview": "Gegründet von Imam Ahmad ibn Hanbal (gest. 855). Heute am stärksten in Saudi-Arabien und unter vielen salafitischen Gemeinschaften, obwohl sich nicht alle Salafiten als hanbalitisch verstehen.",
+      "keyPoints": "Betont das wörtliche Festhalten am Textbeleg (Koran und Hadith) und ist vorsichtig gegenüber spekulativer Begründung. Imam Ahmad war auch ein großer Hadith-Gelehrter.",
+      "differences": "Der hanbalitische Fiqh kann in manchen Fragen (etwa bestimmte Speisen, Musik oder öffentliches Tun) strenger sein als die hanafitische Beweglichkeit. Gebet und Wudu haben eigene Einzelurteile.",
+      "commonGround": "Der hanbalitische Weg ist einer der vier sunnitischen Madhhabs. Seine Anhänger teilen mit anderen Sunniten die Aqīda zu Tauhid, Prophetentum und Jenseits."
+    },
+    {
+      "title": "Schia (Zwölfer)",
+      "overview": "Zwölfer-Schiiten folgen dem Koran und der Lehre des Propheten ﷺ sowie der zwölf Imame aus den Ahl al-Bait. Sie sind weltweit die größte schiitische Gemeinschaft.",
+      "keyPoints": "Eigene Betonung des Imamats — der geistlichen und gemeinschaftlichen Führung Alis (RA) und der folgenden Imame. Das Recht wird über die Imame und qualifizierte Gelehrte (Mardschaʿ) abgeleitet.",
+      "differences": "Manche Gebetsweisen unterscheiden sich (etwa das Verbinden der Gebete an gewöhnlichen Tagen, die Nutzung einer Turba oder Erde für die Niederwerfung). Die Zeitehe (Mutʿa) ist im zwölferschiitischen Fiqh erlaubt und wird von Sunniten abgelehnt.",
+      "commonGround": "Zwölfer-Schiiten bekennen den Koran, das Prophetentum Muhammads ﷺ, das Gebet, das Fasten, die Zakat und den Hadsch. Gespräch und Zusammenleben mit sunnitischen Muslimen sind in vielen Gesellschaften üblich."
+    },
+    {
+      "title": "Deobandische Tradition",
+      "overview": "Eine sunnitische Erneuerungsbewegung aus dem Darul Uloom Deoband in Indien (1867). Sie ist kein eigener Madhhab, sondern eine hanafitische Gelehrten- und Bildungstradition.",
+      "keyPoints": "Betont Koran, Hadith und klassischen hanafitischen Fiqh. Starker Schwerpunkt auf Madrasabildung, Tabligh (Einladung) und das Meiden von Praktiken, die als unbelegte Neuerungen gelten.",
+      "differences": "Deobandis sind im Allgemeinen vorsichtig gegenüber Maulid-Feiern, bestimmten Schreinbräuchen und manchen sufischen Gewohnheiten — obwohl viele deobandische Gelehrte den Tasawwuf unter Bedingungen achten.",
+      "commonGround": "Deobandis sind sunnitisch-hanafitische Muslime, die die Kernüberzeugungen mit anderen Hanafiten teilen. Sie unterscheiden sich vor allem von Barelwis und manchen Sufi-Gruppen in kulturellen und andächtigen Bräuchen."
+    },
+    {
+      "title": "Barelwische Tradition",
+      "overview": "Eine sunnitisch-hanafitische Bewegung, verbunden mit Ahmad Raza Khan Barelwi (gest. 1921) in Indien. Betont die Liebe zum Propheten ﷺ und die Verehrung der Auliyāʾ.",
+      "keyPoints": "Unterstützt das Maulid (das Gedenken an die Geburt des Propheten), Milad-Versammlungen und den Besuch der Schreine rechtschaffener Gelehrter. Folgt im Gottesdienst und in Geschäften dem hanafitischen Fiqh.",
+      "differences": "Barelwis üben Formen der Andacht, die Deobandis und Salafiten meiden können, etwa das Aufstehen bei der Erwähnung des Propheten ﷺ (Qiyām) und ausführliche Maulid-Feiern.",
+      "commonGround": "Barelwis bekennen dieselbe Schahada, denselben Koran und dieselben fünf täglichen Gebete wie andere sunnitische Hanafiten. Unterschiede zu den Deobandis liegen großteils in der Andachtskultur, nicht im Kernglauben."
+    },
+    {
+      "title": "Salafitische Methodik",
+      "overview": "Salafiten suchen dem Verständnis der frühesten Muslimgenerationen (Salaf) zu folgen. Es ist ein methodischer Weg und kein fünfter Madhhab.",
+      "keyPoints": "Unmittelbare Rückkehr zu Koran und Sunna; Vorsicht gegenüber dem blinden Taqlīd eines einzigen Madhhab; oft geprägt vom hanbalitischen Fiqh und saudischen Gelehrtenschulen.",
+      "differences": "Salafiten können Praktiken ablehnen, die sie als Bidʿa ansehen — darunter manche Maulid-Formen, bestimmte sufische Bräuche und das bloße Festhalten an einem Madhhab ohne Beleg.",
+      "commonGround": "Salafiten sind sunnitische Muslime, die dieselben Säulen des Islam bekennen. Viele leben mit Madhhab-Anhängern zusammen und erörtern nebengeordnete rechtliche und kulturelle Fragen."
+    },
+    {
+      "title": "Ahl-e Hadith",
+      "overview": "Ahl-e Hadith ist eine sunnitische Bewegung, die in Pakistan, Indien und Bangladesch hervortritt und ihren Namen von den Leuten des Hadith trägt — den frühen Gelehrten, die authentische Überlieferungen voranstellten. Sie ist eine eigene südasiatische Tradition, kein eigener Madhhab.",
+      "keyPoints": "Betont das unmittelbare Festhalten an Koran und sahih-Hadith statt blinden Taqlīds eines Madhhab. Urteile werden durch unabhängige gelehrte Prüfung der Textbelege gewonnen, oft nah an hanbalitischen Ansichten, aber an keinen einzelnen Imam gebunden.",
+      "differences": "Gelehrte der Ahl-e Hadith können sich von deobandischen Hanafiten in Maulid, Schreinbesuch und manchen Gebetsdetails unterscheiden. Sie teilen viel mit der salafitischen Methodik, bewahren aber eigene Gelehrtenschulen, Moscheen und eine historische Identität auf dem Subkontinent.",
+      "commonGround": "Ahl-e Hadith sind sunnitische Muslime, die die Schahada, die fünf Säulen und die sechs Säulen des Iman bekennen. Sie unterscheiden sich vor allem von madhhabgebundenen Hanafiten (Deobandi/Barelwi) in der Rechtsmethode und manchen Andachtsbräuchen — nicht im Kernglauben."
+    },
+    {
+      "title": "Gebet — Ansätze im Vergleich",
+      "overview": "Alle Muslime verrichten fünf tägliche Gebete in Richtung Qibla. Unterschiede zeigen sich in Einzelheiten des Wudu, beim Händeheben, beim Rezitieren hinter dem Imam und beim Verbinden der Gebete.",
+      "keyPoints": "Hanafiten: oft still hinter dem Imam, eigene Wudu-Reihenfolge. Schafiiten, Malikiten und Hanbaliten: rezitieren die Fātiha hinter dem Imam. Schiiten: dürfen Zuhr-Asr und Maghrib-Ischa regelmäßig verbinden.",
+      "differences": "Wo die Hände liegen, das laute Amin und das Wischen über die Socken gegenüber dem Waschen der Füße sind häufige Unterschiede zwischen den Madhhabs.",
+      "commonGround": "Das Gebet ist eine gemeinsame Pflicht. Muslime aller Gruppen beten in Moscheen weltweit und achten die Heiligkeit der Salah, auch wenn Einzelheiten sich unterscheiden."
+    },
+    {
+      "title": "Fasten und Mondsichtung",
+      "overview": "Das Ramadanfasten ist für jeden Muslim Pflicht, der dazu imstande ist. Unterschiede entstehen oft darüber, wie der Monat beginnt und endet — örtliche Sichtung gegenüber globaler Berechnung.",
+      "keyPoints": "Manche Gemeinschaften folgen der örtlichen Mondsichtung; andere nutzen saudische Bekanntgaben oder astronomische Berechnung. Der hanafitische Fiqh lässt etwas Spielraum, was das Fasten bricht.",
+      "differences": "Beginn und Ende von Ramadan und Fest können in derselben Stadt auf verschiedene Tage fallen, wenn Gemeinschaften verschiedenen Gelehrten oder nationalen Mondausschüssen folgen.",
+      "commonGround": "Die Pflicht, den Ramadan zu fasten, ist allgemein. Muslime teilen im gesegneten Monat dieselben geistlichen Ziele: Taqwa, Koranrezitation und Almosen."
+    },
+    {
+      "title": "Gemeinsame Grundlagen",
+      "overview": "Trotz Unterschieden in Fiqh und Tradition teilen Muslime weltweit einen unauflösbaren Kern: den Glauben an den einen Allah, die Endgültigkeit des Propheten Muhammad ﷺ und die Rechenschaft am Tag des Gerichts.",
+      "keyPoints": "Koran und authentische Sunna einen die Umma. Unterschiede in Nebenurteilen sollten mit Wissen, Demut und Achtung begegnet werden — nicht mit Spaltung oder Feindschaft.",
+      "differences": "Gemeinschaften können verschiedenen Gelehrten oder Madhhabs folgen. Diese Unterschiede zu kennen hilft Muslimen, einander zu verstehen und unnötigen Streit zu vermeiden.",
+      "commonGround": "Allah spricht: „Die Gläubigen sind doch Brüder.“ Wissen zu suchen, aufrichtig zu bitten und guten Charakter zu zeigen, geht über jede fiqhische oder kulturelle Grenze hinaus."
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadan",
+      "importance": "Ramadan is de maand waarin de Koran werd geopenbaard: een geleide barmhartigheid en een duidelijk criterium voor de mensheid.",
+      "virtues": "De poorten van het Paradijs worden geopend, de duivels worden geketend en elke goede daad wordt vermenigvuldigd.",
+      "recommendedActs": "Vast oprecht, vermeerder de recitatie van de Koran, geef liefdadigheid, bid de Taraweeh en zoek Laylatul Qadr in de laatste tien nachten."
+    },
+    {
+      "title": "Eid al-Fitr",
+      "importance": "Eid al-Fitr markeert de voltooiing van Ramadan en de dankbaarheid aan Allah omdat Hij het vasten mogelijk maakte.",
+      "virtues": "Het is een dag van vreugde, gemeenschap en dankbaarheid na een maand van aanbidding en zelfdiscipline.",
+      "recommendedActs": "Betaal de Zakat al-Fitr, verricht het Eid-gebed, draag je beste kleren, groet anderen en bezoek familie, met behoud van islamitische omgangsvormen."
+    },
+    {
+      "title": "Eid al-Adha",
+      "importance": "Eid al-Adha herdenkt de toewijding van Ibrahim (AS) en de riten van de Hadj tijdens Dhul Hijjah.",
+      "virtues": "Het leert offerbereidheid, gehoorzaamheid aan Allah en zorg voor wie het nodig heeft, door de udhiyah (het offer).",
+      "recommendedActs": "Verricht het Eid-gebed, breng het offer als je daartoe in staat bent, deel het vlees met de armen en vermeerder de takbir in de eerste tien dagen van Dhul Hijjah."
+    },
+    {
+      "title": "Hadjseizoen",
+      "importance": "De Hadj is een zuil die eenmaal in het leven geldt voor wie daartoe in staat is: een diepe reis van eenheid en overgave.",
+      "virtues": "Een aanvaarde Hadj brengt vergeving van zonden en vernieuwing van het doel. De vlakte van Arafah is het hart van de Hadj.",
+      "recommendedActs": "Wie de Hadj niet verricht, kan vasten op de Dag van Arafah, de dhikr vermeerderen en du'a doen voor wie zich op de heilige plaatsen bevindt."
+    },
+    {
+      "title": "Ashura",
+      "importance": "De 10e van Muharram is de dag waarop Allah Musa (AS) en zijn volk redde van de farao.",
+      "virtues": "Vasten op Ashura delgt de zonden van het voorgaande jaar uit (wanneer het wordt gecombineerd met vasten een dag ervoor of erna, volgens de Soennah).",
+      "recommendedActs": "Vast op de 9e en de 10e van Muharram als dat mogelijk is, overdenk Allahs hulp aan de verdrukten en vermeerder de dankbaarheid."
+    },
+    {
+      "title": "Laylatul Qadr",
+      "importance": "Laylatul Qadr is beter dan duizend maanden: het is de nacht waarop de openbaring van de Koran begon.",
+      "virtues": "Aanbidding in deze ene nacht kan decennia van beloning overtreffen. De engelen dalen neer met vrede tot aan Fajr.",
+      "recommendedActs": "Zoek haar in de oneven nachten van de laatste tien dagen van Ramadan, met gebed, Koran, du'a en istighfar."
+    },
+    {
+      "title": "Jumu'ah (vrijdag)",
+      "importance": "Vrijdag is de beste dag waarop de zon opkomt. Hij omvat een wekelijks gemeenschappelijk gebed en een wekelijkse herinnering.",
+      "virtues": "Er is een moment op vrijdag waarop du'a wordt aanvaard. Zonden tussen twee vrijdagen worden vergeven aan wie zich wast en met oprechtheid aanwezig is.",
+      "recommendedActs": "Verricht de Ghusl, draag schone kleren, kom vroeg naar de moskee, luister aandachtig naar de khutbah en vermeerder de salawat op de Profeet ﷺ."
+    }
+  ]
+}

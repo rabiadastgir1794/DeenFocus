@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
+import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_dua.dart';
 import '../model/library_module.dart';
 import '../widgets/dua_card.dart';
@@ -27,7 +29,12 @@ class DuasReaderScreen extends StatefulWidget {
 }
 
 class _DuasReaderScreenState extends State<DuasReaderScreen>
-    with LearningListController {
+    with LearningListController, LibraryLanguageReload {
+  DuaCategory? _localizedCategory;
+  bool _bootstrapped = false;
+
+  DuaCategory get _category => _localizedCategory ?? widget.category;
+
   @override
   String get sectionId =>
       widget.category.progressSectionId(LibraryModuleId.duasAdhkar.name);
@@ -36,18 +43,24 @@ class _DuasReaderScreenState extends State<DuasReaderScreen>
   int? get initialCardIndex => widget.initialCardIndex;
 
   @override
-  int get itemCount => widget.category.items.length;
+  int get itemCount => _category.items.length;
 
-  List<LibraryDua> get _duas => widget.category.items;
+  List<LibraryDua> get _duas => _category.items;
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final category = await IslamicLibraryRepository.instance.loadDuaCategory(
+      widget.category.id,
+      languageCode: languageCode,
+    );
+    if (!isCurrentLibraryLoad(generation)) return;
+    if (category != null) {
+      setState(() => _localizedCategory = category);
+    }
+    if (_bootstrapped) return;
+    _bootstrapped = true;
     await loadProgressAndFinish();
+    if (!isCurrentLibraryLoad(generation)) return;
     maybeOpenInitial(_openDetail);
   }
 

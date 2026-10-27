@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadan",
+      "importance": "Ramadan este luna în care a fost revelat Coranul — o îndurare călăuzitoare și un criteriu limpede pentru omenire.",
+      "virtues": "Porțile Paradisului sunt deschise, diavolii sunt înlănțuiți, și orice faptă bună este înmulțită.",
+      "recommendedActs": "Postește cu sinceritate, sporește recitarea Coranului, dă milostenie, roagă-te Taraweeh și caută Laylatul Qadr în ultimele zece nopți."
+    },
+    {
+      "title": "Eidul Fitr",
+      "importance": "Eidul Fitr marchează încheierea Ramadanului și recunoștința față de Allah pentru că a îngăduit postul.",
+      "virtues": "Este o zi de bucurie, de comunitate și de mulțumire după o lună de adorare și de stăpânire de sine.",
+      "recommendedActs": "Achită Zakat al-Fitr, săvârșește rugăciunea de Eid, poartă cele mai bune haine, salută-i pe alții și vizitează familia, păstrând purtarea islamică."
+    },
+    {
+      "title": "Eidul Adha",
+      "importance": "Eidul Adha comemorează devoțiunea lui Ibrahim (AS) și riturile Hajj din Dhul Hijjah.",
+      "virtues": "Ea învață jertfa, ascultarea față de Allah și grija pentru cei în nevoie prin udhiyah (jertfă).",
+      "recommendedActs": "Săvârșește rugăciunea de Eid, adu o jertfă dacă poți, împarte carnea cu săracii și sporește takbirul în primele zece zile din Dhul Hijjah."
+    },
+    {
+      "title": "Sezonul de Hajj",
+      "importance": "Hajj este un stâlp o dată în viață pentru cei care pot — o călătorie adâncă de unitate și de supunere.",
+      "virtues": "Un Hajj primit aduce iertarea păcatelor și înnoirea scopului. Câmpia Arafah este inima Hajj.",
+      "recommendedActs": "Cei care nu săvârșesc Hajj pot posti în Ziua de Arafah, pot spori dhikr-ul și pot face dua pentru cei de la locurile sfinte."
+    },
+    {
+      "title": "Așura",
+      "importance": "A 10-a zi din Muharram este ziua în care Allah l-a salvat pe Musa (AS) și pe poporul său de Faraon.",
+      "virtues": "Postul din Așura șterge păcatele anului trecut (când este unit cu postul unei zile înainte sau după, după Sunnah).",
+      "recommendedActs": "Postește a 9-a și a 10-a zi din Muharram dacă se poate, cugetă la ajutorul lui Allah pentru cei asupriți și sporește recunoștința."
+    },
+    {
+      "title": "Noaptea Qadrului",
+      "importance": "Laylatul Qadr este mai bună decât o mie de luni — este noaptea în care a început revelarea Coranului.",
+      "virtues": "Adorarea din această singură noapte poate întrece răsplata unor decenii. Îngerii coboară cu pace până la Fajr.",
+      "recommendedActs": "Caut-o în nopțile impare din ultimele zece zile ale Ramadanului, prin rugăciune, Coran, dua și istighfar."
+    },
+    {
+      "title": "Jumu'ah (vinerea)",
+      "importance": "Vinerea este cea mai bună zi în care răsare soarele. Ea cuprinde o rugăciune săptămânală în comun și un îndemn săptămânal.",
+      "virtues": "Există un ceas vineri în care dua este primită. Păcatele dintre vineri sunt iertate celor care se îmbăiază și vin cu sinceritate.",
+      "recommendedActs": "Fă Ghusl, poartă haine curate, ajunge devreme la moschee, ascultă cu atenție hutba și sporește salawat asupra Profetului ﷺ."
+    }
+  ]
+}

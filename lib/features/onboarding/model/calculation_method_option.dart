@@ -1,5 +1,7 @@
 import 'package:adhan_dart/adhan_dart.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 enum CalculationMethodOption {
   muslimWorldLeague,
   northAmerica,
@@ -14,32 +16,32 @@ enum CalculationMethodOption {
   singapore,
   moonsightingCommittee;
 
-  String get label {
+  String localizedLabel(AppLocalizations l10n) {
     switch (this) {
       case muslimWorldLeague:
-        return 'Muslim World League';
+        return l10n.calcMethodMuslimWorldLeague;
       case northAmerica:
-        return 'Islamic Society of North America (ISNA)';
+        return l10n.calcMethodNorthAmerica;
       case egyptian:
-        return 'Egyptian General Authority of Survey';
+        return l10n.calcMethodEgyptian;
       case ummAlQura:
-        return 'Umm al-Qura University, Makkah';
+        return l10n.calcMethodUmmAlQura;
       case karachi:
-        return 'University of Islamic Sciences, Karachi';
+        return l10n.calcMethodKarachi;
       case tehran:
-        return 'Tehran';
+        return l10n.calcMethodTehran;
       case kuwait:
-        return 'Kuwait';
+        return l10n.calcMethodKuwait;
       case qatar:
-        return 'Qatar';
+        return l10n.calcMethodQatar;
       case dubai:
-        return 'Dubai';
+        return l10n.calcMethodDubai;
       case turkey:
-        return 'Turkey';
+        return l10n.calcMethodTurkey;
       case singapore:
-        return 'Singapore';
+        return l10n.calcMethodSingapore;
       case moonsightingCommittee:
-        return 'Moonsighting Committee Worldwide';
+        return l10n.calcMethodMoonsighting;
     }
   }
 

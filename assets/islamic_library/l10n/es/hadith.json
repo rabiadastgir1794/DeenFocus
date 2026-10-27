@@ -1,0 +1,588 @@
+{
+  "collections": [
+    {
+      "items": [
+        {
+          "title": "Las obras son según las intenciones",
+          "translation": "Las obras se juzgan por las intenciones, y cada persona obtendrá solo lo que pretendió.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "Sahih al-Bujari 1"
+        },
+        {
+          "title": "Los cinco pilares del islam",
+          "translation": "El islam se construye sobre cinco: el testimonio de fe, establecer la oración, pagar el zakat, ayunar Ramadán y realizar el Hayy para quien pueda.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bujari 8"
+        },
+        {
+          "title": "Lo halal y lo haram son claros",
+          "translation": "Lo lícito es claro y lo ilícito es claro, y entre ambos hay asuntos dudosos. Quien evita los asuntos dudosos se limpia en cuanto a su religión y su honor.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih al-Bujari 52"
+        },
+        {
+          "title": "Deja lo que te haga dudar",
+          "translation": "Deja lo que te haga dudar por aquello que no te haga dudar.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "Sahih al-Bujari 52; Jami' at-Tirmidhi 2518"
+        },
+        {
+          "title": "La fe tiene setenta y tantas ramas",
+          "translation": "La fe tiene setenta y tantas ramas. La más alta es decir «La ilaha illallah» y la más baja es quitar un daño del camino. El pudor es una rama de la fe.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 9; auténtico Muslim 35"
+        },
+        {
+          "title": "Los derechos de un musulmán sobre otro",
+          "translation": "Un musulmán tiene cinco derechos sobre otro musulmán: devolver el saludo, visitar al enfermo, seguir el funeral, aceptar una invitación y decir «Yarhamuk Allah» cuando estornuda.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 1240"
+        },
+        {
+          "title": "Quien cree en Alá y en el Último Día",
+          "translation": "Quien cree en Alá y en el Último Día debe decir el bien o guardar silencio.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 6018; auténtico Muslim 47"
+        },
+        {
+          "title": "No os envidiéis unos a otros",
+          "translation": "No os envidiéis, no os infléis los precios unos a otros, no os odiéis y no os deis la espalda. Sed siervos de Alá como hermanos.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 6066; auténtico Muslim 2564"
+        },
+        {
+          "title": "La mejor gente",
+          "translation": "Las mejores personas son las más beneficiosas para la gente.",
+          "narrator": "Jabir ibn Abdullah (RA)",
+          "source": "Sahih al-Bujari (al-Adab al-Mufrad); autenticado"
+        },
+        {
+          "title": "Alá es bello y ama la belleza",
+          "translation": "Alá es Bello y ama la belleza.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "Sahih Muslim 91"
+        },
+        {
+          "title": "Facilitad, no dificultéis",
+          "translation": "Facilitad las cosas y no las dificultéis; dad buenas noticias y no ahuyentéis a la gente.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bujari 69; auténtico Muslim 1734"
+        },
+        {
+          "title": "El fuerte no es quien vence",
+          "translation": "La persona fuerte no es la que vence a otros en la lucha; la persona fuerte es la que se controla cuando está enfadada.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 6114; auténtico Muslim 2609"
+        },
+        {
+          "title": "Ninguno cree de verdad hasta amar para su hermano",
+          "translation": "Ninguno de vosotros cree de verdad hasta que ame para su hermano lo que ama para sí mismo.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bujari 13; auténtico Muslim 45"
+        },
+        {
+          "title": "El mundo es una prisión para el creyente",
+          "translation": "El mundo es una prisión para el creyente y un paraíso para quien no cree.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2956"
+        },
+        {
+          "title": "Está en este mundo como un extraño",
+          "translation": "Está en este mundo como si fueras un extraño o un viajero.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bujari 6416"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Hermandad en la fe",
+          "translation": "Ninguno de vosotros cree de verdad hasta que ame para su hermano lo que ama para sí mismo.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih Muslim 45"
+        },
+        {
+          "title": "La palabra amable es caridad",
+          "translation": "Una buena palabra es caridad.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 1009"
+        },
+        {
+          "title": "Sonreír es caridad",
+          "translation": "Tu sonrisa en el rostro de tu hermano es una caridad para ti.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "Sahih Muslim (Tirmidhi 1956)"
+        },
+        {
+          "title": "Quien alivia a un creyente",
+          "translation": "Quien alivia a un creyente de una angustia en este mundo, Alá lo aliviará de una angustia el Día de la Resurrección.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2580"
+        },
+        {
+          "title": "La limpieza es la mitad de la fe",
+          "translation": "La limpieza es la mitad de la fe.",
+          "narrator": "Abu Malik al-Ash'ari (RA)",
+          "source": "Sahih Muslim 223"
+        },
+        {
+          "title": "Buscar conocimiento es obligatorio",
+          "translation": "Buscar conocimiento es una obligación para todo musulmán.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Ibn Majah 224; autenticado"
+        },
+        {
+          "title": "La mejor caridad",
+          "translation": "La mejor caridad es la que das mientras estás sano y deseoso de la riqueza, temiendo la pobreza y esperando enriquecerte.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 1419; auténtico Muslim 1031"
+        },
+        {
+          "title": "Alá no mira vuestros cuerpos",
+          "translation": "Alá no mira vuestros cuerpos ni vuestra riqueza, sino que mira vuestros corazones y vuestras obras.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2564"
+        },
+        {
+          "title": "El creyente para el creyente",
+          "translation": "Los creyentes, en su bondad mutua, su compasión y su simpatía, son como un solo cuerpo: cuando un miembro sufre, todo el cuerpo responde con insomnio y fiebre.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih Muslim 2586"
+        },
+        {
+          "title": "Quien quita una penuria mundana",
+          "translation": "Quien aligera una penuria a alguien en este mundo, Alá le aligerará una penuria el Día de la Resurrección.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2699"
+        },
+        {
+          "title": "Las cinco oraciones diarias",
+          "translation": "Quien hace bien la ablución y reza las cinco oraciones diarias, Alá tiene un pacto con él de que entre en el Paraíso.",
+          "narrator": "Uthman ibn Affan (RA)",
+          "source": "Sahih Muslim 228"
+        },
+        {
+          "title": "Los mejores sois los mejores con su familia",
+          "translation": "Los mejores de vosotros son los que son mejores con su familia, y yo soy el mejor de vosotros con mi familia.",
+          "narrator": "Aisha (RA)",
+          "source": "Jami' at-Tirmidhi 3895; auténtico"
+        },
+        {
+          "title": "El pudor no trae sino bien",
+          "translation": "El pudor no trae sino bien.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 6117; auténtico Muslim 37"
+        },
+        {
+          "title": "Alá es amable y ama la amabilidad",
+          "translation": "Alá es Amable y ama la amabilidad en todos los asuntos.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "El Paraíso está a los pies de las madres",
+          "translation": "El Paraíso está a los pies de las madres.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sunan an-Nasa'i 3104; autenticado"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Alá es amable y ama la amabilidad",
+          "translation": "Alá es Amable y ama la amabilidad en todos los asuntos.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "La dulzura embellece",
+          "translation": "La dulzura no está en nada sin que lo embellezca.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih Muslim 2594"
+        },
+        {
+          "title": "El creyente fuerte",
+          "translation": "El creyente fuerte es mejor y más amado por Alá que el creyente débil, aunque hay bien en ambos.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih Muslim 2664"
+        },
+        {
+          "title": "No te enfades",
+          "translation": "No te enfades.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 6116"
+        },
+        {
+          "title": "Las obras más amadas por Alá",
+          "translation": "Las obras más amadas por Alá son las que se hacen con constancia, aunque sean pequeñas.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih al-Bujari 6464; auténtico Muslim 782"
+        },
+        {
+          "title": "Quien no muestra misericordia",
+          "translation": "Quien no muestra misericordia no recibirá misericordia.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 5997; auténtico Muslim 2318"
+        },
+        {
+          "title": "Los mejores de vosotros en carácter",
+          "translation": "Los mejores entre vosotros son los que tienen el mejor carácter.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sahih al-Bujari 3559"
+        },
+        {
+          "title": "Intercambiad regalos y os amaréis",
+          "translation": "Intercambiad regalos y os amaréis unos a otros.",
+          "narrator": "Aisha (RA)",
+          "source": "Al-Adab al-Mufrad; autenticado"
+        },
+        {
+          "title": "La lengua puede llevar al Fuego",
+          "translation": "Lo que más lleva a la gente al Paraíso es la conciencia de Alá y el buen carácter.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Jami' at-Tirmidhi 2004"
+        },
+        {
+          "title": "Visitad al enfermo",
+          "translation": "Ningún musulmán visita a un musulmán enfermo por la mañana sin que setenta mil ángeles envíen bendiciones sobre él hasta la tarde.",
+          "narrator": "Ali ibn Abi Talib (RA)",
+          "source": "Sahih Muslim 2569"
+        },
+        {
+          "title": "Los derechos de los vecinos",
+          "translation": "Yibril no dejó de aconsejarme acerca del vecino hasta que pensé que lo haría heredero.",
+          "narrator": "Aisha (RA)",
+          "source": "Sahih al-Bujari 6014; auténtico Muslim 2624"
+        },
+        {
+          "title": "La maledicencia es peor que el adulterio",
+          "translation": "¿Sabéis qué es la maledicencia? Es mencionar a tu hermano de una manera que le desagrada.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "Sunan Abu Dawud 4877; autenticado"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Las obras son según las intenciones",
+          "translation": "Las obras se juzgan por las intenciones, y cada persona tendrá solo lo que pretendió.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadices Nawawi, n.º 1"
+        },
+        {
+          "title": "Los cinco pilares",
+          "translation": "El islam se construye sobre cinco: el testimonio de fe, la oración, el zakat, el ayuno de Ramadán y el Hayy.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadices Nawawi, n.º 2"
+        },
+        {
+          "title": "Los pilares de la fe",
+          "translation": "La fe es creer en Alá, en Sus ángeles, en Sus libros, en Sus mensajeros, en el Último Día y en el decreto divino, lo bueno y lo malo de él.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadices Nawawi, n.º 3"
+        },
+        {
+          "title": "La creación en el vientre",
+          "translation": "Cada uno de vosotros se reúne en el vientre durante cuarenta días como una gota, luego un coágulo, luego un trozo de carne. Después un ángel sopla el alma y escribe cuatro asuntos.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "40 Hadices Nawawi, n.º 4"
+        },
+        {
+          "title": "Rechazar el mal",
+          "translation": "Quien vea un mal, que lo cambie con su mano. Si no puede, entonces con su lengua. Si no puede, entonces con su corazón, y esa es la fe más débil.",
+          "narrator": "Abu Sa'id al-Khudri (RA)",
+          "source": "40 Hadices Nawawi, n.º 5"
+        },
+        {
+          "title": "Halal, haram y asuntos dudosos",
+          "translation": "Lo lícito es claro y lo ilícito es claro. Entre ambos hay asuntos dudosos que mucha gente no conoce.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadices Nawawi, n.º 6"
+        },
+        {
+          "title": "La religión es el consejo sincero",
+          "translation": "La religión es el consejo sincero. Dijimos: ¿A quién? Dijo: A Alá, a Su Libro, a Su Mensajero, a los dirigentes de los musulmanes y a su gente común.",
+          "narrator": "Tamim ad-Dari (RA)",
+          "source": "40 Hadices Nawawi, n.º 7"
+        },
+        {
+          "title": "Sangre, bienes y honor prohibidos",
+          "translation": "Alá os ha prohibido la sangre, la riqueza ilícita y actuar de forma deshonrosa hacia vuestras madres.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadices Nawawi, n.º 8"
+        },
+        {
+          "title": "Evitad lo que se os ordena evitar",
+          "translation": "Lo que os he prohibido, evitadlo. Lo que os he ordenado hacer, haced de ello cuanto podáis.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 9"
+        },
+        {
+          "title": "Alá es puro y solo acepta lo puro",
+          "translation": "Alá es Puro y solo acepta lo que es puro. Ha ordenado a los creyentes lo que ordenó a los mensajeros.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 10"
+        },
+        {
+          "title": "Deja lo que no te concierne",
+          "translation": "Parte de la excelencia de una persona en el islam es dejar lo que no le concierne.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 11"
+        },
+        {
+          "title": "La excelencia de reunirse para el Corán y el dhikr",
+          "translation": "No se reúne gente en una de las casas de Alá recitando el Libro de Alá y estudiándolo juntos sin que descienda sobre ellos la tranquilidad.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 12"
+        },
+        {
+          "title": "Ama para tu hermano lo que amas para ti",
+          "translation": "Ninguno de vosotros cree de verdad hasta que ame para su hermano lo que ama para sí mismo.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "40 Hadices Nawawi, n.º 13"
+        },
+        {
+          "title": "La sacralidad de un musulmán",
+          "translation": "No menosprecies ninguna buena obra, ni siquiera encontrar a tu hermano con un rostro alegre.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 14"
+        },
+        {
+          "title": "Di el bien o guarda silencio",
+          "translation": "Quien cree en Alá y en el Último Día debe decir el bien o guardar silencio.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 15"
+        },
+        {
+          "title": "No te enfades",
+          "translation": "Un hombre pidió consejo al Profeta y él dijo: No te enfades. El hombre repitió su petición varias veces y él respondió: No te enfades.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 16"
+        },
+        {
+          "title": "Alá ha prescrito la excelencia en todo",
+          "translation": "Alá ha prescrito la excelencia (ihsan) en todas las cosas. Así, cuando matéis, matad bien; y cuando degolléis, degollad bien.",
+          "narrator": "Shaddad ibn Aws (RA)",
+          "source": "40 Hadices Nawawi, n.º 17"
+        },
+        {
+          "title": "Teme a Alá dondequiera que estés",
+          "translation": "Teme a Alá dondequiera que estés, sigue una mala obra con una buena obra para borrarla, y trata a la gente con buen carácter.",
+          "narrator": "Abu Dharr y Muadh ibn Jabal (RA)",
+          "source": "40 Hadices Nawawi, n.º 18"
+        },
+        {
+          "title": "Aférrate a la Sunna",
+          "translation": "Os insto a aferraros a mi Sunna y al camino de los califas rectamente guiados. Guardaos de los asuntos recién inventados, pues toda innovación es extravío.",
+          "narrator": "Irbad ibn Sariyah (RA)",
+          "source": "40 Hadices Nawawi, n.º 19"
+        },
+        {
+          "title": "Cada día las articulaciones deben caridad",
+          "translation": "Cada articulación de una persona debe hacer caridad cada día: la justicia entre dos personas es caridad; ayudar a una persona con su animal es caridad.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 20"
+        },
+        {
+          "title": "Pide a Alá perdón y bienestar",
+          "translation": "Pide a Alá perdón y bienestar, pues a nadie se le da, después de la certeza, nada mejor que el bienestar.",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "source": "40 Hadices Nawawi, n.º 21"
+        },
+        {
+          "title": "Las señales del hipócrita",
+          "translation": "Las señales del hipócrita son tres: cuando habla miente, cuando promete incumple y cuando se le confía traiciona.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 22"
+        },
+        {
+          "title": "El corazón puro",
+          "translation": "Hay un trozo de carne en el cuerpo: si está sano, todo el cuerpo está sano; si está corrompido, todo el cuerpo está corrompido. Es el corazón.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadices Nawawi, n.º 23"
+        },
+        {
+          "title": "Derechos de Alá y derechos de la gente",
+          "translation": "El derecho de Alá sobre Sus siervos es que lo adoren y no le asocien nada. El derecho de los siervos sobre Alá es que Él no castigue a quienes no le asocian copartícipes.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadices Nawawi, n.º 24"
+        },
+        {
+          "title": "Lo lícito y lo ilícito son claros",
+          "translation": "Lo lícito es claro y lo ilícito es claro. Entre ambos hay asuntos dudosos que muchos no conocen.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadices Nawawi, n.º 25"
+        },
+        {
+          "title": "La virtud del buen carácter",
+          "translation": "Los más amados por mí y los más cercanos a mí el Día de la Resurrección son los de mejor carácter.",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "source": "40 Hadices Nawawi, n.º 26"
+        },
+        {
+          "title": "El derecho de Alá sobre Sus siervos",
+          "translation": "Oh siervos Míos, me he prohibido la injusticia a Mí mismo y la he hecho prohibida entre vosotros, así que no os oprimáis unos a otros.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "40 Hadices Nawawi, n.º 27"
+        },
+        {
+          "title": "El mundo es la prisión del creyente",
+          "translation": "El mundo es una prisión para el creyente y un paraíso para quien no cree.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 28"
+        },
+        {
+          "title": "La sombra de Alá el Día del Juicio",
+          "translation": "Siete serán sombreados por Alá el Día en que no habrá sombra sino la Suya: un gobernante justo, un joven que creció adorando a Alá, y otros.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 29"
+        },
+        {
+          "title": "El estado del corazón",
+          "translation": "Si el corazón está sano, todo el cuerpo está sano; si el corazón está corrompido, todo el cuerpo está corrompido.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 30"
+        },
+        {
+          "title": "Evita los asuntos dudosos",
+          "translation": "Deja lo que te haga dudar por aquello que no te haga dudar.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "40 Hadices Nawawi, n.º 31"
+        },
+        {
+          "title": "Ni daño ni devolver daño",
+          "translation": "No debe haber daño ni devolver el daño.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadices Nawawi, n.º 32"
+        },
+        {
+          "title": "El mundo está maldito excepto el dhikr y el conocimiento",
+          "translation": "El mundo está maldito y lo que hay en él está maldito, excepto el recuerdo de Alá, lo que lo ayuda, el erudito y el estudiante.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 33"
+        },
+        {
+          "title": "Alá es bueno y solo acepta lo bueno",
+          "translation": "Alá es Bueno y solo acepta lo que es bueno.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 34"
+        },
+        {
+          "title": "Alá ama a quienes se arrepienten",
+          "translation": "Alá ama a quienes se arrepienten y ama a quienes se purifican.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 35"
+        },
+        {
+          "title": "Está en el mundo como un extraño",
+          "translation": "Está en este mundo como si fueras un extraño o un viajero.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadices Nawawi, n.º 36"
+        },
+        {
+          "title": "Los derechos de Alá sobre Sus siervos",
+          "translation": "El derecho de Alá sobre Sus siervos es que lo adoren solo a Él y no le asocien nada.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadices Nawawi, n.º 37"
+        },
+        {
+          "title": "Invoca a Alá con certeza",
+          "translation": "Invoca a Alá con certeza de la respuesta, y sabe que Alá no responde una súplica que sale de un corazón distraído y desatento.",
+          "narrator": "Abu Hurairah (RA)",
+          "source": "40 Hadices Nawawi, n.º 38"
+        },
+        {
+          "title": "Alá ha perdonado a mi umma los errores",
+          "translation": "Alá ha perdonado a mi umma sus errores, su olvido y lo que se les obliga a hacer.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadices Nawawi, n.º 39"
+        },
+        {
+          "title": "Sé consciente de Alá y Él te protegerá",
+          "translation": "Sé consciente de Alá y Él te protegerá. Sé consciente de Alá y lo encontrarás ante ti.",
+          "narrator": "Abu Abbas Abdullah (RA)",
+          "source": "40 Hadices Nawawi, n.º 40"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Antes de dormir",
+          "translation": "En Tu nombre, oh Alá, muero y vivo.",
+          "narrator": "Al-Bara' ibn Azib (RA)",
+          "source": "Hisnul Muslim; auténtico al-Bujari 6324"
+        },
+        {
+          "title": "Al despertar",
+          "translation": "Todas las alabanzas son para Alá, que nos dio la vida después de habérnosla quitado, y a Él pertenece la resurrección.",
+          "narrator": "Hudhayfah ibn al-Yaman (RA)",
+          "source": "Hisnul Muslim; auténtico al-Bujari 6312"
+        },
+        {
+          "title": "Al entrar en casa",
+          "translation": "En el nombre de Alá entramos, en el nombre de Alá salimos, y en nuestro Señor nos apoyamos.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5096"
+        },
+        {
+          "title": "Al salir de casa",
+          "translation": "En el nombre de Alá, deposito mi confianza en Alá.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5095"
+        },
+        {
+          "title": "Antes de comer",
+          "translation": "En el nombre de Alá.",
+          "narrator": "Umar ibn Abi Salama (RA)",
+          "source": "Hisnul Muslim; auténtico al-Bujari 5376"
+        },
+        {
+          "title": "Después de comer",
+          "translation": "Todas las alabanzas son para Alá, que me alimentó con esto y me lo proveyó sin poder ni fuerza de mi parte.",
+          "narrator": "Muadh ibn Anas (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 4023"
+        },
+        {
+          "title": "Al entrar en la mezquita",
+          "translation": "Oh Alá, ábreme las puertas de Tu misericordia.",
+          "narrator": "Abu Usayd as-Sa'idi (RA)",
+          "source": "Hisnul Muslim; auténtico Muslim 713"
+        },
+        {
+          "title": "Al salir de la mezquita",
+          "translation": "Oh Alá, te pido de Tu favor.",
+          "narrator": "Abu Humaid o Abu Usayd (RA)",
+          "source": "Hisnul Muslim; auténtico Muslim 713"
+        },
+        {
+          "title": "En la angustia",
+          "translation": "No hay dios excepto Alá, el Magnífico, el Tolerante. No hay dios excepto Alá, Señor del Trono magnífico.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "Hisnul Muslim; auténtico al-Bujari 6345"
+        },
+        {
+          "title": "Para el perdón",
+          "translation": "Señor mío, perdóname y acepta mi arrepentimiento, pues Tú eres el siempre dispuesto a aceptar el arrepentimiento, el Más Misericordioso.",
+          "narrator": "Al-Agharr al-Muzani (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 1517"
+        },
+        {
+          "title": "Cuando llueve",
+          "translation": "Oh Alá, que sea una lluvia beneficiosa.",
+          "narrator": "Aisha (RA)",
+          "source": "Hisnul Muslim; auténtico al-Bujari 1032"
+        },
+        {
+          "title": "Al oír el trueno",
+          "translation": "Gloria a Aquel a quien el trueno glorifica con Su alabanza, y los ángeles por temor a Él.",
+          "narrator": "Abdullah ibn az-Zubayr (RA)",
+          "source": "Hisnul Muslim; Al-Muwatta"
+        }
+      ]
+    }
+  ]
+}

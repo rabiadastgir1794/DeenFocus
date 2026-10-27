@@ -7,7 +7,6 @@ import '../../../core/logger/startup_handoff.dart';
 import '../../../core/logger/startup_probe.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/superwall/app_superwall.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../features/focus/focus_entry_intent.dart';
 import '../../../features/focus/model/focus_models.dart';
 import '../../../features/focus/view/focus_tab_screen.dart';
@@ -15,6 +14,7 @@ import '../../../features/home/cycle_mode_entry_intent.dart';
 import '../../../features/home/services/prayer_settings_service.dart';
 import '../../../features/home/view/home_tab_screen.dart';
 import '../../../features/home/view/settings/settings_tab_screen.dart';
+import '../../../features/home/view/widgets/app_bottom_navigation_bar.dart';
 import '../../../features/home/viewmodel/home_tab_view_model.dart';
 import '../../../features/quran/view/quran_tab_screen.dart';
 import '../../../features/tasbih/view/tasbih_tab_screen.dart';
@@ -121,13 +121,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colorScheme = Theme.of(context).colorScheme;
-    const selectedNavColor = AppColors.primary;
-    // Solid nav background so scroll content never shows through.
-    final backgroundColor = isDark
-        ? AppColors.surfaceDark
-        : AppColors.surfaceLight;
     final pages = List<Widget>.generate(_tabs.length, _buildTabPage);
 
     return ChangeNotifierProvider<HomeTabViewModel>(
@@ -136,56 +129,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       )..initialize(),
       child: Scaffold(
         body: IndexedStack(index: _currentIndex, children: pages),
-        bottomNavigationBar: Material(
-          color: backgroundColor,
-          elevation: 8,
-          shadowColor: Colors.black.withValues(alpha: 0.08),
-          child: NavigationBarTheme(
-            data: NavigationBarThemeData(
-              backgroundColor: backgroundColor,
-              surfaceTintColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              elevation: 0,
-              indicatorColor: selectedNavColor.withValues(alpha: 0.18),
-              iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((
-                states,
-              ) {
-                final isSelected = states.contains(WidgetState.selected);
-                return IconThemeData(
-                  color: isSelected
-                      ? selectedNavColor
-                      : colorScheme.onSurfaceVariant,
-                );
-              }),
-              labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((
-                states,
-              ) {
-                final isSelected = states.contains(WidgetState.selected);
-                return Theme.of(context).textTheme.labelSmall?.copyWith(
-                  height: 1.15,
-                  color: isSelected
-                      ? selectedNavColor
-                      : colorScheme.onSurfaceVariant,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                );
-              }),
-            ),
-            child: NavigationBar(
-              backgroundColor: backgroundColor,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              selectedIndex: _currentIndex,
-              onDestinationSelected: (index) => _onDestinationSelected(index),
-              destinations: _tabs
-                  .map(
-                    (tab) => NavigationDestination(
-                      icon: Icon(tab.icon),
-                      label: _labelForTab(l10n, tab.id),
-                    ),
-                  )
-                  .toList(growable: false),
-            ),
-          ),
+        bottomNavigationBar: AppBottomNavigationBar(
+          labels: [
+            for (final tab in _tabs) _labelForTab(l10n, tab.id),
+          ],
+          icons: [for (final tab in _tabs) tab.icon],
+          selectedIndex: _currentIndex,
+          onSelected: _onDestinationSelected,
         ),
       ),
     );

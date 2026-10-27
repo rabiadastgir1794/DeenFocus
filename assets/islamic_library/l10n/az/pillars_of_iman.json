@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "title": "Allaha iman",
+      "subtitle": "Tövhid",
+      "body": "Allaha yeganə həqiqi məbud kimi iman etmək: Onun varlığına, adlarına, sifətlərinə və şəriksiz tək ibadət haqqına.",
+      "reference": "Quran 2:163"
+    },
+    {
+      "title": "Mələklərə iman",
+      "subtitle": "Mələklər",
+      "body": "Mələklər nurdan yaradılmış nəcib məxluqlardır. Allaha ibadət edir və əməlləri yazmaq, vəhyi çatdırmaq da daxil olmaqla Onun əmrlərini yerinə yetirirlər.",
+      "reference": "Quran 2:98"
+    },
+    {
+      "title": "Kitablara iman",
+      "subtitle": "Kitablar",
+      "body": "Allah insanlara hidayət üçün kitablar nazil etmişdir. Müsəlmanlar Allahın göndərdiyi bütün kitablara iman gətirir, Quran isə son qorunmuş vəhydir.",
+      "reference": "Quran 4:136"
+    },
+    {
+      "title": "Elçilərə iman",
+      "subtitle": "Rəsullar",
+      "body": "Allah hər ümmətə insanları yalnız Özünə ibadətə çağırmaq üçün peyğəmbərlər və elçilər göndərmişdir. Məhəmməd ﷺ peyğəmbərlərin sonuncusudur.",
+      "reference": "Quran 33:40"
+    },
+    {
+      "title": "Axirət gününə iman",
+      "subtitle": "Axirət günü",
+      "body": "Ölümdən sonrakı həyata dirilmə, hesab, Cənnət və Cəhənnəm daxildir. Bu iman müsəlmanların məqsəd və məsuliyyətlə yaşamasını formalaşdırır.",
+      "reference": "Quran 99:6-8"
+    },
+    {
+      "title": "Qədərə iman",
+      "subtitle": "Əl-Qədər",
+      "body": "Allahın elmi və qədəri hər şeyi — xeyiri də, çətini də — əhatə edir. Mömin çalışır, Allaha təvəkkül edir və nəticəni səbir və şükrlə qəbul edir.",
+      "reference": "Quran 57:22"
+    }
+  ]
+}

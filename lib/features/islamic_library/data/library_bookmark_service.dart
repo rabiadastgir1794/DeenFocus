@@ -13,6 +13,7 @@ import '../view/hadith_collections_screen.dart';
 import '../view/prayer_guides_screen.dart';
 import '../widgets/library_module_card.dart';
 import 'islamic_library_repository.dart';
+import 'library_content_language.dart';
 import 'library_progress_service.dart';
 
 abstract final class LibraryBookmarkService {
@@ -23,16 +24,17 @@ abstract final class LibraryBookmarkService {
     if (!hasBookmarks) return const [];
 
     final repo = IslamicLibraryRepository.instance;
+    final languageCode = libraryContentLanguageOf(l10n);
     final results = await Future.wait<Object>([
-      repo.loadNamesOfAllah(),
-      repo.loadHadithCollections(),
-      repo.loadDuaCategories(),
-      repo.loadPillarsOfIslam(),
-      repo.loadPillarsOfIman(),
-      repo.loadProphetMuhammad(),
-      repo.loadPrayerGuides(),
-      repo.loadIslamicOccasions(),
-      repo.loadFiqhTopics(),
+      repo.loadNamesOfAllah(languageCode: languageCode),
+      repo.loadHadithCollections(languageCode: languageCode),
+      repo.loadDuaCategories(languageCode: languageCode),
+      repo.loadPillarsOfIslam(languageCode: languageCode),
+      repo.loadPillarsOfIman(languageCode: languageCode),
+      repo.loadProphetMuhammad(languageCode: languageCode),
+      repo.loadPrayerGuides(languageCode: languageCode),
+      repo.loadIslamicOccasions(languageCode: languageCode),
+      repo.loadFiqhTopics(languageCode: languageCode),
     ]);
 
     final names = results[0] as List<AllahName>;

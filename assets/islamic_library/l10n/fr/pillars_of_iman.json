@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "title": "Croyance en Allah",
+      "subtitle": "Tawhid",
+      "body": "Croire en Allah comme l’unique vrai Dieu : Son existence, Ses noms, Ses attributs et Son droit d’être adoré seul, sans associé.",
+      "reference": "Coran 2:163"
+    },
+    {
+      "title": "Croyance aux anges",
+      "subtitle": "Malaika",
+      "body": "Les anges sont de nobles créatures de lumière qui adorent Allah et exécutent Ses ordres, notamment en enregistrant les actes et en transmettant la révélation.",
+      "reference": "Coran 2:98"
+    },
+    {
+      "title": "Croyance aux Livres",
+      "subtitle": "Kutub",
+      "body": "Allah a révélé des Écritures pour guider l’humanité. Les musulmans croient en tous les Livres envoyés par Allah, le Coran étant la révélation finale préservée.",
+      "reference": "Coran 4:136"
+    },
+    {
+      "title": "Croyance aux messagers",
+      "subtitle": "Rusul",
+      "body": "Allah a envoyé des prophètes et des messagers à chaque peuple pour appeler les gens à L’adorer Lui seul. Muhammad ﷺ est le sceau des prophètes.",
+      "reference": "Coran 33:40"
+    },
+    {
+      "title": "Croyance au Jour dernier",
+      "subtitle": "Yawm al-Akhira",
+      "body": "La vie après la mort comprend la résurrection, le jugement, le Paradis et l’Enfer. Cette croyance façonne la manière dont les musulmans vivent, avec un but et une responsabilité.",
+      "reference": "Coran 99:6-8"
+    },
+    {
+      "title": "Croyance au décret divin",
+      "subtitle": "Al-Qadar",
+      "body": "La science et le décret d’Allah englobent toute chose, le bien comme l’épreuve. Les croyants s’efforcent, font confiance à Allah et acceptent les issues avec patience et gratitude.",
+      "reference": "Coran 57:22"
+    }
+  ]
+}

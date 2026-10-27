@@ -1,0 +1,524 @@
+{
+  "categories": [
+    {
+      "items": [
+        {
+          "title": "Oyananda",
+          "translation": "Həmd o Allaha ki, bizi öldürdükdən sonra diriltdi və diriliş Onadır.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Səhər zikri",
+          "translation": "Səhərə çıxdıq və mülk Allaha məxsusdur, həmd də Allaha. Allahdan başqa məbud yoxdur, O təkdir, şəriki yoxdur. Mülk Onundur, həmd Onundur və O hər şeyə qadirdir.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Seyyidül-istiğfar",
+          "translation": "Allahım, Sən mənim Rəbbimsən. Səndən başqa ibadətə layiq olan yoxdur. Məni yaratmısan və mən Sənin qulunam. Gücüm çatdığı qədər əhdinə və vədinə sadiqəm. Etdiyim pisliyin şərindən Sənə sığınıram. Üzərimdəki nemətini və günahımı etiraf edirəm, məni bağışla, çünki günahları Səndən başqası bağışlamaz.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Ayətəl-Kürsi",
+          "translation": "Allah — Ondan başqa məbud yoxdur, əbədi Diridir, hər şeyi ayakta tutandır. Onu nə mürgü, nə də yuxu tutur. Göylərdə və yerdə nə varsa Onundur. Onun izni olmadan yanında kim şəfaət edə bilər? O, onların önündə olanı da, sonra gələcəyi də bilir, onlar isə Onun elmindən yalnız Onun istədiyi qədərini əhatə edirlər. Onun Kürsüsü göyləri və yeri bürüyür, onların qorunması Onu yormaz. O, Ən Ucadır, Ən Böyükdür.",
+          "reference": "Quran 2:255"
+        },
+        {
+          "title": "İxlas surəsi",
+          "translation": "De: O, Allah Təkdir. Allah əbədi sığınacaqdır. Doğmamışdır və doğulmamışdır və heç kəs Ona bərabər deyil. (Səhərlər 3 dəfə oxu.)",
+          "reference": "Quran 112; Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Fələq surəsi",
+          "translation": "De: Sübhün Rəbbinə sığınıram yaratdığının şərindən, qaranlıq çökəndə onun şərindən, düyünlərə üfürənlərin şərindən və paxıl paxıllıq edəndə onun şərindən. (Səhərlər 3 dəfə oxu.)",
+          "reference": "Quran 113; Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Nas surəsi",
+          "translation": "De: İnsanların Rəbbinə, insanların Padşahına, insanların İlahına sığınıram, insanların sinələrinə pıçıldayan, sonra çəkilən vəsvəsəçinin şərindən — cinlərdən və insanlardan. (Səhərlər 3 dəfə oxu.)",
+          "reference": "Quran 114; Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Səhər qorunması (3 dəfə)",
+          "translation": "Adı ilə yerdə və göydə heç nəyin zərər verə bilmədiyi Allahın adı ilə, O, Eşidəndir, Biləndir. (3 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Allahdan razılıq",
+          "translation": "Allahın Rəbbim, İslamın dinim və Məhəmmədin ﷺ peyğəmbərim olmasından razıyam. (3 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Allahla səhər",
+          "translation": "Allahım, Səninlə səhərə çıxırıq, Səninlə axşama giririk, Səninlə yaşayırıq, Səninlə ölürük və diriliş Sənədir.",
+          "reference": "Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Sübhanəllah və bihəmdihi (100 dəfə)",
+          "translation": "Allah pakdır və həmd Onadır. (Səhərlər 100 dəfə oxu.)",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Tövhid (100 dəfə)",
+          "translation": "Allahdan başqa məbud yoxdur, O təkdir, şəriki yoxdur. Mülk Onundur, həmd Onundur və O hər şeyə qadirdir. (Səhərlər 100 dəfə oxu.)",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Ya Həyyu Ya Qəyyum",
+          "translation": "Ey əbədi Diri, ey Qaim tutan, mərhəmətinlə kömək diləyirəm. Bütün işimi mənim üçün düzəlt və məni bir göz qırpımı qədər belə öz halıma buraxma.",
+          "reference": "Sünen ən-Nəsai (Hisnul Muslim)"
+        },
+        {
+          "title": "Həsbünəllah",
+          "translation": "Allah mənə yetər. Ondan başqa məbud yoxdur. Ona təvəkkül etdim və O, əzəmətli Ərşin Rəbbidir. (7 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Axşam zikri",
+          "translation": "Axşama girdik və mülk Allaha məxsusdur, həmd də Allaha. Allahdan başqa məbud yoxdur, O təkdir, şəriki yoxdur. Mülk Onundur, həmd Onundur və O hər şeyə qadirdir.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Allahla axşam",
+          "translation": "Allahım, Səninlə axşama giririk, Səninlə səhərə çıxırıq, Səninlə yaşayırıq, Səninlə ölürük və son dönüş Sənədir.",
+          "reference": "Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Seyyidül-istiğfar",
+          "translation": "Allahım, Sən mənim Rəbbimsən. Səndən başqa ibadətə layiq olan yoxdur. Məni yaratmısan və mən Sənin qulunam. Gücüm çatdığı qədər əhdinə və vədinə sadiqəm. Etdiyim pisliyin şərindən Sənə sığınıram. Üzərimdəki nemətini və günahımı etiraf edirəm, məni bağışla, çünki günahları Səndən başqası bağışlamaz.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Ayətəl-Kürsi",
+          "translation": "Allah — Ondan başqa məbud yoxdur, əbədi Diridir, hər şeyi ayakta tutandır...",
+          "reference": "Quran 2:255"
+        },
+        {
+          "title": "İxlas surəsi (3 dəfə)",
+          "translation": "De: O, Allah Təkdir... (Axşamlar 3 dəfə oxu.)",
+          "reference": "Quran 112; Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Fələq surəsi (3 dəfə)",
+          "translation": "De: Sübhün Rəbbinə sığınıram... (Axşamlar 3 dəfə oxu.)",
+          "reference": "Quran 113; Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Nas surəsi (3 dəfə)",
+          "translation": "De: İnsanların Rəbbinə sığınıram... (Axşamlar 3 dəfə oxu.)",
+          "reference": "Quran 114; Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Axşam qorunması (3 dəfə)",
+          "translation": "Adı ilə yerdə və göydə heç nəyin zərər verə bilmədiyi Allahın adı ilə, O, Eşidəndir, Biləndir. (3 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Allahdan razılıq",
+          "translation": "Allahın Rəbbim, İslamın dinim və Məhəmmədin ﷺ peyğəmbərim olmasından razıyam. (3 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Məxluqatdan sığınmaq",
+          "translation": "Allahın kamil kəlmələrindən yaratdığının şərindən sığınıram. (Axşamlar 3 dəfə oxu.)",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Sübhanəllah və bihəmdihi (100 dəfə)",
+          "translation": "Allah pakdır və həmd Onadır. (Axşamlar 100 dəfə oxu.)",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Bədən və eşitmə əfiyyəti",
+          "translation": "Allahım, bədənimə əfiyyət ver. Allahım, eşitməyimə əfiyyət ver. Allahım, görməyimə əfiyyət ver. Səndən başqa məbud yoxdur. (3 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud"
+        },
+        {
+          "title": "Ya Həyyu Ya Qəyyum",
+          "translation": "Ey əbədi Diri, ey Qaim tutan, mərhəmətinlə kömək diləyirəm. Bütün işimi mənim üçün düzəlt və məni bir göz qırpımı qədər belə öz halıma buraxma.",
+          "reference": "Sünen ən-Nəsai (Hisnul Muslim)"
+        },
+        {
+          "title": "Həsbünəllah (7 dəfə)",
+          "translation": "Allah mənə yetər. Ondan başqa məbud yoxdur. Ona təvəkkül etdim və O, əzəmətli Ərşin Rəbbidir. (7 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Yeməzdən əvvəl",
+          "translation": "Allahın adı ilə.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Bismillahı unutsan",
+          "translation": "Allahın adı ilə, əvvəlində və sonunda.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Yeməkdən sonra",
+          "translation": "Həmd o Allaha ki, bunu mənə yedizdirdi və öz gücümdən və qüdrətimdən olmayaraq mənə ruzi etdi.",
+          "reference": "Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Evdən çıxanda",
+          "translation": "Allahın adı ilə, Allaha təvəkkül etdim. Güc və qüvvət yalnız Allahdandır.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Evə girəndə",
+          "translation": "Allahın adı ilə giririk, Allahın adı ilə çıxırıq və Rəbbimizə təvəkkül edirik.",
+          "reference": "Sünen Əbu Davud"
+        },
+        {
+          "title": "Məscidə girəndə",
+          "translation": "Allahım, mənə rəhmətinin qapılarını aç.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Məsciddən çıxanda",
+          "translation": "Allahım, Səndən lütfündən diləyirəm.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Ayaqyoluna girəndə",
+          "translation": "Allahın adı ilə. Allahım, kişi və qadın çirkli ruhlarından Sənə sığınıram.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Ayaqyolundan çıxanda",
+          "translation": "Səndən bağışlanma diləyirəm.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Dəstəmazdan əvvəl",
+          "translation": "Allahın adı ilə.",
+          "reference": "Sünen Əbu Davud və İbn Macə"
+        },
+        {
+          "title": "Dəstəmazdan sonra",
+          "translation": "Şəhadət edirəm ki, Allahdan başqa məbud yoxdur, O təkdir, şəriki yoxdur, və şəhadət edirəm ki, Məhəmməd Onun qulu və elçisidir.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Geyinəndə",
+          "translation": "Həmd o Allaha ki, bunu mənə geydirdi və öz gücümdən və qüdrətimdən olmayaraq mənə ruzi etdi.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Güzgüyə baxanda",
+          "translation": "Allahım, xarici görkəmimi gözəl etdiyin kimi xarakterimi də gözəl et.",
+          "reference": "Müsnəd Əhməd"
+        },
+        {
+          "title": "Qəzəblənəndə",
+          "translation": "Qovulmuş şeytandan Allaha sığınıram.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Asqıranda",
+          "translation": "Həmd Allaha. (Asqırana cavab: Yərhəmükallah — Allah sənə rəhm etsin. Sonra asqıran deyir: Yəhdikumullahu və yuslihu baləkum.)",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Xoruz səsi eşidəndə",
+          "translation": "Allahım, Səndən lütfündən diləyirəm.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Yağış yağanda",
+          "translation": "Allahım, onu faydalı yağış et.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Dar olanda",
+          "translation": "Allahdan başqa məbud yoxdur, Əzəmətli, Həlim. Allahdan başqa məbud yoxdur, əzəmətli Ərşin Rəbbi. Allahdan başqa məbud yoxdur, göylərin Rəbbi, yerin Rəbbi və nəcib Ərşin Rəbbi.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Namazı bitirdikdən sonra",
+          "translation": "Allahdan bağışlanma diləyirəm (3 dəfə). Allahım, Sən Sülhsən və sülh Səndəndir. Mübarəksən, ey cəlal və ikram sahibi.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Namazdan sonra təsbeh",
+          "translation": "Allah pakdır (33), həmd Allaha (33), Allah ən böyükdür (33), sonra bir dəfə tövhid kəlməsi ilə tamamla.",
+          "reference": "Səhih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Yatmazdan əvvəl",
+          "translation": "Sənin adınla, Allahım, ölürəm və yaşayıram.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Yuxu zikri",
+          "translation": "Allah pakdır, həmd Allaha, Allah ən böyükdür — Peyğəmbərin ﷺ öyrətdiyi yuxu təsbehi.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Yatmazdan əvvəl Ayətəl-Kürsi",
+          "translation": "Allah — Ondan başqa məbud yoxdur, əbədi Diridir, hər şeyi ayakta tutandır. Onu nə mürgü, nə də yuxu tutur. Göylərdə və yerdə nə varsa Onundur. Onun izni olmadan yanında kim şəfaət edə bilər? O, onların [indi] önündə olanı da, sonra gələcəyi də bilir, onlar isə Onun elmindən yalnız Onun istədiyi qədərini əhatə edirlər. Onun Kürsüsü göyləri və yeri bürüyür, onların qorunması Onu yormaz. O, Ən Ucadır, Ən Böyükdür. (Yatmazdan əvvəl Ayətəl-Kürsini oxu. Bunu edənin üzərində səhərə qədər Allahdan bir qoruyucu olar.)",
+          "reference": "Quran 2:255; Səhih əl-Buxari"
+        },
+        {
+          "title": "Bəqərənin son iki ayəsi",
+          "translation": "Elçi Rəbbindən ona nazil olana iman gətirdi, möminlər də. Hamısı Allaha, mələklərinə, kitablarına və elçilərinə iman gətirdi: “Onun elçilərindən heç birini ayırmırıq.” Və dedilər: “Eşitdik və itaət etdik. Bağışlamanı diləyirik, Rəbbimiz, və son dönüş Sənədir.” Allah heç kəsə gücündən artığını yükləməz. Qazandığı xeyir onundur, qazandığı şər də onun boynunadır. “Rəbbimiz, unutsaq və ya yanılsaq bizi tutma. Rəbbimiz, bizdən əvvəlkilərə yüklədiyin kimi bizə ağır yük qoyma. Rəbbimiz, daşıya bilməyəcəyimizi bizə yükləmə. Bizi əfv et, bağışla və bizə rəhm et. Sən bizim himayəçimizsən, kafir qövmə qarşı bizə yardım et.” (Bəqərənin bu son iki ayəsini gecə oxuyan üçün yetər.)",
+          "reference": "Quran 2:285-286; Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Yatmazdan əvvəl üç qul",
+          "translation": "İxlas, Fələq və Nası (hər birini üç dəfə) oxuduqdan sonra ovuclara üfür və bədənə çək.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Yatmazdan əvvəl təvəkkül",
+          "translation": "Allahım, özümü Sənə təslim etdim, işimi Sənə həvalə etdim, üzümü Sənə çevirdim və belimi Sənə söykədim, Sənə ümid və qorxu ilə. Səndən qaçıb sığınacaq yalnız Sənədir. Nazil etdiyin Kitaba və göndərdiyin Peyğəmbərə iman gətirdim.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Gecə dönəndə",
+          "translation": "Allahdan başqa məbud yoxdur, Tək, Qalib. Göylərin, yerin və aralarındakının Rəbbi, Qüdrətli, çox Bağışlayan.",
+          "reference": "Sünen ən-Nəsai (Hisnul Muslim)"
+        },
+        {
+          "title": "Gecə birdən oyananda",
+          "translation": "Allahdan başqa məbud yoxdur, O təkdir, şəriki yoxdur... Həmd Allaha, Allah pakdır, Allahdan başqa məbud yoxdur, Allah ən böyükdür və güc və qüvvət yalnız Allahdandır. Sonra dua et.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Yuxu duası",
+          "translation": "Qovulmuş şeytandan və bu yuxunun şərindən Allaha sığınıram. (Sonra sola üç dəfə yüngülcə tüpür və başqasına danışma.)",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Gecə namazına duranda",
+          "translation": "Allahım, həmd Sənə məxsusdur. Sən göylərin, yerin və onlarda olanların Qaim tutanısan...",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Yeməzdən əvvəl",
+          "translation": "Allahın adı ilə.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Bismillahı unutsan",
+          "translation": "Allahın adı ilə, əvvəli və sonu.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Yeməkdən sonra",
+          "translation": "Həmd o Allaha ki, bunu mənə yedizdirdi və öz gücümdən və qüdrətimdən olmayaraq mənə ruzi etdi.",
+          "reference": "Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Yeməkdən sonra (uzun)",
+          "translation": "Həmd Allaha — bol, təmiz və bərəkətli həmd — heç vaxt yetməyən, tərk edilməyən və ehtiyacdan düşməyən bir həmd, Rəbbimiz.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Süd içəndə",
+          "translation": "Allahım, onu bizim üçün bərəkətli et və bizə ondan daha çox ver.",
+          "reference": "Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Oruclu ikən yemək təklif olunanda",
+          "translation": "Mən orucam.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Səfərə başlayanda",
+          "translation": "Bunu bizə ram edənə paklıq olsun, biz özümüz bunu bacarmazdıq. Şübhəsiz Rəbbimizə dönəcəyik.",
+          "reference": "Quran 43:13-14"
+        },
+        {
+          "title": "Səfər duası",
+          "translation": "Allahım, bu səfərimizdə Səndən yaxşılıq və təqva və Sənin razı qaldığın əməllər diləyirik. Allahım, bu səfəri bizə asan et və uzaqlığını bizə yaxınlaşdır. Allahım, Sən səfərdə yoldaşsan və ailədə qoruyansan.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Səfərdən qayıdanda",
+          "translation": "Qayıdırıq, tövbə edirik, ibadət edirik və Rəbbimizə həmd deyirik.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Bir şəhərə girəndə",
+          "translation": "Allahım, yeddi göyün və onların kölgələdiyinin Rəbbi... Bu şəhərin və əhlinin xeyrini Səndən diləyirəm və onun şərindən və əhlinin şərindən Sənə sığınıram.",
+          "reference": "Sünen ən-Nəsai (Hisnul Muslim)"
+        },
+        {
+          "title": "Heyvan və ya nəqliyyat büdrəyəndə",
+          "translation": "Allahın adı ilə.",
+          "reference": "Sünen Əbu Davud"
+        },
+        {
+          "title": "Gəlişdə ev sahibinin salamı",
+          "translation": "Allahım, onu bizim üçün bərəkətli et.",
+          "reference": "Səyahətçilərin ümumi duası (Hisnul Muslim)"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Xəstəni ziyarət",
+          "translation": "Zərər yoxdur, Allah istəsə təmizlənmədir.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Xəstə üçün",
+          "translation": "Allahım, insanların Rəbbi, zərəri apar və ona şəfa ver, çünki Sən Şəfa verənsən. Sənin şəfandan başqa şəfa yoxdur — ardında xəstəlik qoymayan bir şəfa.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Ağrı olanda",
+          "translation": "Allahın adı ilə (3 dəfə). Duyduğum və qorxduğum şeyin şərindən Allahın qüdrətinə sığınıram (7 dəfə), əli ağrı yerinə qoyaraq.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Xəstəlik üçün ruqyə",
+          "translation": "Zərəri apar, ey insanların Rəbbi. Şəfa ver, çünki Sən Şəfa verənsən. Səndən başqa şəfa verən yoxdur.",
+          "reference": "Səhih əl-Buxari və Səhih Muslim"
+        },
+        {
+          "title": "Xəstə müsəlmanı ziyarət edəndə",
+          "translation": "Əzəmətli Allahdan, əzəmətli Ərşin Rəbbindən, sənə şəfa verməsini diləyirəm. (7 dəfə oxu.)",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Ölüm vaxtında",
+          "translation": "Allahdan başqa məbud yoxdur. (Can verəni bunu deməyə təşviq et.)",
+          "reference": "Səhih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Sığınma",
+          "translation": "Allahın kamil kəlmələrindən yaratdığının şərindən sığınıram.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Narahatlıqdan qorunma",
+          "translation": "Allahım, qəm və kədərdən, acizlik və tənbəllikdən, qorxaqlıq və xəsislikdən, borcun üstün gəlməsindən və insanların əzməsindən Sənə sığınıram.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Evdən çıxanda qorunma",
+          "translation": "Allahın adı ilə, Allaha təvəkkül etdim. Güc və qüvvət yalnız Allahdandır.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Göz dəyməsinə qarşı",
+          "translation": "Hər şeytandan, zəhərli canlıdan və hər pis gözdən Allahın kamil kəlmələrinə sığınıram.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Yunus duası",
+          "translation": "Səndən başqa məbud yoxdur. Sən paksan. Həqiqətən mən zalimlərdən olmuşam.",
+          "reference": "Quran 21:87; Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Qorxanda",
+          "translation": "Allahın qəzəbindən və cəzasından, qullarının şərindən, şeytanların vəsvəsəsindən və onların hazır olmasından Onun kamil kəlmələrinə sığınıram.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Uşaqların qorunması",
+          "translation": "Sizin hər ikinizi hər şeytandan, zəhərli canlıdan və hər pis gözdən Allahın kamil kəlmələrinə sığındırıram.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Birinin bəlasını görəndə",
+          "translation": "Həmd o Allaha ki, səni mübtəla etdiyindən məni salamat saxladı və məni yaratdıqlarının çoxundan üstün etdi. (Bunu sakit de, həmin şəxsi incitmək üçün ucadan yox.)",
+          "reference": "Sünen ət-Tirmizi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Seyyidül-istiğfar",
+          "translation": "Allahım, Sən mənim Rəbbimsən. Səndən başqa ibadətə layiq olan yoxdur... məni bağışla, çünki günahları Səndən başqası bağışlamaz.",
+          "reference": "Səhih əl-Buxari"
+        },
+        {
+          "title": "Bağışlanma diləmək",
+          "translation": "Rəbbim, məni bağışla və tövbəmi qəbul et. Sən tövbəni qəbul edən, ən mərhəmətlisən.",
+          "reference": "Sünen ət-Tirmizi"
+        },
+        {
+          "title": "Əstəğfirullah",
+          "translation": "Allahdan bağışlanma diləyirəm.",
+          "reference": "Ümumi zikr"
+        },
+        {
+          "title": "Peyğəmbərin istiğfarı",
+          "translation": "Ondan başqa məbud olmayan, əbədi Diri, Qaim tutan Allahdan bağışlanma diləyirəm və Ona tövbə edirəm.",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        },
+        {
+          "title": "Adəm duası",
+          "translation": "Rəbbimiz, özümüzə zülm etdik. Əgər bizi bağışlamasan və bizə rəhm etməsən, şübhəsiz ziyana uğrayanlardan olarıq.",
+          "reference": "Quran 7:23"
+        },
+        {
+          "title": "Əhatəli bağışlanma",
+          "translation": "Allahım, bütün günahımı bağışla — kiçiyini və böyüyünü, birincisini və sonuncusunu, açıq olanını və gizli olanını.",
+          "reference": "Səhih Muslim"
+        },
+        {
+          "title": "Məclisdə ən yaxşı istiğfar",
+          "translation": "Sən paksan, Allahım, və həmd Sənədir. Şəhadət edirəm ki, Səndən başqa məbud yoxdur. Səndən bağışlanma diləyirəm və Sənə tövbə edirəm. (Məclisin sonunda deyilir.)",
+          "reference": "Sünen Əbu Davud və ət-Tirmizi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Valideynlər üçün",
+          "translation": "Rəbbim, məni kiçik ikən böyütdükləri kimi onlara rəhm et.",
+          "reference": "Quran 17:24"
+        },
+        {
+          "title": "Mömin valideynlər üçün",
+          "translation": "Rəbbimiz, hesab qurulduğu gün məni, valideynlərimi və möminləri bağışla.",
+          "reference": "Quran 14:41"
+        },
+        {
+          "title": "Valideynlər üçün bağışlanma",
+          "translation": "Rəbbim, məni, valideynlərimi, evimə mömin olaraq girəni, mömin kişiləri və mömin qadınları bağışla.",
+          "reference": "Quran 71:28"
+        },
+        {
+          "title": "Valideynlər vəfat edəndən sonra yaxşılıq",
+          "translation": "Allahım, məni və valideynlərimi bağışla və məni kiçik ikən böyütdükləri kimi onlara rəhm et.",
+          "reference": "Əsasən Quran 17:24"
+        },
+        {
+          "title": "Valideynlərə yaxşılıq",
+          "translation": "Rəbbin yalnız Ona ibadət etməyinizi və valideynlərə yaxşılıq etməyinizi hökm etmişdir.",
+          "reference": "Quran 17:23"
+        }
+      ]
+    }
+  ]
+}

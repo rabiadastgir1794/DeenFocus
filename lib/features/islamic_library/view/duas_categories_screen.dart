@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_dua.dart';
 import 'duas_reader_screen.dart';
 import 'library_category_tile.dart';
@@ -16,20 +17,16 @@ class DuasCategoriesScreen extends StatefulWidget {
   State<DuasCategoriesScreen> createState() => _DuasCategoriesScreenState();
 }
 
-class _DuasCategoriesScreenState extends State<DuasCategoriesScreen> {
+class _DuasCategoriesScreenState extends State<DuasCategoriesScreen>
+    with LibraryLanguageReload {
   bool _loading = true;
   List<DuaCategory> _categories = const [];
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
     final categories = await IslamicLibraryRepository.instance
-        .loadDuaCategories();
-    if (!mounted) return;
+        .loadDuaCategories(languageCode: languageCode);
+    if (!isCurrentLibraryLoad(generation)) return;
     setState(() {
       _categories = categories;
       _loading = false;

@@ -1,0 +1,109 @@
+{
+  "items": [
+    {
+      "title": "Che cos'è il fiqh?",
+      "overview": "Il fiqh è la comprensione umana e l'applicazione della legge islamica ricavata dal Corano e dalla Sunnah. Riguarda l'adorazione, le transazioni, il diritto di famiglia e la condotta quotidiana.",
+      "keyPoints": "Gli studiosi usano principi come il Corano, gli hadith autentici, il consenso (ijma) e il ragionamento analogico (qiyas) per ricavare i giudizi. Il fiqh è una guida pratica per vivere l'Islam giorno per giorno.",
+      "differences": "Scuole e comunità diverse possono giungere a conclusioni diverse su questioni secondarie, condividendo le stesse fonti fondamentali. Questo è normale nella storia giuridica islamica.",
+      "commonGround": "Tutti i musulmani affermano il Corano come parola di Allah e la profezia di Muhammad ﷺ. Le differenze nel fiqh riguardano di solito i dettagli della pratica, non i fondamenti della fede."
+    },
+    {
+      "title": "Perché esistono le differenze",
+      "overview": "Gli studiosi islamici hanno sempre avuto opinioni diverse su molte questioni giuridiche. Il Profeta ﷺ permise la differenza tra i suoi compagni nelle questioni non essenziali.",
+      "keyPoints": "Le ragioni includono: hadith diversi giunti in regioni diverse, interpretazioni linguistiche differenti, circostanze nuove e un ijtihad sincero (sforzo erudito) di studiosi qualificati.",
+      "differences": "Alcune comunità seguono un madhab specifico in modo rigoroso; altre combinano le opinioni o seguono studiosi locali. Anche il contesto culturale influenza come si applicano i giudizi.",
+      "commonGround": "La grande maggioranza dei musulmani concorda sui pilastri dell'Islam e dell'iman, sui principi del cibo halal, sulla preghiera come obbligo e sugli insegnamenti morali del Corano."
+    },
+    {
+      "title": "Islam sunnita — quattro madhab",
+      "overview": "I musulmani sunniti seguono il Corano, la Sunnah e il consenso della comunità dei primi tempi. Col tempo emersero quattro grandi scuole giuridiche (madhab), ciascuna intitolata a un grande imam.",
+      "keyPoints": "I madhab hanafi, maliki, shafi'i e hanbali sono tutti percorsi validi nell'Islam sunnita. La maggior parte dei musulmani sunniti ha storicamente seguito un madhab tramite la propria comunità o regione.",
+      "differences": "I madhab possono differire nei dettagli del Wudu, nella postura della preghiera, nelle regole del digiuno o nelle transazioni commerciali. Sono differenze erudite, non divisioni nella credenza fondamentale.",
+      "commonGround": "Tutti e quattro i madhab accettano gli stessi sei pilastri dell'iman e i cinque pilastri dell'Islam. Differiscono soprattutto nel metodo e nelle conclusioni del ragionamento giuridico."
+    },
+    {
+      "title": "Madhab hanafi",
+      "overview": "Fondato dall'imam Abu Hanifa (m. 767 d.C.). È il madhab più seguito nel mondo, soprattutto in Turchia, in Asia centrale e meridionale e in parti dei Balcani.",
+      "keyPoints": "Sottolinea la ragione (ra'y), l'interesse pubblico (istihsan) e la consuetudine (urf). È noto per la flessibilità nelle situazioni nuove. Molte comunità deobandi e barelvi seguono il fiqh hanafi.",
+      "differences": "Gli hanafi possono unire Maghrib e Isha in certi casi di viaggio o difficoltà, dove altri non lo fanno. La posizione delle mani nella preghiera e alcuni dettagli del Wudu differiscono dagli altri madhab.",
+      "commonGround": "Gli hanafi condividono lo stesso Corano, lo stesso corpus di hadith e la stessa credenza sunnita fondamentale degli studiosi maliki, shafi'i e hanbali."
+    },
+    {
+      "title": "Madhab maliki",
+      "overview": "Fondato dall'imam Malik ibn Anas (m. 795 d.C.) a Madinah. Prevalente in Africa del Nord e dell'Ovest, in parti del Golfo e tra molte comunità musulmane africane nel mondo.",
+      "keyPoints": "Forte accento sulla pratica della gente di Madinah (amal ahl al-Madinah) insieme agli hadith. Usa le masalih mursalah (beneficio pubblico) nel ragionamento giuridico.",
+      "differences": "I maliki tradizionalmente lasciano le braccia lungo i fianchi nella preghiera, invece di incrociarle. Alcuni giudizi su cibo, contratti e la passata sui calzini differiscono dalle posizioni hanafi o shafi'i.",
+      "commonGround": "Gli studiosi maliki affermano gli stessi pilastri della fede e usano le stesse fonti fondamentali degli altri madhab sunniti."
+    },
+    {
+      "title": "Madhab shafi'i",
+      "overview": "Fondato dall'imam al-Shafi'i (m. 820 d.C.). Diffuso nel Sud-est asiatico, in Africa orientale, nello Yemen e in parti del Levante e del Caucaso.",
+      "keyPoints": "Sistematizzò gli usul al-fiqh (principi della giurisprudenza) che influenzarono tutte le scuole successive. Equilibra hadith, consenso e qiyas con un metodo rigoroso.",
+      "differences": "Gli shafi'i recitano Al-Fatiha dietro l'imam nella preghiera in congregazione (dove gli hanafi spesso restano in silenzio). Alcuni dettagli della Zakat e dell'eredità differiscono dai giudizi hanafi.",
+      "commonGround": "Lo shafi'i è pienamente ortodosso sunnita. Molti musulmani del Sud-est asiatico seguono questo madhab, condividendo moschee e comunità con altri."
+    },
+    {
+      "title": "Madhab hanbali",
+      "overview": "Fondato dall'imam Ahmad ibn Hanbal (m. 855 d.C.). Oggi è il più presente in Arabia Saudita e tra molte comunità salafi, anche se non tutti i salafi si identificano come hanbali.",
+      "keyPoints": "Sottolinea l'adesione letterale alle prove testuali (Corano e hadith) ed è cauto verso il ragionamento speculativo. L'imam Ahmad fu anche un grande studioso di hadith.",
+      "differences": "Il fiqh hanbali può essere più rigoroso su alcune questioni (per esempio certi cibi, la musica o atti pubblici) rispetto alla flessibilità hanafi. I dettagli della preghiera e del Wudu hanno giudizi distinti.",
+      "commonGround": "L'hanbali è uno dei quattro madhab sunniti. I suoi seguaci condividono l'aqeedah con gli altri sunniti su Tawhid, profezia e vita futura."
+    },
+    {
+      "title": "Islam sciita (duodecimano)",
+      "overview": "I musulmani sciiti duodecimani seguono il Corano e gli insegnamenti del Profeta ﷺ e dei dodici Imam della Ahl al-Bayt. Sono la più grande comunità sciita nel mondo.",
+      "keyPoints": "Un accento distinto sull'Imamato: la guida spirituale e comunitaria di Ali (RA) e degli Imam successivi. La giurisprudenza si ricava tramite gli Imam e gli studiosi qualificati (marja).",
+      "differences": "Alcune pratiche della preghiera differiscono (per esempio unire le preghiere nei giorni ordinari, usare una turbah o terra per la prostrazione). Il matrimonio temporaneo (mut'ah) è permesso nel fiqh duodecimano ma rifiutato dai sunniti.",
+      "commonGround": "Gli sciiti duodecimani affermano il Corano, la profezia di Muhammad ﷺ, la preghiera, il digiuno, la Zakat e l'Hajj. Il dialogo e la convivenza con i musulmani sunniti sono comuni in molte società."
+    },
+    {
+      "title": "Tradizione deobandi",
+      "overview": "Un movimento sunnita di rinnovamento nato a Darul Uloom Deoband, in India (1867). Non è un madhab a parte, ma una tradizione erudita e educativa hanafi.",
+      "keyPoints": "Sottolinea il Corano, gli hadith e il fiqh hanafi classico. Forte attenzione all'istruzione nelle madrasa, al tabligh (diffusione) e a evitare pratiche viste come innovazioni non verificate.",
+      "differences": "I deobandi sono in genere cauti verso le celebrazioni del Mawlid, certe pratiche nei santuari e alcuni costumi sufi, anche se molti studiosi deobandi rispettano il tasawwuf a certe condizioni.",
+      "commonGround": "I deobandi sono musulmani sunniti hanafi che condividono le credenze fondamentali con gli altri hanafi. Differiscono soprattutto dai barelvi e da alcuni gruppi sufi nelle pratiche culturali e devozionali."
+    },
+    {
+      "title": "Tradizione barelvi",
+      "overview": "Un movimento sunnita hanafi associato ad Ahmad Raza Khan Barelvi (m. 1921) in India. Sottolinea l'amore per il Profeta ﷺ e la venerazione degli awliya (santi).",
+      "keyPoints": "Sostiene il Mawlid (la celebrazione della nascita del Profeta), gli incontri di milad e la visita ai santuari di studiosi retti. Segue il fiqh hanafi per l'adorazione e le transazioni.",
+      "differences": "I barelvi praticano forme di espressione devozionale che deobandi e salafi possono evitare, come alzarsi alla menzione del Profeta ﷺ (qiyam) e Mawlid elaborati.",
+      "commonGround": "I barelvi affermano la stessa Shahadah, lo stesso Corano e le stesse cinque preghiere quotidiane degli altri sunniti hanafi. Le differenze con i deobandi riguardano soprattutto la cultura devozionale, non la credenza fondamentale."
+    },
+    {
+      "title": "Metodologia salafi",
+      "overview": "I salafi cercano di seguire la comprensione delle prime generazioni musulmane (Salaf). È un approccio metodologico, non un quinto madhab.",
+      "keyPoints": "Ritorno diretto al Corano e alla Sunnah; cautela verso il taqlid (seguire ciecamente) di un solo madhab; spesso influenzati dal fiqh hanbali e dalle istituzioni erudite saudite.",
+      "differences": "I salafi possono rifiutare pratiche che considerano bid'ah (innovazione), tra cui alcune forme di Mawlid, certe pratiche sufi e l'adesione a un solo madhab senza prove.",
+      "commonGround": "I salafi sono musulmani sunniti che affermano gli stessi pilastri dell'Islam. Molti convivono in comunità con chi segue un madhab, discutendo questioni giuridiche e culturali secondarie."
+    },
+    {
+      "title": "Ahl-e Hadith (Ahle Hadith)",
+      "overview": "Ahl-e Hadith è un movimento sunnita presente in Pakistan, India e Bangladesh, che prende il nome dalla Gente dell'Hadith, i primi studiosi che davano priorità alle narrazioni autentiche. È una tradizione distinta dell'Asia meridionale, non un madhab a parte.",
+      "keyPoints": "Sottolinea l'adesione diretta al Corano e agli hadith sahih, piuttosto che il taqlid cieco di un solo madhab. I giudizi si ricavano da un esame erudito indipendente delle prove testuali, spesso in linea con le posizioni hanbali, ma senza essere vincolati a un solo imam.",
+      "differences": "Gli studiosi Ahl-e Hadith possono differire dagli hanafi deobandi sul Mawlid, sulla visita ai santuari e su alcuni dettagli della preghiera. Condividono molto con la metodologia salafi, ma mantengono proprie istituzioni erudite, moschee e un'identità storica nel subcontinente.",
+      "commonGround": "Gli Ahl-e Hadith sono musulmani sunniti che affermano la Shahadah, i cinque pilastri e i sei pilastri dell'iman. Differiscono soprattutto dagli hanafi vincolati a un madhab (deobandi/barelvi) nel metodo giuridico e in certe pratiche devozionali, non nella credenza fondamentale."
+    },
+    {
+      "title": "La preghiera — confronto tra approcci",
+      "overview": "Tutti i musulmani compiono cinque preghiere quotidiane rivolti verso la Qibla. Le differenze appaiono nei dettagli del Wudu, nell'alzare le mani, nella recitazione dietro l'imam e nell'unire le preghiere.",
+      "keyPoints": "Hanafi: spesso in silenzio dietro l'imam, ordine specifico del Wudu. Shafi'i/maliki/hanbali: recitano la Fatiha dietro l'imam. Sciiti: possono unire Dhuhr-Asr e Maghrib-Isha regolarmente.",
+      "differences": "Dove si pongono le mani, dire amin ad alta voce e passare la mano sui calzini invece di lavare i piedi sono punti comuni di variazione tra i madhab.",
+      "commonGround": "La preghiera è un obbligo condiviso. I musulmani di tutti i gruppi adorano nelle moschee in tutto il mondo e rispettano la sacralità della Salah anche quando i dettagli differiscono."
+    },
+    {
+      "title": "Digiuno e avvistamento della luna",
+      "overview": "Il digiuno di Ramadan è obbligatorio per tutti i musulmani che ne sono in grado. Le differenze sorgono spesso su come inizia e finisce il mese: avvistamento locale oppure calcolo globale.",
+      "keyPoints": "Alcune comunità seguono l'avvistamento locale della luna; altre usano gli annunci sauditi o il calcolo astronomico. Il fiqh hanafi consente una certa flessibilità su ciò che rompe il digiuno.",
+      "differences": "L'inizio e la fine del Ramadan e dell'Eid possono cadere in giorni diversi nella stessa città, quando le comunità seguono studiosi diversi o comitati nazionali della luna.",
+      "commonGround": "L'obbligo di digiunare il Ramadan è universale. I musulmani condividono gli stessi obiettivi spirituali di taqwa, recitazione del Corano e carità durante il mese benedetto."
+    },
+    {
+      "title": "Fondamenti condivisi",
+      "overview": "Nonostante le differenze di fiqh e di tradizione, i musulmani nel mondo condividono un nucleo inscindibile: la fede in un solo Allah, la finalità del Profeta Muhammad ﷺ e la responsabilità nel Giorno del Giudizio.",
+      "keyPoints": "Il Corano e la Sunnah autentica uniscono la ummah. Le differenze nei giudizi secondari vanno affrontate con conoscenza, umiltà e rispetto, senza divisione né ostilità.",
+      "differences": "Le comunità possono seguire studiosi o madhab diversi. Conoscere queste differenze aiuta i musulmani a comprendersi ed evitare conflitti inutili.",
+      "commonGround": "Allah dice: «I credenti non sono che fratelli.» Cercare la conoscenza, fare una dua sincera e mostrare un buon carattere superano ogni confine fiqhi o culturale."
+    }
+  ]
+}

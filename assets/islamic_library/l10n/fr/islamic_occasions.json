@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadan",
+      "importance": "Le Ramadan est le mois au cours duquel le Coran a été révélé : une miséricorde guidée et un critère clair pour l’humanité.",
+      "virtues": "Les portes du Paradis sont ouvertes, les démons sont enchaînés et chaque bonne action est multipliée.",
+      "recommendedActs": "Jeûne avec sincérité, augmente la récitation du Coran, fais l’aumône, prie le tarawih et recherche Laylat al-Qadr pendant les dix dernières nuits."
+    },
+    {
+      "title": "Aïd al-Fitr",
+      "importance": "L’Aïd al-Fitr marque l’achèvement du Ramadan et la gratitude envers Allah pour avoir rendu le jeûne possible.",
+      "virtues": "C’est un jour de joie, de communauté et de reconnaissance après un mois d’adoration et de discipline personnelle.",
+      "recommendedActs": "Acquitte la zakat al-Fitr, accomplis la prière de l’Aïd, porte tes plus beaux vêtements, salue les autres et rends visite à la famille tout en gardant les convenances islamiques."
+    },
+    {
+      "title": "Aïd al-Adha",
+      "importance": "L’Aïd al-Adha commémore la dévotion d’Ibrahim (AS) et les rites du Hajj durant Dhul Hijja.",
+      "virtues": "Il enseigne le sacrifice, l’obéissance à Allah et le soin de ceux qui sont dans le besoin par l’udhiya (le sacrifice).",
+      "recommendedActs": "Accomplis la prière de l’Aïd, offre le sacrifice si tu le peux, partage la viande avec les pauvres et multiplie le takbir pendant les dix premiers jours de Dhul Hijja."
+    },
+    {
+      "title": "Saison du Hajj",
+      "importance": "Le Hajj est un pilier accompli une fois dans la vie pour celui qui en a la capacité : un voyage profond d’unité et de soumission.",
+      "virtues": "Un Hajj accepté apporte le pardon des péchés et le renouvellement du but. La plaine d’Arafa est le cœur du Hajj.",
+      "recommendedActs": "Ceux qui n’accomplissent pas le Hajj peuvent jeûner le jour d’Arafa, augmenter le dhikr et invoquer pour ceux qui se trouvent sur les lieux sacrés."
+    },
+    {
+      "title": "Achoura",
+      "importance": "Le 10 de Mouharram est le jour où Allah a sauvé Moussa (AS) et son peuple de Pharaon.",
+      "virtues": "Le jeûne d’Achoura expie les péchés de l’année précédente (lorsqu’il est associé au jeûne d’un jour avant ou après, selon la Sunna).",
+      "recommendedActs": "Jeûne le 9 et le 10 de Mouharram si possible, médite sur le secours d’Allah envers les opprimés et augmente la gratitude."
+    },
+    {
+      "title": "Laylat al-Qadr",
+      "importance": "Laylat al-Qadr est meilleure que mille mois : c’est la nuit où a commencé la révélation du Coran.",
+      "virtues": "L’adoration durant cette seule nuit peut dépasser des décennies de récompense. Les anges descendent avec la paix jusqu’au Fajr.",
+      "recommendedActs": "Recherche-la pendant les nuits impaires des dix derniers jours du Ramadan, par la prière, le Coran, l’invocation et l’istighfar."
+    },
+    {
+      "title": "Jumu‘a (vendredi)",
+      "importance": "Le vendredi est le meilleur jour où le soleil se lève. Il comprend une prière collective hebdomadaire et un rappel hebdomadaire.",
+      "virtues": "Il y a un moment le vendredi où l’invocation est exaucée. Les péchés d’un vendredi à l’autre sont pardonnés à ceux qui se lavent et assistent avec sincérité.",
+      "recommendedActs": "Fais le Ghusl, porte des vêtements propres, arrive tôt à la mosquée, écoute le khutba avec attention et multiplie les salawat sur le Prophète ﷺ."
+    }
+  ]
+}

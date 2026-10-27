@@ -1,0 +1,524 @@
+{
+  "categories": [
+    {
+      "items": [
+        {
+          "title": "Au réveil",
+          "translation": "Toute louange appartient à Allah, qui nous a rendu la vie après nous l’avoir reprise, et c’est vers Lui qu’est la résurrection.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Rappel du matin",
+          "translation": "Nous sommes entrés dans le matin et la royauté appartient à Allah, et toute louange appartient à Allah. Il n’y a de dieu qu’Allah seul, sans associé. À Lui appartient la royauté et toute louange, et Il est capable de toute chose.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Le meilleur istighfar",
+          "translation": "Ô Allah, Tu es mon Seigneur. Nul n’a le droit d’être adoré en dehors de Toi. Tu m’as créé et je suis Ton serviteur. Je tiens Ton pacte et Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal de ce que j’ai fait. Je reconnais Ton bienfait envers moi et je reconnais mon péché, alors pardonne-moi, car nul ne pardonne les péchés en dehors de Toi.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Verset du Trône",
+          "translation": "Allah — il n’y a de dieu que Lui, le Vivant éternel, Celui qui soutient l’existence. Ni l’assoupissement ni le sommeil ne Le saisissent. À Lui appartient ce qui est dans les cieux et ce qui est sur la terre. Qui peut intercéder auprès de Lui sinon avec Sa permission ? Il sait ce qui est devant eux et ce qui sera après eux, et ils n’embrassent rien de Sa science sinon ce qu’Il veut. Son Kursi s’étend sur les cieux et la terre, et leur préservation ne Le fatigue pas. Et Il est le Très-Haut, le Très Grand.",
+          "reference": "Coran 2:255"
+        },
+        {
+          "title": "Sourate Al-Ikhlas",
+          "translation": "Dis : Il est Allah, l’Unique. Allah, le Refuge éternel. Il n’engendre pas et n’est pas engendré, et nul n’est égal à Lui. (Récite 3 fois le matin.)",
+          "reference": "Coran 112; Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Sourate Al-Falaq",
+          "translation": "Dis : Je cherche refuge auprès du Seigneur de l’aube contre le mal de ce qu’Il a créé, contre le mal des ténèbres lorsqu’elles s’installent, contre le mal de celles qui soufflent sur les nœuds, et contre le mal de l’envieux lorsqu’il envie. (Récite 3 fois le matin.)",
+          "reference": "Coran 113; Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Sourate An-Nas",
+          "translation": "Dis : Je cherche refuge auprès du Seigneur des hommes, le Roi des hommes, le Dieu des hommes, contre le mal du chuchoteur qui se retire, celui qui chuchote dans les poitrines des hommes, parmi les djinns et les hommes. (Récite 3 fois le matin.)",
+          "reference": "Coran 114; Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Protection du matin (3 fois)",
+          "translation": "Au nom d’Allah, avec le nom de qui rien sur la terre ni dans le ciel ne peut nuire, et Il est Celui qui entend tout, Celui qui sait tout. (Récite 3 fois.)",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Agrément d’Allah",
+          "translation": "Je suis satisfait d’Allah comme Seigneur, de l’islam comme religion, et de Muhammad ﷺ comme Prophète. (Récite 3 fois.)",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Le matin avec Allah",
+          "translation": "Ô Allah, par Toi nous entrons dans le matin, par Toi nous entrons dans le soir, par Toi nous vivons, par Toi nous mourons, et vers Toi est la résurrection.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Subhanallah wa bihamdihi (100 fois)",
+          "translation": "Gloire à Allah et louange à Lui. (Récite 100 fois le matin.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Tawhid (100 fois)",
+          "translation": "Il n’y a de dieu qu’Allah seul, sans associé. À Lui appartient la royauté et toute louange, et Il est capable de toute chose. (Récite 100 fois le matin.)",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Ya Hayyou, Ya Qayyoum",
+          "translation": "Ô Vivant éternel, ô Soutien de toute chose, par Ta miséricorde je cherche secours. Redresse pour moi toutes mes affaires, et ne me laisse pas à moi-même, fût-ce le temps d’un clin d’œil.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Hasbunallah",
+          "translation": "Allah me suffit. Il n’y a de dieu que Lui. C’est sur Lui que je m’appuie, et Il est le Seigneur du Trône immense. (Récite 7 fois.)",
+          "reference": "Sunan Abu Dawud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Rappel du soir",
+          "translation": "Nous sommes entrés dans le soir et la royauté appartient à Allah, et toute louange appartient à Allah. Il n’y a de dieu qu’Allah seul, sans associé. À Lui appartient la royauté et toute louange, et Il est capable de toute chose.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Le soir avec Allah",
+          "translation": "Ô Allah, par Toi nous entrons dans le soir, par Toi nous entrons dans le matin, par Toi nous vivons, par Toi nous mourons, et vers Toi est le retour final.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Le meilleur istighfar",
+          "translation": "Ô Allah, Tu es mon Seigneur. Nul n’a le droit d’être adoré en dehors de Toi. Tu m’as créé et je suis Ton serviteur. Je tiens Ton pacte et Ta promesse autant que je le peux. Je cherche refuge auprès de Toi contre le mal de ce que j’ai fait. Je reconnais Ton bienfait envers moi et je reconnais mon péché, alors pardonne-moi, car nul ne pardonne les péchés en dehors de Toi.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Verset du Trône",
+          "translation": "Allah — il n’y a de dieu que Lui, le Vivant éternel, Celui qui soutient l’existence...",
+          "reference": "Coran 2:255"
+        },
+        {
+          "title": "Sourate Al-Ikhlas (3 fois)",
+          "translation": "Dis : Il est Allah, l’Unique... (Récite 3 fois le soir.)",
+          "reference": "Coran 112; Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Sourate Al-Falaq (3 fois)",
+          "translation": "Dis : Je cherche refuge auprès du Seigneur de l’aube... (Récite 3 fois le soir.)",
+          "reference": "Coran 113; Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Sourate An-Nas (3 fois)",
+          "translation": "Dis : Je cherche refuge auprès du Seigneur des hommes... (Récite 3 fois le soir.)",
+          "reference": "Coran 114; Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Protection du soir (3 fois)",
+          "translation": "Au nom d’Allah, avec le nom de qui rien sur la terre ni dans le ciel ne peut nuire, et Il est Celui qui entend tout, Celui qui sait tout. (Récite 3 fois.)",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Agrément d’Allah",
+          "translation": "Je suis satisfait d’Allah comme Seigneur, de l’islam comme religion, et de Muhammad ﷺ comme Prophète. (Récite 3 fois.)",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Refuge contre la création",
+          "translation": "Je cherche refuge dans les paroles parfaites d’Allah contre le mal de ce qu’Il a créé. (Récite 3 fois le soir.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Subhanallah wa bihamdihi (100 fois)",
+          "translation": "Gloire à Allah et louange à Lui. (Récite 100 fois le soir.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bien-être du corps et de l’ouïe",
+          "translation": "Ô Allah, accorde-moi le bien-être dans mon corps. Ô Allah, accorde-moi le bien-être dans mon ouïe. Ô Allah, accorde-moi le bien-être dans ma vue. Il n’y a de dieu que Toi. (Récite 3 fois.)",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Ya Hayyou, Ya Qayyoum",
+          "translation": "Ô Vivant éternel, ô Soutien de toute chose, par Ta miséricorde je cherche secours. Redresse pour moi toutes mes affaires, et ne me laisse pas à moi-même, fût-ce le temps d’un clin d’œil.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Hasbunallah (7 fois)",
+          "translation": "Allah me suffit. Il n’y a de dieu que Lui. C’est sur Lui que je m’appuie, et Il est le Seigneur du Trône immense. (Récite 7 fois.)",
+          "reference": "Sunan Abu Dawud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Avant de manger",
+          "translation": "Au nom d’Allah.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Si l’on oublie Bismillah",
+          "translation": "Au nom d’Allah, à son commencement et à sa fin.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Après avoir mangé",
+          "translation": "Toute louange appartient à Allah, qui m’a nourri de ceci et me l’a accordé sans force ni pouvoir de ma part.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "En quittant la maison",
+          "translation": "Au nom d’Allah, je place ma confiance en Allah. Il n’y a de force ni de pouvoir qu’avec Allah.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "En entrant dans la maison",
+          "translation": "Au nom d’Allah nous entrons, au nom d’Allah nous sortons, et c’est en notre Seigneur que nous plaçons notre confiance.",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "En entrant dans la mosquée",
+          "translation": "Ô Allah, ouvre-moi les portes de Ta miséricorde.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "En quittant la mosquée",
+          "translation": "Ô Allah, je Te demande de Ta faveur.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "En entrant aux toilettes",
+          "translation": "Au nom d’Allah. Ô Allah, je cherche refuge auprès de Toi contre les esprits impurs, mâles et femelles.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "En sortant des toilettes",
+          "translation": "Je cherche Ton pardon.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Avant le Wudu",
+          "translation": "Au nom d’Allah.",
+          "reference": "Sunan Abu Dawud et Ibn Majah"
+        },
+        {
+          "title": "Après le Wudu",
+          "translation": "J’atteste qu’il n’y a de dieu qu’Allah seul, sans associé, et j’atteste que Muhammad est Son serviteur et Son Messager.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "En s’habillant",
+          "translation": "Toute louange appartient à Allah, qui m’a vêtu de ceci et me l’a accordé sans force ni pouvoir de ma part.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "En se regardant dans le miroir",
+          "translation": "Ô Allah, de même que Tu as embelli mon apparence, embellis mon caractère.",
+          "reference": "Musnad Ahmad"
+        },
+        {
+          "title": "Lorsqu’on est en colère",
+          "translation": "Je cherche refuge auprès d’Allah contre Satan, le maudit.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Lorsqu’on éternue",
+          "translation": "Toute louange appartient à Allah. (Réponse à celui qui éternue : Yarhamukallah — qu’Allah te fasse miséricorde. Puis celui qui a éternué dit : Yahdikumullahu wa yuslihu balakum.)",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "En entendant un coq",
+          "translation": "Ô Allah, je Te demande de Ta faveur.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Lorsqu’il pleut",
+          "translation": "Ô Allah, fais-en une pluie bénéfique.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Dans la détresse",
+          "translation": "Il n’y a de dieu qu’Allah, le Magnifique, le Longanime. Il n’y a de dieu qu’Allah, Seigneur du Trône immense. Il n’y a de dieu qu’Allah, Seigneur des cieux, Seigneur de la terre et Seigneur du Trône noble.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Après avoir terminé la Salat",
+          "translation": "Je demande pardon à Allah (3 fois). Ô Allah, Tu es la Paix et de Toi vient la paix. Béni sois-Tu, ô Détenteur de la majesté et de l’honneur.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Tasbih après la Salat",
+          "translation": "Gloire à Allah (33), toute louange appartient à Allah (33), Allah est le Plus Grand (33), puis on complète par la déclaration du Tawhid une fois.",
+          "reference": "Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Avant de dormir",
+          "translation": "En Ton nom, ô Allah, je meurs et je vis.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Dhikr du sommeil",
+          "translation": "Gloire à Allah, toute louange appartient à Allah, Allah est le Plus Grand — le tasbih du coucher enseigné par le Prophète ﷺ.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Verset du Trône avant de dormir",
+          "translation": "Allah — il n’y a de divinité que Lui, le Vivant éternel, Celui qui soutient l’existence. Ni l’assoupissement ni le sommeil ne Le saisissent. À Lui appartient ce qui est dans les cieux et ce qui est sur la terre. Qui peut intercéder auprès de Lui sinon avec Sa permission ? Il sait ce qui est [présentement] devant eux et ce qui sera après eux, et ils n’embrassent rien de Sa science sinon ce qu’Il veut. Son Kursi s’étend sur les cieux et la terre, et leur préservation ne Le fatigue pas. Et Il est le Très-Haut, le Très Grand. (Récite le verset du Trône avant de dormir. Quiconque le fait aura un gardien de la part d’Allah jusqu’au matin.)",
+          "reference": "Coran 2:255; authentique al-Bukhari"
+        },
+        {
+          "title": "Les deux derniers versets d’Al-Baqara",
+          "translation": "Le Messager a cru en ce qui lui a été révélé de la part de son Seigneur, et [de même] les croyants. Tous ont cru en Allah, en Ses anges, en Ses Livres et en Ses messagers, [en disant] : « Nous ne faisons aucune distinction entre aucun de Ses messagers. » Et ils disent : « Nous avons entendu et nous avons obéi. [Nous implorons] Ton pardon, notre Seigneur, et c’est vers Toi qu’est la destination [finale]. » Allah n’impose à une âme que [ce qui est] dans sa capacité. Elle aura [la conséquence de] ce [bien] qu’elle a acquis, et elle portera [la conséquence de] ce [mal] qu’elle a commis. « Notre Seigneur, ne nous tiens pas rigueur si nous avons oublié ou fauté. Notre Seigneur, ne mets pas sur nous un fardeau pareil à celui que Tu as mis sur ceux qui nous ont précédés. Notre Seigneur, ne nous charge pas de ce que nous n’avons pas la force de porter. Pardonne-nous, absous-nous et fais-nous miséricorde. Tu es notre protecteur, accorde-nous donc la victoire sur les gens qui ne croient pas. » (Réciter ces deux derniers versets d’Al-Baqara la nuit suffira à celui qui les lit.)",
+          "reference": "Coran 2:285-286; authentique al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Les trois Qul avant de dormir",
+          "translation": "Souffle dans les paumes et passe-les sur le corps après avoir récité Al-Ikhlas, Al-Falaq et An-Nas (trois fois chacune).",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Remettre sa confiance avant de dormir",
+          "translation": "Ô Allah, je me soumets à Toi, je Te confie mes affaires, je tourne mon visage vers Toi et j’appuie mon dos sur Toi, dans l’espoir et la crainte de Toi. Il n’y a de refuge ni d’échappatoire loin de Toi sinon vers Toi. Je crois en Ton Livre que Tu as révélé et en Ton Prophète que Tu as envoyé.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "En se retournant la nuit",
+          "translation": "Il n’y a de dieu qu’Allah, l’Unique, Celui qui prévaut. Seigneur des cieux et de la terre et de ce qui est entre eux, le Tout-Puissant, Celui qui pardonne beaucoup.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Si l’on se réveille soudain la nuit",
+          "translation": "Il n’y a de dieu qu’Allah seul, sans associé... Toute louange appartient à Allah, gloire à Allah, il n’y a de dieu qu’Allah, Allah est le Plus Grand, et il n’y a de force ni de pouvoir qu’avec Allah. Puis fais une invocation.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Invocation pour un rêve",
+          "translation": "Je cherche refuge auprès d’Allah contre Satan, le maudit, et contre le mal de ce rêve. (Puis crache légèrement vers la gauche trois fois et n’en parle pas aux autres.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "En se levant pour la prière de nuit",
+          "translation": "Ô Allah, à Toi appartient toute louange. Tu es le Soutien des cieux et de la terre et de quiconque s’y trouve...",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Avant de manger",
+          "translation": "Au nom d’Allah.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Si l’on oublie Bismillah",
+          "translation": "Au nom d’Allah, à son commencement et à la fin.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Après avoir mangé",
+          "translation": "Toute louange appartient à Allah, qui m’a nourri de ceci et me l’a accordé sans force ni pouvoir de ma part.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Après un repas (plus long)",
+          "translation": "Toute louange appartient à Allah — une louange abondante, pure et bénie — une louange qui ne suffit jamais, qu’on n’abandonne jamais et dont on ne se passe jamais, notre Seigneur.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "En buvant du lait",
+          "translation": "Ô Allah, bénis-le pour nous et donne-nous-en davantage.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Lorsqu’on offre de la nourriture pendant le jeûne",
+          "translation": "Je jeûne.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Au début d’un voyage",
+          "translation": "Gloire à Celui qui a soumis ceci pour nous, alors que nous n’aurions pas pu le faire par nous-mêmes. Vers notre Seigneur nous retournerons certes.",
+          "reference": "Coran 43:13-14"
+        },
+        {
+          "title": "Invocation du voyage",
+          "translation": "Ô Allah, nous Te demandons sur ce voyage la droiture et la piété, et des œuvres qui Te plaisent. Ô Allah, facilite-nous ce voyage et raccourcis sa distance. Ô Allah, Tu es le Compagnon du voyage et le Gardien de la famille.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Au retour du voyage",
+          "translation": "Nous revenons, repentants, adorant et louant notre Seigneur.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "En entrant dans une ville",
+          "translation": "Ô Allah, Seigneur des sept cieux et de ce qu’ils ombragent... Je Te demande le bien de cette ville et de ses gens, et je cherche refuge auprès de Toi contre son mal et le mal de ses gens.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Lorsque l’animal ou le véhicule trébuche",
+          "translation": "Au nom d’Allah.",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Salutation de l’hôte à l’arrivée",
+          "translation": "Ô Allah, bénis-le pour nous.",
+          "reference": "Invocation générale des voyageurs (Hisnul Muslim)"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "En visitant le malade",
+          "translation": "Pas de mal ; c’est une purification, si Allah le veut.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Pour le malade",
+          "translation": "Ô Allah, Seigneur des hommes, écarte le mal et guéris-le, car Tu es le Guérisseur. Il n’y a de guérison que Ta guérison — une guérison qui ne laisse aucune maladie.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "Lorsqu’on a mal",
+          "translation": "Au nom d’Allah (3 fois). Je cherche refuge auprès d’Allah et de Sa puissance contre le mal de ce que je ressens et redoute (7 fois), en posant la main sur l’endroit de la douleur.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Ruqya pour la maladie",
+          "translation": "Écarte le mal, ô Seigneur des hommes. Guéris, car Tu es le Guérisseur. Il n’y a de guérisseur que Toi.",
+          "reference": "Sahih al-Bukhari et Sahih Muslim"
+        },
+        {
+          "title": "En visitant un musulman malade",
+          "translation": "Je demande à Allah le Magnifique, Seigneur du Trône immense, de te guérir. (Récite 7 fois.)",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Au moment de la mort",
+          "translation": "Il n’y a de dieu qu’Allah. (Encourage le mourant à dire cela.)",
+          "reference": "Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Chercher refuge",
+          "translation": "Je cherche refuge dans les paroles parfaites d’Allah contre le mal de ce qu’Il a créé.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Protection contre l’anxiété",
+          "translation": "Ô Allah, je cherche refuge auprès de Toi contre le souci et le chagrin, contre l’incapacité et la paresse, contre la lâcheté et l’avarice, et contre le fait d’être accablé par la dette et dominé par les hommes.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Protection en quittant la maison",
+          "translation": "Au nom d’Allah, je place ma confiance en Allah. Il n’y a de force ni de pouvoir qu’avec Allah.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Contre le mauvais œil",
+          "translation": "Je cherche refuge dans les paroles parfaites d’Allah contre tout démon et toute créature venimeuse, et contre tout mauvais œil.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Invocation de Yunus",
+          "translation": "Il n’y a de dieu que Toi. Gloire à Toi. Certes, j’ai été parmi les injustes.",
+          "reference": "Coran 21:87; Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Lorsqu’on a peur",
+          "translation": "Je cherche refuge dans les paroles parfaites d’Allah contre Sa colère et Son châtiment, contre le mal de Ses serviteurs, contre les chuchotements des démons et contre leur présence.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Protection des enfants",
+          "translation": "Je cherche protection pour vous deux dans les paroles parfaites d’Allah contre tout démon et toute créature venimeuse, et contre tout mauvais œil.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "En voyant une affliction atteindre quelqu’un",
+          "translation": "Toute louange appartient à Allah, qui m’a épargné ce dont Il t’a affligé, et qui m’a grandement favorisé au-dessus de beaucoup de ceux qu’Il a créés. (Dis-le à voix basse, non à voix haute pour blesser la personne.)",
+          "reference": "Sunan at-Tirmidhi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Le meilleur istighfar",
+          "translation": "Ô Allah, Tu es mon Seigneur. Nul n’a le droit d’être adoré en dehors de Toi... alors pardonne-moi, car nul ne pardonne les péchés en dehors de Toi.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Demander pardon",
+          "translation": "Mon Seigneur, pardonne-moi et accepte mon repentir. Tu es Celui qui accepte le repentir, le Très Miséricordieux.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Astaghfirullah",
+          "translation": "Je demande pardon à Allah.",
+          "reference": "Dhikr général"
+        },
+        {
+          "title": "Istighfar du Prophète",
+          "translation": "Je demande pardon à Allah, en dehors de qui il n’y a de dieu, le Vivant éternel, le Soutien, et je me repens à Lui.",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        },
+        {
+          "title": "Invocation d’Adam",
+          "translation": "Notre Seigneur, nous nous sommes fait du tort à nous-mêmes. Si Tu ne nous pardonnes pas et ne nous fais pas miséricorde, nous serons certes parmi les perdants.",
+          "reference": "Coran 7:23"
+        },
+        {
+          "title": "Pardon complet",
+          "translation": "Ô Allah, pardonne-moi tout mon péché — le petit et le grand, le premier et le dernier, l’apparent et le secret.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Le meilleur istighfar en assemblée",
+          "translation": "Gloire à Toi, ô Allah, et louange. J’atteste qu’il n’y a de dieu que Toi. Je cherche Ton pardon et je me repens à Toi. (Dit à la fin d’une assemblée.)",
+          "reference": "Sunan Abu Dawud et at-Tirmidhi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Pour les parents",
+          "translation": "Mon Seigneur, fais-leur miséricorde comme ils m’ont élevé lorsque j’étais petit.",
+          "reference": "Coran 17:24"
+        },
+        {
+          "title": "Pour les parents croyants",
+          "translation": "Notre Seigneur, pardonne-moi, ainsi qu’à mes parents et aux croyants, le Jour où le compte sera établi.",
+          "reference": "Coran 14:41"
+        },
+        {
+          "title": "Pardon pour les parents",
+          "translation": "Mon Seigneur, pardonne-moi, ainsi qu’à mes parents, à quiconque entre dans ma maison en croyant, et aux hommes croyants et aux femmes croyantes.",
+          "reference": "Coran 71:28"
+        },
+        {
+          "title": "Bonté après le décès des parents",
+          "translation": "Ô Allah, pardonne-moi ainsi qu’à mes parents, et fais-leur miséricorde comme ils m’ont élevé lorsque j’étais petit.",
+          "reference": "D’après le Coran 17:24"
+        },
+        {
+          "title": "Le bien envers les parents",
+          "translation": "Ton Seigneur a décrété que vous n’adoriez que Lui, et que vous soyez bons envers les parents.",
+          "reference": "Coran 17:23"
+        }
+      ]
+    }
+  ]
+}

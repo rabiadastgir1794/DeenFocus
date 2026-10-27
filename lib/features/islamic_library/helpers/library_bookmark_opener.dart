@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/islamic_library_repository.dart';
+import '../data/library_content_language.dart';
 import '../model/library_bookmark_entry.dart';
 import '../model/library_hadith.dart';
 import '../model/library_guide.dart';
@@ -19,6 +20,9 @@ Future<void> openLibraryBookmark(
   LibraryBookmarkEntry entry,
 ) async {
   final cardIndex = entry.cardIndex;
+  final languageCode = libraryContentLanguageCode(
+    Localizations.localeOf(context).languageCode,
+  );
   switch (entry.moduleId) {
     case LibraryModuleId.namesOfAllah:
       await Navigator.of(context).push<void>(
@@ -29,7 +33,9 @@ Future<void> openLibraryBookmark(
       return;
     case LibraryModuleId.hadith:
       final collections =
-          await IslamicLibraryRepository.instance.loadHadithCollections();
+          await IslamicLibraryRepository.instance.loadHadithCollections(
+            languageCode: languageCode,
+          );
       HadithCollection? collection;
       for (final item in collections) {
         if (item.id == entry.subSectionId) {
@@ -49,7 +55,10 @@ Future<void> openLibraryBookmark(
       return;
     case LibraryModuleId.duasAdhkar:
       final category = await IslamicLibraryRepository.instance
-          .loadDuaCategory(entry.subSectionId!);
+          .loadDuaCategory(
+            entry.subSectionId!,
+            languageCode: languageCode,
+          );
       if (!context.mounted || category == null) return;
       await Navigator.of(context).push<void>(
         MaterialPageRoute<void>(
@@ -62,7 +71,9 @@ Future<void> openLibraryBookmark(
       return;
     case LibraryModuleId.prayerMethods:
       final guides =
-          await IslamicLibraryRepository.instance.loadPrayerGuides();
+          await IslamicLibraryRepository.instance.loadPrayerGuides(
+            languageCode: languageCode,
+          );
       PrayerGuide? guide;
       for (final item in guides) {
         if (item.id == entry.subSectionId) {

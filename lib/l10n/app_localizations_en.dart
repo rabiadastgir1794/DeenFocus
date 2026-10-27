@@ -2918,6 +2918,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCalculationMethodTitle => 'Calculation Method';
 
   @override
+  String get calcMethodMuslimWorldLeague => 'Muslim World League';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'Islamic Society of North America (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'Egyptian General Authority of Survey';
+
+  @override
+  String get calcMethodUmmAlQura => 'Umm al-Qura University, Makkah';
+
+  @override
+  String get calcMethodKarachi => 'University of Islamic Sciences, Karachi';
+
+  @override
+  String get calcMethodTehran => 'Tehran';
+
+  @override
+  String get calcMethodKuwait => 'Kuwait';
+
+  @override
+  String get calcMethodQatar => 'Qatar';
+
+  @override
+  String get calcMethodDubai => 'Dubai';
+
+  @override
+  String get calcMethodTurkey => 'Turkey';
+
+  @override
+  String get calcMethodSingapore => 'Singapore';
+
+  @override
+  String get calcMethodMoonsighting => 'Moonsighting Committee Worldwide';
+
+  @override
   String get settingsAsrCalculationTitle => 'Asr Calculation';
 
   @override

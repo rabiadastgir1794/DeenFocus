@@ -1,0 +1,524 @@
+{
+  "categories": [
+    {
+      "items": [
+        {
+          "title": "Bij het ontwaken",
+          "translation": "Alle lof is voor Allah, die ons het leven gaf nadat Hij het van ons had genomen, en tot Hem is de opstanding.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Ochtendgedachtenis",
+          "translation": "Wij zijn de ochtend binnengegaan en de heerschappij behoort aan Allah, en alle lof is voor Allah. Er is geen god dan Allah alleen, zonder deelgenoot. Aan Hem behoort de heerschappij en alle lof, en Hij is over alle dingen machtig.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Sayyid al-Istighfar",
+          "translation": "O Allah, U bent mijn Heer. Niemand heeft het recht aanbeden te worden behalve U. U hebt mij geschapen en ik ben Uw dienaar. Ik houd mij aan Uw verbond en belofte zo goed als ik kan. Ik zoek toevlucht bij U tegen het kwaad van wat ik heb gedaan. Ik erken Uw gunst aan mij en ik erken mijn zonde, dus vergeef mij, want niemand vergeeft de zonden behalve U.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Ayat al-Kursi",
+          "translation": "Allah: er is geen god dan Hij, de Eeuwig Levende, de Onderhouder van het bestaan. Noch sluimer noch slaap overmant Hem. Aan Hem behoort wat in de hemelen is en wat op de aarde is. Wie kan bij Hem bemiddelen behalve met Zijn toestemming? Hij kent wat vóór hen is en wat na hen zal zijn, en zij omvatten niets van Zijn kennis behalve wat Hij wil. Zijn Kursi strekt zich uit over de hemelen en de aarde, en het behoeden ervan vermoeit Hem niet. En Hij is de Allerhoogste, de Grootste.",
+          "reference": "Koran 2:255"
+        },
+        {
+          "title": "Soera Al-Ikhlas",
+          "translation": "Zeg: Hij is Allah, de Ene. Allah, de Eeuwige Toevlucht. Hij verwekt niet en is niet verwekt, en niets is aan Hem gelijk. (Reciteer 3 keer in de ochtend.)",
+          "reference": "Koran 112; Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Soera Al-Falaq",
+          "translation": "Zeg: Ik zoek toevlucht bij de Heer van de dageraad tegen het kwaad van wat Hij schiep, tegen het kwaad van de duisternis wanneer zij neerdaalt, tegen het kwaad van hen die op knopen blazen en tegen het kwaad van een afgunstige wanneer hij afgunstig is. (Reciteer 3 keer in de ochtend.)",
+          "reference": "Koran 113; Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Soera An-Nas",
+          "translation": "Zeg: Ik zoek toevlucht bij de Heer van de mensen, de Koning van de mensen, de God van de mensen, tegen het kwaad van de terugtrekkende fluisteraar die in de borsten van de mensen fluistert, van onder de djinn en de mensen. (Reciteer 3 keer in de ochtend.)",
+          "reference": "Koran 114; Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Ochtendbescherming (3 keer)",
+          "translation": "In de naam van Allah, met Wiens naam niets op aarde of in de hemel schade kan doen, en Hij is de Alhorende, de Alwetende. (Reciteer 3 keer.)",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Welgevallen met Allah",
+          "translation": "Ik heb welgevallen aan Allah als mijn Heer, aan de islam als mijn godsdienst en aan Mohammed ﷺ als mijn Profeet. (Reciteer 3 keer.)",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "De ochtend met Allah",
+          "translation": "O Allah, door U gaan wij de ochtend in, door U gaan wij de avond in, door U leven wij, door U sterven wij, en tot U is de opstanding.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Subhanallah wa bihamdihi (100 keer)",
+          "translation": "Glorie zij Allah en lof zij Hem. (Reciteer 100 keer in de ochtend.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Tawhid (100 keer)",
+          "translation": "Er is geen god dan Allah alleen, zonder deelgenoot. Aan Hem behoort de heerschappij en alle lof, en Hij is over alle dingen machtig. (Reciteer 100 keer in de ochtend.)",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Ya Hayyu Ya Qayyum",
+          "translation": "O Eeuwig Levende, o Onderhouder, bij Uw barmhartigheid zoek ik hulp. Zet al mijn zaken voor mij recht en laat mij niet aan mijzelf over, zelfs niet voor een oogwenk.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Hasbunallah",
+          "translation": "Allah is mij voldoende. Er is geen god dan Hij. Op Hem vertrouw ik, en Hij is de Heer van de machtige Troon. (Reciteer 7 keer.)",
+          "reference": "Sunan Abu Dawud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Avondgedachtenis",
+          "translation": "Wij zijn de avond binnengegaan en de heerschappij behoort aan Allah, en alle lof is voor Allah. Er is geen god dan Allah alleen, zonder deelgenoot. Aan Hem behoort de heerschappij en alle lof, en Hij is over alle dingen machtig.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "De avond met Allah",
+          "translation": "O Allah, door U gaan wij de avond in, door U gaan wij de ochtend in, door U leven wij, door U sterven wij, en tot U is de uiteindelijke terugkeer.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Sayyid al-Istighfar",
+          "translation": "O Allah, U bent mijn Heer. Niemand heeft het recht aanbeden te worden behalve U. U hebt mij geschapen en ik ben Uw dienaar. Ik houd mij aan Uw verbond en belofte zo goed als ik kan. Ik zoek toevlucht bij U tegen het kwaad van wat ik heb gedaan. Ik erken Uw gunst aan mij en ik erken mijn zonde, dus vergeef mij, want niemand vergeeft de zonden behalve U.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Ayat al-Kursi",
+          "translation": "Allah: er is geen god dan Hij, de Eeuwig Levende, de Onderhouder van het bestaan...",
+          "reference": "Koran 2:255"
+        },
+        {
+          "title": "Soera Al-Ikhlas (3 keer)",
+          "translation": "Zeg: Hij is Allah, de Ene... (Reciteer 3 keer in de avond.)",
+          "reference": "Koran 112; Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Soera Al-Falaq (3 keer)",
+          "translation": "Zeg: Ik zoek toevlucht bij de Heer van de dageraad... (Reciteer 3 keer in de avond.)",
+          "reference": "Koran 113; Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Soera An-Nas (3 keer)",
+          "translation": "Zeg: Ik zoek toevlucht bij de Heer van de mensen... (Reciteer 3 keer in de avond.)",
+          "reference": "Koran 114; Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Avondbescherming (3 keer)",
+          "translation": "In de naam van Allah, met Wiens naam niets op aarde of in de hemel schade kan doen, en Hij is de Alhorende, de Alwetende. (Reciteer 3 keer.)",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Welgevallen met Allah",
+          "translation": "Ik heb welgevallen aan Allah als mijn Heer, aan de islam als mijn godsdienst en aan Mohammed ﷺ als mijn Profeet. (Reciteer 3 keer.)",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Toevlucht zoeken tegen de schepping",
+          "translation": "Ik zoek toevlucht in de volmaakte woorden van Allah tegen het kwaad van wat Hij heeft geschapen. (Reciteer 3 keer in de avond.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Subhanallah wa bihamdihi (100 keer)",
+          "translation": "Glorie zij Allah en lof zij Hem. (Reciteer 100 keer in de avond.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Welzijn van lichaam en gehoor",
+          "translation": "O Allah, schenk mij welzijn in mijn lichaam. O Allah, schenk mij welzijn in mijn gehoor. O Allah, schenk mij welzijn in mijn zicht. Er is geen god dan U. (Reciteer 3 keer.)",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Ya Hayyu Ya Qayyum",
+          "translation": "O Eeuwig Levende, o Onderhouder, bij Uw barmhartigheid zoek ik hulp. Zet al mijn zaken voor mij recht en laat mij niet aan mijzelf over, zelfs niet voor een oogwenk.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Hasbunallah (7 keer)",
+          "translation": "Allah is mij voldoende. Er is geen god dan Hij. Op Hem vertrouw ik, en Hij is de Heer van de machtige Troon. (Reciteer 7 keer.)",
+          "reference": "Sunan Abu Dawud"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Vóór het eten",
+          "translation": "In de naam van Allah.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Als men Bismillah vergeet",
+          "translation": "In de naam van Allah, aan het begin en aan het einde ervan.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Na het eten",
+          "translation": "Alle lof is voor Allah, die mij dit heeft gevoed en het mij heeft gegeven zonder enige macht of kracht van mijzelf.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Bij het verlaten van huis",
+          "translation": "In de naam van Allah, ik stel mijn vertrouwen op Allah. Er is geen macht noch kracht behalve bij Allah.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Bij het binnengaan van huis",
+          "translation": "In de naam van Allah gaan wij binnen, in de naam van Allah gaan wij weg, en op onze Heer stellen wij ons vertrouwen.",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Bij het binnengaan van de moskee",
+          "translation": "O Allah, open voor mij de deuren van Uw barmhartigheid.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bij het verlaten van de moskee",
+          "translation": "O Allah, ik vraag U van Uw gunst.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bij het binnengaan van het toilet",
+          "translation": "In de naam van Allah. O Allah, ik zoek toevlucht bij U tegen de mannelijke en vrouwelijke onreine geesten.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Bij het verlaten van het toilet",
+          "translation": "Ik vraag Uw vergeving.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Vóór de Wudu",
+          "translation": "In de naam van Allah.",
+          "reference": "Sunan Abu Dawud en Ibn Majah"
+        },
+        {
+          "title": "Na de Wudu",
+          "translation": "Ik getuig dat er geen god is dan Allah alleen, zonder deelgenoot, en ik getuig dat Mohammed Zijn dienaar en Boodschapper is.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bij het aankleden",
+          "translation": "Alle lof is voor Allah, die mij hiermee heeft gekleed en het mij heeft gegeven zonder enige macht of kracht van mijzelf.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Bij het kijken in de spiegel",
+          "translation": "O Allah, zoals U mijn uiterlijke gestalte mooi hebt gemaakt, maak mijn karakter mooi.",
+          "reference": "Musnad Ahmad"
+        },
+        {
+          "title": "Bij boosheid",
+          "translation": "Ik zoek toevlucht bij Allah tegen Satan, de vervloekte.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Bij het niezen",
+          "translation": "Alle lof is voor Allah. (Antwoord aan wie niest: Yarhamukallah — Moge Allah zich over jou erbarmen. Daarna zegt wie niest: Yahdikumullahu wa yuslihu balakum.)",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Bij het horen van een haan",
+          "translation": "O Allah, ik vraag U van Uw gunst.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Wanneer het regent",
+          "translation": "O Allah, maak het een weldadige stortbui.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Bij benauwdheid",
+          "translation": "Er is geen god dan Allah, de Prachtige, de Verdraagzame. Er is geen god dan Allah, Heer van de machtige Troon. Er is geen god dan Allah, Heer van de hemelen, Heer van de aarde en Heer van de edele Troon.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Na het beëindigen van de Salah",
+          "translation": "Ik vraag Allah om vergeving (3 keer). O Allah, U bent de Vrede en van U komt de vrede. Gezegend bent U, o Bezitter van majesteit en eer.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Tasbih na de Salah",
+          "translation": "Glorie zij Allah (33), alle lof is voor Allah (33), Allah is de Grootste (33), en voltooi daarna één keer met de verklaring van Tawhid.",
+          "reference": "Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Vóór het slapen",
+          "translation": "In Uw naam, o Allah, sterf ik en leef ik.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Dhikr voor het slapen",
+          "translation": "Glorie zij Allah, alle lof is voor Allah, Allah is de Grootste: de tasbih voor het slapengaan die de Profeet ﷺ onderwees.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Ayat al-Kursi vóór het slapen",
+          "translation": "Allah — er is geen godheid dan Hij, de Eeuwig Levende, de Onderhouder van het bestaan. Noch sluimer noch slaap overmant Hem. Aan Hem behoort wat in de hemelen is en wat op de aarde is. Wie kan bij Hem bemiddelen behalve met Zijn toestemming? Hij kent wat [nu] vóór hen is en wat na hen zal zijn, en zij omvatten niets van Zijn kennis behalve wat Hij wil. Zijn Kursi strekt zich uit over de hemelen en de aarde, en het behoeden ervan vermoeit Hem niet. En Hij is de Allerhoogste, de Grootste. (Reciteer Ayat al-Kursi vóór het slapen. Wie dat doet, krijgt een bewaker van Allah over zich tot de ochtend.)",
+          "reference": "Koran 2:255; Sahih al-Bukhari"
+        },
+        {
+          "title": "De laatste twee verzen van Al-Baqarah",
+          "translation": "De Boodschapper heeft geloofd in wat hem van zijn Heer is geopenbaard, en [zo ook] de gelovigen. Allen hebben geloofd in Allah, Zijn engelen, Zijn boeken en Zijn boodschappers, [zeggend]: „Wij maken geen onderscheid tussen iemand van Zijn boodschappers.” En zij zeggen: „Wij hebben gehoord en wij gehoorzamen. [Wij zoeken] Uw vergeving, onze Heer, en tot U is de [uiteindelijke] bestemming.” Allah belast een ziel niet behalve [met wat binnen] haar vermogen [ligt]. Zij krijgt [het gevolg van] wat [goeds] zij heeft verworven, en zij draagt [het gevolg van] wat [kwaads] zij heeft verdiend. „Onze Heer, neem het ons niet kwalijk als wij vergeten of gedwaald hebben. Onze Heer, en leg ons geen last op zoals U die hebt gelegd op hen die vóór ons waren. Onze Heer, en belast ons niet met wat wij niet kunnen dragen. En vergeef ons; en scheld ons kwijt; en heb barmhartigheid met ons. U bent onze beschermer, geef ons dus de overwinning op het ongelovige volk.” (Het reciteren van deze laatste twee verzen van Al-Baqarah in de nacht volstaat voor wie ze leest.)",
+          "reference": "Koran 2:285-286; Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "De drie Quls vóór het slapen",
+          "translation": "Blaas in de handpalmen en veeg over het lichaam nadat je Al-Ikhlas, Al-Falaq en An-Nas hebt gereciteerd (elk drie keer).",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Vertrouwen stellen vóór het slapen",
+          "translation": "O Allah, ik onderwerp mij aan U, vertrouw mijn zaken aan U toe, wend mijn gezicht tot U en leun met mijn rug op U, in hoop en vrees voor U. Er is geen toevlucht of ontkomen aan U behalve tot U. Ik geloof in Uw Boek dat U hebt geopenbaard en in Uw Profeet die U hebt gezonden.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Bij het omdraaien in de nacht",
+          "translation": "Er is geen god dan Allah, de Ene, de Overwinnende. Heer van de hemelen en de aarde en wat daartussen is, de Almachtige, de Vaak Vergevende.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Als men 's nachts plotseling wakker wordt",
+          "translation": "Er is geen god dan Allah alleen, zonder deelgenoot... Alle lof is voor Allah, glorie zij Allah, er is geen god dan Allah, Allah is de Grootste, en er is geen macht noch kracht behalve bij Allah. Doe daarna du'a.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Du'a bij droomuitleg",
+          "translation": "Ik zoek toevlucht bij Allah tegen Satan, de vervloekte, en tegen het kwaad van deze droom. (Spuug daarna drie keer lichtjes naar links en vertel het niet aan anderen.)",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bij het opstaan voor het nachtgebed",
+          "translation": "O Allah, aan U behoort alle lof. U bent de Onderhouder van de hemelen en de aarde en van wie zich daarin bevindt...",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Vóór het eten",
+          "translation": "In de naam van Allah.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Als men Bismillah vergeet",
+          "translation": "In de naam van Allah, aan het begin en aan het einde.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Na het eten",
+          "translation": "Alle lof is voor Allah, die mij dit heeft gevoed en het mij heeft gegeven zonder enige macht of kracht van mijzelf.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Na een maaltijd (langer)",
+          "translation": "Alle lof is voor Allah — overvloedige, reine en gezegende lof — een lof die nooit volstaat, nooit wordt opgegeven en waarvan nooit wordt afgezien, onze Heer.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Bij het drinken van melk",
+          "translation": "O Allah, zegen het voor ons en geef ons er meer van.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Wanneer eten wordt aangeboden tijdens het vasten",
+          "translation": "Ik vast.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Bij het begin van een reis",
+          "translation": "Glorie zij Hem die dit aan ons heeft onderworpen, en wij hadden dat zelf niet gekund. Tot onze Heer zullen wij zeker terugkeren.",
+          "reference": "Koran 43:13-14"
+        },
+        {
+          "title": "Smeekbede op reis",
+          "translation": "O Allah, wij vragen U op deze reis om rechtschapenheid en godsvrees, en om daden die U behagen. O Allah, maak deze reis voor ons gemakkelijk en vouw de afstand samen. O Allah, U bent de Metgezel op de reis en de Bewaker van het gezin.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bij de terugkeer van reis",
+          "translation": "Wij keren terug, berouwvol, aanbiddend en onze Heer prijzend.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Bij het binnengaan van een stad",
+          "translation": "O Allah, Heer van de zeven hemelen en wat zij overschaduwen... Ik vraag U het goede van deze stad en haar mensen, en ik zoek toevlucht bij U tegen haar kwaad en het kwaad van haar mensen.",
+          "reference": "Sunan an-Nasa'i (Hisnul Muslim)"
+        },
+        {
+          "title": "Wanneer het dier of voertuig struikelt",
+          "translation": "In de naam van Allah.",
+          "reference": "Sunan Abu Dawud"
+        },
+        {
+          "title": "Groet van de bewoner bij aankomst",
+          "translation": "O Allah, zegen het voor ons.",
+          "reference": "Algemene du'a van reizigers (Hisnul Muslim)"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Bij het bezoeken van de zieke",
+          "translation": "Geen kwaad: het is een reiniging, als Allah wil.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Voor de zieke",
+          "translation": "O Allah, Heer van de mensen, verwijder het kwaad en genees hem, want U bent de Genezer. Er is geen genezing dan Uw genezing: een genezing die geen ziekte achterlaat.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Bij pijn",
+          "translation": "In de naam van Allah (3 keer). Ik zoek toevlucht bij Allah en Zijn macht tegen het kwaad van wat ik voel en vrees (7 keer), terwijl ik de hand op de plaats van de pijn leg.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Ruqyah bij ziekte",
+          "translation": "Verwijder het kwaad, o Heer van de mensen. Genees, want U bent de Genezer. Er is geen genezer dan U.",
+          "reference": "Sahih al-Bukhari en Sahih Muslim"
+        },
+        {
+          "title": "Bij het bezoeken van een zieke moslim",
+          "translation": "Ik vraag Allah de Prachtige, Heer van de machtige Troon, jou te genezen. (Reciteer 7 keer.)",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Op het moment van de dood",
+          "translation": "Er is geen god dan Allah. (Moedig de stervende aan dit te zeggen.)",
+          "reference": "Sahih Muslim"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Toevlucht zoeken",
+          "translation": "Ik zoek toevlucht in de volmaakte woorden van Allah tegen het kwaad van wat Hij heeft geschapen.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "Bescherming tegen angst",
+          "translation": "O Allah, ik zoek toevlucht bij U tegen zorg en verdriet, tegen onvermogen en luiheid, tegen lafheid en gierigheid, en tegen overweldigd worden door schuld en overmeesterd worden door mensen.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Bescherming bij het verlaten van huis",
+          "translation": "In de naam van Allah, ik stel mijn vertrouwen op Allah. Er is geen macht noch kracht behalve bij Allah.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Tegen het boze oog",
+          "translation": "Ik zoek toevlucht in de volmaakte woorden van Allah tegen elke duivel en elk giftig schepsel, en tegen elk kwaad oog.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Du'a van Yunus",
+          "translation": "Er is geen god dan U. Glorie zij U. Voorwaar, ik ben van de onrechtplegers geweest.",
+          "reference": "Koran 21:87; Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Bij angst",
+          "translation": "Ik zoek toevlucht in de volmaakte woorden van Allah tegen Zijn toorn en straf, tegen het kwaad van Zijn dienaren, tegen het fluisteren van de duivels en tegen hun aanwezigheid.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Bescherming van kinderen",
+          "translation": "Ik zoek bescherming voor jullie beiden in de volmaakte woorden van Allah tegen elke duivel en elk giftig schepsel, en tegen elk kwaad oog.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Wanneer men ziet dat iets iemand treft",
+          "translation": "Alle lof is voor Allah, die mij heeft gespaard van waarmee Hij jou heeft beproefd en die mij sterk heeft begunstigd boven velen van hen die Hij schiep. (Zeg het zacht, niet hardop om de persoon te kwetsen.)",
+          "reference": "Sunan at-Tirmidhi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Sayyid al-Istighfar",
+          "translation": "O Allah, U bent mijn Heer. Niemand heeft het recht aanbeden te worden behalve U... dus vergeef mij, want niemand vergeeft de zonden behalve U.",
+          "reference": "Sahih al-Bukhari"
+        },
+        {
+          "title": "Vergeving zoeken",
+          "translation": "Mijn Heer, vergeef mij en aanvaard mijn berouw. U bent de Aanvaarder van berouw, de Meest Barmhartige.",
+          "reference": "Sunan at-Tirmidhi"
+        },
+        {
+          "title": "Astaghfirullah",
+          "translation": "Ik vraag Allah om vergeving.",
+          "reference": "Algemeen dhikr"
+        },
+        {
+          "title": "Istighfar van de Profeet",
+          "translation": "Ik vraag vergeving aan Allah, naast Wie er geen god is, de Eeuwig Levende, de Onderhouder, en ik wend mij berouwvol tot Hem.",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        },
+        {
+          "title": "Du'a van Adam",
+          "translation": "Onze Heer, wij hebben onszelf onrecht aangedaan. Als U ons niet vergeeft en geen barmhartigheid met ons hebt, zullen wij zeker tot de verliezers behoren.",
+          "reference": "Koran 7:23"
+        },
+        {
+          "title": "Alomvattende vergeving",
+          "translation": "O Allah, vergeef mij al mijn zonde: de kleine en de grote, de eerste en de laatste, de openlijke en de verborgene.",
+          "reference": "Sahih Muslim"
+        },
+        {
+          "title": "De beste istighfar in een bijeenkomst",
+          "translation": "Glorie zij U, o Allah, en lof. Ik getuig dat er geen god is dan U. Ik vraag Uw vergeving en wend mij berouwvol tot U. (Gezegd aan het einde van een bijeenkomst.)",
+          "reference": "Sunan Abu Dawud en at-Tirmidhi"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Voor de ouders",
+          "translation": "Mijn Heer, heb barmhartigheid met hen zoals zij mij hebben opgevoed toen ik klein was.",
+          "reference": "Koran 17:24"
+        },
+        {
+          "title": "Voor gelovige ouders",
+          "translation": "Onze Heer, vergeef mij, mijn ouders en de gelovigen op de Dag waarop de afrekening wordt vastgesteld.",
+          "reference": "Koran 14:41"
+        },
+        {
+          "title": "Vergeving voor de ouders",
+          "translation": "Mijn Heer, vergeef mij, mijn ouders, wie mijn huis binnengaat als gelovige, en de gelovige mannen en de gelovige vrouwen.",
+          "reference": "Koran 71:28"
+        },
+        {
+          "title": "Goedheid nadat de ouders zijn heengegaan",
+          "translation": "O Allah, vergeef mij en mijn ouders, en heb barmhartigheid met hen zoals zij mij hebben opgevoed toen ik klein was.",
+          "reference": "Gebaseerd op de Koran 17:24"
+        },
+        {
+          "title": "Goedheid jegens de ouders",
+          "translation": "Jouw Heer heeft bepaald dat jullie niemand aanbidden dan Hem en dat jullie goed zijn voor de ouders.",
+          "reference": "Koran 17:23"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "guides": [
+    {
+      "items": [
+        {
+          "title": "Intenția (niyya)",
+          "description": "Fă o intenție sinceră în inimă să săvârșești Wudu de dragul lui Allah."
+        },
+        {
+          "title": "Spune Bismillah",
+          "description": "Începe spunând: Bismillah (În numele lui Allah)."
+        },
+        {
+          "title": "Spală mâinile și gura",
+          "description": "Spală ambele mâini de trei ori, clătește gura de trei ori și trage apă în nas și sufl-o afară de trei ori."
+        },
+        {
+          "title": "Spală fața și brațele",
+          "description": "Spală toată fața de trei ori, apoi brațul drept până la cot de trei ori, apoi brațul stâng."
+        },
+        {
+          "title": "Șterge capul și spală picioarele",
+          "description": "Șterge capul o dată, șterge urechile și spală piciorul drept, apoi pe cel stâng, până la glezne, de trei ori fiecare."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Pregătire",
+          "description": "Asigură-te că ai Wudu, îmbracă-te modest și îndreaptă-te spre Qibla, pe un loc de rugăciune curat."
+        },
+        {
+          "title": "Takbir și starea în picioare",
+          "description": "Ridică mâinile și spune Allahu Akbar ca să începi. Stai cu smerenie și cu atenție."
+        },
+        {
+          "title": "Recită Al-Fatiha",
+          "description": "Recită Sura Al-Fatiha în fiecare rak'a, urmată de o sură scurtă sau de versete în primele două rak'a ale rugăciunilor fard, acolo unde se aplică."
+        },
+        {
+          "title": "Ruku și sujud",
+          "description": "Pleacă-te spunând Subhana Rabbiyal Adheem, apoi prosternă-te spunând Subhana Rabbiyal A'la, cu calm și cu nemișcare."
+        },
+        {
+          "title": "Tashahhud și salam",
+          "description": "Așază-te pentru tashahhud-ul final, trimite salawat asupra Profetului ﷺ, apoi încheie întorcându-te la dreapta și la stânga cu salam."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Intenție",
+          "description": "Intenționează în inimă să săvârșești Ghusl ca să îndepărtezi necurăția mare, de dragul lui Allah."
+        },
+        {
+          "title": "Spală mâinile și locul intim",
+          "description": "Spală ambele mâini, apoi spală orice necurăție de pe trup."
+        },
+        {
+          "title": "Săvârșește Wudu",
+          "description": "Încheie Wudu așa cum o faci de obicei, înainte de spălarea finală a trupului."
+        },
+        {
+          "title": "Toarnă apă peste trup",
+          "description": "Toarnă apă peste cap de trei ori, având grijă să ajungă la rădăcina părului."
+        },
+        {
+          "title": "Încheie spălarea întregului trup",
+          "description": "Spală tot trupul, începând cu partea dreaptă, având grijă să nu rămână niciun loc uscat."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Când este îngăduit",
+          "description": "Tayammum este îngăduit când apa nu este la îndemână, când folosirea ei dăunează sau când nu poate fi ajunsă la timp pentru rugăciune."
+        },
+        {
+          "title": "Intenția și lovirea pământului",
+          "description": "Fă intenția, apoi lovește pământul curat o dată cu ambele palme."
+        },
+        {
+          "title": "Șterge fața",
+          "description": "Șterge toată fața o dată cu ambele mâini."
+        },
+        {
+          "title": "Șterge brațele",
+          "description": "Șterge brațul drept până la cot cu mâna stângă, apoi brațul stâng cu mâna dreaptă."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Scop",
+          "description": "Rugăciunea de înmormântare este o obligație a comunității, ca să se ceară milă și iertare pentru musulmanul răposat."
+        },
+        {
+          "title": "Stai în rânduri",
+          "description": "Stai cu fața spre Qibla, fără ruku și fără sujud. Trupul este așezat în fața imamului."
+        },
+        {
+          "title": "Patru takbiruri",
+          "description": "Spune Allahu Akbar de patru ori. După primul, recită Al-Fatiha în tăcere; după celelalte, trimite salawat și fă dua pentru răposat."
+        },
+        {
+          "title": "Fă dua",
+          "description": "Cere-I lui Allah să-l ierte pe răposat, să-i dăruiască statornicie și să-i înlocuiască locuința cu una mai bună în Paradis."
+        },
+        {
+          "title": "Încheiere",
+          "description": "După takbirul final, dă salam o dată spre dreapta, ca în rugăciunea obișnuită."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Ihram",
+          "description": "Intră în ihram la miqat cu intenția de Umrah, evitând opririle ihramului."
+        },
+        {
+          "title": "Tawaf",
+          "description": "Înconjoară Kaaba de șapte ori, începând și încheind la Piatra Neagră dacă se poate, cu dua și cu dhikr."
+        },
+        {
+          "title": "Două rak'a",
+          "description": "Roagă-te două rak'a în spatele lui Maqam Ibrahim, dacă se poate."
+        },
+        {
+          "title": "Sa'i",
+          "description": "Mergi de șapte ori între Safa și Marwah, amintindu-ți încrederea Hajarei (AS) în Allah."
+        },
+        {
+          "title": "Raderea sau scurtarea părului",
+          "description": "Bărbații își rad sau își scurtează părul; femeile taie din păr cât un vârf de deget, ca să încheie Umrah."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Zilele de Hajj",
+          "description": "Hajj are loc în Dhul Hijjah. Riturile de seamă cuprind ihram, starea la Arafah, Muzdalifah și aruncarea pietrelor la Jamarat."
+        },
+        {
+          "title": "Tawaf-ul Ifadah",
+          "description": "Săvârșește tawaf în jurul Kaabei după ziua de Arafah, ca stâlp al Hajj."
+        },
+        {
+          "title": "Sa'i al Hajj",
+          "description": "Încheie sa'i între Safa și Marwah, dacă nu a fost deja făcut în Umrah."
+        },
+        {
+          "title": "Șederea la Mina",
+          "description": "Petrece nopțile la Mina și aruncă pietre la Jamarat în zilele de tashriq, cu răbdare și cu dhikr."
+        },
+        {
+          "title": "Tawaf-ul de rămas-bun",
+          "description": "Înainte de a părăsi Mecca, săvârșește tawaf-ul de rămas-bun (Tawaf al-Wada') ca rit final."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Intenție",
+          "description": "Intenționează să postești în fiecare zi de Ramadan încă dinainte de Fajr, de dragul lui Allah."
+        },
+        {
+          "title": "Suhur",
+          "description": "Mănâncă o masă înainte de zori (suhur) — este binecuvântare în ea — chiar dacă este mică."
+        },
+        {
+          "title": "Evită ceea ce anulează postul",
+          "description": "Ferește-te de mâncare, de băutură și de intimitate de la Fajr până la Maghrib. Păzește-ți limba și faptele."
+        },
+        {
+          "title": "Iftar cu recunoștință",
+          "description": "Întrerupe postul la Maghrib cu curmale și apă, dacă sunt, rostind dua celui care postește."
+        },
+        {
+          "title": "Adorarea de noapte",
+          "description": "Sporește Coranul, dua și rugăciunile opționale în Ramadan, mai ales în ultimele zece nopți."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Cine trebuie să plătească",
+          "description": "Zakat se cuvine asupra averii care îndeplinește condițiile, ținută un an lunar, când ajunge pragul nisab."
+        },
+        {
+          "title": "Cota",
+          "description": "Cota obișnuită pentru bani, aur și argint este 2,5% din averea excedentară care îndeplinește condițiile."
+        },
+        {
+          "title": "Cei îndreptățiți să primească",
+          "description": "Dă celor opt categorii pomenite în Coran, dând întâietate nevoii locale acolo unde se poate."
+        },
+        {
+          "title": "Intenția și timpul",
+          "description": "Fă intenția că plata este Zakat. Se poate achita oricând după ce a devenit datorată; mulți o plătesc în Ramadan."
+        },
+        {
+          "title": "Efect",
+          "description": "Zakat curățește averea, micșorează lăcomia și îi întărește pe membrii cei mai vulnerabili ai comunității."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Oprește păcatul",
+          "description": "Pocăința sinceră începe cu părăsirea imediată a păcatului și cu hotărârea de a nu te întoarce la el."
+        },
+        {
+          "title": "Căință",
+          "description": "Simte în inimă o căință adevărată pentru că L-ai neascultat pe Allah."
+        },
+        {
+          "title": "Hotărăște să nu repeți",
+          "description": "Fă o intenție fermă să eviți păcatul de acum înainte și schimbă împrejurările care duc la el."
+        },
+        {
+          "title": "Cere iertare",
+          "description": "Spune Astaghfirullah, fă dua și, dacă păcatul a atins drepturile altora, restabilește acele drepturi."
+        },
+        {
+          "title": "Îndurarea lui Allah",
+          "description": "Allah îi iubește pe cei care se pocăiesc. Niciun păcat nu este prea mare dacă pocăința este sinceră și înainte de moarte."
+        }
+      ]
+    }
+  ]
+}

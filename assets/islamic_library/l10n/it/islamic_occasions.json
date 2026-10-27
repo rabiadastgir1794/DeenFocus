@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadan",
+      "importance": "Il Ramadan è il mese in cui fu rivelato il Corano: una misericordia guidata e un criterio chiaro per l'umanità.",
+      "virtues": "Le porte del Paradiso sono aperte, i demoni sono incatenati e ogni buona azione è moltiplicata.",
+      "recommendedActs": "Digiuna con sincerità, aumenta la recitazione del Corano, fai la carità, prega il Taraweeh e cerca Laylatul Qadr nelle ultime dieci notti."
+    },
+    {
+      "title": "Eid al-Fitr",
+      "importance": "L'Eid al-Fitr segna il compimento del Ramadan e la gratitudine ad Allah per aver reso possibile il digiuno.",
+      "virtues": "È un giorno di gioia, comunità e riconoscenza dopo un mese di adorazione e disciplina di sé.",
+      "recommendedActs": "Versa la Zakat al-Fitr, compi la preghiera dell'Eid, indossa i tuoi abiti migliori, saluta gli altri e visita la famiglia, mantenendo le buone maniere islamiche."
+    },
+    {
+      "title": "Eid al-Adha",
+      "importance": "L'Eid al-Adha commemora la devozione di Ibrahim (AS) e i riti dell'Hajj durante Dhul Hijjah.",
+      "virtues": "Insegna il sacrificio, l'obbedienza ad Allah e la cura di chi è nel bisogno attraverso l'udhiyah (sacrificio).",
+      "recommendedActs": "Compi la preghiera dell'Eid, offri il sacrificio se puoi, condividi la carne con i poveri e aumenta il takbir nei primi dieci giorni di Dhul Hijjah."
+    },
+    {
+      "title": "Stagione dell'Hajj",
+      "importance": "L'Hajj è un pilastro da compiere una volta nella vita per chi ne è in grado: un viaggio profondo di unità e sottomissione.",
+      "virtues": "Un Hajj accettato porta il perdono dei peccati e un rinnovamento dello scopo. La piana di Arafah è il cuore dell'Hajj.",
+      "recommendedActs": "Chi non compie l'Hajj può digiunare nel Giorno di Arafah, aumentare il dhikr e fare du'a per chi si trova nei luoghi sacri."
+    },
+    {
+      "title": "Ashura",
+      "importance": "Il 10 di Muharram è il giorno in cui Allah salvò Musa (AS) e il suo popolo dal Faraone.",
+      "virtues": "Il digiuno di Ashura espia i peccati dell'anno precedente (se unito al digiuno di un giorno prima o dopo, secondo la Sunnah).",
+      "recommendedActs": "Digiuna il 9 e il 10 di Muharram se possibile, rifletti sull'aiuto di Allah agli oppressi e aumenta la gratitudine."
+    },
+    {
+      "title": "Laylatul Qadr",
+      "importance": "Laylatul Qadr è migliore di mille mesi: è la notte in cui iniziò la rivelazione del Corano.",
+      "virtues": "L'adorazione in questa sola notte può superare decenni di ricompensa. Gli angeli scendono con la pace fino al Fajr.",
+      "recommendedActs": "Cercala nelle notti dispari degli ultimi dieci giorni di Ramadan, con la preghiera, il Corano, la du'a e l'istighfar."
+    },
+    {
+      "title": "Jumu'ah (venerdì)",
+      "importance": "Il venerdì è il giorno migliore in cui sorge il sole. Comprende una preghiera comunitaria settimanale e un richiamo settimanale.",
+      "virtues": "C'è un momento del venerdì in cui la du'a è accettata. I peccati tra un venerdì e l'altro sono perdonati a chi si lava e partecipa con sincerità.",
+      "recommendedActs": "Fai il Ghusl, indossa abiti puliti, arriva presto alla moschea, ascolta con attenzione la khutbah e aumenta le salawat sul Profeta ﷺ."
+    }
+  ]
+}

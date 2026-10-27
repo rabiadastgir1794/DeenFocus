@@ -1,0 +1,588 @@
+{
+  "collections": [
+    {
+      "items": [
+        {
+          "title": "Faptele sunt după intenții",
+          "translation": "Faptele sunt judecate după intenții, și fiecare om va primi doar ceea ce a intenționat.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "Sahih al-Bukhari 1"
+        },
+        {
+          "title": "Cei cinci stâlpi ai Islamului",
+          "translation": "Islamul este zidit pe cinci: mărturia de credință, statornicirea rugăciunii, achitarea Zakat, postul din Ramadan și săvârșirea Hajj pentru cel care poate.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bukhari 8"
+        },
+        {
+          "title": "Halal și haram sunt limpezi",
+          "translation": "Ceea ce este îngăduit este limpede și ceea ce este oprit este limpede, iar între ele sunt lucruri îndoielnice. Cine evită lucrurile îndoielnice se curățește în privința religiei și a onoarei sale.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih al-Bukhari 52"
+        },
+        {
+          "title": "Lasă ceea ce te face să te îndoiești",
+          "translation": "Lasă ceea ce te face să te îndoiești pentru ceea ce nu te face să te îndoiești.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "Sahih al-Bukhari 52; Jami' at-Tirmidhi 2518"
+        },
+        {
+          "title": "Credința are peste șaptezeci de ramuri",
+          "translation": "Credința are peste șaptezeci de ramuri. Cea mai înaltă este rostirea «La ilaha illallah», iar cea mai de jos este îndepărtarea unei vătămări de pe drum. Rușinea este o ramură a credinței.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 9; autentic Muslim 35"
+        },
+        {
+          "title": "Drepturile unui musulman asupra altuia",
+          "translation": "Un musulman are cinci drepturi asupra altui musulman: să-i întoarcă salutul, să-l viziteze pe bolnav, să urmeze înmormântarea, să primească o invitație și să spună «Yarhamuk Allah» când el strănută.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 1240"
+        },
+        {
+          "title": "Cine crede în Allah și în Ziua de Apoi",
+          "translation": "Cine crede în Allah și în Ziua de Apoi să spună un bine sau să tacă.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 6018; autentic Muslim 47"
+        },
+        {
+          "title": "Nu vă invidiați unii pe alții",
+          "translation": "Nu vă invidiați unii pe alții, nu vă umflați prețurile unii altora, nu vă urâți unii pe alții și nu vă întoarceți unii de la alții. Fiți slujitori ai lui Allah, ca frați.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 6066; autentic Muslim 2564"
+        },
+        {
+          "title": "Cei mai buni dintre oameni",
+          "translation": "Cei mai buni dintre oameni sunt cei mai folositori oamenilor.",
+          "narrator": "Jabir ibn Abdullah (RA)",
+          "source": "Sahih al-Bukhari (al-Adab al-Mufrad); autentificat"
+        },
+        {
+          "title": "Allah este frumos și iubește frumusețea",
+          "translation": "Allah este Frumos și iubește frumusețea.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "Sahih Muslim 91"
+        },
+        {
+          "title": "Ușurează, nu îngreuna",
+          "translation": "Ușurați lucrurile și nu le îngreunați; dați veste bună și nu-i îndepărtați pe oameni.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bukhari 69; autentic Muslim 1734"
+        },
+        {
+          "title": "Cel puternic nu este cel care învinge",
+          "translation": "Omul puternic nu este cel care îi învinge pe alții la luptă; omul puternic este cel care se stăpânește când este mânios.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 6114; autentic Muslim 2609"
+        },
+        {
+          "title": "Niciunul dintre voi nu crede cu adevărat până nu iubește pentru fratele său",
+          "translation": "Niciunul dintre voi nu crede cu adevărat până nu iubește pentru fratele său ceea ce iubește pentru sine.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih al-Bukhari 13; autentic Muslim 45"
+        },
+        {
+          "title": "Lumea este o închisoare pentru credincios",
+          "translation": "Lumea este o închisoare pentru credincios și un paradis pentru necredincios.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih Muslim 2956"
+        },
+        {
+          "title": "Fii în lumea aceasta ca un străin",
+          "translation": "Fii în lumea aceasta ca și cum ai fi un străin sau un călător.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "Sahih al-Bukhari 6416"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Frăția în credință",
+          "translation": "Niciunul dintre voi nu crede cu adevărat până nu iubește pentru fratele său ceea ce iubește pentru sine.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sahih Muslim 45"
+        },
+        {
+          "title": "Cuvântul bun este milostenie",
+          "translation": "Un cuvânt bun este milostenie.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih Muslim 1009"
+        },
+        {
+          "title": "Zâmbetul este milostenie",
+          "translation": "Zâmbetul tău în fața fratelui tău este pentru tine o milostenie.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "Sahih Muslim (Tirmidhi 1956)"
+        },
+        {
+          "title": "Cine ușurează un credincios",
+          "translation": "Cine îl ușurează pe un credincios de o strâmtorare în lumea aceasta, Allah îl va ușura de o strâmtorare în Ziua Învierii.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih Muslim 2580"
+        },
+        {
+          "title": "Curățenia este jumătate din credință",
+          "translation": "Curățenia este jumătate din credință.",
+          "narrator": "Abu Malik al-Ash'ari (RA)",
+          "source": "Sahih Muslim 223"
+        },
+        {
+          "title": "Căutarea cunoașterii este obligatorie",
+          "translation": "Căutarea cunoașterii este o obligație asupra fiecărui musulman.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Ibn Majah 224; autentificat"
+        },
+        {
+          "title": "Cea mai bună milostenie",
+          "translation": "Cea mai bună milostenie este cea pe care o dai cât ești sănătos și dornic de avere, temându-te de sărăcie și nădăjduind să te îmbogățești.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 1419; autentic Muslim 1031"
+        },
+        {
+          "title": "Allah nu se uită la trupurile voastre",
+          "translation": "Allah nu se uită la trupurile voastre sau la averea voastră, ci se uită la inimile voastre și la faptele voastre.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih Muslim 2564"
+        },
+        {
+          "title": "Credinciosul față de credincios",
+          "translation": "Credincioșii, în bunătatea, compasiunea și mila lor unii față de alții, sunt ca un singur trup — când un mădular suferă, tot trupul răspunde cu nesomn și febră.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "Sahih Muslim 2586"
+        },
+        {
+          "title": "Cine îndepărtează o greutate lumească",
+          "translation": "Cine ușurează o greutate cuiva în lumea aceasta, Allah îi va ușura greutatea în Ziua Învierii.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih Muslim 2699"
+        },
+        {
+          "title": "Cele cinci rugăciuni zilnice",
+          "translation": "Cine își face bine abluțiunea și se roagă cele cinci rugăciuni zilnice, Allah are un legământ cu el să intre în Paradis.",
+          "narrator": "Uthman ibn Affan (RA)",
+          "source": "Sahih Muslim 228"
+        },
+        {
+          "title": "Cei mai buni dintre voi sunt cei mai buni cu familiile lor",
+          "translation": "Cei mai buni dintre voi sunt cei care sunt cei mai buni cu familiile lor, iar eu sunt cel mai bun dintre voi cu familia mea.",
+          "narrator": "Aișa (RA)",
+          "source": "Jami' at-Tirmidhi 3895; autentic"
+        },
+        {
+          "title": "Rușinea nu aduce decât bine",
+          "translation": "Rușinea nu aduce decât bine.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 6117; autentic Muslim 37"
+        },
+        {
+          "title": "Allah este blând și iubește blândețea",
+          "translation": "Allah este Blând și iubește blândețea în toate lucrurile.",
+          "narrator": "Aișa (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "Paradisul se află la picioarele mamelor",
+          "translation": "Paradisul se află la picioarele mamelor.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Sunan an-Nasa'i 3104; autentificat"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Allah este blând și iubește blândețea",
+          "translation": "Allah este Blând și iubește blândețea în toate lucrurile.",
+          "narrator": "Aișa (RA)",
+          "source": "Sahih Muslim 2593"
+        },
+        {
+          "title": "Blândețea înfrumusețează",
+          "translation": "Blândețea nu se află în nimic fără să-l înfrumusețeze.",
+          "narrator": "Aișa (RA)",
+          "source": "Sahih Muslim 2594"
+        },
+        {
+          "title": "Credinciosul puternic",
+          "translation": "Credinciosul puternic este mai bun și mai iubit de Allah decât credinciosul slab, deși în amândoi este bine.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih Muslim 2664"
+        },
+        {
+          "title": "Nu te mânia",
+          "translation": "Nu te mânia.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 6116"
+        },
+        {
+          "title": "Cele mai iubite fapte lui Allah",
+          "translation": "Cele mai iubite fapte lui Allah sunt cele făcute cu statornicie, chiar dacă sunt mici.",
+          "narrator": "Aișa (RA)",
+          "source": "Sahih al-Bukhari 6464; autentic Muslim 782"
+        },
+        {
+          "title": "Cine nu arată milă",
+          "translation": "Cine nu arată milă nu va primi milă.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 5997; autentic Muslim 2318"
+        },
+        {
+          "title": "Cei mai buni dintre voi în caracter",
+          "translation": "Cei mai buni dintre voi sunt cei care au cel mai bun caracter.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sahih al-Bukhari 3559"
+        },
+        {
+          "title": "Schimbați daruri și vă veți iubi",
+          "translation": "Schimbați daruri și vă veți iubi unii pe alții.",
+          "narrator": "Aișa (RA)",
+          "source": "Al-Adab al-Mufrad; autentificat"
+        },
+        {
+          "title": "Limba poate duce la Focul Iadului",
+          "translation": "Lucrurile care îi duc cel mai mult pe oameni în Paradis sunt conștiința de Allah și caracterul bun.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Jami' at-Tirmidhi 2004"
+        },
+        {
+          "title": "Vizitează-i pe bolnavi",
+          "translation": "Niciun musulman nu vizitează dimineața un musulman bolnav fără ca șaptezeci de mii de îngeri să trimită binecuvântări asupra lui până seara.",
+          "narrator": "Ali ibn Abi Talib (RA)",
+          "source": "Sahih Muslim 2569"
+        },
+        {
+          "title": "Drepturile vecinilor",
+          "translation": "Jibril a tot stăruit să-mi recomande vecinul, până am crezut că îl va face moștenitor.",
+          "narrator": "Aișa (RA)",
+          "source": "Sahih al-Bukhari 6014; autentic Muslim 2624"
+        },
+        {
+          "title": "Bârfa este mai rea decât adulterul",
+          "translation": "Știți ce este bârfa? Este să-l pomenești pe fratele tău într-un fel care îi displace.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "Sunan Abu Dawud 4877; autentificat"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Faptele sunt după intenții",
+          "translation": "Faptele sunt judecate după intenții, și fiecare om va avea doar ceea ce a intenționat.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadith Nawawi, #1"
+        },
+        {
+          "title": "Cei cinci stâlpi",
+          "translation": "Islamul este zidit pe cinci: mărturia de credință, rugăciunea, Zakat, postul din Ramadan și Hajj.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadith Nawawi, #2"
+        },
+        {
+          "title": "Stâlpii credinței",
+          "translation": "Credința este să crezi în Allah, în îngerii Săi, în cărțile Sale, în trimișii Săi, în Ziua de Apoi și în hotărârea divină — binele ei și răul ei.",
+          "narrator": "Umar ibn al-Khattab (RA)",
+          "source": "40 Hadith Nawawi, #3"
+        },
+        {
+          "title": "Creația în pântece",
+          "translation": "Fiecare dintre voi este adunat în pântece timp de patruzeci de zile ca o picătură, apoi ca un cheag, apoi ca o bucată de carne. Apoi un înger suflă sufletul și scrie patru lucruri.",
+          "narrator": "Abdullah ibn Mas'ud (RA)",
+          "source": "40 Hadith Nawawi, #4"
+        },
+        {
+          "title": "Respingerea răului",
+          "translation": "Cine vede un rău, să-l schimbe cu mâna sa. Dacă nu poate, atunci cu limba sa. Dacă nu poate, atunci cu inima sa — și aceasta este cea mai slabă credință.",
+          "narrator": "Abu Sa'id al-Khudri (RA)",
+          "source": "40 Hadith Nawawi, #5"
+        },
+        {
+          "title": "Halal, haram și lucrurile îndoielnice",
+          "translation": "Ceea ce este îngăduit este limpede și ceea ce este oprit este limpede. Între ele sunt lucruri îndoielnice pe care mulți oameni nu le cunosc.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #6"
+        },
+        {
+          "title": "Religia este un sfat sincer",
+          "translation": "Religia este un sfat sincer. Am spus: Către cine? El a spus: Către Allah, către Cartea Sa, către Trimisul Său, către conducătorii musulmanilor și către oamenii lor de rând.",
+          "narrator": "Tamim ad-Dari (RA)",
+          "source": "40 Hadith Nawawi, #7"
+        },
+        {
+          "title": "Sângele, averea și onoarea oprite",
+          "translation": "Allah v-a oprit sângele, averea neîngăduită și purtarea necinstită față de mamele voastre.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #8"
+        },
+        {
+          "title": "Evită ceea ce ți s-a poruncit să eviți",
+          "translation": "Ceea ce v-am oprit, evitați. Ceea ce v-am poruncit să faceți, faceți din aceasta atât cât puteți.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #9"
+        },
+        {
+          "title": "Allah este curat și nu primește decât ceea ce este curat",
+          "translation": "Allah este Curat și nu primește decât ceea ce este curat. El le-a poruncit credincioșilor ceea ce le-a poruncit trimișilor.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #10"
+        },
+        {
+          "title": "Lasă ceea ce nu te privește",
+          "translation": "O parte din excelența unui om în Islam este să lase ceea ce nu-l privește.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #11"
+        },
+        {
+          "title": "Virtutea adunării pentru Coran și dhikr",
+          "translation": "Niciun grup de oameni nu se adună într-una din casele lui Allah, recitând Cartea lui Allah și studiind-o împreună, fără ca liniștea să coboare asupra lor.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #12"
+        },
+        {
+          "title": "Iubește pentru fratele tău ceea ce iubești pentru tine",
+          "translation": "Niciunul dintre voi nu crede cu adevărat până nu iubește pentru fratele său ceea ce iubește pentru sine.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "40 Hadith Nawawi, #13"
+        },
+        {
+          "title": "Sfințenia unui musulman",
+          "translation": "Nu disprețui nicio faptă bună, nici măcar întâlnirea fratelui tău cu o față veselă.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #14"
+        },
+        {
+          "title": "Spune un bine sau taci",
+          "translation": "Cine crede în Allah și în Ziua de Apoi să spună un bine sau să tacă.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #15"
+        },
+        {
+          "title": "Nu te aprinde de mânie",
+          "translation": "Un om i-a cerut Profetului un sfat, iar el a spus: Nu te aprinde de mânie. Omul și-a repetat cererea de mai multe ori, iar el a răspuns: Nu te aprinde de mânie.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #16"
+        },
+        {
+          "title": "Allah a rânduit excelența în toate",
+          "translation": "Allah a rânduit excelența (ihsan) în toate lucrurile. Așadar, când ucizi, ucide bine; și când junghii, junghie bine.",
+          "narrator": "Shaddad ibn Aws (RA)",
+          "source": "40 Hadith Nawawi, #17"
+        },
+        {
+          "title": "Teme-te de Allah oriunde te-ai afla",
+          "translation": "Teme-te de Allah oriunde te-ai afla, urmează o faptă rea cu o faptă bună ca s-o șteargă și poartă-te cu oamenii cu un caracter bun.",
+          "narrator": "Abu Dharr și Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #18"
+        },
+        {
+          "title": "Ține-te strâns de Sunnah",
+          "translation": "Vă îndemn să vă țineți de Sunnah mea și de calea califilor bine călăuziți. Feriți-vă de lucrurile născocite de curând, căci orice inovație este rătăcire.",
+          "narrator": "Irbad ibn Sariyah (RA)",
+          "source": "40 Hadith Nawawi, #19"
+        },
+        {
+          "title": "Încheieturile fiecărui om datorează milostenie în fiecare zi",
+          "translation": "Fiecare încheietură a unui om trebuie să facă milostenie în fiecare zi: dreptatea între doi oameni este milostenie; a ajuta un om cu animalul său este milostenie.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #20"
+        },
+        {
+          "title": "Cere-I lui Allah iertare și bunăstare",
+          "translation": "Cere-I lui Allah iertare și bunăstare, căci după certitudine nu i se dă nimănui nimic mai bun decât bunăstarea.",
+          "narrator": "Abdullah ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #21"
+        },
+        {
+          "title": "Semnele unui ipocrit",
+          "translation": "Semnele unui ipocrit sunt trei: când vorbește, minte; când făgăduiește, își calcă făgăduiala; și când i se încredințează ceva, trădează.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #22"
+        },
+        {
+          "title": "Inima curată",
+          "translation": "În trup este o bucată de carne — dacă ea este sănătoasă, tot trupul este sănătos; dacă ea este stricată, tot trupul este stricat. Ea este inima.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #23"
+        },
+        {
+          "title": "Drepturile lui Allah și drepturile oamenilor",
+          "translation": "Dreptul lui Allah asupra slujitorilor Săi este ca ei să-L adore și să nu-I alăture nimic. Dreptul slujitorilor asupra lui Allah este ca El să nu-i pedepsească pe cei care nu-I alătură parteneri.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #24"
+        },
+        {
+          "title": "Ceea ce este îngăduit și ceea ce este oprit sunt limpezi",
+          "translation": "Ceea ce este îngăduit este limpede și ceea ce este oprit este limpede. Între ele sunt lucruri îndoielnice pe care mulți nu le cunosc.",
+          "narrator": "An-Nu'man ibn Bashir (RA)",
+          "source": "40 Hadith Nawawi, #25"
+        },
+        {
+          "title": "Virtutea caracterului bun",
+          "translation": "Cei mai iubiți dintre voi pentru mine și cei mai apropiați de mine în Ziua Învierii sunt cei cu cel mai bun caracter.",
+          "narrator": "Abdullah ibn Amr (RA)",
+          "source": "40 Hadith Nawawi, #26"
+        },
+        {
+          "title": "Dreptul lui Allah asupra slujitorilor Săi",
+          "translation": "O, slujitorii Mei, am oprit nedreptatea pentru Mine Însumi și am făcut-o oprită între voi, așa că nu vă nedreptăți unii pe alții.",
+          "narrator": "Abu Dharr (RA)",
+          "source": "40 Hadith Nawawi, #27"
+        },
+        {
+          "title": "Lumea este închisoarea credinciosului",
+          "translation": "Lumea este o închisoare pentru credincios și un paradis pentru necredincios.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #28"
+        },
+        {
+          "title": "Umbra lui Allah în Ziua Judecății",
+          "translation": "Șapte vor fi umbriți de Allah în Ziua în care nu va fi altă umbră decât a Lui: un cârmuitor drept, un tânăr care a crescut adorându-L pe Allah și alții.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #29"
+        },
+        {
+          "title": "Starea inimii",
+          "translation": "Dacă inima este sănătoasă, tot trupul este sănătos; dacă inima este stricată, tot trupul este stricat.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #30"
+        },
+        {
+          "title": "Evită lucrurile îndoielnice",
+          "translation": "Lasă ceea ce te face să te îndoiești pentru ceea ce nu te face să te îndoiești.",
+          "narrator": "Al-Hasan ibn Ali (RA)",
+          "source": "40 Hadith Nawawi, #31"
+        },
+        {
+          "title": "Nici vătămare, nici răsplătirea vătămării",
+          "translation": "Nu trebuie să existe nici vătămare, nici răsplătirea vătămării.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #32"
+        },
+        {
+          "title": "Lumea este blestemată, afară de dhikr și de cunoaștere",
+          "translation": "Lumea este blestemată și ceea ce este în ea este blestemat, afară de pomenirea lui Allah, de ceea ce o ajută, de învățăt și de învățăcel.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #33"
+        },
+        {
+          "title": "Allah este bun și nu primește decât binele",
+          "translation": "Allah este Bun și nu primește decât ceea ce este bun.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #34"
+        },
+        {
+          "title": "Allah îi iubește pe cei care se pocăiesc",
+          "translation": "Allah îi iubește pe cei care se pocăiesc și îi iubește pe cei care se curățesc.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #35"
+        },
+        {
+          "title": "Fii în lume ca un străin",
+          "translation": "Fii în lumea aceasta ca și cum ai fi un străin sau un călător.",
+          "narrator": "Abdullah ibn Umar (RA)",
+          "source": "40 Hadith Nawawi, #36"
+        },
+        {
+          "title": "Drepturile lui Allah asupra slujitorilor Săi",
+          "translation": "Dreptul lui Allah asupra slujitorilor Săi este ca ei să-L adore numai pe El și să nu-I alăture nimic.",
+          "narrator": "Muadh ibn Jabal (RA)",
+          "source": "40 Hadith Nawawi, #37"
+        },
+        {
+          "title": "Cheamă-L pe Allah cu certitudine",
+          "translation": "Cheamă-L pe Allah fiind sigur de răspuns și să știi că Allah nu răspunde unei cereri venite dintr-o inimă nepăsătoare și împrăștiată.",
+          "narrator": "Abu Huraira (RA)",
+          "source": "40 Hadith Nawawi, #38"
+        },
+        {
+          "title": "Allah a iertat umma mea pentru greșeli",
+          "translation": "Allah a iertat umma mea pentru greșelile lor, pentru uitarea lor și pentru ceea ce sunt siliți să facă.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "40 Hadith Nawawi, #39"
+        },
+        {
+          "title": "Fii cu grijă față de Allah și El te va păzi",
+          "translation": "Fii cu grijă față de Allah și El te va păzi. Fii cu grijă față de Allah și Îl vei afla înaintea ta.",
+          "narrator": "Abu Abbas Abdullah (RA)",
+          "source": "40 Hadith Nawawi, #40"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Înainte de a dormi",
+          "translation": "În numele Tău, o, Allah, mor și trăiesc.",
+          "narrator": "Al-Bara' ibn Azib (RA)",
+          "source": "Hisnul Muslim; autentic al-Bukhari 6324"
+        },
+        {
+          "title": "La trezire",
+          "translation": "Toată lauda este pentru Allah, Cel care ne-a dat viață după ce ne-o luase, și la El este învierea.",
+          "narrator": "Hudhayfah ibn al-Yaman (RA)",
+          "source": "Hisnul Muslim; autentic al-Bukhari 6312"
+        },
+        {
+          "title": "La intrarea în locuință",
+          "translation": "În numele lui Allah intrăm, în numele lui Allah ieșim, și asupra Domnului nostru ne bizuim.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5096"
+        },
+        {
+          "title": "La ieșirea din locuință",
+          "translation": "În numele lui Allah, mă încred în Allah.",
+          "narrator": "Anas ibn Malik (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 5095"
+        },
+        {
+          "title": "Înainte de masă",
+          "translation": "În numele lui Allah.",
+          "narrator": "Umar ibn Abi Salama (RA)",
+          "source": "Hisnul Muslim; autentic al-Bukhari 5376"
+        },
+        {
+          "title": "După masă",
+          "translation": "Toată lauda este pentru Allah, Cel care m-a hrănit cu aceasta și mi-a dăruit-o fără nicio putere sau tărie din partea mea.",
+          "narrator": "Muadh ibn Anas (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 4023"
+        },
+        {
+          "title": "La intrarea în masjid",
+          "translation": "O, Allah, deschide-mi porțile îndurării Tale.",
+          "narrator": "Abu Usayd as-Sa'idi (RA)",
+          "source": "Hisnul Muslim; autentic Muslim 713"
+        },
+        {
+          "title": "La ieșirea din masjid",
+          "translation": "O, Allah, Îți cer din belșugul Tău.",
+          "narrator": "Abu Humaid sau Abu Usayd (RA)",
+          "source": "Hisnul Muslim; autentic Muslim 713"
+        },
+        {
+          "title": "Când ești în strâmtorare",
+          "translation": "Nu există dumnezeu în afară de Allah, Cel Măreț, Cel Îngăduitor. Nu există dumnezeu în afară de Allah, Domnul Tronului măreț.",
+          "narrator": "Ibn Abbas (RA)",
+          "source": "Hisnul Muslim; autentic al-Bukhari 6345"
+        },
+        {
+          "title": "Pentru iertare",
+          "translation": "Domnul meu, iartă-mă și primește-mi pocăința, căci Tu ești Cel Veșnic Întors spre pocăință, Cel Prea Milostiv.",
+          "narrator": "Al-Agharr al-Muzani (RA)",
+          "source": "Hisnul Muslim; Abu Dawud 1517"
+        },
+        {
+          "title": "Când plouă",
+          "translation": "O, Allah, fă să fie o ploaie folositoare.",
+          "narrator": "Aișa (RA)",
+          "source": "Hisnul Muslim; autentic al-Bukhari 1032"
+        },
+        {
+          "title": "Când auzi tunetul",
+          "translation": "Slavă Celui pe care tunetul Îl preamărește cu lauda Lui, și îngerii, din teama de El.",
+          "narrator": "Abdullah ibn az-Zubayr (RA)",
+          "source": "Hisnul Muslim; Al-Muwatta"
+        }
+      ]
+    }
+  ]
+}

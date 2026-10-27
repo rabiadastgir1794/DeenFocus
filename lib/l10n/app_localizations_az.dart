@@ -1663,7 +1663,7 @@ class AppLocalizationsAz extends AppLocalizations {
   String get appLanguage => 'Proqram dili';
 
   @override
-  String get tabHome => 'Ev';
+  String get tabHome => 'Əsas';
 
   @override
   String get tabFocus => 'Fokus';
@@ -2933,6 +2933,42 @@ class AppLocalizationsAz extends AppLocalizations {
   String get settingsCalculationMethodTitle => 'Hesab Metodu';
 
   @override
+  String get calcMethodMuslimWorldLeague => 'İslam Dünyası Liqası';
+
+  @override
+  String get calcMethodNorthAmerica => 'Şimali Amerika İslam Cəmiyyəti (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'Misir Ümumi Tədqiqat İdarəsi';
+
+  @override
+  String get calcMethodUmmAlQura => 'Ümmül-Qura Universiteti, Məkkə';
+
+  @override
+  String get calcMethodKarachi => 'İslam Elmləri Universiteti, Karaçi';
+
+  @override
+  String get calcMethodTehran => 'Tehran';
+
+  @override
+  String get calcMethodKuwait => 'Küveyt';
+
+  @override
+  String get calcMethodQatar => 'Qətər';
+
+  @override
+  String get calcMethodDubai => 'Dubay';
+
+  @override
+  String get calcMethodTurkey => 'Türkiyə';
+
+  @override
+  String get calcMethodSingapore => 'Sinqapur';
+
+  @override
+  String get calcMethodMoonsighting => 'Ümumdünya Hilal Müşahidə Komitəsi';
+
+  @override
   String get settingsAsrCalculationTitle => 'Əsr Hesabı';
 
   @override
@@ -3718,19 +3754,19 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get settingsAppDemoHomeFeaturesSubtitle =>
-      'See how Home Screen widgets and Live Activity keep prayer times close — without opening the app.';
+      'Əsas ekran vidcetlərinin və Live Activity-nin namaz vaxtlarını yaxın saxladığını görün — tətbiqi açmadan.';
 
   @override
   String get settingsAppDemoWidgetsCardSubtitle =>
-      'Daily verse and prayer times on your Home Screen, always up to date.';
+      'Gündəlik ayə və namaz vaxtları əsas ekranda, həmişə yenilənmiş.';
 
   @override
   String get settingsAppDemoLiveActivityCardSubtitle =>
-      'Current and next prayer on your Lock Screen and Dynamic Island.';
+      'Cari və növbəti namaz kilid ekranında və Dynamic Island-da.';
 
   @override
   String get settingsAppDemoTajweedCardSubtitle =>
-      'Recite an ayah and get instant tajweed feedback.';
+      'Bir ayə oxuyun və dərhal təcvid rəyi alın.';
 
   @override
   String get featureDemoTajweedTitle => 'Təcvid';

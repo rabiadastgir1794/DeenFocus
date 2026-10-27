@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "title": "Ramadan",
+      "importance": "Ramadan ist der Monat, in dem der Koran herabgesandt wurde — eine geleitete Barmherzigkeit und ein klares Unterscheidungsmerkmal für die Menschen.",
+      "virtues": "Die Tore des Paradieses werden geöffnet, die Teufel werden gefesselt, und jede gute Tat wird vervielfacht.",
+      "recommendedActs": "Faste aufrichtig, vermehre die Koranrezitation, gib Almosen, bete Tarāwīh und suche die Lailat al-Qadr in den letzten zehn Nächten."
+    },
+    {
+      "title": "Fest des Fastenbrechens",
+      "importance": "Das Fest des Fastenbrechens bezeichnet den Abschluss des Ramadan und die Dankbarkeit gegenüber Allah dafür, dass Er das Fasten ermöglicht hat.",
+      "virtues": "Es ist ein Tag der Freude, der Gemeinschaft und der Dankbarkeit nach einem Monat der Anbetung und Selbstdisziplin.",
+      "recommendedActs": "Entrichte die Zakat al-Fitr, verrichte das Festgebet, zieh deine besten Kleider an, grüße andere und besuche die Familie, wobei du islamische Umgangsformen wahrst."
+    },
+    {
+      "title": "Opferfest",
+      "importance": "Das Opferfest erinnert an die Hingabe Ibrahims (AS) und an die Riten des Hadsch im Dhū l-Hiddscha.",
+      "virtues": "Es lehrt Opfer, Gehorsam gegenüber Allah und Fürsorge für Bedürftige durch die Udḥiya (das Opfertier).",
+      "recommendedActs": "Verrichte das Festgebet, bringe das Opfer dar, wenn du dazu imstande bist, teile das Fleisch mit den Armen und vermehre den Takbīr in den ersten zehn Tagen des Dhū l-Hiddscha."
+    },
+    {
+      "title": "Hadsch-Zeit",
+      "importance": "Der Hadsch ist für den, der dazu imstande ist, eine einmalige Säule im Leben — eine tiefe Reise der Einheit und der Hingabe.",
+      "virtues": "Ein angenommener Hadsch bringt Vergebung der Sünden und eine Erneuerung des Ziels. Die Ebene von Arafāt ist das Herz des Hadsch.",
+      "recommendedActs": "Wer den Hadsch nicht vollzieht, kann am Tag von Arafāt fasten, das Gedenken vermehren und Bittgebete für die an den heiligen Stätten sprechen."
+    },
+    {
+      "title": "Aschura",
+      "importance": "Der 10. Muharram ist der Tag, an dem Allah Musa (AS) und sein Volk vor dem Pharao rettete.",
+      "virtues": "Das Fasten am Aschura sühnt die Sünden des vorigen Jahres (wenn es nach der Sunna mit einem Fasttag davor oder danach verbunden wird).",
+      "recommendedActs": "Faste nach Möglichkeit den 9. und 10. Muharram, denke über Allahs Hilfe für die Unterdrückten nach und vermehre die Dankbarkeit."
+    },
+    {
+      "title": "Lailat al-Qadr",
+      "importance": "Die Lailat al-Qadr ist besser als tausend Monate — es ist die Nacht, in der die Offenbarung des Koran begann.",
+      "virtues": "Die Anbetung in dieser einen Nacht kann den Lohn von Jahrzehnten übertreffen. Die Engel steigen mit Frieden herab bis zum Fajr.",
+      "recommendedActs": "Suche sie in den ungeraden Nächten der letzten zehn Tage des Ramadan durch Gebet, Koran, Bittgebet und Istighfār."
+    },
+    {
+      "title": "Dschumua (Freitag)",
+      "importance": "Der Freitag ist der beste Tag, an dem die Sonne aufgeht. Er umfasst ein wöchentliches Gemeinschaftsgebet und eine wöchentliche Erinnerung.",
+      "virtues": "Am Freitag gibt es einen Augenblick, in dem das Bittgebet erhört wird. Sünden zwischen zwei Freitagen werden denen vergeben, die sich waschen und aufrichtig teilnehmen.",
+      "recommendedActs": "Verrichte Ghusl, zieh saubere Kleider an, komm früh in die Moschee, höre aufmerksam der Chutba zu und vermehre den Segen auf den Propheten ﷺ."
+    }
+  ]
+}

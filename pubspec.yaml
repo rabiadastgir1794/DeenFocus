@@ -130,6 +130,18 @@ flutter:
     - assets/islamic_library/islamic_occasions.json
     - assets/islamic_library/fiqh_differences.json
     - assets/islamic_library/covers/
+    - assets/islamic_library/l10n/ar/
+    - assets/islamic_library/l10n/az/
+    - assets/islamic_library/l10n/de/
+    - assets/islamic_library/l10n/es/
+    - assets/islamic_library/l10n/fr/
+    - assets/islamic_library/l10n/hi/
+    - assets/islamic_library/l10n/it/
+    - assets/islamic_library/l10n/nl/
+    - assets/islamic_library/l10n/pt/
+    - assets/islamic_library/l10n/ro/
+    - assets/islamic_library/l10n/ru/
+    - assets/islamic_library/l10n/zh/
 
   fonts:
     - family: UthmanicHafs

@@ -1,0 +1,109 @@
+{
+  "items": [
+    {
+      "title": "Ce este fiqh-ul?",
+      "overview": "Fiqh-ul este înțelegerea și aplicarea omenească a legii islamice, derivată din Coran și din Sunnah. El cuprinde adorarea, tranzacțiile, dreptul familiei și purtarea de zi cu zi.",
+      "keyPoints": "Învățații folosesc principii precum Coranul, hadithul autentic, consensul (ijma) și raționamentul prin analogie (qiyas) pentru a deduce hotărâri. Fiqh-ul este o călăuzire practică pentru a trăi Islamul zi de zi.",
+      "differences": "Școli și comunități diferite pot ajunge la concluzii diferite în chestiuni secundare, împărtășind aceleași izvoare de temelie. Aceasta este ceva obișnuit în istoria juridică islamică.",
+      "commonGround": "Toți musulmanii afirmă Coranul ca fiind cuvântul lui Allah și profeția lui Muhammad ﷺ. Diferențele de fiqh sunt de obicei în amănuntele practicii, nu în temeliile credinței."
+    },
+    {
+      "title": "De ce există diferențe",
+      "overview": "Învățații islamici au avut întotdeauna păreri diverse asupra multor chestiuni juridice. Profetul ﷺ a îngăduit deosebirea dintre companionii săi în chestiuni care nu sunt esențiale.",
+      "keyPoints": "Motivele includ: hadithuri diferite ajunse în regiuni diferite, interpretări lingvistice variate, împrejurări noi și un ijtihad sincer (efort de învățătură) al unor învățați calificați.",
+      "differences": "Unele comunități urmează strict un anumit madhab; altele îmbină păreri sau urmează învățați locali. Contextul cultural modelează și el felul în care se aplică hotărârile.",
+      "commonGround": "Marea majoritate a musulmanilor sunt de acord asupra stâlpilor Islamului și ai credinței, asupra principiilor hranei halal, asupra rugăciunii ca obligație și asupra învățăturilor morale ale Coranului."
+    },
+    {
+      "title": "Islamul sunnit — patru madhab-uri",
+      "overview": "Musulmanii sunniți urmează Coranul, Sunnah și consensul comunității timpurii. Cu timpul au apărut patru mari școli de drept (madhab-uri), fiecare numită după un mare imam.",
+      "keyPoints": "Madhab-urile hanafi, maliki, shafi'i și hanbali sunt toate căi valabile în Islamul sunnit. Cei mai mulți musulmani sunniți au urmat istoric un madhab prin comunitatea sau regiunea lor.",
+      "differences": "Madhab-urile pot diferi în amănunte ale Wudu, ale posturii în rugăciune, ale regulilor postului sau ale tranzacțiilor comerciale. Acestea sunt deosebiri de învățătură, nu dezbinări în credința de temelie.",
+      "commonGround": "Toate cele patru madhab-uri acceptă aceiași șase stâlpi ai credinței și cinci stâlpi ai Islamului. Ele diferă mai ales în metoda și în concluziile raționamentului juridic."
+    },
+    {
+      "title": "Madhabul hanafi",
+      "overview": "Întemeiat de imamul Abu Hanifa (d. 767 d.Hr.). Este madhabul cel mai urmat în lume, mai ales în Turcia, Asia Centrală și de Sud și în părți din Balcani.",
+      "keyPoints": "Pune accent pe rațiune (ra'y), pe interesul public (istihsan) și pe obicei (urf). Este cunoscut pentru flexibilitate în situații noi. Multe comunități deobandi și barelvi urmează fiqh-ul hanafi.",
+      "differences": "Hanafiții pot uni Maghrib și Isha în anumite cazuri de călătorie sau de greutate, unde alții nu o fac. Așezarea mâinilor în rugăciune și unele amănunte ale Wudu diferă de alte madhab-uri.",
+      "commonGround": "Hanafiții împărtășesc același Coran, același corpus de hadith și aceeași credință sunnită de temelie cu învățații maliki, shafi'i și hanbali."
+    },
+    {
+      "title": "Madhabul maliki",
+      "overview": "Întemeiat de imamul Malik ibn Anas (d. 795 d.Hr.) în Medina. Predominant în Africa de Nord și de Vest, în părți din Golf și în multe comunități musulmane africane din lume.",
+      "keyPoints": "Accent puternic pe practica locuitorilor Medinei (amal ahl al-Madinah), alături de hadith. Folosește masalih mursalah (folosul public) în raționamentul juridic.",
+      "differences": "Malikiții lasă tradițional brațele pe lângă corp în rugăciune, în loc să le încrucișeze. Unele hotărâri despre hrană, contracte și ștergerea peste ciorapi diferă de părerile hanafite sau shafi'ite.",
+      "commonGround": "Învățații maliki afirmă aceiași stâlpi ai credinței și folosesc aceleași izvoare de temelie ca celelalte madhab-uri sunnite."
+    },
+    {
+      "title": "Madhabul shafi'i",
+      "overview": "Întemeiat de imamul al-Shafi'i (d. 820 d.Hr.). Răspândit în Asia de Sud-Est, Africa de Est, Yemen și în părți din Levant și Caucaz.",
+      "keyPoints": "A sistematizat usul al-fiqh (principiile jurisprudenței), care au influențat toate școlile de mai târziu. Echilibrează hadithul, consensul și qiyas-ul printr-o metodă riguroasă.",
+      "differences": "Shafi'iții recită Al-Fatiha în spatele imamului la rugăciunea în comun (unde hanafiții rămân adesea tăcuți). Unele amănunte despre Zakat și moștenire diferă de hotărârile hanafite.",
+      "commonGround": "Școala shafi'i este pe deplin ortodoxă sunnită. Mulți musulmani din Asia de Sud-Est urmează acest madhab, împărțind moschei și comunități cu alții."
+    },
+    {
+      "title": "Madhabul hanbali",
+      "overview": "Întemeiat de imamul Ahmad ibn Hanbal (d. 855 d.Hr.). Cel mai prezent astăzi în Arabia Saudită și în multe comunități salafi, deși nu toți salafiții se identifică drept hanbali.",
+      "keyPoints": "Pune accent pe aderarea literală la dovada textuală (Coran și hadith) și este precaut față de raționamentul speculativ. Imamul Ahmad a fost și un mare învățăt de hadith.",
+      "differences": "Fiqh-ul hanbali poate fi mai strict în unele chestiuni (de pildă anumite alimente, muzica sau faptele publice) față de flexibilitatea hanafită. Rugăciunea și Wudu au hotărâri distincte.",
+      "commonGround": "Hanbali este unul dintre cele patru madhab-uri sunnite. Următorii lui împărtășesc aqida cu ceilalți sunniți despre Tawhid, profeție și viața de apoi."
+    },
+    {
+      "title": "Islamul șiit (duodeciman)",
+      "overview": "Musulmanii șiți duodecimani urmează Coranul și învățăturile Profetului ﷺ și ale celor doisprezece imami din Ahl al-Bayt. Ei sunt cea mai mare comunitate șiită din lume.",
+      "keyPoints": "Accent deosebit pe imamat — conducerea spirituală și comunitară a lui Ali (RA) și a imamilor următori. Jurisprudența se deduce prin imami și prin învățați calificați (marja).",
+      "differences": "Unele practici ale rugăciunii diferă (de pildă unirea rugăciunilor în zile obișnuite, folosirea unei turbah sau a pământului pentru prosternare). Căsătoria temporară (mut'ah) este îngăduită în fiqh-ul duodeciman, dar respinsă de sunniți.",
+      "commonGround": "Șiiții duodecimani afirmă Coranul, profeția lui Muhammad ﷺ, rugăciunea, postul, Zakat și Hajj. Dialogul și conviețuirea cu musulmanii sunniți sunt obișnuite în multe societăți."
+    },
+    {
+      "title": "Tradiția deobandi",
+      "overview": "O mișcare sunnită de reînnoire, pornită de la Darul Uloom Deoband, India (1867). Nu este un madhab separat, ci o tradiție de învățătură și de educație hanafită.",
+      "keyPoints": "Pune accent pe Coran, hadith și fiqh-ul hanafi clasic. Accent puternic pe educația în madrasa, pe tabligh (chemare) și pe evitarea practicilor văzute ca inovații neverificate.",
+      "differences": "Deobanzii sunt în general prudenți față de sărbătorile Mawlid, față de anumite practici la morminte și față de unele obiceiuri sufite — deși mulți învățați deobandi respectă tasawwuf-ul cu condiții.",
+      "commonGround": "Deobanzii sunt musulmani sunniți hanafiți care împărtășesc credințele de temelie cu alți hanafiți. Ei se deosebesc mai ales de barelvi și de unele grupuri sufite în practicile culturale și devoționale."
+    },
+    {
+      "title": "Tradiția barelvi",
+      "overview": "O mișcare sunnită hanafită legată de Ahmad Raza Khan Barelvi (d. 1921) în India. Pune accent pe iubirea pentru Profetul ﷺ și pe cinstirea awliya (sfinților).",
+      "keyPoints": "Susține Mawlid (sărbătorirea nașterii Profetului), adunările de milad și vizitarea mormintelor învățaților drepți. Urmează fiqh-ul hanafi pentru adorare și tranzacții.",
+      "differences": "Barelvii practică forme de expresie devoțională pe care deobanzii și salafiții le pot evita, cum ar fi ridicarea în picioare la pomenirea Profetului ﷺ (qiyam) și evenimentele Mawlid elaborate.",
+      "commonGround": "Barelvii afirmă aceeași Șahada, același Coran și aceleași cinci rugăciuni zilnice ca ceilalți hanafiți sunniți. Deosebirile față de deobanzi țin în mare parte de cultura devoțională, nu de credința de temelie."
+    },
+    {
+      "title": "Metodologia salafi",
+      "overview": "Salafiții caută să urmeze înțelegerea celor mai timpurii generații de musulmani (Salaf). Este o abordare metodologică, nu un al cincilea madhab.",
+      "keyPoints": "Întoarcere directă la Coran și la Sunnah; prudență față de taqlid (urmarea oarbă) a unui singur madhab; adesea influențați de fiqh-ul hanbali și de instituțiile de învățătură din Arabia Saudită.",
+      "differences": "Salafiții pot respinge practici pe care le văd ca bid'a (inovație) — inclusiv unele forme de Mawlid, anumite practici sufite și aderarea doar la un madhab fără dovadă.",
+      "commonGround": "Salafiții sunt musulmani sunniți care afirmă aceiași stâlpi ai Islamului. Mulți conviețuiesc în comunități cu cei care urmează un madhab, dezbătând chestiuni juridice și culturale secundare."
+    },
+    {
+      "title": "Curentul Ahl-e Hadith (Ahle Hadith)",
+      "overview": "Ahl-e Hadith este o mișcare sunnită prezentă în Pakistan, India și Bangladesh, al cărei nume vine de la Oamenii Hadithului — învățații timpurii care dădeau întâietate relatărilor autentice. Este o tradiție sud-asiatică distinctă, nu un madhab separat.",
+      "keyPoints": "Pune accent pe aderarea directă la Coran și la hadithul sahih, mai degrabă decât pe taqlid-ul orb al unui singur madhab. Hotărârile se deduc prin cercetarea independentă a dovezii textuale, aliniindu-se adesea cu părerile hanbali, dar fără a fi legate de un singur imam.",
+      "differences": "Învățații Ahl-e Hadith pot diferi de hanafiții deobandi în privința Mawlid, a vizitării mormintelor și a unor amănunte ale rugăciunii. Ei au multe în comun cu metodologia salafi, dar își păstrează propriile instituții de învățătură, moschei și identitate istorică în subcontinent.",
+      "commonGround": "Ahl-e Hadith sunt musulmani sunniți care afirmă Șahada, cei cinci stâlpi și cei șase stâlpi ai credinței. Ei se deosebesc mai ales de hanafiții legați de un madhab (deobandi/barelvi) în metodologia juridică și în anumite practici devoționale — nu în credința de temelie."
+    },
+    {
+      "title": "Rugăciunea — compararea abordărilor",
+      "overview": "Toți musulmanii săvârșesc cinci rugăciuni zilnice cu fața spre Qibla. Diferențele apar în amănuntele Wudu, în ridicarea mâinilor, în recitarea din spatele imamului și în unirea rugăciunilor.",
+      "keyPoints": "Hanafiții: adesea tăcuți în spatele imamului, o ordine anume a Wudu. Shafi'iții/malikiții/hanbaliții: recită Fatiha în spatele imamului. Șiiții: pot uni Dhuhr-Asr și Maghrib-Isha în mod regulat.",
+      "differences": "Locul în care se așază mâinile, rostirea cu voce tare a lui amin și ștergerea peste ciorapi față de spălarea picioarelor sunt puncte obișnuite de variație între madhab-uri.",
+      "commonGround": "Rugăciunea este o obligație comună. Musulmanii din toate grupurile se închină în moschei din întreaga lume și respectă sfințenia Salah chiar și când amănuntele diferă."
+    },
+    {
+      "title": "Postul și observarea lunii",
+      "overview": "Postul din Ramadan este obligatoriu pentru toți musulmanii care pot. Diferențele apar adesea asupra felului în care începe și se încheie luna — observarea locală față de calculul global.",
+      "keyPoints": "Unele comunități urmează observarea locală a lunii; altele folosesc anunțurile Arabiei Saudite sau calculul astronomic. Fiqh-ul hanafi îngăduie o oarecare flexibilitate asupra a ceea ce întrerupe postul.",
+      "differences": "Începutul și sfârșitul Ramadanului și al Eid pot cădea în zile diferite în același oraș, când comunitățile urmează învățați diferiți sau comitete naționale ale lunii.",
+      "commonGround": "Obligația de a posti Ramadanul este universală. Musulmanii împărtășesc aceleași țeluri spirituale de taqwa, de recitare a Coranului și de milostenie în luna binecuvântată."
+    },
+    {
+      "title": "Temelii comune",
+      "overview": "În ciuda diferențelor de fiqh și de tradiție, musulmanii din întreaga lume împărtășesc un nucleu de nezdruncinat: credința într-un singur Allah, finalitatea Profetului Muhammad ﷺ și răspunderea în Ziua Judecății.",
+      "keyPoints": "Coranul și Sunnah autentică unesc umma. Diferențele în hotărârile secundare trebuie abordate cu cunoaștere, smerenie și respect — nu cu dezbinare sau ostilitate.",
+      "differences": "Comunitățile pot urma învățați sau madhab-uri diferite. A învăța despre aceste diferențe îi ajută pe musulmani să se înțeleagă unii pe alții și să evite conflictul inutil.",
+      "commonGround": "Allah spune: „Credincioșii nu sunt decât frați.” Căutarea cunoașterii, dua sinceră și caracterul bun trec dincolo de orice hotar de fiqh sau de cultură."
+    }
+  ]
+}

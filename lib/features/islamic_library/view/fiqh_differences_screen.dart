@@ -5,6 +5,7 @@ import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_fiqh.dart';
 import '../model/library_module.dart';
 import '../widgets/fiqh_topic_card.dart';
@@ -22,7 +23,7 @@ class FiqhDifferencesScreen extends StatefulWidget {
 }
 
 class _FiqhDifferencesScreenState extends State<FiqhDifferencesScreen>
-    with LearningListController {
+    with LearningListController, LibraryLanguageReload {
   static const _sectionId = LibraryModuleId.fiqhDifferences;
 
   List<FiqhTopic> _topics = const [];
@@ -37,14 +38,11 @@ class _FiqhDifferencesScreenState extends State<FiqhDifferencesScreen>
   int get itemCount => _topics.length;
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final topics = await IslamicLibraryRepository.instance.loadFiqhTopics();
-    if (!mounted) return;
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final topics = await IslamicLibraryRepository.instance.loadFiqhTopics(
+      languageCode: languageCode,
+    );
+    if (!isCurrentLibraryLoad(generation)) return;
     setState(() => _topics = topics);
     await loadProgressAndFinish();
     maybeOpenInitial(_openDetail);

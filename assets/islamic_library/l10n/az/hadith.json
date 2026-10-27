@@ -1,0 +1,588 @@
+{
+  "collections": [
+    {
+      "items": [
+        {
+          "title": "Əməllər niyyətlərə görədir",
+          "translation": "Əməllər niyyətlərə görədir və hər kəs yalnız niyyət etdiyini alır.",
+          "narrator": "Ömər ibn əl-Xəttab (RA)",
+          "source": "Səhih əl-Buxari 1"
+        },
+        {
+          "title": "İslamın beş sütunu",
+          "translation": "İslam beş şey üzərində qurulub: iman şəhadəti, namazı qılmaq, zəkat vermək, Ramazan orucu və gücü çatan üçün həcc.",
+          "narrator": "Abdullah ibn Ömər (RA)",
+          "source": "Səhih əl-Buxari 8"
+        },
+        {
+          "title": "Halal və haram aydındır",
+          "translation": "Halal aydındır, haram aydındır, aralarında isə şübhəli işlər vardır. Şübhəlilərdən çəkinən dinini və namusunu qorumuş olur.",
+          "narrator": "Ən-Nuʿman ibn Bəşir (RA)",
+          "source": "Səhih əl-Buxari 52"
+        },
+        {
+          "title": "Şübhə verəni burax",
+          "translation": "Sənə şübhə verəni, şübhə verməyənə burax.",
+          "narrator": "Əl-Həsən ibn Əli (RA)",
+          "source": "Səhih əl-Buxari 52; Cami ət-Tirmizi 2518"
+        },
+        {
+          "title": "İmanın yetmişdən çox qolu var",
+          "translation": "İmanın yetmişdən çox qolu vardır. Ən üstünü “Lə iləhə illəllah” demək, ən aşağısı yoldan zərəri götürməkdir. Həya imanın bir qoludur.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 9; Səhih Muslim 35"
+        },
+        {
+          "title": "Müsəlmanın digər müsəlman üzərində haqları",
+          "translation": "Müsəlmanın digər müsəlman üzərində beş haqqı vardır: salamı almaq, xəstəni ziyarət etmək, cənazənin ardınca getmək, dəvəti qəbul etmək və asqıranda “Yərhəmükallah” demək.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 1240"
+        },
+        {
+          "title": "Allaha və Axirət gününə iman gətirən",
+          "translation": "Allaha və Axirət gününə iman gətirən ya xeyir desin, ya da sussun.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 6018; Səhih Muslim 47"
+        },
+        {
+          "title": "Bir-birinizə paxıllıq etməyin",
+          "translation": "Bir-birinizə paxıllıq etməyin, bir-birinizə qarşı qiyməti şişirtməyin, bir-birinizə nifrət etməyin və bir-birinizdən üz döndərməyin. Allahın qulları olaraq qardaş olun.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 6066; Səhih Muslim 2564"
+        },
+        {
+          "title": "İnsanların ən xeyirlisi",
+          "translation": "İnsanların ən xeyirlisi insanlara ən çox faydası olandır.",
+          "narrator": "Cabir ibn Abdullah (RA)",
+          "source": "Səhih əl-Buxari (əl-Ədəb əl-Müfrəd); səhih sayılmış"
+        },
+        {
+          "title": "Allah gözəldir və gözəlliyi sevir",
+          "translation": "Allah gözəldir və gözəlliyi sevir.",
+          "narrator": "Abdullah ibn Məsud (RA)",
+          "source": "Səhih Muslim 91"
+        },
+        {
+          "title": "Asanlaşdırın, çətinləşdirməyin",
+          "translation": "Asanlaşdırın, çətinləşdirməyin; müjdə verin, insanları qovmayın.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "Səhih əl-Buxari 69; Səhih Muslim 1734"
+        },
+        {
+          "title": "Güclü başqasını yıxan deyil",
+          "translation": "Güclü başqasını güləşdə yıxan deyil; güclü qəzəblənəndə özünə hakim olandır.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 6114; Səhih Muslim 2609"
+        },
+        {
+          "title": "Heç biriniz qardaşı üçün sevməyincə həqiqi iman gətirməz",
+          "translation": "Heç biriniz özü üçün sevdiyini qardaşı üçün sevməyincə həqiqi iman gətirməz.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "Səhih əl-Buxari 13; Səhih Muslim 45"
+        },
+        {
+          "title": "Dünya mömin üçün zindandır",
+          "translation": "Dünya mömin üçün zindan, kafir üçün cənnətdir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih Muslim 2956"
+        },
+        {
+          "title": "Bu dünyada qərib kimi ol",
+          "translation": "Bu dünyada elə ol ki, sanki qərib və ya yoldan keçənsən.",
+          "narrator": "Abdullah ibn Ömər (RA)",
+          "source": "Səhih əl-Buxari 6416"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "İmanda qardaşlıq",
+          "translation": "Heç biriniz özü üçün sevdiyini qardaşı üçün sevməyincə həqiqi iman gətirməz.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "Səhih Muslim 45"
+        },
+        {
+          "title": "Xoş söz sədəqədir",
+          "translation": "Xoş söz sədəqədir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih Muslim 1009"
+        },
+        {
+          "title": "Təbəssüm sədəqədir",
+          "translation": "Qardaşının üzünə təbəssümün sənin üçün sədəqədir.",
+          "narrator": "Əbu Zərr (RA)",
+          "source": "Səhih Muslim (Tirmizi 1956)"
+        },
+        {
+          "title": "Möminin dərdini yüngülləşdirən",
+          "translation": "Bu dünyada bir möminin dərdindən bir dərdini yüngülləşdirənə Allah Qiyamət gününün dərdlərindən birini yüngülləşdirər.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih Muslim 2580"
+        },
+        {
+          "title": "Təmizlik imanın yarısıdır",
+          "translation": "Təmizlik imanın yarısıdır.",
+          "narrator": "Əbu Malik əl-Əşari (RA)",
+          "source": "Səhih Muslim 223"
+        },
+        {
+          "title": "Elm axtarmaq vacibdir",
+          "translation": "Elm axtarmaq hər müsəlmana vacibdir.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "İbn Macə 224; səhih sayılmış"
+        },
+        {
+          "title": "Ən yaxşı sədəqə",
+          "translation": "Ən yaxşı sədəqə sağlam və mala həris ikən, yoxsulluqdan qorxub varlanmağa ümid edərkən verdiyindir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 1419; Səhih Muslim 1031"
+        },
+        {
+          "title": "Allah bədənlərinizə baxmaz",
+          "translation": "Allah bədənlərinizə və malınıza baxmaz, ürəklərinizə və əməllərinizə baxar.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih Muslim 2564"
+        },
+        {
+          "title": "Mömin möminə",
+          "translation": "Möminlər bir-birinə mehribanlıq, şəfqət və rəhmətdə bir bədən kimidir — bir üzv əziyyət çəkəndə bütün bədən yuxusuzluq və qızdırma ilə ona cavab verir.",
+          "narrator": "Ən-Nuʿman ibn Bəşir (RA)",
+          "source": "Səhih Muslim 2586"
+        },
+        {
+          "title": "Dünyəvi çətinliyi aradan qaldıran",
+          "translation": "Bu dünyada birinin çətinliyini yüngülləşdirənə Allah Qiyamət günü çətinliyi yüngülləşdirər.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih Muslim 2699"
+        },
+        {
+          "title": "Beş gündəlik namaz",
+          "translation": "Gözəl dəstəmaz alıb beş gündəlik namazı qılan üçün Allahın Cənnətə daxil etmək əhdi vardır.",
+          "narrator": "Osman ibn Əffan (RA)",
+          "source": "Səhih Muslim 228"
+        },
+        {
+          "title": "Ən xeyirliniz ailəsinə ən xeyirli olandır",
+          "translation": "Ən xeyirliniz ailəsinə ən xeyirli olandır, mən də ailəmə ən xeyirlinizəm.",
+          "narrator": "Aişə (RA)",
+          "source": "Cami ət-Tirmizi 3895; səhih"
+        },
+        {
+          "title": "Həya yalnız xeyir gətirər",
+          "translation": "Həya yalnız xeyir gətirər.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 6117; Səhih Muslim 37"
+        },
+        {
+          "title": "Allah mülayimdir və mülayimliyi sevir",
+          "translation": "Allah mülayimdir və hər işdə mülayimliyi sevir.",
+          "narrator": "Aişə (RA)",
+          "source": "Səhih Muslim 2593"
+        },
+        {
+          "title": "Cənnət anaların ayaqları altındadır",
+          "translation": "Cənnət anaların ayaqları altındadır.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "Sünen ən-Nəsai 3104; səhih sayılmış"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Allah mülayimdir və mülayimliyi sevir",
+          "translation": "Allah mülayimdir və hər işdə mülayimliyi sevir.",
+          "narrator": "Aişə (RA)",
+          "source": "Səhih Muslim 2593"
+        },
+        {
+          "title": "Mülayimlik gözəlləşdirər",
+          "translation": "Mülayimlik bir şeydə olsa, onu yalnız gözəlləşdirər.",
+          "narrator": "Aişə (RA)",
+          "source": "Səhih Muslim 2594"
+        },
+        {
+          "title": "Güclü mömin",
+          "translation": "Güclü mömin zəif mömindən daha xeyirli və Allaha daha sevimlidir, hər ikisində də xeyir vardır.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih Muslim 2664"
+        },
+        {
+          "title": "Qəzəblənmə",
+          "translation": "Qəzəblənmə.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 6116"
+        },
+        {
+          "title": "Allaha ən sevimli əməllər",
+          "translation": "Allaha ən sevimli əməllər az da olsa davamlı olanlardır.",
+          "narrator": "Aişə (RA)",
+          "source": "Səhih əl-Buxari 6464; Səhih Muslim 782"
+        },
+        {
+          "title": "Rəhm etməyən",
+          "translation": "Rəhm etməyənə rəhm edilməz.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 5997; Səhih Muslim 2318"
+        },
+        {
+          "title": "Xaraktercə ən xeyirliniz",
+          "translation": "Ən xeyirliniz ən gözəl xarakterli olanlarınızdır.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Səhih əl-Buxari 3559"
+        },
+        {
+          "title": "Hədiyyəleşin, bir-birinizi sevərsiniz",
+          "translation": "Hədiyyəleşin, bir-birinizi sevərsiniz.",
+          "narrator": "Aişə (RA)",
+          "source": "Əl-Ədəb əl-Müfrəd; səhih sayılmış"
+        },
+        {
+          "title": "Dil cəhənnəmə apara bilər",
+          "translation": "İnsanları Cənnətə ən çox aparan Allah təqvası və gözəl xarakterdir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Cami ət-Tirmizi 2004"
+        },
+        {
+          "title": "Xəstəni ziyarət et",
+          "translation": "Səhər xəstə müsəlmanı ziyarət edən müsəlmana axşama qədər yetmiş min mələk salavat göndərər.",
+          "narrator": "Əli ibn Əbi Talib (RA)",
+          "source": "Səhih Muslim 2569"
+        },
+        {
+          "title": "Qonşunun haqları",
+          "translation": "Cəbrayıl qonşu barədə mənə o qədər vəsiyyət etdi ki, elə bildim onu varis edəcək.",
+          "narrator": "Aişə (RA)",
+          "source": "Səhih əl-Buxari 6014; Səhih Muslim 2624"
+        },
+        {
+          "title": "Qeybət zinadan ağırdır",
+          "translation": "Qeybətin nə olduğunu bilirsinizmi? Qardaşını xoşlamadığı şəkildə anmaqdır.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "Sünen Əbu Davud 4877; səhih sayılmış"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Əməllər niyyətlərə görədir",
+          "translation": "Əməllər ancaq niyyətlərə görədir və hər kəsin payı yalnız niyyət etdiyidir.",
+          "narrator": "Ömər ibn əl-Xəttab (RA)",
+          "source": "40 Hədis Nəvəvi, #1"
+        },
+        {
+          "title": "Beş sütun",
+          "translation": "İslam beş şey üzərində qurulub: iman şəhadəti, namaz, zəkat, Ramazan orucu və həcc.",
+          "narrator": "Abdullah ibn Ömər (RA)",
+          "source": "40 Hədis Nəvəvi, #2"
+        },
+        {
+          "title": "İmanın sütunları",
+          "translation": "İman Allaha, mələklərinə, kitablarına, elçilərinə, Axirət gününə və qədərin xeyrinə və şərinə inanmaqdır.",
+          "narrator": "Ömər ibn əl-Xəttab (RA)",
+          "source": "40 Hədis Nəvəvi, #3"
+        },
+        {
+          "title": "Bətnində yaradılış",
+          "translation": "Hər birinizin yaradılışı anasının bətnində qırx gün nütfə, sonra laxtalanmış qan, sonra bir parça ət olaraq toplanır. Sonra mələk ruh üfürür və dörd şeyi yazır.",
+          "narrator": "Abdullah ibn Məsud (RA)",
+          "source": "40 Hədis Nəvəvi, #4"
+        },
+        {
+          "title": "Pisliyi rədd etmək",
+          "translation": "Sizdən bir pis iş görən onu əli ilə dəyişsin. Bacarmasa dili ilə. Bacarmasa qəlbi ilə — bu isə imanın ən zəifidir.",
+          "narrator": "Əbu Səid əl-Xudri (RA)",
+          "source": "40 Hədis Nəvəvi, #5"
+        },
+        {
+          "title": "Halal, haram və şübhəli işlər",
+          "translation": "Halal aydındır, haram aydındır. Aralarında çox insanın bilmədiyi şübhəli işlər vardır.",
+          "narrator": "Ən-Nuʿman ibn Bəşir (RA)",
+          "source": "40 Hədis Nəvəvi, #6"
+        },
+        {
+          "title": "Din səmimi nəsihətdir",
+          "translation": "Din səmimi nəsihətdir. Dedik: Kimə? Dedi: Allaha, Kitabına, Elçisinə, müsəlmanların rəhbərlərinə və onların ümumuna.",
+          "narrator": "Təmim əd-Dari (RA)",
+          "source": "40 Hədis Nəvəvi, #7"
+        },
+        {
+          "title": "Qan, mal və namusun haramlığı",
+          "translation": "Allah sizə qanlarınızı, haram malı və analarınıza qarşı namussuzluğu haram etmişdir.",
+          "narrator": "İbn Abbas (RA)",
+          "source": "40 Hədis Nəvəvi, #8"
+        },
+        {
+          "title": "Qadağan olunandan çəkinin",
+          "translation": "Sizə qadağan etdiyimdən çəkinin. Sizə əmr etdiyimi gücünüz çatdığı qədər yerinə yetirin.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #9"
+        },
+        {
+          "title": "Allah təmizdir və yalnız təmizi qəbul edər",
+          "translation": "Allah təmizdir və yalnız təmizi qəbul edər. Möminlərə elçilərə əmr etdiyini əmr etmişdir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #10"
+        },
+        {
+          "title": "Sənə aid olmayanı burax",
+          "translation": "İnsanın İslamının gözəlliyindən biri ona aid olmayanı buraxmasıdır.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #11"
+        },
+        {
+          "title": "Quran və zikr üçün yığışmağın fəziləti",
+          "translation": "Allahın evlərindən birində Allahın Kitabını oxuyub birlikdə öyrənən bir camaətə sakitlik enməz deyil.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #12"
+        },
+        {
+          "title": "Özün üçün sevdiyini qardaşın üçün sev",
+          "translation": "Heç biriniz özü üçün sevdiyini qardaşı üçün sevməyincə həqiqi iman gətirməz.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "40 Hədis Nəvəvi, #13"
+        },
+        {
+          "title": "Müsəlmanın toxunulmazlığı",
+          "translation": "Heç bir yaxşılığı kiçik sayma, hətta qardaşını açıq üzlə qarşılasan belə.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #14"
+        },
+        {
+          "title": "Xeyir de və ya sus",
+          "translation": "Allaha və Axirət gününə iman gətirən ya xeyir desin, ya da sussun.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #15"
+        },
+        {
+          "title": "Qəzəblənməyin",
+          "translation": "Bir kişi Peyğəmbərdən nəsihət istədi, o dedi: Qəzəblənmə. Kişi istəyini bir neçə dəfə təkrarladı, o da cavab verdi: Qəzəblənmə.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #16"
+        },
+        {
+          "title": "Allah hər şeydə gözəlliyi yazmışdır",
+          "translation": "Allah hər şeydə ihsanı yazmışdır. Öldürəndə gözəl öldürün, kəsəndə gözəl kəsin.",
+          "narrator": "Şəddad ibn Əvs (RA)",
+          "source": "40 Hədis Nəvəvi, #17"
+        },
+        {
+          "title": "Harada olsan Allahdan qorx",
+          "translation": "Harada olsan Allahdan qorx, pis əməlin ardınca onu silən yaxşı əməl gətir və insanlarla gözəl xarakterlə davran.",
+          "narrator": "Əbu Zərr və Muaz ibn Cəbəl (RA)",
+          "source": "40 Hədis Nəvəvi, #18"
+        },
+        {
+          "title": "Sünnəmə yapışın",
+          "translation": "Sizi sünnəmə və doğru yolda olan xəlifələrin yoluna yapışmağa çağırıram. Yeni uydurulan işlərdən çəkinin, çünki hər bidət azğınlıqdır.",
+          "narrator": "İrbad ibn Sariyə (RA)",
+          "source": "40 Hədis Nəvəvi, #19"
+        },
+        {
+          "title": "Hər gün hər oynağa sədəqə düşür",
+          "translation": "İnsanın hər oynağı hər gün sədəqə etməlidir: iki nəfər arasında ədalət sədəqədir; birinə heyvanında kömək etmək sədəqədir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #20"
+        },
+        {
+          "title": "Allahdan əfv və əfiyyət diləyin",
+          "translation": "Allahdan əfv və əfiyyət diləyin, çünki yəqindən sonra heç kəsə əfiyyətdən yaxşısı verilməmişdir.",
+          "narrator": "Abdullah ibn Əbbas (RA)",
+          "source": "40 Hədis Nəvəvi, #21"
+        },
+        {
+          "title": "Münafiqin əlamətləri",
+          "translation": "Münafiqin üç əlaməti vardır: danışanda yalan deyər, vəd edəndə poza, əmanət veriləndə xəyanət edər.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #22"
+        },
+        {
+          "title": "Səlim ürək",
+          "translation": "Bədəndə bir ət parçası vardır — düzəltsə, bütün bədən düzələr; pozulsa, bütün bədən pozular. O, ürəkdir.",
+          "narrator": "Ən-Nuʿman ibn Bəşir (RA)",
+          "source": "40 Hədis Nəvəvi, #23"
+        },
+        {
+          "title": "Allahın haqqı və insanların haqqı",
+          "translation": "Allahın qulları üzərində haqqı Onu ibadət etmələri və Ona heç nəyi şərik qoşmamalarıdır. Qulların Allah üzərində haqqı isə Ona şərik qoşmayanı əzablandırmamasıdır.",
+          "narrator": "Muaz ibn Cəbəl (RA)",
+          "source": "40 Hədis Nəvəvi, #24"
+        },
+        {
+          "title": "Halal aydındır, haram aydındır",
+          "translation": "Halal aydındır, haram aydındır. Aralarında çoxunun bilmədiyi şübhəli işlər vardır.",
+          "narrator": "Ən-Nuʿman ibn Bəşir (RA)",
+          "source": "40 Hədis Nəvəvi, #25"
+        },
+        {
+          "title": "Gözəl xarakterin fəziləti",
+          "translation": "Mənə ən sevimliniz və Qiyamət günü mənə ən yaxın oturanınız ən gözəl xarakterlilərinizdir.",
+          "narrator": "Abdullah ibn Əmr (RA)",
+          "source": "40 Hədis Nəvəvi, #26"
+        },
+        {
+          "title": "Allahın qulları üzərində haqqı",
+          "translation": "Ey qullarım, zülmü Özümə haram etdim və onu sizin aranızda haram etdim, bir-birinizə zülm etməyin.",
+          "narrator": "Əbu Zərr (RA)",
+          "source": "40 Hədis Nəvəvi, #27"
+        },
+        {
+          "title": "Dünya möminin zindanıdır",
+          "translation": "Dünya mömin üçün zindan, kafir üçün cənnətdir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #28"
+        },
+        {
+          "title": "Qiyamət günü Allahın kölgəsi",
+          "translation": "Allah kölgəsindən başqa kölgə olmayan gündə yeddi nəfəri kölgələndirər: ədalətli rəhbər, Allah ibadətində böyüyən gənc və başqaları.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #29"
+        },
+        {
+          "title": "Ürəyin halı",
+          "translation": "Ürək düzəlsə, bütün bədən düzələr; ürək pozulsa, bütün bədən pozular.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #30"
+        },
+        {
+          "title": "Şübhəli işlərdən çəkinin",
+          "translation": "Sənə şübhə verəni, şübhə verməyənə burax.",
+          "narrator": "Əl-Həsən ibn Əli (RA)",
+          "source": "40 Hədis Nəvəvi, #31"
+        },
+        {
+          "title": "Nə zərər, nə də qarşılıqlı zərər",
+          "translation": "Nə zərər vermək olar, nə də zərərə zərərlə cavab.",
+          "narrator": "İbn Abbas (RA)",
+          "source": "40 Hədis Nəvəvi, #32"
+        },
+        {
+          "title": "Dünya lənətlidir, zikr və elm istisna",
+          "translation": "Dünya lənətlidir, içində olan da lənətlidir, Allahın zikri, ona kömək edən, alim və öyrənən istisna.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #33"
+        },
+        {
+          "title": "Allah yaxşıdır və yalnız yaxşını qəbul edər",
+          "translation": "Allah yaxşıdır və yalnız yaxşı olanı qəbul edər.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #34"
+        },
+        {
+          "title": "Allah tövbə edənləri sevir",
+          "translation": "Allah tövbə edənləri sevir və təmizlənənləri sevir.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #35"
+        },
+        {
+          "title": "Dünyada qərib ol",
+          "translation": "Bu dünyada elə ol ki, sanki qərib və ya yoldan keçənsən.",
+          "narrator": "Abdullah ibn Ömər (RA)",
+          "source": "40 Hədis Nəvəvi, #36"
+        },
+        {
+          "title": "Allahın qulları üzərində haqqı",
+          "translation": "Allahın qulları üzərində haqqı Onu tək ibadət etmələri və Ona heç nəyi şərik qoşmamalarıdır.",
+          "narrator": "Muaz ibn Cəbəl (RA)",
+          "source": "40 Hədis Nəvəvi, #37"
+        },
+        {
+          "title": "Allaha yəqinlə dua edin",
+          "translation": "Allaha qəbul olunacağına yəqin edərək dua edin və bilin ki, Allah qafil, dağınıq ürəkdən gələn duanı qəbul etməz.",
+          "narrator": "Əbu Hüreyrə (RA)",
+          "source": "40 Hədis Nəvəvi, #38"
+        },
+        {
+          "title": "Allah ümmətimin səhvini bağışlamışdır",
+          "translation": "Allah ümmətimin səhvini, unutqanlığını və məcbur edildiklərini bağışlamışdır.",
+          "narrator": "İbn Abbas (RA)",
+          "source": "40 Hədis Nəvəvi, #39"
+        },
+        {
+          "title": "Allahı qoru, O da səni qorusun",
+          "translation": "Allahı qoru, O da səni qorusun. Allahı qoru, Onu qarşında taparsan.",
+          "narrator": "Əbu Abbas Abdullah (RA)",
+          "source": "40 Hədis Nəvəvi, #40"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Yatmazdan əvvəl",
+          "translation": "Sənin adınla, Allahım, ölürəm və yaşayıram.",
+          "narrator": "Əl-Bəra ibn Azib (RA)",
+          "source": "Hisnul Muslim; Səhih əl-Buxari 6324"
+        },
+        {
+          "title": "Oyananda",
+          "translation": "Həmd o Allaha ki, bizi öldürdükdən sonra diriltdi və diriliş Onadır.",
+          "narrator": "Hüzeyfə ibn əl-Yəman (RA)",
+          "source": "Hisnul Muslim; Səhih əl-Buxari 6312"
+        },
+        {
+          "title": "Evə girmək",
+          "translation": "Allahın adı ilə giririk, Allahın adı ilə çıxırıq və Rəbbimiz Allaha arxalanırıq.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "Hisnul Muslim; Əbu Davud 5096"
+        },
+        {
+          "title": "Evdən çıxmaq",
+          "translation": "Allahın adı ilə, Allaha təvəkkül etdim.",
+          "narrator": "Ənəs ibn Malik (RA)",
+          "source": "Hisnul Muslim; Əbu Davud 5095"
+        },
+        {
+          "title": "Yeməzdən əvvəl",
+          "translation": "Allahın adı ilə.",
+          "narrator": "Ömər ibn Əbi Sələmə (RA)",
+          "source": "Hisnul Muslim; Səhih əl-Buxari 5376"
+        },
+        {
+          "title": "Yeməkdən sonra",
+          "translation": "Həmd o Allaha ki, bunu mənə yedizdirdi və məndə güc və qüvvət olmadan mənə ruzi etdi.",
+          "narrator": "Muaz ibn Ənəs (RA)",
+          "source": "Hisnul Muslim; Əbu Davud 4023"
+        },
+        {
+          "title": "Məscidə girmək",
+          "translation": "Allahım, mənə rəhmətinin qapılarını aç.",
+          "narrator": "Əbu Useyd əs-Saidi (RA)",
+          "source": "Hisnul Muslim; Səhih Muslim 713"
+        },
+        {
+          "title": "Məsciddən çıxmaq",
+          "translation": "Allahım, Səndən lütfündən istəyirəm.",
+          "narrator": "Əbu Humeyd və ya Əbu Useyd (RA)",
+          "source": "Hisnul Muslim; Səhih Muslim 713"
+        },
+        {
+          "title": "Dar olanda",
+          "translation": "Allahdan başqa məbud yoxdur, Əzəmətli, Həlim. Allahdan başqa məbud yoxdur, əzəmətli Ərşin Rəbbi.",
+          "narrator": "İbn Abbas (RA)",
+          "source": "Hisnul Muslim; Səhih əl-Buxari 6345"
+        },
+        {
+          "title": "Bağışlanma üçün",
+          "translation": "Rəbbim, məni bağışla və tövbəmi qəbul et, çünki Sən daim tövbə qəbul edən, ən mərhəmətlisən.",
+          "narrator": "Əl-Əğərr əl-Müzəni (RA)",
+          "source": "Hisnul Muslim; Əbu Davud 1517"
+        },
+        {
+          "title": "Yağış yağanda",
+          "translation": "Allahım, faydalı yağış olsun.",
+          "narrator": "Aişə (RA)",
+          "source": "Hisnul Muslim; Səhih əl-Buxari 1032"
+        },
+        {
+          "title": "İldırım səsi eşidəndə",
+          "translation": "İldırımın həmdi ilə pakladığı və mələklərin qorxusundan pakladığı Zata paklıq olsun.",
+          "narrator": "Abdullah ibn əz-Zübeyr (RA)",
+          "source": "Hisnul Muslim; əl-Muvatta"
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/quran/view/quran_reader_screen.dart';
 import '../../../l10n/app_localizations.dart';
+import '../data/library_content_language.dart';
 import '../helpers/library_hub_search.dart';
 import '../model/library_module.dart';
 import '../view/duas_categories_screen.dart';
@@ -33,6 +34,28 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
   String _query = '';
   List<LibraryHubSearchHit>? _contentIndex;
   bool _indexLoading = false;
+  String? _indexLanguage;
+  int _indexGeneration = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final code = libraryContentLanguageCode(
+      Localizations.localeOf(context).languageCode,
+    );
+    if (_indexLanguage == code) return;
+    _indexLanguage = code;
+    _contentIndex = null;
+    _indexLoading = false;
+    _indexGeneration++;
+    if (_query.trim().isNotEmpty) {
+      final l10n = AppLocalizations.of(context)!;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        unawaited(_ensureContentIndex(l10n));
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -110,19 +133,25 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
   }
 
   Future<void> _ensureContentIndex(AppLocalizations l10n) async {
-    if (_contentIndex != null || _indexLoading) return;
-    setState(() => _indexLoading = true);
+    final code = libraryContentLanguageOf(l10n);
+    if (_contentIndex != null && _indexLanguage == code) return;
+    final generation = ++_indexGeneration;
+    if (!_indexLoading && mounted) {
+      setState(() => _indexLoading = true);
+    }
     try {
       final index = await LibraryHubSearch.buildContentIndex(l10n);
-      if (!mounted) return;
+      if (!mounted || generation != _indexGeneration) return;
       setState(() {
         _contentIndex = index;
+        _indexLanguage = code;
         _indexLoading = false;
       });
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted || generation != _indexGeneration) return;
       setState(() {
         _contentIndex = const [];
+        _indexLanguage = code;
         _indexLoading = false;
       });
     }
@@ -213,12 +242,15 @@ class _IslamicLibraryHubBodyState extends State<IslamicLibraryHubBody> {
         Expanded(
           child: showEmpty
               ? Center(
-                  child: Text(
-                    l10n.librarySearchEmpty,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                    child: Text(
+                      l10n.librarySearchEmpty,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                    ),
                   ),
                 )
               : ListView(

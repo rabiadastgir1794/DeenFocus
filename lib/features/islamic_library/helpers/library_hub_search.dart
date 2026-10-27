@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
+import '../data/library_content_language.dart';
 import '../model/allah_name.dart';
 import '../model/library_dua.dart';
 import '../model/library_fiqh.dart';
@@ -84,15 +85,28 @@ abstract final class LibraryHubSearch {
     AppLocalizations l10n,
   ) async {
     final repo = IslamicLibraryRepository.instance;
-    final names = await repo.loadNamesOfAllah();
-    final duaCategories = await repo.loadDuaCategories();
-    final hadithCollections = await repo.loadHadithCollections();
-    final pillarsIslam = await repo.loadPillarsOfIslam();
-    final pillarsIman = await repo.loadPillarsOfIman();
-    final prophet = await repo.loadProphetMuhammad();
-    final prayerGuides = await repo.loadPrayerGuides();
-    final fiqh = await repo.loadFiqhTopics();
-    final occasions = await repo.loadIslamicOccasions();
+    final languageCode = libraryContentLanguageOf(l10n);
+    final names = await repo.loadNamesOfAllah(languageCode: languageCode);
+    final duaCategories = await repo.loadDuaCategories(
+      languageCode: languageCode,
+    );
+    final hadithCollections = await repo.loadHadithCollections(
+      languageCode: languageCode,
+    );
+    final pillarsIslam = await repo.loadPillarsOfIslam(
+      languageCode: languageCode,
+    );
+    final pillarsIman = await repo.loadPillarsOfIman(
+      languageCode: languageCode,
+    );
+    final prophet = await repo.loadProphetMuhammad(languageCode: languageCode);
+    final prayerGuides = await repo.loadPrayerGuides(
+      languageCode: languageCode,
+    );
+    final fiqh = await repo.loadFiqhTopics(languageCode: languageCode);
+    final occasions = await repo.loadIslamicOccasions(
+      languageCode: languageCode,
+    );
 
     final hits = <LibraryHubSearchHit>[];
     final namesModule = libraryModuleTitle(l10n, LibraryModuleId.namesOfAllah);

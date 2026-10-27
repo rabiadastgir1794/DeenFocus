@@ -1,0 +1,240 @@
+{
+  "guides": [
+    {
+      "items": [
+        {
+          "title": "Niyyət",
+          "description": "Allah rizası üçün dəstəmaz almağı ürəyində səmimi niyyət et."
+        },
+        {
+          "title": "Bismillah de",
+          "description": "Başla: Bismillah (Allahın adı ilə)."
+        },
+        {
+          "title": "Əlləri və ağzı yu",
+          "description": "Hər iki əli üç dəfə yu, ağzı üç dəfə yaxala, suyu burna üç dəfə çəkib xaric et."
+        },
+        {
+          "title": "Üzü və qolları yu",
+          "description": "Üzün hamısını üç dəfə yu, sonra sağ qolu dirsəyə qədər üç dəfə, sonra sol qolu."
+        },
+        {
+          "title": "Başı məsh et və ayaqları yu",
+          "description": "Başı bir dəfə məsh et, qulaqları məsh et, sonra sağ ayağı, sonra sol ayağı topuğa qədər hər birini üç dəfə yu."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Hazırlıq",
+          "description": "Dəstəmazın olduğunu yoxla, örtülü geyin və təmiz namaz yerində qibləyə tərəf dur."
+        },
+        {
+          "title": "Təkbirdə durmaq",
+          "description": "Başlamaq üçün əllərini qaldırıb Allahu Əkbər de. Təvazö və diqqətlə dur."
+        },
+        {
+          "title": "Fatihəni oxu",
+          "description": "Hər rükətdə Fatihə surəsini oxu, fərz namazların ilk iki rükətində uyğun olanda qısa surə və ya ayələrlə davam et."
+        },
+        {
+          "title": "Ruku və səcdə",
+          "description": "Sübhanə Rabbiyəl-Azim deyərək ruku et, sonra Sübhanə Rabbiyəl-Əla deyərək aram və sükunətlə səcdə et."
+        },
+        {
+          "title": "Təşəhhüd və salam",
+          "description": "Son təşəhhüd üçün otur, Peyğəmbərə ﷺ salavat gətir, sonra sağa və sola salamla bitir."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Niyyət",
+          "description": "Allah rizası üçün böyük hədəsi aradan qaldırmaq üçün qüsl almağı ürəyində niyyət et."
+        },
+        {
+          "title": "Əlləri və örtülü yeri yu",
+          "description": "Hər iki əli yu, sonra bədəndəki çirki yu."
+        },
+        {
+          "title": "Dəstəmaz al",
+          "description": "Bədənin son yuyulmasından əvvəl dəstəmazı adətin üzrə tamamla."
+        },
+        {
+          "title": "Bədənə su tök",
+          "description": "Suyu başa üç dəfə tök və saçın köklərinə çatdığına əmin ol."
+        },
+        {
+          "title": "Bütün bədəni yu",
+          "description": "Sağ tərəfdən başlayaraq bütün bədəni yu və quru yer qalmadığına əmin ol."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Nə vaxt caizdir",
+          "description": "Təyəmmüm su tapılmayanda, istifadə zərərli olanda və ya namaz vaxtına qədər çatdırıla bilməyəndə caizdir."
+        },
+        {
+          "title": "Niyyət və torpağa vurmaq",
+          "description": "Niyyət et, sonra hər iki ovucunla təmiz torpağa bir dəfə vur."
+        },
+        {
+          "title": "Üzü məsh et",
+          "description": "Üzün hamısını hər iki əllə bir dəfə məsh et."
+        },
+        {
+          "title": "Qolları məsh et",
+          "description": "Sol əllə sağ qolu dirsəyə qədər məsh et, sonra sağ əllə sol qolu."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Məqsəd",
+          "description": "Cənazə namazı vəfat etmiş müsəlman üçün rəhmət və bağışlanma diləmək üzrə camaat borcudur."
+        },
+        {
+          "title": "Səflərdə durmaq",
+          "description": "Ruku və səcdəsiz qibləyə tərəf dur. Cənazə imamın önünə qoyulur."
+        },
+        {
+          "title": "Dörd təkbir",
+          "description": "Allahu Əkbəri dörd dəfə de. Birincidən sonra Fatihəni səssiz oxu; digərlərindən sonra salavat gətir və vəfat edən üçün dua et."
+        },
+        {
+          "title": "Dua et",
+          "description": "Allahdan vəfat edəni bağışlamasını, onu sabitqədəm etməsini və evini Cənnətdə daha yaxşısı ilə əvəz etməsini dilə."
+        },
+        {
+          "title": "Bitirmək",
+          "description": "Son təkbirdən sonra adi namazdakı kimi sağa bir dəfə salam ver."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Ehram",
+          "description": "Miqatda Ümrə niyyəti ilə ehrama gir və ehramın qadağalarından çəkin."
+        },
+        {
+          "title": "Təvaf",
+          "description": "Mümkünsə Qara daşdan başlayıb orada bitirərək Kəbəni yeddi dəfə dolan, dua və zikrlə."
+        },
+        {
+          "title": "İki rükət",
+          "description": "Mümkünsə Məqami-İbrahimin arxasında iki rükət qıl."
+        },
+        {
+          "title": "Səy",
+          "description": "Səfa ilə Mərvə arasında yeddi dəfə get, Hacərin (AS) Allaha təvəkkülünü xatırla."
+        },
+        {
+          "title": "Qırxmaq və ya qısaltmaq",
+          "description": "Kişilər saçı qırxır və ya qısaldır; qadınlar Ümrəni tamamlamaq üçün saçdan barmaq ucu qədər kəsir."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Həcc günləri",
+          "description": "Həcc Zülhiccədə olur. Əsas mərasimlərə ehram, Ərəfatda durmaq, Müzdəlifə və cəmərələrin daşlanması daxildir."
+        },
+        {
+          "title": "Təvafi-ifada",
+          "description": "Ərəfə günündən sonra Kəbəni təvaf et; bu, həccin sütunlarındandır."
+        },
+        {
+          "title": "Həccin səyi",
+          "description": "Ümrədə edilməyibsə Səfa ilə Mərvə arasındakı səyi tamamla."
+        },
+        {
+          "title": "Minada qalmaq",
+          "description": "Gecələri Minada qal və təşriq günlərində səbir və zikrlə cəmərələri daşla."
+        },
+        {
+          "title": "Vida təvafı",
+          "description": "Məkkədən ayrılmazdan əvvəl son mərasim olaraq vida təvafını (təvafi-vəda) yerinə yetir."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Niyyət",
+          "description": "Allah rizası üçün Ramazanın hər gününü Fəcrdən əvvəl oruc tutmağa niyyət et."
+        },
+        {
+          "title": "Səhər yeməyi",
+          "description": "Səhər yeməyi ye — az olsa belə onda bərəkət vardır."
+        },
+        {
+          "title": "Orucu pozanlardan çəkin",
+          "description": "Fəcrdən Məğribə qədər yeməkdən, içməkdən və yaxınlıqdan çəkin. Dilini və əməllərini qoru."
+        },
+        {
+          "title": "Şükürlə iftar",
+          "description": "Məğribdə varsa xurma və su ilə orucu aç və oruclunun duasını söylə."
+        },
+        {
+          "title": "Gecə ibadəti",
+          "description": "Ramazanda, xüsusən son on gecədə, Quranı, duanı və nafilə namazları artır."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Kim verməlidir",
+          "description": "Zəkat bir qəməri il saxlanılan və nisaba çatan şərtli mala vacib olur."
+        },
+        {
+          "title": "Miqdar",
+          "description": "Nağd pul, qızıl və gümüşdə adi miqdar şərtə çatan artıq malın 2.5 faizidir."
+        },
+        {
+          "title": "Haqqı olanlar",
+          "description": "Quranda adı çəkilən səkkiz dəstəyə ver və mümkün olanda yerli ehtiyacı önə çək."
+        },
+        {
+          "title": "Niyyət və vaxt",
+          "description": "Ödənişin zəkat olduğuna niyyət et. Vacib olandan sonra istənilən vaxt verilə bilər; çoxları Ramazanda verir."
+        },
+        {
+          "title": "Təsir",
+          "description": "Zəkat malı təmizləyir, tamahı azaldır və cəmiyyətin ən zəif üzvlərini gücləndirir."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Günahı burax",
+          "description": "Səmimi tövbə günahı dərhal buraxmaq və ona qayıtmamağa əzm etməklə başlayır."
+        },
+        {
+          "title": "Peşmançılıq",
+          "description": "Allaha asi olduğuna görə ürəyində həqiqi peşmanlıq hiss et."
+        },
+        {
+          "title": "Təkrarlamamağa əzm",
+          "description": "Günahdan bundan sonra çəkinməyə möhkəm niyyət et və ona aparan şəraiti dəyiş."
+        },
+        {
+          "title": "Bağışlanma dilə",
+          "description": "Əstəğfirullah de, dua et və günah başqalarının haqqına toxunubsa o haqqı qaytar."
+        },
+        {
+          "title": "Allahın mərhəməti",
+          "description": "Allah tövbə edənləri sevir. Tövbə səmimi və ölümdən əvvəl olsa, heç bir günah çox böyük deyil."
+        }
+      ]
+    }
+  ]
+}

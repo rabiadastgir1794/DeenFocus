@@ -10,7 +10,10 @@ simple; the premium experience should be inside each module.
 its existing reader. All other modules use **searchable list → detail** (nested
 modules: category list → item list → detail). Swipeable card pager removed for
 non-Quran content. Bookmarks/progress/deep-open still index-based. Hub UI
-strings localized for all app languages; bundled educational JSON still English.
+strings localized for all app languages. Non-Quran educational text is
+localized from `assets/islamic_library/l10n/<lang>/` over the English JSON.
+Arabic script and Latin transliteration stay on the English source. `ar_SA`
+and `ar_EG` share `ar`; `pt_BR` uses `pt`. Quran is unchanged.
 
 ---
 
@@ -210,7 +213,9 @@ Non-Quran modules reuse the same navigation shell:
   `libraryShare` / snackbar keys — not the untranslated `quran*` fallbacks)
 * Detail section labels: Translation, Transliteration, Meaning, Narrator,
   Source, Fiqh/Occasion headers — via `AppLocalizations` in all app languages
-* Educational JSON body (titles, hadith text, explanations) remains English
+* Educational JSON body is localized per app language via `l10n/<lang>` overlays.
+  Arabic script and Latin transliteration stay on the English source. Quran is
+  not part of these overlays.
 * Progress: last opened index via `LibraryProgressService`
 * Bookmarks open the list, then auto-push the bookmarked detail
 

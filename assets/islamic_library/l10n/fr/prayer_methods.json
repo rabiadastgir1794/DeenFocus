@@ -1,0 +1,240 @@
+{
+  "guides": [
+    {
+      "items": [
+        {
+          "title": "Intention (niyya)",
+          "description": "Forme dans ton cœur une intention sincère d’accomplir le Wudu pour Allah."
+        },
+        {
+          "title": "Dire Bismillah",
+          "description": "Commence en disant : Bismillah (au nom d’Allah)."
+        },
+        {
+          "title": "Laver les mains et la bouche",
+          "description": "Lave les deux mains trois fois, rince la bouche trois fois, aspire de l’eau dans le nez et rejette-la trois fois."
+        },
+        {
+          "title": "Laver le visage et les bras",
+          "description": "Lave tout le visage trois fois, puis le bras droit jusqu’au coude trois fois, puis le bras gauche."
+        },
+        {
+          "title": "Essuyer la tête et laver les pieds",
+          "description": "Essuie la tête une fois, essuie les oreilles, puis lave le pied droit et le pied gauche jusqu’aux chevilles, trois fois chacun."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Préparation",
+          "description": "Assure-toi d’avoir le Wudu, habille-toi avec pudeur et oriente-toi vers la Qibla sur un lieu de prière propre."
+        },
+        {
+          "title": "Takbir et station debout",
+          "description": "Lève les mains et dis Allahu Akbar pour commencer. Tiens-toi debout avec humilité et concentration."
+        },
+        {
+          "title": "Réciter Al-Fatiha",
+          "description": "Récite la sourate Al-Fatiha dans chaque rak‘a, suivie d’une sourate courte ou de versets dans les deux premières rak‘a des prières fard lorsque cela s’applique."
+        },
+        {
+          "title": "Ruku et sujud",
+          "description": "Incline-toi en disant Subhana Rabbiyal Adheem, puis prosterne-toi en disant Subhana Rabbiyal A‘la, avec calme et immobilité."
+        },
+        {
+          "title": "Tachahhoud et salam",
+          "description": "Assieds-toi pour le tachahhoud final, envoie les salawat sur le Prophète ﷺ, puis termine en te tournant à droite et à gauche avec le salam."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "L’intention",
+          "description": "Forme dans ton cœur l’intention d’accomplir le Ghusl afin de lever l’impureté majeure pour Allah."
+        },
+        {
+          "title": "Laver les mains et la partie intime",
+          "description": "Lave les deux mains, puis lave toute impureté du corps."
+        },
+        {
+          "title": "Accomplir le Wudu",
+          "description": "Accomplis le Wudu comme tu le fais d’ordinaire, avant le lavage final du corps."
+        },
+        {
+          "title": "Verser l’eau sur le corps",
+          "description": "Verse de l’eau sur la tête trois fois, en veillant à ce qu’elle atteigne les racines des cheveux."
+        },
+        {
+          "title": "Achever le lavage de tout le corps",
+          "description": "Lave tout le corps, en commençant par le côté droit, et assure-toi qu’aucun endroit ne reste sec."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Quand il est permis",
+          "description": "Le Tayammum est permis lorsque l’eau n’est pas disponible, lorsque son usage est nuisible, ou lorsqu’on ne peut pas l’atteindre à temps pour la prière."
+        },
+        {
+          "title": "Intention et frapper la terre",
+          "description": "Forme l’intention, puis frappe une terre propre une fois avec les deux paumes."
+        },
+        {
+          "title": "Essuyer le visage",
+          "description": "Essuie tout le visage une fois avec les deux mains."
+        },
+        {
+          "title": "Essuyer les bras",
+          "description": "Essuie le bras droit jusqu’au coude avec la main gauche, puis le bras gauche avec la main droite."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "But",
+          "description": "La Prière funéraire est une obligation collective pour demander miséricorde et pardon pour le musulman décédé."
+        },
+        {
+          "title": "Se tenir en rangs",
+          "description": "Tiens-toi face à la Qibla, sans ruku ni sujud. Le corps est placé devant l’imam."
+        },
+        {
+          "title": "Quatre takbir",
+          "description": "Dis Allahu Akbar quatre fois. Après le premier, récite Al-Fatiha en silence ; après les autres, envoie les salawat et invoque pour le défunt."
+        },
+        {
+          "title": "Invoquer",
+          "description": "Demande à Allah de pardonner le défunt, de lui accorder la fermeté et de remplacer sa demeure par une meilleure au Paradis."
+        },
+        {
+          "title": "Terminer",
+          "description": "Après le dernier takbir, donne le salam une fois vers la droite, comme dans la prière habituelle."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Ihram",
+          "description": "Entre en ihram au miqat avec l’intention de l’Omra, en évitant les interdits de l’ihram."
+        },
+        {
+          "title": "Tawaf",
+          "description": "Fais sept tours autour de la Kaaba, en commençant et en terminant à la Pierre noire si possible, avec invocation et dhikr."
+        },
+        {
+          "title": "Deux rak‘a",
+          "description": "Prie deux rak‘a derrière le Maqam Ibrahim si possible."
+        },
+        {
+          "title": "Sa‘y",
+          "description": "Marche sept fois entre Safa et Marwa, en te rappelant la confiance de Hajar (AS) en Allah."
+        },
+        {
+          "title": "Rasage ou raccourcissement",
+          "description": "Les hommes se rasent ou raccourcissent les cheveux ; les femmes coupent de leurs cheveux la longueur d’un bout de doigt pour achever l’Omra."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Jours du Hajj",
+          "description": "Le Hajj a lieu en Dhul Hijja. Les rites principaux comprennent l’ihram, la station à Arafa, Muzdalifa et la lapidation des Jamarat."
+        },
+        {
+          "title": "Tawaf al-Ifada",
+          "description": "Accomplis le tawaf autour de la Kaaba après le jour d’Arafa, comme pilier du Hajj."
+        },
+        {
+          "title": "Sa‘y du Hajj",
+          "description": "Achève le sa‘y entre Safa et Marwa s’il n’a pas déjà été fait lors de l’Omra."
+        },
+        {
+          "title": "Séjour à Mina",
+          "description": "Passe les nuits à Mina et lapide les Jamarat pendant les jours de tashriq, avec patience et dhikr."
+        },
+        {
+          "title": "Tawaf d’adieu",
+          "description": "Avant de quitter La Mecque, accomplis le tawaf d’adieu (Tawaf al-Wada) comme rite final."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "L’intention",
+          "description": "Forme l’intention de jeûner chaque jour du Ramadan avant le Fajr, pour Allah."
+        },
+        {
+          "title": "Souhour",
+          "description": "Prends un repas avant l’aube (souhour) : il y a une bénédiction en lui, même s’il est petit."
+        },
+        {
+          "title": "Éviter ce qui rompt le jeûne",
+          "description": "Abstiens-toi de nourriture, de boisson et d’intimité du Fajr jusqu’au Maghrib. Garde ta langue et tes actes."
+        },
+        {
+          "title": "Iftar avec gratitude",
+          "description": "Romps le jeûne au Maghrib avec des dattes et de l’eau si tu en as, en disant l’invocation de celui qui jeûne."
+        },
+        {
+          "title": "Adoration nocturne",
+          "description": "Augmente le Coran, l’invocation et les prières surérogatoires pendant le Ramadan, surtout durant les dix dernières nuits."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Qui doit s’en acquitter",
+          "description": "La Zakat est due sur les biens qui remplissent les conditions, détenus pendant une année lunaire, lorsqu’ils atteignent le seuil du nisab."
+        },
+        {
+          "title": "Taux",
+          "description": "Le taux courant sur l’argent, l’or et l’argent métal est de 2,5 % de l’excédent de biens qui remplit les conditions."
+        },
+        {
+          "title": "Bénéficiaires admissibles",
+          "description": "Donne aux huit catégories mentionnées dans le Coran, en donnant la priorité au besoin local lorsque c’est possible."
+        },
+        {
+          "title": "Intention et moment",
+          "description": "Forme l’intention que le versement est la zakat. Elle peut être versée à tout moment après qu’elle est due ; beaucoup la versent pendant le Ramadan."
+        },
+        {
+          "title": "Effet",
+          "description": "La Zakat purifie les biens, réduit l’avidité et renforce les membres les plus vulnérables de la communauté."
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "title": "Cesser le péché",
+          "description": "La Tawba sincère commence par quitter immédiatement le péché et par la résolution de ne pas y revenir."
+        },
+        {
+          "title": "Remords",
+          "description": "Ressens dans le cœur un remords véritable d’avoir désobéi à Allah."
+        },
+        {
+          "title": "Résoudre de ne pas recommencer",
+          "description": "Forme une intention ferme d’éviter le péché désormais et change les conditions qui y mènent."
+        },
+        {
+          "title": "Demander pardon",
+          "description": "Dis Astaghfirullah, invoque, et si le péché a touché les droits d’autrui, restitue ces droits."
+        },
+        {
+          "title": "La miséricorde d’Allah",
+          "description": "Allah aime ceux qui se repentent. Aucun péché n’est trop grand si la Tawba est sincère et a lieu avant la mort."
+        }
+      ]
+    }
+  ]
+}

@@ -178,7 +178,7 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                       children: [
                         Expanded(
                           child: Text(
-                            option.label,
+                            option.localizedLabel(l10n),
                             style: Theme.of(ctx).textTheme.bodyLarge,
                           ),
                         ),
@@ -567,13 +567,13 @@ class _SettingsTabScreenState extends State<SettingsTabScreen>
                 SettingsRow(
                   icon: Icons.people_outline_rounded,
                   label: l10n.sectTitle,
-                  value: profile.sect.label,
+                  value: profile.sect.localizedLabel(l10n),
                   onTap: () => unawaited(_showSectPicker(context)),
                 ),
                 SettingsRow(
                   icon: Icons.calculate_outlined,
                   label: l10n.settingsCalculationMethodTitle,
-                  value: profile.calculationMethod.label,
+                  value: profile.calculationMethod.localizedLabel(l10n),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(

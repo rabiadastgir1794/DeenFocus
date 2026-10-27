@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_hadith.dart';
 import 'hadith_reader_screen.dart';
 import 'library_category_tile.dart';
@@ -17,20 +18,16 @@ class HadithCollectionsScreen extends StatefulWidget {
       _HadithCollectionsScreenState();
 }
 
-class _HadithCollectionsScreenState extends State<HadithCollectionsScreen> {
+class _HadithCollectionsScreenState extends State<HadithCollectionsScreen>
+    with LibraryLanguageReload {
   bool _loading = true;
   List<HadithCollection> _collections = const [];
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
     final collections = await IslamicLibraryRepository.instance
-        .loadHadithCollections();
-    if (!mounted) return;
+        .loadHadithCollections(languageCode: languageCode);
+    if (!isCurrentLibraryLoad(generation)) return;
     setState(() {
       _collections = collections;
       _loading = false;

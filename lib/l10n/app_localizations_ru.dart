@@ -1670,7 +1670,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get appLanguage => 'Язык приложения';
 
   @override
-  String get tabHome => 'Дом';
+  String get tabHome => 'Главная';
 
   @override
   String get tabFocus => 'Фокус';
@@ -2947,6 +2947,43 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsCalculationMethodTitle => 'Метод расчёта';
 
   @override
+  String get calcMethodMuslimWorldLeague => 'Всемирная исламская лига';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'Исламское общество Северной Америки (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'Египетское управление геодезии';
+
+  @override
+  String get calcMethodUmmAlQura => 'Университет Умм аль-Кура, Мекка';
+
+  @override
+  String get calcMethodKarachi => 'Университет исламских наук, Карачи';
+
+  @override
+  String get calcMethodTehran => 'Тегеран';
+
+  @override
+  String get calcMethodKuwait => 'Кувейт';
+
+  @override
+  String get calcMethodQatar => 'Катар';
+
+  @override
+  String get calcMethodDubai => 'Дубай';
+
+  @override
+  String get calcMethodTurkey => 'Турция';
+
+  @override
+  String get calcMethodSingapore => 'Сингапур';
+
+  @override
+  String get calcMethodMoonsighting => 'Всемирный комитет по наблюдению луны';
+
+  @override
   String get settingsAsrCalculationTitle => 'Расчёт Асра';
 
   @override
@@ -3738,15 +3775,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsAppDemoWidgetsCardSubtitle =>
-      'Daily verse and prayer times on your Home Screen, always up to date.';
+      'Аят дня и время намаза на главном экране — всегда актуально.';
 
   @override
   String get settingsAppDemoLiveActivityCardSubtitle =>
-      'Current and next prayer on your Lock Screen and Dynamic Island.';
+      'Текущий и следующий намаз на экране блокировки и Dynamic Island.';
 
   @override
   String get settingsAppDemoTajweedCardSubtitle =>
-      'Recite an ayah and get instant tajweed feedback.';
+      'Прочитайте аят и сразу получите отзыв по таджвиду.';
 
   @override
   String get featureDemoTajweedTitle => 'Таджвид';

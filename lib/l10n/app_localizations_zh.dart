@@ -1558,10 +1558,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appLanguage => '应用程序语言';
 
   @override
-  String get tabHome => '家';
+  String get tabHome => '首页';
 
   @override
-  String get tabFocus => '重点';
+  String get tabFocus => '专注';
 
   @override
   String get tabTasbih => '塔斯比赫';
@@ -2767,6 +2767,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsCalculationMethodTitle => '计算方法';
+
+  @override
+  String get calcMethodMuslimWorldLeague => '穆斯林世界联盟';
+
+  @override
+  String get calcMethodNorthAmerica => '北美伊斯兰协会 (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => '埃及测量总局';
+
+  @override
+  String get calcMethodUmmAlQura => '乌姆古拉大学，麦加';
+
+  @override
+  String get calcMethodKarachi => '伊斯兰科学大学，卡拉奇';
+
+  @override
+  String get calcMethodTehran => '德黑兰';
+
+  @override
+  String get calcMethodKuwait => '科威特';
+
+  @override
+  String get calcMethodQatar => '卡塔尔';
+
+  @override
+  String get calcMethodDubai => '迪拜';
+
+  @override
+  String get calcMethodTurkey => '土耳其';
+
+  @override
+  String get calcMethodSingapore => '新加坡';
+
+  @override
+  String get calcMethodMoonsighting => '全球月相观测委员会';
 
   @override
   String get settingsAsrCalculationTitle => '晡礼计算';

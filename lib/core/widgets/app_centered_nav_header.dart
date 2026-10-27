@@ -56,7 +56,8 @@ class AppCenteredNavHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Align(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
                 alignment: AlignmentDirectional.centerStart,
                 child: _backButton(colorScheme),
               ),
@@ -72,6 +73,8 @@ class AppCenteredNavHeader extends StatelessWidget {
                     Text(
                       title,
                       textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: textTheme.titleMedium?.copyWith(
                         color: colorScheme.primary,
                         fontWeight: FontWeight.w800,
@@ -82,6 +85,8 @@ class AppCenteredNavHeader extends StatelessWidget {
                       Text(
                         subtitle!,
                         textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w500,
@@ -95,7 +100,8 @@ class AppCenteredNavHeader extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Align(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
                 alignment: AlignmentDirectional.centerEnd,
                 child: trailing ?? const SizedBox.shrink(),
               ),

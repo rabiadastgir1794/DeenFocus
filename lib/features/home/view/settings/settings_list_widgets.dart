@@ -59,6 +59,8 @@ class SettingsCardButton extends StatelessWidget {
                   children: [
                     Text(
                       title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -66,6 +68,8 @@ class SettingsCardButton extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -133,59 +137,47 @@ class SettingsRow extends StatelessWidget {
         child: InkWell(
           onTap: disabled ? null : onTap,
           borderRadius: BorderRadius.circular(24),
-          child: Padding(
+            child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Icon(
+                  icon,
+                  size: 20,
+                  color: disabled
+                      ? disabledColor
+                      : colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 12),
                 Expanded(
-                  child: Row(
+                  child: OverflowBar(
+                    spacing: 12,
+                    overflowSpacing: 2,
+                    alignment: MainAxisAlignment.spaceBetween,
+                    overflowAlignment: OverflowBarAlignment.start,
                     children: [
-                      Icon(
-                        icon,
-                        size: 20,
-                        color: disabled
-                            ? disabledColor
-                            : colorScheme.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          label,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: disabled ? disabledColor : null,
-                              ),
+                      Text(
+                        label,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: disabled ? disabledColor : null,
                         ),
                       ),
+                      if (value != null)
+                        Text(
+                          value!,
+                          textAlign: TextAlign.end,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                        ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 170),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (value != null)
-                        Flexible(
-                          child: Text(
-                            value!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.end,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: colorScheme.onSurfaceVariant),
-                          ),
-                        ),
-                      if (value != null) const SizedBox(width: 6),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ],
-                  ),
+                const SizedBox(width: 2),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ],
             ),
@@ -213,11 +205,15 @@ class SettingsSectionHeader extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: colorScheme.primary),
         const SizedBox(width: 8),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: colorScheme.primary,
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: colorScheme.primary,
+            ),
           ),
         ),
       ],
@@ -255,6 +251,8 @@ class SettingsSwitchRow extends StatelessWidget {
                 Expanded(
                   child: Text(
                     label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -313,6 +311,8 @@ class SettingsSubtitleSwitchRow extends StatelessWidget {
                 children: [
                   Text(
                     label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: enabled ? null : disabledColor,
@@ -321,6 +321,8 @@ class SettingsSubtitleSwitchRow extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: enabled
                           ? colorScheme.onSurfaceVariant

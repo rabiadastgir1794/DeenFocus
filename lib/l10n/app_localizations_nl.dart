@@ -1664,7 +1664,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appLanguage => 'App-taal';
 
   @override
-  String get tabHome => 'Thuis';
+  String get tabHome => 'Home';
 
   @override
   String get tabFocus => 'Focus';
@@ -2936,6 +2936,44 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsCalculationMethodTitle => 'Berekeningsmethode';
+
+  @override
+  String get calcMethodMuslimWorldLeague => 'Islamitische Wereldliga';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'Islamitische Vereniging van Noord-Amerika (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'Egyptische algemene landmeetkundige dienst';
+
+  @override
+  String get calcMethodUmmAlQura => 'Universiteit Umm al-Qura, Mekka';
+
+  @override
+  String get calcMethodKarachi =>
+      'Universiteit voor Islamitische Wetenschappen, Karachi';
+
+  @override
+  String get calcMethodTehran => 'Teheran';
+
+  @override
+  String get calcMethodKuwait => 'Koeweit';
+
+  @override
+  String get calcMethodQatar => 'Qatar';
+
+  @override
+  String get calcMethodDubai => 'Dubai';
+
+  @override
+  String get calcMethodTurkey => 'Turkije';
+
+  @override
+  String get calcMethodSingapore => 'Singapore';
+
+  @override
+  String get calcMethodMoonsighting => 'Wereldwijd maanslichtingscomité';
 
   @override
   String get settingsAsrCalculationTitle => 'Asr-berekening';
@@ -4307,7 +4345,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String libraryItemCount(int count) {
-    return '$count items';
+    return '$count elementen';
   }
 
   @override

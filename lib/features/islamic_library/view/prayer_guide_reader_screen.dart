@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
+import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_guide.dart';
 import '../model/library_module.dart';
 import '../widgets/guide_step_card.dart';
@@ -28,7 +30,12 @@ class PrayerGuideReaderScreen extends StatefulWidget {
 }
 
 class _PrayerGuideReaderScreenState extends State<PrayerGuideReaderScreen>
-    with LearningListController {
+    with LearningListController, LibraryLanguageReload {
+  PrayerGuide? _localizedGuide;
+  bool _bootstrapped = false;
+
+  PrayerGuide get _guide => _localizedGuide ?? widget.guide;
+
   @override
   String get sectionId =>
       widget.guide.progressSectionId(LibraryModuleId.prayerMethods.name);
@@ -37,18 +44,26 @@ class _PrayerGuideReaderScreenState extends State<PrayerGuideReaderScreen>
   int? get initialCardIndex => widget.initialCardIndex;
 
   @override
-  int get itemCount => widget.guide.steps.length;
+  int get itemCount => _guide.steps.length;
 
-  List<GuideStep> get _steps => widget.guide.steps;
+  List<GuideStep> get _steps => _guide.steps;
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final guides = await IslamicLibraryRepository.instance.loadPrayerGuides(
+      languageCode: languageCode,
+    );
+    if (!isCurrentLibraryLoad(generation)) return;
+    for (final guide in guides) {
+      if (guide.id == widget.guide.id) {
+        setState(() => _localizedGuide = guide);
+        break;
+      }
+    }
+    if (_bootstrapped) return;
+    _bootstrapped = true;
     await loadProgressAndFinish();
+    if (!isCurrentLibraryLoad(generation)) return;
     maybeOpenInitial(_openDetail);
   }
 

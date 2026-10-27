@@ -1,0 +1,109 @@
+{
+  "items": [
+    {
+      "title": "Qu’est-ce que le fiqh ?",
+      "overview": "Le fiqh est la compréhension et l’application humaines de la loi islamique, tirées du Coran et de la Sunna. Il couvre l’adoration, les transactions, le droit de la famille et la conduite quotidienne.",
+      "keyPoints": "Les savants utilisent des principes tels que le Coran, le hadith authentique, le consensus (ijma) et le raisonnement analogique (qiyas) pour dégager des règles. Le fiqh est un guide pratique pour vivre l’islam au jour le jour.",
+      "differences": "Des écoles et des communautés différentes peuvent aboutir à des conclusions différentes sur des questions secondaires tout en partageant les mêmes sources fondamentales. Cela est normal dans l’histoire juridique islamique.",
+      "commonGround": "Tous les musulmans affirment le Coran comme parole d’Allah et la prophétie de Muhammad ﷺ. Les différences de fiqh portent d’ordinaire sur des détails de pratique, non sur les fondements de la foi."
+    },
+    {
+      "title": "Pourquoi des différences existent",
+      "overview": "Les savants musulmans ont toujours eu des avis divers sur de nombreuses questions juridiques. Le Prophète ﷺ a permis la différence parmi ses compagnons sur les questions non essentielles.",
+      "keyPoints": "Les raisons comprennent : des hadiths différents parvenus à des régions différentes, des interprétations linguistiques variées, des circonstances nouvelles et un ijtihad sincère (effort savant) de savants qualifiés.",
+      "differences": "Certaines communautés suivent strictement un madhab précis ; d’autres combinent des avis ou suivent des savants locaux. Le contexte culturel façonne aussi la manière d’appliquer les règles.",
+      "commonGround": "La grande majorité des musulmans s’accorde sur les piliers de l’islam et de l’iman, sur les principes de la nourriture halal, sur la prière comme obligation et sur les enseignements moraux du Coran."
+    },
+    {
+      "title": "Islam sunnite — quatre madhabs",
+      "overview": "Les musulmans sunnites suivent le Coran, la Sunna et le consensus de la première communauté. Avec le temps, quatre grandes écoles de droit (madhabs) sont apparues, chacune nommée d’après un grand imam.",
+      "keyPoints": "Les madhabs hanafite, malikite, chaféite et hanbalite sont des voies valides au sein de l’islam sunnite. La plupart des musulmans sunnites ont historiquement suivi un madhab par leur communauté ou leur région.",
+      "differences": "Les madhabs peuvent différer sur des détails du Wudu, de la posture dans la prière, des règles du jeûne ou des transactions commerciales. Ce sont des différences savantes, non des divisions dans la croyance fondamentale.",
+      "commonGround": "Les quatre madhabs acceptent les mêmes six piliers de l’iman et cinq piliers de l’islam. Ils diffèrent surtout dans la méthode et les conclusions du raisonnement juridique."
+    },
+    {
+      "title": "Madhab hanafite",
+      "overview": "Fondé par l’imam Abu Hanifa (m. 767 de l’ère commune). C’est le madhab le plus suivi dans le monde, surtout en Turquie, en Asie centrale et du Sud, et dans certaines parties des Balkans.",
+      "keyPoints": "Il met l’accent sur la raison (ra’y), l’intérêt public (istihsan) et la coutume (urf). Il est connu pour sa souplesse face aux situations nouvelles. De nombreuses communautés deobandies et barelvies suivent le fiqh hanafite.",
+      "differences": "Les hanafites peuvent réunir le Maghrib et l’Isha dans certains cas de voyage ou de difficulté où d’autres ne le font pas. La place des mains dans la prière et certains détails du Wudu diffèrent des autres madhabs.",
+      "commonGround": "Les hanafites partagent le même Coran, le même corpus de hadith et le même credo sunnite fondamental que les savants malikites, chaféites et hanbalites."
+    },
+    {
+      "title": "Madhab malikite",
+      "overview": "Fondé par l’imam Malik ibn Anas (m. 795 de l’ère commune) à Médine. Dominant en Afrique du Nord et de l’Ouest, dans certaines parties du Golfe et parmi de nombreuses communautés musulmanes africaines dans le monde.",
+      "keyPoints": "Fort accent sur la pratique des gens de Médine (amal ahl al-Madinah) à côté du hadith. Il utilise les masalih mursala (l’intérêt public) dans le raisonnement juridique.",
+      "differences": "Les malikites laissent traditionnellement les bras le long du corps dans la prière plutôt que de les croiser. Certaines règles sur la nourriture, les contrats et l’essuyage sur les chaussettes diffèrent des avis hanafites ou chaféites.",
+      "commonGround": "Les savants malikites affirment les mêmes piliers de la foi et utilisent les mêmes sources fondamentales que les autres madhabs sunnites."
+    },
+    {
+      "title": "Madhab chaféite",
+      "overview": "Fondé par l’imam al-Shafi‘i (m. 820 de l’ère commune). Répandu en Asie du Sud-Est, en Afrique de l’Est, au Yémen et dans certaines parties du Levant et du Caucase.",
+      "keyPoints": "Il a systématisé les usul al-fiqh (principes de jurisprudence) qui ont influencé toutes les écoles ultérieures. Il équilibre le hadith, le consensus et le qiyas avec une méthode rigoureuse.",
+      "differences": "Les chaféites récitent Al-Fatiha derrière l’imam dans la prière en commun (là où les hanafites restent souvent silencieux). Certains détails de la Zakat et de l’héritage diffèrent des règles hanafites.",
+      "commonGround": "Le chaféite est pleinement orthodoxe sunnite. De nombreux musulmans d’Asie du Sud-Est suivent ce madhab tout en partageant mosquées et communautés avec d’autres."
+    },
+    {
+      "title": "Madhab hanbalite",
+      "overview": "Fondé par l’imam Ahmad ibn Hanbal (m. 855 de l’ère commune). Le plus en vue aujourd’hui en Arabie saoudite et parmi de nombreuses communautés salafies, bien que tous les salafis ne se disent pas hanbalites.",
+      "keyPoints": "Il met l’accent sur l’adhésion littérale à la preuve textuelle (le Coran et le hadith) et reste prudent face au raisonnement spéculatif. L’imam Ahmad fut aussi un grand savant du hadith.",
+      "differences": "Le fiqh hanbalite peut être plus strict sur certaines questions (par exemple certains aliments, la musique ou des actes publics) par rapport à la souplesse hanafite. La prière et le Wudu ont des règles distinctes.",
+      "commonGround": "Le hanbalite est l’un des quatre madhabs sunnites. Ses adeptes partagent l’aqida des autres sunnites sur le tawhid, la prophétie et l’au-delà."
+    },
+    {
+      "title": "Islam chiite (duodécimain)",
+      "overview": "Les musulmans chiites duodécimains suivent le Coran et les enseignements du Prophète ﷺ ainsi que des douze imams issus des Ahl al-Bayt. Ils forment la plus grande communauté chiite dans le monde.",
+      "keyPoints": "Accent distinct sur l’imamat : la direction spirituelle et communautaire d’Ali (RA) et des imams qui lui succèdent. La jurisprudence est tirée par les imams et par des savants qualifiés (marja).",
+      "differences": "Certaines pratiques de la prière diffèrent (par exemple réunir les prières les jours ordinaires, ou utiliser une turbah ou de la terre pour la prosternation). Le mariage temporaire (mut‘a) est permis dans le fiqh duodécimain, mais rejeté par les sunnites.",
+      "commonGround": "Les chiites duodécimains affirment le Coran, la prophétie de Muhammad ﷺ, la prière, le jeûne, la Zakat et le Hajj. Le dialogue et la coexistence avec les musulmans sunnites sont courants dans de nombreuses sociétés."
+    },
+    {
+      "title": "Tradition deobandie",
+      "overview": "Un mouvement sunnite de renouveau né à Darul Uloom Deoband, en Inde (1867). Ce n’est pas un madhab séparé, mais une tradition savante et éducative hanafite.",
+      "keyPoints": "Il met l’accent sur le Coran, le hadith et le fiqh hanafite classique. Fort accent sur l’enseignement des madrasas, le tabligh (l’appel) et le fait d’éviter des pratiques vues comme des innovations non vérifiées.",
+      "differences": "Les deobandis sont en général prudents envers les célébrations du Mawlid, certaines pratiques aux mausolées et certaines coutumes soufies, bien que de nombreux savants deobandis respectent le tasawwuf avec des conditions.",
+      "commonGround": "Les deobandis sont des musulmans sunnites hanafites qui partagent les croyances fondamentales des autres hanafites. Ils diffèrent surtout des barelvis et de certains groupes soufis sur des pratiques culturelles et dévotionnelles."
+    },
+    {
+      "title": "Tradition barelvie",
+      "overview": "Un mouvement sunnite hanafite associé à Ahmad Raza Khan Barelvi (m. 1921) en Inde. Il met l’accent sur l’amour du Prophète ﷺ et la vénération des awliya (saints).",
+      "keyPoints": "Il soutient le Mawlid (célébrer la naissance du Prophète), les rassemblements de milad et la visite des mausolées de savants justes. Il suit le fiqh hanafite pour l’adoration et les transactions.",
+      "differences": "Les barelvis pratiquent des formes d’expression dévotionnelle que les deobandis et les salafis peuvent éviter, comme se lever à la mention du Prophète ﷺ (qiyam) et des Mawlid élaborés.",
+      "commonGround": "Les barelvis affirment la même chahada, le même Coran et les mêmes cinq prières quotidiennes que les autres hanafites sunnites. Les différences avec les deobandis portent surtout sur la culture dévotionnelle, non sur le credo fondamental."
+    },
+    {
+      "title": "Méthode salafie",
+      "overview": "Les salafis cherchent à suivre la compréhension des premières générations musulmanes (le Salaf). C’est une approche méthodologique, et non un cinquième madhab.",
+      "keyPoints": "Retour direct au Coran et à la Sunna ; prudence envers le taqlid (suivi aveugle) d’un seul madhab ; souvent influencés par le fiqh hanbalite et par des institutions savantes saoudiennes.",
+      "differences": "Les salafis peuvent rejeter des pratiques qu’ils considèrent comme une bid‘a (innovation), dont certaines formes de Mawlid, certaines pratiques soufies et l’adhésion exclusive à un madhab sans preuve.",
+      "commonGround": "Les salafis sont des musulmans sunnites qui affirment les mêmes piliers de l’islam. Beaucoup coexistent dans des communautés avec ceux qui suivent un madhab, tout en débattant de questions juridiques et culturelles secondaires."
+    },
+    {
+      "title": "Ahl-e Hadith (les gens du hadith)",
+      "overview": "Ahl-e Hadith est un mouvement sunnite important au Pakistan, en Inde et au Bangladesh, qui tire son nom des Gens du Hadith, les premiers savants qui donnaient la priorité aux narrations authentiques. C’est une tradition distincte d’Asie du Sud, non un madhab séparé.",
+      "keyPoints": "Il met l’accent sur l’adhésion directe au Coran et au hadith sahih plutôt que sur le taqlid aveugle d’un seul madhab. Les règles sont dégagées par un examen savant indépendant de la preuve textuelle, souvent en accord avec des avis hanbalites, sans être liées à un seul imam.",
+      "differences": "Les savants d’Ahl-e Hadith peuvent différer des hanafites deobandis sur le Mawlid, la visite des mausolées et certains détails de la prière. Ils partagent beaucoup avec la méthode salafie, mais gardent leurs propres institutions savantes, mosquées et identité historique dans le sous-continent.",
+      "commonGround": "Les Ahl-e Hadith sont des musulmans sunnites qui affirment la chahada, les cinq piliers et les six piliers de l’iman. Ils diffèrent surtout des hanafites liés à un madhab (deobandis et barelvis) sur la méthode juridique et certaines pratiques dévotionnelles, non sur le credo fondamental."
+    },
+    {
+      "title": "La prière — comparer les approches",
+      "overview": "Tous les musulmans accomplissent cinq prières quotidiennes en direction de la Qibla. Les différences apparaissent dans les détails du Wudu, du lever des mains, de la récitation derrière l’imam et de la réunion des prières.",
+      "keyPoints": "Hanafites : souvent silencieux derrière l’imam, avec un ordre précis du Wudu. Chaféites, malikites et hanbalites : récitent la Fatiha derrière l’imam. Chiites : peuvent réunir Dhuhr-Asr et Maghrib-Isha de façon régulière.",
+      "differences": "L’endroit où l’on place les mains, le fait de dire amin à voix haute, et l’essuyage sur les chaussettes plutôt que le lavage des pieds sont des points courants de variation entre madhabs.",
+      "commonGround": "La prière est une obligation partagée. Des musulmans de tous les groupes adorent dans des mosquées du monde entier et respectent le caractère sacré de la Salat même lorsque les détails diffèrent."
+    },
+    {
+      "title": "Le jeûne et l’observation de la lune",
+      "overview": "Le jeûne du Ramadan est obligatoire pour tous les musulmans qui en sont capables. Les différences portent souvent sur la façon dont le mois commence et se termine : observation locale ou calcul global.",
+      "keyPoints": "Certaines communautés suivent l’observation locale de la lune ; d’autres utilisent les annonces saoudiennes ou le calcul astronomique. Le fiqh hanafite permet une certaine souplesse sur ce qui rompt le jeûne.",
+      "differences": "Le début et la fin du Ramadan et de l’Aïd peuvent tomber à des jours différents dans la même ville lorsque les communautés suivent des savants différents ou des comités nationaux de la lune.",
+      "commonGround": "L’obligation de jeûner le Ramadan est universelle. Les musulmans partagent les mêmes buts spirituels de taqwa, de récitation du Coran et d’aumône durant le mois béni."
+    },
+    {
+      "title": "Fondements partagés",
+      "overview": "Malgré les différences de fiqh et de tradition, les musulmans du monde partagent un noyau inébranlable : la croyance en un seul Allah, la finalité du Prophète Muhammad ﷺ et la responsabilité au Jour du Jugement.",
+      "keyPoints": "Le Coran et la Sunna authentique unissent la oumma. Les différences sur les règles secondaires doivent être abordées avec savoir, humilité et respect, non avec division ou hostilité.",
+      "differences": "Les communautés peuvent suivre des savants ou des madhabs différents. Connaître ces différences aide les musulmans à se comprendre et à éviter des conflits inutiles.",
+      "commonGround": "Allah dit : « Les croyants ne sont que des frères. » Chercher le savoir, faire une invocation sincère et montrer un bon caractère dépassent toute frontière de fiqh ou de culture."
+    }
+  ]
+}

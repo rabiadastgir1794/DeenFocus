@@ -1657,13 +1657,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get appLanguage => 'ऐप भाषा';
 
   @override
-  String get tabHome => 'घर';
+  String get tabHome => 'होम';
 
   @override
-  String get tabFocus => 'केंद्र';
+  String get tabFocus => 'फ़ोकस';
 
   @override
-  String get tabTasbih => 'Tasbih';
+  String get tabTasbih => 'तस्बीह';
 
   @override
   String get tabQuran => 'सीखें';
@@ -2923,6 +2923,43 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsCalculationMethodTitle => 'गणना विधि';
 
   @override
+  String get calcMethodMuslimWorldLeague => 'मुस्लिम वर्ल्ड लीग';
+
+  @override
+  String get calcMethodNorthAmerica =>
+      'इस्लामिक सोसाइटी ऑफ़ नॉर्थ अमेरिका (ISNA)';
+
+  @override
+  String get calcMethodEgyptian => 'मिस्र सामान्य सर्वेक्षण प्राधिकरण';
+
+  @override
+  String get calcMethodUmmAlQura => 'उम्म अल-क़ुरा विश्वविद्यालय, मक्का';
+
+  @override
+  String get calcMethodKarachi => 'इस्लामी विज्ञान विश्वविद्यालय, कराची';
+
+  @override
+  String get calcMethodTehran => 'तेहरान';
+
+  @override
+  String get calcMethodKuwait => 'कुवैत';
+
+  @override
+  String get calcMethodQatar => 'क़तर';
+
+  @override
+  String get calcMethodDubai => 'दुबई';
+
+  @override
+  String get calcMethodTurkey => 'तुर्की';
+
+  @override
+  String get calcMethodSingapore => 'सिंगापुर';
+
+  @override
+  String get calcMethodMoonsighting => 'विश्व चंद्रदर्शन समिति';
+
+  @override
   String get settingsAsrCalculationTitle => 'असर गणना';
 
   @override
@@ -3707,15 +3744,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsAppDemoWidgetsCardSubtitle =>
-      'Daily verse and prayer times on your Home Screen, always up to date.';
+      'होम स्क्रीन पर दैनिक आयत और नमाज़ के समय, हमेशा नवीनतम।';
 
   @override
   String get settingsAppDemoLiveActivityCardSubtitle =>
-      'Current and next prayer on your Lock Screen and Dynamic Island.';
+      'लॉक स्क्रीन और Dynamic Island पर मौजूदा और अगली नमाज़।';
 
   @override
   String get settingsAppDemoTajweedCardSubtitle =>
-      'Recite an ayah and get instant tajweed feedback.';
+      'एक आयत पढ़ें और तुरंत तजवीद पर प्रतिक्रिया पाएँ।';
 
   @override
   String get featureDemoTajweedTitle => 'तजवीद';

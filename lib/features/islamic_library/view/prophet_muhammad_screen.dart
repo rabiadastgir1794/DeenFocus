@@ -5,6 +5,7 @@ import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_module.dart';
 import '../model/prophet_story_card.dart';
 import '../widgets/learning_item_tile.dart';
@@ -22,7 +23,7 @@ class ProphetMuhammadScreen extends StatefulWidget {
 }
 
 class _ProphetMuhammadScreenState extends State<ProphetMuhammadScreen>
-    with LearningListController {
+    with LearningListController, LibraryLanguageReload {
   static const _sectionId = LibraryModuleId.prophets;
 
   List<ProphetStoryCard> _cards = const [];
@@ -37,14 +38,11 @@ class _ProphetMuhammadScreenState extends State<ProphetMuhammadScreen>
   int get itemCount => _cards.length;
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final cards = await IslamicLibraryRepository.instance.loadProphetMuhammad();
-    if (!mounted) return;
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final cards = await IslamicLibraryRepository.instance.loadProphetMuhammad(
+      languageCode: languageCode,
+    );
+    if (!isCurrentLibraryLoad(generation)) return;
     setState(() => _cards = cards);
     await loadProgressAndFinish();
     maybeOpenInitial(_openDetail);

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_centered_nav_header.dart';
 import '../../../l10n/app_localizations.dart';
+import '../data/islamic_library_repository.dart';
 import '../helpers/learning_list_controller.dart';
+import '../helpers/library_language_reload.dart';
 import '../model/library_hadith.dart';
 import '../model/library_module.dart';
 import '../widgets/hadith_card.dart';
@@ -27,7 +29,13 @@ class HadithReaderScreen extends StatefulWidget {
 }
 
 class _HadithReaderScreenState extends State<HadithReaderScreen>
-    with LearningListController {
+    with LearningListController, LibraryLanguageReload {
+  HadithCollection? _localizedCollection;
+  bool _bootstrapped = false;
+
+  HadithCollection get _collection =>
+      _localizedCollection ?? widget.collection;
+
   @override
   String get sectionId =>
       widget.collection.progressSectionId(LibraryModuleId.hadith.name);
@@ -36,18 +44,25 @@ class _HadithReaderScreenState extends State<HadithReaderScreen>
   int? get initialCardIndex => widget.initialCardIndex;
 
   @override
-  int get itemCount => widget.collection.items.length;
+  int get itemCount => _collection.items.length;
 
-  List<LibraryHadith> get _hadiths => widget.collection.items;
+  List<LibraryHadith> get _hadiths => _collection.items;
 
   @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
+  Future<void> onLibraryLanguage(String languageCode, int generation) async {
+    final collections = await IslamicLibraryRepository.instance
+        .loadHadithCollections(languageCode: languageCode);
+    if (!isCurrentLibraryLoad(generation)) return;
+    for (final collection in collections) {
+      if (collection.id == widget.collection.id) {
+        setState(() => _localizedCollection = collection);
+        break;
+      }
+    }
+    if (_bootstrapped) return;
+    _bootstrapped = true;
     await loadProgressAndFinish();
+    if (!isCurrentLibraryLoad(generation)) return;
     maybeOpenInitial(_openDetail);
   }
 
