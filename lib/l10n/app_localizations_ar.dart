@@ -2194,6 +2194,63 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get tasbihPin => 'تثبيت';
+
+  @override
+  String get tasbihUnpin => 'إلغاء التثبيت';
+
+  @override
+  String get tasbihEdit => 'تعديل';
+
+  @override
+  String get tasbihNameSubhanAllah => 'سبحان الله';
+
+  @override
+  String get tasbihMeaningSubhanAllah => 'تنزيهًا لله';
+
+  @override
+  String get tasbihNameAlhamdulillah => 'الحمد لله';
+
+  @override
+  String get tasbihMeaningAlhamdulillah => 'الحمد والثناء لله';
+
+  @override
+  String get tasbihNameAllahuAkbar => 'الله أكبر';
+
+  @override
+  String get tasbihMeaningAllahuAkbar => 'الله أعظم من كل شيء';
+
+  @override
+  String get tasbihNameLaIlahaIllallah => 'لا إله إلا الله';
+
+  @override
+  String get tasbihMeaningLaIlahaIllallah => 'لا معبود بحق إلا الله';
+
+  @override
+  String get tasbihNameAstaghfirullah => 'أستغفر الله';
+
+  @override
+  String get tasbihMeaningAstaghfirullah => 'أطلب المغفرة من الله';
+
+  @override
+  String get tasbihNameLaHawla => 'لا حول ولا قوة إلا بالله';
+
+  @override
+  String get tasbihMeaningLaHawla => 'لا قدرة ولا قوة إلا بالله';
+
+  @override
+  String get tasbihNameSubhanAllahiWaBihamdihi => 'سبحان الله وبحمده';
+
+  @override
+  String get tasbihMeaningSubhanAllahiWaBihamdihi => 'أسبح الله وأحمده';
+
+  @override
+  String get tasbihNameHasbunallahu => 'حسبنا الله ونعم الوكيل';
+
+  @override
+  String get tasbihMeaningHasbunallahu => 'الله كافينا وهو نعم الوكيل';
+
+  @override
   String get focusModeActivated => 'تم تنشيط وضع التركيز';
 
   @override
@@ -2765,7 +2822,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tasbihDeleteDhikrTitle => 'حذف الذكر؟';
 
   @override
-  String get tasbihDelete => 'يمسح';
+  String get tasbihDelete => 'حذف';
 
   @override
   String get focusAndroidBlockingNotReady =>

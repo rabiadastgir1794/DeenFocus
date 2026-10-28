@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../home/view/widgets/home_rounded_icon_button.dart';
 import '../data/tasbih_local_repository.dart';
+import '../helpers/tasbih_display_text.dart';
 import 'tasbih_detail_screen.dart';
 
 class TasbihTabScreen extends StatefulWidget {
@@ -117,8 +118,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
 
   Future<void> _openDetail(TasbihItem item) async {
     await Navigator.of(context).push<void>(
-      CupertinoPageRoute<void>(
-          builder: (_) => TasbihDetailScreen(item: item)),
+      CupertinoPageRoute<void>(builder: (_) => TasbihDetailScreen(item: item)),
     );
     if (!mounted) return;
     await _loadItems();
@@ -172,78 +172,80 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 12.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.tasbihTabTitle,
+                                style: TextStyle(
+                                  fontSize: 30.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                l10n.tasbihChooseOrAddSubtitle,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        HomeRoundedIconButton(
+                          icon: Icons.add,
+                          onTap: () => _openEditor(),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    Container(
+                      margin: EdgeInsets.zero,
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: borderColor, width: 1.1),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 14.h,
+                        ),
+                        child: Row(
                           children: [
-                            Text(
-                              l10n.tasbihTabTitle,
-                              style: TextStyle(
-                                fontSize: 30.sp,
-                                fontWeight: FontWeight.w700,
+                            Expanded(
+                              child: Text(
+                                l10n.tasbihGrandTotalLabel,
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                            SizedBox(height: 4.h),
                             Text(
-                              l10n.tasbihChooseOrAddSubtitle,
+                              '${_items.length}',
                               style: TextStyle(
-                                fontSize: 14.sp,
-                                color: colorScheme.onSurfaceVariant,
+                                color: colorScheme.primary,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      HomeRoundedIconButton(
-                        icon: Icons.add,
-                        onTap: () => _openEditor(),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-                  Container(
-                    margin: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: borderColor, width: 1.1),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 14.h,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              l10n.tasbihGrandTotalLabel,
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            '${_items.length}',
-                            style: TextStyle(
-                              color: colorScheme.primary,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Expanded(
-                    child: ReorderableListView.builder(
+                    SizedBox(height: 8.h),
+                    ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       buildDefaultDragHandles: false,
                       itemCount: _items.length,
                       onReorder: _reorder,
@@ -254,10 +256,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                           decoration: BoxDecoration(
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: borderColor,
-                              width: 1.1,
-                            ),
+                            border: Border.all(color: borderColor, width: 1.1),
                           ),
                           margin: EdgeInsets.only(bottom: 8.h),
                           child: ListTile(
@@ -282,7 +281,7 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                 Expanded(
                                   child: Text(
                                     item.label,
-                                    maxLines: 1,
+                                    maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -290,37 +289,9 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                             ),
                             subtitle: Padding(
                               padding: EdgeInsets.only(top: 2.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    item.transliteration.isEmpty
-                                        ? l10n.tasbihNoTransliteration
-                                        : item.transliteration,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  if (item.totalCount > 0)
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.bar_chart_rounded,
-                                          size: 14.sp,
-                                          color: colorScheme.primary,
-                                        ),
-                                        SizedBox(width: 4.w),
-                                        Text(
-                                          '${l10n.tasbihTotalCount}: ${item.totalCount}',
-                                          style: TextStyle(
-                                            color: colorScheme.primary,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                ],
+                              child: _TasbihItemSubtitle(
+                                item: item,
+                                l10n: l10n,
                               ),
                             ),
                             trailing: Row(
@@ -371,8 +342,12 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                             color: colorScheme.primary,
                                           ),
                                           const SizedBox(width: 10),
-                                          Text(
-                                            item.isPinned ? 'Unpin' : 'Pin',
+                                          Flexible(
+                                            child: Text(
+                                              item.isPinned
+                                                  ? l10n.tasbihUnpin
+                                                  : l10n.tasbihPin,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -380,14 +355,16 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                     if (item.isCustom) ...[
                                       PopupMenuItem<_ItemAction>(
                                         value: _ItemAction.edit,
-                                        child: const Row(
+                                        child: Row(
                                           children: [
-                                            Icon(
+                                            const Icon(
                                               Icons.edit_outlined,
                                               size: 18,
                                             ),
-                                            SizedBox(width: 10),
-                                            Text('Edit'),
+                                            const SizedBox(width: 10),
+                                            Flexible(
+                                              child: Text(l10n.tasbihEdit),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -401,10 +378,12 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                                               color: colorScheme.error,
                                             ),
                                             const SizedBox(width: 10),
-                                            Text(
-                                              'Delete',
-                                              style: TextStyle(
-                                                color: colorScheme.error,
+                                            Flexible(
+                                              child: Text(
+                                                l10n.tasbihDelete,
+                                                style: TextStyle(
+                                                  color: colorScheme.error,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -419,8 +398,8 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
                         );
                       },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -429,6 +408,69 @@ class _TasbihTabScreenState extends State<TasbihTabScreen> {
           ColoredBox(
             color: Colors.black.withValues(alpha: 0.15),
             child: const Center(child: CircularProgressIndicator()),
+          ),
+      ],
+    );
+  }
+}
+
+class _TasbihItemSubtitle extends StatelessWidget {
+  const _TasbihItemSubtitle({required this.item, required this.l10n});
+
+  final TasbihItem item;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final name = tasbihDisplayName(l10n, item);
+    final meaning = tasbihDisplayMeaning(l10n, item);
+    final showName = tasbihShowsName(item, name);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (showName) Text(name, maxLines: 2, overflow: TextOverflow.ellipsis),
+        if (meaning.trim().isNotEmpty)
+          Text(
+            meaning,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: showName
+                ? TextStyle(
+                    fontSize: 13.sp,
+                    color: colorScheme.onSurfaceVariant,
+                  )
+                : null,
+          ),
+        if (!showName && meaning.trim().isEmpty)
+          Text(
+            l10n.tasbihNoTransliteration,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        if (item.totalCount > 0)
+          Row(
+            children: [
+              Icon(
+                Icons.bar_chart_rounded,
+                size: 14.sp,
+                color: colorScheme.primary,
+              ),
+              SizedBox(width: 4.w),
+              Flexible(
+                child: Text(
+                  '${l10n.tasbihTotalCount}: ${item.totalCount}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
       ],
     );
@@ -457,8 +499,9 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
   void initState() {
     super.initState();
     _arabicCtrl = TextEditingController(text: widget.item?.label ?? '');
-    _translitCtrl =
-        TextEditingController(text: widget.item?.transliteration ?? '');
+    _translitCtrl = TextEditingController(
+      text: widget.item?.transliteration ?? '',
+    );
     _meaningCtrl = TextEditingController(text: widget.item?.meaning ?? '');
     _arabicFocus = FocusNode();
     _translitFocus = FocusNode();
@@ -505,8 +548,7 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
             enableSuggestions: false,
             textInputAction: TextInputAction.next,
             onSubmitted: (_) => _translitFocus.requestFocus(),
-            decoration:
-                InputDecoration(hintText: l10n.tasbihArabicOrDhikrHint),
+            decoration: InputDecoration(hintText: l10n.tasbihArabicOrDhikrHint),
           ),
           SizedBox(height: 10.h),
           TextField(
@@ -527,8 +569,9 @@ class _DhikrEditorSheetState extends State<_DhikrEditorSheet> {
             autocorrect: false,
             enableSuggestions: false,
             textInputAction: TextInputAction.done,
-            decoration:
-                InputDecoration(hintText: l10n.tasbihMeaningOptionalHint),
+            decoration: InputDecoration(
+              hintText: l10n.tasbihMeaningOptionalHint,
+            ),
           ),
           SizedBox(height: 16.h),
           Row(

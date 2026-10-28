@@ -1,6 +1,15 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-27 — Masjid Finder keeps saved mosques visible when a live Overpass refresh fails.
+> Last updated: 2026-10-28 — Tasbih screens are localized; Masjid Finder keeps saved mosques visible when Overpass refresh fails.
+
+## Status: Tasbih screens (2026-10-28)
+The counter and the dhikr list read their chrome, pin/edit/delete actions, and
+the eight built-in names and meanings from ARB in every supported language.
+Built-in phrases are resolved by id at display time, so an existing install
+does not need a new Hive seed. Custom dhikr still shows the text the user
+saved. The counter page and the list scroll when text is large. Hindi
+“Tasbih” is now “तस्बीह”, and the Hindi list subtitle no longer uses the
+wrong word धिक्कार.
 
 ## Status: Masjid Finder live update failed (2026-10-27)
 The banner was the live Overpass request failing, then the screen replacing the
