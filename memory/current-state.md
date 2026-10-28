@@ -1,6 +1,15 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-27 — Learn content is localized; tab and settings layout follows long translations.
+> Last updated: 2026-10-28 — Tasbih counter and dhikr list are localized.
+
+## Status: Tasbih screens (2026-10-28)
+The counter and the dhikr list read their chrome, pin/edit/delete actions, and
+the eight built-in names and meanings from ARB in every supported language.
+Built-in phrases are resolved by id at display time, so an existing install
+does not need a new Hive seed. Custom dhikr still shows the text the user
+saved. The counter page and the list scroll when text is large. Hindi
+“Tasbih” is now “तस्बीह”, and the Hindi list subtitle no longer uses the
+wrong word धिक्कार.
 
 ## Status: Tab labels and settings layout (2026-10-27)
 Bottom navigation keeps each label on one line and scales it down when the

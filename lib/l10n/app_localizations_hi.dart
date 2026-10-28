@@ -2136,20 +2136,20 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tasbihBack => 'वापस';
 
   @override
-  String get tasbihTabTitle => 'Tasbih';
+  String get tasbihTabTitle => 'तस्बीह';
 
   @override
   String get tasbihChooseOrAddSubtitle =>
-      'एक धिक्कार चुनें या अपना खुद का बनाएं';
+      'एक ज़िक्र चुनें या अपना ज़िक्र बनाएँ';
 
   @override
-  String get tasbihAddCustomTitle => 'धिक्कार जोड़ें';
+  String get tasbihAddCustomTitle => 'ज़िक्र जोड़ें';
 
   @override
-  String get tasbihEditCustomTitle => 'कस्टम धिक्कार संपादित करें';
+  String get tasbihEditCustomTitle => 'अपना ज़िक्र संपादित करें';
 
   @override
-  String get tasbihArabicOrDhikrHint => 'अरबी पाठ या कोई धिक्कार';
+  String get tasbihArabicOrDhikrHint => 'अरबी पाठ या कोई ज़िक्र';
 
   @override
   String get tasbihTransliterationOptionalHint => 'लिप्यंतरण (वैकल्पिक)';
@@ -2183,41 +2183,101 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String tasbihLoopLabel(int number) {
-    return 'Loop $number';
+    return 'चक्र $number';
   }
 
   @override
-  String get tasbihCurrentDhikr => 'Current Dhikr';
+  String get tasbihCurrentDhikr => 'वर्तमान ज़िक्र';
 
   @override
-  String get tasbihViewAll => 'View All';
+  String get tasbihViewAll => 'सभी देखें';
 
   @override
-  String get tasbihSaveSession => 'Save session';
+  String get tasbihSaveSession => 'सत्र सहेजें';
 
   @override
-  String get tasbihSessionSaved => 'Session saved';
+  String get tasbihSessionSaved => 'सत्र सहेजा गया';
 
   @override
   String get tasbihSwipeHint =>
-      'Slide beads through the center · reverse to undo';
+      'मनकों को बीच से खिसकाएँ · पूर्ववत करने के लिए उल्टा करें';
 
   @override
-  String get tasbihEditGoalTitle => 'Set goal';
+  String get tasbihEditGoalTitle => 'लक्ष्य सेट करें';
 
   @override
-  String get tasbihCustomGoalHint => 'Enter a number (e.g. 33)';
+  String get tasbihCustomGoalHint => 'एक संख्या दर्ज करें (जैसे 33)';
 
   @override
-  String get tasbihSoundOn => 'Sound on';
+  String get tasbihSoundOn => 'ध्वनि चालू';
 
   @override
-  String get tasbihSoundOff => 'Sound off';
+  String get tasbihSoundOff => 'ध्वनि बंद';
 
   @override
   String tasbihSessionSummary(int total, int goal, int loops) {
-    return 'Total this session $total · Goal $goal · Loops completed $loops';
+    return 'इस सत्र का कुल $total · लक्ष्य $goal · पूरे चक्र $loops';
   }
+
+  @override
+  String get tasbihPin => 'पिन करें';
+
+  @override
+  String get tasbihUnpin => 'पिन हटाएँ';
+
+  @override
+  String get tasbihEdit => 'संपादित करें';
+
+  @override
+  String get tasbihNameSubhanAllah => 'सुभान अल्लाह';
+
+  @override
+  String get tasbihMeaningSubhanAllah => 'अल्लाह की महिमा हो';
+
+  @override
+  String get tasbihNameAlhamdulillah => 'अलहम्दुलिल्लाह';
+
+  @override
+  String get tasbihMeaningAlhamdulillah => 'समस्त प्रशंसा अल्लाह के लिए है';
+
+  @override
+  String get tasbihNameAllahuAkbar => 'अल्लाहु अकबर';
+
+  @override
+  String get tasbihMeaningAllahuAkbar => 'अल्लाह सबसे महान है';
+
+  @override
+  String get tasbihNameLaIlahaIllallah => 'ला इलाहा इल्लल्लाह';
+
+  @override
+  String get tasbihMeaningLaIlahaIllallah =>
+      'अल्लाह के सिवा कोई इबादत के लायक नहीं';
+
+  @override
+  String get tasbihNameAstaghfirullah => 'अस्तग़फ़िरुल्लाह';
+
+  @override
+  String get tasbihMeaningAstaghfirullah => 'मैं अल्लाह से क्षमा माँगता हूँ';
+
+  @override
+  String get tasbihNameLaHawla => 'ला हौला वला क़ुव्वता इल्ला बिल्लाह';
+
+  @override
+  String get tasbihMeaningLaHawla => 'अल्लाह के बिना न शक्ति है न बल';
+
+  @override
+  String get tasbihNameSubhanAllahiWaBihamdihi => 'सुभानल्लाह व बिहम्दिहि';
+
+  @override
+  String get tasbihMeaningSubhanAllahiWaBihamdihi =>
+      'अल्लाह की महिमा और प्रशंसा हो';
+
+  @override
+  String get tasbihNameHasbunallahu => 'हसबुनल्लाहु व निअमल वकील';
+
+  @override
+  String get tasbihMeaningHasbunallahu =>
+      'अल्लाह हमारे लिए काफ़ी है, वह उत्तम कार्यसाधक है';
 
   @override
   String get focusModeActivated => 'फोकस मोड सक्रिय';
@@ -2794,10 +2854,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get nearbyMosquesDenominationNotSpecified => 'मज़हब निर्दिष्ट नहीं';
 
   @override
-  String get tasbihDeleteDhikrTitle => 'धिक्कार हटाओ?';
+  String get tasbihDeleteDhikrTitle => 'ज़िक्र हटाएँ?';
 
   @override
-  String get tasbihDelete => 'मिटाना';
+  String get tasbihDelete => 'हटाएँ';
 
   @override
   String get focusAndroidBlockingNotReady =>

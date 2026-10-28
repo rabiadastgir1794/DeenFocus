@@ -2213,6 +2213,66 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tasbihPin => 'Pin';
+
+  @override
+  String get tasbihUnpin => 'Unpin';
+
+  @override
+  String get tasbihEdit => 'Edit';
+
+  @override
+  String get tasbihNameSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get tasbihMeaningSubhanAllah => 'Glory be to Allah';
+
+  @override
+  String get tasbihNameAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get tasbihMeaningAlhamdulillah => 'Praise be to Allah';
+
+  @override
+  String get tasbihNameAllahuAkbar => 'Allahu Akbar';
+
+  @override
+  String get tasbihMeaningAllahuAkbar => 'Allah is the Greatest';
+
+  @override
+  String get tasbihNameLaIlahaIllallah => 'La ilaha illallah';
+
+  @override
+  String get tasbihMeaningLaIlahaIllallah => 'There is no god but Allah';
+
+  @override
+  String get tasbihNameAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get tasbihMeaningAstaghfirullah => 'I seek forgiveness from Allah';
+
+  @override
+  String get tasbihNameLaHawla => 'La hawla wa la quwwata illa billah';
+
+  @override
+  String get tasbihMeaningLaHawla =>
+      'There is no power or might except with Allah';
+
+  @override
+  String get tasbihNameSubhanAllahiWaBihamdihi => 'SubhanAllahi wa bihamdihi';
+
+  @override
+  String get tasbihMeaningSubhanAllahiWaBihamdihi =>
+      'Glory and praise be to Allah';
+
+  @override
+  String get tasbihNameHasbunallahu => 'Hasbunallahu wa ni\'mal wakeel';
+
+  @override
+  String get tasbihMeaningHasbunallahu =>
+      'Allah is sufficient for us, and He is the best disposer of affairs';
+
+  @override
   String get focusModeActivated => 'Focus Mode Activated';
 
   @override

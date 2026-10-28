@@ -4139,6 +4139,120 @@ abstract class AppLocalizations {
   /// **'Total this session {total} · Goal {goal} · Loops completed {loops}'**
   String tasbihSessionSummary(int total, int goal, int loops);
 
+  /// No description provided for @tasbihPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get tasbihPin;
+
+  /// No description provided for @tasbihUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get tasbihUnpin;
+
+  /// No description provided for @tasbihEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get tasbihEdit;
+
+  /// No description provided for @tasbihNameSubhanAllah.
+  ///
+  /// In en, this message translates to:
+  /// **'SubhanAllah'**
+  String get tasbihNameSubhanAllah;
+
+  /// No description provided for @tasbihMeaningSubhanAllah.
+  ///
+  /// In en, this message translates to:
+  /// **'Glory be to Allah'**
+  String get tasbihMeaningSubhanAllah;
+
+  /// No description provided for @tasbihNameAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Alhamdulillah'**
+  String get tasbihNameAlhamdulillah;
+
+  /// No description provided for @tasbihMeaningAlhamdulillah.
+  ///
+  /// In en, this message translates to:
+  /// **'Praise be to Allah'**
+  String get tasbihMeaningAlhamdulillah;
+
+  /// No description provided for @tasbihNameAllahuAkbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Allahu Akbar'**
+  String get tasbihNameAllahuAkbar;
+
+  /// No description provided for @tasbihMeaningAllahuAkbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Allah is the Greatest'**
+  String get tasbihMeaningAllahuAkbar;
+
+  /// No description provided for @tasbihNameLaIlahaIllallah.
+  ///
+  /// In en, this message translates to:
+  /// **'La ilaha illallah'**
+  String get tasbihNameLaIlahaIllallah;
+
+  /// No description provided for @tasbihMeaningLaIlahaIllallah.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no god but Allah'**
+  String get tasbihMeaningLaIlahaIllallah;
+
+  /// No description provided for @tasbihNameAstaghfirullah.
+  ///
+  /// In en, this message translates to:
+  /// **'Astaghfirullah'**
+  String get tasbihNameAstaghfirullah;
+
+  /// No description provided for @tasbihMeaningAstaghfirullah.
+  ///
+  /// In en, this message translates to:
+  /// **'I seek forgiveness from Allah'**
+  String get tasbihMeaningAstaghfirullah;
+
+  /// No description provided for @tasbihNameLaHawla.
+  ///
+  /// In en, this message translates to:
+  /// **'La hawla wa la quwwata illa billah'**
+  String get tasbihNameLaHawla;
+
+  /// No description provided for @tasbihMeaningLaHawla.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no power or might except with Allah'**
+  String get tasbihMeaningLaHawla;
+
+  /// No description provided for @tasbihNameSubhanAllahiWaBihamdihi.
+  ///
+  /// In en, this message translates to:
+  /// **'SubhanAllahi wa bihamdihi'**
+  String get tasbihNameSubhanAllahiWaBihamdihi;
+
+  /// No description provided for @tasbihMeaningSubhanAllahiWaBihamdihi.
+  ///
+  /// In en, this message translates to:
+  /// **'Glory and praise be to Allah'**
+  String get tasbihMeaningSubhanAllahiWaBihamdihi;
+
+  /// No description provided for @tasbihNameHasbunallahu.
+  ///
+  /// In en, this message translates to:
+  /// **'Hasbunallahu wa ni\'mal wakeel'**
+  String get tasbihNameHasbunallahu;
+
+  /// No description provided for @tasbihMeaningHasbunallahu.
+  ///
+  /// In en, this message translates to:
+  /// **'Allah is sufficient for us, and He is the best disposer of affairs'**
+  String get tasbihMeaningHasbunallahu;
+
   /// No description provided for @focusModeActivated.
   ///
   /// In en, this message translates to:

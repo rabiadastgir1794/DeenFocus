@@ -2198,41 +2198,100 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String tasbihLoopLabel(int number) {
-    return 'Loop $number';
+    return 'Круг $number';
   }
 
   @override
-  String get tasbihCurrentDhikr => 'Current Dhikr';
+  String get tasbihCurrentDhikr => 'Текущий зикр';
 
   @override
-  String get tasbihViewAll => 'View All';
+  String get tasbihViewAll => 'Показать все';
 
   @override
-  String get tasbihSaveSession => 'Save session';
+  String get tasbihSaveSession => 'Сохранить сессию';
 
   @override
-  String get tasbihSessionSaved => 'Session saved';
+  String get tasbihSessionSaved => 'Сессия сохранена';
 
   @override
   String get tasbihSwipeHint =>
-      'Slide beads through the center · reverse to undo';
+      'Проведите бусины через центр · назад, чтобы отменить';
 
   @override
-  String get tasbihEditGoalTitle => 'Set goal';
+  String get tasbihEditGoalTitle => 'Задать цель';
 
   @override
-  String get tasbihCustomGoalHint => 'Enter a number (e.g. 33)';
+  String get tasbihCustomGoalHint => 'Введите число (например, 33)';
 
   @override
-  String get tasbihSoundOn => 'Sound on';
+  String get tasbihSoundOn => 'Звук включён';
 
   @override
-  String get tasbihSoundOff => 'Sound off';
+  String get tasbihSoundOff => 'Звук выключен';
 
   @override
   String tasbihSessionSummary(int total, int goal, int loops) {
-    return 'Total this session $total · Goal $goal · Loops completed $loops';
+    return 'Всего за сессию $total · Цель $goal · Завершённых кругов $loops';
   }
+
+  @override
+  String get tasbihPin => 'Закрепить';
+
+  @override
+  String get tasbihUnpin => 'Открепить';
+
+  @override
+  String get tasbihEdit => 'Изменить';
+
+  @override
+  String get tasbihNameSubhanAllah => 'Субханаллах';
+
+  @override
+  String get tasbihMeaningSubhanAllah => 'Пречист Аллах';
+
+  @override
+  String get tasbihNameAlhamdulillah => 'Альхамдулиллях';
+
+  @override
+  String get tasbihMeaningAlhamdulillah => 'Хвала Аллаху';
+
+  @override
+  String get tasbihNameAllahuAkbar => 'Аллаху акбар';
+
+  @override
+  String get tasbihMeaningAllahuAkbar => 'Аллах велик';
+
+  @override
+  String get tasbihNameLaIlahaIllallah => 'Ля иляха илляллах';
+
+  @override
+  String get tasbihMeaningLaIlahaIllallah => 'Нет божества, кроме Аллаха';
+
+  @override
+  String get tasbihNameAstaghfirullah => 'Астагфируллах';
+
+  @override
+  String get tasbihMeaningAstaghfirullah => 'Прошу прощения у Аллаха';
+
+  @override
+  String get tasbihNameLaHawla => 'Ля хауля ва ля куввата илля биллях';
+
+  @override
+  String get tasbihMeaningLaHawla => 'Нет мощи и силы, кроме как от Аллаха';
+
+  @override
+  String get tasbihNameSubhanAllahiWaBihamdihi => 'Субханаллахи ва бихамдихи';
+
+  @override
+  String get tasbihMeaningSubhanAllahiWaBihamdihi =>
+      'Пречист Аллах и хвала Ему';
+
+  @override
+  String get tasbihNameHasbunallahu => 'Хасбуналлаху ва ни\'маль-вакиль';
+
+  @override
+  String get tasbihMeaningHasbunallahu =>
+      'Достаточно нам Аллаха, и как прекрасен Он как покровитель';
 
   @override
   String get focusModeActivated => 'Режим фокусировки активирован';

@@ -2033,7 +2033,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasbihTabTitle => '塔斯比赫';
 
   @override
-  String get tasbihChooseOrAddSubtitle => '选择一个dhikr或创建您自己的';
+  String get tasbihChooseOrAddSubtitle => '选择一段迪克尔，或创建自己的';
 
   @override
   String get tasbihAddCustomTitle => '添加迪克尔';
@@ -2042,7 +2042,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasbihEditCustomTitle => '编辑自定义迪克尔';
 
   @override
-  String get tasbihArabicOrDhikrHint => '阿拉伯文字或任何 dhikr';
+  String get tasbihArabicOrDhikrHint => '阿拉伯语或任何迪克尔';
 
   @override
   String get tasbihTransliterationOptionalHint => '音译（可选）';
@@ -2076,41 +2076,97 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String tasbihLoopLabel(int number) {
-    return 'Loop $number';
+    return '第 $number 轮';
   }
 
   @override
-  String get tasbihCurrentDhikr => 'Current Dhikr';
+  String get tasbihCurrentDhikr => '当前迪克尔';
 
   @override
-  String get tasbihViewAll => 'View All';
+  String get tasbihViewAll => '查看全部';
 
   @override
-  String get tasbihSaveSession => 'Save session';
+  String get tasbihSaveSession => '保存本次';
 
   @override
-  String get tasbihSessionSaved => 'Session saved';
+  String get tasbihSessionSaved => '已保存';
 
   @override
-  String get tasbihSwipeHint =>
-      'Slide beads through the center · reverse to undo';
+  String get tasbihSwipeHint => '将珠子滑过中心 · 反向滑动可撤销';
 
   @override
-  String get tasbihEditGoalTitle => 'Set goal';
+  String get tasbihEditGoalTitle => '设置目标';
 
   @override
-  String get tasbihCustomGoalHint => 'Enter a number (e.g. 33)';
+  String get tasbihCustomGoalHint => '输入数字（例如 33）';
 
   @override
-  String get tasbihSoundOn => 'Sound on';
+  String get tasbihSoundOn => '声音开';
 
   @override
-  String get tasbihSoundOff => 'Sound off';
+  String get tasbihSoundOff => '声音关';
 
   @override
   String tasbihSessionSummary(int total, int goal, int loops) {
-    return 'Total this session $total · Goal $goal · Loops completed $loops';
+    return '本次共计 $total · 目标 $goal · 已完成轮次 $loops';
   }
+
+  @override
+  String get tasbihPin => '置顶';
+
+  @override
+  String get tasbihUnpin => '取消置顶';
+
+  @override
+  String get tasbihEdit => '编辑';
+
+  @override
+  String get tasbihNameSubhanAllah => '苏布哈南拉';
+
+  @override
+  String get tasbihMeaningSubhanAllah => '赞颂真主';
+
+  @override
+  String get tasbihNameAlhamdulillah => '艾勒哈姆杜林拉';
+
+  @override
+  String get tasbihMeaningAlhamdulillah => '一切赞颂全归真主';
+
+  @override
+  String get tasbihNameAllahuAkbar => '安拉胡艾克拜尔';
+
+  @override
+  String get tasbihMeaningAllahuAkbar => '真主至大';
+
+  @override
+  String get tasbihNameLaIlahaIllallah => '俩伊俩海印兰拉';
+
+  @override
+  String get tasbihMeaningLaIlahaIllallah => '除真主外绝无应受崇拜的';
+
+  @override
+  String get tasbihNameAstaghfirullah => '艾斯泰额菲鲁拉';
+
+  @override
+  String get tasbihMeaningAstaghfirullah => '我向真主求饶恕';
+
+  @override
+  String get tasbihNameLaHawla => '俩豪莱瓦俩古沃泰印拉宾拉';
+
+  @override
+  String get tasbihMeaningLaHawla => '除真主外绝无力与能';
+
+  @override
+  String get tasbihNameSubhanAllahiWaBihamdihi => '苏布哈南拉希瓦比哈姆迪希';
+
+  @override
+  String get tasbihMeaningSubhanAllahiWaBihamdihi => '赞颂真主并赞美他';
+
+  @override
+  String get tasbihNameHasbunallahu => '哈斯布南拉胡瓦尼阿迈勒瓦基勒';
+
+  @override
+  String get tasbihMeaningHasbunallahu => '真主使我们满足，他是最好的受托者';
 
   @override
   String get focusModeActivated => '对焦模式已激活';

@@ -2197,41 +2197,99 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String tasbihLoopLabel(int number) {
-    return 'Loop $number';
+    return 'Volta $number';
   }
 
   @override
-  String get tasbihCurrentDhikr => 'Current Dhikr';
+  String get tasbihCurrentDhikr => 'Dhikr atual';
 
   @override
-  String get tasbihViewAll => 'View All';
+  String get tasbihViewAll => 'Ver tudo';
 
   @override
-  String get tasbihSaveSession => 'Save session';
+  String get tasbihSaveSession => 'Salvar sessão';
 
   @override
-  String get tasbihSessionSaved => 'Session saved';
+  String get tasbihSessionSaved => 'Sessão salva';
 
   @override
   String get tasbihSwipeHint =>
-      'Slide beads through the center · reverse to undo';
+      'Deslize as contas pelo centro · inverta para desfazer';
 
   @override
-  String get tasbihEditGoalTitle => 'Set goal';
+  String get tasbihEditGoalTitle => 'Definir meta';
 
   @override
-  String get tasbihCustomGoalHint => 'Enter a number (e.g. 33)';
+  String get tasbihCustomGoalHint => 'Digite um número (ex. 33)';
 
   @override
-  String get tasbihSoundOn => 'Sound on';
+  String get tasbihSoundOn => 'Som ligado';
 
   @override
-  String get tasbihSoundOff => 'Sound off';
+  String get tasbihSoundOff => 'Som desligado';
 
   @override
   String tasbihSessionSummary(int total, int goal, int loops) {
-    return 'Total this session $total · Goal $goal · Loops completed $loops';
+    return 'Total desta sessão $total · Meta $goal · Voltas concluídas $loops';
   }
+
+  @override
+  String get tasbihPin => 'Fixar';
+
+  @override
+  String get tasbihUnpin => 'Desafixar';
+
+  @override
+  String get tasbihEdit => 'Editar';
+
+  @override
+  String get tasbihNameSubhanAllah => 'SubhanAllah';
+
+  @override
+  String get tasbihMeaningSubhanAllah => 'Glória a Allah';
+
+  @override
+  String get tasbihNameAlhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get tasbihMeaningAlhamdulillah => 'Louvado seja Allah';
+
+  @override
+  String get tasbihNameAllahuAkbar => 'Allahu Akbar';
+
+  @override
+  String get tasbihMeaningAllahuAkbar => 'Allah é o Maior';
+
+  @override
+  String get tasbihNameLaIlahaIllallah => 'La ilaha illallah';
+
+  @override
+  String get tasbihMeaningLaIlahaIllallah => 'Não há divindade além de Allah';
+
+  @override
+  String get tasbihNameAstaghfirullah => 'Astaghfirullah';
+
+  @override
+  String get tasbihMeaningAstaghfirullah => 'Peço perdão a Allah';
+
+  @override
+  String get tasbihNameLaHawla => 'La hawla wa la quwwata illa billah';
+
+  @override
+  String get tasbihMeaningLaHawla => 'Não há poder nem força senão com Allah';
+
+  @override
+  String get tasbihNameSubhanAllahiWaBihamdihi => 'SubhanAllahi wa bihamdihi';
+
+  @override
+  String get tasbihMeaningSubhanAllahiWaBihamdihi => 'Glória e louvor a Allah';
+
+  @override
+  String get tasbihNameHasbunallahu => 'Hasbunallahu wa ni\'mal wakeel';
+
+  @override
+  String get tasbihMeaningHasbunallahu =>
+      'Allah nos basta, e Ele é o melhor guardião';
 
   @override
   String get focusModeActivated => 'Modo de foco ativado';
