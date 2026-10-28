@@ -51,6 +51,7 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
   double? _longitude;
   List<NearbyMosque> _mosques = const <NearbyMosque>[];
   bool _pendingResumeReload = false;
+  Future<void>? _activeLoad;
 
   @override
   void initState() {
@@ -76,10 +77,23 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
     }
   }
 
-  Future<void> _load({bool forceRefresh = false}) async {
+  Future<void> _load({bool forceRefresh = false}) {
+    final active = _activeLoad;
+    if (active != null) return active;
+    final future = _loadOnce(forceRefresh: forceRefresh);
+    _activeLoad = future;
+    return future.whenComplete(() {
+      if (identical(_activeLoad, future)) _activeLoad = null;
+    });
+  }
+
+  Future<void> _loadOnce({required bool forceRefresh}) async {
+    final keepVisibleResults = _mosques.isNotEmpty || _latitude != null;
     setState(() {
       _isLoading = true;
-      _awaitingLocation = true;
+      if (!keepVisibleResults) {
+        _awaitingLocation = true;
+      }
       _errorMessage = null;
       _errorSuggestOpenSettings = false;
       _errorOpenSystemLocationSettings = false;
@@ -100,19 +114,22 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
         );
       }
 
-      if (!forceRefresh) {
-        final cached = await NearbyMosquesCache.readValid(
-          latitude: latitude,
-          longitude: longitude,
-        );
-        // Skip thin caches from older narrower queries so users pick up
-        // improved OSM coverage without waiting for TTL.
-        if (cached != null &&
-            cached.mosques.length >=
-                NearbyMosquesService.sparseResultThreshold) {
-          if (!mounted) return;
+      final saved = await NearbyMosquesCache.readNearby(
+        latitude: latitude,
+        longitude: longitude,
+        ignoreTtl: true,
+      );
+      if (saved != null && saved.mosques.isNotEmpty) {
+        if (!mounted) return;
+        setState(() {
+          _mosques = saved.mosques;
+        });
+        final fresh =
+            !forceRefresh &&
+            saved.mosques.length >= NearbyMosquesService.sparseResultThreshold &&
+            DateTime.now().difference(saved.fetched) <= NearbyMosquesCache.ttl;
+        if (fresh) {
           setState(() {
-            _mosques = cached.mosques;
             _isLoading = false;
             _errorMessage = null;
           });
@@ -378,12 +395,25 @@ class _HomeNearbyMosquesScreenState extends State<HomeNearbyMosquesScreen>
             ),
           if ((_locationName?.trim().isNotEmpty ?? false))
             const SizedBox(height: 8),
-          if (_isLoading)
+          if (_isLoading && _mosques.isNotEmpty)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: LinearProgressIndicator(),
+            ),
+          if (_errorMessage != null && _mosques.isNotEmpty) ...[
+            _StatusCard(
+              message: _errorMessage!,
+              actionLabel: l10n.nearbyMosquesTryAgain,
+              onAction: () => _load(forceRefresh: true),
+            ),
+            const SizedBox(height: 12),
+          ],
+          if (_isLoading && _mosques.isEmpty)
             const Padding(
               padding: EdgeInsets.only(top: 40),
               child: Center(child: CircularProgressIndicator()),
             )
-          else if (_errorMessage != null)
+          else if (_errorMessage != null && _mosques.isEmpty)
             _StatusCard(
               message: _errorMessage!,
               actionLabel: _errorSuggestOpenSettings

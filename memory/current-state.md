@@ -1,6 +1,16 @@
 # Current State
 > Source of truth for recovery. Read this first after any interruption.
-> Last updated: 2026-10-27 — Learn content is localized; tab and settings layout follows long translations.
+> Last updated: 2026-10-27 — Masjid Finder keeps saved mosques visible when a live Overpass refresh fails.
+
+## Status: Masjid Finder live update failed (2026-10-27)
+The banner was the live Overpass request failing, then the screen replacing the
+saved list with that error. Timeouts were reported as offline, HTTP 429 was not
+retried, and HTTP 504 was retried once against only maps.mail.ru. Requests now
+time out at 25s, back off across all three mirrors (honoring Retry-After, capped
+at 8s), and identical in-flight queries are shared. A fresh dense cache still
+skips the network. A stale cache stays on screen during refresh, with the
+existing stale banner above the list if the refresh fails. OSM matching is
+unchanged.
 
 ## Status: Tab labels and settings layout (2026-10-27)
 Bottom navigation keeps each label on one line and scales it down when the

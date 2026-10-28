@@ -305,8 +305,15 @@ class NearbyMosquesQueryResult {
 }
 
 class NearbyMosquesService {
-  NearbyMosquesService({http.Client? client})
-    : _client = client ?? http.Client();
+  NearbyMosquesService({
+    http.Client? client,
+    this.requestTimeout = const Duration(seconds: 25),
+    this.maxTransientAttempts = 3,
+    Duration Function(int attempt)? backoff,
+    Future<void> Function(Duration delay)? sleep,
+  }) : _client = client ?? http.Client(),
+       _backoff = backoff ?? defaultBackoff,
+       _sleep = sleep ?? Future<void>.delayed;
 
   /// VK Maps answers when the FOSSGIS instance is at capacity.
   /// kumi.systems is the old name of private.coffee, and
@@ -317,9 +324,6 @@ class NearbyMosquesService {
     'https://overpass.private.coffee/api/interpreter',
     'https://overpass-api.de/api/interpreter',
   ];
-
-  static const _overpassRetryEndpoint =
-      'https://maps.mail.ru/osm/tools/overpass/api/interpreter';
 
   static const _overpassUserAgent =
       'Deenly/com.rnr.deenfocus (nearby mosques; +https://www.openstreetmap.org/copyright)';
@@ -342,6 +346,18 @@ class NearbyMosquesService {
   static const int defaultMaxResultCount = 100;
 
   final http.Client _client;
+  final Duration requestTimeout;
+  final int maxTransientAttempts;
+  final Duration Function(int attempt) _backoff;
+  final Future<void> Function(Duration delay) _sleep;
+  final Map<String, Future<Map<String, dynamic>>> _inFlight =
+      <String, Future<Map<String, dynamic>>>{};
+
+  /// 500ms, 1s, 2s, 4s, then 8s. Transient Overpass failures only.
+  static Duration defaultBackoff(int attempt) {
+    final shift = attempt.clamp(0, 4);
+    return Duration(milliseconds: 500 * (1 << shift));
+  }
 
   /// Fetches nearby mosques, expanding radius when the area is sparse on OSM.
   Future<NearbyMosquesQueryResult> fetchNearbyExpanding({
@@ -468,14 +484,52 @@ out center tags;
   Future<Map<String, dynamic>> _fetchOverpassJson(
     String query, {
     bool retryOnBusy = true,
+  }) {
+    // Pull-to-refresh and radius expansion can ask for the same query while
+    // the first one is still open. Sharing that future avoids a second burst
+    // of mirror calls, which is what usually draws a 429.
+    final existing = _inFlight[query];
+    if (existing != null) return existing;
+    final future = _fetchOverpassJsonWithRetry(
+      query,
+      retryOnBusy: retryOnBusy,
+    );
+    _inFlight[query] = future;
+    future
+        .whenComplete(() {
+          if (identical(_inFlight[query], future)) {
+            _inFlight.remove(query);
+          }
+        })
+        .ignore();
+    return future;
+  }
+
+  Future<Map<String, dynamic>> _fetchOverpassJsonWithRetry(
+    String query, {
+    required bool retryOnBusy,
   }) async {
-    try {
-      return await _raceOverpass(query, _overpassInterpreters);
-    } on NearbyMosquesException catch (error) {
-      if (!retryOnBusy || !error.retryable) rethrow;
-      await Future<void>.delayed(const Duration(seconds: 2));
-      return _raceOverpass(query, const <String>[_overpassRetryEndpoint]);
+    var attempt = 0;
+    while (true) {
+      try {
+        return await _raceOverpass(query, _overpassInterpreters);
+      } on NearbyMosquesException catch (error) {
+        final attempts = maxTransientAttempts < 1 ? 1 : maxTransientAttempts;
+        final canRetry =
+            retryOnBusy && error.retryable && attempt < attempts - 1;
+        if (!canRetry) rethrow;
+        await _sleep(_delayFor(error, attempt));
+        attempt++;
+      }
     }
+  }
+
+  Duration _delayFor(NearbyMosquesException error, int attempt) {
+    final backoff = _backoff(attempt);
+    final retryAfter = error.retryAfter;
+    if (retryAfter == null || retryAfter <= backoff) return backoff;
+    const cap = Duration(seconds: 8);
+    return retryAfter > cap ? cap : retryAfter;
   }
 
   Future<Map<String, dynamic>> _raceOverpass(
@@ -487,8 +541,12 @@ out center tags;
     final completer = Completer<Map<String, dynamic>>();
     var remaining = endpoints.length;
     var sawRateLimit = false;
+    var sawServer = false;
     var sawQueryError = false;
-    var sawHttp = false;
+    var sawTimeout = false;
+    var sawOffline = false;
+    var sawOtherHttp = false;
+    Duration? retryAfter;
     Map<String, dynamic>? fallbackBody;
     var fallbackCount = -1;
 
@@ -503,7 +561,7 @@ out center tags;
             },
             body: query,
           )
-          .timeout(const Duration(seconds: 25))
+          .timeout(requestTimeout)
           .then((r) {
             if (kDebugMode) {
               debugPrint('[NearbyMosques] $endpoint → HTTP ${r.statusCode}');
@@ -511,29 +569,43 @@ out center tags;
             if (completer.isCompleted) return;
             if (r.statusCode == 429) {
               sawRateLimit = true;
-              sawHttp = true;
+              final after = _retryAfterHeader(r.headers['retry-after']);
+              final currentRetryAfter = retryAfter;
+              if (after != null &&
+                  (currentRetryAfter == null || after < currentRetryAfter)) {
+                retryAfter = after;
+              }
+              return;
+            }
+            if (_isTransientHttpStatus(r.statusCode)) {
+              sawServer = true;
               return;
             }
             if (r.statusCode < 200 || r.statusCode >= 300) {
-              sawHttp = true;
+              sawOtherHttp = true;
               return;
             }
             final decoded = _decodeOverpassBody(r.body);
             if (decoded == null) {
-              sawHttp = true;
+              sawOtherHttp = true;
               return;
             }
-            sawHttp = true;
             final count = _elementCount(decoded);
             final remark = decoded['remark']?.toString().toLowerCase() ?? '';
-            final incomplete =
-                remark.contains('timeout') || remark.contains('runtime error');
+            final timedOut =
+                remark.contains('timeout') || remark.contains('timed out');
+            final runtimeError = remark.contains('runtime error');
             // A remark with no elements is a failed query, not an empty area.
-            if (incomplete && count == 0) {
-              sawQueryError = true;
+            // A timeout remark can clear on a later attempt; out-of-memory cannot.
+            if ((timedOut || runtimeError) && count == 0) {
+              if (timedOut) {
+                sawTimeout = true;
+              } else {
+                sawQueryError = true;
+              }
               return;
             }
-            if (count > 0 && !incomplete) {
+            if (count > 0 && !timedOut && !runtimeError) {
               completer.complete(decoded);
               return;
             }
@@ -544,6 +616,11 @@ out center tags;
           })
           .catchError((Object e) {
             if (kDebugMode) debugPrint('[NearbyMosques] $endpoint → error: $e');
+            if (e is TimeoutException) {
+              sawTimeout = true;
+            } else {
+              sawOffline = true;
+            }
           })
           .whenComplete(() {
             remaining--;
@@ -553,36 +630,84 @@ out center tags;
               completer.complete(fallback);
               return;
             }
-            if (sawRateLimit) {
-              completer.completeError(
-                const NearbyMosquesException(
-                  'The public mosque data service is rate-limiting requests from your '
-                  'network (this can happen on the first try on shared Wi-Fi or '
-                  'cellular). Try again in a minute or switch network.',
-                ),
-              );
-              return;
-            }
-            if (sawQueryError) {
-              completer.completeError(
-                const NearbyMosquesException(
-                  'The map service could not return nearby mosques. Please try again.',
-                ),
-              );
-              return;
-            }
-            completer.completeError(
-              NearbyMosquesException(
-                sawHttp
-                    ? 'The mosque service is busy right now. Please try again.'
-                    : 'No internet connection or the map service is unreachable. Check your connection and try again.',
-                retryable: true,
-              ),
-            );
+            completer.completeError(_failureFromRace(
+              sawRateLimit: sawRateLimit,
+              sawServer: sawServer,
+              sawQueryError: sawQueryError,
+              sawTimeout: sawTimeout,
+              sawOffline: sawOffline,
+              sawOtherHttp: sawOtherHttp,
+              retryAfter: retryAfter,
+            ));
           });
     }
 
     return completer.future;
+  }
+
+  static bool _isTransientHttpStatus(int statusCode) {
+    return statusCode == 408 ||
+        statusCode == 500 ||
+        statusCode == 502 ||
+        statusCode == 503 ||
+        statusCode == 504;
+  }
+
+  static Duration? _retryAfterHeader(String? header) {
+    if (header == null) return null;
+    final seconds = int.tryParse(header.trim());
+    if (seconds == null || seconds < 0) return null;
+    return Duration(seconds: seconds);
+  }
+
+  static NearbyMosquesException _failureFromRace({
+    required bool sawRateLimit,
+    required bool sawServer,
+    required bool sawQueryError,
+    required bool sawTimeout,
+    required bool sawOffline,
+    required bool sawOtherHttp,
+    required Duration? retryAfter,
+  }) {
+    if (sawRateLimit) {
+      return NearbyMosquesException(
+        'The public mosque data service is rate-limiting requests from your '
+        'network (this can happen on the first try on shared Wi-Fi or '
+        'cellular). Try again in a minute or switch network.',
+        retryable: true,
+        retryAfter: retryAfter,
+        kind: NearbyMosquesFailureKind.rateLimited,
+      );
+    }
+    if (sawServer) {
+      return const NearbyMosquesException(
+        'The mosque service is busy right now. Please try again.',
+        retryable: true,
+        kind: NearbyMosquesFailureKind.server,
+      );
+    }
+    if (sawQueryError || sawOtherHttp) {
+      return const NearbyMosquesException(
+        'The map service could not return nearby mosques. Please try again.',
+        kind: NearbyMosquesFailureKind.query,
+      );
+    }
+    if (sawTimeout) {
+      return const NearbyMosquesException(
+        'The request took too long. Check your internet connection and try again.',
+        retryable: true,
+        kind: NearbyMosquesFailureKind.timeout,
+      );
+    }
+    return NearbyMosquesException(
+      sawOffline
+          ? 'No internet connection or the map service is unreachable. Check your connection and try again.'
+          : 'The mosque service is busy right now. Please try again.',
+      retryable: true,
+      kind: sawOffline
+          ? NearbyMosquesFailureKind.offline
+          : NearbyMosquesFailureKind.server,
+    );
   }
 
   List<NearbyMosque> _mosquesFromOverpass(
@@ -982,13 +1107,25 @@ out center tags;
       math.cos(_degreesToRadians(degrees));
 }
 
+enum NearbyMosquesFailureKind { rateLimited, server, timeout, offline, query }
+
 class NearbyMosquesException implements Exception {
-  const NearbyMosquesException(this.message, {this.retryable = false});
+  const NearbyMosquesException(
+    this.message, {
+    this.retryable = false,
+    this.retryAfter,
+    this.kind,
+  });
 
   final String message;
 
-  /// True when another attempt may succeed (capacity or a dropped connection).
+  /// True when another attempt may succeed (capacity, rate limit, or a drop).
   final bool retryable;
+
+  /// Server `Retry-After` when the failure is a 429. Already applied between attempts.
+  final Duration? retryAfter;
+
+  final NearbyMosquesFailureKind? kind;
 
   @override
   String toString() => message;

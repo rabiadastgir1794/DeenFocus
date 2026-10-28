@@ -12,6 +12,19 @@ abstract class NearbyMosquesCache {
   static Future<({double lat, double lng, DateTime fetched, List<NearbyMosque> mosques})?> readValid({
     required double latitude,
     required double longitude,
+  }) {
+    return readNearby(
+      latitude: latitude,
+      longitude: longitude,
+    );
+  }
+
+  /// Last saved search for this spot. [ignoreTtl] keeps expired results so the
+  /// map can stay filled while a live refresh runs.
+  static Future<({double lat, double lng, DateTime fetched, List<NearbyMosque> mosques})?> readNearby({
+    required double latitude,
+    required double longitude,
+    bool ignoreTtl = false,
   }) async {
     final cachedLat = await StorageService.nearbyMosquesCacheLatitude;
     final cachedLng = await StorageService.nearbyMosquesCacheLongitude;
@@ -36,7 +49,7 @@ abstract class NearbyMosquesCache {
     }
 
     final fetched = DateTime.fromMillisecondsSinceEpoch(fetchedMs, isUtc: false);
-    if (DateTime.now().difference(fetched) > ttl) {
+    if (!ignoreTtl && DateTime.now().difference(fetched) > ttl) {
       return null;
     }
 
